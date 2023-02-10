@@ -1,0 +1,33 @@
+{
+  "name": "solito-expo-router",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-native": "^0.69.5",
+    "eslint": "^8.21.0",
+    "turbo": "^1.4.2",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
+    "web": "cd apps/next && dotenv -e ../../.env.local -- yarn next"
+  },
+  "resolutions": {
+    "metro": "^0.73.1",
+    "metro-resolver": "^0.73.1"
+  },
+  "nohoist": [
+    "**/expo-router",
+    "**/expo-router/**"
+  ],
+  "engines": {
+    "node": "^16.0.0"
+  },
+  "dependencies": {
+    "dotenv-cli": "^7.0.0"
+  }
+}

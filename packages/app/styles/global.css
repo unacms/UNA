@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.u-vanilla-html {
+    @apply prose dark:prose-invert;
+    @apply prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-500 prose-a:underline   hover:prose-a:decoration-2 prose-a:underline-offset-4 visited:prose-a:text-purple-500;
+    max-width: none;
+}
+/* custom comments */
+.form-comment {
+    @apply fixed z-50 flex-wrap gap-4 bottom-0 left-0  w-full bg-gray-50 dark:bg-gray-800 border-t  border-gray-200  dark:border-gray-600/50 ;
+}
+.form-comment form {
+    @apply grid;
+    grid-column-gap: 1rem;;
+    grid-template-areas:
+    "text button";
+    grid-template-columns: 1fr 70px;
+}
+.form-comment .form-control-cmt_submit {
+    grid-area: button;
+}
+.form-comment .form-control-cmt_text {
+    grid-area: text;
+}
+.form-comment textarea {
+    height: 44px;
+    @apply block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+}
+.hle{
+    @apply bg-blue-500;
+}
+.cmt-line{
+    margin-bottom: 4px;
+}
+section .cmt:last-child .cmt-line{
+    display: none;
+}
+section .cmt:first-child .cmt-line-top{
+    margin-top: -20px;
+    display: block;
+    height: 20px;
+}
+
+.\@container\/cell{
+    container-type: cell !important;
+}
+
