@@ -3,6 +3,7 @@
   "name": "app",
   "main": "index.ts",
   "dependencies": {
+    "date-fns": "^2.29.3",
     "dripsy": "^3.6.0",
     "expo-linking": "^3.0.0",
     "moti": "0.19.0-alpha.6",

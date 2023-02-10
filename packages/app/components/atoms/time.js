@@ -1,4 +1,5 @@
-import React  from 'react'
+import React, { useState, useEffect }  from 'react'
+import { parseISO, format, formatDistance } from 'date-fns';
 
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -7,7 +8,17 @@ import { View } from 'app/design/view'
 //import moment from 'moment/min/moment-with-locales';
 
 export default function ElementTime(props) {
-    return <View><Text>TODO:datetime</Text></View>;
+    const [date, setDate] = useState(new Date());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setDate(new Date());
+        }, 60000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const s = formatDistance(new Date(props.ts * 1000), date, { addSuffix: true })
+    return <Text>{s}</Text>
 /*
     moment.updateLocale('en', {
         relativeTime : {
