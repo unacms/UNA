@@ -10,8 +10,7 @@ export function HomeScreen() {
       <H1 className="">Welcome to G-Med app.</H1>
       <View>
         <P>
-          Here is a basic starter. This screen uses the same code on Next.js and React
-          Native.
+          UNA Universal App - for gMed
         </P>
         <P>
           Solito is made by{' '}
@@ -34,9 +33,13 @@ export function HomeScreen() {
         <TextLink href="/contact">
           Contact
         </TextLink>
-        <Text> | </Text>
+        <Text> - </Text>
         <TextLink href="/posts-home">
           Posts
+        </TextLink>
+        <Text> - </Text>
+        <TextLink href="/home">
+          Feed
         </TextLink>
       </Row>
 
