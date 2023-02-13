@@ -2,8 +2,22 @@ import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
 
-export function HomeScreen() {
+const Box = function ({ className, ...props })  {
+  return <Text className={`flex flex-1 text-center h-14 basis-24 justify-center items-center text-white bg-fuchsia-500 rounded ${className}`} {...props}/>
+}
 
+
+export function HomeScreen() {
+  return (
+    <View className="flex flex-row flex-wrap h-screen w-screen content-center items-center gap-y-1 overflow-hidden">
+      <Box>01</Box>
+      <Box>02</Box>
+      <Box>03</Box>
+      <Box>04</Box>
+      <Box>05</Box>
+      <Box>06</Box>
+    </View>
+  );
   return (
     <View className="px-2 py-5 grid place-items-center">
     <View className="max-w-md">
@@ -38,7 +52,7 @@ export function HomeScreen() {
           Posts
         </TextLink>
         <Text> - </Text>
-        <TextLink href="/home">
+        <TextLink href="/timeline-view-home">
           Feed
         </TextLink>
       </Row>

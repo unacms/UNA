@@ -8,6 +8,11 @@ import { View } from 'app/design/view'
 
 
 // g-med style browsing
+/**
+ * It renders a link to the post, which contains a profile picture, a title, a description, and a
+ * comment
+ * @returns A React component.
+ */
 export default function UnitFeed({data}) {
     var oImage = data.content.images.length > 0 ? data.content.images[0] : null;
     if (oImage == null)
@@ -21,28 +26,30 @@ export default function UnitFeed({data}) {
     //return <View><Row><Text>TODO:feed unit</Text></Row></View>
     
     return (
-        <Link href={data.url} className="mt-[1px] @xl/cell:mt-2 @xl/cell:first:mt-4 overflow-hidden border-gray-300/80 hover:border-gray-300  bg-white active:bg-gray-100 @xl/cell:hover:bg-gray-50 dark:active:bg-gray-700 dark:bg-gray-900 @xl/cell:dark:hover:bg-gray-800 dark:border-gray-800/50 dark:hover:border-gray-700/50 p-4  @xl/cell:hover:-translate-y-0.5 @xl/cell:hover:shadow-sm @xl/cell:border  @xl/cell:active:translate-y-1 @xl/cell:duration-300   @xl/cell:rounded-lg   gap-4 w-full">
-            <View className='flex flex-col gap-2 @xl/cell:gap-4 flex-auto'>
-                <View className="flex  flex-none gap-1">
-                    <View className="flex-auto gap- block relative">       
-                        <Profile {...data.author_data} showLinks="false" />
+        <Link href={data.url} className="flex-1 flex-auto flex-col">
+            <View className='flex-1 w-full p-2 bg-green-400 rounded-lg flex-auto '>
+                <View className="flex-1 flex-auto ">
+                    <View className="flex-none ">       
+                        <Profile {...data.author_data} showLinks="false" className="" />
                     </View>    
-                    <View className='flex-none flex flex-col mb-auto gap-1.5 mt-0.5  '>
+                    
                         <View className="whitespace-nowrap ml-auto flex-none font-medium tracking-tight  text-sm    ">
                             <Time className="" ts={data.date}></Time>
                         </View>
-                        <Text className="text-sm -mt-4 ring ring-white dark:ring-gray-900 -mr-1.5 @xl/cell:m-0 flex-none hidden @xl/cell:block font-medium   bg-blue-500 h-min  rounded-xl rounded-br-sm  ml-auto px-2  text-white dark:text-gray-800  ">{data.cmts.count}</Text>
 
-                    </View>
+                    
                 </View> 
                 {false && oImage &&
                     <View className="hidden @xl/cell:block  w-full aspect-video flex-none"><Image {...oImage} scale="width" alt={data.title} className="rounded-md aspect-video" /></View>
                 }  
-                <View className="flex flex-col flex-auto gap-2 @xl/cell:gap-4 -mt-8 @xl/cell:mt-0">                                
+                <View className="flex flex-1 flex-col flex-auto gap-1  ">                                
                     <Text className="text-sm hidden text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-blue-300  ">{data.description}</Text>
-                    <View className='flex bg-primary '>
-                        <H1 className="text-base flex-auto mt-auto   leading-tight   font-bold tracking-tight text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400  ">{data.content.title}</H1>
-                        <Text className="text-sm hidden flex-none @xl/cell:hidden font-medium mt-auto  bg-blue-500 h-min  rounded-xl rounded-br  ml-auto px-2  text-white dark:text-gray-800  ">{data.cmts.count}</Text>
+                    <View className='flex '>
+                        <H1 className="text-lg  mt-auto font-bold tracking-tight text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
+                        <View className=' bg-blue-500 rounded-full ml-auto px-2'>
+                            <Text className="text-xs font-medium text-white">{data.cmts.count}</Text>
+                        </View>
+                        
                     </View>
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
