@@ -18,7 +18,6 @@ export default function Aaa (props) {
   }, []);
 
   // TODO: handle error when API is down
-
   if (undefined === pageData)
     return <Text sx={{ textAlign: 'center', mb: 16, fontWeight: 'bold' }}>Loading...</Text>
 
