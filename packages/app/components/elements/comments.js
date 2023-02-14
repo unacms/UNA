@@ -116,7 +116,7 @@ export default function ElementComments(props) {
 
     // handle more button
     const handleMore =  async () => {
-
+        setPostData(null);
         const sRequest = prepareUrl({'is_form' : false}) ;
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
@@ -127,6 +127,7 @@ export default function ElementComments(props) {
 
     // handle change order
     const handleOrder =  async (orderWay) => { 
+        setPostData(null);
         const sRequest = prepareUrl({'start_from': 0, 'is_form' : false, 'order_way': orderWay});
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
@@ -151,7 +152,7 @@ export default function ElementComments(props) {
     return (
         <div className='bg-red-500'>
             <div className="p-4 m-auto">
-                <button data-dropdown-toggle="cmts-order" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Order by <svg className="w-4 h-4 ml-2"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                <button data-dropdown-trigger="hover" data-dropdown-toggle="cmts-order" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Order by <svg className="w-4 h-4 ml-2"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></button>
                 <div id="cmts-order" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                     <li>

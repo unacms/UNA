@@ -32,8 +32,8 @@ export default function UnitGeneral(props) {
                 <Profile {...data.author_data} displayType="unit_wo_info"  />
             </View>
             <View className="flex flex-row-reverse gap-4 flex-auto">
-                    {data.image &&
-                        <View className="hidden @xl/cell:block -my-2 -mx-2 h-44 aspect-video flex-none">{/*<Image {...data.image} alt={data.title} className="rounded aspect-video" />*/}</View>
+                    {data.image && 
+                        <View className=" -my-2 -mx-2 h-44 aspect-video flex-none">{<Image {...data.image} alt={data.title} className="rounded aspect-video" />}</View>
                     } 
                     <View className="flex flex-auto flex-col-reverse @xl/cell:flex-col  ">
                         <View className="flex flex-col flex-auto gap-2">

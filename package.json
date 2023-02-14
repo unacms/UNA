@@ -14,6 +14,7 @@
   },
   "scripts": {
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
+    "ios": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios",
     "web": "cd apps/next && dotenv -e ../../.env.local -- yarn next"
   },
   "resolutions": {

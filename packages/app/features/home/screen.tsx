@@ -8,6 +8,7 @@ const Box = function ({ className, ...props })  {
 
 
 export function HomeScreen() {
+  /*
   return (
     <View className="flex flex-row flex-wrap h-screen w-screen content-center items-center gap-y-1 overflow-hidden">
       <Box>01</Box>
@@ -18,6 +19,7 @@ export function HomeScreen() {
       <Box>06</Box>
     </View>
   );
+  */
   return (
     <View className="px-2 py-5 grid place-items-center">
     <View className="max-w-md">
