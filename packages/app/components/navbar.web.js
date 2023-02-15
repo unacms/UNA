@@ -4,11 +4,12 @@ import { siteTitle } from "./layout";
 import Link from './atoms/link';
 import Toggle  from './atoms/toggle';
 import React, { useState } from 'react';
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
 
 export default function () {
   const session = null;//const { data: session } = useSession();
   const [menuPopup, setMenuPopup] = useState(true);
-
   return (
       <header className=" w-full">
         <nav className="bg-primary border-gray-200 px-2  py-2.5 dark:bg-primary-dark  order-1 ">

@@ -23,10 +23,11 @@ export default function UnitFeed({data}) {
         oCmt = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
     }
 
-    //return <View><Row><Text>TODO:feed unit</Text></Row></View>
+    //TODO: rework url
+    let url = '/' + data.url;
     
     return (
-        <Link href={data.url} className="flex-col ">
+        <Link href={url} className="flex-col ">
             <View className='flex-col mx-2 my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg  '>
                 <View className='flex-row m-4'>
                     <View className="flex-col flex-1">

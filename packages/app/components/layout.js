@@ -4,8 +4,6 @@ import Tabsbar from './tabsbar';
 import Main from './main';
 import Breadcrumb from './breadcrumb';
 import Footer from './footer';
-//import styles from './layout.module.css';
-//import utilStyles from '../styles/utils.module.css';
 import useSkeleton from '../lib/hooks/skeleton';
 import { View, ScrollView } from 'app/design/view'
 
@@ -34,15 +32,15 @@ export default function Layout(props) {
     const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
 
     return (
-        <View>
+        <ScrollView>
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
             {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <ScrollView className = {sClassName}>
+            <View className = {sClassName}>
                 {props.children}
-            </ScrollView>
+            </View>
             {(oComments == null ) && <Footer />}
-        </View>
+        </ScrollView>
     );
 /*
     return (
