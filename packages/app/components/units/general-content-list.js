@@ -3,7 +3,7 @@ import Link from '../atoms/link';
 import Time from '../atoms/time';
 import Profile from '../atoms/profile';
 
-import { Text, H1 } from 'app/design/typography'
+import { Text, H1 ,TextLink} from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
@@ -13,6 +13,11 @@ export default function UnitGeneral(props) {
     let data = props.data;
    
 const {height, width, scale, fontScale} = useWindowDimensions();
+    
+    let styles = StyleSheet.create({
+    });
+    
+    if (Platform.OS != 'web'){
     
     var _margin = 8;
     var _margin2 = 8;
@@ -29,20 +34,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         wi = w;
         wt = w;
     }
-    
-  /*  let fb = (_col2w - width) * 2000;
-    let fb2 = (_col1w - width) * 2000;*/
     let mw = w - 2 * _margin2;
-    const styles = StyleSheet.create({
-      card_list: {
-          flexWrap: 'wrap',
-          flexDirection:'row',
-          flexShrink:1 
-      },
+    styles = StyleSheet.create({
       card: {
         width: w,
         flexShrink:1,
-       // flexBasis: fb,
         flexGrow: 0,
         alignContent: 'flex-start',
         borderRadius: 10,
@@ -54,28 +50,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
       },
      card_image: {
          width:wi,
-
-       //  flexBasis: fb2,
-        // margin: _margin2,
-         //height:200,
-        //background:'red'
-     },
-    card_image2: {
-        margin: _margin2
-     },    
+     },  
      card_text: {
          width:wt,
          flexGrow: 1,
-        // flexBasis: fb2,
-     },
-    card_text2: {
-         margin:_margin2,
-     }     
+     }   
     });
-    
-    let im_w = 200;//wi - 2 * _margin2;
-    let im_h = 200;//data.image.height*im_w/data.image.width;
-    
+    }
 
     function SnippetInfo(props) {
         return (
@@ -87,100 +68,31 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             </View>
         );
     }
-    return (
-        <View className="card_ist" style={styles.card_list}>
-        <View className="card border-gray-700/50 border" style={styles.card}>
-            <View style={styles.card_image} >
-                <View  style={styles.card_image2}>
-                    <Image src={data.image.src}  width={im_w}  height={im_h}  alt={data.title} className="rounded aspect-video" />
-                </View>
-            </View>
-            <View style={styles.card_text}>
-               
-                   <Text style={styles.card_text2}> {Platform.OS}{im_w}I've been using UNA since 11 Sep 2020, I'm running it on two web sites. Last week a really well known Bitchute & Gab Icon made a posting about my web site and how awesome it was. Over the next two days I added almost 2 thousand users without any glitches or crashes on a VPS server. This software is robust and bad ass. Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here</Text>
-            
-            </View>       
-</View>
-       
-      <View className="card border-gray-700/50 border" style={styles.card}>
-            <View style={styles.card_image} >
-                <View  style={styles.card_image2}>
-                    <Image {...data.image} alt={data.title} className="rounded aspect-video" />
-                </View>
-            </View>
-            <View style={styles.card_text}>
-               
-                   <Text style={styles.card_text2}> I've been using UNA since 11 Sep 2020, I'm running it on two web sites. Last week a really well known Bitchute & Gab Icon made a posting about my web site and how awesome it was. Over the next two days I added almost 2 thousand users without any glitches or crashes on a VPS server. This software is robust and bad ass. Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here</Text>
-            
-            </View>       
-</View>
 
-      <View className="card border-gray-700/50 border" style={styles.card}>
-            <View style={styles.card_image} >
-                <View  style={styles.card_image2}>
-                    <Image {...data.image} alt={data.title} className="rounded aspect-video" />
+    return (
+            <View className='flex-col my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg card ' style={styles.card}>
+                {data.image &&
+                    <View style={styles.card_image} className="cardPart2 flex-row mb-3 "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
+                }  
+                <View className="cardPart1 flex-col " style={styles.card_text}>
+                    <View className='flex-col mx-4 my-3 xxx'>
+                    <View className='flex-row '>
+                        <View className="flex-col flex-1">
+                            <View className="">       
+                                <Profile {...data.author_data} showLinks="false" className="" />
+                            </View>    
+
+                            <View className="">
+                                <Time className="" ts={data.added}></Time>
+                            </View>
+
+
+                        </View> 
+                    </View>
+                     <TextLink href={data.url}><Text className="text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.title}</Text></TextLink>
+                    <Text>{data.summary_plain}</Text>
                 </View>
-            </View>
-            <View style={styles.card_text}>
-               
-                   <Text style={styles.card_text2}> I've been using UNA since 11 Sep 2020, I'm running it on two web sites. Last week a really well known Bitchute & Gab Icon made a posting about my web site and how awesome it was. Over the next two days I added almost 2 thousand users without any glitches or crashes on a VPS server. This software is robust and bad ass. Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here</Text>
-            
-            </View>       
-</View>
-     
-        
-      <View className="card border-gray-700/50 border" style={styles.card}>
-            <View style={styles.card_image} >
-                <View  style={styles.card_image2}>
-                    <Image {...data.image} alt={data.title} className="rounded aspect-video" />
                 </View>
-            </View>
-            <View style={styles.card_text}>
-               
-                   <Text style={styles.card_text2}> I've been using UNA since 11 Sep 2020, I'm running it on two web sites. Last week a really well known Bitchute & Gab Icon made a posting about my web site and how awesome it was. Over the next two days I added almost 2 thousand users without any glitches or crashes on a VPS server. This software is robust and bad ass. Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here Thank you and kudos goes out to the developers and those of you who help others on here. In case you're wondering, the web site that's using the software and rocking and rolling is here</Text>
-            
-            </View>       
-</View>
-        
-</View>
-        /*
-        <Link href={data.url} className="">
-         <View className="mt-[1px] sm:h-48 sm:mt-2 sm:first:mt-4 overflow-hidden border-gray-300/80 hover:border-gray-300  bg-white active:bg-gray-100 sm:hover:bg-gray-50 dark:active:bg-gray-700 dark:bg-gray-900 sm:dark:hover:bg-gray-800 dark:border-gray-800/50 dark:hover:border-gray-700/50 p-4  sm:hover:-translate-y-0.5 sm:hover:shadow-sm sm:border  sm:active:translate-y-1 sm:duration-300   sm:rounded-lg   gap-4 w-full">
-        <View className="flex gap-4 w-full h-full">
-            <View className=" flex-none sm:hidden h-min relative">
-                <Profile {...data.author_data} displayType="unit_wo_info"  />
-            </View>
-            <View className="flex flex-row-reverse gap-4 flex-auto">
-                    {data.image &&
-                        <View className="hidden sm:block -my-2 -mx-2 h-44 aspect-video flex-none"><Image {...data.image} alt={data.title} className="rounded aspect-video" /></View>
-                    } 
-                    <View className="flex flex-auto flex-col-reverse sm:flex-col  ">
-                        <View className="flex flex-col flex-auto gap-2">
-                            <View className='flex gap-2'>
-                                <h2 className="text-base flex-auto line-clamp-2 leading-tight sm:text-lg sm:leading-tight  font-bold tracking-tight text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400  ">{data.title}</h2>
-                                <View className="hidden sm:inline-flex whitespace-nowrap mb-auto  flex-none font-medium tracking-tight bg-gray-100 text-gray-600 text-xs   items-center px-1 py-0.5 my-0.5 rounded-full  dark:bg-gray-700/50 dark:hover:bg-gray-600 hover:bg-gray-200 dark:text-gray-300">
-                                    <Time className="px-0.5" ts={data.added}></Time>
-                                </View>
-                            </View>
-                            
-                            <p className="text-sm hidden sm:block sm:line-clamp-2  text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300  ">{data.summary_plain}</p>
-                        </View>
-                        <View className="flex flex-none gap-4">
-                            <View className="flex-none hidden sm:block relative">      
-                             
-                                <Profile {...data.author_data} displayType="unit"  showLinks="false" showInfo=<SnippetInfo {...data} /> />
-                            </View>
-                            <View className="sm:hidden flex-auto">
-                                <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="false" />
-                            </View>
-                            <View className="sm:hidden whitespace-nowrap mb-auto  flex-none font-medium tracking-tight bg-gray-100 text-gray-600 text-xs  inline-flex items-center px-1 py-0.5 rounded-full  dark:bg-gray-700/50 dark:hover:bg-gray-600 hover:bg-gray-200 dark:text-gray-300">
-                                <Time className="px-0.5" ts={data.added}></Time>
-                            </View>
-                        </View>
-                    </View> 
-            </View>
-        </View>
-        </View>
-    </Link>   */
-    );
+            </View> 
+      );
 }

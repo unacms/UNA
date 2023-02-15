@@ -5,7 +5,6 @@ import Tabsbar from './tabsbar';
 import Main from './main';
 import Breadcrumb from './breadcrumb';
 import Footer from './footer';
-import utilStyles from '../styles/utils.module.css';
 import useSkeleton from '../lib/hooks/skeleton';
 import {useRouter} from "next/router";
 
@@ -35,6 +34,7 @@ export default function Layout(props) {
                 <link rel="icon" href="/favicon.ico" />
                 <meta name="description" content={siteTitle} />
                 <meta name="og:title" content={siteTitle} />
+               
             </Head>
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}

@@ -15,7 +15,7 @@ import { Provider } from 'app/provider'
 import Head from 'next/head'
 import React from 'react'
 
-import '../global.css'
+import '../../../packages/app/styles/global.css'
 
 import type { SolitoAppProps } from 'solito'
 

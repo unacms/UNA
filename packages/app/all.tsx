@@ -25,7 +25,6 @@ export async function getData(path) {
 
     // TODO: pass GET&POST params
     const data = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path)
-
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
 }
 
