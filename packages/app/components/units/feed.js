@@ -27,30 +27,32 @@ export default function UnitFeed({data}) {
     
     return (
         <Link href={data.url} className="flex-col ">
-            <View className='flex-col mx-2 my-1 bg-white dark:bg-gray-800  rounded-lg  '>
-                <View className="flex-col mx-4 mt-3 flex-wrap">
-                    <View className="">       
-                        <Profile {...data.author_data} showLinks="false" className="" />
-                    </View>    
-                    
-                    <View className="mt-1">
-                        <Time className="" ts={data.date}></Time>
-                    </View>
+            <View className='flex-col mx-2 my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg  '>
+                <View className='flex-row m-4'>
+                    <View className="flex-col flex-1">
+                        <View className="">       
+                            <Profile {...data.author_data} showLinks="false" className="" />
+                        </View>    
+                        
+                        <View className="">
+                            <Time className="" ts={data.date}></Time>
+                        </View>
 
-                    
-                </View> 
+                        
+                    </View> 
+                    <View className="flex-none flex-col  bg-blue-500 rounded-full  mr-auto px-1.5 mb-auto ">    
+                            <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
+                    </View>
+                </View>
+
+
                 {oImage &&
-                    <View className=" flex-row mt-3 "><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
+                    <View className=" flex-row mb-3 "><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
                 }  
                 <View className="flex-col ">
                     <Text className="hidden  ">{data.description}</Text>
-                    <View className="flex-col  bg-red-200 mx-4 my-3">
-                        <H1 className="flex-none text-lg bg-green-300 font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
-                        
-                        <Text className="flex-none bg-blue-500 rounded-full mr-auto px-2 text-xs font-medium text-white">{data.cmts.count}</Text>
-                        
-                        
-                    </View>
+                    <Text className="mx-4 mb-4 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
+                    
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
                             <View className='flex-none hidden @xl/cell:block'><Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" /></View>
