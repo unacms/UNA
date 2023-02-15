@@ -5,7 +5,7 @@ import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 
 export default function AtomProfile(oProps) {
-    return <View><Text>{oProps.display_name}</Text></View>
+    return <View><Text className="font-bold text-gray-800 dark:text-gray-100">{oProps.display_name}</Text></View>
 /*
     var sResult = '';
 

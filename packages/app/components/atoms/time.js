@@ -18,7 +18,7 @@ export default function ElementTime(props) {
     }, []);
 
     const s = formatDistance(new Date(props.ts * 1000), date, { addSuffix: true })
-    return <Text>{s}</Text>
+    return <Text className=" text-gray-600 dark:text-gray-400">{s}</Text>
 /*
     moment.updateLocale('en', {
         relativeTime : {
