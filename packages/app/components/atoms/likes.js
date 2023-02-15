@@ -3,7 +3,6 @@ import { useEffect, useState, useContext } from 'react';
 // import { Dropdown } from 'flowbite';
 import { fetcher } from '../../lib/util';
 import { GlobalsData } from '../../context/context';
-import Menu from '../menu';
 import Profile from './profile';
 
 import { Text} from 'app/design/typography'
