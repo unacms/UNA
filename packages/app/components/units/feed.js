@@ -26,9 +26,9 @@ export default function UnitFeed({data}) {
     //return <View><Row><Text>TODO:feed unit</Text></Row></View>
     
     return (
-        <Link href={data.url} className="flex-1 flex-auto flex-col">
-            <View className='flex-1 w-full p-2 bg-green-400 rounded-lg flex-auto '>
-                <View className="flex-1 flex-auto ">
+        <Link href={data.url} className="flex-1  flex-col">
+            <View className='flex-1 flex-col w-full p-2 bg-green-400 rounded-lg '>
+                <View className="flex-1 flex-row ">
                     <View className="flex-none ">       
                         <Profile {...data.author_data} showLinks="false" className="" />
                     </View>    
@@ -40,9 +40,9 @@ export default function UnitFeed({data}) {
                     
                 </View> 
                 {oImage &&
-                    <View className="flex-none"><Image {...oImage} alt={data.title} resizeMode="cover" className="border-2 border-red-500 rounded-md w-48 aspect-video" /></View>
+                    <View className=" flex-row "><Image {...oImage} alt={data.title} resizeMode="cover" className=" border-2 border-red-500 rounded-md  w-48 aspect-video " /></View>
                 }  
-                <View className="flex flex-1 flex-col flex-auto gap-1">
+                <View className="flex flex-1 flex-col gap-1">
                     <Text className="text-sm hidden text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-blue-300  ">{data.description}</Text>
                     <View className="">
                         <H1 className="text-lg  mt-auto font-bold tracking-tight text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
