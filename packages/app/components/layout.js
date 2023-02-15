@@ -7,7 +7,7 @@ import Footer from './footer';
 //import styles from './layout.module.css';
 //import utilStyles from '../styles/utils.module.css';
 import useSkeleton from '../lib/hooks/skeleton';
-import { View } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 
 export const siteTitle = 'G-Med';
 
@@ -38,9 +38,9 @@ export default function Layout(props) {
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
             {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className = {sClassName}>
+            <ScrollView className = {sClassName}>
                 {props.children}
-            </View>
+            </ScrollView>
             {(oComments == null ) && <Footer />}
         </View>
     );

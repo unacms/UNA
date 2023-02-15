@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
 import Navbar from './navbar';
 import Tabsbar from './tabsbar';
 import Main from './main';
@@ -41,8 +39,8 @@ export default function Layout(props) {
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
             {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <div className = {sClassName}>
-                {loading ? skeleton : <Main> {props.children} </Main>}
+            <div className={sClassName}>
+                {loading ? skeleton : <Main className=""> {props.children} </Main>}
             </div>
             {(oComments == null ) && <Footer />}
         </>

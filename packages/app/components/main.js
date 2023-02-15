@@ -1,5 +1,6 @@
 //import { motion } from "framer-motion";
 //import {useRouter} from "next/router";
+import { View } from 'app/design/view'
 
 export default function Main(props) {  
     
@@ -48,7 +49,7 @@ export default function Main(props) {
           };
     }*/
 
-    return props.children;
+    return <View {...props}>{props.children}</View>
 /*
     return (
         <motion.div
