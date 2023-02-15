@@ -39,12 +39,12 @@ export default function UnitFeed({data}) {
 
                     
                 </View> 
-                {false && oImage &&
-                    <View className="hidden @xl/cell:block  w-full aspect-video flex-none"><Image {...oImage} scale="width" alt={data.title} className="rounded-md aspect-video" /></View>
+                {oImage &&
+                    <View className="flex-none"><Image {...oImage} alt={data.title} resizeMode="cover" className="border-2 border-red-500 rounded-md w-48 aspect-video" /></View>
                 }  
-                <View className="flex flex-1 flex-col flex-auto gap-1  ">                                
+                <View className="flex flex-1 flex-col flex-auto gap-1">
                     <Text className="text-sm hidden text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-blue-300  ">{data.description}</Text>
-                    <View className='flex '>
+                    <View className="">
                         <H1 className="text-lg  mt-auto font-bold tracking-tight text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
                         <View className=' bg-blue-500 rounded-full ml-auto px-2'>
                             <Text className="text-xs font-medium text-white">{data.cmts.count}</Text>
