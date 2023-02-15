@@ -98,7 +98,6 @@ export default function AtomProfile(oProps) {
                     </View>
                     <View className="flex-row items-center text-gray-500 text-xs sm:inline-flex font-medium tracking-tight">
                         <View className="flex-row gap-1 font-medium tracking-tight my-auto text-xs sm:inline-flex items-center rounded-full">
-                            
                             <Text>AU</Text>
                         </View>
                         <View className='sm:inline-flex items-center text-xs'><Text>{sShowInfo}</Text></View>
