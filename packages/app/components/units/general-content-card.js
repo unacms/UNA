@@ -10,7 +10,7 @@ import { View } from 'app/design/view'
 export default function Unit(props) {
     let data = props.data;
 
-    return <View><Row><Text>TODO:general content card</Text></Row></View>
+    return <View><Text>TODO:general content card</Text></View>
 /*
     function SnippetInfo(props) {
         return (
