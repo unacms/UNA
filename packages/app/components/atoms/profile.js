@@ -44,7 +44,7 @@ export default function AtomProfile(oProps) {
             iSizeHeight = 80;
             break;
     }
-    sSize += ' rounded-full border border-gray-500/30 ';
+    sSize += ' rounded-full border border-black/5 dark:border-white/5';
 
     //--- with clickable Username (or not)
     const bShowLinks = !oProps.showLinks || oProps.showLinks === 'true';
@@ -57,15 +57,15 @@ export default function AtomProfile(oProps) {
 
     function DisplayNameText(oProps) {
         return (
-            <Text className="text-sm text-gray-700 dark:text-gray-300">{oProps.title}</Text>
+            <Text   className='text-gray-900 dark:text-gray-100 text-sm font-bold tracking-tight mr-2'>{oProps.title}</Text>
         );
     }
 
     //--- with custom or default info section
     function DisplayInfo(oProps) {
         return (
-            <View className="bx-def-unit-info flex items-center">
-                <Text className="pl-1">Dermatology</Text>
+            <View className="">
+                <Text className="">Dermatology</Text>
             </View>
         );
     }
@@ -83,7 +83,7 @@ export default function AtomProfile(oProps) {
                     <View className="flex-none relative">
                         <AtomProfile {...oProps} displayType="unit_wo_info"  />
                     </View>
-                    <View className="flex-auto mb-auto mt-0.5 sm:my-auto">
+                    <View className="flex-auto mb-auto my-auto sm:my-auto">
                         <AtomProfile {...oProps} displayType="unit_wo_image" />
                     </View>
                 </View>
@@ -102,14 +102,13 @@ export default function AtomProfile(oProps) {
         case 'unit_wo_image':
             sResult = (
                 <View className="flex-col ">
-                    <View className='flex-row gap-x-2 gap-y-1'>
-                        <View className="flex-none">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
+                    <View className='flex-row '>
+                        <View className="">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
                     </View>
-                    <View className="flex-row items-center text-gray-500 text-xs sm:inline-flex font-medium tracking-tight">
-                        <View className="flex-row gap-1 font-medium tracking-tight my-auto text-xs sm:inline-flex items-center rounded-full">
-                            <Text>AU</Text>
-                        </View>
-                        <View className='sm:inline-flex items-center text-xs'><Text>{sShowInfo}</Text></View>
+                    <View className="flex-row items-center">
+                        
+                        <Text  className='text-gray-600 dark:text-gray-400 text-sm  tracking-tight mr-2'>AU</Text>
+                        <Text  className='text-gray-600 dark:text-gray-400 text-sm  tracking-tight'>Dermatology</Text>
                      </View>
                 </View>
             );

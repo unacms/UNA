@@ -72,15 +72,15 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
             <Link href={data.url}>
-            <View className='flex-col my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg card ' style={styles.card}>
+            <View className='flex-col border-none   bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg card overflow-hidden' style={styles.card}>
                 {data.image &&
-                    <View style={styles.card_image} className="cardPart2 flex-row mb-3 "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
+                    <View style={styles.card_image} className="cardPart2 flex-row  "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
                 <View className="cardPart1 flex-col " style={styles.card_text}>
                     <View className='flex-col mx-4 my-3'>
                     <View className='flex-row '>
-                        <View className="flex-col flex-1">
-                            <View className="">       
+                        <View className="flex-row flex-1">
+                            <View className="flex-auto">       
                                 <Profile {...data.author_data} showLinks="false" className="" />
                             </View>    
 
@@ -91,7 +91,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
                         </View> 
                     </View>
-                    <Text className="text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.title}</Text>
+                    <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-800 dark:text-gray-100 my-2">{data.title}</Text>
                     <Text>{data.summary_plain}</Text>
                 </View>
                 </View>
