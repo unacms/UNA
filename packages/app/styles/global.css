@@ -49,12 +49,16 @@ body {
     --col2w: 1000px;  
     --col1w: 700px; 
 }
-
-.card {
+.cardList > * {
     min-width: calc(33.33% - (var(--margin2) * 2)) !important;
     margin: var(--margin2);
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
+    flex-shrink: 1;
+    flex-direction: row !important;
+}
+.card {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;  
     align-content: flex-start;
@@ -77,8 +81,5 @@ body {
     max-width: 100%;
     flex-grow: 1;
     flex-basis: calc((var(--col1w) - 100%) * 2000) !important;
-}
-.card img{
-    
 }
 

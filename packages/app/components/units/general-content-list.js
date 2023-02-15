@@ -19,43 +19,44 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     
     if (Platform.OS != 'web'){
     
-    var _margin = 8;
-    var _margin2 = 8;
-    var _col2w = 1000;  
-    var _col1w = 600;    
-    
-    let w = width/3 - _margin * 2 ;
-    if (width < _col2w)
-        w = width - _margin * 2 - 2;  
-    let wi = w/3;
-    let wt = w - wi - 2*_margin2-2;
-    
-    if (width <_col1w || width>_col2w){
-        wi = w;
-        wt = w;
-    }
-    let mw = w - 2 * _margin2;
-    styles = StyleSheet.create({
-      card: {
-        width: w,
-        flexShrink:1,
-        flexGrow: 0,
-        alignContent: 'flex-start',
-        borderRadius: 10,
-        flexDirection:'row',
-        background:'red',
-          flexWrap: 'wrap',
-          flexShrink:1,
-           margin:_margin,
-      },
-     card_image: {
-         width:wi,
-     },  
-     card_text: {
-         width:wt,
-         flexGrow: 1,
-     }   
-    });
+        var _margin = 8;
+        var _margin2 = 8;
+        var _col2w = 1000;  
+        var _col1w = 600;    
+
+        let w = width/3 - _margin * 2 ;
+        if (width < _col2w)
+            w = width - _margin * 2 - 2;  
+        let wi = w/3;
+        let wt = w - wi - 2*_margin2-2;
+
+        if (width <_col1w || width>_col2w){
+            wi = w;
+            wt = w;
+        }
+        let mw = w - 2 * _margin2;
+        
+        styles = StyleSheet.create({
+          card: {
+            width: w,
+            flexShrink:1,
+            flexGrow: 0,
+            alignContent: 'flex-start',
+            borderRadius: 10,
+            flexDirection:'row',
+            background:'red',
+              flexWrap: 'wrap',
+              flexShrink:1,
+               margin:_margin,
+          },
+         card_image: {
+             width:wi,
+         },  
+         card_text: {
+             width:wt,
+             flexGrow: 1,
+         }   
+        });
     }
 
     function SnippetInfo(props) {
@@ -70,12 +71,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     return (
+            <Link href={data.url}>
             <View className='flex-col my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg card ' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="cardPart2 flex-row mb-3 "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
                 <View className="cardPart1 flex-col " style={styles.card_text}>
-                    <View className='flex-col mx-4 my-3 xxx'>
+                    <View className='flex-col mx-4 my-3'>
                     <View className='flex-row '>
                         <View className="flex-col flex-1">
                             <View className="">       
@@ -89,10 +91,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
                         </View> 
                     </View>
-                     <TextLink href={data.url}><Text className="text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.title}</Text></TextLink>
+                    <Text className="text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.title}</Text>
                     <Text>{data.summary_plain}</Text>
                 </View>
                 </View>
             </View> 
+        </Link>
       );
 }
