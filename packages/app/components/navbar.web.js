@@ -11,7 +11,7 @@ export default function () {
   const session = null;//const { data: session } = useSession();
   const [menuPopup, setMenuPopup] = useState(true);
   return (
-      <header className=" w-full">
+      <header className="w-full">
         <nav className="bg-primary border-gray-200 px-2  py-2.5 dark:bg-primary-dark  order-1 ">
             <div className="flex justify-between items-center">
                 <div className="flex flex-shrink-0 justify-start items-center gap-2">

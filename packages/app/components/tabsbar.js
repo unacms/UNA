@@ -11,7 +11,7 @@ export default function ({ children }) {
     return <View><Text>TODO:native tabbar</Text></View>
     return (
 
-            <View className="sticky z-40 bg-opacity-70 dark:bg-opacity-70 backdrop-blur-md top-0 bg-gray-50 dark:bg-gray-800 text-sm font-semibold text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-800/50">
+            <View className="sticky z-40 bg-opacity-70 dark:bg-opacity-70 backdrop-blur-md top-0 bg-gray-50 dark:bg-gray-900 text-sm font-semibold text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-800/50">
                 <View className="flex-row">
                 <View className="flex-auto">
                         <Link href="/" key="x" title="Feed" className=" group flex flex-col w-full  text-gray-800 dark:text-gray-200   items-center">
