@@ -28,7 +28,7 @@ export default function UnitFeed({data}) {
     return (
         <Link href={data.url} className="flex-col ">
             <View className='flex-col mx-2 my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg  '>
-                <View className='flex-row m-4'>
+                <View className='flex-row mx-4 my-3'>
                     <View className="flex-col flex-1">
                         <View className="">       
                             <Profile {...data.author_data} showLinks="false" className="" />
@@ -51,7 +51,7 @@ export default function UnitFeed({data}) {
                 }  
                 <View className="flex-col ">
                     <Text className="hidden  ">{data.description}</Text>
-                    <Text className="mx-4 mb-4 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
+                    <Text className="mx-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
                     
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
