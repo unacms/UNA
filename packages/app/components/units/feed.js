@@ -27,28 +27,28 @@ export default function UnitFeed({data}) {
     
     return (
         <Link href={data.url} className="flex-col ">
-            <View className='flex-col p-2 mx-2 my-1 bg-white dark:bg-gray-800 dark:border-gray-700 border border-gray-200  rounded-lg  '>
-                <View className="flex-row mb-2 flex-wrap">
-                    <View className="mr-2">       
+            <View className='flex-col mx-2 my-1 bg-white dark:bg-gray-800  rounded-lg  '>
+                <View className="flex-col mx-4 mt-3 flex-wrap">
+                    <View className="">       
                         <Profile {...data.author_data} showLinks="false" className="" />
                     </View>    
                     
-                    <View className="  ">
+                    <View className="mt-1">
                         <Time className="" ts={data.date}></Time>
                     </View>
 
                     
                 </View> 
                 {oImage &&
-                    <View className=" flex-row bg-green-200 "><Image {...oImage} alt={data.title} resizeMode="cover" className=" border-2 border-gray-500 rounded-lg  w-full aspect-video " /></View>
+                    <View className=" flex-row mt-3 "><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
                 }  
-                <View className="flex-col gap-1 bg-red-200/20">
-                    <Text className="text-sm hidden text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-blue-300  ">{data.description}</Text>
-                    <View className="">
-                        <H1 className="text-lg  mt-auto font-bold tracking-tight text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
-                        <View className=' bg-blue-500 rounded-full ml-auto px-2'>
-                            <Text className="text-xs font-medium text-white">{data.cmts.count}</Text>
-                        </View>
+                <View className="flex-col ">
+                    <Text className="hidden  ">{data.description}</Text>
+                    <View className="flex-col  bg-red-200 mx-4 my-3">
+                        <H1 className="flex-none text-lg bg-green-300 font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</H1>
+                        
+                        <Text className="flex-none bg-blue-500 rounded-full mr-auto px-2 text-xs font-medium text-white">{data.cmts.count}</Text>
+                        
                         
                     </View>
                     {/* oCmt &&
