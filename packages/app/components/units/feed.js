@@ -67,13 +67,16 @@ export default function UnitFeed({data}) {
             <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  u-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
                 <View className='flex-row  my-3 w-full'>
                     <View className="flex-col flex-1 ml-4">
-                        <View className="">       
-                            <Profile {...data.author_data} showLinks="false" className="" />
-                        </View>    
+                        <View className="flex-auto flex-row space-x-2">
+                                    <View className="flex-none">
+                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
+                                    </View>
+                                    <View className="flex-none">
+                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
+                                    </View>
+                                </View>  
                         
-                        <View className="">
-                            <Time className="" ts={data.date}></Time>
-                        </View>
+                        
                     </View> 
                     <View className="flex-none flex-col  bg-blue-500 rounded-full  px-1.5 mb-auto mr-4">    
                             <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
