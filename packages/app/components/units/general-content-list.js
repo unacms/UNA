@@ -59,6 +59,8 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         });
     }
 
+    var url = '/' + data.url;
+    
     function SnippetInfo(props) {
         return (
            <View className="hidden sm:inline-flex items-center  font-medium tracking-tight text-green-500 text-xs">
@@ -71,7 +73,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     return (
-            <Link href={data.url}>
+            <Link href={url}>
             <View className='flex-col border-none bg-white  dark:bg-gray-800  u-card overflow-hidden mb-2 sm:m-2 sm:rounded-lg' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="u-card-media flex-row aspect-video"><Image {...data.image} alt={data.title} prefWidth="500" prefHeight="400" className="u-image w-full aspect-video" /></View>
@@ -93,13 +95,10 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                             </View> 
                         </View>
                         <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-900 dark:text-gray-50 mt-3">{data.title}</Text>
-                        <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>
-                        
+                        <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
                     </View>
-                    
                 </View>
                 <View className='flex-none bg-gray-100 dark:bg-gray-900/50 px-4 py-3 u-card-bar w-full'>
-                        
                         <Text className="text-gray-600 dark:text-gray-400 text-xs">158 views</Text>
                         
                     </View>
