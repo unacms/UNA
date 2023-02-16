@@ -45,9 +45,9 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             borderRadius: 10,
             flexDirection:'row',
             background:'red',
-              flexWrap: 'wrap',
-              flexShrink:1,
-               margin:_margin,
+            flexWrap: 'wrap',
+            flexShrink:1,
+            margin:_margin,
           },
          card_image: {
              width:wi,
@@ -72,7 +72,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
             <Link href={data.url}>
-            <View className='flex-col border-none   bg-white  dark:bg-gray-800   rounded-lg card overflow-hidden' style={styles.card}>
+            <View className='flex-col border-none bg-white  dark:bg-gray-800 sm:rounded-lg card overflow-hidden mb-2 sm:m-2' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="cardPart2 flex-row aspect-video"><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
