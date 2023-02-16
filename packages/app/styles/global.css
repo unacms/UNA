@@ -67,6 +67,7 @@ body {
     border:1px solid #ccc;
     border-radius: 0.25rem;
     background: #fff;
+    align-content: stretch !important;
 }
   
 .cardPart1{

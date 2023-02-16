@@ -74,7 +74,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             <Link href={data.url}>
             <View className='flex-col border-none   bg-white  dark:bg-gray-800   rounded-lg card overflow-hidden' style={styles.card}>
                 {data.image &&
-                    <View style={styles.card_image} className="cardPart2 flex-row  "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
+                    <View style={styles.card_image} className="cardPart2 flex-row aspect-video"><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
                 <View className="cardPart1 flex-col flex-grow" style={styles.card_text}>
                     <View className='flex-col grow flex-1 mx-4 my-3'>
