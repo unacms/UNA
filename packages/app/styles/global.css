@@ -38,7 +38,7 @@ body {
     -ms-overflow-style: scrollbar;
 }
 
-.umCardList {
+.u-card-list {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -49,14 +49,14 @@ body {
     --col2w: 1000px;  
     --col1w: 700px; 
 }
-.umCardList > * {
+.u-card-list > * {
     min-width: calc(33.33%) !important;
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;
     flex-direction: row !important;
 }
-.umCard {
+.u-card {
     width: 100%;
     display: flex;
     flex-wrap: wrap;  
@@ -65,7 +65,7 @@ body {
     flex-direction: row !important;
 }
   
-.umCardContent{
+.u-card-content{
     min-width: calc(100% - 33%);
     flex-grow: 1;
     flex-basis: calc((var(--col1w) - 100%) * 2000) !important;
@@ -73,23 +73,25 @@ body {
     margin-bottom: 2.5rem;
 }
 
-.umCardMedia{
+.u-card-media{
     min-width: 33%;
     max-width: 100%;
     flex-grow: 1;
     flex-basis: calc((var(--col1w) - 100%) * 2000) !important;
 }
 
-.umCardFix{
+.u-card-fix{
     max-width: 100%;
     flex-grow: 1;
     flex-basis: -100px;
     ;
 }
-.umCardBar{
+.u-card-bar{
     position: absolute;
     bottom:0px;
     width: 100%;
 }
 
-
+.u-image{
+    object-fit: cover !important;
+}

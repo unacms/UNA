@@ -64,7 +64,7 @@ export default function UnitFeed({data}) {
     
     return (
         <Link href={url}>
-            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  umCard style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  u-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
                 <View className='flex-row  my-3 w-full'>
                     <View className="flex-col flex-1 ml-4">
                         <View className="">       
@@ -79,12 +79,10 @@ export default function UnitFeed({data}) {
                             <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
                     </View>
                 </View>
-
-
                 {oImage &&
-                    <View className="flex-row aspect-video umCardFix"><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
+                    <View className="flex-row aspect-video u-card-fix"><Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image" /></View>
                 }  
-                <View className="flex-col umCardFix">
+                <View className="flex-col u-card-fix">
                     <Text className="hidden  ">{data.description}</Text>
                     <Text className="mx-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
                     
