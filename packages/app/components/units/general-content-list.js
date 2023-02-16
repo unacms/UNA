@@ -72,12 +72,12 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
             <Link href={data.url}>
-            <View className='flex-col border-none   bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800  rounded-lg card overflow-hidden' style={styles.card}>
+            <View className='flex-col border-none   bg-white  dark:bg-gray-800   rounded-lg card overflow-hidden' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="cardPart2 flex-row  "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
-                <View className="cardPart1 flex-col " style={styles.card_text}>
-                    <View className='flex-col mx-4 my-3'>
+                <View className="cardPart1 flex-col flex-grow" style={styles.card_text}>
+                    <View className='flex-col grow flex-1 mx-4 my-3'>
                         <View className='flex-row '>
                             <View className="flex-row flex-1">
                                 <View className="flex-auto flex-row space-x-2">
@@ -88,13 +88,17 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                                         <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.added}></Time>)} className="" />
                                     </View>
                                 </View>
-                                <View className="">
-                                    <Time className="" ts={data.added}></Time>
-                                </View>
+                                
                             </View> 
                         </View>
                         <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-900 dark:text-gray-50 mt-3">{data.title}</Text>
                         <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>
+                        
+                    </View>
+                    <View className='flex-none bg-gray-100 dark:bg-gray-900/50 px-4 py-3 '>
+                        
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs">158 views</Text>
+                        
                     </View>
                 </View>
             </View> 
