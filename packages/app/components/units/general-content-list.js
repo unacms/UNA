@@ -80,15 +80,17 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                     <View className='flex-col mx-4 my-3'>
                         <View className='flex-row '>
                             <View className="flex-row flex-1">
-                                <View className="flex-auto">       
-                                    <Profile {...data.author_data} showLinks="false" className="" />
-                                </View>    
-
+                                <View className="flex-auto flex-row space-x-2">
+                                    <View className="flex-none">
+                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
+                                    </View>
+                                    <View className="flex-none">
+                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" className="" />
+                                    </View>
+                                </View>
                                 <View className="">
                                     <Time className="" ts={data.added}></Time>
                                 </View>
-
-
                             </View> 
                         </View>
                         <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-900 dark:text-gray-50 mt-3">{data.title}</Text>

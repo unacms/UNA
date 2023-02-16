@@ -22,26 +22,26 @@ export default function AtomProfile(oProps) {
 
         case 'sm':
             sSize = 'w-8 h-8';
-            iSizeWidth = 40;
-            iSizeHeight = 40;
+            iSizeWidth = 32;
+            iSizeHeight = 32;
             break;
 
         case 'base':
             sSize = 'w-10 h-10';
-            iSizeWidth = 48;
-            iSizeHeight = 48;
+            iSizeWidth = 40;
+            iSizeHeight = 40;
             break;
 
         case 'lg':
             sSize = 'w-12 h-12';
-            iSizeWidth = 56;
-            iSizeHeight = 56;
+            iSizeWidth = 48;
+            iSizeHeight = 48;
             break;
 
         case 'xl':
             sSize = 'w-14 h-14';
-            iSizeWidth = 80;
-            iSizeHeight = 80;
+            iSizeWidth = 56;
+            iSizeHeight = 56;
             break;
     }
     sSize += ' rounded-full border border-black/5 dark:border-white/5';
@@ -57,14 +57,15 @@ export default function AtomProfile(oProps) {
 
     function DisplayNameText(oProps) {
         return (
-            <Text   className='text-gray-900 dark:text-gray-100 text-sm font-bold tracking-tight mr-2'>{oProps.title}</Text>
+            <Text className='text-gray-900 dark:text-gray-100 text-sm font-bold tracking-tight mr-2'>{oProps.title}</Text>
         );
     }
 
     //--- with custom or default info section
     function DisplayInfo(oProps) {
         return (
-            <View className="">
+            <View className="flex-row text-gray-600 dark:text-gray-400 text-sm  tracking-tight">
+                <Text className='mr-2'>AU</Text>
                 <Text className="">Dermatology</Text>
             </View>
         );
@@ -105,11 +106,7 @@ export default function AtomProfile(oProps) {
                     <View className='flex-row '>
                         <View className="">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
                     </View>
-                    <View className="flex-row items-center">
-                        
-                        <Text  className='text-gray-600 dark:text-gray-400 text-sm  tracking-tight mr-2'>AU</Text>
-                        <Text  className='text-gray-600 dark:text-gray-400 text-sm  tracking-tight'>Dermatology</Text>
-                     </View>
+                    <View className="flex-row items-center">{sShowInfo}</View>
                 </View>
             );
             break;
