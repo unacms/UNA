@@ -65,8 +65,8 @@ export default function UnitFeed({data}) {
     return (
         <Link href={url}>
             <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  umCard style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row mx-4 my-3 w-full'>
-                    <View className="flex-col flex-1">
+                <View className='flex-row  my-3 w-full'>
+                    <View className="flex-col flex-1 ml-4">
                         <View className="">       
                             <Profile {...data.author_data} showLinks="false" className="" />
                         </View>    
@@ -75,7 +75,7 @@ export default function UnitFeed({data}) {
                             <Time className="" ts={data.date}></Time>
                         </View>
                     </View> 
-                    <View className="flex-none flex-col  bg-blue-500 rounded-full  mr-auto px-1.5 mb-auto ">    
+                    <View className="flex-none flex-col  bg-blue-500 rounded-full  px-1.5 mb-auto mr-4">    
                             <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
                     </View>
                 </View>
