@@ -5,6 +5,9 @@ import Profile from '../atoms/profile';
 
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
+import {StyleSheet, useWindowDimensions} from 'react-native';
+import { Platform, PlatformIOSStatic } from 'react-native'
+
 
 
 // g-med style browsing
@@ -22,14 +25,47 @@ export default function UnitFeed({data}) {
     if (data.cmts.data.length > 0){
         oCmt = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
     }
+    
+    const {height, width, scale, fontScale} = useWindowDimensions();
 
     //TODO: rework url
     let url = '/' + data.url;
     
+    let styles = StyleSheet.create({
+    });
+    
+    if (Platform.OS != 'web'){
+    
+        var _margin = 8;
+        var _margin2 = 8;
+        var _col2w = 1000;  
+        var _col1w = 600;    
+
+        let w = width/3 - _margin * 2 ;
+        if (width < _col2w)
+            w = width - _margin * 2 - 2;  
+        let mw = w - 2 * _margin2;
+        
+        styles = StyleSheet.create({
+          card: {
+            width: w,
+            flexShrink:1,
+            flexGrow: 0,
+            alignContent: 'flex-start',
+            borderRadius: 10,
+            flexDirection:'row',
+            background:'red',
+            flexWrap: 'wrap',
+            flexShrink:1,
+            margin:_margin,
+          }, 
+        });
+    }
+    
     return (
-        <Link href={url} className="flex-col ">
-            <View className='flex-col mx-2 my-1 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg  '>
-                <View className='flex-row mx-4 my-3'>
+        <Link href={url}>
+            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  umCard style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+                <View className='flex-row mx-4 my-3 w-full'>
                     <View className="flex-col flex-1">
                         <View className="">       
                             <Profile {...data.author_data} showLinks="false" className="" />
@@ -38,8 +74,6 @@ export default function UnitFeed({data}) {
                         <View className="">
                             <Time className="" ts={data.date}></Time>
                         </View>
-
-                        
                     </View> 
                     <View className="flex-none flex-col  bg-blue-500 rounded-full  mr-auto px-1.5 mb-auto ">    
                             <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
@@ -48,9 +82,9 @@ export default function UnitFeed({data}) {
 
 
                 {oImage &&
-                    <View className=" flex-row mb-3 "><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
+                    <View className="flex-row aspect-video umCardFix"><Image {...oImage} alt={data.title} resizeMode="cover" className="  w-full aspect-video " /></View>
                 }  
-                <View className="flex-col ">
+                <View className="flex-col umCardFix">
                     <Text className="hidden  ">{data.description}</Text>
                     <Text className="mx-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
                     

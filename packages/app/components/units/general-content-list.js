@@ -72,11 +72,12 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
             <Link href={data.url}>
-            <View className='flex-col border-none bg-white  dark:bg-gray-800 sm:rounded-lg card overflow-hidden mb-2 sm:m-2' style={styles.card}>
+            <View className='flex-col border-none bg-white  dark:bg-gray-800  umCard overflow-hidden mb-2 sm:m-2 sm:rounded-lg' style={styles.card}>
                 {data.image &&
-                    <View style={styles.card_image} className="cardPart2 flex-row aspect-video"><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
+                    <View style={styles.card_image} className="umCardMedia flex-row aspect-video"><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
-                <View className="cardPart1 flex-col flex-grow" style={styles.card_text}>
+                <View className="umCardContent flex-col flex-grow" style={styles.card_text}>
+                    
                     <View className='flex-col grow flex-1 mx-4 my-3'>
                         <View className='flex-row '>
                             <View className="flex-row flex-1">
@@ -95,12 +96,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                         <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>
                         
                     </View>
-                    <View className='flex-none bg-gray-100 dark:bg-gray-900/50 px-4 py-3 '>
+                    
+                </View>
+                <View className='flex-none bg-gray-100 dark:bg-gray-900/50 px-4 py-3 umCardBar w-full'>
                         
                         <Text className="text-gray-600 dark:text-gray-400 text-xs">158 views</Text>
                         
                     </View>
-                </View>
             </View> 
         </Link>
       );
