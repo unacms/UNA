@@ -21,25 +21,25 @@ export default function AtomProfile(oProps) {
             break;
 
         case 'sm':
-            sSize = 'w-10 h-10';
+            sSize = 'w-8 h-8';
             iSizeWidth = 40;
             iSizeHeight = 40;
             break;
 
         case 'base':
-            sSize = 'w-12 h-12';
+            sSize = 'w-10 h-10';
             iSizeWidth = 48;
             iSizeHeight = 48;
             break;
 
         case 'lg':
-            sSize = 'w-14 h-14';
+            sSize = 'w-12 h-12';
             iSizeWidth = 56;
             iSizeHeight = 56;
             break;
 
         case 'xl':
-            sSize = 'w-20 h-20';
+            sSize = 'w-14 h-14';
             iSizeWidth = 80;
             iSizeHeight = 80;
             break;

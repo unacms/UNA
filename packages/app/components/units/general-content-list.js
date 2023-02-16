@@ -72,28 +72,28 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
             <Link href={data.url}>
-            <View className='flex-col border-none   bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  rounded-lg card overflow-hidden' style={styles.card}>
+            <View className='flex-col border-none   bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800  rounded-lg card overflow-hidden' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="cardPart2 flex-row  "><Image {...data.image} alt={data.title} resizeMode="cover" className=" w-full aspect-video" /></View>
                 }  
                 <View className="cardPart1 flex-col " style={styles.card_text}>
                     <View className='flex-col mx-4 my-3'>
-                    <View className='flex-row '>
-                        <View className="flex-row flex-1">
-                            <View className="flex-auto">       
-                                <Profile {...data.author_data} showLinks="false" className="" />
-                            </View>    
+                        <View className='flex-row '>
+                            <View className="flex-row flex-1">
+                                <View className="flex-auto">       
+                                    <Profile {...data.author_data} showLinks="false" className="" />
+                                </View>    
 
-                            <View className="">
-                                <Time className="" ts={data.added}></Time>
-                            </View>
+                                <View className="">
+                                    <Time className="" ts={data.added}></Time>
+                                </View>
 
 
-                        </View> 
+                            </View> 
+                        </View>
+                        <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-900 dark:text-gray-50 mt-3">{data.title}</Text>
+                        <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>
                     </View>
-                    <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-800 dark:text-gray-100 my-2">{data.title}</Text>
-                    <Text>{data.summary_plain}</Text>
-                </View>
                 </View>
             </View> 
         </Link>
