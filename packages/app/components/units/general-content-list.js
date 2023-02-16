@@ -6,7 +6,7 @@ import Profile from '../atoms/profile';
 import { Text, H1 ,TextLink} from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native'
+import {Platform, PlatformIOSStatic} from 'react-native'
 
 // g-med style browsing
 export default function UnitGeneral(props) {
@@ -58,9 +58,6 @@ const {height, width, scale, fontScale} = useWindowDimensions();
          }   
         });
     }
-
-    var url = '/' + data.url;
-    
     function SnippetInfo(props) {
         return (
            <View className="hidden sm:inline-flex items-center  font-medium tracking-tight text-green-500 text-xs">
@@ -73,7 +70,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     return (
-            <Link href={url}>
+            <Link href={data.url}>
             <View className='flex-col border-none bg-white  dark:bg-gray-800  u-card overflow-hidden mb-2 sm:m-2 sm:rounded-lg' style={styles.card}>
                 {data.image &&
                     <View style={styles.card_image} className="u-card-media flex-row aspect-video"><Image {...data.image} alt={data.title} prefWidth="500" prefHeight="400" className="u-image w-full aspect-video" /></View>

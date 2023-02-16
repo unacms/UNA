@@ -50,23 +50,27 @@ export default function UnitFeed({data}) {
           card: {
             width: w,
             flexShrink:1,
-            flexGrow: 0,
+            flexGrow: 1,
             alignContent: 'flex-start',
             borderRadius: 10,
             flexDirection:'row',
-            background:'red',
             flexWrap: 'wrap',
             flexShrink:1,
             margin:_margin,
+          }, 
+             card2: {
+            width: width,
+
           }, 
         });
     }
     
     return (
         <Link href={url}>
-            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  u-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row  my-3 w-full'>
-                    <View className="flex-col flex-1 ml-4">
+      
+            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60 overflow-hidden u-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+                <View className='flex-row  my-3 w-full' style={styles.card2}>
+                    <View className="flex-col flex-1 ml-4" style={styles.card2}>
                         <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
                                         <Profile {...data.author_data} displayType="unit_wo_info" className="" />
