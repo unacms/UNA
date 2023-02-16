@@ -64,9 +64,9 @@ export default function AtomProfile(oProps) {
     //--- with custom or default info section
     function DisplayInfo(oProps) {
         return (
-            <View className="flex-row text-gray-600 dark:text-gray-400 text-sm  tracking-tight">
-                <Text className='mr-2'>AU</Text>
-                <Text className="">Dermatology</Text>
+            <View className="flex-row ">
+                <Text className='mr-2 text-gray-600 dark:text-gray-400 text-sm  tracking-tight'>AU</Text>
+                <Text className="text-gray-600 dark:text-gray-400 text-sm  tracking-tight">Dermatology</Text>
             </View>
         );
     }

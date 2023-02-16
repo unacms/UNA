@@ -13,8 +13,8 @@ export default function ElementAuthor(oProps) {
 
     const sInfo = (
         <Menu {...oAuthor.author_desc} displayType="link" params={{
-            className: 'bx-menu flex-row flex-wrap justify-start items-stretch space-x-0.5',
-            classNameItem: 'menu-item block py-0.5 dark:hover:text-white rounded-lg'
+            className: 'bx-menu flex-row flex-wrap justify-start items-stretch ',
+            classNameItem: 'menu-item block  dark:hover:text-white '
         }} />
     );
 

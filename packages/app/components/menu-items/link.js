@@ -44,7 +44,7 @@ export default function MenuItemLink(oProps) {
     sTitle = (
         <Text className="flex-row gap-1 mx-auto">
             {oProps.icon && !bTitleOnly && <p className='h-6 w-6 text-base'>{oProps.icon}</p>}
-            {sTitle && <Text className='pl-1.5 pr-0.5'>{sTitle}</Text>}
+            {sTitle && <Text className='mr-2'>{sTitle}</Text>}
         </Text>
     );
 
