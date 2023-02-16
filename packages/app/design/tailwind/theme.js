@@ -13,6 +13,10 @@ const theme = {
                 "content-dark": "#6A9BCE",
                 "focus-dark": "#2F5E8E",
             },
+            "gray-1000": {
+                DEFAULT: "#06090E",
+             
+            },
         },
     },
 }
