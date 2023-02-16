@@ -64,6 +64,14 @@ body {
     flex-shrink: 1 !important;
     flex-direction: row !important;
 }
+.u-feed-card {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;  
+    align-content: flex-start;
+    flex-shrink: 1 !important;
+    
+}
   
 .u-card-content{
     min-width: calc(100% - 33%);
