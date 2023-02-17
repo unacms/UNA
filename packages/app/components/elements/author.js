@@ -14,7 +14,10 @@ export default function ElementAuthor(oProps) {
     const sInfo = (
         <Menu {...oAuthor.author_desc} displayType="link" params={{
             className: 'bx-menu flex-row flex-wrap justify-start items-stretch ',
-            classNameItem: 'menu-item block text-gray-600 dark:text-gray-400 hover:text-gray-900 hover:underline dark:hover:text-gray-100 '
+            classNameItem: {
+                link: 'block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline',
+                text: 'block'
+            }
         }} />
     );
 
