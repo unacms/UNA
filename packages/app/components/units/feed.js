@@ -64,7 +64,7 @@ export default function UnitFeed({data}) {
         <Link href={url}>
       
             <View className='flex-col bg-white dark:bg-gray-900 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row  px-4 pt-3 w-full' style={styles.card2}>
+                <View className='flex-row  px-4 my-3 w-full' style={styles.card2}>
                     <View className="flex-col flex-1 " style={styles.card2}>
                         <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
@@ -83,7 +83,7 @@ export default function UnitFeed({data}) {
                 </View>
                 {oImage &&
                     
-                    <View className="flex-row aspect-video u-card-fix pt-3">
+                    <View className="flex-row aspect-video u-card-fix mb-3">
                         <Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image " />
                         
                     </View>
@@ -91,8 +91,8 @@ export default function UnitFeed({data}) {
                 }  
                 <View className="flex-col u-card-fix">
                     
-                    <Text className="px-4 pt-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
-                    <View className="px-4 py-3  flex-row space-x-3  ">
+                    <Text className="px-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
+                    <View className="px-4 mb-3  flex-row space-x-3  ">
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">12</Text> views</Text>
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">48</Text> likes</Text>
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">16</Text> comments</Text>
