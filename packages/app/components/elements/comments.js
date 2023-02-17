@@ -3,14 +3,16 @@ import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/util';
-
+import { View } from 'app/design/view'
+import { Text, H1 ,TextLink } from 'app/design/typography'
+import { MainButton } from 'app/design/controls'
 
 export default function ElementComments(props) {
 
     let browse = props.browse;
     let form = props.form;
     let requestUrl = props.url;
-   
+ 
     const [postData, setPostData] = useState(null);
     const [commentData, setCommentData] = useState({
         parentId: 0, 
@@ -33,13 +35,40 @@ export default function ElementComments(props) {
             revalidateOnReconnect: false
         }
     );
-
+    
+    function prepareUrl (params) {
+        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay}
+        return requestUrl + JSON.stringify({...def, ...params});
+    }
+    
+    function parseData (browse, dynamicData) {
+        dynamicData.data.browse.data.data.map(function(c, kc){
+            let o = c[Object.keys(c)[0]];
+            // add in root
+            if(o.data.cmt_vparent_id == 0){
+                if (dynamicData.data.browse.insert == 'before')
+                    browse.data.data = [c].concat(browse.data.data);
+                else
+                    browse.data.data = browse.data.data.concat([c]);
+            }
+            else{
+                browse.data.data = findParent(browse.data.data, c, o, dynamicData.data.browse.insert);
+            }
+        });
+        return browse;
+    }
+    
+    // add new values to state
+    const addCommentData =  (params) => {
+        setCommentData(Object.assign({}, commentData, params));
+    } 
+/*
     const onFormSubmit = (formData, d) => {
         setPostData(formData);
     }
     
     // handle errors and loading 
-    if (error || dynamicData?.error) return `An error has occurred:${error ? error : data?.error}`;
+    if (error || dynamicData?.error) return "An error has occurred:${error ? error : data?.error}";
     if (postData && !dynamicData) {
         form = null
     }
@@ -92,38 +121,12 @@ export default function ElementComments(props) {
         return data;
     }
 
-    function parseData (browse, dynamicData) {
-        dynamicData.data.browse.data.data.map(function(c, kc){
-            let o = c[Object.keys(c)[0]];
-            // add in root
-            if(o.data.cmt_vparent_id == 0){
-                if (dynamicData.data.browse.insert == 'before')
-                    browse.data.data = [c].concat(browse.data.data);
-                else
-                    browse.data.data = browse.data.data.concat([c]);
-            }
-            else{
-                browse.data.data = findParent(browse.data.data, c, o, dynamicData.data.browse.insert);
-            }
-        });
-        return browse;
-    }
+    
 
-    function prepareUrl (params) {
-        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay}
-        return requestUrl + JSON.stringify({...def, ...params});
-    }
+    
 
     // handle more button
-    const handleMore =  async () => {
-        setPostData(null);
-        const sRequest = prepareUrl({'is_form' : false}) ;
-        const sResponse = await fetcher(sRequest);
-        if(sResponse && sResponse.data != undefined){
-            browse = parseData(browse, sResponse);
-            addCommentData({startFrom: sResponse.data.browse.data.start})
-        }
-    }
+    
 
     // handle change order
     const handleOrder =  async (orderWay) => { 
@@ -144,31 +147,30 @@ export default function ElementComments(props) {
             commentData.parentId = 0;
         }
     }
-    // add new values to state
-    const addCommentData =  (params) => {
-        setCommentData(Object.assign({}, commentData, params));
+    
+   console.log(browse);
+   
+   
+   addCommentData={addCommentData} 
+   { form && <Form {...form}  onFormSubmit={onFormSubmit}  handleValues={handleFormValues} /> }   style={{ display: commentData.startFrom > 0? "block" : "none" }}
+    */
+    
+    const handleMore =  async () => {
+        setPostData(null);
+        const sRequest = prepareUrl({'is_form' : false}) ;
+        const sResponse = await fetcher(sRequest);
+        if(sResponse && sResponse.data != undefined){
+            browse = parseData(browse, sResponse);
+            addCommentData({startFrom: sResponse.data.browse.data.start})
+        }
     }
-  
+    
     return (
-        <div className='bg-red-500'>
-            <div className="p-4 m-auto">
-                <button data-dropdown-trigger="hover" data-dropdown-toggle="cmts-order" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Order by <svg className="w-4 h-4 ml-2"  fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg></button>
-                <div id="cmts-order" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                    <li>
-                        <a href="#" onClick={() => handleOrder('desc')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Newest</a>
-                    </li>
-                    <li>
-                        <a href="#" onClick={() => handleOrder('asc')} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Oldest</a>
-                    </li>
-                    </ul>
-                </div>
-            </div>
-            <Browse {...browse} addCommentData={addCommentData} />
-            { form && <Form {...form}  onFormSubmit={onFormSubmit}  handleValues={handleFormValues} /> }
-            <div className="p-4 m-auto" style={{ display: commentData.startFrom > 0? "block" : "none" }}>
-                <button className="text-white bg-blue-600 hover:bg-blue-700 border border-gray-900/20 dark:border-white/20 focus:ring-4 shadow-sm hover:shadow-md active:shadow-sm hover:-translate-y-0.5 active:translate-y-0 duration-200 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm @xl/cell:w-auto px-5 py-2.5 text-center dark:focus:ring-blue-800" onClick={handleMore}>Load More</button>
-            </div>
-        </div>
+        <View className=''>
+            <Browse {...browse} />    
+            <View className="p-4 m-auto" >
+                <MainButton title="Load More" onPress={handleMore}/>
+            </View>
+        </View>
     );
 }
