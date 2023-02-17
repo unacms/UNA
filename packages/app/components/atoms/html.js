@@ -8,7 +8,7 @@ export default function ElementHtml(props) {
         return <div className="u-vanilla-html" dangerouslySetInnerHTML={{__html:props.data}} />
     }
     else{
-        return <WebView style={{width:500, height:500, flex:1, borderWidth:1, borderColor:'#ff0000'}}
+        return <WebView style={{width:500, height:25, flex:1, borderWidth:1, borderColor:'#ff0000'}}
           originWhitelist={['*']}
           source={{ html: props.data }}
         />

@@ -81,7 +81,7 @@ export default function UnitFeed({data}) {
                         
                     </View> 
                     <View className="flex-none flex-col bg-blue-500 rounded-full  px-1.5 mb-auto ">    
-                            <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
+                        <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
                     </View>
                 </View>
                 {oImage &&
