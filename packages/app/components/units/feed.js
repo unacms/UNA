@@ -91,8 +91,22 @@ export default function UnitFeed({data}) {
                 }  
                 <View className="flex-col u-card-fix">
                     
-                    <Text className="px-4 py-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
-                    <Text className="px-4 py-3  border-t border-gray-500/10  text-gray-600 dark:text-gray-400 text-xs "><Text className="">158 views</Text></Text>
+                    <Text className="px-4 pt-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
+                    <View className="px-4 py-3  flex-row space-x-3  ">
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">12</Text> views</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">48</Text> likes</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">16</Text> comments</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">32</Text> reposts</Text>
+                    </View>
+
+                    
+
+                    <View className="px-4 py-3 bg-gray-500/5 border-t border-gray-500/10  flex-row space-x-4  ">
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Like</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Comment</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Repost</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Share</Text>
+                    </View>
 
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
