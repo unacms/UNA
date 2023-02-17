@@ -9,7 +9,7 @@ import { View, ScrollView } from 'app/design/view'
 
 export const siteTitle = 'G-Med';
 
-export default function Layout(props) {  
+export default function Layout(props) {
 
     var oBreadCrump = null;
     var oComments = null;

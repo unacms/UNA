@@ -9,7 +9,8 @@
       "android"
     ],
     "ios": {
-      "bundleIdentifier": "com.solito.expo-router"
+      "bundleIdentifier": "com.una.gmed2",
+      "backgroundColor": "#FF0000"
     },
     "android": {
       "package": "com.una.gmed2"

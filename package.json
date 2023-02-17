@@ -20,8 +20,8 @@
     "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules"
   },
   "resolutions": {
-    "metro": "^0.73.1",
-    "metro-resolver": "^0.73.1"
+    "metro": "^0.73.7",
+    "metro-resolver": "^0.73.7"
   },
   "nohoist": [
     "**/expo-router",

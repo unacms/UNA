@@ -4,7 +4,18 @@ import { Stack } from 'expo-router'
 export default function Root() {
   return (
     <Provider>
-      <Stack />
+      <Stack screenOptions={
+        { // https://reactnavigation.org/docs/native-stack-navigator/#options
+          headerTitle:"G-Med",
+          headerStyle: {
+            backgroundColor: "#2F5E8E",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          }
+        }
+      } />
     </Provider>
   )
 }
