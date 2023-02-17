@@ -63,7 +63,7 @@ export default function UnitFeed({data}) {
     return (
         <Link href={url}>
       
-            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+            <View className='flex-col bg-white dark:bg-gray-900 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
                 <View className='flex-row  px-4 pt-3 w-full' style={styles.card2}>
                     <View className="flex-col flex-1 " style={styles.card2}>
                         <View className="flex-auto flex-row space-x-2">
@@ -101,11 +101,11 @@ export default function UnitFeed({data}) {
 
                     
 
-                    <View className="px-4 py-3 bg-gray-500/5 border-t border-gray-500/10  flex-row space-x-4  ">
-                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Like</Text>
-                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Comment</Text>
-                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Repost</Text>
-                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Share</Text>
+                    <View className="px-4 py-1  border-t border-gray-500/10  flex-row space-x-1  ">
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Like</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Comment</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Repost</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Share</Text></View>
                     </View>
 
                     {/* oCmt &&
