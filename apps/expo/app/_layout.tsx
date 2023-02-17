@@ -5,8 +5,7 @@ export default function Root() {
   return (
     <Provider>
       <Stack screenOptions={
-        { // https://reactnavigation.org/docs/native-stack-navigator/#options
-          headerTitle:"G-Med",
+        { // https://reactnavigation.org/docs/native-stack-navigator/#options        
           headerStyle: {
             backgroundColor: "#2F5E8E",
           },
