@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-// import { Dropdown } from 'flowbite';
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
 import Profile from './profile';
 
 import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
+import Popup from './popup'
 
 export default function ElementLikes(oProps) {
 
@@ -18,26 +18,27 @@ export default function ElementLikes(oProps) {
         return [].concat(aName).join('-');
     };
 
+    const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
     const { pageData, setPageData } = useContext(PageData);
 
-    const isGlobalVar = (sName) => {
-        const sGlobalsKey = getName();
+    const isPageVar = (sName) => {
+        const sPageKey = getName();
 
-        return pageData && pageData[sGlobalsKey] != undefined && pageData[sGlobalsKey][sName] != undefined;
+        return pageData && pageData[sPageKey] != undefined && pageData[sPageKey][sName] != undefined;
     };
 
-    const getGlobalVar = (sName) => {
-        const sGlobalsKey = getName();
+    const getPageVar = (sName) => {
+        const sPageKey = getName();
 
-        return pageData[sGlobalsKey][sName];
+        return pageData[sPageKey][sName];
     };
 
-    const setGlobalVars = (mValue) => {
-        const sGlobalsKey = getName();
+    const setPageVars = (mValue) => {
+        const sPageKey = getName();
 
         let oValue = {};
-        oValue[sGlobalsKey] = mValue;
+        oValue[sPageKey] = mValue;
 
         if(!pageData)
             setPageData(oValue);
@@ -65,7 +66,7 @@ export default function ElementLikes(oProps) {
         event.preventDefault();
 
         performAction('do', {value: 1}, (oData) => {
-            setGlobalVars(oData);
+            setPageVars(oData);
         });
     };
 
@@ -73,7 +74,7 @@ export default function ElementLikes(oProps) {
         event.preventDefault();
 
         performAction('do', {value: 1}, (oData) => {
-            setGlobalVars(oData);
+            setPageVars(oData);
         });
     };
 
@@ -84,18 +85,17 @@ export default function ElementLikes(oProps) {
             if(!oData?.performed_by)
                 return;
 
-            console.log('TODO: Show popup with users.');
-
             setPerformedBy(oData.performed_by);
+            setPopupVisible(true);
         });
     };
 
     const getSkeleton = () => {
         return (
-            <View className="mb-2">
+            <View className="space-y-2">
             {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex items-center gap-3">
+                <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                    <View className="animate-pulse flex-row items-center gap-3">
                         <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
                         <View className="flex-1 space-y-1">
                             <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
@@ -115,16 +115,16 @@ export default function ElementLikes(oProps) {
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isGlobalVar('is_voted') && getGlobalVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isGlobalVar('is_disabled') && getGlobalVar('is_disabled') === true);
+    const bShowActionVoted = oAction?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
+    const bShowActionDisabled = oAction?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
 
     let sIcon = oAction?.icon || '';
-    if(isGlobalVar('icon'))
-        sIcon = getGlobalVar('icon');
+    if(isPageVar('icon'))
+        sIcon = getPageVar('icon');
 
     let sTitle = oAction?.title || '';
-    if(isGlobalVar('title'))
-        sTitle = getGlobalVar('title');
+    if(isPageVar('title'))
+        sTitle = getPageVar('title');
 
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
@@ -162,8 +162,8 @@ export default function ElementLikes(oProps) {
     if(bShowCounter) {
         let iCount = oCounter.count;
 
-        if(isGlobalVar('counter')) {
-            const oCounterGlobal = getGlobalVar('counter');
+        if(isPageVar('counter')) {
+            const oCounterGlobal = getPageVar('counter');
             if(oCounterGlobal?.count)
                 iCount = oCounterGlobal.count;
         }
@@ -181,25 +181,21 @@ export default function ElementLikes(oProps) {
             sUsers = getSkeleton();
 
         return (
-            <View className={'flex flex-none' + (!iCount ? ' hidden' : '')}>
+            <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
                 <A id={getName('performed-by-ddb')} className="group flex-none flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={(event) => {handleGetPerformedBy(event)}}>
                     {oCounter?.icon && <Text className='w-6 h-6 flex justify-center text-base'>{oCounter.icon}</Text>}
                     <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                 </A>
-                <View id={getName('performed-by-ddp')} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-                    <View className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                </View>
+                <Popup id={getName('performed-by-ddp')} visible={[popupVisible, setPopupVisible]}>
+                    <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                </Popup>
             </View>
         );
     }
 
     //--- CSR: Initialize Flowbite components.
     useEffect(() => {
-        //--- Performed By dropdown.
-        const oCntTarget = document.getElementById(getName('performed-by-ddp'));
-        const oCntTrigger = document.getElementById(getName('performed-by-ddb'));
-        if(oCntTarget && oCntTrigger)
-            new Dropdown(oCntTarget, oCntTrigger, {placement: 'bottom-start', trigger:'click'});
+        //Note. Client side code can be executed here. 
     }, []);
 
     return (

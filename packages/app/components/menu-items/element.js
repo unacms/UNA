@@ -20,7 +20,7 @@ export default function MenuItemElement(oProps) {
         oProps.data.params = {...oProps.data.params, ...oProps.params}
 
     return (
-        <View className="menu-item whitespace-nowrap">
+        <View className="menu-item android:mr-2 ios:mr-2 whitespace-nowrap">
             <Element key={oProps.id ? oProps.id : oProps.name} {...oProps.data} />
         </View>
     );

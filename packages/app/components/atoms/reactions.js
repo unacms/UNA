@@ -1,16 +1,16 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
+import { Alert } from 'react-native';
+
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
-import Menu from '../menu';
-import Profile from './profile';
-
 import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
+import Menu from '../menu';
+import Popup from './popup'
+import Profile from './profile';
 
 export default function ElementReactions(oProps) {
-    //return <View><Text>TODO:Reactions</Text></View>;
-  
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -19,26 +19,28 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
+    //const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
+    const [ popupVisibleBy, setPopupVisibleBy ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
     const { pageData, setPageData } = useContext(PageData);
 
-    const isGlobalVar = (sName) => {
-        const sGlobalsKey = getName();
+    const isPageVar = (sName) => {
+        const sPageKey = getName();
 
-        return pageData && pageData[sGlobalsKey] != undefined && pageData[sGlobalsKey][sName] != undefined;
+        return pageData && pageData[sPageKey] != undefined && pageData[sPageKey][sName] != undefined;
     };
 
-    const getGlobalVar = (sName) => {
-        const sGlobalsKey = getName();
+    const getPageVar = (sName) => {
+        const sPageKey = getName();
 
-        return pageData[sGlobalsKey][sName];
+        return pageData[sPageKey][sName];
     };
 
-    const setGlobalVars = (mValue) => {
-        const sGlobalsKey = getName();
+    const setPageVars = (mValue) => {
+        const sPageKey = getName();
 
         let oValue = {};
-        oValue[sGlobalsKey] = mValue;
+        oValue[sPageKey] = mValue;
 
         if(!pageData)
             setPageData(oValue);
@@ -64,6 +66,14 @@ export default function ElementReactions(oProps) {
 
     const handleDoPopup = (event, oProps) => {
         console.log('TODO: Show popup');
+
+        Alert.alert(
+            '',
+            'TODO: Show popup',
+            [
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+        );
     };
 
     const handleDo = (event, oProps) => {
@@ -74,7 +84,7 @@ export default function ElementReactions(oProps) {
             oActionPopup.hide();
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
-            setGlobalVars(oData);
+            setPageVars(oData);
         });
     };
 
@@ -82,11 +92,11 @@ export default function ElementReactions(oProps) {
         event.preventDefault();
 
         let sReaction = oProps.action.reaction;
-        if(isGlobalVar('reaction'))
-            sReaction = getGlobalVar('reaction');
+        if(isPageVar('reaction'))
+            sReaction = getPageVar('reaction');
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
-            setGlobalVars(oData);
+            setPageVars(oData);
 
             //--- Reinit 'Do Action' popup.
             setTimeout(function() {
@@ -110,15 +120,16 @@ export default function ElementReactions(oProps) {
                 return;
 
             setPerformedBy(oData.performed_by);
+            setPopupVisibleBy(true);
         });
     };
 
     const getSkeleton = () => {
         return (
-            <View className="mb-2">
+            <View className="space-y-2">
             {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex items-center gap-3">
+                <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                    <View className="animate-pulse flex-row items-center gap-3">
                         <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
                         <View className="flex-1 space-y-1">
                             <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
@@ -138,16 +149,16 @@ export default function ElementReactions(oProps) {
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isGlobalVar('is_voted') && getGlobalVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isGlobalVar('is_disabled') && getGlobalVar('is_disabled') === true);
+    const bShowActionVoted = oAction?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
+    const bShowActionDisabled = oAction?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
 
     let sIcon = oAction?.icon || '';
-    if(isGlobalVar('icon'))
-        sIcon = getGlobalVar('icon');
+    if(isPageVar('icon'))
+        sIcon = getPageVar('icon');
 
     let sTitle = oAction?.title || '';
-    if(isGlobalVar('title'))
-        sTitle = getGlobalVar('title');
+    if(isPageVar('title'))
+        sTitle = getPageVar('title');
 
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
@@ -169,7 +180,7 @@ export default function ElementReactions(oProps) {
     
         sAction = (
             <View>
-                <A id={getName('action-ddb')} disabled={bShowActionDisabled ? 'disabled' : ''} className={sClassNameDo} onPress={!bShowActionDisabled ? handleDoPopup : () => {}}>
+                <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo} onPress={!bShowActionDisabled ? handleDoPopup : () => {}}>
                     <View className="flex-row gap-1 mx-auto">
                         {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
                         {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
@@ -194,8 +205,8 @@ export default function ElementReactions(oProps) {
                 return;
 
             let iCount = aItem.count;
-            if(isGlobalVar('counter')) {
-                const oCounterGlobal = getGlobalVar('counter');
+            if(isPageVar('counter')) {
+                const oCounterGlobal = getPageVar('counter');
                 const sCounteKey = 'count_' + aItem.name;
                 if(oCounterGlobal[sCounteKey] != undefined)
                     iCount = oCounterGlobal[sCounteKey];
@@ -205,7 +216,7 @@ export default function ElementReactions(oProps) {
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
                     return (
-                        <View><Profile {...aUser} /></View>
+                        <View key={aUser.id}><Profile {...aUser} /></View>
                     );
                 });
             }
@@ -219,35 +230,16 @@ export default function ElementReactions(oProps) {
                         {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                     </A>
-                    <View id={getName('performed-by-ddp-' + aItem.name)} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-                        <View className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                    </View>
+                    <Popup id={getName('performed-by-ddp-' + aItem.name)} visible={[popupVisibleBy, setPopupVisibleBy]}>
+                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    </Popup>
                 </View>
             );
         });
 
     //--- CSR: Initialize Flowbite components.
     useEffect(() => {
-        //--- Do action dropdown.
-        if(!bShowActionDisabled) {
-        const oActTarget = document.getElementById(getName('action-ddp'));
-        const oActTrigger = document.getElementById(getName('action-ddb'));
-        if(oActTarget && oActTrigger)
-                new Dropdown(oActTarget, oActTrigger, {placement: 'top', trigger:'click'});
-        }
-
-        //--- Performed By dropdowns.
-        Object.keys(oCounter.items).map(function(iKey) {
-            const aItem = oCounter.items[iKey];
-            if(aItem.name == 'default')
-                return;
-
-            //TODO: init dropdowns for counter.
-            const oCntTarget = document.getElementById(getName('performed-by-ddp-' + aItem.name));
-            const oCntTrigger = document.getElementById(getName('performed-by-ddb-' + aItem.name));
-            if(oCntTarget && oCntTrigger)
-                new Dropdown(oCntTarget, oCntTrigger, {placement: 'bottom-start', trigger:'click'});
-        });
+        //TODO: Do action dropdown.
     }, []);
 
     return (
