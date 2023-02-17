@@ -63,8 +63,8 @@ export default function UnitFeed({data}) {
     return (
         <Link href={url}>
       
-            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800/60 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row border-b border-gray-100 dark:border-gray-800/60 px-4 py-3 w-full' style={styles.card2}>
+            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+                <View className='flex-row  px-4 pt-3 w-full' style={styles.card2}>
                     <View className="flex-col flex-1 " style={styles.card2}>
                         <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
@@ -82,12 +82,18 @@ export default function UnitFeed({data}) {
                     </View>
                 </View>
                 {oImage &&
-                    <View className="flex-row aspect-video u-card-fix"><Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image" /></View>
+                    
+                    <View className="flex-row aspect-video u-card-fix pt-3">
+                        <Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image " />
+                        
+                    </View>
+                    
                 }  
                 <View className="flex-col u-card-fix">
                     
                     <Text className="px-4 py-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
-                    
+                    <Text className="px-4 py-3  border-t border-gray-500/10  text-gray-600 dark:text-gray-400 text-xs "><Text className="">158 views</Text></Text>
+
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
                             <View className='flex-none hidden @xl/cell:block'><Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" /></View>
