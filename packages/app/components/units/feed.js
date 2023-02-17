@@ -10,12 +10,7 @@ import { Platform, PlatformIOSStatic } from 'react-native'
 
 
 
-// g-med style browsing
-/**
- * It renders a link to the post, which contains a profile picture, a title, a description, and a
- * comment
- * @returns A React component.
- */
+
 export default function UnitFeed({data}) {
     var oImage = data.content.images.length > 0 ? data.content.images[0] : null;
     if (oImage == null)
@@ -50,23 +45,27 @@ export default function UnitFeed({data}) {
           card: {
             width: w,
             flexShrink:1,
-            flexGrow: 0,
+            flexGrow: 1,
             alignContent: 'flex-start',
             borderRadius: 10,
             flexDirection:'row',
-            background:'red',
             flexWrap: 'wrap',
             flexShrink:1,
             margin:_margin,
+          }, 
+             card2: {
+            width: width,
+
           }, 
         });
     }
     
     return (
         <Link href={url}>
-            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/60  overflow-hidden  u-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row  my-3 w-full'>
-                    <View className="flex-col flex-1 ml-4">
+      
+            <View className='flex-col bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+                <View className='flex-row  px-4 pt-3 w-full' style={styles.card2}>
+                    <View className="flex-col flex-1 " style={styles.card2}>
                         <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
                                         <Profile {...data.author_data} displayType="unit_wo_info" className="" />
@@ -78,17 +77,37 @@ export default function UnitFeed({data}) {
                         
                         
                     </View> 
-                    <View className="flex-none flex-col  bg-blue-500 rounded-full  px-1.5 mb-auto mr-4">    
+                    <View className="flex-none flex-col  bg-blue-500 rounded-full  px-1.5 mb-auto ">    
                             <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
                     </View>
                 </View>
                 {oImage &&
-                    <View className="flex-row aspect-video u-card-fix"><Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image" /></View>
+                    
+                    <View className="flex-row aspect-video u-card-fix pt-3">
+                        <Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image " />
+                        
+                    </View>
+                    
                 }  
                 <View className="flex-col u-card-fix">
-                    <Text className="hidden  ">{data.description}</Text>
-                    <Text className="mx-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
                     
+                    <Text className="px-4 pt-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
+                    <View className="px-4 py-3  flex-row space-x-3  ">
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">12</Text> views</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">48</Text> likes</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">16</Text> comments</Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">32</Text> reposts</Text>
+                    </View>
+
+                    
+
+                    <View className="px-4 py-3 bg-gray-500/5 border-t border-gray-500/10  flex-row space-x-4  ">
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Like</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Comment</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Repost</Text>
+                        <Text className="text-blue-600 dark:text-gray-400 text-sm font-semibold">Share</Text>
+                    </View>
+
                     {/* oCmt &&
                         <View className='flex gap-1  ml-12 @xl/cell:m-0'>
                             <View className='flex-none hidden @xl/cell:block'><Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" /></View>
