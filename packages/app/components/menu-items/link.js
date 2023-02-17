@@ -11,7 +11,7 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + (oProps?.params && oProps.params?.classNameItem || 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
+        const sClassName = 'menu-item ' + (oProps?.params && oProps.params?.classNameItem || 'block  text hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
 
         const handleClick = () => {
             if(oProps.params?.onclick)
