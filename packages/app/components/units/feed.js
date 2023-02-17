@@ -53,9 +53,12 @@ export default function UnitFeed({data}) {
             flexShrink:1,
             margin:_margin,
           }, 
-             card2: {
-            width: width,
-
+          card_image: {
+           
+             width: width,
+          },      
+          card2: {
+              width: width,
           }, 
         });
     }
@@ -83,7 +86,7 @@ export default function UnitFeed({data}) {
                 </View>
                 {oImage &&
                     
-                    <View className="flex-row aspect-video u-card-fix mb-3">
+                    <View className="flex-row aspect-video mb-3" style={styles.card_image}>
                         <Image {...oImage} alt={data.title} prefWidth="500" prefHidth="400" className="w-full aspect-video u-image " />
                         
                     </View>
