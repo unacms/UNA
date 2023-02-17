@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import All, { getData } from 'app/all'
 import { Text } from 'dripsy'
 import { useRoute } from '@react-navigation/native';
+import { Stack } from 'expo-router'
+import { View } from 'app/design/view'
 
 export default function Aaa (props) {
   const [pageData, setPageData] = useState(undefined)
@@ -19,7 +21,7 @@ export default function Aaa (props) {
 
   // TODO: handle error when API is down
   if (undefined === pageData)
-    return <Text sx={{ textAlign: 'center', mb: 16, fontWeight: 'bold' }}>Loading...</Text>
+    return <Text sx={{ textAlign: 'center', mb: 16, fontWeight: 'bold' }}><Stack.Screen options={{ title: "..." }} />Loading...</Text>
 
-  return <All path={path} data={pageData} {...props}>{props.children}</All>
+  return <View><Stack.Screen options={{ title: pageData.title }} /><All path={path} data={pageData} {...props}>{props.children}</All></View>
 }
