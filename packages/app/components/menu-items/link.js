@@ -11,7 +11,7 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + (oProps?.params && oProps.params?.classNameItem || 'block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
 
         const handleClick = () => {
             if(oProps.params?.onclick)
@@ -24,7 +24,7 @@ export default function MenuItemLink(oProps) {
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = oProps?.params && oProps.params?.classNameItem || 'menu-item block px-4 py-2';
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'menu-item block px-4 py-2');
 
         return (
             <Text className={sClassName}>{oProps.title}</Text>
@@ -43,7 +43,7 @@ export default function MenuItemLink(oProps) {
 
     sTitle = (
         <Text className="flex-row gap-1 mx-auto">
-            {oProps.icon && !bTitleOnly && <p className='h-6 w-6 text-base'>{oProps.icon}</p>}
+            {oProps.icon && !bTitleOnly && <Text className='h-6 w-6 text-base'>{oProps.icon}</Text>}
             {sTitle && <Text className='mr-2'>{sTitle}</Text>}
         </Text>
     );

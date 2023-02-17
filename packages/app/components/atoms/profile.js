@@ -51,13 +51,13 @@ export default function AtomProfile(oProps) {
 
     function DisplayNameLink(oProps) {
         return (
-            <A className="font-semibold text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline" href={oProps.url}>{oProps.title}</A>
+            <A className="font-bold text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline" href={oProps.url}>{oProps.title}</A>
         );
     }
 
     function DisplayNameText(oProps) {
         return (
-            <Text className='text-gray-900 dark:text-gray-100 text-sm font-bold tracking-tight mr-2'>{oProps.title}</Text>
+            <Text className='text-gray-700 dark:text-gray-300 text-sm font-bold tracking-tight mr-2'>{oProps.title}</Text>
         );
     }
 
