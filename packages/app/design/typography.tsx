@@ -53,7 +53,7 @@ export const A = forwardRef<NativeText, StyledProps<AProps>>(function A(
   return (
     <Text
       accessibilityRole="link"
-      className={`text-blue-500 hover:underline ${className}`}
+      className={className || `text-blue-500 hover:underline`}
       {...props}
       {...nativeAProps}
       ref={ref}
