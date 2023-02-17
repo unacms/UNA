@@ -1,18 +1,14 @@
 import { fetcher } from 'app/lib/util';
 import Layout from 'app/components/layout';
-import Cell from 'app/components/cell';
+import Page from 'app/components/page';
 
 import { View, Text } from 'dripsy'
 import { TextLink } from 'solito/link'
 
 export default function ({uri, data}) {
-    const cells = Object.keys(data.elements).map(key => {
-        return <Cell key={key} blocks={data.elements[key]} />
-    })
-
     return (
         <Layout uri={uri}>
-            {cells}
+            <Page uri={uri} data={data} />
         </Layout>
     );
 }

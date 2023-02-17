@@ -5,7 +5,7 @@ import Link from './atoms/link';
 import Toggle  from './atoms/toggle';
 import React, { useState } from 'react';
 import { View } from 'app/design/view'
-import { Text } from 'app/design/typography'
+import { A, Text } from 'app/design/typography'
 
 export default function () {
   const session = null;//const { data: session } = useSession();
@@ -19,20 +19,20 @@ export default function () {
                             <span className="sr-only">Open menu</span>
                             <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
                      </button>
-                     <Link href="/" className="flex mr-6">
+                     <A href="/" className="flex mr-6">
                       <img src="https://i.ibb.co/zNxQhVR/g-med-inverted.png" className=" h-8" alt="{siteTitle}" />
                       <span className="hidden self-center text-2xl font-semibold whitespace-nowrap text-gray-50">{siteTitle}</span>
-                    </Link>
+                    </A>
                 </div>
                 <ul className="hidden flex-col justify-left mt-0 w-full text-sm font-medium text-gray-100 md:flex-row dark:text-gray-800 md:flex">
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <Link href="/" title="Home" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Home</Link>
+                        <A href="/" title="Home" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Home</A>
                     </li>
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <Link href="/about" title="About" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">About</Link>
+                        <A href="/about" title="About" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">About</A>
                     </li>
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <Link href="/contact" title="Contact" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Contact</Link>
+                        <A href="/contact" title="Contact" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Contact</A>
                     </li>
                 </ul>
 

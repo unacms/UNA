@@ -2,15 +2,14 @@ import React from 'react';
 import { useEffect, useState, useContext } from 'react';
 // import { Dropdown } from 'flowbite';
 import { fetcher } from '../../lib/util';
-import { GlobalsData } from '../../context/context';
+import { PageData } from '../../context/page';
 import Profile from './profile';
 
-import { Text} from 'app/design/typography'
+import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 
 export default function ElementLikes(oProps) {
-    return <View><Text>TODO:Likes</Text></View>;
-/*
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -20,18 +19,18 @@ export default function ElementLikes(oProps) {
     };
 
     const [ performedBy, setPerformedBy ] = useState();
-    const { globals, setGlobals } = useContext(GlobalsData);
+    const { pageData, setPageData } = useContext(PageData);
 
     const isGlobalVar = (sName) => {
         const sGlobalsKey = getName();
 
-        return globals && globals[sGlobalsKey] != undefined && globals[sGlobalsKey][sName] != undefined;
+        return pageData && pageData[sGlobalsKey] != undefined && pageData[sGlobalsKey][sName] != undefined;
     };
 
     const getGlobalVar = (sName) => {
         const sGlobalsKey = getName();
 
-        return globals[sGlobalsKey][sName];
+        return pageData[sGlobalsKey][sName];
     };
 
     const setGlobalVars = (mValue) => {
@@ -40,10 +39,10 @@ export default function ElementLikes(oProps) {
         let oValue = {};
         oValue[sGlobalsKey] = mValue;
 
-        if(!globals)
-            setGlobals(oValue);
+        if(!pageData)
+            setPageData(oValue);
         else
-            setGlobals({...globals, ...oValue});
+            setPageData({...pageData, ...oValue});
     };
 
     const oParams = oProps.params;
@@ -85,25 +84,27 @@ export default function ElementLikes(oProps) {
             if(!oData?.performed_by)
                 return;
 
+            console.log('TODO: Show popup with users.');
+
             setPerformedBy(oData.performed_by);
         });
     };
 
     const getSkeleton = () => {
         return (
-            <li className="space-y-2">
-            {[...Array(3)].map( _ => 
-                <div className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
-                    <div className="animate-pulse flex items-center gap-3">
-                        <div className="rounded-full bg-gray-600/20 h-10 w-10"></div>
-                        <div className="flex-1 space-y-1">
-                            <div className="h-4 w-1/2 bg-gray-600/20 rounded-full"></div>    
-                            <div className="h-3 w-1/3 bg-gray-600/20 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
+            <View className="mb-2">
+            {[...Array(1, 2, 3)].map( i => 
+                <View key={i} className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                    <View className="animate-pulse flex items-center gap-3">
+                        <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+                        <View className="flex-1 space-y-1">
+                            <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
+                            <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+                        </View>
+                    </View>
+                </View>
             )}
-            </li>
+            </View>
         );
     };
 
@@ -128,28 +129,28 @@ export default function ElementLikes(oProps) {
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <button type="button" className="group inline-flex flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2    dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white" onClick={handleUndo}>
-                <div className="flex gap-1 mx-auto">
-                    {sIcon && <p className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</p>}
-                    {sTitle && <p className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</p>}
-                </div>
-            </button>
+            <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
+                <View className="flex-row flex-nowrap items-center gap-1 mx-auto">
+                    {sIcon && <Text className='w-6 h-6 flex justify-center group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                    {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                </View>
+            </A>
         );
     }
     else {
         let sClassNameDo = '';
         if(bShowActionDisabled)
-            sClassNameDo = 'group flex-auto inline-flex items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed';
+            sClassNameDo = 'group flex-auto flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 hover:no-underline cursor-not-allowed';
         else
-            sClassNameDo = 'group flex-auto inline-flex items-center p-2 shadow-sm hover:shadow active:opacity-80 active:shadow-none dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white';
+            sClassNameDo = 'group flex-auto flex-row items-center p-2 shadow-sm hover:shadow active:opacity-80 active:shadow-none dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline';
 
         sAction = (
-            <button id={getName('action-ddb')} type="button" disabled={bShowActionDisabled ? 'disabled' : ''} className={sClassNameDo} onClick={!bShowActionDisabled ? handleDo : () => {}}>
-                <div className="flex gap-1 mx-auto">
-                    {sIcon && <p className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</p>}
-                    {sTitle && <p className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</p>}
-                </div>
-            </button>
+            <A id={getName('action-ddb')} disabled={bShowActionDisabled ? 'disabled' : ''} className={sClassNameDo} onPress={!bShowActionDisabled ? handleDo : () => {}}>
+                <View className="flex-row flex-nowrap items-center gap-1 mx-auto">
+                    {sIcon && <Text className='w-6 h-6 flex justify-center group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                    {sTitle && <Text className='hidden xl/cell:block pl-0.5'>{sTitle}</Text>}
+                </View>
+            </A>
         );
     }
 
@@ -171,7 +172,7 @@ export default function ElementLikes(oProps) {
         if(performedBy) {
             sUsers = performedBy.map(aUser => {
                 return (
-                    <li><Profile {...aUser} /></li>
+                    <View key={aUser.id}><Profile {...aUser} /></View>
                 );
             });
         }
@@ -180,18 +181,17 @@ export default function ElementLikes(oProps) {
             sUsers = getSkeleton();
 
         return (
-            <div className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                <button id={getName('performed-by-ddb')} type="button" className="group inline-flex flex-none active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white" onClick={(event) => {handleGetPerformedBy(event)}}>
-                    {oCounter?.icon && <p className='w-6 h-6 text-base'>{oCounter.icon}</p>}
-                    <p className='pl-1.5 pr-0.5'>{iCount}</p>
-                </button>
-                <div id={getName('performed-by-ddp')} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-                    <ul className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</ul>
-                </div>
-            </div>
+            <View className={'flex flex-none' + (!iCount ? ' hidden' : '')}>
+                <A id={getName('performed-by-ddb')} className="group flex-none flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={(event) => {handleGetPerformedBy(event)}}>
+                    {oCounter?.icon && <Text className='w-6 h-6 flex justify-center text-base'>{oCounter.icon}</Text>}
+                    <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
+                </A>
+                <View id={getName('performed-by-ddp')} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                    <View className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                </View>
+            </View>
         );
     }
-        
 
     //--- CSR: Initialize Flowbite components.
     useEffect(() => {
@@ -203,10 +203,9 @@ export default function ElementLikes(oProps) {
     }, []);
 
     return (
-        <div className="inline-flex gap-1 xl/cell:gap-0 ">
-            {bShowAction && <div>{sAction}</div>}
-            {bShowCounter && <div>{sCounter}</div>}
-        </div>
+        <View className="inline-flex gap-1 xl/cell:gap-0">
+            {bShowAction && <View>{sAction}</View>}
+            {bShowCounter && <View>{sCounter}</View>}
+        </View>
     );
-*/
  }

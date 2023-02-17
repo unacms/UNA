@@ -1,17 +1,16 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-// import { Dropdown } from 'flowbite';
 import { fetcher } from '../../lib/util';
-import { GlobalsData } from '../../context/context';
+import { PageData } from '../../context/page';
 import Menu from '../menu';
 import Profile from './profile';
 
-import { Text} from 'app/design/typography'
+import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 
 export default function ElementReactions(oProps) {
-    return <View><Text>TODO:Reactions</Text></View>;
-/*
+    //return <View><Text>TODO:Reactions</Text></View>;
+  
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -21,19 +20,18 @@ export default function ElementReactions(oProps) {
     };
 
     const [ performedBy, setPerformedBy ] = useState();
-    const { globals, setGlobals } = useContext(GlobalsData);
-    
+    const { pageData, setPageData } = useContext(PageData);
 
     const isGlobalVar = (sName) => {
         const sGlobalsKey = getName();
 
-        return globals && globals[sGlobalsKey] != undefined && globals[sGlobalsKey][sName] != undefined;
+        return pageData && pageData[sGlobalsKey] != undefined && pageData[sGlobalsKey][sName] != undefined;
     };
 
     const getGlobalVar = (sName) => {
         const sGlobalsKey = getName();
 
-        return globals[sGlobalsKey][sName];
+        return pageData[sGlobalsKey][sName];
     };
 
     const setGlobalVars = (mValue) => {
@@ -42,10 +40,10 @@ export default function ElementReactions(oProps) {
         let oValue = {};
         oValue[sGlobalsKey] = mValue;
 
-        if(!globals)
-            setGlobals(oValue);
+        if(!pageData)
+            setPageData(oValue);
         else
-            setGlobals({...globals, ...oValue});
+            setPageData({...pageData, ...oValue});
     };
 
     const oParams = oProps.params;
@@ -62,6 +60,10 @@ export default function ElementReactions(oProps) {
         const sResponse = await fetcher(sRequest);
         if(typeof onLoad === 'function')
             onLoad(sResponse?.data);
+    };
+
+    const handleDoPopup = (event, oProps) => {
+        console.log('TODO: Show popup');
     };
 
     const handleDo = (event, oProps) => {
@@ -113,19 +115,19 @@ export default function ElementReactions(oProps) {
 
     const getSkeleton = () => {
         return (
-            <li className="space-y-2">
-            {[...Array(3)].map( _ => 
-                <div className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
-                    <div className="animate-pulse flex items-center gap-3">
-                        <div className="rounded-full bg-gray-600/20 h-10 w-10"></div>
-                        <div className="flex-1 space-y-1">
-                            <div className="h-4 w-1/2 bg-gray-600/20 rounded-full"></div>    
-                            <div className="h-3 w-1/3 bg-gray-600/20 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
+            <View className="mb-2">
+            {[...Array(1, 2, 3)].map( i => 
+                <View key={i} className="flex flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                    <View className="animate-pulse flex items-center gap-3">
+                        <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+                        <View className="flex-1 space-y-1">
+                            <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
+                            <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+                        </View>
+                    </View>
+                </View>
             )}
-            </li>
+            </View>
         );
     };
 
@@ -150,33 +152,33 @@ export default function ElementReactions(oProps) {
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <button type="button" className="group inline-flex flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-blue-600 hover:text-blue-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:bg-gray-700/80 dark:focus:text-white" onClick={handleUndo}>
-                <div className="flex gap-1 mx-auto">
-                    {sIcon && <p className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</p>}
-                    {sTitle && <p className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</p>}
-                </div>
-            </button>
+            <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-blue-600 hover:text-blue-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
+                <View className="flex gap-1 mx-auto">
+                    {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                    {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                </View>
+            </A>
         );
     }
     else {
         let sClassNameDo = '';
         if(bShowActionDisabled)
-            sClassNameDo = 'group flex-auto inline-flex items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed';
+            sClassNameDo = 'group flex-auto  flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed hover:no-underline';
         else
-            sClassNameDo = 'group inline-flex flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white'
+            sClassNameDo = 'group flex-auto flex-row shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline'
     
         sAction = (
-            <>
-                <button id={getName('action-ddb')} type="button" disabled={bShowActionDisabled ? 'disabled' : ''} className={sClassNameDo}>
-                    <div className="flex gap-1 mx-auto">
-                        {sIcon && <p className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</p>}
-                        {sTitle && <p className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</p>}
-                    </div>
-                </button>
-                <div id={getName('action-ddp')} className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
+            <View>
+                <A id={getName('action-ddb')} disabled={bShowActionDisabled ? 'disabled' : ''} className={sClassNameDo} onPress={!bShowActionDisabled ? handleDoPopup : () => {}}>
+                    <View className="flex-row gap-1 mx-auto">
+                        {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                        {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                    </View>
+                </A>
+                <View id={getName('action-ddp')} className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
                     <Menu {...oAction.menu} displayType="link" params={{onclick: handleDo}} />
-                </div>
-            </>
+                </View>
+            </View>
         );
     }
 
@@ -203,7 +205,7 @@ export default function ElementReactions(oProps) {
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
                     return (
-                        <li><Profile {...aUser} /></li>
+                        <View><Profile {...aUser} /></View>
                     );
                 });
             }
@@ -212,15 +214,15 @@ export default function ElementReactions(oProps) {
                 sUsers = getSkeleton();
 
             return (
-                <div key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <button id={getName('performed-by-ddb-' + aItem.name)} type="button" className="group inline-flex flex-none active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white" onClick={(event) => {handleGetPerformedBy(event, aItem)}}>
-                        {aItem?.icon && <p className='w-6 h-6 text-base'>{aItem.icon}</p>}
-                        <p className='pl-1.5 pr-0.5'>{iCount}</p>
-                    </button>
-                    <div id={getName('performed-by-ddp-' + aItem.name)} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
-                        <ul className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</ul>
-                    </div>
-                </div>
+                <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
+                    <A id={getName('performed-by-ddb-' + aItem.name)} className="group inline-flex flex-none active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={(event) => {handleGetPerformedBy(event, aItem)}}>
+                        {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
+                        <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
+                    </A>
+                    <View id={getName('performed-by-ddp-' + aItem.name)} className="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                        <View className="p-2 space-y-2 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    </View>
+                </View>
             );
         });
 
@@ -240,6 +242,7 @@ export default function ElementReactions(oProps) {
             if(aItem.name == 'default')
                 return;
 
+            //TODO: init dropdowns for counter.
             const oCntTarget = document.getElementById(getName('performed-by-ddp-' + aItem.name));
             const oCntTrigger = document.getElementById(getName('performed-by-ddb-' + aItem.name));
             if(oCntTarget && oCntTrigger)
@@ -248,10 +251,9 @@ export default function ElementReactions(oProps) {
     }, []);
 
     return (
-        <div className="inline-flex gap-1 xl/cell:gap-0 ">
-            {bShowAction && <div>{sAction}</div>}
-            {bShowCounter && <div>{sCounter}</div>}
-        </div>
+        <View className="inline-flex gap-1 xl/cell:gap-0 ">
+            {bShowAction && <View>{sAction}</View>}
+            {bShowCounter && <View className="flex-row">{sCounter}</View>}
+        </View>
     );
-*/
  }
