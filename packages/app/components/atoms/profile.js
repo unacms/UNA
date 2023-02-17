@@ -44,7 +44,7 @@ export default function AtomProfile(oProps) {
             iSizeHeight = 56;
             break;
     }
-    sSize += ' rounded-full border border-black/5 dark:border-white/5';
+    sSize += ' rounded-full ';
 
     //--- with clickable Username (or not)
     const bShowLinks = !oProps.showLinks || oProps.showLinks === 'true';
