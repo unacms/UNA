@@ -38,7 +38,7 @@ export default function UnitComments(props) {
     return (
         <View>
             <View id={ 'cmt-' + data.cmt_id } className="w-full">
-                <View className="mx-4 my-2">
+                <View className="mx-4 py-4 border-t border-gray-500/10 ">
                     <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
                                         <Profile {...data.author_data} displayType="unit_wo_info" className="" />
@@ -49,7 +49,7 @@ export default function UnitComments(props) {
                                             <Profile  {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="" className="" />
                                             <Time  ts={data.cmt_time}></Time>
                                         </View>
-                                        <View  className="flex-auto flex-col p-2 bg-gray-100 dark:bg-gray-800 rounded-xl rounded-tl-sm">
+                                        <View  className="flex-auto flex-col  rounded-lg rounded-tl-sm">
                                             <Html data={data.cmt_text} />
                                         </View>
                                     </View>
