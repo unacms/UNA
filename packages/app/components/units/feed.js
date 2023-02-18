@@ -66,7 +66,7 @@ export default function UnitFeed({data}) {
     return (
         <Link href={url}>
       
-            <View className='flex-col bg-white dark:bg-gray-900 overflow-hidden u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
+            <View className='flex-col bg-white dark:bg-gray-900 overflow-hidden  u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
                 <View className='flex-row  px-4 my-3 w-full' style={styles.card2}>
                     <View className="flex-col flex-1 " style={styles.card2}>
                                 <View className="flex-auto flex-row space-x-2">
