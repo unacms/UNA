@@ -166,9 +166,9 @@ export default function ElementComments(props) {
     }
     
     return (
-        <View className=''>
+        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg sm:m-4 -translate-y-4 border-t border-gray-500/10'>
             <Browse {...browse} />    
-            <View className="p-4 m-auto" >
+            <View className="p-4 m-auto"  >
                 <MainButton title="Load More" onPress={handleMore}/>
             </View>
         </View>

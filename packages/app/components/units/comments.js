@@ -38,10 +38,25 @@ export default function UnitComments(props) {
     return (
         <View>
             <View id={ 'cmt-' + data.cmt_id } className="w-full">
-                <View className="m-4">
-                    <Time className="pl-1" ts={data.cmt_time}></Time>
-                    <Html data={data.cmt_text} />
-                    <Profile {...data.author_data} displayType="unit_wo_image" showInfo="false" />
+                <View className="mx-4 my-2">
+                    <View className="flex-auto flex-row space-x-2">
+                                    <View className="flex-none">
+                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
+                                        
+                                    </View>
+                                    <View className="flex-auto flex-col  ">
+                                        <View  className=" mb-1 flex-auto flex-row items-stretch ">
+                                            <Profile  {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="" className="" />
+                                            <Time  ts={data.cmt_time}></Time>
+                                        </View>
+                                        <View  className="flex-auto flex-col p-2 bg-gray-100 dark:bg-gray-800 rounded-xl rounded-tl-sm">
+                                            <Html data={data.cmt_text} />
+                                        </View>
+                                    </View>
+                    </View> 
+                    
+                    
+                    
                 </View>
             </View>
         {(items.length != 0) && <View className='flex w-full  pl-12'>
