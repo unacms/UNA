@@ -34,7 +34,7 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "p-4 border-t border-gray-100 dark:border-gray-700";
+    let sCommentStyle =  "p-4 border-t border-gray-100 dark:border-gray-800";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
