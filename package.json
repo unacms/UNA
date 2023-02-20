@@ -16,7 +16,11 @@
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
     "ios": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios",
     "android": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:android",
+
     "web": "cd apps/next && dotenv -e ../../.env.local -- yarn next",
+    "build": "cd apps/next && yarn build",
+    "prod": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
+
     "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules"
   },
   "resolutions": {

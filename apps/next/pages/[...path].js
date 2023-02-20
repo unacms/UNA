@@ -2,7 +2,7 @@ import React from 'react'
 import All, { getData } from 'app/all'
 import { useRouter } from 'next/router';
 
-export default function (props) {
+export default function Path (props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
 
