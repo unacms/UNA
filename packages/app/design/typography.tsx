@@ -15,7 +15,6 @@ export const P = styled(NativeText, 'text-base text-black my-4')
  */
 export const H1 = styled(NativeText, 'text-3xl font-extrabold my-4')
 H1.defaultProps = {
-  accessibilityLevel: 1,
   accessibilityRole: 'header',
 }
 
