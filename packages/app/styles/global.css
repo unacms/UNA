@@ -8,10 +8,36 @@
     line-height: 1.75rem; 
     max-width: none;
 }
-.u-vanilla-html H1{
-     @apply text-gray-900 dark:text-gray-100
+.u-vanilla-html H1, H2, H3, H4{
+    @apply text-gray-900 dark:text-gray-100; 
 }
-
+.u-vanilla-html H1{
+    font-weight: 800;
+    font-size: 1.875rem;
+    line-height: 2.5rem;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+}
+.u-vanilla-html H2{
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+.u-vanilla-html H3{
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    margin-top: 1.6em;
+    margin-bottom: 0.6em;
+}
+.u-vanilla-html H4{
+    font-weight: 600;
+    margin-top: 1.125em;
+    margin-bottom: 0.5em;
+    line-height: 1.5rem;
+}
 .u-vanilla-html-small {
     font-size: 1rem;
     line-height: 1.5rem; 
@@ -65,7 +91,7 @@ body {
     --col1w: 700px; 
 }
 .u-card-list > * {
-    min-width: calc(33.33%) !important;
+    min-width: calc(33.33% - 16px) !important;
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;

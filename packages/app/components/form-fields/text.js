@@ -5,7 +5,10 @@ import {TextInput} from 'react-native';
 
 export default function FormFieldText(props) {
     
-    
+     const handlePasswordChange = () => {
+        props.handlePasswordChange();
+      // Perform validation and/or API calls here
+    };
     
     return (
  
