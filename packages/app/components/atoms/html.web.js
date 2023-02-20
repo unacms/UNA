@@ -1,4 +1,6 @@
 
 export default function ElementHtml(props) {
-    return <div className="u-vanilla-html" dangerouslySetInnerHTML={{__html:props.data}} />
+    let sClass = "u-vanilla-html " + props.className;
+    
+    return <div className={sClass} dangerouslySetInnerHTML={{__html:props.data}} styles={props.htmlStyles}/>
 }

@@ -32,6 +32,7 @@ export default function Form(props) {
 
     let data = props.data;
     let onFormSubmit = props.onFormSubmit;
+    let formData = new FormData();
 
     const defaultValues = {}
     
@@ -52,31 +53,27 @@ export default function Form(props) {
         }*/
     }
     
+    const onFormPreSubmit = async d => {
+       
+        await onFormSubmit(formData, d); 
+    }    
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
         const InputType = components[a.type];
         if (InputType){
-           // if (data.inputs[key].value)
-           //     defaultValues.key = data.inputs[key].value;
-            return <InputType key={data.inputs[key].name} register={register} {...a} />;
+            formData.append(data.inputs[key].name, 'aaa');
+            return <InputType key={data.inputs[key].name} register={register} {...a} onSubmit={ handleSubmit(onFormPreSubmit) } />;
         }
         else{
             return <Text>Unsupporded field type: {a.type}</Text>
         }
     });
 
-    const onFormPreSubmit = async d => {
-        const formData = new FormData();
-
-        Object.keys(d).map(function (key) {
-            formData.append(key, d[key]);
-        });
-        await onFormSubmit(formData, d); 
-    }
+    
 
     return (
         <View className="w-full grid place-items-center px-4 first:pt-4" onSubmit={ handleSubmit(onFormPreSubmit) }>
-            {inputs}
+            {inputs }
         </View>
     );
 }

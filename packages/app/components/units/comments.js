@@ -32,25 +32,42 @@ export default function UnitComments(props) {
         props.addCommentData({parentId:id});
     };
 
+    let bSmallSize= props.mode && props.mode =='small' ? true : false;
+    
+    let sCommentStyle =  "p-4 border-t border-gray-500/10";
+    let sProfileSize = "base";
+    let sCommentClass = "u-vanilla-html-small";
+    if(bSmallSize){
+        sCommentStyle = "p-2";
+        sProfileSize = "xs";
+    }
+    
     if (!data)
         return (<View></View>);
+                
+    const oCommentTextStyle = {
+        body: {
+            fontSize: 16,
+            lineHeight:24
+        }
+    };            
 
     return (
         <View>
             <View id={ 'cmt-' + data.cmt_id } className="w-full">
-                <View className="mx-4 py-4 border-t border-gray-500/10 ">
+                <View className={sCommentStyle}>
                     <View className="flex-auto flex-row space-x-2">
                                     <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
+                                        <Profile {...data.author_data} displaySize={sProfileSize} displayType="unit_wo_info" className="" />
                                         
                                     </View>
                                     <View className="flex-auto flex-col  ">
                                         <View  className=" mb-1 flex-auto flex-row items-stretch ">
                                             <Profile  {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="" className="" />
-                                            <Time  ts={data.cmt_time}></Time>
+                                            <Time ts={data.cmt_time}></Time>
                                         </View>
                                         <View  className="flex-auto flex-col  rounded-lg rounded-tl-sm">
-                                            <Html data={data.cmt_text} />
+                                            <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} subWidth="80" />
                                         </View>
                                     </View>
                     </View> 
@@ -61,7 +78,7 @@ export default function UnitComments(props) {
             </View>
         {(items.length != 0) && <View className='flex w-full  pl-12'>
                 <View className = 'w-full '>
-                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' addCommentData={props.addCommentData} data={items[a]} />)}
+                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  addCommentData={props.addCommentData} data={items[a]} />)}
                 </View>
             </View> 
         }

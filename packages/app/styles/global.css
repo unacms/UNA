@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+.u-vanilla-html {
+    @apply text-gray-700 dark:text-gray-300 ;
+    font-size: 1.125rem;
+    line-height: 1.75rem; 
+    max-width: none;
+}
+.u-vanilla-html H1{
+     @apply text-gray-900 dark:text-gray-100
+}
+
+.u-vanilla-html-small {
+    font-size: 1rem;
+    line-height: 1.5rem; 
+}
+
 html, body, #__next {
     width: 100%;
     /* To smooth any scrolling behavior */

@@ -6,6 +6,7 @@ import { fetcher } from '../../lib/util';
 import { View } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { MainButton } from 'app/design/controls'
+import {StyleSheet, useWindowDimensions} from 'react-native';
 
 export default function ElementComments(props) {
 
@@ -165,12 +166,13 @@ export default function ElementComments(props) {
         }
     }
     
+    
+    //style={{ display: commentData.startFrom > 0? "block" : "none" }}
+    
     return (
-        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg sm:mx-4 '>
-            <Browse {...browse} />    
-            <View className="p-4 m-auto"  >
-                <MainButton title="Load More" onPress={handleMore}/>
-            </View>
+        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg sm:mx-4'>
+            <Browse {...browse} />  
+            { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><MainButton title="Load More" onPress={handleMore}/></View> }
         </View>
     );
 }
