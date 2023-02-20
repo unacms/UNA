@@ -49,7 +49,7 @@ export default function Main(props) {
           };
     }*/
 
-    return <View {...props}>{props.children}</View>
+    return <View {...props}></View>
 /*
     return (
         <motion.div

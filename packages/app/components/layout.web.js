@@ -7,6 +7,7 @@ import Breadcrumb from './breadcrumb';
 import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
 import {useRouter} from "next/router";
+import { View } from 'app/design/view'
 
 export const siteTitle = 'G-Med';
 
@@ -39,9 +40,9 @@ export default function Layout(props) {
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
             {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <div className={sClassName}>
-                {loading ? skeleton : <Main className=""> {props.children} </Main>}
-            </div>
+            <View className={sClassName}>
+                {loading ? skeleton : <Main>{props.children}</Main>}
+            </View>
             {(oComments == null ) && <Footer />}
         </>
     );

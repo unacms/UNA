@@ -1,6 +1,7 @@
 import React from 'react';
-import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler,Controller  } from "react-hook-form";
-import {  TextInput, Button, Alert } from "react-native";
+
+import { useForm, Controller } from 'react-hook-form';
+import {  TextInput, Button, Alert, StyleSheet } from "react-native";
 import Captcha from './form-fields/captcha';
 import Custom from './form-fields/custom';
 import Hidden from './form-fields/hidden';
@@ -31,9 +32,9 @@ const components = {
 
 export default function Form(props) {
 
-    let data = props.data;
+   // let data = props.data;
     let onFormSubmit = props.onFormSubmit;
-    console.log(onFormSubmit);
+    //console.log(onFormSubmit);
     /*let onFormSubmit = props.onFormSubmit;
 
     const defaultValues = {}
@@ -78,55 +79,74 @@ export default function Form(props) {
     }*/
     
     
-    const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      firstName: '',
-      lastName: ''
+  const { register, setValue, handleSubmit, control, reset, formState: { errors } } = useForm();
+   
+   const onSubmit = async d => {
+        const formData = new FormData();
+console.log(d);
+        Object.keys(d).map(function (key) {
+            formData.append(key, d[key]);
+        });
+        await onFormSubmit(formData, d); 
     }
-  });
-  const onSubmit = data => {
-      console.log(data);
-      onFormSubmit(formData, d); 
-  };
+   
+    const styles = StyleSheet.create({});
 
-return (
-    <View>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.label}>First name</Text>
       <Controller
         control={control}
-        rules={{
-         required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({field: { onChange, onBlur, value }}) => (
           <TextInput
-           
+            style={styles.input}
             onBlur={onBlur}
-            onChangeText={onChange}
+            onChangeText={value => onChange(value)}
             value={value}
           />
         )}
-        name="firstName"
+        name="email"
+        rules={{ required: true }}
       />
-      {errors.firstName && <Text>This is required.</Text>}
-
+      <Text style={styles.label}>Last name</Text>
       <Controller
         control={control}
-        rules={{
-         maxLength: 100,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({field: { onChange, onBlur, value }}) => (
           <TextInput
-           
+            style={styles.input}
             onBlur={onBlur}
-            onChangeText={onChange}
+            onChangeText={value => onChange(value)}
             value={value}
           />
         )}
-        name="lastName"
+        name="password"
+        rules={{ required: true }}
       />
 
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <View style={styles.button}>
+        <Button
+          style={styles.buttonInner}
+          color
+          title="Reset"
+          onPress={() => {
+            reset({
+              email: 'jane@example.com',
+              password: '****'
+            })
+          }}
+        />
+      </View>
+
+      <View style={styles.button}>
+        <Button
+          style={styles.buttonInner}
+          color
+          title="Button"
+          onPress={handleSubmit(onSubmit)}
+        />
+      </View>
     </View>
-  );    
+  );
     
     /*return (
         <View className="w-full grid place-items-center px-4 first:pt-4" onSubmit={ handleSubmit(onFormPreSubmit) }>
