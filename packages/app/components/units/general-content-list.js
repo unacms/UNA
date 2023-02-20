@@ -85,7 +85,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                                         <Profile {...data.author_data} displayType="unit_wo_info" className="" />
                                     </View>
                                     <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.added}></Time>)} className="" />
+                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.added}></Time>)} className="" />     
                                     </View>
                                 </View>
                                 

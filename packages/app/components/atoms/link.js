@@ -1,19 +1,15 @@
-// import Link from 'next/link';
-// import {useRouter} from "next/router";
-import { Link } from 'solito/link'
+import {StyleSheet, TouchableOpacity, Vibration} from 'react-native';
+import { Link } from 'expo-router';
 
 export default function ElementLink(props) {
-
+    console.log(props.vibration);
     return (
-        <Link {...props}>{props.children}</Link>
-    );
-
-/*
-    const router = useRouter()
-    const path = router.asPath;
-
-    return (
-        <Link {...props}  onClick={() => {sessionStorage.setItem("gl_UrlTrg", props.href);sessionStorage.setItem("gl_UrlRef", path);}} >{props.children}</Link>
-    );
-*/
+        <Link href={props.href} asChild >
+             <TouchableOpacity onPress={() => {
+                props.vibrate ? Vibration.vibrate(parseInt(props.vibrate)): ''
+                }}>
+                {props.children}
+            </TouchableOpacity>
+        </Link>
+  )
 }

@@ -1,10 +1,10 @@
 import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Image from '../atoms/image';
+import Link from '../atoms/link';
 
 export default function AtomProfile(oProps) {
     let sResult = '';
-
     //--- display type
     const sDisplayType = oProps.displayType ? oProps.displayType : oProps.display_type;
 
@@ -51,7 +51,7 @@ export default function AtomProfile(oProps) {
 
     function DisplayNameLink(oProps) {
         return (
-            <A className="font-bold text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline" href={oProps.url}>{oProps.title}</A>
+            <Text className="font-bold text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline">{oProps.title}</Text>
         );
     }
 
@@ -80,46 +80,45 @@ export default function AtomProfile(oProps) {
     switch(sDisplayType) {
         case 'unit':
             sResult = (
-                <View className="flex-row items-center w-full space-x-2">
+                <Link vibrate="400" href={oProps.url}><View className="flex-row items-center w-full space-x-2">
                     <View className="flex-none relative">
                         <AtomProfile {...oProps} displayType="unit_wo_info"  />
                     </View>
                     <View className="flex-auto mb-auto my-auto sm:my-auto">
                         <AtomProfile {...oProps} displayType="unit_wo_image" />
                     </View>
-                </View>
+                </View></Link>
             );
             break;
 
         case 'unit_wo_info':
             //
             sResult = (
-                <View className="relative flex-row">
+                <Link vibrate="400" href={oProps.url}><View className="relative flex-row">
                     <Image className={sSize} width={iSizeWidth} height={iSizeHeight} src={oProps.url_avatar} alt={oProps.display_name} />
-                </View>
+                </View></Link>
             );
             break;
 
         case 'unit_wo_image':
             sResult = (
-                <View className="flex-col ">
+                <Link vibrate="400" href={oProps.url}><View className="flex-col ">
                     <View className='flex-row '>
                         <View className="">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
                     </View>
                     <View className="flex-row items-center">{sShowInfo}</View>
-                </View>
+                </View></Link>
             );
             break;
 
         default:
             sResult = (
-                <View className="relative flex-row">
+                <Link vibrate="400" href={oProps.url}><View className="relative flex-row">
                     <View className={sSize}>
                         <Text>Undefind</Text>
                     </View>
-                </View>
+                </View></Link>
             );
     }
-
     return sResult;
 }
