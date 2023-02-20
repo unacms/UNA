@@ -57,6 +57,10 @@ export function HomeScreen() {
         <TextLink href="/timeline-view-home">
           Feed
         </TextLink>
+        <Text> - </Text>
+        <TextLink href="/About">
+          About
+        </TextLink>
       </Row>
 
     </View>
