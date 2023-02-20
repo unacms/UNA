@@ -15,6 +15,7 @@
   "scripts": {
     "native": "cd apps/expo && dotenv -e ../../.env.local -- expo start --clear",
     "ios": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios",
+    "ios:device": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:ios --device",
     "android": "cd apps/expo && dotenv -e ../../.env.local -- npx expo run:android",
     "web": "cd apps/next && dotenv -e ../../.env.local -- yarn next",
     "build": "cd apps/next && yarn build",
