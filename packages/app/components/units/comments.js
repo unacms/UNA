@@ -38,7 +38,7 @@ export default function UnitComments(props) {
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = "p-4";
+        sCommentStyle = "p-2";
     }
     
     if (!data)
