@@ -11,7 +11,7 @@ export default function ElementImage(props) {
 
     let {width, height, ...rest} = props; // remove width & height
 
-    rest.height = props.prefHidth ? props.prefHidth : height;
+    rest.height = props.prefHeight ? props.prefHeight : height;
     rest.width = props.prefWidth ? props.prefWidth : width;
     
     if (Platform.OS != 'web'){

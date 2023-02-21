@@ -22,7 +22,7 @@ export default function ElementAuthor(oProps) {
     );
 
     return (
-        <View className=" flex-row items-center gap-3 pt-4 px-4 sm:mt-4 sm:mx-4 sm:rounded-t-lg bg-white dark:bg-gray-900">
+        <View className=" flex-row items-center gap-3 pt-4 px-4 sm:rounded-t-lg bg-white dark:bg-gray-900">
             <Profile {...oAuthor.author_unit} displayType="unit" display_size="lg" showInfo={sInfo} />
             {session && <MenuMore {...oProps.data.menu_manage} />}
         </View>

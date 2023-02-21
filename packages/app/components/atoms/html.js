@@ -21,10 +21,14 @@ export default function ElementHtml(props) {
             whiteSpace: 'normal',
             color: '#374151',
             fontSize: 18,
-            lineHeight: 28  
+            lineHeight: 28,
+            margin: 0,
         },
         a: {
             color: 'red'
+        },
+        p:{
+            margin: 0,  
         },
         h1:{
             color: '#111827'
@@ -44,11 +48,8 @@ export default function ElementHtml(props) {
         let tagsStylesC = {
             body: {
                 color: '#d1d5db',
-                margin: 0,
             },
-            p:{
-               marginTop: 0,  
-            },
+            
             a: {
                 color: 'green'
             },

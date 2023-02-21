@@ -1,4 +1,12 @@
-export function fetcher (url, token, data) {
+export function fetcher (mixed) {
+    let url, token, data;
+    
+    if (Array.isArray(mixed)){
+        [url, token, data] = mixed;
+    }
+    else{
+        url = mixed;
+    }
     return fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
         method: data ? 'post' : 'get',
         body: data ? data : null,

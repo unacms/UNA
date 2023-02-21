@@ -5,7 +5,7 @@ import Menu from '../menu';
 
 export default function ElementActions(props) {
     return (
-        <View className="p-4 relative sm:mb-4 sm:mx-4 sm:rounded-b-lg -mt-1 bg-white dark:bg-gray-900 ">
+        <View className="p-4 relative sm:mb-4 sm:rounded-b-lg -mt-1 bg-white dark:bg-gray-900 ">
             <View className="flex flex-col gap-4 divide-y divide-gray-500/5 w-full">
                 <View className='flex-none w-full flex-row flex-wrap items-center h-min my-auto gap-y-1 gap-x-2 '>
                     <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />

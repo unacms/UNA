@@ -83,11 +83,13 @@ export default function Form(props) {
    
    const onSubmit = async d => {
         const formData = new FormData();
-console.log(d);
+
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
         });
-        await onFormSubmit(formData, d); 
+       console.log(555);
+       console.log(formData.get('email'));
+       await onFormSubmit(formData, d); 
     }
    
     const styles = StyleSheet.create({});

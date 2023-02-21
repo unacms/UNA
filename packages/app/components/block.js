@@ -17,8 +17,10 @@ export default function Block({block}) {
     //TODO: conatiners @lg/main:flex https://tailwindcss.com/blog/tailwindcss-v3-2#container-queries
     return (
         <View key={block.id} className="w-full">
-            <H1 className="hidden text-xl border-b-2 border-base-100 my-auto pb-1">{block.title}</H1>
-            <BlockType data={block.content} type={block.type} />
+            <View key={block.id} className="sm:mx-4">
+                <H1 className="hidden text-xl border-b-2 border-base-100 my-auto pb-1">{block.title}</H1>
+                <BlockType data={block.content} type={block.type} />
+            </View>
         </View>
     );
 }

@@ -170,7 +170,7 @@ export default function ElementComments(props) {
     //style={{ display: commentData.startFrom > 0? "block" : "none" }}
     
     return (
-        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg sm:mx-4'>
+        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
             <Browse {...browse} />  
             { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><MainButton title="Load More" onPress={handleMore}/></View> }
         </View>

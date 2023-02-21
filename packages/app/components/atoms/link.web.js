@@ -1,7 +1,12 @@
-import Link from 'next/link';
+import { useRouter } from 'solito/router'
+import {StyleSheet, TouchableOpacity, Vibration} from 'react-native';
 
-export default function ElementLink(props) {
+export default function ElementLink(props) { 
+    const { push, replace, back, parseNextPath } = useRouter()
+    
     return (
-        <a {...props} >{props.children}</a>
+        <TouchableOpacity onPress={() => { push(props.href);}}>
+                {props.children}
+        </TouchableOpacity>
     );
 }
