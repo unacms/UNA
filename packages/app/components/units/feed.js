@@ -87,7 +87,7 @@ export default function UnitFeed({data}) {
                 {oImage &&
                     
                     <View className="flex-row mb-3" style={styles.card_image}>
-                        <Image {...oImage} alt={data.title} prefWidth="900" prefHeight="1600" className="w-full u-image " />
+                        <Image {...oImage} alt={data.title} pref_width="600" pref_height="800" className="w-full u-image " />
                         
                     </View>
                     

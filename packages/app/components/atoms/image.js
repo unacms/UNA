@@ -6,13 +6,11 @@ export const SolitoImage2 = styled(SolitoImage)
 
 
 export default function ElementImage(props) {
-    // if (props.scale && props.scale == 'width')
-    //    props.height = 'auto';
-
+    
     let {width, height, ...rest} = props; // remove width & height
 
-    rest.height = props.prefHeight ? props.prefHeight : height;
-    rest.width = props.prefWidth ? props.prefWidth : width;
+    rest.height = props.pref_height ? props.pref_height : height;
+    rest.width = props.pref_width ? props.pref_width : width;
     
     if (Platform.OS != 'web'){
         rest.height = 'auto';
