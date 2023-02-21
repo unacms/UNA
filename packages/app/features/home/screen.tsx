@@ -1,4 +1,5 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
+import Link from '../../components/atoms/link';
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
 
@@ -41,9 +42,9 @@ export function HomeScreen() {
           Feed
         </TextLink>
         <Text> - </Text>
-        <TextLink href="/About">
-          About
-        </TextLink>
+        <Link vibrate="100" href="/about">
+          <Text className='text-blue-500 font-bold text-base'>About</Text>
+        </Link>
       </Row>
 
     </View>
