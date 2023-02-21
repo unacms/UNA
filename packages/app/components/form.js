@@ -18,8 +18,6 @@ import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 
-import TextInput from './form-fields/ti'
-
 const components = {
     captcha: Captcha,
     custom: Custom,
