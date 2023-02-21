@@ -31,7 +31,6 @@
     "**/expo-router/**"
   ],
   "dependencies": {
-    "@vercel/analytics": "^0.1.10",
     "dotenv-cli": "^7.0.0"
   }
 }

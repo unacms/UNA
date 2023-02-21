@@ -1,4 +1,5 @@
 import 'raf/polyfill'
+import { Analytics } from '@vercel/analytics/react';
 
 const fixReanimatedIssue = () => {
   // FIXME remove this once this reanimated fix gets released
@@ -32,6 +33,7 @@ function MyApp({ Component, pageProps }: SolitoAppProps) {
       </Head>
       <Provider>
         <Component {...pageProps} />
+        <Analytics />
       </Provider>
     </>
   )

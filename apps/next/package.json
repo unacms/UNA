@@ -14,7 +14,8 @@
     "autoprefixer": "^10.4.13",
     "next": "13.0.1",
     "raf": "^3.4.1",
-    "swr": "^2.0.3"
+    "swr": "^2.0.3",
+    "@vercel/analytics": "^0.1.10"
   },
   "devDependencies": {
     "@types/node": "17.0.21",
