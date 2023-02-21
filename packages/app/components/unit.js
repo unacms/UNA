@@ -17,6 +17,5 @@ const componentsMap = {
 
 export default function List(props) {
     const Component = componentsMap[props.unit];
-    console.log(props.unit);
     return <Component {...props} />;
 }

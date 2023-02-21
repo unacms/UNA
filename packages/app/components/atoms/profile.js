@@ -106,7 +106,7 @@ export default function AtomProfile(oProps) {
                     <View className='flex-row '>
                         <View className="">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
                     </View>
-                    <View className="flex-row items-center">{sShowInfo}</View>
+                    <View className="flex-row items-center"><Text>{sShowInfo}</Text></View>
                 </View></Link>
             );
             break;

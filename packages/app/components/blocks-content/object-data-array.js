@@ -19,9 +19,7 @@ export default function BlockContentObjectDataArray(props) {
         requestUrl = a.request?.url || null;
         return a.request ? false : true;
     });
-    console.log(777+"+++"+immutable);
-if (postData)
-  console.log(postData.get('email'));
+
     // get data from URL if needed
     let { data: dynamicData, error } = useSWR(
         postData ? [requestUrl, '123', postData] : null,

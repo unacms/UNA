@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { fetcher } from '../../lib/util';
 import { View } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
-import { MainButton } from 'app/design/controls'
+import { StyledButton } from 'app/design/controls'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 
 export default function ElementComments(props) {
@@ -38,7 +38,8 @@ export default function ElementComments(props) {
     );
     
     function prepareUrl (params) {
-        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay}
+        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
+        console.log(requestUrl);
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
@@ -63,10 +64,13 @@ export default function ElementComments(props) {
     const addCommentData =  (params) => {
         setCommentData(Object.assign({}, commentData, params));
     } 
-/*
+    
     const onFormSubmit = (formData, d) => {
+        //TODO: POSTING in APP
         setPostData(formData);
     }
+
+    
     
     // handle errors and loading 
     if (error || dynamicData?.error) return "An error has occurred:${error ? error : data?.error}";
@@ -76,20 +80,6 @@ export default function ElementComments(props) {
 
     if (dynamicData && dynamicData.data.browse && dynamicData.data.browse.insert){
         browse = parseData(browse, dynamicData);
-        if (dynamicData.data.browse.new){
-            //TODO: improve hightlignt process
-            setTimeout(() => {
-                let el = document.getElementById('cmt-' + dynamicData.data.browse.new);
-                if (el)
-                    el.scrollIntoView();
-                    el.classList.add('hle')
-              }, "1000");
-              setTimeout(() => {
-                let el = document.getElementById('cmt-' + dynamicData.data.browse.new);
-                if (el)
-                    el.classList.remove('hle')
-              }, "3000");
-        }
     }
 
     function findParent (data, c, o, insert) {
@@ -148,13 +138,7 @@ export default function ElementComments(props) {
             commentData.parentId = 0;
         }
     }
-    
-   console.log(browse);
    
-   
-   addCommentData={addCommentData} 
-   { form && <Form {...form}  onFormSubmit={onFormSubmit}  handleValues={handleFormValues} /> }   style={{ display: commentData.startFrom > 0? "block" : "none" }}
-    */
     
     const handleMore =  async () => {
         setPostData(null);
@@ -171,8 +155,9 @@ export default function ElementComments(props) {
     
     return (
         <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
-            <Browse {...browse} />  
-            { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><MainButton title="Load More" onPress={handleMore}/></View> }
+            <Browse {...browse} addCommentData={addCommentData} /> 
+            { form && <Form {...form}  onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
+            { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><StyledButton title="Load More" onPress={handleMore}/></View> }
         </View>
     );
 }

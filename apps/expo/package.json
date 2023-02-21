@@ -2,6 +2,7 @@
   "dependencies": {
     "app": "*",
     "expo": "~47.0.12",
+    "expo-haptics": "~12.0.1",
     "expo-router": "0.0.31",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",

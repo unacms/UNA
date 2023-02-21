@@ -1,23 +1,28 @@
 import React from 'react';
 import Field from './_field';
-import {Text} from 'app/design/typography'
-import {TextInput} from 'react-native';
+import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
+import { StyledInput } from 'app/design/controls'
 
 export default function FormFieldText(props) {
     
-     const handlePasswordChange = () => {
-        props.handlePasswordChange();
-      // Perform validation and/or API calls here
-    };
+    const formContext = useFormContext();
+    const { formState } = formContext;
+    let rules = {};
+    let name = props.name;
+    let defaultValue = props.value;
+    
+    const { field } = useController({ name, rules, defaultValue });
+
     
     return (
- 
-            <TextInput onChangeText={handlePasswordChange}
-    placeholder="Username" className="input bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-
-  
-  />
- 
+        <Field {...props}>
+            <StyledInput 
+                name={props.name}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                defaultValue={defaultValue}
+       
+        />
+        </Field>
     );
-// <input className="input bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="text" {...props.register(props.name)} />
 }

@@ -1,18 +1,38 @@
 import React from 'react';
 import Field from './_field';
 import {Text} from 'app/design/typography'
-import {Button} from 'react-native';
+import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
+import { StyledButton, StyledHidden } from 'app/design/controls'
+import {Controller} from 'react-hook-form';
+import { View } from 'app/design/view';
 
 export default function FormFieldSubmit(props) {
     
-    const handleSubmit = () => {
-        props.onSubmit();
-  // Perform validation and/or API calls here
-};
+    const formContext = useFormContext();
+    const { formState } = formContext;
+    let rules = {};
+    let name = props.name;
+    let defaultValue = props.value;
+    
+    const { field } = useController({ name, rules, defaultValue });
     
     return (
-        <Button onPress={handleSubmit} title="xzcz"/>
+        <Field {...props}>
+            <StyledButton
 
+                title={props.value}
+                onPress={props.handleSubmit}
+            />
+            <View style={{width:0,height:0}}>
+            <StyledHidden 
+                    name={props.name}
+                    onChangeText={field.onChange}
+                    onBlur={field.onBlur}
+                    defaultValue={defaultValue}
+
+            />
+            </View>
+        </Field>
+        
     );
-// <button className=" text-white bg-blue-600 hover:bg-blue-700   border border-gray-900/20 dark:border-white/20 focus:ring-4 shadow-sm hover:shadow-md active:shadow-sm hover:-translate-y-0.5 active:translate-y-0 duration-200 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base  @xl/cell:w-auto px-5 py-2.5 text-center  dark:focus:ring-blue-800" type="submit" {...props.register(props.name)}>{props.value}</button>
 }

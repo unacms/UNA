@@ -3,9 +3,16 @@ import RenderHtml from 'react-native-render-html'
 import { colors } from 'app/design/tailwind/theme'
 import { mergeDeep } from '../../lib/util';
 import { Text, H1 ,TextLink} from 'app/design/typography'
+import { removeElement, isTag } from 'domutils';
+
 
 function onElement(element) {
-  console.log(element);
+    if (element.parent.children[0] === 'p') {
+        element.parent.children[0] = {class: 'firstP'}
+    }
+    if (element.parent.children[element.parent.children.length-1] === 'p') {
+        element.parent.children[element.parent.children.length-1].attribs = {class: 'lastP'}
+    }
 }
 
 const domVisitors = {
@@ -27,9 +34,6 @@ export default function ElementHtml(props) {
         a: {
             color: 'red'
         },
-        p:{
-            margin: 0,  
-        },
         h1:{
             color: '#111827'
         },
@@ -43,6 +47,16 @@ export default function ElementHtml(props) {
             color: '#111827'
         }
     };
+    
+    const classesStyles = {
+        firstP: {
+            marginTop: 0,
+        },
+        lastP:{
+            marginBottom: 0, 
+        }
+    }
+
     
     if(theme == 'dark'){
         let tagsStylesC = {
@@ -77,8 +91,9 @@ export default function ElementHtml(props) {
             <RenderHtml
           contentWidth={width}
           tagsStyles={tagsStyles}
+        classesStyles={classesStyles} 
           source={{html: props.data}}
-          //domVisitors={domVisitors}
+          domVisitors={domVisitors}
         />
         </View>
     );

@@ -25,7 +25,7 @@ export default function ElementBrowse(props) {
     let classes = '';
     if (data.unit != 'feed' && data.unit != 'comments')
         classes = 'u-card-list';
-    console.log(data.data);
+    
     return (
         <View className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
