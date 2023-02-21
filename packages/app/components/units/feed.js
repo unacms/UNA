@@ -104,7 +104,7 @@ export default function UnitFeed({data}) {
 
                     
 
-                    <View className="px-4 py-1  border-t border-gray-500/10  flex-row space-x-1  ">
+                    <View className="px-4 py-1  border-t border-gray-500/20  flex-row space-x-1  ">
                         <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Like</Text></View>
                         <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Comment</Text></View>
                         <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Repost</Text></View>
