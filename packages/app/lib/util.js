@@ -1,3 +1,5 @@
+import * as Haptics from 'expo-haptics';
+
 export function fetcher (mixed) {
     let url, token, data;
     
@@ -34,6 +36,31 @@ export function mergeDeep(target, ...sources) {
   }
 
   return mergeDeep(target, ...sources);
+}
+
+export function FeedbackHaptics(type) {
+    //https://docs.expo.dev/versions/latest/sdk/haptics/
+    switch (type) {
+        case 'Success':
+            Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+            )
+            break;
+        case 'Error':
+            Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+            )
+            break;
+        case 'Warning':
+            Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning
+            )
+            break;
+        case 'Select':
+            Haptics.selectionAsync();
+            break;
+
+    }
 }
 
 function isObject(item) {

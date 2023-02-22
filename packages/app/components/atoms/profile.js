@@ -80,7 +80,7 @@ export default function AtomProfile(oProps) {
     switch(sDisplayType) {
         case 'unit':
             sResult = (
-                <Link vibrate="100" href={oProps.url}><View className="flex-row items-center w-full space-x-2">
+                <Link haptics="Select" href={oProps.url}><View className="flex-row items-center w-full space-x-2">
                     <View className="flex-none relative">
                         <AtomProfile {...oProps} displayType="unit_wo_info"  />
                     </View>
@@ -94,7 +94,7 @@ export default function AtomProfile(oProps) {
         case 'unit_wo_info':
             //
             sResult = (
-                <Link vibrate="100" href={oProps.url}><View className="relative flex-row">
+                <Link haptics="Select" href={oProps.url}><View className="relative flex-row">
                     <Image className={sSize} width={iSizeWidth} height={iSizeHeight} src={oProps.url_avatar} alt={oProps.display_name} />
                 </View></Link>
             );
@@ -102,7 +102,7 @@ export default function AtomProfile(oProps) {
 
         case 'unit_wo_image':
             sResult = (
-                <Link vibrate="100" href={oProps.url}><View className="flex-col ">
+                <Link haptics="Select" href={oProps.url}><View className="flex-col ">
                     <View className='flex-row '>
                         <View className="">{bShowLinks ? <DisplayNameLink title={oProps.display_name} url={oProps.url} /> : <DisplayNameText title={oProps.display_name} />}</View>
                     </View>
@@ -113,7 +113,7 @@ export default function AtomProfile(oProps) {
 
         default:
             sResult = (
-                <Link vibrate="100" href={oProps.url}><View className="relative flex-row">
+                <Link haptics="Select" href={oProps.url}><View className="relative flex-row">
                     <View className={sSize}>
                         <Text>Undefined</Text>
                     </View>
