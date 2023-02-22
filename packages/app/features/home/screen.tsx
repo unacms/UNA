@@ -114,7 +114,7 @@ export function HomeScreen() {
                           </View>
                           <View className='w-full px-4 pb-2 flex-col space-y-1'>
                               <View className='w-full h-4  bg-gray-500/40 rounded-full'></View>
-                              <View className='w-2/3 h-4  bg-gray-500/40 rounded-full'></View>
+                              <View className='w-3/4 h-4  bg-gray-500/40 rounded-full'></View>
                           </View>
                           <View className='w-full px-4 pb-3 flex-col space-y-1'>
                               <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
