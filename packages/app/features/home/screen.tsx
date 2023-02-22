@@ -3,9 +3,12 @@ import Link from '../../components/atoms/link';
 import Image from '../../components/atoms/image';
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
+import * as Haptics from 'expo-haptics';
+import { StyleSheet, Button } from 'react-native';
 
 
 export function HomeScreen() {
+ let styles = {};
   return (
     <View className="w-full h-screen bg-gray-100 dark:bg-gray-900  flex-row ">
       <View className="flex-none flex-col bg-gray-900 border-r border-black/50 space-y-4 hidden sm:block p-4 " >
@@ -143,8 +146,63 @@ export function HomeScreen() {
 
       </View>
       
-      <View className="">
+      <View style={styles.container}>
+      <Text style={styles.text}>Haptics.selectionAsync</Text>
+      <View style={styles.buttonContainer}>
+        <Button title="Selection" onPress={() => Haptics.selectionAsync()} />
       </View>
+      <Text style={styles.text}>Haptics.notificationAsync</Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Success"
+          onPress={
+            () =>
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Success
+              )
+          }
+        />
+        <Button
+          title="Error"
+          onPress={
+            () =>
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Error
+              )
+          }
+        />
+        <Button
+          title="Warning"
+          onPress={
+            () =>
+              Haptics.notificationAsync(
+                Haptics.NotificationFeedbackType.Warning
+              )
+          }
+        />
+      </View>
+      <Text style={styles.text}>Haptics.impactAsync</Text>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Light"
+          onPress={
+            () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+          }
+        />
+        <Button
+          title="Medium"
+          onPress={
+            () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+          }
+        />
+        <Button
+          title="Heavy"
+          onPress={
+            () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+          }
+        />
+      </View>
+    </View>
     </View>
     
   )
