@@ -33,7 +33,7 @@ export function HomeScreen() {
           <View className=" p-4 h-full flex-row ">
             <View className="w-8 h-8 bg-blue-200 rounded-full">
             </View>
-            <View className="hidden w-60 mx-4 md:block flex-auto h-8 bg-blue-200 rounded-full">
+            <View className="hidden w-52 mx-4 md:block flex-auto h-8 bg-blue-200 rounded-full">
             </View>
           </View>   
           <View className="flex-auto items-center flex-row space-x-4">
@@ -82,16 +82,17 @@ export function HomeScreen() {
                 </View>
                 <View className="px-4 py-3 flex border-b border-gray-200 items-center flex-row space-x-4  ">
                     
-                    <TextLink className='text-blue-500 font-bold text-base' href="/">
-                      Tab 1
+                  <TextLink className='text-blue-500 font-bold text-base' href="/timeline-view-home">
+                      Feed
                     </TextLink>
-                    
-                    <TextLink className=' text-blue-500 font-bold text-base' href="/">
-                      Tab 2
+                    <TextLink className='text-blue-500 font-bold text-base' href="/posts-home">
+                      Posts
                     </TextLink>
-                    
-                    <TextLink className='text-blue-500 font-bold text-base' href="/">
+                    <TextLink className='text-blue-500 font-bold text-base' href="/persons-home">
                       Tab 3
+                    </TextLink>
+                    <TextLink className='text-blue-500 font-bold text-base' href="/persons-home">
+                      Tab 4
                     </TextLink>
                 </View>
                 <View className="flex-auto  w-full flex-row">
