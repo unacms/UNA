@@ -101,7 +101,23 @@ export function HomeScreen() {
                 </View>
                 <View className="flex-auto relative w-full flex-row overflow-scroll max-w-6xl mx-auto">
                     <View className=" flex-auto  flex-col p-4 space-y-2 max-w-3xl mx-auto ">
-                        <View className="bg-white w-full dark:bg-gray-800 border rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
+                        <View className="bg-white p-[1px] dark:bg-gray-800 overflow-hidden border rounded-lg border-gray-200 dark:border-gray-700/50   ">
+                        <View className="bg-blue-500/20 w-full pb-[30%] rounded-t-md "></View>
+                          <View className='flex-row px-4 pt-3 space-x-2'>
+                            <View className='w-10 h-10  bg-gray-500/40 rounded-full'></View>
+                            <View className='w-24 my-auto  flex-col space-y-1'>
+                              <View className='w-full h-3  bg-gray-500/40 rounded-full'></View>
+                              <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                            </View>
+                          
+                          </View>
+                          <Text className='text-gray-500 px-4 py-3  text-base '>
+                            Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.
+                            Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.
+                            Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.
+                            Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.Announcement! Read about G-Med for more info.
+
+                          </Text>
                         </View>
                         <View className="bg-white dark:bg-gray-800  border rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
                         </View>
