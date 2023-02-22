@@ -156,8 +156,8 @@ export default function ElementComments(props) {
     return (
         <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
             <Browse {...browse} addCommentData={addCommentData} /> 
-            { form && <Form {...form}  onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
             { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><StyledButton title="Load More" onPress={handleMore}/></View> }
+            { form && <Form {...form}  onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
         </View>
     );
 }

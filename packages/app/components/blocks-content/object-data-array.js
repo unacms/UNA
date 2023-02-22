@@ -22,7 +22,7 @@ export default function BlockContentObjectDataArray(props) {
 
     // get data from URL if needed
     let { data: dynamicData, error } = useSWR(
-        postData ? [requestUrl, '123', postData] : null,
+        postData ? [requestUrl, '555', postData] : null,
         fetcher,
         !immutable ? undefined : {
             revalidateIfStale: false,
@@ -41,6 +41,10 @@ export default function BlockContentObjectDataArray(props) {
     if (postData && !dynamicData) return <Text>Loading...</Text>;
     
     let realData = props.data;
+    if (dynamicData){
+        realData = dynamicData.data;
+    }
+
     // display each block element from static data or from dynamic data
     return (
         <View className="grid relative">

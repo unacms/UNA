@@ -5,12 +5,12 @@ import { StyledInput } from 'app/design/controls'
 
 export default function FormFieldText(props) {
     
-    const formContext = useFormContext();
-    const { formState } = formContext;
+   // const formContext = useFormContext();
+//    const { formState } = formContext;
     let rules = {};
     let name = props.name;
-    let defaultValue = props.value;
-    
+    let defaultValue = props.value ? props.value : '';
+     console.log('qqqq');
     const { field } = useController({ name, rules, defaultValue });
     
     return (
@@ -21,7 +21,8 @@ export default function FormFieldText(props) {
                 name={props.name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
-                defaultValue={defaultValue}
+                value={field.value}
+         
         />
         </Field>
     );

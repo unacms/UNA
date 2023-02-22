@@ -1,6 +1,5 @@
 import React from 'react';
 
-//import { useForm, Controller } from 'react-hook-form';
 import {  Button, Alert, StyleSheet } from "react-native";
 import Captcha from './form-fields/captcha';
 import Custom from './form-fields/custom';
@@ -38,6 +37,7 @@ export default function Form(props) {
    
 
     const onSubmit = async d => {
+        console.log(888);
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
@@ -50,7 +50,7 @@ export default function Form(props) {
     }   
     
     const {...methods} = useForm();  
-    
+    console.log('wwwww');
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
         const InputType = components[a.type];
