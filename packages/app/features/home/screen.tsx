@@ -102,7 +102,7 @@ export function HomeScreen() {
                 <View className="flex-auto relative w-full flex-row overflow-scroll max-w-6xl mx-auto">
                     <View className=" flex-auto  flex-col p-4 space-y-2 max-w-3xl mx-auto ">
                         <View className="bg-white p-[1px] dark:bg-gray-800 overflow-hidden border rounded-lg border-gray-200 dark:border-gray-700/50   ">
-                          <View className="bg-gray-500/20 w-full pb-[30%] rounded-t-md "></View>
+                          <View className="bg-blue-500/20 w-full pb-[30%] rounded-t-md "></View>
                           
                           <View className='flex-row px-4 py-3 space-x-2 animate-pulse'>
                             <View className='w-10 h-10  bg-gray-500/40 rounded-full'></View>
@@ -112,12 +112,20 @@ export function HomeScreen() {
                             </View>
                           
                           </View>
+                          <View className='w-full px-4 pb-2 flex-col space-y-1'>
+                              <View className='w-full h-4  bg-gray-500/40 rounded-full'></View>
+                              <View className='w-2/3 h-4  bg-gray-500/40 rounded-full'></View>
+                          </View>
                           <View className='w-full px-4 pb-3 flex-col space-y-1'>
                               <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
                               <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
                               <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
                               <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
                               <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                          </View>
+                          <View className=" px-4 pb-4 w-full">
+                              <View className="bg-green-500/20 pb-[100%] w-full  rounded-md ">
+                              </View>
                           </View>
                          
                           
