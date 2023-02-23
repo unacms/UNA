@@ -43,6 +43,18 @@ export default function AtomProfile(oProps) {
             iSizeWidth = 56;
             iSizeHeight = 56;
             break;
+
+        case '2xl':
+            sSize = 'w-24 h-24';
+            iSizeWidth = 96;
+            iSizeHeight = 96;
+            break;
+
+        case '3xl':
+            sSize = 'w-32 h-32';
+            iSizeWidth = 128;
+            iSizeHeight = 128;
+            break;
     }
     sSize += ' rounded-full ';
 

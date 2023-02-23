@@ -34,11 +34,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "p-4 border-t border-gray-500/20";
+    let sCommentStyle =  "px-4 py-3";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = "p-2";
+        sCommentStyle = "px-4 py-2";
     }
     
     if (!data)
@@ -57,7 +57,7 @@ export default function UnitComments(props) {
                 <View className={sCommentStyle}>
                     <View className="flex-row items-center">
                         <Profile {...data.author_data} displaySize='sm' displayType="unit_wo_info" className="" />
-                        <View className =" ml-2 flex-row">
+                        <View className =" ml-2 flex-row items-center">
                             <Profile  {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="" className="" />
                             <Time ts={data.cmt_time}></Time>
                         </View>
