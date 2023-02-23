@@ -41,7 +41,6 @@ export default function UnitFeed({data}) {
           }, 
           card_image: {
              borderRadius: 0,
-             
           }     
         });
     }
