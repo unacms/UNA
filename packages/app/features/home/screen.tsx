@@ -105,30 +105,129 @@ export function HomeScreen() {
             </View>
             <View className="flex-auto relative w-full flex-row overflow-scroll max-w-6xl mx-auto">
                     <View className=" flex-auto  flex-col py-4 sm:px-4 space-y-2 max-w-3xl mx-auto ">
-                        <View className="bg-white p-[1px] dark:bg-gray-800 overflow-hidden border sm:rounded-lg border-gray-200 dark:border-gray-700/50   ">
-                          <View className="bg-teal-500/20 w-full pb-[30%] sm:rounded-t-md "></View>
+                        <View className="bg-white animate-pulse p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
                           
-                          <View className='flex-row px-4 py-3 space-x-2 animate-pulse'>
-                            <View className='w-10 h-10  bg-gray-500/40 rounded-full'></View>
-                            <View className='w-24 my-auto  flex-col space-y-1'>
-                              <View className='w-full h-3  bg-gray-500/40 rounded-full'></View>
-                              <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                          
+                          <View className='flex-row p-4 space-x-2 '>
+                            <View className='w-10 h-10  bg-gray-500/20 rounded-full'></View>
+                            <View className='w-1/3 my-auto  flex-col space-y-1'>
+                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
+                              <View className='w-2/3 h-3  bg-gray-500/10 rounded-full'></View>
                             </View>
                           
                           </View>
-                          <View className='w-full px-4 pb-2 flex-col space-y-1'>
-                              <View className='w-full h-4  bg-gray-500/40 rounded-full'></View>
-                              <View className='w-3/4 h-4  bg-gray-500/40 rounded-full'></View>
+                         
+                          <View className='w-full px-4 pb-4 flex-col space-y-1'>
+                              
+                              <View className='w-full h-3  bg-gray-500/10 rounded-full'></View>
+                              <View className='w-full h-3  bg-gray-500/10 rounded-full'></View>
+                              
+                              <View className='w-3/4 h-3  bg-gray-500/10 rounded-full'></View>
+                          </View>
+                         
+                         
+                          
+                          
+                          
+                        </View>
+                        <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
+                          
+                          
+                          <View className='flex-row p-4 space-x-2 '>
+                            <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
+                            <View className=' my-auto  flex-col '>
+                            <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
+                            Dr Sponge Bob Jr
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
+                            2 min ago
+                            </Text>
+                            </View>
+                          
+                          </View>
+                          <View className='w-full px-4 pb-4 flex-col space-y-1'>
+                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
+                            From Classroom to Career: Navigating the Modern Challenges of Transitioning into the Workforce
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400'>
+                            Our app provides an intuitive and easy-to-use interface for users to publish and share content on their social media accounts. Leveraging the power of UNA's community platform, our app allows users to connect and engage with like-minded individuals, creating a vibrant social network that is both fun and functional.
+
+
+                            </Text>
+                          </View>
+                          
+                          
+                         
+                          
+                          
+                          
+                        </View>
+                        <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
+                          <View className="bg-teal-500/40 w-full pb-[33%] sm:rounded-t-md "></View>
+                          
+                          <View className='flex-row px-4 py-3 space-x-2 '>
+                            <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
+                            <View className=' my-auto  flex-col '>
+                            <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
+                            Dr Sponge Bob Jr
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
+                            2 min ago
+                            </Text>
+                            </View>
+                          
+                          </View>
+                          <View className='w-full px-4 pb-4 flex-col space-y-1'>
+                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
+                            From Classroom to Career: Navigating the Modern Challenges of Transitioning into the Workforce
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400'>
+                            Our app provides an intuitive and easy-to-use interface for users to publish and share content on their social media accounts. Leveraging the power of UNA's community platform, our app allows users to connect and engage with like-minded individuals, creating a vibrant social network that is both fun and functional.
+
+
+                            </Text>
+                          </View>
+                          
+                          
+                         
+                          
+                          
+                          
+                        </View>
+                        <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
+                          <View className="bg-teal-500/40 w-full pb-[33%] sm:rounded-t-md "></View>
+                          
+                          <View className='flex-row px-4 py-3 space-x-2 '>
+                            <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
+                            <View className=' my-auto  flex-col '>
+                            <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
+                            Dr Sponge Bob Jr
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
+                            2 min ago
+                            </Text>
+                            </View>
+                          
                           </View>
                           <View className='w-full px-4 pb-3 flex-col space-y-1'>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
+                            From Classroom to Career: Navigating the Modern Challenges of Transitioning into the Workforce
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400'>
+                            Our app provides an intuitive and easy-to-use interface for users to publish and share content on their social media accounts. Leveraging the power of UNA's community platform, our app allows users to connect and engage with like-minded individuals, creating a vibrant social network that is both fun and functional.
+
+
+                            </Text>
                           </View>
+                          
                           <View className=" px-4 pb-4 w-full">
-                              <View className="bg-green-500/20 pb-[100%] w-full  rounded-md ">
+                              <View className="bg-gray-500/10  max-h-[80vh] w-full  rounded-md overflow-hidden items-center flex-row space-x-1">
+                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
+                                
+                                </View>
+                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
+                                
+                                </View>
                               </View>
                           </View>
                          
@@ -136,46 +235,48 @@ export function HomeScreen() {
                           
                           
                         </View>
-                        <View className="bg-white p-[1px] dark:bg-gray-800 overflow-hidden border sm:rounded-lg border-gray-200 dark:border-gray-700/50   ">
-                          <View className="bg-blue-500/20 w-full pb-[30%] sm:rounded-t-md "></View>
+                        <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
+                          <View className="bg-teal-500/40 w-full pb-[33%] sm:rounded-t-md "></View>
                           
-                          <View className='flex-row px-4 py-3 space-x-2 animate-pulse'>
-                            <View className='w-10 h-10  bg-gray-500/40 rounded-full'></View>
-                            <View className='w-24 my-auto  flex-col space-y-1'>
-                              <View className='w-full h-3  bg-gray-500/40 rounded-full'></View>
-                              <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                          <View className='flex-row px-4 py-3 space-x-2 '>
+                            <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
+                            <View className=' my-auto  flex-col '>
+                            <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
+                            Dr Sponge Bob Jr
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
+                            2 min ago
+                            </Text>
                             </View>
                           
                           </View>
-                          <View className='w-full px-4 pb-2 flex-col space-y-1'>
-                              <View className='w-full h-4  bg-gray-500/40 rounded-full'></View>
-                              <View className='w-3/4 h-4  bg-gray-500/40 rounded-full'></View>
-                          </View>
                           <View className='w-full px-4 pb-3 flex-col space-y-1'>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-full h-3  bg-gray-500/20 rounded-full'></View>
-                              <View className='w-2/3 h-3  bg-gray-500/20 rounded-full'></View>
+                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
+                            From Classroom to Career: Navigating the Modern Challenges of Transitioning into the Workforce
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400'>
+                            Our app provides an intuitive and easy-to-use interface for users to publish and share content on their social media accounts. Leveraging the power of UNA's community platform, our app allows users to connect and engage with like-minded individuals, creating a vibrant social network that is both fun and functional.
+
+
+                            </Text>
                           </View>
                           
+                          <View className=" px-4 pb-4 w-full">
+                              <View className="bg-gray-500/20  aspect-square w-full  rounded-md overflow-hidden items-center">
+                                <View className="bg-blue-500/20  w-80 h-[25000px]  ">
+                                
+                                </View>
+                              </View>
+                          </View>
                          
                           
                           
                           
                         </View>
-                        <View className="bg-white dark:bg-gray-800  border sm:rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
-                        </View>
-                        <View className="bg-white dark:bg-gray-800  border sm:rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
-                        </View>
-                        <View className="bg-white dark:bg-gray-800  border sm:rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
-                        </View>
-                        <View className="bg-white dark:bg-gray-800  border sm:rounded-lg border-gray-200 dark:border-gray-700/50 h-80  ">
-                        </View>
                     
                     </View>
                     <View className="hidden sticky top-0 xl:flex flex-none w-2/5  flex-col p-4 pl-0  space-y-2">
-                        <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50   ">
+                        <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700  ">
                           <View className="bg-yellow-500/20  w-full sm:rounded-t-md aspect-video"></View>
                           <View className=" overflow-hidden w-full my-3 h-10  ">
                               <Text className='text-gray-800 px-4   dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
@@ -197,7 +298,7 @@ export function HomeScreen() {
                           
                           
                         </View>
-                        <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50   ">
+                        <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
                           <View className="bg-teal-500/20  w-full pb-[56%] sm:rounded-t-md "></View>
                           <View className=" overflow-hidden w-full my-3 h-10  ">
                               <Text className='text-gray-800 px-4   dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
@@ -219,7 +320,7 @@ export function HomeScreen() {
                           
                           
                         </View>
-                        <View className="bg-white  p-[1px] animate-pulse duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50   ">
+                        <View className="bg-white  p-[1px] animate-pulse duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700  ">
                           <View className="bg-gray-500/10  w-full pb-[56%] sm:rounded-t-md  "></View>
                           <View className=" overflow-hidden w-full px-4 my-3 h-10 space-y-2 ">
                           
