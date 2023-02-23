@@ -51,7 +51,7 @@ export function HomeScreen() {
         </View>
         <View className=" flex-row flex-1">
           <View className="w-72 flex-none hidden md:flex p-4  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700/50 flex-col space-y-2">
-          <TextLink className='text-blue-500 font-bold text-base' href="/timeline-view-home">Feed</TextLink>
+                  <TextLink className='text-blue-500 font-bold text-base' href="/timeline-view-home">Feed</TextLink>
                     <TextLink className='text-blue-500 font-bold text-base' href="/posts-home">
                       Posts
                     </TextLink>
@@ -75,32 +75,34 @@ export function HomeScreen() {
                      </Text>
                      
                 </View>
-                <View className="bg-white dark:bg-gray-800 overflow-scroll px-8 py-3 flex  items-center flex-row space-x-8 w-full max-w-6xl mx-auto  ">
-                    
-                  <TextLink className='text-blue-500 font-bold text-base' href="/timeline-view-home">
-                      Feed
-                    </TextLink>
-                    <TextLink className='text-blue-500 font-bold text-base' href="/posts-home">
-                      Posts
-                    </TextLink>
-                    <TextLink className='text-blue-500 font-bold text-base' href="/contact">
-                      Contact
-                    </TextLink>                
-                    <TextLink className='text-blue-500 font-bold text-base' href="/about">
-                      About
-                    </TextLink>
-                    <TextLink className='text-blue-500 font-bold text-base' href="/timeline-view-home">
-                      Feed
-                    </TextLink>
-                    <TextLink className='text-blue-500 font-bold text-base' href="/posts-home">
-                      Posts
-                    </TextLink>
-                    <TextLink className='text-blue-500 font-bold text-base' href="/contact">
-                      Contact
-                    </TextLink>                
-                    <TextLink className='text-blue-500 font-bold text-base' href="/about">
-                      About
-                    </TextLink>
+              
+                <View className="  w-full flex-row max-w-6xl mx-auto px-4">
+                  <View className="flex flex-row space-x-2  text-sm font-medium text-center">
+                      
+                          <TextLink href="/timeline-view-home" className="inline-flex p-4 border-b-2 border-transparent  hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group flex-row">
+                              
+                              Feed
+                          </TextLink>
+                      
+                      
+                          <TextLink href="/posts-home" className="flex-row inline-flex p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500 group" aria-current="page">
+                              Posts
+                          </TextLink>
+                      
+                      
+                          <TextLink href="/contact" className="inline-flex p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group flex-row">
+                              
+                              Contact
+                          </TextLink>
+                      
+                     
+                          <TextLink href="/about" className="inline-flex p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group flex-row">
+                              
+                              About
+                          </TextLink>
+                      
+                      
+                  </View>
                 </View>
             </View>
             <View className="flex-auto relative w-full flex-row overflow-scroll max-w-6xl mx-auto">
