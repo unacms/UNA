@@ -10,7 +10,6 @@ export default function FormFieldText(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-     console.log('qqqq');
     const { field } = useController({ name, rules, defaultValue });
     
     return (

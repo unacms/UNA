@@ -3,17 +3,18 @@ import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/util';
-import { View } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyledButton } from 'app/design/controls'
-import {StyleSheet, useWindowDimensions} from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
+
 
 export default function ElementComments(props) {
 
     let browse = props.browse;
     let form = props.form;
     let requestUrl = props.url;
- 
+    const [ref, setRef] = useState(null);
     const [postData, setPostData] = useState(null);
     const [commentData, setCommentData] = useState({
         parentId: 0, 
@@ -39,9 +40,20 @@ export default function ElementComments(props) {
     
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-        console.log(requestUrl);
         return requestUrl + JSON.stringify({...def, ...params});
     }
+    
+    const scrollHandler = () => {
+    
+ console.log(ref);
+      ref.scrollTo({
+        x: 0,
+        y: 0,
+        animated: true,
+      });
+
+  };
+
     
     function parseData (browse, dynamicData) {
         dynamicData.data.browse.data.data.map(function(c, kc){
@@ -62,16 +74,15 @@ export default function ElementComments(props) {
     
     // add new values to state
     const addCommentData =  (params) => {
+        console.log(5);
+        scrollHandler();
         setCommentData(Object.assign({}, commentData, params));
     } 
     
     const onFormSubmit = (formData, d) => {
-        //TODO: POSTING in APP
         setPostData(formData);
     }
 
-    
-    
     // handle errors and loading 
     if (error || dynamicData?.error) return "An error has occurred:${error ? error : data?.error}";
     if (postData && !dynamicData) {
@@ -80,6 +91,24 @@ export default function ElementComments(props) {
 
     if (dynamicData && dynamicData.data.browse && dynamicData.data.browse.insert){
         browse = parseData(browse, dynamicData);
+        
+        if (dynamicData.data.browse.new){
+            //commentData = Object.assign({}, commentData, {parentId:0});
+            //TODO: improve hightlignt process
+            /*setTimeout(() => {
+                let el = document.getElementsByClassName('cmt-' + dynamicData.data.browse.new)[0];
+                if (el){
+                    el.scrollIntoView();
+                    el.classList.add('hle')
+                }
+              }, 1000);
+            /*  setTimeout(() => {
+                let el = document.getElementsByClassName('cmt-' + dynamicData.data.browse.new)[0];
+                if (el)
+                    el.classList.remove('hle')
+              }, 3000);*/
+        }
+        
     }
 
     function findParent (data, c, o, insert) {
@@ -155,9 +184,14 @@ export default function ElementComments(props) {
     
     return (
         <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
-            <Browse {...browse} addCommentData={addCommentData} /> 
-            { commentData.startFrom > 0 && <View className="p-4 m-auto"  ><StyledButton title="Load More" onPress={handleMore}/></View> }
-            { form && <Form {...form}  onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
+           <ScrollView  ref={(ref) => {
+            setRef(ref);
+          }}>
+                <Browse {...browse} addCommentData={addCommentData} /> 
+                { commentData.startFrom > 0 && <View className="p-4"  ><StyledButton title="Show more" onPress={handleMore}/></View> }
+            
+            { form && <Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
+            </ScrollView>
         </View>
     );
 }

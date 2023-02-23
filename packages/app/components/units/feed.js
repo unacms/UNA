@@ -30,72 +30,62 @@ export default function UnitFeed({data}) {
     });
     
     if (Platform.OS != 'web'){
-    
-        var _margin = 8;
-        var _margin2 = 8;
-        var _col2w = 1000;  
-        var _col1w = 600;    
 
-        let w = width/3 - _margin * 2 ;
-        if (width < _col2w)
-            w = width - _margin * 2 - 2;  
-        let mw = w - 2 * _margin2;
-        
         styles = StyleSheet.create({
           card: {
-            width: w,
-            flexShrink:1,
-            flexGrow: 1,
-            alignContent: 'flex-start',
-            borderRadius: 10,
-            flexDirection:'row',
-            flexWrap: 'wrap',
-            flexShrink:1,
-            margin:_margin,
+            borderRadius: 0,
+            marginLeft:0,
+            marginRight:0,
+            marginBottom:8,
+
           }, 
           card_image: {
-           
-             width: width,
-          },      
-          card2: {
-              width: width,
-          }, 
+             borderRadius: 0,
+             
+          }     
         });
     }
-    
+
     return (
         <Link href={url}>
-      
-            <View className='flex-col bg-white dark:bg-gray-900 overflow-hidden  u-feed-card style={styles.card} mb-2 sm:m-2 sm:rounded-lg'>
-                <View className='flex-row px-4 my-3 w-full' style={styles.card2}>
-                    <View className="flex-col flex-1" style={styles.card2}>
-                                <View className="flex-auto flex-row space-x-2">
-                                    <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
-                                    </View>
-                                    <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
-                                    </View>
-                                </View>  
-                        
-                        
-                    </View> 
-                    <View className="flex-none flex-col bg-blue-500 rounded-full  px-1.5 mb-auto ">    
-                        <Text className=" text-xs font-bold text-white dark:text-gray-800">{data.cmts.count}</Text>  
-                    </View>
-                </View>
-                {oImage &&
-                    
-                    <View className="flex-row mb-3" style={styles.card_image}>
-                        <Image {...oImage} alt={data.title} pref_width="600" pref_height="800" className="w-full u-image " />
+      <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700" style={styles.card}>
+                       
+                          {oImage &&
+                    <View className="w-full sm:rounded-t-md bg-gray-500/20 aspect-video w-full sm:rounded-md overflow-hidden items-center" style={styles.card_image}>
+                        <Image {...oImage} alt={data.title} view="cover"  />
                         
                     </View>
                     
                 }  
-                <View className="flex-col u-card-fix">
-                    
-                    <Text className="px-4 mb-3 text-lg  font-bold tracking-tight leading-6 text-gray-800 dark:text-gray-100 ">{data.content.title}</Text>
-                    <View className="px-4 mb-3  flex-row space-x-3  ">
+                          <View className='flex-row px-4 py-3 space-x-2 '>
+                            <Profile {...data.author_data} displayType="full" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
+                           
+                          
+                          </View>
+                          <View className='w-full px-4 pb-3 flex-col space-y-1'>
+                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
+                           {data.content.title}
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400'>
+                                {data.description}{data.cmts.count}
+                            </Text>
+                          </View>
+                          
+                          
+                          {false && /* TODO: attachments*/
+                          <View className=" px-4 pb-4 w-full">
+                              <View className="bg-gray-500/10  max-h-[80vh] w-full  rounded-md overflow-hidden items-center flex-row space-x-1">
+                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
+                                
+                                </View>
+                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
+                                
+                                </View>
+                              </View>
+                          </View>
+                        }
+        
+        <View className="px-4 mb-3  flex-row space-x-3  ">
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">12</Text> views</Text>
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">48</Text> likes</Text>
                         <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">16</Text> comments</Text>
@@ -105,26 +95,16 @@ export default function UnitFeed({data}) {
                     
 
                     <View className="px-4 py-1  border-t border-gray-500/20  flex-row space-x-1  ">
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Like</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Comment</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Repost</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Share</Text></View>
-                    </View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Like</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Comment</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Repost</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Share</Text></View>
+                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>
+                          More</Text></View>
 
-                    {/* oCmt &&
-                        <View className='flex gap-1  ml-12 @xl/cell:m-0'>
-                            <View className='flex-none hidden @xl/cell:block'><Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" /></View>
-                            <View className='flex w-full'>  
-                                <View className='flex relative flex-none @xl/cell:flex-wrap gap-x-2  ml-1  w-full text-sm  bg-gray-300/50 dark:bg-gray-700/50 py-0.5 px-1.5  @xl/cell:py-1.5 @xl/cell:px-2.5 rounded-lg     '>
-                                    <Text className=' flex-none  hidden @xl/cell:line-clamp-1 my-auto font-semibold '>{oCmt.author_data.display_name}</Text>
-                                    <View className='flex-auto line-clamp-1 @xl/cell:line-clamp-2 text-gray-600 dark:text-gray-400  my-auto' dangerouslySetInnerHTML={{__html:oCmt.cmt_text}}/>
-                                    <View className="text-sm -mt-4 ring ring-white dark:ring-gray-900 -mr-1.5 flex-none @xl/cell:hidden font-medium   bg-blue-500 h-min  rounded-xl rounded-br-sm  ml-auto px-2  text-white dark:text-gray-800  ">{data.cmts.count}</View>
-                                </View>  
-                            </View> 
-                        </View>
-            */}
-                </View>
-            </View> 
+                    </View>
+        </View>
         </Link>     
     );
 }

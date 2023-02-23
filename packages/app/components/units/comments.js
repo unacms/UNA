@@ -3,7 +3,6 @@ import Time from '../atoms/time';
 import Score from '../atoms/score';
 import Vote from '../atoms/vote';
 import Unit from '../unit';
-//import $ from 'jquery';
 import {useEffect, useState, useContext } from 'react';
 import { fetcher } from '../../lib/util';
 
@@ -11,6 +10,7 @@ import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
 import Html from '../atoms/html';
+import { Button } from 'react-native'
 
 export default function UnitComments(props) {
 
@@ -27,8 +27,7 @@ export default function UnitComments(props) {
     // request form for reply
 
     const reply = async (id) => {
-        document.querySelector('.form-comment textarea').setAttribute('placeholder', 'Write your reply');
-        document.querySelector('.form-comment textarea').focus();
+        // TODO SCROOL
         props.addCommentData({parentId:id});
     };
 
@@ -53,7 +52,7 @@ export default function UnitComments(props) {
 
     return (
         <View>
-            <View id={ 'cmt-' + data.cmt_id } className="">
+            <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
                     <View className="flex-row items-center">
                         <Profile {...data.author_data} displaySize='sm' displayType="unit_wo_info" className="" />
@@ -64,6 +63,9 @@ export default function UnitComments(props) {
                     </View>
                     <View  className="flex-auto flex-col  rounded-lg rounded-tl-sm ml-10">
                         <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
+                        <View className="w-20">
+                            <Button title="reply" onPress={() => reply(data.cmt_id)}  />
+                        </View>
                     </View>
                 </View>
             </View>

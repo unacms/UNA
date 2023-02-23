@@ -18,7 +18,7 @@ export default function (props) {
         });
         
     }, []);
-    
+    console.log(url);
     var skeleton = '';
     if (url){
         skeleton = (url == '/posts-home' ? 'posts-home' : skeleton);
@@ -312,7 +312,6 @@ export default function (props) {
             </View>
         </View>
     </View>
-
     };
 
     return [loading, skeletons[skeleton]];

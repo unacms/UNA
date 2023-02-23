@@ -25,6 +25,8 @@ export default function ElementBrowse(props) {
     let classes = '';
     if (data.unit != 'feed' && data.unit != 'comments')
         classes = 'u-card-list';
+    if (data.unit == 'feed')
+        classes = 'flex-auto flex-col py-4 sm:px-4 space-y-2 max-w-3xl mx-auto';
     
     return (
         <View className={classes} style={styles.cardList}>

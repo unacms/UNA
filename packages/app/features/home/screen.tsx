@@ -137,7 +137,7 @@ export function HomeScreen() {
                         </View>
                         <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
                           
-                          
+                         
                           <View className='flex-row p-4 space-x-2 '>
                             <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
                             <View className=' my-auto  flex-col '>
@@ -225,7 +225,7 @@ export function HomeScreen() {
                             <View className='w-10 h-10  bg-blue-500/50 rounded-full'></View>
                             <View className=' my-auto  flex-col '>
                             <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
-                            Dr Sponge Bob Jr
+                            Dr Sponge Bob Jr11
                             </Text>
                             <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
                             2 min ago

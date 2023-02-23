@@ -26,13 +26,29 @@ export default function () {
                 </div>
                 <ul className="hidden flex-col justify-left mt-0 w-full text-sm font-medium text-gray-100 md:flex-row dark:text-gray-800 md:flex">
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <A href="/" title="Home" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Home</A>
+                        <Link href="/" title="Home">
+                            <Text className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Home</Text>
+                        </Link>
                     </li>
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <A href="/about" title="About" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">About</A>
+                        <Link href="/about" title="About">
+                             <Text className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">About</Text>
+                        </Link>
                     </li>
                     <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
-                        <A href="/contact" title="Contact" className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Contact</A>
+                        <Link href="/contact" title="Contact">
+                            <Text className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Contact</Text>
+                        </Link>
+                    </li>
+                    <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
+                        <Link href="/posts-home" title="Contact">
+                            <Text className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Posts</Text>
+                        </Link>
+                    </li>
+                    <li className="block border-b dark:border-gray-700 md:inline md:border-b-0">
+                        <Link href="/timeline-view-home" title="Contact">
+                            <Text className="block py-2.5 px-4 hover:bg-primary-focus/50 active:bg-primary-focus rounded-lg text-gray-200 hover:text-white">Feed</Text>
+                        </Link>
                     </li>
                 </ul>
 

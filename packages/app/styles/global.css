@@ -89,13 +89,15 @@ body {
     --margin2: 0.5rem;
     --col2w: 1000px;  
     --col1w: 700px; 
+   
 }
 .u-card-list > * {
-    min-width: calc(33.33% - 16px) !important;
+    min-width: calc(33.33% - 8px) !important;
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;
     flex-direction: row !important;
+    margin:4px
 }
 .u-card {
     width: 100%;

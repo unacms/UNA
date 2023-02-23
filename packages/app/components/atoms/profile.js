@@ -102,7 +102,23 @@ export default function AtomProfile(oProps) {
                 </View></Link>
             );
             break;
-
+        case 'full':
+            sResult = (
+                <Link haptics="Select" href={oProps.url}>
+                    <View className="flex-row items-center w-full space-x-2">
+                        <Image className={sSize} width={iSizeWidth} height={iSizeHeight} src={oProps.url_avatar} alt={oProps.display_name} />
+                        <View className=' my-auto  flex-col '>
+                            <Text className='text-gray-800 dark:text-gray-200 text-sm tracking-tight hover:underline font-bold'>
+                                <DisplayNameText title={oProps.display_name} />
+                            </Text>
+                            <Text className='text-gray-600 dark:text-gray-400 text-xs tracking-tight '>
+                                {sShowInfo}
+                            </Text>
+                        </View>
+                    </View>
+                </Link>
+            );
+            break;
         case 'unit_wo_info':
             //
             sResult = (

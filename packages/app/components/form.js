@@ -34,10 +34,16 @@ export default function Form(props) {
 
     let data = props.data;
     let onFormSubmit = props.onFormSubmit;
-   
+    
+    const defaultValues = {}
+
+    Object.keys(data.inputs).forEach(function (key) {  
+        if (data.inputs[key].value || data.inputs[key].value == 0)      
+            defaultValues[key] = data.inputs[key].value;
+    });
+
 
     const onSubmit = async d => {
-        console.log(888);
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
@@ -48,9 +54,18 @@ export default function Form(props) {
     const onError = async d => {
         //TODO: gandle error
     }   
+    const {...methods} = useForm({defaultValues: defaultValues});  
+
     
-    const {...methods} = useForm();  
-    console.log('wwwww');
+    if (props.handleValues){
+        if(props.commentData && props.commentData.parentId != defaultValues['cmt_parent_id']){
+            //TODO: Set Value without timeout
+            setTimeout(() => {
+                methods.setValue('cmt_parent_id', props.commentData.parentId);   
+            }, 100);
+        }
+    }
+    
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
         const InputType = components[a.type];

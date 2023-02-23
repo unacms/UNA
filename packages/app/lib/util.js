@@ -1,10 +1,8 @@
 import * as Haptics from 'expo-haptics';
 
 export function fetcher (mixed) {
-    console.log(999)
-    console.log(mixed)
+    console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
     let url, token, data;
-    
     if (Array.isArray(mixed)){
         [url, token, data] = mixed;
     }

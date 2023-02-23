@@ -38,24 +38,17 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         
         styles = StyleSheet.create({
           card: {
-            width: w,
-            flexShrink:1,
-            flexGrow: 0,
-            alignContent: 'flex-start',
-            borderRadius: 10,
-            flexDirection:'row',
-            background:'red',
-            flexWrap: 'wrap',
-            flexShrink:1,
-            margin:_margin,
+            width: width,
+            borderRadius: 0,
+            marginLeft:0,
+            marginRight:0,
+            marginBottom:8,
+          
           },
          card_image: {
-             width:wi,
-         },  
-         card_text: {
-             width:wt,
-             flexGrow: 1,
-         }   
+             width:width-2,
+             borderRadius: 0,
+         },    
         });
     }
     function SnippetInfo(props) {
@@ -70,38 +63,36 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     return (
-           
-            <View className='flex-col border-none bg-white dark:bg-gray-800 overflow-hidden mb-2 sm:m-2 sm:rounded-lg' style={styles.card}>
+        <View className="u-card" style={styles.card}>
+       <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700 w-full">
                  <Link href={data.url}>
-                {data.image &&
-                    <View style={styles.card_image} className="u-card-media flex-row aspect-video"><Image {...data.image} alt={data.title} pref_width="500" pref_height="400" className="u-image w-full aspect-video" /></View>
-                }  
-                <View className="u-card-content flex-col flex-grow" style={styles.card_text}>
-                    
-                    <View className='flex-col grow flex-1 mx-4 my-3'>
-                        <View className='flex-row '>
-                            <View className="flex-row flex-1">
-                                <View className="flex-auto flex-row space-x-2">
-                                    <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_info" className="" />
-                                    </View>
-                                    <View className="flex-none">
-                                        <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo={(<Time className="" ts={data.added}></Time>)} className="" />     
-                                    </View>
-                                </View>
-                                
-                            </View> 
-                        </View>
-                        <Text className="text-lg  font-bold tracking-tight leading-5 text-gray-900 dark:text-gray-50 mt-3">{data.title}</Text>
-                        <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
-                    </View>
-                </View>
-                <View className='flex-none bg-gray-100 dark:bg-gray-900/50 px-4 py-3 u-card-bar w-full'>
-                        <Text className="text-gray-600 dark:text-gray-400 text-xs">158 views</Text>
+           
+                        
+        {data.image &&
+                    <View className="w-full sm:rounded-t-md bg-gray-500/20 aspect-video w-full sm:rounded-md overflow-hidden items-center" style={styles.card_image}>
+                        <Image {...data.image} alt={data.title} view="cover" style={styles.card_image} />
                         
                     </View>
-                </Link>
-            </View> 
+                } 
+        {!data.image &&<View className="bg-yellow-500/20  w-full sm:rounded-t-md aspect-video"></View> }
+        
+        <View className="px-4">
+                          <View className=" overflow-hidden w-full my-3 h-10  ">
+                              <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
+                              {data.title}
+                              </Text>
+                              <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
+                          </View>
+                          
+                          <View className='pb-3'>
+                              <Profile {...data.author_data} displayType="full"  className="" />
+                            </View>
+         </View>
+                      
+            </Link>
+             </View>
+               </View>  
+                
        
       );
 }
