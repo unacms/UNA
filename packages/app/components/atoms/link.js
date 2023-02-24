@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'app/design/view'
 import { Link } from 'expo-router';
 import { FeedbackHaptics } from '../../lib/util';
 

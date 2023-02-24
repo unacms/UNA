@@ -2,24 +2,23 @@ import Image from '../atoms/image';
 import Link from '../atoms/link';
 import Time from '../atoms/time';
 import Profile from '../atoms/profile';
-
+import { TouchableOpacity } from 'app/design/view'
+import { useState } from 'react';
+import Html from '../atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
 
-
-
-
 export default function UnitFeed({data}) {
     var oImage = data.content.images.length > 0 ? data.content.images[0] : null;
-    if (oImage == null)
-        oImage = data.content.images_attach ? data.content.images_attach[0] : null;
-    
-        var oCmt = null;
+
+    var oCmt = null;
     if (data.cmts.data.length > 0){
         oCmt = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
     }
+    
+    const [showFull, setShowFull] = useState(false)
     
     const {height, width, scale, fontScale} = useWindowDimensions();
 
@@ -44,7 +43,17 @@ export default function UnitFeed({data}) {
           }     
         });
     }
+    var DomParser = require('react-native-html-parser').DOMParser
+    let doc = new DomParser().parseFromString(data.content.text,'text/html')
+    let sFirstImg = '';
+    if (doc.getElementsByTagName('img').length > 0){
+        sFirstImg = doc.getElementsByTagName('img')[0].attributes[0].value
+    }
+    
+    const regex = /(<([^>]+)>)/ig;
+    const sPlain = data.content.text.replace(regex, '');
 
+    
     return (
         <Link href={url} className="w-full">
         
@@ -61,30 +70,28 @@ export default function UnitFeed({data}) {
                     <Text className="text-gray-800  group-hover:text-gray-900 duration-200 dark:group-hover:text-white dark:text-gray-200  text-2xl  tracking-tight font-bold">
                       {data.content.title}
                     </Text>
-                    <View className="flex-row space-x-2 h-12 overflow-hidden relative">
-                      <Text className="text-gray-700  dark:text-gray-300 text-base">
-                        {data.description}{data.cmts.count} Our app provides an intuitive and easy-to-use interface
-                        for users to publish and share content on their social
-                        media accounts. Leveraging the power of UNA's community
-                        platform, our app allows users to connect and engage with
-                        like-minded individuals, creating a vibrant social network
-                        that is both fun and functional.
-                      </Text>
-                      <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '>
-                        <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-gray-800'>
-                          
-                        </View>
-                        <View className='pl-2  bg-white dark:bg-gray-800'>
-                          <Text className="text-blue-600 dark:text-blue-400 text-base font-semibold">
-                          More...
+                        { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
+                            <Text className="text-gray-700  dark:text-gray-300 text-base">
+                                 {sPlain} {data.description}{data.cmts.count}
                           </Text>
+                            <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
+                                <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-gray-800'></View>
+                                <TouchableOpacity className='pl-2  bg-white dark:bg-gray-800'  onPress={(e) => {setShowFull(true);e.preventDefault() }}>
+                                    <Text className="text-blue-600 dark:text-blue-400 text-base font-semibold">More...</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        
-                      </View>
-                    </View>
-                  </View>
-                  <View className="w-full pb-4 rounded-lg">
-                    <View className="w-full aspect-square rounded-lg bg-blue-500/50 "></View>
+                        {sFirstImg &&
+                            <View className="w-full rounded-lg mt-4 aspect-square bg-blue-500/50" >
+                                <Image src={sFirstImg} alt={data.title} view="cover" className="u-cover"  />
+                            </View>
+                        }  
+                        </View>
+                          :
+                        <View>
+                            <Html data={data.content.text} />
+                        </View>
+                        }
                   </View>
                   <View className='flex-row w-full space-x-4'>
                       <View className=" mb-3 flex-auto flex-row space-x-4  ">
