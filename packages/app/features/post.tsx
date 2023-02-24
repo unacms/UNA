@@ -1,6 +1,5 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import { View } from 'app/design/view'
-import {}
 
 
 export function PostScreen() {

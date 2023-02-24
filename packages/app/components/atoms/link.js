@@ -4,7 +4,7 @@ import { FeedbackHaptics } from '../../lib/util';
 
 export default function ElementLink(props) {
     return (
-        <Link href={props.href} asChild >
+        <Link href={props.href} asChild {...props}>
              <TouchableOpacity onPress={() => {
                     props.haptics ? FeedbackHaptics(props.haptics) : ''
                 }}>

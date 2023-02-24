@@ -5,7 +5,9 @@ import Main from './main';
 import Breadcrumb from './breadcrumb';
 import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
-import { View, ScrollView } from 'app/design/view'
+import { ScrollView, SafeAreaView } from 'app/design/view'
+import { StyleSheet, View } from "react-native";
+import { Text } from 'app/design/typography'
 
 export const siteTitle = 'G-Med';
 
@@ -30,17 +32,19 @@ export default function Layout(props) {
 
     const [loading, skeleton] = useSkeleton();
     const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
-
+    
     return (
-        <ScrollView className="bg-gray-300 dark:bg-gray-1000 text-gray-900 dark:text-gray-50">
+        <View className="bg-gray-300 dark:bg-red-100 text-gray-900 dark:text-gray-50 h-full">
             <Navbar />
-            {(oBreadCrump == null ) && <Tabsbar />}
-            {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className = {sClassName}>
-                {props.children}
-            </View>
-            {(oComments == null ) && <Footer />}
-        </ScrollView>
+            <ScrollView className="bg-gray-300 dark:bg-gray-1000 text-gray-900 dark:text-gray-50">
+                {(oBreadCrump == null ) && <Tabsbar />}
+                {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
+                <View className = {sClassName}>
+                    {props.children}
+                </View>
+            </ScrollView>
+            <View className="fixed"><Footer/></View>
+        </View>
     );
 /*
     return (

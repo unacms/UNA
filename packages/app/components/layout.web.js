@@ -6,7 +6,8 @@ import Main from './main';
 import Breadcrumb from './breadcrumb';
 import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
-import {useRouter} from "next/router";
+import { ScrollView, SafeAreaView } from 'app/design/view'
+import { useRouter } from "next/router";
 import { View } from 'app/design/view'
 
 export const siteTitle = 'G-Med';
@@ -37,13 +38,15 @@ export default function Layout(props) {
                 <meta name="og:title" content={siteTitle} />
                
             </Head>
-            <Navbar />
-            {(oBreadCrump == null ) && <Tabsbar />}
-            {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className={sClassName}>
-                {loading ? skeleton : <Main>{props.children}</Main>}
+            <View className="bg-gray-300 dark:bg-red-100 text-gray-900 dark:text-gray-50 h-full">
+                <Navbar />
+                {(oBreadCrump == null ) && <Tabsbar />}
+                {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
+                <ScrollView className={sClassName}>
+                    {loading ? skeleton : <Main>{props.children}</Main>}
+                </ScrollView>
+                <View className="fixed bottom-0 w-full"><Footer/></View>
             </View>
-            {(oComments == null ) && <Footer />}
         </>
     );
 }
