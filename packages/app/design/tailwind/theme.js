@@ -21,7 +21,11 @@ const colors =
 
 const theme = {
     extend: {
-        colors: colors
+        colors: colors,
+        
+        aspectRatio: {
+            '3/1': '3 / 1',
+          },
     },
 }
 

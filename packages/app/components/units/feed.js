@@ -46,64 +46,109 @@ export default function UnitFeed({data}) {
     }
 
     return (
-        <Link href={url}>
-      <View className="bg-white p-[1px] duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700" style={styles.card}>
-                       
-                          {oImage &&
-                    <View className="w-full sm:rounded-t-md bg-gray-500/20 aspect-video w-full sm:rounded-md overflow-hidden items-center" style={styles.card_image}>
-                        <Image {...oImage} alt={data.title} view="cover"  />
-                        
-                    </View>
-                    
-                }  
-                          <View className='flex-row px-4 py-3 space-x-2 '>
-                            <Profile {...data.author_data} displayType="full" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
-                           
-                          
-                          </View>
-                          <View className='w-full px-4 pb-3 flex-col space-y-1'>
-                            <Text className='text-gray-800 dark:text-gray-200 text text-xl leading-6 tracking-tight font-bold'>
-                           {data.content.title}
-                            </Text>
-                            <Text className='text-gray-600 dark:text-gray-400'>
-                                {data.description}{data.cmts.count}
-                            </Text>
-                          </View>
-                          
-                          
-                          {false && /* TODO: attachments*/
-                          <View className=" px-4 pb-4 w-full">
-                              <View className="bg-gray-500/10  max-h-[80vh] w-full  rounded-md overflow-hidden items-center flex-row space-x-1">
-                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
-                                
-                                </View>
-                                <View className="bg-blue-500/20  flex-1 aspect-square  ">
-                                
-                                </View>
-                              </View>
-                          </View>
-                        }
+        <Link href={url} className="w-full">
         
-        <View className="px-4 mb-3  flex-row space-x-3  ">
-                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">12</Text> views</Text>
-                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">48</Text> likes</Text>
-                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">16</Text> comments</Text>
-                        <Text className="text-gray-600 dark:text-gray-400 text-xs"><Text className="font-bold">32</Text> reposts</Text>
+        <View className="bg-white group duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700"  style={styles.card}>
+                {oImage &&
+                    <View className="w-full aspect-[3/1] " style={styles.card_image}>
+                        <Image {...oImage} alt={data.title} view="cover" className="u-cover"  />
                     </View>
-
+                }  
+                  <View className="px-4 pt-4">
+                  <Profile {...data.author_data} displayType="full" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
+        
+                  <View className="w-full  pb-4 flex-col space-y-4 pt-4">
+                    <Text className="text-gray-800  group-hover:text-gray-900 duration-200 dark:group-hover:text-white dark:text-gray-200  text-2xl  tracking-tight font-bold">
+                      {data.content.title}
+                    </Text>
+                    <View className="flex-row space-x-2 h-12 overflow-hidden relative">
+                      <Text className="text-gray-700  dark:text-gray-300 text-base">
+                        {data.description}{data.cmts.count} Our app provides an intuitive and easy-to-use interface
+                        for users to publish and share content on their social
+                        media accounts. Leveraging the power of UNA's community
+                        platform, our app allows users to connect and engage with
+                        like-minded individuals, creating a vibrant social network
+                        that is both fun and functional.
+                      </Text>
+                      <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '>
+                        <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-gray-800'>
+                          
+                        </View>
+                        <View className='pl-2  bg-white dark:bg-gray-800'>
+                          <Text className="text-blue-600 dark:text-blue-400 text-base font-semibold">
+                          More...
+                          </Text>
+                        </View>
+                        
+                      </View>
+                    </View>
+                  </View>
+                  <View className="w-full pb-4 rounded-lg">
+                    <View className="w-full aspect-square rounded-lg bg-blue-500/50 "></View>
+                  </View>
+                  <View className='flex-row w-full space-x-4'>
+                      <View className=" mb-3 flex-auto flex-row space-x-4  ">
+                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
+                          <Text className="font-bold text-gray-700 dark:text-gray-300">16</Text> comments
+                        </Text>
+                      </View>
+                      <View className="mb-3  flex-row space-x-4  ">
+                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
+                          <Text className="font-bold text-gray-700 dark:text-gray-300">12</Text> views
+                        </Text>
+                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
+                          <Text className="font-bold text-gray-700 dark:text-gray-300">48</Text> likes
+                        </Text>
+                
+                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
+                          <Text className="font-bold text-gray-700 dark:text-gray-300">32</Text> reposts
+                        </Text>
+                      </View>
+                  </View>
+ </View>
+                  <View className="px-4 py-2  border-t border-gray-500/20  flex-row space-x-1  ">
                     
+                  <View className='flex-row w-full space-x-4'>
+                      <View className=" flex-row space-x-2  ">
+                          <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                            Like
+                          </Text>
+                        </View>
+                        <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                            Comment
+                          </Text>
+                        </View>
+                        <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                            Repost
+                          </Text>
+                        </View>
+                        <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                            Share
+                          </Text>
+                        </View>
 
-                    <View className="px-4 py-1  border-t border-gray-500/20  flex-row space-x-1  ">
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Like</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Comment</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Repost</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg"><Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>Share</Text></View>
-                        <View className="group flex-auto flex p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className='group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto'>
-                          More</Text></View>
-
-                    </View>
-        </View>
+                      </View>
+                      <View className=" flex-auto space-x-2 flex-row justify-end ">
+                        <View className="group  flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                            More
+                          </Text>
+                        </View>
+                      </View>
+                  </View>
+                    
+                    
+                    
+                    
+                  </View>
+                </View>
+        
+        
+      
         </Link>     
     );
 }

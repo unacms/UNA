@@ -1,4 +1,9 @@
-import { TouchableOpacity as ReactNativeTouchableOpacity, ScrollView as ReactNativeScrollView, View as ReactNativeView, SafeAreaView as ReactNativeSafeAreaView } from 'react-native'
+import { 
+    TouchableOpacity as ReactNativeTouchableOpacity, 
+    ScrollView as ReactNativeScrollView, 
+    View as ReactNativeView, 
+    SafeAreaView as ReactNativeSafeAreaView 
+} from 'react-native'
 
 import { styled } from 'nativewind'
 
@@ -6,6 +11,4 @@ export const View = styled(ReactNativeView)
 export const ScrollView = styled(ReactNativeScrollView)
 export const SafeAreaView = styled(ReactNativeSafeAreaView)
 export const TouchableOpacity = styled(ReactNativeTouchableOpacity)
-
-
-
+export const Row = styled(View, "flex-row")

@@ -140,6 +140,9 @@ body {
     bottom:0px;
     width: 100%;
 }
+.u-cover{
+    object-fit: cover !important;
+}
 
 .u-image{
     object-fit: cover !important;

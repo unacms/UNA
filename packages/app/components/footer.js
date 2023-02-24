@@ -1,7 +1,6 @@
 import Link from './atoms/link';
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { Row } from 'app/design/layout'
 
 export default function () {
  	return (
