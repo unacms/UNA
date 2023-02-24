@@ -8,6 +8,10 @@
     line-height: 1.5rem; 
     max-width: none;
 }
+.u-vanilla-html img{
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
 .u-vanilla-html H1, H2, H3, H4{
     @apply text-gray-900 dark:text-gray-100; 
 }

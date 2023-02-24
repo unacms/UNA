@@ -29,7 +29,6 @@ export default function UnitFeed({data}) {
     });
     
     if (Platform.OS != 'web'){
-
         styles = StyleSheet.create({
           card: {
             borderRadius: 0,
@@ -43,17 +42,22 @@ export default function UnitFeed({data}) {
           }     
         });
     }
+    
     var DomParser = require('react-native-html-parser').DOMParser
     let doc = new DomParser().parseFromString(data.content.text,'text/html')
     let sFirstImg = '';
-    if (doc.getElementsByTagName('img').length > 0){
-        sFirstImg = doc.getElementsByTagName('img')[0].attributes[0].value
+    let sImages = doc.getElementsByTagName('img');
+    if (sImages.length > 0){
+        sFirstImg = sImages[0].attributes[0].value
     }
     
     const regex = /(<([^>]+)>)/ig;
-    const sPlain = data.content.text.replace(regex, '');
-
-    
+    let sPlainFull = data.content.text.replace(regex, '');
+    let sPlain = sPlainFull.substr(0,50);
+    let bShowMore = false;
+    if (sPlain != sPlainFull || sImages.length > 1){
+        bShowMore = true;
+    }
     return (
         <Link href={url} className="w-full">
         
@@ -64,7 +68,7 @@ export default function UnitFeed({data}) {
                     </View>
                 }  
                   <View className="px-4 pt-4">
-                  <Profile {...data.author_data} displayType="full" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
+                  <Profile {...data.author_data} displayType="full" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
         
                   <View className="w-full  pb-4 flex-col space-y-4 pt-4">
                     <Text className="text-gray-800  group-hover:text-gray-900 duration-200 dark:group-hover:text-white dark:text-gray-200  text-2xl  tracking-tight font-bold">
@@ -74,12 +78,13 @@ export default function UnitFeed({data}) {
                             <Text className="text-gray-700  dark:text-gray-300 text-base">
                                  {sPlain} {data.description}{data.cmts.count}
                           </Text>
-                            <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
+                           { bShowMore && <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
                                 <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-gray-800'></View>
                                 <TouchableOpacity className='pl-2  bg-white dark:bg-gray-800'  onPress={(e) => {setShowFull(true);e.preventDefault() }}>
                                     <Text className="text-blue-600 dark:text-blue-400 text-base font-semibold">More...</Text>
                                 </TouchableOpacity>
                             </View>
+                            }
                         </View>
                         {sFirstImg &&
                             <View className="w-full rounded-lg mt-4 aspect-square bg-blue-500/50" >
@@ -113,7 +118,7 @@ export default function UnitFeed({data}) {
                       </View>
                   </View>
  </View>
-                  <View className="px-4 py-2  border-t border-gray-500/20  flex-row space-x-1  ">
+                  <View className=" py-2  border-t border-gray-500/20  flex-row space-x-1  ">
                     
                   <View className='flex-row w-full space-x-4'>
                       <View className=" flex-row space-x-2  ">

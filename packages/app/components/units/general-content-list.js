@@ -64,13 +64,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
         <View className="u-card" style={styles.card}>
-       <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700 w-full">
+       <View className="bg-white  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700 w-full">
                  <Link href={data.url}>
            
                         
         {data.image &&
-                    <View className="w-full sm:rounded-t-md bg-gray-500/20 aspect-video w-full sm:rounded-md overflow-hidden items-center" style={styles.card_image}>
-                        <Image {...data.image} alt={data.title} view="cover" style={styles.card_image} />
+                    <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
+                        <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
                         
                     </View>
                 } 

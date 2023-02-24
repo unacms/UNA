@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.6",
+    "@react-navigation/material-top-tabs": "^6.6.1",
     "app": "*",
     "expo": "~47.0.12",
     "expo-haptics": "~12.0.1",
@@ -17,6 +19,7 @@
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
+    "react-native-tab-view": "^3.5.0",
     "react-native-web": "~0.18.9",
     "react-native-webview": "11.23.1",
     "swr": "^2.0.3"

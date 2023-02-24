@@ -10,6 +10,7 @@ import { ScrollView, SafeAreaView } from 'app/design/view'
 import { useRouter } from "next/router";
 import { View } from 'app/design/view'
 
+
 export const siteTitle = 'G-Med';
 
 export default function Layout(props) {  
@@ -29,6 +30,7 @@ export default function Layout(props) {
     });
 */
     const [loading, skeleton] = useSkeleton();
+   
     const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
     return (
         <>
