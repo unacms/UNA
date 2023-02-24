@@ -27,8 +27,8 @@ export default function ElementHtml(props) {
         body: {
             whiteSpace: 'normal',
             color: '#374151',
-            fontSize: 18,
-            lineHeight: 28,
+            fontSize: 16,
+            lineHeight: 24,
             margin: 0,
         },
         a: {

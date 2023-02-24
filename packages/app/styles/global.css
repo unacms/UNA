@@ -4,8 +4,8 @@
 
 .u-vanilla-html {
     @apply text-gray-700 dark:text-gray-300 ;
-    font-size: 1.125rem;
-    line-height: 1.75rem; 
+    font-size: 1rem;
+    line-height: 1.5rem; 
     max-width: none;
 }
 .u-vanilla-html H1, H2, H3, H4{
