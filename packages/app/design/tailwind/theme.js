@@ -16,6 +16,10 @@ const colors =
             DEFAULT: "#FFFFFF",
             "dark": "#181b20",
     },
+    "item-hover": {
+        DEFAULT: "#dbe1e6",
+        "dark": "#252a32",
+    },
     "sidebar": {
         DEFAULT: "#FFFFFF",
         "dark": "#181b20",
@@ -38,7 +42,7 @@ const colors =
     },
     "bordercolor": {
         DEFAULT: "#252a32",
-        "dark": "#90a2b2",
+        "dark": "#607385",
     },
     'neo': {
         '50': '#f3f5f6',

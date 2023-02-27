@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native'
 export function HomeScreen() {
   return (
     <View className="w-full h-screen bg-screen dark:bg-screen-dark flex-row">
-      <View className="flex-none flex-col bg-gray-900 border-r border-black/50 space-y-4 hidden sm:block p-4 ">
+      <View className="flex-none flex-col bg-neo-900 border-r border-black/50 space-y-4 hidden sm:block p-4 ">
         <Link href="/" className="">
           <View className="bg-green-500 rounded-lg w-10 h-10 items-center shadow my-auto">
             <View className="bg-green-300 rounded-full w-8 h-8 items-center shadow my-auto"></View>
@@ -25,8 +25,8 @@ export function HomeScreen() {
           </View>
         </Link>
       </View>
-      <View className="relative flex-auto h-screen flex-col ">
-        <Text className="hidden text-white px-4 py-3 bg-blue-500 text-base text-center ">
+      <View className="relative  h-screen  ">
+        <Text className=" text-white px-4 py-3 bg-brand text-base text-center ">
           Announcement! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
@@ -44,7 +44,7 @@ export function HomeScreen() {
           for more info.
         </Text>
 
-        <View className=" w-screen overflow-scroll backdrop-blur-sm bg-navbar dark:bg-navbar-dark h-16 flex  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row ">
+        <View className=" w-screen bg-navbar dark:bg-navbar-dark flex border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row ">
           <View className="p-4 h-full flex-row ">
             <View className="w-8 h-8 bg-blue-500/50 rounded-full"></View>
             <View className="hidden w-52 mx-4 md:block flex-auto h-8 bg-blue-500/20 rounded-full"></View>
@@ -52,13 +52,13 @@ export function HomeScreen() {
 
           <Row className="flex-auto items-center flex-row space-x-4 ">
             <TouchableOpacity>
-              <TextLink
+              <Link
                 href="/timeline-view-home"
-                className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
+                className="group flex-row items-center rounded-lg p-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 ">Feed</Text>
-              </TextLink>
+                <View className="h-6 w-6 bg-neo-500 rounded-full duration-200 group-hover:bg-neo-900 dark:bg-neo-200 dark:group-hover:bg-white" />
+                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">Feed</Text>
+              </Link>
             </TouchableOpacity>
             <TouchableOpacity>
               <TextLink

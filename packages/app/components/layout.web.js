@@ -40,7 +40,7 @@ export default function Layout(props) {
                 <meta name="og:title" content={siteTitle} />
                
             </Head>
-            <View className="bg-gray-300 dark:bg-red-100 text-gray-900 dark:text-gray-50 h-full">
+            <View className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 h-full">
                 <Navbar />
                 {(oBreadCrump == null ) && <Tabsbar />}
                 {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
