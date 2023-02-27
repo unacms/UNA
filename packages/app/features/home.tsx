@@ -1,13 +1,15 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import Link from '../components/atoms/link'
+import {IconPlus, IconMessage} from '../components/svg'
 import Image from '../components/atoms/image'
 //import Svg, { Path } from "react-native-svg";
 import { View,Row } from 'app/design/view'
-import { TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'app/design/view'
 
 export function HomeScreen() {
   return (
     <View className="w-full h-screen bg-screen dark:bg-screen-dark flex-row">
+      
       <View className="flex-none flex-col bg-neo-900 border-r border-black/50 space-y-4 hidden sm:block p-4 ">
         <Link href="/" className="">
           <View className="bg-green-500 rounded-lg w-10 h-10 items-center shadow my-auto">
@@ -27,7 +29,7 @@ export function HomeScreen() {
       </View>
       <View className="relative  h-screen  ">
         <Text className=" text-white px-4 py-3 bg-brand text-base text-center ">
-          Announcement! Read{' '}
+        <IconPlus className="h-6 w-6"></IconPlus><IconMessage className="h-6 w-6"></IconMessage>Announcement1! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
             href="/about"
