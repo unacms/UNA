@@ -12,7 +12,7 @@ export default function () {
   const [menuPopup, setMenuPopup] = useState(true);
   return (
       <header className="w-full">
-        <nav className="bg-primary border-gray-200 px-2  py-2.5 dark:bg-primary-dark  order-1 ">
+        <nav className="bg-navbar border-gray-200 px-2  py-2.5 dark:bg-navbar-dark  order-1 ">
             <div className="flex justify-between items-center">
                 <div className="flex flex-shrink-0 justify-start items-center gap-2">
                     <button type="button" className="p-2  text-gray-200 rounded-full hover:text-white hover:bg-primary-focus/60 active:bg-primary-focus">

@@ -7,7 +7,7 @@ import { TouchableOpacity } from 'react-native'
 
 export function HomeScreen() {
   return (
-    <View className="w-full h-screen bg-gray-100 dark:bg-gray-900 flex-row">
+    <View className="w-full h-screen bg-screen dark:bg-screen-dark flex-row">
       <View className="flex-none flex-col bg-gray-900 border-r border-black/50 space-y-4 hidden sm:block p-4 ">
         <Link href="/" className="">
           <View className="bg-green-500 rounded-lg w-10 h-10 items-center shadow my-auto">
@@ -25,8 +25,8 @@ export function HomeScreen() {
           </View>
         </Link>
       </View>
-      <View className="flex-auto h-screen flex-col ">
-        <Text className="text-white px-4 py-3 bg-blue-500 text-base text-center hidden sm:block">
+      <View className="relative flex-auto h-screen flex-col ">
+        <Text className="hidden text-white px-4 py-3 bg-blue-500 text-base text-center ">
           Announcement! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
@@ -44,7 +44,7 @@ export function HomeScreen() {
           for more info.
         </Text>
 
-        <View className="w-screen overflow-scroll  bg-white dark:bg-gray-800 h-16 flex bg-white border-b border-gray-200 dark:border-gray-700/50 flex-row ">
+        <View className=" w-screen overflow-scroll backdrop-blur-sm bg-navbar dark:bg-navbar-dark h-16 flex  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row ">
           <View className="p-4 h-full flex-row ">
             <View className="w-8 h-8 bg-blue-500/50 rounded-full"></View>
             <View className="hidden w-52 mx-4 md:block flex-auto h-8 bg-blue-500/20 rounded-full"></View>
@@ -98,8 +98,11 @@ export function HomeScreen() {
             </TouchableOpacity>
           </Row>
         </View>
+        
+
+
         <View className=" flex-row flex-1">
-          <View className="w-72 flex-none hidden xl:flex px-3 py-4  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700/50 flex-col space-y-2">
+          <View className="w-72  flex-none hidden xl:flex px-3 py-4  bg-sidebar dark:bg-sidebar-dark border-r border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
             <View className="flex-col space-y-2">
               <TouchableOpacity>
                 <TextLink
@@ -143,8 +146,8 @@ export function HomeScreen() {
           <View className="flex-auto flex flex-col flex-1 ">
             <View className="flex-auto relative w-full sm:p-4 lg:p-6 flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
               <View className=" flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
-                <View className="bg-white group duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700   ">
-                  <View className="bg-teal-500/40 w-full pb-[36%]  "></View>
+                <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20   ">
+                  <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
                   <View className="flex-row p-4 space-x-2 ">
                     <View className="w-12 h-12  bg-blue-500/50 rounded-full"></View>
@@ -433,6 +436,9 @@ export function HomeScreen() {
                   </View>
                 </View>
               </View>
+
+
+
               <View className="hidden sticky top-0 lg:flex flex-none w-2/5  flex-col   space-y-2">
                 <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700  ">
                   <View className="bg-yellow-500/20  w-full sm:rounded-t-md aspect-video"></View>

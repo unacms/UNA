@@ -4,19 +4,55 @@
 
 const colors = 
 {
-    "primary": {
+    "brand": {
         DEFAULT: "#2F5E8E",
-        "content": "#2F5E8E",
-        "focus": "#214264",
-
+        "dark": "#040507",
+    },
+    "screen": {
+        DEFAULT: "#f3f5f6",
+        "dark": "#0d0f11",
+    },
+    "navbar": {
+            DEFAULT: "#FFFFFF",
+            "dark": "#181b20",
+    },
+    "sidebar": {
+        DEFAULT: "#FFFFFF",
+        "dark": "#181b20",
+    },
+    "tabbar": {
+        DEFAULT: "#FFFFFF",
+        "dark": "#181b20",
+    },
+    "block": {
+        DEFAULT: "#FFFFFF",
+        "dark": "#181b20",
+    },
+    "card": {
+        DEFAULT: "#FFFFFF",
+        "dark": "#181b20",
+    },
+    "button": {
+        DEFAULT: "#2F5E8E",
         "dark": "#2F5E8E",
-        "content-dark": "#6A9BCE",
-        "focus-dark": "#2F5E8E",
     },
-    "gray-1000": {
-        DEFAULT: "#06090E",
-     
+    "bordercolor": {
+        DEFAULT: "#252a32",
+        "dark": "#90a2b2",
     },
+    'neo': {
+        '50': '#f3f5f6',
+        '100': '#dbe1e6',
+        '200': '#bdc8d1',
+        '300': '#90a2b2',
+        '400': '#607385',
+        '500': '#465462',
+        '600': '#2f3742',
+        '700': '#252a32',
+        '800': '#181b20',
+        '900': '#0d0f11',
+    },
+   
 };
 
 const theme = {

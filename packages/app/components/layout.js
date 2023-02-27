@@ -32,7 +32,7 @@ export default function Layout(props) {
     const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
 
     return (
-        <ScrollView className="bg-gray-300 dark:bg-gray-1000 text-gray-900 dark:text-gray-50">
+        <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
             {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
