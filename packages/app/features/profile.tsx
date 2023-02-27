@@ -1,8 +1,7 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View,Row } from 'app/design/view'
 import Link from '../components/atoms/link';
 import Image from '../components/atoms/image';
-import { Row } from 'app/design/layout'
 
 export function ProfileScreen() {
   return (

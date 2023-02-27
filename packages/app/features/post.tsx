@@ -5,7 +5,7 @@ import { View } from 'app/design/view'
 export function PostScreen() {
   return (
     <View>
-        <Text>Sample Pos here</Text>
+        <Text>Sample Pos here11</Text>
     </View>
   
 
