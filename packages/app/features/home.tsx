@@ -10,7 +10,7 @@ export function HomeScreen() {
   return (
     <View className="w-full h-screen bg-screen dark:bg-screen-dark flex-row">
       
-      <View className="flex-none flex-col bg-neo-900 border-r border-black/50 space-y-4 hidden sm:block p-4 ">
+      <View className="flex-none flex-col bg-neo-900 border-r border-black/50 space-y-4 hidden  p-4 ">
         <Link href="/" className="">
           <View className="bg-green-500 rounded-lg w-10 h-10 items-center shadow my-auto">
             <View className="bg-green-300 rounded-full w-8 h-8 items-center shadow my-auto"></View>
@@ -27,8 +27,8 @@ export function HomeScreen() {
           </View>
         </Link>
       </View>
-      <View className="relative  h-screen  ">
-        <Text className=" text-white px-4 py-3 bg-brand text-base text-center ">
+      <View className="relative w-full h-screen  ">
+        <Text className=" text-white px-4 py-3 bg-brand text-base text-center hidden">
         Announcement1! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
@@ -46,108 +46,115 @@ export function HomeScreen() {
           for more info.
         </Text>
 
-        <View className=" w-screen bg-navbar dark:bg-navbar-dark flex border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row ">
-          <View className="p-4 h-full flex-row ">
+        <View className="absolute z-30 backdrop-blur-sm  lg:h-16 px-4 lg:px-6 py-1 w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row space-x-4 ">
+          <View className="my-auto h-full flex-row items-center space-x-2 flex-auto">
             <View className="w-8 h-8 bg-blue-500/50 rounded-full"></View>
-            <View className="hidden w-52 mx-4 md:block flex-auto h-8 bg-blue-500/20 rounded-full"></View>
+            <View className="hidden w-52  md:block flex-none h-8 bg-blue-500/20 rounded-full"></View>
           </View>
 
-          <Row className="flex-auto items-center flex-row space-x-4 ">
+          <Row className="flex-none items-center flex-row space-x-2 ">
             <TouchableOpacity>
               <Link
                 href="/timeline-view-home"
-                className="group flex-row items-center rounded-lg p-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+                className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
-                <View className="h-6 w-6 bg-neo-500 rounded-full duration-200 group-hover:bg-neo-900 dark:bg-neo-200 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 "><Icon icon="home" className="h-6 w-6 text-red-500"></Icon> Feed</Text>
+                <Icon icon="home" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className=" text-sm lg:text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Home</Text>
               </Link>
             </TouchableOpacity>
             <TouchableOpacity>
-              <TextLink
-                href="/contact"
-                className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 "><Icon icon="message" className="h-6 w-6"></Icon> Contact</Text>
-              </TextLink>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <TextLink
-                href="/about"
-                className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 ">About</Text>
-              </TextLink>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <TextLink
+              <Link
                 href="/posts-home"
-                className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
+                className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
-                <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 ">Posts</Text>
-              </TextLink>
+                <Icon icon="discover" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className="text-sm lg:text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Discover</Text>
+              </Link>
             </TouchableOpacity>
             <TouchableOpacity>
-              <TextLink
-                href="/profile"
-                className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
+              <Link
+                href="/contact"
+                className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
-                <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 ">Profile</Text>
-              </TextLink>
+                <Icon icon="contact" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className=" text-sm lg:text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Contact</Text>
+              </Link>
             </TouchableOpacity>
+            <TouchableOpacity>
+              <Link
+                href="/about"
+                className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+              >
+                <Icon icon="about" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className="text-sm lg:text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  About</Text>
+              </Link>
+            </TouchableOpacity>
+     
           </Row>
         </View>
         
 
 
-        <View className=" flex-row flex-1">
-          <View className="w-72  flex-none hidden xl:flex px-3 py-4  bg-sidebar dark:bg-sidebar-dark border-r border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
+        <View className=" flex-row flex-1 2xl:mx-auto ">
+          <View className="w-72 mt-16 flex-none hidden xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
             <View className="flex-col space-y-2">
-              <TouchableOpacity>
-                <TextLink
-                  href="/timeline-view-home"
-                  className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
-                >
-                  <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                  <Text className="ml-2 mr-1  ">Feed</Text>
-                </TextLink>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <TextLink
-                  href="/posts-home"
-                  className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
-                >
-                  <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                  <Text className="ml-2 mr-1  flex-1 whitespace-nowrap">
-                    Posts
-                  </Text>
-                  <Text className="ml-2 inline-flex items-center justify-center rounded-full bg-gray-200 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                    Pro
-                  </Text>
-                </TextLink>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <TextLink
-                  href="/profile"
-                  className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
-                >
-                  <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                  <Text className="ml-2 mr-1 flex-1 whitespace-nowrap">
-                    Profile
-                  </Text>
-                  <Text className="ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 p-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                    3
-                  </Text>
-                </TextLink>
-              </TouchableOpacity>
+            <TouchableOpacity>
+              <Link
+                href="/timeline-view-home"
+                className="group flex-row space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+              >
+                <Icon icon="home" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className="text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Home</Text>
+              </Link>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Link
+                href="/posts-home"
+                className="group flex-row space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+              >
+                <Icon icon="discover" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className="text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Discover</Text>
+              </Link>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Link
+                href="/contact"
+                className="group flex-row space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+              >
+                <Icon icon="contact" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className=" text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  Contact</Text>
+              </Link>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Link
+                href="/about"
+                className="group flex-row space-x-3 items-center rounded-lg px-3 py-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
+              >
+                <Icon icon="about" className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon> 
+
+                <Text className="text-sm lg:text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  About</Text>
+              </Link>
+            </TouchableOpacity>
             </View>
           </View>
-          <View className="flex-auto flex flex-col flex-1 ">
+          
             <View className="flex-auto relative w-full sm:p-4 lg:p-6 flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
-              <View className=" flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
+              <View className="mt-16 flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
                 <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20   ">
                   <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
@@ -441,7 +448,7 @@ export function HomeScreen() {
 
 
 
-              <View className="hidden sticky top-0 lg:flex flex-none w-2/5  flex-col   space-y-2">
+              <View className="mt-16 hidden sticky top-0 lg:flex flex-none w-2/5  flex-col   space-y-2">
                 <View className="bg-white  p-[1px]  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700  ">
                   <View className="bg-yellow-500/20  w-full sm:rounded-t-md aspect-video"></View>
                   <View className=" overflow-hidden w-full my-3 h-10  ">
@@ -490,7 +497,7 @@ export function HomeScreen() {
                 </View>
               </View>
             </View>
-          </View>
+          
         </View>
       </View>
     </View>
