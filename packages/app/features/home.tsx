@@ -59,7 +59,7 @@ export function HomeScreen() {
                 className="group flex-row items-center rounded-lg p-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
                 <View className="h-6 w-6 bg-neo-500 rounded-full duration-200 group-hover:bg-neo-900 dark:bg-neo-200 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 "><Icon icon="plus" className="h-6 w-6"></Icon> Feed</Text>
+                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 "><Icon icon="home" className="h-6 w-6 text-red-500"></Icon> Feed</Text>
               </Link>
             </TouchableOpacity>
             <TouchableOpacity>
