@@ -1,6 +1,6 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import Link from '../components/atoms/link'
-import {IconPlus, IconMessage} from '../components/svg'
+import {Icon} from '../components/svg'
 import Image from '../components/atoms/image'
 //import Svg, { Path } from "react-native-svg";
 import { View,Row } from 'app/design/view'
@@ -29,7 +29,7 @@ export function HomeScreen() {
       </View>
       <View className="relative  h-screen  ">
         <Text className=" text-white px-4 py-3 bg-brand text-base text-center ">
-        <IconPlus className="h-6 w-6"></IconPlus><IconMessage className="h-6 w-6"></IconMessage>Announcement1! Read{' '}
+        Announcement1! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
             href="/about"
@@ -59,7 +59,7 @@ export function HomeScreen() {
                 className="group flex-row items-center rounded-lg p-2   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
               >
                 <View className="h-6 w-6 bg-neo-500 rounded-full duration-200 group-hover:bg-neo-900 dark:bg-neo-200 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">Feed</Text>
+                <Text className="ml-2 mr-1 text-base font-semibold duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 "><Icon icon="plus" className="h-6 w-6"></Icon> Feed</Text>
               </Link>
             </TouchableOpacity>
             <TouchableOpacity>
@@ -68,7 +68,7 @@ export function HomeScreen() {
                 className="flex items-center rounded-lg p-2 text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50"
               >
                 <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text className="ml-2 mr-1 ">Contact</Text>
+                <Text className="ml-2 mr-1 "><Icon icon="message" className="h-6 w-6"></Icon> Contact</Text>
               </TextLink>
             </TouchableOpacity>
             <TouchableOpacity>
