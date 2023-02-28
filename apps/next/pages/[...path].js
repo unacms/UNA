@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 export default function Path (props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
-    console.log(path);
+    
     return <All path={path} {...props}>props.children</All>
 }
 

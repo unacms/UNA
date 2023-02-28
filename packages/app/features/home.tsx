@@ -173,7 +173,7 @@ export function HomeScreen() {
             </TouchableOpacity>
           </Row>
         </View>
-
+        { /* content */ }
         <View className=" flex-row flex-1 2xl:mx-auto ">
           <View className="w-72 mt-16 flex-none hidden xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
             <View className="flex-col space-y-0.5">
@@ -644,6 +644,7 @@ export function HomeScreen() {
             </View>
           </View>
         </View>
+        { /* content */ }
       </View>
     </View>
   )

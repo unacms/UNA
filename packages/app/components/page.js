@@ -1,5 +1,6 @@
 import PageDataContext from 'app/context/page';
 import Cell from 'app/components/cell';
+import Home from 'app/components/pages/home';
 
 export default function Page(props) {
     let data = props.data;
@@ -8,7 +9,14 @@ export default function Page(props) {
         return <Cell key={key} blocks={data.elements[key]} />
     });
 
-    return (
-        <PageDataContext>{cells}</PageDataContext>
-    );
+    if (props.data.uri != 'home'){
+        return (
+            <PageDataContext>{cells}</PageDataContext>
+        );
+    }
+    else{
+        return (
+            <PageDataContext><Home>{cells}</Home></PageDataContext>
+        );
+    }
 }
