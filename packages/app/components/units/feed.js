@@ -11,7 +11,9 @@ import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
 
 export default function UnitFeed({data}) {
-    var oImage = data.content.images.length > 0 ? data.content.images[0] : null;
+    var oImage = null;
+    if (data.content.images)  
+      oImage = data.content.images.length > 0 ? data.content.images[0] : null;
 
     var oCmt = null;
     if (data.cmts.data.length > 0){

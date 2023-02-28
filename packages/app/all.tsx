@@ -15,8 +15,9 @@ export default function ({uri, data}) {
 
 // this function is called in Next as serverSideProps and in Expo to get data dynamically
 export async function getData(path) {
-    if (path == '')
-	path = 'timeline-view-home'
+    if (!path)
+	    path = 'home';
+
     path = path.startsWith('/') ? path.substr(1) : path;
 
     // TODO: pass GET&POST params
