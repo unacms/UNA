@@ -145,20 +145,20 @@ export default function () {
     </Row>
   </View>
   <AnimatePresence>
-  { menuPopup && <MotiView
+  { menuPopup && <MotiView 
       from={{
         opacity: 0,
-        scale: 0.9,
+        translateX: -72,
       }}
       animate={{
         opacity: 1,
-        scale: 1,
+        translateX: 0,
       }}
       exit={{
         opacity: 0,
-        scale: 0.9,
+        translateX: -72,
       }}
-    ><ElementMainMenu  /></MotiView>
+    ><View className='w-72 2xl:hidden'><ElementMainMenu  /></View></MotiView>
   }
   </AnimatePresence>
 </View>

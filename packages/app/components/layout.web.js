@@ -32,7 +32,7 @@ export default function Layout(props) {
             <View className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 h-full">
                 <Navbar />
                 {(oBreadCrump == null ) && <Tabsbar />}
-                {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
+                {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}
                 <ScrollView className={sClassName}>
                     <View className=" flex-row flex-1 max-w-screen-2xl min-w-full 2xl:justify-center" > 
                         <View className="w-72 flex-none hidden xl:flex "><ElementMainMenu className="w-full flex-none hidden" /></View>
