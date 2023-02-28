@@ -15,7 +15,7 @@ export default function Root() {
             fontWeight: "bold",
           }
         }
-      } ><Stack.Screen name="post" options={{title:'Postss'}}></Stack.Screen><Stack.Screen name="profile" options={{title:'Postss222'}}/><Stack.Screen name="contact" options={{title:'contactz'}}/></Stack>
+      } ></Stack>
          
     </Provider>
 

@@ -10400,6 +10400,11 @@ react-native-html-parser@^0.1.0:
   resolved "https://registry.yarnpkg.com/react-native-html-parser/-/react-native-html-parser-0.1.0.tgz#c35de1dc325562da26e68befa423bac34505ba48"
   integrity sha512-G5d0pk7TA9YgjVJhLRf2zMOOf1HXd8ItM9JYsTS2pXoEfSRfMfRU5iTj03LGwvHU2NT9kc18NDJeLgZY6+Bbvg==
 
+react-native-multibar@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-multibar/-/react-native-multibar-1.1.5.tgz#51504a8cc8b2faacff0fa54c1c74680a05e7e1b8"
+  integrity sha512-DauThuzfguVrfSdaaaPtwYYP/JmdVUxCaa9OzweHavJbKhL5UILiniWpETLSR3uSaQaKsz6lplRaAVOnO+nL9g==
+
 react-native-reanimated@~2.12.0:
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-2.12.0.tgz#5821eecfb1769b1617a67a2d4dec12fdeedb2b6e"
