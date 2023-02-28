@@ -158,7 +158,7 @@ export default function () {
         opacity: 0,
         translateX: -72,
       }}
-    ><View className='w-72 2xl:hidden'><ElementMainMenu  /></View></MotiView>
+    ><TouchableOpacity className='bg-white/80 bg-block/80 w-full h-screen' onPress={showMenu}><View className='w-72'><ElementMainMenu  /></View></TouchableOpacity></MotiView>
   }
   </AnimatePresence>
 </View>
