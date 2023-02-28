@@ -183,7 +183,7 @@ export default function ElementComments(props) {
     //style={{ display: commentData.startFrom > 0? "block" : "none" }}
     
     return (
-        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
+        <View className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full py-2 rounded-b-lg sm:border  border-bordercolor/10 dark:border-bordercolor-dark/10'>
            <ScrollView  ref={(ref) => {
             setRef(ref);
           }}>

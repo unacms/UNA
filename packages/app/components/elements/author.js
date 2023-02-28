@@ -15,15 +15,15 @@ export default function ElementAuthor(oProps) {
         <Menu {...oAuthor.author_desc} displayType="link" params={{
             className: 'bx-menu flex-row flex-wrap justify-start items-stretch ',
             classNameItem: {
-                link: 'block text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline',
+                link: 'block text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline',
                 text: 'block'
             }
         }} />
     );
 
     return (
-        <View className=" flex-row items-center gap-3 pt-4 px-4 sm:rounded-t-lg bg-white dark:bg-gray-900">
-            <Profile {...oAuthor.author_unit} displayType="unit" display_size="lg" showInfo={sInfo} />
+        <View className="mx-auto w-full max-w-5xl flex-row items-center  pt-4 px-4 sm:rounded-t-lg bg-card dark:bg-card-dark border-t  border-bordercolor/10 dark:border-bordercolor-dark/10 sm:border-x">
+            <Profile {...oAuthor.author_unit} displayType="unit" displaySize="xl" showInfo={sInfo} />
             {session && <MenuMore {...oProps.data.menu_manage} />}
         </View>
     );

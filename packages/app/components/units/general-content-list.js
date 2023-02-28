@@ -64,7 +64,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     return (
         <View className="u-card" style={styles.card}>
-       <View className="bg-white  duration-200 hover:shadow-lg active:shadow-none dark:bg-gray-800 overflow-hidden border sm:rounded-lg hover:border-gray-300 border-gray-200 dark:border-gray-700/50 dark:hover:border-gray-700 w-full">
+       <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
                  <Link href={data.url}>
            
                         
@@ -74,7 +74,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                         
                     </View>
                 } 
-        {!data.image &&<View className="bg-yellow-500/20  w-full sm:rounded-t-md aspect-video"></View> }
+        {!data.image &&<View className="bg-brand/10 dark:bg-brand-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
         
         <View className="px-4">
                           <View className=" overflow-hidden w-full my-3 h-10  ">
@@ -85,7 +85,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                           </View>
                           
                           <View className='pb-3'>
-                              <Profile {...data.author_data} displayType="full"  className="" />
+                              <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
                             </View>
          </View>
                       

@@ -17,7 +17,7 @@ export default function () {
   }
 
   return (
-    <View className="fixed z-10 w-full mb-16"><View className=" backdrop-blur-sm  h-16 px-2 sm:px-3   w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row space-x-1 sm:space-x-2 ">
+    <View className="fixed -top-[1px]  z-10 w-full mb-16"><View className=" backdrop-blur pt-[1px]  h-16 px-2 sm:px-3   w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row space-x-1 sm:space-x-2 ">
     <TouchableOpacity className="xl:hidden" onPress={showMenu}>
       <View
         className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
