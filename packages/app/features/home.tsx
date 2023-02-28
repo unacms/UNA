@@ -65,7 +65,7 @@ export function HomeScreen() {
               <Icon icon="logo-mark" className="h-14 w-14"></Icon>
               <Icon
                 icon="logo-text"
-                className="h-14 w-14 text-brand dark:text-brand-dark  "
+                className="h-14 w-14 hidden sm:block text-brand dark:text-brand-dark  "
               ></Icon>
             </Link>
           </TouchableOpacity>
