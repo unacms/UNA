@@ -65,7 +65,7 @@ export function HomeScreen() {
               <Icon icon="logo-mark" className="h-14 w-14"></Icon>
               <Icon
                 icon="logo-text"
-                className="h-14 w-14 text-brand dark:text-brand-dark  "
+                className="h-14 w-14 hidden sm:block text-brand dark:text-brand-dark  "
               ></Icon>
             </Link>
           </TouchableOpacity>
@@ -302,27 +302,27 @@ export function HomeScreen() {
 
           <View className="flex-auto relative w-full sm:p-4  flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
             <View className="mt-16 flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
-              <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20   ">
+            <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20   ">
                 <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
                 <View className="flex-row p-4 space-x-2 ">
                   <View className="w-12 h-12  bg-blue-500/50 rounded-full"></View>
                   <View className=" my-auto  flex-col ">
-                    <Text className="text-gray-700 hover:text-gray-900 duration-200 dark:hover:text-white dark:text-gray-300 text-base tracking-tight hover:underline font-bold">
+                    <Text className="text-neo-800 hover:text-gray-900 duration-200 dark:hover:text-neo-50 dark:text-neo-200 text-base tracking-tight hover:underline font-bold">
                       Dr Sponge Bob Jr
                     </Text>
-                    <Text className="text-gray-600 dark:text-gray-400 text-sm  ">
+                    <Text className="text-neo-600 dark:text-neo-400 text-sm  ">
                       2 min ago
                     </Text>
                   </View>
                 </View>
                 <View className="w-full px-4 pb-4 flex-col space-y-4">
-                  <Text className="text-gray-800  group-hover:text-gray-900 duration-200 dark:group-hover:text-white dark:text-gray-200  text-2xl  tracking-tight font-bold">
+                  <Text className="text-neo-800  group-hover:text-neo-900 duration-200 dark:group-hover:text-neo-50 dark:text-neo-100  text-2xl  tracking-tight font-bold">
                     From Classroom to Career: Navigating the Modern Challenges
                     of Transitioning into the Workforce
                   </Text>
                   <View className="flex-row space-x-2 h-12 overflow-hidden relative">
-                    <Text className="text-gray-700  dark:text-gray-300 text-base">
+                    <Text className="text-neo-700  dark:text-neo-200 text-base">
                       Our app provides an intuitive and easy-to-use interface
                       for users to publish and share content on their social
                       media accounts. Leveraging the power of UNA's community
@@ -331,9 +331,9 @@ export function HomeScreen() {
                       that is both fun and functional.
                     </Text>
                     <View className="absolute  flex-row bottom-0  right-0 bg-gradient-to-r ">
-                      <View className="  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-gray-800"></View>
-                      <View className="pl-2  bg-white dark:bg-gray-800">
-                        <Text className="text-blue-600 dark:text-blue-400 text-base font-semibold">
+                      <View className="  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-neo-800"></View>
+                      <View className="pl-2  bg-white dark:bg-neo-800">
+                        <Text className="text-brand dark:text-brand-dark text-base font-medium">
                           More...
                         </Text>
                       </View>
@@ -345,29 +345,29 @@ export function HomeScreen() {
                 </View>
                 <View className="flex-row w-full space-x-4">
                   <View className="px-4 mb-3 flex-auto flex-row space-x-4  ">
-                    <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                      <Text className="font-bold text-gray-700 dark:text-gray-300">
+                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                      <Text className="font-bold text-neo-700 dark:text-neo-200">
                         16
                       </Text>{' '}
                       comments
                     </Text>
                   </View>
                   <View className="px-4 mb-3  flex-row space-x-4  ">
-                    <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                      <Text className="font-bold text-gray-700 dark:text-gray-300">
+                  <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                      <Text className="font-bold text-neo-700 dark:text-neo-200">
                         12
                       </Text>{' '}
                       views
                     </Text>
-                    <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                      <Text className="font-bold text-gray-700 dark:text-gray-300">
+                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                      <Text className="font-bold text-neo-700 dark:text-neo-200">
                         48
                       </Text>{' '}
                       likes
                     </Text>
 
-                    <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                      <Text className="font-bold text-gray-700 dark:text-gray-300">
+                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                      <Text className="font-bold text-neo-700 dark:text-neo-200">
                         32
                       </Text>{' '}
                       reposts
@@ -375,33 +375,33 @@ export function HomeScreen() {
                   </View>
                 </View>
 
-                <View className="px-4 py-2  border-t border-gray-500/20  flex-row space-x-1  ">
+                <View className="px-4 py-3  border-t border-gray-500/20  flex-row space-x-1  ">
                   <View className="flex-row w-full space-x-4">
                     <View className=" flex-row space-x-2  ">
-                      <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                        <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
+                        <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Like
                         </Text>
                       </View>
-                      <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                        <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
+                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Comment
                         </Text>
                       </View>
-                      <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                        <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
+                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Repost
                         </Text>
                       </View>
-                      <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                        <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
+                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Share
                         </Text>
                       </View>
                     </View>
                     <View className=" flex-auto space-x-2 flex-row justify-end ">
-                      <View className="group  flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                        <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                    <View className="group flex-none flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
+                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           More
                         </Text>
                       </View>
