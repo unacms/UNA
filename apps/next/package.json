@@ -17,6 +17,7 @@
     "app": "*",
     "autoprefixer": "^10.4.13",
     "lucide-react-native": "^0.115.0",
+    "moti": "^0.23.7",
     "next": "13.0.1",
     "raf": "^3.4.1",
     "react-native-extended-stylesheet": "^0.12.0",

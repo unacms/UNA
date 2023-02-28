@@ -73,11 +73,11 @@ export default function UnitFeed({data}) {
                   <Profile {...data.author_data} displayType="full" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
         
                   <View className="w-full  pb-4 flex-col space-y-4 pt-4">
-                    <Text className="text-gray-800  group-hover:text-gray-900 duration-200 dark:group-hover:text-white dark:text-gray-200  text-2xl  tracking-tight font-bold">
+                    <Text className="text-neo-800  group-hover:text-neo-900 duration-200 dark:group-hover:text-white dark:text-neo-200  text-2xl  tracking-tight font-bold">
                       {data.content.title}
                     </Text>
                         { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
-                            <Text className="text-gray-700  dark:text-gray-300 text-base">
+                            <Text className="text-neo-700  dark:text-neo-300 text-base">
                                  {sPlain} {data.description}{data.cmts.count}
                           </Text>
                            { bShowMore && <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
@@ -102,45 +102,45 @@ export default function UnitFeed({data}) {
                   </View>
                   <View className='flex-row w-full space-x-4'>
                       <View className=" mb-3 flex-auto flex-row space-x-4  ">
-                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                          <Text className="font-bold text-gray-700 dark:text-gray-300">16</Text> comments
+                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                          <Text className="font-bold text-neo-700 dark:text-neo-300">16</Text> comments
                         </Text>
                       </View>
                       <View className="mb-3  flex-row space-x-4  ">
-                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                          <Text className="font-bold text-gray-700 dark:text-gray-300">12</Text> views
+                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                          <Text className="font-bold text-neo-700 dark:text-neo-300">12</Text> views
                         </Text>
-                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                          <Text className="font-bold text-gray-700 dark:text-gray-300">48</Text> likes
+                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                          <Text className="font-bold text-neo-700 dark:text-neo-300">48</Text> likes
                         </Text>
                 
-                        <Text className="text-gray-600 dark:text-gray-400 text-sm">
-                          <Text className="font-bold text-gray-700 dark:text-gray-300">32</Text> reposts
+                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
+                          <Text className="font-bold text-neo-700 dark:text-neo-300">32</Text> reposts
                         </Text>
                       </View>
                   </View>
  </View>
-                  <View className=" py-2  border-t border-gray-500/20  flex-row space-x-1  ">
+                  <View className=" px-4 py-2  border-t border-gray-500/20  flex-row space-x-1  ">
                     
                   <View className='flex-row w-full space-x-4'>
                       <View className=" flex-row space-x-2  ">
                           <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                          <Text className="group-hover:text-neo-800 text-neo-600 dark:group-hover:text-neo-200 dark:text-neo-400 text-sm font-semibold mx-auto">
                             Like
                           </Text>
                         </View>
                         <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                          <Text className="group-hover:text-neo-800 text-neo-600 dark:group-hover:text-neo-200 dark:text-neo-400 text-sm font-semibold mx-auto">
                             Comment
                           </Text>
                         </View>
                         <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                          <Text className="group-hover:text-neo-800 text-neo-600 dark:group-hover:text-neo-200 dark:text-neo-400 text-sm font-semibold mx-auto">
                             Repost
                           </Text>
                         </View>
                         <View className="group flex-auto flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                          <Text className="group-hover:text-neo-800 text-neo-600 dark:group-hover:text-neo-200 dark:text-neo-400 text-sm font-semibold mx-auto">
                             Share
                           </Text>
                         </View>
@@ -148,7 +148,7 @@ export default function UnitFeed({data}) {
                       </View>
                       <View className=" flex-auto space-x-2 flex-row justify-end ">
                         <View className="group  flex py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
-                          <Text className="group-hover:text-gray-800 text-gray-600 dark:group-hover:text-gray-200 dark:text-gray-400 text-sm font-semibold mx-auto">
+                          <Text className="group-hover:text-neo-800 text-neo-600 dark:group-hover:text-neo-200 dark:text-neo-400 text-sm font-semibold mx-auto">
                             More
                           </Text>
                         </View>
