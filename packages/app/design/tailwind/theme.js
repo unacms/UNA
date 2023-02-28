@@ -5,8 +5,8 @@
 const colors = 
 {
     "brand": {
-        DEFAULT: "#2F5E8E",
-        "dark": "#040507",
+        DEFAULT: "#0284c7",
+        "dark": "#38bdf8",
     },
     "screen": {
         DEFAULT: "#f3f5f6",
