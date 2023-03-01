@@ -55,7 +55,7 @@ export default function UnitFeed({data}) {
     
     const regex = /(<([^>]+)>)/ig;
     let sPlainFull = data.content.text.replace(regex, '');
-    let sPlain = sPlainFull.substr(0,50);
+    let sPlain = sPlainFull.substr(0,200);
     let bShowMore = false;
     if (sPlain != sPlainFull || sImages.length > 1){
         bShowMore = true;
@@ -78,7 +78,7 @@ export default function UnitFeed({data}) {
                     </Text>
                         { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
                             <Text className="text-neo-700  dark:text-neo-200 text-base">
-                                 {sPlain} {data.description}{data.cmts.count}
+                                 {sPlain}{data.cmts.count}
                           </Text>
                            { bShowMore && <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
                                 <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
