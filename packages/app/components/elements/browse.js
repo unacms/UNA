@@ -87,9 +87,9 @@ const checkVisible = (isVisible) => {
   }
    
     return (
-        <View><ScrollView className={classes} style={styles.cardList}>
+        <View><View className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
-            </ScrollView>
+            </View>
         { (data.unit != 'comments' && data.data.length > 0 && browseData.end == false) && <InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView> }
         </View>
         
