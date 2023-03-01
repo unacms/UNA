@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
+import { Modal, Platform } from 'react-native';
 
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
@@ -13,7 +14,6 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-import Menu from '../menu';
 import Popup from './popup';
 import Profile from './profile';
 
@@ -26,8 +26,6 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const [ popupVisibleBy, setPopupVisibleBy ] = useState('');
-    const [ performedBy, setPerformedBy ] = useState();
     const { pageData, setPageData } = useContext(PageData);
 
     const isPageVar = (sName) => {
@@ -44,9 +42,7 @@ export default function ElementReactions(oProps) {
 
     const setPageVars = (mValue) => {
         const sPageKey = getName();
-
-        let oValue = {};
-        oValue[sPageKey] = mValue;
+        const oValue = {[sPageKey]: mValue};
 
         if(!pageData)
             setPageData(oValue);
@@ -57,6 +53,14 @@ export default function ElementReactions(oProps) {
     const oParams = oProps.params;
     const oAction = oProps.action;
     const oCounter = oProps.counter;
+    
+    let oCounterState = {};
+    for (const i in oAction.menu.items) {
+        oCounterState[oAction.menu.items[i].name] = false;
+    }
+
+    const [ popupVisibleBy, setPopupVisibleBy ] = useState(oCounterState);
+    const [ performedBy, setPerformedBy ] = useState();
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
@@ -87,17 +91,9 @@ export default function ElementReactions(oProps) {
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
             setPageVars(oData);
-
-            //--- Reinit 'Do Action' popup.
-            setTimeout(function() {
-                const oTarget = document.getElementById(getName('action-ddp'));
-                const oTrigger = document.getElementById(getName('action-ddb'));
-                if(oTarget && oTrigger)
-                    new Dropdown(oTarget, oTrigger, {trigger:'click'});
-            }, 100);
         });
     };
-    
+
     const handleGetPerformedBy = (event, aItem) => {
         event.preventDefault();
 
@@ -108,9 +104,9 @@ export default function ElementReactions(oProps) {
         performAction('get_performed_by', {reaction: sReaction}, (oData) => {
             if(!oData?.performed_by)
                 return;
-
+            
             setPerformedBy(oData.performed_by);
-            setPopupVisibleBy(sReaction);
+            setPopupVisibleBy(state => ({...state, [sReaction]: true}));
         });
     };
 
@@ -132,6 +128,8 @@ export default function ElementReactions(oProps) {
         );
     };
 
+
+    
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
@@ -139,8 +137,14 @@ export default function ElementReactions(oProps) {
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
+
+    let bShowActionVoted = oAction?.is_voted === true || false;
+    if(isPageVar('is_voted'))
+        bShowActionVoted = getPageVar('is_voted') === true;
+
+    let bShowActionDisabled = oAction?.is_disabled === true || false;
+    if(isPageVar('is_disabled'))
+        bShowActionDisabled = getPageVar('is_disabled') === true;
 
     let sIcon = oAction?.icon || '';
     if(isPageVar('icon'))
@@ -226,7 +230,7 @@ export default function ElementReactions(oProps) {
                 });
             }
 
-            if(!sUsers)
+            if(!sUsers || sUsers.length == 0)
                 sUsers = getSkeleton();
 
             return (
@@ -235,16 +239,29 @@ export default function ElementReactions(oProps) {
                         {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                     </A>
-                    <Popup id={getName('performed-by-ddp-' + aItem.name)} visible={[popupVisibleBy == aItem.name, setPopupVisibleBy]}>
-                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                    </Popup>
+                    <Modal visible={popupVisibleBy[aItem.name]} presentation="formSheet" animationType="slide" transparent={Platform.OS != 'ios'}>
+                        <View id={getName('performed-by-ddp-' + aItem.name)} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+                            <View className="relative w-full h-full max-w-2xl md:h-auto">
+                                <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
+                                    <View className="p-4">
+                                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                                    </View>
+                                    <View className="flex-row items-center p-6 border-t border-gray-200 dark:border-gray-600 rounded-b">
+                                        <A className="group flex-none shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={() => {setPopupVisibleBy(state => ({...state, [aItem.name]: false}))}}>
+                                            <Text>Close</Text>
+                                        </A>                        
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
             );
         });
 
-    //--- CSR: Initialize Flowbite components.
+    //--- CSR: Initialize.
     useEffect(() => {
-        //TODO: Do action dropdown.
+        //TODO: Init something in User End here.
     }, []);
 
     return (

@@ -177,7 +177,7 @@ export default function ElementLikes(oProps) {
             });
         }
 
-        if(!sUsers)
+        if(!sUsers || sUsers.length == 0)
             sUsers = getSkeleton();
 
         return (

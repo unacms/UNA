@@ -9,6 +9,7 @@
     "@types/react": "^18.0.17",
     "@types/react-native": "^0.69.5",
     "eslint": "^8.21.0",
+    "lerna-update-wizard": "^1.1.2",
     "turbo": "^1.4.2",
     "typescript": "^4.7.4"
   },
@@ -20,7 +21,8 @@
     "web": "cd apps/next && dotenv -e ../../.env.local -- yarn next",
     "build": "cd apps/next && yarn build",
     "prod": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
-    "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules"
+    "docs": "cd apps/docs && yarn next",
+    "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules && rm -rf ./apps/docs/node_modules"
   },
   "resolutions": {
     "metro": "^0.73.7",
