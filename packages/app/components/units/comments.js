@@ -33,11 +33,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "px-4 pb-0 ";
+    let sCommentStyle =  "px-4  ";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = "pl-2 pr-4 ";
+        sCommentStyle = " pr-4 ";
     }
     
     if (!data)
@@ -46,7 +46,7 @@ export default function UnitComments(props) {
     const oCommentTextStyle = {
         body: {
             fontSize: 16,
-            lineHeight:24
+            lineHeight:22
         }
     };            
 
@@ -54,27 +54,27 @@ export default function UnitComments(props) {
         <View>
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
-                    <View className="flex-row items-center">
-                        <Profile {...data.author_data} displaySize='sm' displayType="unit_wo_info" className="" />
-                        <View className =" ml-2 flex-row items-center">
-                            <Profile  {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="" className="" />
-                            <Time ts={data.cmt_time}></Time>
-                        </View>
+                    
+                    <View className=" flex-row items-center ">
+                        <View className="mr-2"><Profile {...data.author_data} displaySize='sm' displayType="minimal" className="" /></View>
+                        <Time ts={data.cmt_time}></Time>
+                        
                     </View>
-                    <View  className="flex-auto flex-row space-x-2   border-bordercolor/10 dark:border-bordercolor-dark/20 ">
-                       <View className="w-8">
+                    <View  className=" flex-row ">
+                       <View className="w-8 flex-0">
                         <View className="w-0.5 my-1 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
-                       <View className='flex-col space-y-2 flex-auto pb-3 '>
+                       <View className='flex-1 flex-col ml-2 space-y-2  pb-3 '>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
                             <View className="w-20">
                                 <Button title="reply" onPress={() => reply(data.cmt_id)}  />
                             </View>
                         </View>
                     </View>
+                    
                 </View>
             </View>
-            {(items.length != 0) && <View className='flex-row w-full pl-4  '>
+            {(items.length != 0) && <View className='flex-row  ml-4  '>
                         <View className="w-8 flex-col space-y-1">
                         <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20 "></View>
                         <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
