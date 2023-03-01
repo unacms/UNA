@@ -33,11 +33,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "px-4 py-1 ";
+    let sCommentStyle =  "px-4 pb-0 ";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = "px-4 py-1";
+        sCommentStyle = "pl-2 pr-4 ";
     }
     
     if (!data)
@@ -63,7 +63,7 @@ export default function UnitComments(props) {
                     </View>
                     <View  className="flex-auto flex-row space-x-2   border-bordercolor/10 dark:border-bordercolor-dark/20 ">
                        <View className="w-8">
-                        <View className="w-0.5 mt-1 rounded-full h-full mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                        <View className="w-0.5 my-1 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
                        <View className='flex-col space-y-2 flex-auto pb-3 '>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
@@ -74,8 +74,14 @@ export default function UnitComments(props) {
                     </View>
                 </View>
             </View>
-            {(items.length != 0) && <View className='flex w-full pl-10 pb-2'>
-                <View className = 'w-full '>
+            {(items.length != 0) && <View className='flex-row w-full pl-4  '>
+                        <View className="w-8 flex-col space-y-0.5">
+                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20 "></View>
+                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
+                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
+                        <View className="w-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                       </View>
+                <View className = 'flex-auto '>
                     {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  addCommentData={props.addCommentData} data={items[a]} />)}
                 </View>
             </View> 

@@ -78,7 +78,7 @@ export default function Form(props) {
     });    
     
     return (
-        <View className="w-full grid place-items-center px-4 first:pt-4" >
+        <View className="w-full  grid place-items-center px-4 first:pt-4" >
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>
