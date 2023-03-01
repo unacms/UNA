@@ -157,6 +157,8 @@ export default function AtomProfile(oProps) {
         </Link>
       )
       break
+      
+
     case 'unit_wo_info':
       //
       sResult = (
