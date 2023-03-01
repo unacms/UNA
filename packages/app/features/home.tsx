@@ -2,7 +2,6 @@ import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import Link from '../components/atoms/link'
 import { Icon } from '../components/svg'
 import Image from '../components/atoms/image'
-//import Svg, { Path } from "react-native-svg";
 import { View, Row } from 'app/design/view'
 import { TouchableOpacity } from 'app/design/view'
 

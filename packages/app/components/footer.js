@@ -6,8 +6,6 @@ export default function () {
  	return (
         <View className="border-t-2 border-red-200 bg-orange-100 w-full">
             <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
-
-              
             <Link             
                 href="/demo_homepage"
                 className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"

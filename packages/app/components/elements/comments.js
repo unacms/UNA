@@ -183,14 +183,14 @@ export default function ElementComments(props) {
     //style={{ display: commentData.startFrom > 0? "block" : "none" }}
     
     return (
-        <View className='bg-white dark:bg-gray-900 py-2 rounded-b-lg'>
+        <View className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
            <ScrollView  ref={(ref) => {
             setRef(ref);
           }}>
                 <Browse {...browse} addCommentData={addCommentData} /> 
-                { commentData.startFrom > 0 && <View className="p-4"  ><StyledButton title="Show more" onPress={handleMore}/></View> }
+                { commentData.startFrom > 0 && <View className="p-8"  ><StyledButton title="Show more" onPress={handleMore}/></View> }
             
-            { form && <Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues}  /> }
+            { form && <View className="border-t border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50/50 dark:bg-neo-700/50"><Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} /></View>  }
             </ScrollView>
         </View>
     );

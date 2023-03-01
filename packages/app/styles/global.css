@@ -93,6 +93,7 @@ body {
     --margin2: 0.5rem;
     --col2w: 1000px;  
     --col1w: 700px; 
+    margin-top: -4px;
    
 }
 .u-card-list > * {
@@ -150,4 +151,12 @@ body {
 
 .u-image{
     object-fit: cover !important;
+}
+
+.u-content{
+    width: 1440px
+}
+/* TODO: improve */
+.u-content2{
+    width: 1152px
 }

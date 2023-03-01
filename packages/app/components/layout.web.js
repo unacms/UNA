@@ -9,6 +9,7 @@ import useSkeleton from '../lib/hooks/skeleton';
 import { ScrollView, SafeAreaView } from 'app/design/view'
 import { useRouter } from "next/router";
 import { View } from 'app/design/view'
+import ElementMainMenu from 'app/components/elements/mainmenu'
 
 
 export const siteTitle = 'G-Med';
@@ -16,22 +17,10 @@ export const siteTitle = 'G-Med';
 export default function Layout(props) {  
     var oBreadCrump = null;
     var oComments = null;
-/*
-        props.children[1].forEach(element => {
-            element.props.blocks.forEach(block => {
-            if (block.content && block.content.type == 'breadcrumb'){
-                oBreadCrump = block.content.data;
-            }
-            
-            if (block.content && block.content[0] && block.content[0].type == 'comments'){
-                oComments = true;
-            }
-        });
-    });
-*/
+
     const [loading, skeleton] = useSkeleton();
    
-    const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
+    const sClassName = 'mt-16 relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
     return (
         <>
             <Head>
@@ -40,12 +29,15 @@ export default function Layout(props) {
                 <meta name="og:title" content={siteTitle} />
                
             </Head>
-            <View className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 h-full">
+            <View className="bg-screen dark:bg-screen-dark text-neo-900 dark:text-neo-50 h-full">
                 <Navbar />
                 {(oBreadCrump == null ) && <Tabsbar />}
-                {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
+                {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}
                 <ScrollView className={sClassName}>
-                    {loading ? skeleton : <Main>{props.children}</Main>}
+                    <View className=" flex-row flex-1 max-w-screen-2xl min-w-full 2xl:justify-center" > 
+                        <View className="w-72 flex-none hidden xl:flex "><ElementMainMenu className="w-full flex-none hidden" /></View>
+                        {loading ? <View className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-2 sm:py-4">{skeleton}</View> : <Main className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-2 sm:py-4">{props.children}</Main>}
+                    </View>
                 </ScrollView>
                 <View className="fixed bottom-0 w-full"><Footer/></View>
             </View>

@@ -1,55 +1,15 @@
-import Link from './atoms/link';
+import { TouchableOpacity } from 'app/design/view'
+import Link from 'app/components/atoms/link'
+import { Icon } from 'app/components/svg'
+import Toggle  from './atoms/toggle';
+import React, { useState } from 'react';
 import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
+import { A, Text } from 'app/design/typography'
 
-export default function ({ children }) {
-
-return (
-        <View className="border-t-2 border-red-200 bg-green-100 w-full">
-            <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
-
-              <Link
-                href="/timeline-view-home"
-                className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text>Feed</Text>
-              </Link>
-
-            <Link             
-                href="/contact"
-                className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text >Contact</Text>
-             
-            </Link>
-            <Link
-             
-                href="/about"
-                className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text >About</Text>
-             
-            </Link>
-            <Link
-                href="/posts-home"
-                className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text >Posts</Text>
-
-            </Link>
-            <Link              
-                href="/profile"
-                className="flex items-center rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 items-center"
-              >
-                <View className="h-6 w-6 bg-gray-500 rounded-full flex-shrink-0 transition duration-75 group-hover:bg-gray-900 dark:bg-gray-400 dark:group-hover:bg-white" />
-                <Text >Profile</Text>
-
-            </Link>
-          </Row>
-        </View>
-    );
+export default function () {
+  const session = null;//const { data: session } = useSession();
+  const [menuPopup, setMenuPopup] = useState(true);
+  return (
+    <View></View>
+  );
 }
