@@ -9,21 +9,17 @@ export default function ElementMainMenu(props) {
 return (
 <View className="h-full xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
 <View className="flex-col space-y-0.5">
-  <TouchableOpacity>
     <Link href="/timeline-view-home">
        <View className="group flex-row space-x-3 items-center rounded-lg p-3   duration-200 bg-item-hover/50 dark:bg-item-hover-dark/50">
       <Icon
         icon="home"
         className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
       ></Icon>
-
       <Text className="text-base font-medium duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
         Home
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/posts-home">
       <View className="group flex-row space-x-3 items-center rounded-lg p-3   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
@@ -38,8 +34,6 @@ return (
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/posts-home">
       <View className="group flex-row space-x-3 items-center rounded-lg p-3   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
@@ -54,8 +48,6 @@ return (
       </Text>
       </View> 
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/groups-home">
       <View className="group flex-row space-x-3 items-center rounded-lg p-3   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
@@ -70,8 +62,6 @@ return (
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/channels">
       <View className="group flex-row space-x-3 items-center rounded-lg p-3   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"
@@ -86,8 +76,6 @@ return (
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/persons-home">
         <View 
@@ -103,8 +91,6 @@ return (
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
     <Link
       href="/contact">
         <View 
@@ -120,8 +106,6 @@ return (
       </Text>
       </View> 
     </Link>
-  </TouchableOpacity>
-  <TouchableOpacity>
   <Link
       href="/about" >
         <View 
@@ -137,7 +121,6 @@ return (
       </Text>
       </View>
     </Link>
-  </TouchableOpacity>
 </View>
 </View>);
 }
