@@ -60,9 +60,9 @@ export default function UnitComments(props) {
                         <Time ts={data.cmt_time}></Time>
                         
                     </View>
-                    <View  className=" flex-row ">
-                       <View className="w-8 flex-0">
-                        <View className="w-0.5 my-1 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                    <View  className=" flex-row ml-8 ">
+                       <View className="w-8 flex-0 h-full absolute top-0 -left-8">
+                        <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
                        <View className='flex-1 flex-col ml-2 space-y-2  pb-3 '>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
@@ -74,11 +74,11 @@ export default function UnitComments(props) {
                     
                 </View>
             </View>
-            {(items.length != 0) && <View className='flex-row  ml-4  '>
-                        <View className="w-8 flex-col space-y-1">
-                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20 "></View>
-                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
-                        <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
+            {(items.length != 0) && <View className='relative flex-row  ml-14  '>
+                        <View className="w-8 absolute top-0 -left-10 h-full flex-col space-y-0.5">
+                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10 "></View>
+                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                         <View className="w-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
                 <View className = 'flex-auto '>
