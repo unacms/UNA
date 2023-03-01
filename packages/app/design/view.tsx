@@ -4,6 +4,7 @@ import {
     View as ReactNativeView, 
     SafeAreaView as ReactNativeSafeAreaView 
 } from 'react-native'
+import { Link as SolitoLink } from 'solito/link'
 
 import { styled } from 'nativewind'
 
@@ -12,3 +13,4 @@ export const ScrollView = styled(ReactNativeScrollView)
 export const SafeAreaView = styled(ReactNativeSafeAreaView)
 export const TouchableOpacity = styled(ReactNativeTouchableOpacity)
 export const Row = styled(View, "flex-row")
+export const Link = styled(SolitoLink)

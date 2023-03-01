@@ -1,12 +1,12 @@
-import { useRouter } from 'solito/router'
-import { TouchableOpacity } from 'app/design/view'
+import { styled } from 'nativewind'
+import { Link as SolitoLink, TextLink as TextSolitoLink } from 'solito/link'
 
-export default function ElementLink(props) { 
-    const { push, replace, back, parseNextPath } = useRouter()
-    
+export const Link = styled(SolitoLink)
+
+export default function ElementLink(props) {     
     return (
-        <TouchableOpacity onPress={() => { push(props.href);}} {...props}>
-                {props.children}
-        </TouchableOpacity>
+        <Link href={props.href} {...props}>
+            {props.children}
+        </Link>
     );
 }

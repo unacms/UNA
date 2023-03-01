@@ -30,22 +30,22 @@ export default function () {
     </TouchableOpacity>
     <TouchableOpacity className="flex-auto">
       <Link
-        href="/home"
-        className="group hover:scale-110   duration-500 mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-1"
+        href="/home"><View className="group hover:scale-110   duration-500 mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-1"
       >
         <Icon icon="logo-mark" className="h-14 w-14"></Icon>
         <Icon
           icon="logo-text"
           className="h-14 w-14 hidden sm:block text-brand dark:text-brand-dark  "
         ></Icon>
+        </View>
       </Link>
     </TouchableOpacity>
 
     <Row className="flex-none lg:flex-auto items-center flex-row sm:space-x-1 md:space-x-2 ">
       <TouchableOpacity className="hidden sm:block">
         <Link
-          href="/timeline-view-home"
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
+          href="/timeline-view-home">
+            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
         >
           <Icon
             icon="home"
@@ -55,12 +55,13 @@ export default function () {
           <Text className="hidden md:block text-sm lg:text-base font-medium duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
             Home
           </Text>
+          </View>
         </Link>
       </TouchableOpacity>
       <TouchableOpacity className="hidden sm:block">
         <Link
-          href="/posts-home"
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
+          href="/posts-home">
+            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
         >
           <Icon
             icon="discover"
@@ -70,6 +71,7 @@ export default function () {
           <Text className="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
             Discover
           </Text>
+          </View>
         </Link>
       </TouchableOpacity>
 
@@ -80,8 +82,8 @@ export default function () {
           </Text>
         </View>
         <Link
-          href="/search"
-          className="lg:w-full group flex-col lg:flex-row lg:bg-hover dark:lg:bg-hover-dark lg:border  
+          href="/search">
+            <View className="lg:w-full group flex-col lg:flex-row lg:bg-hover dark:lg:bg-hover-dark lg:border  
           lg:border-bordercolor/10 dark:lg:border-bordercolor-dark/20 lg:space-x-3 items-center rounded-full 
           md:rounded-lg p-3 md:py-1 lg:py-2.5 lg:rounded-full bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 
           my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent 
@@ -96,50 +98,55 @@ export default function () {
           <Text className="hidden md:block text-sm lg:text-base font- lg:font-normal duration-200 group-hover:text-neo-900 text-neo-700 lg:text-neo-400 dark:lg:text-neo-600 dark:group-hover:text-neo-50 dark:text-neo-200 ">
             Search
           </Text>
+          </View>
         </Link>
       </TouchableOpacity>
       <TouchableOpacity>
         <Link
-          href="/notifications"
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
+          href="/notifications">
+            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
         >
           <Icon
             icon="notifications"
             className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
           ></Icon>
+          </View>
         </Link>
       </TouchableOpacity>
       <TouchableOpacity>
         <Link
-          href="/messages"
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
+          href="/messages">
+            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
         >
           <Icon
             icon="messages"
             className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
           ></Icon>
+            </View>
         </Link>
       </TouchableOpacity>
       <TouchableOpacity>
         <Link
-          href="/add"
+          href="/add"><View 
           className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-2.5  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
         >
           <Icon
             icon="plus"
             className="h-7 w-7 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
           ></Icon>
+          </View>
         </Link>
       </TouchableOpacity>
       <TouchableOpacity>
         <Link
-          href="/account"
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
+          href="/account">
+            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
         >
           <Icon
             icon="account"
             className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
           ></Icon>
+          </View>
         </Link>
       </TouchableOpacity>
     </Row>

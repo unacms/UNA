@@ -1,7 +1,7 @@
 import { ComponentProps, forwardRef } from 'react'
 import { Text as NativeText, Platform, Linking, TextStyle } from 'react-native'
 import { styled, StyledProps } from 'nativewind'
-import { TextLink as SolitoTextLink } from 'solito/link'
+import { TextLink as SolitoTextLink, Link as SolitoLink } from 'solito/link'
 
 export const Text = styled(NativeText)
 
@@ -74,3 +74,13 @@ export const TextLink = styled<
     />
   )
 }, 'text-base font-bold hover:underline text-blue-500')
+
+export const Link = styled<
+  ComponentProps<typeof SolitoLink> & { style?: TextStyle }
+>(function TextLink({ style, ...props }) {
+  return (
+    <SolitoLink
+      {...props}
+    />
+  )
+})
