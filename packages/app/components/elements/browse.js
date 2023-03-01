@@ -13,8 +13,8 @@ export default function ElementBrowse(props) {
     const {height, width, scale, fontScale} = useWindowDimensions(); 
 
     const [browseData, setbrowseData] = useState({
-        startFrom: data.paginate.start,
-        perPage: data.paginate.per_page,
+        startFrom: data.paginate ? data.paginate.start : 0,
+        perPage: data.paginate ? data.paginate.per_page : 10,
         moduleName: data.module, 
         mode: data.mode,
         end: false,
@@ -44,7 +44,6 @@ export default function ElementBrowse(props) {
     const handleMore =  async () => {
         
         const sRequest = prepareUrl() ;
-        console.log(sRequest);
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
@@ -74,7 +73,8 @@ export default function ElementBrowse(props) {
       const [isInView, setIsInView] = useState(false)
 
 const checkVisible = (isVisible) => {
-    
+    console.log(123);
+      console.log(isVisible);
     if (isInView != isVisible && isVisible){
         console.log(isVisible);
         handleMore();
@@ -87,10 +87,10 @@ const checkVisible = (isVisible) => {
   }
    
     return (
-        <View><View className={classes} style={styles.cardList}>
+        <View><ScrollView className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
-            </View>
-        { (data.unit != 'comments' && data.data.length > 0 && browseData.end == false) && <InView onChange={(isVisible) => checkVisible(isVisible)}><View /></InView> }
+            </ScrollView>
+        { (data.unit != 'comments' && data.data.length > 0 && browseData.end == false) && <InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView> }
         </View>
         
     );
