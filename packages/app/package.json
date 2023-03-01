@@ -10,7 +10,8 @@
     "nativewind": "^2.0.11",
     "react-hook-form": "^7.43.1",
     "react-native-reanimated": "~2.12.0",
-    "solito": "^2.3.0"
+    "solito": "^2.3.0",
+    "zeego": "^1.0.2"
   },
   "sideEffects": false
 }

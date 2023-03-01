@@ -1,13 +1,20 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Alert } from 'react-native';
 
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
-import { A, Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { A, Text } from 'app/design/typography';
+import { View } from 'app/design/view';
+import { 
+    DropdownMenuRoot, 
+    DropdownMenuContentH, 
+    DropdownMenuTrigger, 
+    DropdownMenuItemH, 
+    DropdownMenuItemTitle,
+    DropdownMenuItemIcon
+} from 'app/design/dropdown';
 import Menu from '../menu';
-import Popup from './popup'
+import Popup from './popup';
 import Profile from './profile';
 
 export default function ElementReactions(oProps) {
@@ -19,8 +26,7 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
-    //const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
-    const [ popupVisibleBy, setPopupVisibleBy ] = useState(false);
+    const [ popupVisibleBy, setPopupVisibleBy ] = useState('');
     const [ performedBy, setPerformedBy ] = useState();
     const { pageData, setPageData } = useContext(PageData);
 
@@ -64,24 +70,8 @@ export default function ElementReactions(oProps) {
             onLoad(sResponse?.data);
     };
 
-    const handleDoPopup = (event, oProps) => {
-        console.log('TODO: Show popup');
-
-        Alert.alert(
-            '',
-            'TODO: Show popup',
-            [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-            ],
-        );
-    };
-
     const handleDo = (event, oProps) => {
         event.preventDefault();
-
-        const oActionPopup = new Dropdown(document.getElementById(getName('action-ddp')), document.getElementById(getName('action-ddb')));
-        if(oActionPopup != undefined)
-            oActionPopup.hide();
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setPageVars(oData);
@@ -120,7 +110,7 @@ export default function ElementReactions(oProps) {
                 return;
 
             setPerformedBy(oData.performed_by);
-            setPopupVisibleBy(true);
+            setPopupVisibleBy(sReaction);
         });
     };
 
@@ -177,19 +167,34 @@ export default function ElementReactions(oProps) {
             sClassNameDo = 'group flex-auto  flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed hover:no-underline';
         else
             sClassNameDo = 'group flex-auto flex-row shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline'
-    
+
+        const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
+            const aItem = oAction.menu.items[iKey];
+
+            return (
+                <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(e) => {handleDo(e, aItem)}}>
+                    {aItem.icon && 
+                    <DropdownMenuItemIcon>
+                        <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
+                    </DropdownMenuItemIcon>
+                    }
+                    <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
+                </DropdownMenuItemH>
+            );
+        });
+
         sAction = (
-            <View>
-                <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo} onPress={!bShowActionDisabled ? handleDoPopup : () => {}}>
-                    <View className="flex-row gap-1 mx-auto">
-                        {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                        {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                    </View>
-                </A>
-                <View id={getName('action-ddp')} className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700">
-                    <Menu {...oAction.menu} displayType="link" params={{onclick: handleDo}} />
-                </View>
-            </View>
+            <DropdownMenuRoot>
+                <DropdownMenuTrigger>
+                    <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo}>
+                        <View className="flex-row gap-1 mx-auto">
+                            {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                            {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                        </View>
+                    </A>
+                </DropdownMenuTrigger>
+                <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
+            </DropdownMenuRoot>
         );
     }
 
@@ -226,11 +231,11 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <A id={getName('performed-by-ddb-' + aItem.name)} className="group inline-flex flex-none active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={(event) => {handleGetPerformedBy(event, aItem)}}>
+                    <A id={getName('performed-by-ddb-' + aItem.name)} className="group inline-flex flex-none active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 hover:no-underline" onPress={(event) => {handleGetPerformedBy(event, aItem)}}>
                         {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                     </A>
-                    <Popup id={getName('performed-by-ddp-' + aItem.name)} visible={[popupVisibleBy, setPopupVisibleBy]}>
+                    <Popup id={getName('performed-by-ddp-' + aItem.name)} visible={[popupVisibleBy == aItem.name, setPopupVisibleBy]}>
                         <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                     </Popup>
                 </View>
