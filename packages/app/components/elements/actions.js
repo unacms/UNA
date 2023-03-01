@@ -5,9 +5,9 @@ import Menu from '../menu';
 
 export default function ElementActions(props) {
     return (
-        <View className="p-4 relative sm:mb-4 sm:rounded-b-lg -mt-1 bg-white dark:bg-gray-900 ">
-            <View className="flex flex-col gap-4 divide-y divide-gray-500/5 w-full">
-                <View className='flex-none w-full flex-row flex-wrap items-center h-min my-auto gap-y-1 gap-x-2 '>
+        <View className="relative sm:my-0 sm:rounded-b-lg bg-card dark:bg-card-dark border-b border-bordercolor/10 dark:border-bordercolor-dark/10 sm:border-x w-full mx-auto max-w-5xl">
+            <View className="flex flex-col divide-y divide-gray-500/5 w-full">
+                <View className='flex-none flex flex-wrap flex-row items-center h-min my-auto p-2'>
                     <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     <View className='flex-auto flex-row justify-end items-end'>
                         <A className="ml-auto inline-flex flex-none group  active:opacity-80 active:shadow-none items-center p-1.5   dark:hover:bg-gray-800 dark:active:bg-gray-700  active:bg-gray-200   text-sm focus:outline-none font-medium text-gray-700 bg-white  focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white">
@@ -36,7 +36,7 @@ export default function ElementActions(props) {
                         </A>
                     </View>
                 </View>
-                <View className="flex flex-wrap flex-auto gap-2 pt-4 w-full ">
+                <View className="flex flex-wrap flex-auto p-2">
                     <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: true, show_counter: false}} />
                 </View>
             </View>
