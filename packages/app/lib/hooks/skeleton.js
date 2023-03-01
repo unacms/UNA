@@ -18,9 +18,11 @@ export default function (props) {
         });
         
     }, []);
-    console.log(url);
+
     var skeleton = '';
+    console.log(url);
     if (url){
+        skeleton = (url == '/' || url == '' || url == '/home' ? 'home' : skeleton);
         skeleton = (url == '/posts-home' ? 'posts-home' : skeleton);
         skeleton = (url == '/groups-home' ? 'groups-home' : skeleton);
         skeleton = (url == '/persons-home' ? 'persons-home' : skeleton);
@@ -31,13 +33,6 @@ export default function (props) {
 
     var skeletons = {
         '' : <View>
-        <View className="sticky z-40 bg-opacity-70 dark:bg-opacity-70 backdrop-blur-md top-0 bg-gray-50 dark:bg-gray-900 text-sm font-semibold text-center text-gray-500 border-b border-gray-300 dark:text-gray-400 dark:border-gray-800">
-            <ul className="flex -mb-px">
-                <li className="w-full">
-                    <a href="/persons-home" key="u" title="Collegues" className="w-full inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-800 dark:hover:text-100 hover:border-gray-400 dark:hover:border-gray-700 dark:hover:text-gray-300">&nbsp;</a>
-                </li>
-            </ul>
-        </View>
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
             <View className="animate-pulse flex gap-3">
                 <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
@@ -56,6 +51,50 @@ export default function (props) {
             </View>
         </View>
     </View>, 
+    'home' : <View className="flex-auto relative w-full flex-row max-w-6xl mx-auto">
+    <View className="flex-auto">
+    <View>
+    <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
+        <View className="animate-pulse flex gap-3">
+            <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
+            <View className="flex-1 space-y-2 py-1">
+                <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>    
+                <View className="h-3 w-1/3 bg-gray-600/20 rounded"></View>
+            </View>
+        </View>
+        <View className="flex-1 animate-pulse space-y-4 py-1">
+            <View className="h-6 w-2/3 bg-gray-600/20 rounded"></View>
+            <View className="space-y-2">
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+            </View>
+        </View>
+    </View>
+</View>
+    </View>
+    <View className="hidden sticky top-0 lg:flex flex-none w-2/5">
+    <View>
+    <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
+        <View className="animate-pulse flex gap-3">
+            <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
+            <View className="flex-1 space-y-2 py-1">
+                <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>    
+                <View className="h-3 w-1/3 bg-gray-600/20 rounded"></View>
+            </View>
+        </View>
+        <View className="flex-1 animate-pulse space-y-4 py-1">
+            <View className="h-6 w-2/3 bg-gray-600/20 rounded"></View>
+            <View className="space-y-2">
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+                <View className="h-4 bg-gray-600/20 rounded"></View>
+            </View>
+        </View>
+    </View>
+</View>
+    </View>
+</View>, 
     'posts-home' : <View className="flex flex-col @xl/cell:gap-2">
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
             <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">

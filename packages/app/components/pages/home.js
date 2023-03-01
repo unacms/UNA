@@ -8,7 +8,7 @@ export default function Home(props) {
     let post = Object.assign({}, props.children[3]);
 
     return (
-        <View className="flex-auto relative w-full flex-row max-w-6xl mx-auto ">
+        <View className="flex-auto relative w-full flex-row mx-auto ">
             <View className="flex-auto">
                 {feed}
             </View>

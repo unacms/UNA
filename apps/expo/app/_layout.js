@@ -16,7 +16,6 @@ export default function Root() {
           }
         }
       } ></Stack>
-         
     </Provider>
 
   )
