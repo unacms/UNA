@@ -9,9 +9,9 @@
     "expo-router": "0.0.31",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
-    "moti": "^0.23.7",
-    "react": "18.1.0",
-    "react-dom": "18.1.0",
+    "moti": "0.23.7",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.70.5",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-fast-image": "^8.6.3",
@@ -36,7 +36,7 @@
     "@types/react-native": "~0.70.6",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "tailwindcss": "^3.2.4",
-    "typescript": "^4.6.3"
+    "typescript": "4.9.5"
   },
   "scripts": {
     "start": "expo start --dev-client",
