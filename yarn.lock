@@ -10660,6 +10660,11 @@ react-native-codegen@^0.70.6:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-component-inview@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-component-inview/-/react-native-component-inview-1.0.2.tgz#da2140bb6c89f40706695ffaed2efbb007f491e7"
+  integrity sha512-BlzgpZDxpGx+5MQD0xA1jKzlej/0tOw72DEIHVb7FOEaGduXkWMIKag+nf50jgbez0S7qAFRH53ctF6q5xrrBw==
+
 react-native-extended-stylesheet@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/react-native-extended-stylesheet/-/react-native-extended-stylesheet-0.12.0.tgz#ebacf22d78a8e2173bdef2a08cbf1acba4dc051f"

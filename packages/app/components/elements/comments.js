@@ -40,6 +40,7 @@ export default function ElementComments(props) {
     
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
+        console.log(requestUrl);
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
