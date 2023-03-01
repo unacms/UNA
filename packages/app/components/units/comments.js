@@ -75,7 +75,7 @@ export default function UnitComments(props) {
                 </View>
             </View>
             {(items.length != 0) && <View className='flex-row w-full pl-4  '>
-                        <View className="w-8 flex-col space-y-0.5">
+                        <View className="w-8 flex-col space-y-1">
                         <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20 "></View>
                         <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
                         <View className="w-0.5 rounded-full h-0.5 mx-auto bg-bordercolor/20 dark:bg-bordercolor-dark/20"></View>
