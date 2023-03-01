@@ -6,6 +6,6 @@ export const StyledButton = styled(Button, 'text-white bg-blue-600 hover:bg-blue
 export const StyledButton2 = styled(Button, '')
 
 
-export const StyledInput = styled(TextInput, 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-900 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500')
+export const StyledInput = styled(TextInput, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
 
 export const StyledHidden = styled(TextInput, 'hidden')

@@ -36,7 +36,7 @@ export default function Layout(props) {
                 <ScrollView className={sClassName}>
                     <View className=" flex-row flex-1 max-w-screen-2xl min-w-full 2xl:justify-center" > 
                         <View className="w-72 flex-none hidden xl:flex "><ElementMainMenu className="w-full flex-none hidden" /></View>
-                        {loading ? <View className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-4">{skeleton}</View> : <Main className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-4">{props.children}</Main>}
+                        {loading ? <View className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-2 sm:py-4">{skeleton}</View> : <Main className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-2 sm:py-4">{props.children}</Main>}
                     </View>
                 </ScrollView>
                 <View className="fixed bottom-0 w-full"><Footer/></View>

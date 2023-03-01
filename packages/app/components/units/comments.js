@@ -33,11 +33,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "px-4 py-3";
+    let sCommentStyle =  "px-4 py-1 ";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = "px-4 py-2";
+        sCommentStyle = "px-4 py-1";
     }
     
     if (!data)
@@ -61,10 +61,15 @@ export default function UnitComments(props) {
                             <Time ts={data.cmt_time}></Time>
                         </View>
                     </View>
-                    <View  className="flex-auto flex-col  rounded-lg rounded-tl-sm ml-10">
-                        <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
-                        <View className="w-20">
-                            <Button title="reply" onPress={() => reply(data.cmt_id)}  />
+                    <View  className="flex-auto flex-row space-x-2   border-bordercolor/10 dark:border-bordercolor-dark/20 ">
+                       <View className="w-8">
+                        <View className="w-0.5 mt-1 rounded-full h-full mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                       </View>
+                       <View className='flex-col space-y-2 flex-auto pb-3 '>
+                            <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
+                            <View className="w-20">
+                                <Button title="reply" onPress={() => reply(data.cmt_id)}  />
+                            </View>
                         </View>
                     </View>
                 </View>

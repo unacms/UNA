@@ -83,7 +83,7 @@ export default function UnitFeed({data}) {
                            { bShowMore && <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
                                 <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
                                 <TouchableOpacity className='pl-2  bg-card dark:bg-card-dark'  onPress={(e) => {setShowFull(true);e.preventDefault() }}>
-                                    <Text className="text-brand dark:text-brand-dark text-base font-semibold">More...</Text>
+                                    <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
                                 </TouchableOpacity>
                             </View>
                             }

@@ -74,7 +74,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="text-neo-700 dark:text-neo-300 hover:text-neo-900 dark:hover:text-neo-50 text-sm  tracking-tight mr-2">
+      <Text className="font-bold text-neo-700 dark:text-neo-200 hover:text-neo-900 dark:hover:text-neo-50 text-sm  tracking-tight mr-2">
         {oProps.title}
       </Text>
     )
