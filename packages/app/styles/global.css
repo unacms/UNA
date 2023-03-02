@@ -152,13 +152,8 @@ body {
 .u-image{
     object-fit: cover !important;
 }
-
-.u-content{
-    width: 1440px
-}
-/* TODO: improve */
-.u-content2{
-    width: 1152px
+.u-sidebar::-webkit-scrollbar {
+    display: none;
 }
 .u-content3{
     width: 100%;
@@ -167,6 +162,9 @@ body {
 .u-content4{
     width: 100%;
     overflow: hidden;
+}
+.dsf{
+    width:calc(100%)
 }
 html {
     overflow-y:scroll;

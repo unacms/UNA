@@ -44,21 +44,29 @@ export default function UnitFeed({data}) {
           }     
         });
     }
-    
+    let sFirstImg = '';
+    let sImages = [];
     var DomParser = require('react-native-html-parser').DOMParser
     let doc = new DomParser().parseFromString(data.content.text,'text/html')
-    let sFirstImg = '';
-    let sImages = doc.getElementsByTagName('img');
-    if (sImages.length > 0){
-        sFirstImg = sImages[0].attributes[0].value
+
+    if (doc){
+      sImages = doc.getElementsByTagName('img');
+      if (sImages.length > 0){
+          sFirstImg = sImages[0].attributes[0].value
+      }
     }
-    
-    const regex = /(<([^>]+)>)/ig;
-    let sPlainFull = data.content.text.replace(regex, '');
-    let sPlain = sPlainFull.substr(0,200);
     let bShowMore = false;
-    if (sPlain != sPlainFull || sImages.length > 1){
-        bShowMore = true;
+
+    const regex = /(<([^>]+)>)/ig;
+    let sPlainFull = '';
+    let sPlain = '';
+    if (data.content.text){
+      sPlainFull = data.content.text.replace(regex, '');
+      sPlain = sPlainFull.substr(0,200);
+      
+      if (sPlain != sPlainFull || sImages.length > 1){
+          bShowMore = true;
+      }
     }
     return (
         <Link href={url} className="w-full">
@@ -90,7 +98,7 @@ export default function UnitFeed({data}) {
                         </View>
                         {sFirstImg &&
                             <View className="w-full rounded mt-4 aspect-square bg-blue-500/50 overflow-hidden" >
-                                <Image src={sFirstImg} alt={data.title} view="cover" className="u-cover"  />
+                                <Image src={sFirstImg} alt={data.title} view="cover"   />
                             </View>
                         }  
                         </View>

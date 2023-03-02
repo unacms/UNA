@@ -5,9 +5,9 @@ import useSWR from "swr";
 import { fetcher } from '../../lib/util';
 import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
-import { StyledButton } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-
+import InView from 'react-native-component-inview'
 
 export default function ElementComments(props) {
 
@@ -40,22 +40,18 @@ export default function ElementComments(props) {
     
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-        console.log(requestUrl);
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
     const scrollHandler = () => {
-    
- console.log(ref);
-      ref.scrollTo({
-        x: 0,
-        y: 0,
-        animated: true,
-      });
+        ref.scrollTo({
+            x: 0,
+            y: 0,
+            animated: true,
+        });
 
-  };
+    };
 
-    
     function parseData (browse, dynamicData) {
         dynamicData.data.browse.data.data.map(function(c, kc){
             let o = c[Object.keys(c)[0]];
@@ -75,7 +71,6 @@ export default function ElementComments(props) {
     
     // add new values to state
     const addCommentData =  (params) => {
-        console.log(5);
         scrollHandler();
         setCommentData(Object.assign({}, commentData, params));
     } 
@@ -141,14 +136,7 @@ export default function ElementComments(props) {
         }
         return data;
     }
-
     
-
-    
-
-    // handle more button
-    
-
     // handle change order
     const handleOrder =  async (orderWay) => { 
         setPostData(null);
@@ -169,7 +157,7 @@ export default function ElementComments(props) {
         }
     }
    
-    
+    // handle more button
     const handleMore =  async () => {
         setPostData(null);
         const sRequest = prepareUrl({'is_form' : false}) ;
@@ -179,20 +167,62 @@ export default function ElementComments(props) {
             addCommentData({startFrom: sResponse.data.browse.data.start})
         }
     }
-    
-    
-    //style={{ display: commentData.startFrom > 0? "block" : "none" }}
+
+    const [isInView, setIsInView] = useState(false);
+        
+    const [viewParams, setViewParams] = useState({
+        width:0,
+        height:0
+    });
+
+    const checkVisible = (isVisible) => {
+        if (isInView != isVisible && isVisible){
+            handleMore();
+        }
+        if (isVisible){
+            setIsInView(isVisible)
+        } else {
+            setIsInView(isVisible)
+        }
+    }
+
+
+    let styles = StyleSheet.create({
+        form: {
+          width: viewParams.width-2,
+          position: 'absolute',
+          bottom: 0
+        },
+        list: {
+            marginBottom: viewParams.height,
+        }
+      });
+
+      let stylesScroll = StyleSheet.create({
+        view: {
+          top: -500,
+        },
+      });
     
     return (
-        <View className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
-           <ScrollView  ref={(ref) => {
+        <View onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout;
+            setViewParams({height:viewParams.height, width:width})
+          }} className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
+           <View className='jkjn' style={styles.list} ref={(ref) => {
             setRef(ref);
           }}>
                 <Browse {...browse} addCommentData={addCommentData} /> 
-                { commentData.startFrom > 0 && <View className="p-4"  ><StyledButton title="Show more" onPress={handleMore}/></View> }
-            
-            { form && <View className="border-t border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50/50 dark:bg-neo-700/50"><Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} /></View>  }
-            </ScrollView>
+                { ( commentData.startFrom > 0) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
+            </View>
+            { form && <View onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout;
+            if (height >0)
+                setViewParams({width:viewParams.width, height:height})
+          }}  style={styles.form} className="absolute bottom-0 border-t border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50 dark:bg-neo-700">
+                <Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} />
+                </View>  
+            }
         </View>
     );
 }

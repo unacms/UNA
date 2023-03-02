@@ -16,7 +16,7 @@ export default function ElementMainMenu(props) {
         {'title': 'Discover', 'url': '/timeline-view-home', 'icon': 'discover'},
         {'title': 'Posts', 'url': '/posts-home', 'icon': 'post'},
         {'title': 'Groups', 'url': '/groups-home', 'icon': 'group'},
-        {'title': 'Channels', 'url': '/channels', 'icon': 'hash'},
+        {'title': 'Channels', 'url': '/channels-home', 'icon': 'hash'},
         {'title': 'People', 'url': '/persons-home', 'icon': 'people'},
         {'title': 'Contact', 'url': '/contact', 'icon': 'contact'},
         {'title': 'About', 'url': '/about', 'icon': 'about'}

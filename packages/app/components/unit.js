@@ -8,9 +8,9 @@ import Feed from './units/feed';
 
 const componentsMap = {
     'general-content-list': GeneralContentList,
-    'general-content-card': GeneralContentCart,
-    'general-profile-card': GeneralProfileCart,
-    'general-context-card': GeneralContextCart,
+    'general-content-card': GeneralContentList,
+    'general-profile-card': GeneralContentList,
+    'general-context-card': GeneralContentList,
     comments: Comments,
     feed: Feed,
 };

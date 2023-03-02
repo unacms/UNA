@@ -11,17 +11,19 @@ import InView from 'react-native-component-inview'
 export default function ElementBrowse(props) {
     let data = props.data;
     const {height, width, scale, fontScale} = useWindowDimensions(); 
+    
+    
 
-    const [browseData, setbrowseData] = useState({
-        startFrom: data.paginate ? data.paginate.start : 0,
-        perPage: data.paginate ? data.paginate.per_page : 10,
-        moduleName: data.module, 
-        mode: data.mode,
-        end: false,
-    });
+    let defParams = data.params;
+    console.log('dataa', data)
+    if (defParams){
+        defParams.moduleName = data.module ? data.module : '';
+        defParams.loadedAll = data.data.length > 0 ? false : true;
+    }
+    const [browseParams, setbrowseParams] = useState(defParams);
 
-    const updateBrowseData =  (params) => {
-        setbrowseData(Object.assign({}, browseData, params));
+    const updateBrowseParams =  (params) => {
+        setbrowseParams(Object.assign({}, browseParams, params));
     } 
     
     let styles = StyleSheet.create({});
@@ -42,55 +44,55 @@ export default function ElementBrowse(props) {
         classes = 'flex-auto flex-col space-y-2  max-w-3xl mx-auto';
 
     const handleMore =  async () => {
-        
         const sRequest = prepareUrl() ;
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
-            updateBrowseData({
-                startFrom: sResponse.data[0].data.paginate.start, 
-                perPage:sResponse.data[0].data.paginate.per_page, 
-                end: sResponse.data[0].data.data.length > 0 ? false : true
+            updateBrowseParams({
+                start: sResponse.data[0].data.params.start, 
+                per_page: sResponse.data[0].data.params.per_page, 
+                loadedAll: sResponse.data[0].data.data.length > 0 ? false : true
             }) 
         }
     } 
         
         
     function prepareUrl (params) {
-        if (data.unit != 'comments' && data.unit != 'feed'){
-            let def = {'mode': browseData.mode, 'params': {'paginate': {'per_page': browseData.perPage, 'start': browseData.startFrom + browseData.perPage}}};
-            return "/api.php?r=bx_posts/browse/&params[]=" + JSON.stringify(def);
+        if (data.unit != 'comments'){
+            let params = Object.assign({}, browseParams)
+            params.start = parseInt(browseParams.start) + parseInt(browseParams.per_page);
+            if(data.unit != 'feed')
+                return "/api.php?r=" + browseParams.moduleName + "/browse/&params[]=" + JSON.stringify({'params': params});
+            else
+                return "/api.php?r=bx_timeline/get_posts/&params[]=" + JSON.stringify({'params': params});
         }
     }    
 
-    const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-        const paddingToBottom = 20;
-        return layoutMeasurement.height + contentOffset.y >=
-          contentSize.height - paddingToBottom;
-      };
+    const [isInView, setIsInView] = useState(false);
 
-
-      const [isInView, setIsInView] = useState(false)
-
-const checkVisible = (isVisible) => {
-    console.log(123);
-      console.log(isVisible);
-    if (isInView != isVisible && isVisible){
-        console.log(isVisible);
-        handleMore();
+    const checkVisible = (isVisible) => {
+        console.log(5);
+        if (isInView != isVisible && isVisible){
+            handleMore();
+        }
+        if (isVisible){
+            setIsInView(isVisible)
+        } else {
+            setIsInView(isVisible)
+        }
     }
-    if (isVisible){
-      setIsInView(isVisible)
-    } else {
-      setIsInView(isVisible)
-    }
-  }
+    
+    let stylesScroll = StyleSheet.create({
+        view: {
+          top: -500,
+        },
+      });
    
     return (
         <View><View className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
             </View>
-        { (data.unit != 'comments' && data.data.length > 0 && browseData.end == false) && <InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView> }
+        { (data.unit != 'comments' && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
         </View>
         
     );

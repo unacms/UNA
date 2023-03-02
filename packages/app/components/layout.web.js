@@ -33,10 +33,14 @@ export default function Layout(props) {
                 <Navbar />
                 {(oBreadCrump == null ) && <Tabsbar />}
                 {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}
-                <View className=" u-content3 mx-auto flex-1 flex-row" > 
+                <View className=" u-content3 mx-auto flex-1 flex-row -top-[1px]" > 
                 <View className={sClassName}>
                     <View className=" flex-row u-content3 2xl:justify-center mx-auto" > 
-                        <View className="w-72 flex-none hidden xl:flex "><ElementMainMenu className="w-full flex-none hidden" /></View>
+                        <View className="w-72 flex-none hidden xl:flex bg-white 2xl:bg-transparent">
+                            <View className="w-72 fixed max-h-screen overflow-auto u-sidebar pb-4">
+                                <ElementMainMenu className="w-full flex-none hidden" />
+                            </View>
+                        </View>
                         {loading ? <View className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{skeleton}</View> : <Main className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{props.children}</Main>}
                     </View>
                 </View>
