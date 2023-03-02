@@ -45,7 +45,7 @@ export default function ElementAuthor(oProps) {
 
         return (
             <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name}>
-                <A href={aItem?.link || ''}>
+                <A href={aItem?.link && aItem.link != 'javascript:void(0)' ? aItem.link : ''}>
                     <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
                 </A>
             </DropdownMenuItemV>
