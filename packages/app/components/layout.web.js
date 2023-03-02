@@ -20,7 +20,7 @@ export default function Layout(props) {
 
     const [loading, skeleton] = useSkeleton();
    
-    const sClassName = 'mt-16 relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
+    const sClassName = 'lalal mt-16 relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
     return (
         <>
             <Head>

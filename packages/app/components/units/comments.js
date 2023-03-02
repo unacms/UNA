@@ -33,11 +33,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  "px-4  ";
+    let sCommentStyle =  " mx-4 space-y-1 ";
 
     let sCommentClass = "u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = " pr-4 ";
+        sCommentStyle = " mr-4 space-y-1";
     }
     
     if (!data)
@@ -51,20 +51,20 @@ export default function UnitComments(props) {
     };            
 
     return (
-        <View>
+        <View className='w-full'>
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
                     
-                    <View className=" flex-row items-center ">
-                        <View className="mr-2"><Profile {...data.author_data} displaySize='sm' displayType="minimal" className="" /></View>
-                        <Time ts={data.cmt_time}></Time>
+                    
+                    <View className="mr-2"><Profile {...data.author_data} displaySize='base' showInfo={(<Time className="" ts={data.cmt_time}></Time>)} displayType="full" className="" /></View>
                         
-                    </View>
-                    <View  className=" flex-row ml-8 ">
-                       <View className="w-8 flex-0 h-full absolute top-0 -left-8">
+                        
+                    
+                    <View  className=" flex-row ml-8 pb-1">
+                       <View className="w-8 flex-0 h-full absolute top-0 -left-7">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
-                       <View className='flex-1 flex-col ml-2 space-y-2  pb-3 '>
+                       <View className='flex-1 flex-col ml-4 mb-4  space-y-2 rounded-xl rounded-tl'>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
                             <View className="w-20">
                                 <Button title="reply" onPress={() => reply(data.cmt_id)}  />
@@ -74,8 +74,8 @@ export default function UnitComments(props) {
                     
                 </View>
             </View>
-            {(items.length != 0) && <View className='relative flex-row  ml-14  '>
-                        <View className="w-8 absolute top-0 -left-10 h-full flex-col space-y-0.5">
+            {(items.length != 0) && <View className='relative flex-row  ml-12  '>
+                        <View className="w-14 absolute top-0 -left-10 h-full flex-col space-y-0.5">
                         <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10 "></View>
                         <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                         <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
