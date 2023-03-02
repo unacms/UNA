@@ -160,3 +160,24 @@ body {
 .u-content2{
     width: 1152px
 }
+.u-content3{
+    width: 100%;
+    overflow: hidden;
+}
+.u-content4{
+    width: 100%;
+    overflow: hidden;
+}
+html {
+    overflow-y:scroll;
+}
+@media (min-width: 1536px){
+    .u-content3{
+        width: 1536px
+    }
+}
+@media (min-width: 1280px){
+    .u-content4{
+        width: calc(100% - 288px);
+    }
+}

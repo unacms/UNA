@@ -20,7 +20,7 @@ export default function Layout(props) {
 
     const [loading, skeleton] = useSkeleton();
    
-    const sClassName = 'lalal mt-16 relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
+    const sClassName = 'w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 flex-1 flex-row' + (oComments ? ' sm:mb-24' : '');
     return (
         <>
             <Head>
@@ -29,16 +29,18 @@ export default function Layout(props) {
                 <meta name="og:title" content={siteTitle} />
                
             </Head>
-            <View className="bg-screen dark:bg-screen-dark text-neo-900 dark:text-neo-50 h-full">
+            <View className="bg-screen dark:bg-screen-dark text-neo-900 dark:text-neo-50 h-full items-stretch flex-row">
                 <Navbar />
                 {(oBreadCrump == null ) && <Tabsbar />}
                 {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}
-                <ScrollView className={sClassName}>
-                    <View className=" flex-row flex-1 max-w-screen-2xl min-w-full 2xl:justify-center" > 
+                <View className=" u-content3 mx-auto flex-1 flex-row" > 
+                <View className={sClassName}>
+                    <View className=" flex-row u-content3 2xl:justify-center mx-auto" > 
                         <View className="w-72 flex-none hidden xl:flex "><ElementMainMenu className="w-full flex-none hidden" /></View>
-                        {loading ? <View className="w-full mx-auto 2xl:m-0 xl:w-3/4 py-2 sm:py-4">{skeleton}</View> : <Main className="w-full mx-auto 2xl:m-0 xl:w-2/3 py-2 sm:py-4">{props.children}</Main>}
+                        {loading ? <View className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{skeleton}</View> : <Main className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{props.children}</Main>}
                     </View>
-                </ScrollView>
+                </View>
+                </View>
                 <View className="fixed bottom-0 w-full"><Footer/></View>
             </View>
         </>

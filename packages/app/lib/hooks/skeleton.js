@@ -33,7 +33,7 @@ export default function (props) {
   var skeletons = {
     '': (
       <View>
-        <View className=" p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
+        <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
             <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
             <View className="flex-1 space-y-2 py-1">
