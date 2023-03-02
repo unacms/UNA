@@ -14,7 +14,6 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-import Popup from './popup';
 import Profile from './profile';
 
 export default function ElementReactions(oProps) {
@@ -160,7 +159,7 @@ export default function ElementReactions(oProps) {
             <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-blue-600 hover:text-blue-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
                 <View className="flex flex-row flex-nowrap gap-1 mx-auto">
                     {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                    {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                    {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
                 </View>
             </A>
         );
@@ -193,7 +192,7 @@ export default function ElementReactions(oProps) {
                     <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo}>
                         <View className="flex flex-row flex-nowrap gap-1 mx-auto">
                             {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                            {sTitle && <Text className='hidden xl/cell:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+                            {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
                         </View>
                     </A>
                 </DropdownMenuTrigger>
@@ -261,11 +260,11 @@ export default function ElementReactions(oProps) {
 
     //--- CSR: Initialize.
     useEffect(() => {
-        //TODO: Init something in User End here.
+        //Note. Client side code can be executed here. 
     }, []);
 
     return (
-        <View className="inline-flex gap-1 xl/cell:gap-0 ">
+        <View className="inline-flex gap-1 sm:gap-0">
             {bShowAction && <View>{sAction}</View>}
             {bShowCounter && <View className="flex-row">{sCounter}</View>}
         </View>
