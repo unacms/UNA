@@ -1,29 +1,41 @@
-import { Button } from "app/design/controls"
+import { Button } from 'app/design/controls'
 import { Wrapper } from '../../../components/wrapper'
 
 # Button
 
-Buttons let users perform actions and make choices with a click or tap.  
-The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text that will be displayed on its surface.
+Buttons let users perform actions and make choices with a click or tap.
 
-## Text button
+The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text 
+that will be displayed on its surface.
+
+## Text Button
 
 ```jsx
-import {Button} from "app/design/controls";
-<Button text onPress={() => alert('Hello World!')}>PRESS ME</Button>
+import { Button } from 'app/design/controls';
+
+<Button text onPress={() => alert('Hello World!')}>
+  PRESS ME
+</Button>
 ```
 
 <Wrapper>
-    <Button text onPress={() => alert('Hello World!')}>PRESS ME</Button>
+  <Button text className='mx-auto' onPress={() => alert('Hello World!')}>
+    Button
+  </Button>
 </Wrapper>
 
-## Text primary button
+## Text Primary Button
 
 ```jsx
-import {Button} from "app/design/controls";
-<Button text variant="primary" onPress={() => alert('Hello World!')}>PRESS ME</Button>
+import { Button } from 'app/design/controls';
+
+<Button text variant="primary"  onPress={() => alert('Hello World!')}>
+  PRESS ME
+</Button>
 ```
 
 <Wrapper>
-    <Button text variant="primary" onPress={() => alert('Hello World!')}>PRESS ME</Button>
+  <Button text variant="primary" className='mx-auto' onPress={() => alert('Hello World!')}>
+    Button
+  </Button>
 </Wrapper>
