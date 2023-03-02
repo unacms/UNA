@@ -53,8 +53,8 @@ export default function (props) {
       </View>
     ),
     home: (
-      <View className="justify-center flex-auto space-x-6 w-full flex-row max-w-5xl mx-auto">
-        <View className="flex-auto flex-col space-y-4 max-w-xl">
+      <View className="justify-center flex-auto space-x-6 w-full flex-row  mx-auto">
+        <View className="flex-auto flex-col space-y-4 max-w-3xl">
           <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
             <View className="flex-row space-x-2">
               <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
