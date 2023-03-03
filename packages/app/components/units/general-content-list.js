@@ -9,7 +9,7 @@ import {StyleSheet, useWindowDimensions} from 'react-native';
 import {Platform, PlatformIOSStatic} from 'react-native'
 
 // g-med style browsing
-export default function UnitGeneral(props) {
+export default function Unit(props) {
     let data = props.data;
    
 const {height, width, scale, fontScale} = useWindowDimensions();

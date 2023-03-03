@@ -20,7 +20,7 @@ export default function FormFieldSubmit(props) {
         <Field {...props}>
             <Button
                 title={props.value}
-                variant='primary'
+                type='primary' full
                 onPress={props.handleSubmit}
             />
             <View style={{width:0,height:0}}>

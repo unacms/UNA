@@ -1,5 +1,6 @@
 import { Button } from 'app/design/controls'
 import { Wrapper } from '../../../components/wrapper'
+import { View, Row } from 'app/design/view'
 
 # Button
 
@@ -13,16 +14,30 @@ that will be displayed on its surface.
 ```jsx
 import { Button } from 'app/design/controls';
 
-<Button text onPress={() => alert('Hello World!')}>
-  Default Button
-</Button>
+<Button title="default"  type="default" />
 ```
 
-<Wrapper>
-  <Button text className='mx-auto' onPress={() => alert('Hello World!')}>
-    Default Button
-  </Button>
+<Wrapper className='flex-col gap-4'>
+  <Row className='flex-wrap items-start gap-4'>
+        <Button title="Default"  type="default" />
+        <Button title="Primary"  type="primary"  />
+        <Button title="Danger" type="danger"/>
+        <Button title="text" type="text"/>
+        <Button title="Link" type="link"/>
+        <Button title="Outline" type="outline"/>
+
+        <Button title="Disabled" disabled />
+        
+        <Button title="iconed" icon ="lala" />
+
+        <Button title="Small" icon="home" size ="sm" />
+        <Button title="Base" icon="home" size ="base" />
+        <Button title="Large" icon="home" size ="lg" />
+    </Row>
+        <Button title="Full Width" full ="full" />
 </Wrapper>
+
+
 
 ## Text Primary Button
 

@@ -1,0 +1,65 @@
+import { Button } from 'app/design/controls'
+import { Wrapper } from '../../../components/wrapper'
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import {Unit} from 'app/components/units/general-content-list';
+
+
+
+# Person Cards
+
+Buttons let users perform actions and make choices with a click or tap.
+
+The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text
+that will be displayed on its surface.
+
+## Basic Card
+
+```jsx
+import { Button } from 'app/design/controls'
+;<Button text onPress={() => alert('Hello World!')}>
+  Default Button
+</Button>
+```
+
+<Wrapper className='bg-neo-50'>
+  <View className="flex-col space-y-2 w-72 mx-auto p-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 rounded-lg">
+    <View>
+      <View className="w-24 h-24 bg-neo-500 rounded-full mx-auto mt-4 "></View>
+      <View className="text-center my-4">
+        <View className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          John Doe
+        </View>
+        <View>
+          <Text  className='text-sm text-neo-600 dark:text-neo-400'>@johndoe</Text>
+        </View>
+      </View>
+    </View>
+    <Button text variant="primary" onPress={() => alert('Hello World!')}>
+      Follow
+    </Button>
+    <Button text className="" onPress={() => alert('Hello World!')}>
+      Remove
+    </Button>
+  </View>
+</Wrapper>
+
+## Text Primary Button
+
+```jsx
+import { Button } from 'app/design/controls'
+;<Button text variant="primary" onPress={() => alert('Hello World!')}>
+  Primary Button
+</Button>
+```
+
+<Wrapper>
+  <Button
+    text
+    variant="primary"
+    className="mx-auto"
+    onPress={() => alert('Hello World!')}
+  >
+    Primary Button
+  </Button>
+</Wrapper>
