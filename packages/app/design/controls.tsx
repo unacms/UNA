@@ -13,7 +13,7 @@ export function Button(props) {
   if (props.variant && 'primary' == props.variant)
     className = `bg-blue-700 hover:bg-blue-600 focus:ring-blue-500/20 ${className}`
   else
-    className = `bg-white dark:bg-neo-800 hover:bg-neo-50 dark:hover:bg-neo-700 focus:ring-bordercolor/5  dark:focus:ring-bordercolor-dark/5 ${className}`
+    className = `bg-neo-50 dark:bg-neo-700 hover:bg-white dark:hover:bg-neo-600 focus:ring-bordercolor/5  dark:focus:ring-bordercolor-dark/5 ${className}`
 
   return (
     <TouchableOpacityStyled className={className} {...rest}>
