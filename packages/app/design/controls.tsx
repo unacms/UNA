@@ -11,7 +11,7 @@ export function Button(props) {
   className = `border border-bordercolor/10 dark:border-bordercolor-dark/10 focus:ring-4 shadow-sm hover:shadow-md active:shadow-sm hover:-translate-y-0.5 active:translate-y-0  focus:outline-none  rounded-lg  px-5 py-2 text-center ${className}`
 
   if (props.variant && 'primary' == props.variant)
-    className = `bg-blue-600 hover:bg-blue-700 focus:ring-blue-300  dark:focus:ring-blue-800 ${className}`
+    className = `bg-blue-700 hover:bg-blue-600 focus:ring-blue-500/20 ${className}`
   else
     className = `bg-white dark:bg-neo-800 hover:bg-neo-50 dark:hover:bg-neo-700 focus:ring-bordercolor/5  dark:focus:ring-bordercolor-dark/5 ${className}`
 
