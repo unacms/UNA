@@ -2,7 +2,7 @@ import React from 'react';
 import Field from './_field';
 import {Text} from 'app/design/typography'
 import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
-import { Button, StyledHidden } from 'app/design/controls'
+import { Button, Hidden } from 'app/design/controls'
 import {Controller} from 'react-hook-form';
 import { View } from 'app/design/view';
 
@@ -19,12 +19,12 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Button
-
                 title={props.value}
+                type='primary' full
                 onPress={props.handleSubmit}
             />
             <View style={{width:0,height:0}}>
-            <StyledHidden 
+            <Hidden 
                     name={props.name}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}

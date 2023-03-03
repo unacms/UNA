@@ -10,7 +10,7 @@ import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
 import Html from '../atoms/html';
-import { Button } from 'react-native'
+import { Button } from 'app/design/controls'
 
 export default function UnitComments(props) {
 
@@ -66,9 +66,7 @@ export default function UnitComments(props) {
                        </View>
                        <View className='flex-1 flex-col ml-4 mb-4  space-y-2 rounded-xl rounded-tl'>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
-                            <View className="w-20">
-                                <Button title="reply" onPress={() => reply(data.cmt_id)}  />
-                            </View>
+                            <Button title="Reply" className="w-40" valiant="small"  onPress={() => reply(data.cmt_id)}  />
                         </View>
                     </View>
                     
