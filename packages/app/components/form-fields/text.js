@@ -1,7 +1,7 @@
 import React from 'react';
 import Field from './_field';
 import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
-import { StyledInput } from 'app/design/controls'
+import { Input } from 'app/design/controls'
 
 export default function FormFieldText(props) {
     
@@ -14,7 +14,7 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props}>
-            <StyledInput 
+            <Input 
                 name={props.name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
