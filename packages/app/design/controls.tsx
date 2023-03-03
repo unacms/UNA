@@ -16,9 +16,10 @@ export function Button(props) {
     let buttonDisabled = props.disabled ? true : false;
     let buttonIcon = props.icon ? props.icon : '';
     
+
     let buttonFull = props.full ? true : false;
 
-    let sClassContainer = " text-center relative rounded flex-row items-center justify-center"; 
+    let sClassContainer = " text-center relative rounded flex-row items-center justify-center "; 
     let sIconContainer = " h-6 w-6 mr-2";
 
     if (!buttonFull)
