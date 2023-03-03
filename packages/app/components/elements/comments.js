@@ -43,14 +43,14 @@ export default function ElementComments(props) {
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
-    const scrollHandler = () => {
+    /*const scrollHandler = () => {
         ref.scrollTo({
             x: 0,
             y: 0,
             animated: true,
         });
 
-    };
+    };*/
 
     function parseData (browse, dynamicData) {
         dynamicData.data.browse.data.data.map(function(c, kc){
@@ -71,7 +71,7 @@ export default function ElementComments(props) {
     
     // add new values to state
     const addCommentData =  (params) => {
-        scrollHandler();
+        //scrollHandler();
         setCommentData(Object.assign({}, commentData, params));
     } 
     
@@ -177,6 +177,7 @@ export default function ElementComments(props) {
 
     const checkVisible = (isVisible) => {
         if (isInView != isVisible && isVisible){
+            console.log(555)
             handleMore();
         }
         if (isVisible){
@@ -212,8 +213,8 @@ export default function ElementComments(props) {
            <View className='jkjn' style={styles.list} ref={(ref) => {
             setRef(ref);
           }}>
-                <Browse {...browse} addCommentData={addCommentData} /> 
-                { ( commentData.startFrom > 0) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
+                <Browse {...browse} addCommentData={addCommentData} disablescroll={true} /> 
+                { ( commentData.startFrom > 0) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /><Text>789</Text></InView></View> }
             </View>
             { form && <View onLayout={(event) => {
             var {x, y, width, height} = event.nativeEvent.layout;

@@ -41,7 +41,7 @@ export default function ElementBrowse(props) {
     if (data.unit != 'feed' && data.unit != 'comments')
         classes = 'u-card-list';
     if (data.unit == 'feed')
-        classes = 'flex-auto flex-col space-y-2  max-w-3xl mx-auto';
+        classes = 'flex-auto flex-col space-y-2 w-full  max-w-3xl mx-auto';
 
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
@@ -92,7 +92,7 @@ export default function ElementBrowse(props) {
         <View><View className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
             </View>
-        { (data.unit != 'comments' && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
+        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
         </View>
         
     );
