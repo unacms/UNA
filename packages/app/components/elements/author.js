@@ -33,6 +33,7 @@ export default function ElementAuthor(oProps) {
 
     const oMenuManage = oProps.data.menu_manage;
     const aMenuManageExcept = ['more-auto'];
+    const selectMenuManageItem = (val: unknown) => () => alert('TODO: Redirect to ' + val);
 
     const sMenuManageItems = Object.keys(oMenuManage.items).map(function(iKey) {
         const aItem = oMenuManage.items[iKey];
@@ -44,10 +45,8 @@ export default function ElementAuthor(oProps) {
             return;
 
         return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name}>
-                <A href={aItem?.link && aItem.link != 'javascript:void(0)' ? aItem.link : ''}>
-                    <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-                </A>
+            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={aItem?.link && aItem.link != 'javascript:void(0)' ? selectMenuManageItem(aItem.link) : ''}>
+                <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
             </DropdownMenuItemV>
         );
     });
@@ -61,6 +60,7 @@ export default function ElementAuthor(oProps) {
                         <path d="M3 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM8.5 10a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM15.5 8.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
                     </svg>
                     }
+                    {(Platform.OS == 'ios' || Platform.OS == 'android') && <Text>...</Text>}
                 </A>
             </DropdownMenuTrigger>
             <DropdownMenuContentV>{sMenuManageItems}</DropdownMenuContentV>

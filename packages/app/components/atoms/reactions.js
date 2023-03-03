@@ -74,7 +74,8 @@ export default function ElementReactions(oProps) {
     };
 
     const handleDo = (event, oProps) => {
-        event.preventDefault();
+        alert(event);
+        //event.preventDefault();
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setPageVars(oData);
@@ -175,13 +176,18 @@ export default function ElementReactions(oProps) {
             const aItem = oAction.menu.items[iKey];
 
             return (
-                <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(e) => {handleDo(e, aItem)}}>
-                    {aItem.icon && 
-                    <DropdownMenuItemIcon>
-                        <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
-                    </DropdownMenuItemIcon>
+                <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
+                    {Platform.OS == 'web' && 
+                    <>
+                        <DropdownMenuItemIcon>
+                            <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
+                        </DropdownMenuItemIcon>
+                        <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
+                    </>
                     }
-                    <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
+                    {(Platform.OS == 'android' || Platform.OS == 'ios') && 
+                    <DropdownMenuItemTitle>{aItem.name}</DropdownMenuItemTitle>
+                    }
                 </DropdownMenuItemH>
             );
         });
