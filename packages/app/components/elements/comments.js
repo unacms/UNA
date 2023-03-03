@@ -5,7 +5,6 @@ import useSWR from "swr";
 import { fetcher } from '../../lib/util';
 import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
-import { Button } from 'app/design/controls'
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import InView from 'react-native-component-inview'
 
