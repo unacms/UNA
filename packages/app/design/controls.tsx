@@ -31,45 +31,45 @@ export function Button(props) {
     let sClassText = "  text-center "; 
     switch (buttonType) {
         case 'default':
-            sClassContainer += "bg-neo-300 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600";
-            sClassText += "font-semibold text-white";
+            sClassContainer += " bg-neo-300 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
+            sClassText += " font-semibold text-white";
             break;
         case 'primary':
-            sClassContainer += "font-semibold  bg-blue-700 hover:bg-blue-600";
-            sClassText += "font-semibold  text-white";
+            sClassContainer += " font-semibold  bg-blue-700 hover:bg-blue-600 ";
+            sClassText += " font-semiboldtext-white ";
             break;
         case 'danger':
-            sClassContainer += "font-semibold  bg-red-700 hover:bg-red-600";
-            sClassText += "font-semibold  text-white";
+            sClassContainer += " font-semibold  bg-red-700 hover:bg-red-600 ";
+            sClassText += " font-semibold  text-white ";
             break;
         case 'text':
             sClassContainer += "";
-            sClassText += "font-semibold  text-white";
+            sClassText += " font-semibold  text-white ";
             break;
         case 'link':
             sClassContainer += "";
-            sClassText += "font-semibold  text-blue-700";
+            sClassText += " font-semibold  text-blue-700 ";
             break;
         case 'outline':
-            sClassContainer += " bg-green-700";
-            sClassText += "font-semibold  text-white";
+            sClassContainer += " bg-green-700 ";
+            sClassText += " font-semibold  text-white ";
             break;
     }
 
     switch (buttonSize) {
         case 'base':
             sClassContainer += " px-5 py-3 ";
-            sClassText += " text-base";
+            sClassText += " text-base ";
             break;
         case 'sm':
-            sClassContainer += " px-3 py-2";
-            sIconContainer = " h-4 w-4 mr-1";
-            sClassText += " text-sm";
+            sClassContainer += " px-3 py-2 ";
+            sIconContainer = " h-4 w-4 mr-1 ";
+            sClassText += " text-sm ";
             break;
         case 'lg':
-            sClassContainer += " px-6 py-4";
-            sIconContainer = " h-8 w-8 mr-3";
-            sClassText += " text-xl";
+            sClassContainer += " px-6 py-4 ";
+            sIconContainer = " h-8 w-8 mr-3 ";
+            sClassText += " text-xl ";
             break;
     }
 
