@@ -31,8 +31,8 @@ export function Button(props) {
     let sClassText = "  text-center "; 
     switch (buttonType) {
         case 'default':
-            sClassContainer += " bg-neo-300 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
-            sClassText += " font-semibold text-white";
+            sClassContainer += " bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
+            sClassText += " font-semibold text-neo-800 dark:text-neo-200 ";
             break;
         case 'primary':
             sClassContainer += " font-semibold  bg-blue-700 hover:bg-blue-600 ";
