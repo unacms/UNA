@@ -19,55 +19,77 @@ export function Button(props) {
 
     let buttonFull = props.full ? true : false;
 
-    let sClassContainer = "border border-bordercolor/20 dark:border-bordercolor-dark/20  text-center relative rounded-lg flex-row items-center justify-center "; 
+    let sClassContainer = "  group  text-center relative  flex-row items-center justify-center "; 
     let sIconContainer = " h-6 w-6 mr-2";
 
     if (!buttonFull)
         sClassContainer += ' w-fit m-0';
 
     if (buttonDisabled)
-        sClassContainer += ' bg-neo-100 '; 
+        sClassContainer += ' opacity-50 '; 
+        
 
     let sClassText = "  text-center "; 
     switch (buttonType) {
         case 'default':
-            sClassContainer += " bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
-            sClassText += " font-semibold text-neo-800 dark:text-neo-200 ";
+            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
+            sClassText += "group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
             break;
         case 'primary':
-            sClassContainer += " font-semibold  bg-blue-700 hover:bg-blue-600 ";
-            sClassText += " font-semiboldtext-white ";
+            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-blue-600 hover:bg-blue-500 ";
+            sClassText += " font-semibold text-neo-50  ";
             break;
         case 'danger':
-            sClassContainer += " font-semibold  bg-red-700 hover:bg-red-600 ";
-            sClassText += " font-semibold  text-white ";
+            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-red-600 hover:bg-red-500 ";
+            sClassText += " font-semibold  text-neo-50  ";
             break;
         case 'text':
             sClassContainer += "";
-            sClassText += " font-semibold  text-white ";
+            sClassText += " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
             break;
         case 'link':
             sClassContainer += "";
-            sClassText += " font-semibold  text-blue-700 ";
+            sClassText += " group-hover:text-blue-600  dark:group-hover:text-blue-500 font-semibold text-blue-500 dark:text-blue-400 ";
             break;
         case 'outline':
-            sClassContainer += " bg-green-700 ";
-            sClassText += " font-semibold  text-white ";
+            sClassContainer += "   duration-200  border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20    ";
+            sClassText += " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
             break;
     }
 
     switch (buttonSize) {
-        case 'base':
-            sClassContainer += " px-5 py-3 ";
-            sClassText += " text-base ";
-            break;
-        case 'sm':
-            sClassContainer += " px-3 py-2 ";
-            sIconContainer = " h-4 w-4 mr-1 ";
+        case 'link-sm':
+            sClassContainer += "  ";
+            sIconContainer = " h-5 w-5 mr-1.5 ";
             sClassText += " text-sm ";
             break;
+
+        case 'xs':
+            sClassContainer += " rounded-md px-1.5 py-1 ";
+            sIconContainer = " h-4 w-4 mr-1 ";
+            sClassText += " text-xs ";
+            break;
+
+        case 'sm':
+            sClassContainer += " rounded-lg px-2.5 py-1.5 ";
+            sIconContainer = " h-5 w-5 mr-1.5 ";
+            sClassText += " text-sm ";
+            break;
+
+        case 'base':
+            sClassContainer += " rounded-lg px-3.5 py-2.5 ";
+            sIconContainer = " h-6 w-6 mr-2 ";
+            sClassText += " text-base ";
+            break;
+
         case 'lg':
-            sClassContainer += " px-6 py-4 ";
+            sClassContainer += " rounded-lg px-5 py-3 ";
+            sIconContainer = " h-6 w-6 mr-3 ";
+            sClassText += " text-lg ";
+            break;
+        
+        case 'xl':
+            sClassContainer += " rounded-xl px-7 py-4 ";
             sIconContainer = " h-8 w-8 mr-3 ";
             sClassText += " text-xl ";
             break;

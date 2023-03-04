@@ -66,7 +66,7 @@ export default function UnitComments(props) {
                        </View>
                        <View className='flex-1 flex-col ml-4 mb-4  space-y-2 rounded-xl rounded-tl'>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
-                            <Button title="Reply" className="w-40" valiant="small"  onPress={() => reply(data.cmt_id)}  />
+                            <Button title="Reply" size ="link-sm" icon="messages" type="link"  onPress={() => reply(data.cmt_id)}  />
                         </View>
                     </View>
                     

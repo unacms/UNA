@@ -33,7 +33,7 @@ export default function ElementAuthor(oProps) {
 
     const oMenuManage = oProps.data.menu_manage;
     const aMenuManageExcept = ['more-auto'];
-    const selectMenuManageItem = (val: unknown) => () => alert('TODO: Redirect to ' + val);
+    const selectMenuManageItem = (val) => () => alert('TODO: Redirect to ' + val);
 
     const sMenuManageItems = Object.keys(oMenuManage.items).map(function(iKey) {
         const aItem = oMenuManage.items[iKey];
