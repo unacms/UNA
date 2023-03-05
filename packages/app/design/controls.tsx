@@ -44,11 +44,11 @@ export function Button(props) {
             sClassText += " font-semibold  text-neo-50  ";
             break;
         case 'text':
-            sClassContainer += "";
+            sClassContainer += " hover:-translate-y-[1px] active:translate-y-[1px]  duration-200  hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 ";
             sClassText += " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
             break;
         case 'link':
-            sClassContainer += "";
+            sClassContainer += "  ";
             sClassText += " group-hover:text-blue-600  dark:group-hover:text-blue-500 font-semibold text-blue-500 dark:text-blue-400 ";
             break;
         case 'outline':
@@ -58,8 +58,8 @@ export function Button(props) {
     }
 
     switch (buttonSize) {
-        case 'link-sm':
-            sClassContainer += "  ";
+        case 'text-sm':
+            sClassContainer += " rounded-lg  px-1.5 py-1 ";
             sIconContainer = " h-5 w-5 mr-1.5 ";
             sClassText += " text-sm ";
             break;

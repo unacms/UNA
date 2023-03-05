@@ -35,7 +35,7 @@ export default function UnitComments(props) {
 
     let sCommentStyle =  " mx-4 space-y-1 ";
 
-    let sCommentClass = "u-vanilla-html-small";
+    let sCommentClass = "bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1.5 px-2 u-vanilla-html-small";
     if(bSmallSize){
         sCommentStyle = " mr-4 space-y-1";
     }
@@ -64,9 +64,9 @@ export default function UnitComments(props) {
                        <View className="w-8 flex-0 h-full absolute top-0 -left-7">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
-                       <View className='flex-1 flex-col ml-4 mb-4  space-y-2 rounded-xl rounded-tl'>
+                       <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
                             <Html data={data.cmt_text} htmlStyles={oCommentTextStyle} className={sCommentClass} />
-                            <Button title="Reply" size ="link-sm" icon="messages" type="link"  onPress={() => reply(data.cmt_id)}  />
+                            <Button  title="Reply" size ="text-sm" icon="reply" type="text"  onPress={() => reply(data.cmt_id)}  />
                         </View>
                     </View>
                     
