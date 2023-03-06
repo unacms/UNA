@@ -1,7 +1,7 @@
-import Profile from '../atoms/profile';
-import Time from '../atoms/time';
-import Score from '../atoms/score';
-import Vote from '../atoms/vote';
+import Profile from '../../ui/molecules/profile';
+import Time from '../../ui/atoms/time';
+import Score from '../../ui/atoms/score';
+import Vote from '../../ui/molecules/vote';
 import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
 import { fetcher } from '../../lib/util';
@@ -9,7 +9,7 @@ import { fetcher } from '../../lib/util';
 import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
-import Html from '../atoms/html';
+import Html from '../../ui/atoms/html';
 import { Button } from 'app/design/controls'
 
 export default function UnitComments(props) {

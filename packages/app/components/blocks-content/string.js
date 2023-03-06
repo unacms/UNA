@@ -1,5 +1,5 @@
 import { Text } from 'app/design/typography'
-import Html from '../atoms/html';
+import Html from '../../ui/atoms/html';
 
 export default function BlockContentString(props) {
 

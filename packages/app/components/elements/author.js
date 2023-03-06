@@ -14,7 +14,7 @@ import {
 } from 'app/design/dropdown';
 
 import Menu from '../menu';
-import Profile from '../atoms/profile';
+import Profile from '../../ui/molecules/profile';
 
 export default function ElementAuthor(oProps) {
     const session = true;//const { data: session } = useSession();

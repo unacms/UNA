@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { TouchableOpacity } from 'app/design/view'
-import Link from 'app/components/atoms/link'
+import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import { useRouter } from 'next/router';

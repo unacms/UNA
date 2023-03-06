@@ -1,4 +1,4 @@
-import Link from './atoms/link';
+import Link from '../ui/atoms/link';
 //import { useRouter } from 'next/router';
 import {Text} from 'app/design/typography'
 

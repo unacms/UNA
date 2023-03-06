@@ -1,7 +1,7 @@
-import Image from '../atoms/image';
-import Link from '../atoms/link';
-import Time from '../atoms/time';
-import Profile from '../atoms/profile';
+import Image from '../../ui/atoms/image';
+import Link from '../../ui/atoms/link';
+import Time from '../../ui/atoms/time';
+import Profile from '../../ui/molecules/profile';
 
 import { Text, H1 ,TextLink} from 'app/design/typography'
 import { View } from 'app/design/view'

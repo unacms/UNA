@@ -1,6 +1,6 @@
 import React from 'react';
-import Likes from '../atoms/likes';
-import Reactions from '../atoms/reactions';
+import Likes from '../../ui/molecules/likes';
+import Reactions from '../../ui/molecules/reactions';
 import { View } from 'app/design/view'
 
 const oComponentsMap = {

@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
-import Image from '../atoms/image';
-import Html from '../atoms/html';
+import Image from '../../ui/atoms/image';
+import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
 
 export default function ElementEntry({data}) {

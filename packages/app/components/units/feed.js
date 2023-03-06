@@ -1,10 +1,10 @@
-import Image from '../atoms/image';
-import Link from '../atoms/link';
-import Time from '../atoms/time';
-import Profile from '../atoms/profile';
+import Image from '../../ui/atoms/image';
+import Link from '../../ui/atoms/link';
+import Time from '../../ui/atoms/time';
+import Profile from '../../ui/molecules/profile';
 import { TouchableOpacity } from 'app/design/view'
 import { useState } from 'react';
-import Html from '../atoms/html';
+import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';

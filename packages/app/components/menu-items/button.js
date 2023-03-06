@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '../atoms/link';
+import Link from '../../ui/atoms/link';
 import { View } from 'app/design/view'
 
 export default function MenuItemButton(oProps) {

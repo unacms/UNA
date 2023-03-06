@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'app/design/view'
-import Link from 'app/components/atoms/link'
+import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
-import Toggle  from './atoms/toggle';
+import Toggle  from '../ui/atoms/toggle';
 import React, { useState } from 'react';
 import { View, Row } from 'app/design/view'
 import { A, Text } from 'app/design/typography'

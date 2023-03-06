@@ -1,5 +1,5 @@
 import React from 'react';
-import Time from '../atoms/time';
+import Time from '../../ui/atoms/time';
 import { A, Text } from 'app/design/typography'
 
 export default function MenuItemLink(oProps) {
