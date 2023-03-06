@@ -1,6 +1,6 @@
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
-import Score from '../../ui/atoms/score';
+import Score from '../../ui/molecules/score';
 import Vote from '../../ui/molecules/vote';
 import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
