@@ -8,6 +8,7 @@ import { TouchableOpacityProps } from 'react-native'
 type ButtonProps = TouchableOpacityProps & {
     type?: 'default' | 'primary' | 'danger' | 'text' | 'link' | 'outline';
     size?: 'text-sm' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+    align?: 'center' | 'left';
     disabled?: boolean;
     icon?: string;
     full?: boolean;
