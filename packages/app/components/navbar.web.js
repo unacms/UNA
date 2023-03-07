@@ -1,4 +1,5 @@
 import { TouchableOpacity } from 'app/design/view'
+import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
 import Toggle  from '../ui/atoms/toggle';
@@ -11,7 +12,11 @@ import { MotiView, AnimatePresence } from 'moti'
 export default function () {
   const session = null;//const { data: session } = useSession();
   const [menuPopup, setMenuPopup] = useState(false);
-
+  let { width } = useWindowDimensions();
+  
+  if (width > 1280 && menuPopup)
+    setMenuPopup(false);
+  
   const showMenu =  (params) => {
     setMenuPopup(!menuPopup);
   }
