@@ -6,14 +6,17 @@ import { Icon } from 'app/components/svg'
 import { TouchableOpacityProps } from 'react-native'
 
 type ButtonProps = TouchableOpacityProps & {
-    type?: 'default' | 'primary' | 'danger' | 'text' | 'link' | 'outline';
-    size?: 'text-sm' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
-    align?: 'center' | 'left';
+    align?: 'center' | 'start' | 'end';
     disabled?: boolean;
-    icon?: string;
-    full?: boolean;
+    fullWidth?: boolean;
+    size?: 'text-sm' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+    startDecorator?: string;
+    endDecorator?: string;
+    variant?: 'default' | 'primary' | 'danger' | 'text' | 'link' | 'outline';    
     title?: string;
-  };
+    rounded?: boolean;
+    solid?: boolean;
+};
 
 /* inputs */
 export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
@@ -22,96 +25,72 @@ export const Hidden = styled(TextInputDef, 'hidden')
 /* buttons */
 export function Button(props: ButtonProps) {
     let { className, ...rest } = props
-    let buttonType = props.type ? props.type : 'default';
+    let buttonType = props.variant ? props.variant : 'default';
     let buttonSize = props.size ? props.size : 'base';
     let buttonDisabled = props.disabled ? true : false;
-    let buttonIcon = props.icon ? props.icon : '';
-    
+    let buttonIconStart = props.startDecorator ? props.startDecorator : '';
+    let buttonIconEnd = props.endDecorator ? props.endDecorator : false;
+    let buttonAlign = props.align ? props.align : 'center';
+    let buttonFull = props.fullWidth ? true : false;
+    let buttonTitle = props.title ? props.title : '';
+    let buttonRounded = props.rounded ? true : false;
+    let buttonSolid = props.solid ? true : false;
 
-    let buttonFull = props.full ? true : false;
-
-    let sClassContainer = "  group  text-center relative  flex-row items-center justify-center "; 
-    let sIconContainer = " h-6 w-6 mr-2";
+    let sClassContainer = " group relative flex-row items-center "; 
+    let sIconContainer = " h-6 w-6 mr-2 ";
 
     if (!buttonFull)
-        sClassContainer += ' w-fit m-0';
+        sClassContainer += ' w-fit m-0 ';
 
     if (buttonDisabled)
         sClassContainer += ' opacity-50 '; 
-        
 
-    let sClassText = "  text-center "; 
-    switch (buttonType) {
-        case 'default':
-            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
-            sClassText += "group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
-            break;
-        case 'primary':
-            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-blue-600 hover:bg-blue-500 ";
-            sClassText += " font-semibold text-neo-50  ";
-            break;
-        case 'danger':
-            sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-red-600 hover:bg-red-500 ";
-            sClassText += " font-semibold  text-neo-50  ";
-            break;
-        case 'text':
-            sClassContainer += " hover:-translate-y-[1px] active:translate-y-[1px]  duration-200  hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 ";
-            sClassText += " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
-            break;
-        case 'link':
-            sClassContainer += "  ";
-            sClassText += " group-hover:text-blue-600  dark:group-hover:text-blue-500 font-semibold text-blue-500 dark:text-blue-400 ";
-            break;
-        case 'outline':
-            sClassContainer += "   duration-200  border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20    ";
-            sClassText += " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200 ";
-            break;
-    }
+    let sClassText = "  text-center ";
+    
+    sClassContainer += (buttonSolid ? '' : 'u-btn-' + buttonType + '-trans') + ' u-btn-' + buttonType + '-cnt ';
+    sClassText += ' u-btn-' + buttonType + '-text '
+
+    sClassContainer += ' justify-' + buttonAlign + ' ';
 
     switch (buttonSize) {
-        case 'text-sm':
-            sClassContainer += " rounded-lg  px-1.5 py-1 ";
-            sIconContainer = " h-5 w-5 mr-1.5 ";
+        case 'sm':
+            sClassContainer += (buttonRounded ? "rounded-full p-1 " : "rounded-lg px-1.5 py-1");
+            sIconContainer = " h-5 w-5 " + (buttonTitle != '' ? (buttonIconEnd != '' ? " ml-1.5 " : " mr-1.5 ") : '');
             sClassText += " text-sm ";
             break;
 
         case 'xs':
-            sClassContainer += " rounded-md px-1.5 py-1 ";
-            sIconContainer = " h-4 w-4 mr-1 ";
+            sClassContainer += (buttonRounded ? "rounded-full p-1 " : "rounded-md px-1.5 py-1 ");
+            sIconContainer = " h-4 w-4 " + (buttonTitle != '' ? (buttonIconEnd != '' ? " ml-1 " : " mr-1 ") : '');
             sClassText += " text-xs ";
             break;
 
-        case 'sm':
-            sClassContainer += " rounded-lg px-2.5 py-1.5 ";
-            sIconContainer = " h-5 w-5 mr-1.5 ";
-            sClassText += " text-sm ";
-            break;
-
         case 'base':
-            sClassContainer += " rounded-lg px-3.5 py-2.5 ";
-            sIconContainer = " h-6 w-6 mr-2 ";
+            sClassContainer += (buttonRounded ? "rounded-full p-2.5 " : "rounded-lg px-3.5 py-2.5 ");
+            sIconContainer = " h-6 w-6 " + (buttonTitle != '' ? (buttonIconEnd != '' ? " ml-2 " : " mr-2 ") : '');
             sClassText += " text-base ";
             break;
 
         case 'lg':
-            sClassContainer += " rounded-lg px-5 py-3 ";
-            sIconContainer = " h-6 w-6 mr-3 ";
+            sClassContainer += (buttonRounded ? "rounded-full p-3" : "rounded-lg px-5 py-3 ");
+            sIconContainer = " h-6 w-6 " + (buttonTitle != '' ? (buttonIconEnd != '' ? " ml-3 " : " mr-3 ") : '');
             sClassText += " text-lg ";
             break;
         
         case 'xl':
-            sClassContainer += " rounded-xl px-7 py-4 ";
-            sIconContainer = " h-8 w-8 mr-3 ";
+            sClassContainer += (buttonRounded ? "rounded-full p-4 " : "rounded-xl px-7 py-4 ");
+            sIconContainer = " h-8 w-8 " + (buttonTitle != '' ? (buttonIconEnd != '' ? " ml-3 " : " mr-3 ") : '');
             sClassText += " text-xl ";
             break;
     }
 
     return (
-        <Pressable className={sClassContainer} {...rest}>
-            {buttonIcon != '' && <Icon className={sClassText+sIconContainer} icon={buttonIcon}></Icon>}
-            <Text className={sClassText}>
-                {props.title}
-            </Text>
+        <Pressable className={sClassContainer} {...rest} >
+            {buttonIconStart != '' && !buttonIconEnd && <Icon className={sClassText+sIconContainer} icon={buttonIconStart}></Icon>}
+            { buttonTitle && <Text className={sClassText}>
+                {buttonTitle}
+            </Text>}
+            {buttonIconEnd != '' && buttonIconEnd && <Icon className={sClassText+sIconContainer} icon={buttonIconEnd}></Icon>}
         </Pressable>
     )
 }

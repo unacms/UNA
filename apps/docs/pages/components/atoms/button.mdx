@@ -19,21 +19,27 @@ import { Button } from 'app/design/controls';
 
 <Wrapper className='flex-col gap-4'>
   <Row className='flex-wrap items-start gap-4'>
-        <Button title="Default"  type="default" />
-        <Button title="Primary"  type="primary"  />
-        <Button title="Danger" type="danger"/>
-        <Button title="text" type="text"/>
-        <Button title="Link" type="link"/>
-        <Button title="Outline" type="outline"/>
+        <Button title="Default"  variant="default" />
+        <Button title="Primary"  variant="primary"  />
+        <Button title="Danger" variant="danger"/>
+        <Button title="text" variant="text"/>
+        <Button title="Link" variant="link"/>
+        <Button title="Outline" variant="outline"/>
 
         <Button title="Disabled" disabled />
-        <Button title="XSmall" icon="home" size ="xs" />
-        <Button title="Small" icon="home" size ="sm" />
-        <Button title="Base" icon="home" size ="base" />
-        <Button title="Large" icon="home" size ="lg" />
-        <Button title="XLarge" icon="home" size ="xl" />
+        <Button title="XSmall" startDecorator="home" size ="xs" />
+        <Button title="Small" startDecorator="home" size ="sm" />
+        <Button title="Base" startDecorator="home" size ="base" />
+        <Button title="Large" startDecorator="home" size ="lg" />
+        <Button title="XLarge" startDecorator="home" size ="xl" />
+        <Button title="XLarge" startDecorator="home" iconend size ="xl" />
     </Row>
-        <Button title="Full Width" full ="full" />
+        <Button title="Full Width" fullWidth />
+        <Button title="Full Width left alignment" fullWidth align="start" startDecorator="home" />
+        <Button title="Full Width right alignment" variant="danger" fullWidth align="end" endDecorator="home" />
+        <Button rounded startDecorator="home" />
+
+        <Button  startDecorator="home" title="no hover" solid />
 </Wrapper>
 
 

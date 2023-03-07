@@ -79,7 +79,7 @@ export function Icon(props) {
 
     case 'logo-text':
       data = (
-        <Svg className={className} viewBox="0 0 326 118" fill="none">
+        <Svg className={className + " mr-0 ml-0"} viewBox="0 0 326 118" fill="none">
           <Path
             d="M0.63664 116V2.38114H15.9905L22.617 24.3615V116H0.63664ZM79.184 116L11.7884 28.7252L15.9905 2.38114L83.3861 89.6559L79.184 116ZM79.184 116L72.8808 94.6662V2.38114H95.0227V116H79.184ZM118.064 116V2.38114H140.044V116H118.064ZM134.226 116V96.6056H197.096V116H134.226ZM134.226 67.3524V48.6045H191.439V67.3524H134.226ZM134.226 21.7755V2.38114H196.288V21.7755H134.226ZM266.409 117.778C258.113 117.778 250.355 116.269 243.136 113.252C236.025 110.236 229.775 106.087 224.388 100.808C219.109 95.4204 214.96 89.1711 211.943 82.0598C208.927 74.8408 207.418 67.1369 207.418 58.9481C207.418 50.7594 208.873 43.1633 211.782 36.1597C214.799 29.0484 218.947 22.853 224.227 17.5734C229.614 12.1861 235.863 8.03784 242.974 5.12868C250.086 2.11177 257.79 0.603316 266.086 0.603316C274.49 0.603316 282.248 2.11177 289.359 5.12868C296.471 8.03784 302.666 12.1861 307.946 17.5734C313.333 22.853 317.535 29.0484 320.552 36.1597C323.569 43.271 325.077 50.921 325.077 59.1098C325.077 67.2985 323.569 74.9485 320.552 82.0598C317.535 89.1711 313.333 95.4204 307.946 100.808C302.666 106.087 296.471 110.236 289.359 113.252C282.356 116.269 274.706 117.778 266.409 117.778ZM266.086 97.2521C273.413 97.2521 279.77 95.6359 285.157 92.4035C290.545 89.1711 294.747 84.6996 297.764 78.989C300.888 73.2784 302.451 66.5982 302.451 58.9481C302.451 53.3453 301.589 48.2273 299.865 43.5942C298.141 38.9611 295.663 34.9745 292.43 31.6344C289.198 28.1865 285.373 25.5467 280.955 23.715C276.538 21.8833 271.581 20.9674 266.086 20.9674C258.975 20.9674 252.672 22.5836 247.177 25.816C241.789 28.9407 237.533 33.3583 234.409 39.0689C231.392 44.7795 229.883 51.4059 229.883 58.9481C229.883 64.6587 230.745 69.8844 232.469 74.6253C234.301 79.3661 236.779 83.4066 239.904 86.7468C243.136 90.0869 246.961 92.6728 251.379 94.5045C255.904 96.3362 260.807 97.2521 266.086 97.2521Z"
             fill="currentColor"
@@ -91,7 +91,7 @@ export function Icon(props) {
     case 'discover':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -108,7 +108,7 @@ export function Icon(props) {
     case 'about':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -126,7 +126,7 @@ export function Icon(props) {
     case 'home':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -143,7 +143,7 @@ export function Icon(props) {
     case 'contact':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -160,7 +160,7 @@ export function Icon(props) {
     case 'contact':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -177,7 +177,7 @@ export function Icon(props) {
     case 'reply':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -194,7 +194,7 @@ export function Icon(props) {
     case 'messages':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -210,7 +210,7 @@ export function Icon(props) {
     case 'notifications':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -227,7 +227,7 @@ export function Icon(props) {
     case 'search':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -244,7 +244,7 @@ export function Icon(props) {
     case 'account':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -261,7 +261,7 @@ export function Icon(props) {
     case 'rocket':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -280,7 +280,7 @@ export function Icon(props) {
     case 'plus':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -297,7 +297,7 @@ export function Icon(props) {
     case 'menu':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -315,7 +315,7 @@ export function Icon(props) {
     case 'hash':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -334,7 +334,7 @@ export function Icon(props) {
     case 'post':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -354,7 +354,7 @@ export function Icon(props) {
     case 'group':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -378,7 +378,7 @@ export function Icon(props) {
     case 'people':
       data = (
         <Svg
-          className={className}
+          className={className + " mr-0 ml-0"}
           width="24"
           height="24"
           viewBox="0 0 24 24"

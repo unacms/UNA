@@ -4,7 +4,7 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import { useRouter } from 'next/router';
-
+import { Button } from 'app/design/controls'
 
 export default function ElementMainMenu(props) {
     const router = useRouter()
@@ -27,10 +27,7 @@ export default function ElementMainMenu(props) {
             <View className="flex-col space-y-0.5">
                 {
                     menu.map( item => <Link href={item.url}>
-                        <View className={'/' + path == item.url ? "group flex-row space-x-3 items-center rounded-lg p-3 duration-200 bg-item-hover/50 dark:bg-item-hover-dark/50" : "group flex-row space-x-3 items-center rounded-lg p-3   duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50"}>
-                            <Icon icon={item.icon} className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "></Icon>
-                            <Text className="text-base font-medium duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">{item.title}</Text>
-                        </View>
+                        <Button variant="text" startDecorator={item.icon} fullWidth solid align='start' title ={item.title} />
                     </Link>)
                 }
             </View>

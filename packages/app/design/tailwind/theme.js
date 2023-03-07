@@ -56,7 +56,6 @@ const colors =
         '800': '#181b20',
         '900': '#0d0f11',
     },
-   
 };
 
 const theme = {

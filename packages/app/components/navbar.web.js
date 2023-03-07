@@ -8,6 +8,7 @@ import { View, Row } from 'app/design/view'
 import { A, Text } from 'app/design/typography'
 import ElementMainMenu from 'app/components/elements/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
+import { Button } from 'app/design/controls'
 
 export default function () {
   const session = null;//const { data: session } = useSession();
@@ -124,10 +125,11 @@ export default function () {
           ></Icon>
           </View>
         </Link>
-      </TouchableOpacity>
+      </TouchableOpacity> 
       <TouchableOpacity onPress={hideMenu}>
         <Link
           href="/messages">
+           
             <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
         >
           <Icon
