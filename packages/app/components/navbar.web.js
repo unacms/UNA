@@ -18,6 +18,7 @@ export default function () {
     setMenuPopup(false);
   
   const showMenu =  (params) => {
+    console.log(123);
     setMenuPopup(!menuPopup);
   }
 
@@ -173,11 +174,16 @@ export default function () {
       exit={{
         opacity: 0,
       }}
+      transition={{
+        duration: 0,
+      }}
     >
       <TouchableOpacity className='bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen' onPress={showMenu}>
-      <MotiView 
+  </TouchableOpacity>
+  </MotiView>
+  <MotiView style={{width:288}}
       from={{
-        translateX: -72,
+        translateX: -300,
         overshootClamping:false
       }}
       animate={{
@@ -185,7 +191,7 @@ export default function () {
         overshootClamping:false
       }}
       exit={{
-        translateX: -72,
+        translateX: -300,
         overshootClamping:false
       }}
       transition={{
@@ -199,8 +205,6 @@ export default function () {
         <ElementMainMenu  />
       </View>
     </MotiView>
-  </TouchableOpacity>
-  </MotiView>
  </View>
 
     
