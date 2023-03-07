@@ -7,7 +7,7 @@ import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
 import { View, ScrollView } from 'app/design/view'
 
-export const siteTitle = 'G-Med';
+export const siteTitle = 'NEO';
 
 export default function Layout(props) {
 

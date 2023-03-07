@@ -25,7 +25,7 @@ export function ProfileScreen() {
       </View>
       <View className="flex-auto h-screen flex-col " >
         <Text className='text-white px-4 py-3 bg-blue-500 text-base text-center'>
-          Announcement! Read <TextLink className='text-white font-semibold underline text-base' href="/about">about G-Med</TextLink> or <TextLink className='text-white font-semibold underline text-base' href="/about">contact us</TextLink> for more info.
+          Announcement! Read <TextLink className='text-white font-semibold underline text-base' href="/about">about NEO</TextLink> or <TextLink className='text-white font-semibold underline text-base' href="/about">contact us</TextLink> for more info.
         </Text>
         <View className="bg-white dark:bg-gray-800 h-16 hidden sm:flex bg-white border-b border-gray-200 dark:border-gray-700/50 flex-row ">
           <View className="p-4 h-full flex-row ">

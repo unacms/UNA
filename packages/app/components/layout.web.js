@@ -12,7 +12,7 @@ import { View } from 'app/design/view'
 import ElementMainMenu from 'app/components/elements/mainmenu'
 
 
-export const siteTitle = 'G-Med';
+export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
     var oBreadCrump = null;
