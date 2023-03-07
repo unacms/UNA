@@ -1,35 +1,26 @@
-import { TextInput as TextInputDef} from 'react-native'
-import { TouchableOpacity, Pressable, View } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { styled } from 'nativewind'
-import { Icon } from 'app/components/svg'
+import { TextInput as TextInputDef } from 'react-native';
+import { TouchableOpacity, Pressable, View } from 'app/design/view';
+import { Text } from 'app/design/typography';
+import { styled } from 'nativewind';
+import { Icon } from 'app/components/svg';
 
 /* inputs */
-export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
-export const Hidden = styled(TextInputDef, 'hidden')
+export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base');
+export const Hidden = styled(TextInputDef, 'hidden');
 
 /* buttons */
 export function Button(props) {
-    let { className, ...rest } = props
+    let { className, ...rest } = props;
     let buttonType = props.type ? props.type : 'default';
     let buttonSize = props.size ? props.size : 'base';
     let buttonDisabled = props.disabled ? true : false;
     let buttonIcon = props.icon ? props.icon : '';
-    
-
     let buttonFull = props.full ? true : false;
-
-    let sClassContainer = "  group  text-center relative  flex-row items-center justify-center "; 
-    let sIconContainer = " h-6 w-6 mr-2";
-
-    if (!buttonFull)
-        sClassContainer += ' w-fit m-0';
-
-    if (buttonDisabled)
-        sClassContainer += ' opacity-50 '; 
-        
-
-    let sClassText = "  text-center "; 
+    let sClassContainer = "group text-center relative flex-row items-center justify-center";
+    let sIconContainer = "h-6 w-6 mr-2";
+    if (!buttonFull) sClassContainer += ' w-fit m-0';
+    if (buttonDisabled) sClassContainer += ' opacity-50';
+    let sClassText = "text-center";
     switch (buttonType) {
         case 'default':
             sClassContainer += " hover:-translate-y-0.5 active:translate-y-0.5  duration-200 active:shadow-none shadow-sm hover:shadow-lg border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ";
