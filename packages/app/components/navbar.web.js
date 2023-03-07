@@ -58,33 +58,13 @@ export default function () {
       <TouchableOpacity className="hidden sm:block" onPress={hideMenu}>
         <Link
           href="/timeline-view-home">
-            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
-        >
-          <Icon
-            icon="home"
-            className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-
-          <Text className="hidden md:block text-sm lg:text-base font-medium duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
-            Home
-          </Text>
-          </View>
+            <Button title="Home" startDecorator="home" variant="custom" rounded solid classTextName="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 " classIconName="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50" />
         </Link>
       </TouchableOpacity>
       <TouchableOpacity className="hidden sm:block" onPress={hideMenu}>
         <Link
           href="/posts-home">
-            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50"
-        >
-          <Icon
-            icon="discover"
-            className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-
-          <Text className="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
-            Discover
-          </Text>
-          </View>
+              <Button title="Discover" startDecorator="discover" variant="custom" rounded solid classTextName="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 " classIconName="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full md:rounded-lg p-3 md:py-1 lg:p-3 bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent duration-200 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 dark:md:hover:bg-item-hover-dark/50" />
         </Link>
       </TouchableOpacity>
 
@@ -113,56 +93,19 @@ export default function () {
           </Text>
           </View>
         </Link>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={hideMenu}>
-        <Link
-          href="/notifications">
-            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
-        >
-          <Icon
-            icon="notifications"
-            className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-          </View>
+        </TouchableOpacity>
+        <Link  href="/notifications"onPress={hideMenu}>
+            <Button startDecorator="notifications" variant="custom" rounded solid classTextName="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark" />
         </Link>
-      </TouchableOpacity> 
-      <TouchableOpacity onPress={hideMenu}>
-        <Link
-          href="/messages">
-           
-            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
-        >
-          <Icon
-            icon="messages"
-            className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-            </View>
+        <Link href="/messages" onPress={hideMenu}>
+            <Button startDecorator="messages" variant="custom" rounded solid classTextName="group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark" />
         </Link>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={hideMenu}>
-        <Link
-          href="/add"><View 
-          className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-2.5  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
-        >
-          <Icon
-            icon="plus"
-            className="h-7 w-7 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-          </View>
+        <Link href="/add" onPress={hideMenu}>
+            <Button startDecorator="plus" variant="custom" rounded solid classTextName="group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark" />
         </Link>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={hideMenu}>
-        <Link
-          href="/account">
-            <View className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark    hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark"
-        >
-          <Icon
-            icon="account"
-            className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
-          ></Icon>
-          </View>
+        <Link href="/account" onPress={hideMenu}>
+          <Button startDecorator="account" variant="custom" rounded solid classTextName="group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300" className="group flex-col lg:flex-row lg:space-x-3 items-center rounded-full  p-3  bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover dark:md:hover:bg-item-hover-dark" />
         </Link>
-      </TouchableOpacity>
     </Row>
   </View>
   <AnimatePresence>

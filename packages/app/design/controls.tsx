@@ -12,10 +12,12 @@ type ButtonProps = TouchableOpacityProps & {
     size?: 'text-sm' | 'xs' | 'sm' | 'base' | 'lg' | 'xl';
     startDecorator?: string;
     endDecorator?: string;
-    variant?: 'default' | 'primary' | 'danger' | 'text' | 'link' | 'outline';    
+    variant?: 'default' | 'primary' | 'danger' | 'text' | 'link' | 'outline' | 'custom';    
     title?: string;
     rounded?: boolean;
     solid?: boolean;
+    classTextName? : string;
+    classIconName? : string;
 };
 
 /* inputs */
@@ -24,7 +26,7 @@ export const Hidden = styled(TextInputDef, 'hidden')
 
 /* buttons */
 export function Button(props: ButtonProps) {
-    let { className, ...rest } = props
+    let { className, classTextName, classIconName, ...rest } = props
     let buttonType = props.variant ? props.variant : 'default';
     let buttonSize = props.size ? props.size : 'base';
     let buttonDisabled = props.disabled ? true : false;
@@ -47,8 +49,14 @@ export function Button(props: ButtonProps) {
 
     let sClassText = "  text-center ";
     
-    sClassContainer += (buttonSolid ? '' : 'u-btn-' + buttonType + '-trans') + ' u-btn-' + buttonType + '-cnt ';
-    sClassText += ' u-btn-' + buttonType + '-text '
+    if (buttonType != 'custom'){
+        sClassContainer += (buttonSolid ? '' : 'u-btn-' + buttonType + '-trans') + ' u-btn-' + buttonType + '-cnt ';
+        sClassText += ' u-btn-' + buttonType + '-text '
+    }
+    else{
+        sClassContainer += className;
+        sClassText += classTextName;
+    }
 
     sClassContainer += ' justify-' + buttonAlign + ' ';
 
@@ -86,11 +94,11 @@ export function Button(props: ButtonProps) {
 
     return (
         <Pressable className={sClassContainer} {...rest} >
-            {buttonIconStart != '' && !buttonIconEnd && <Icon className={sClassText+sIconContainer} icon={buttonIconStart}></Icon>}
+            {buttonIconStart != '' && !buttonIconEnd && <Icon className={classIconName ? classIconName : sClassText+sIconContainer} icon={buttonIconStart}></Icon>}
             { buttonTitle && <Text className={sClassText}>
                 {buttonTitle}
             </Text>}
-            {buttonIconEnd != '' && buttonIconEnd && <Icon className={sClassText+sIconContainer} icon={buttonIconEnd}></Icon>}
+            {buttonIconEnd != '' && buttonIconEnd && <Icon className={classIconName ? classIconName : sClassText+sIconContainer} icon={buttonIconEnd}></Icon>}
         </Pressable>
     )
 }
