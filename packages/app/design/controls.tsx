@@ -11,6 +11,7 @@ type ButtonProps = TouchableOpacityProps & {
     disabled?: boolean;
     icon?: string;
     full?: boolean;
+    title?: string;
   };
 
 /* inputs */
