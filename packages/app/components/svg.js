@@ -202,19 +202,9 @@ export function Icon(props) {
 
     case 'about':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Circle cx="12" cy="12" r="10"></Circle>
-          <Line x1="12" y1="16" x2="12" y2="12"></Line>
-          <Line x1="12" y1="8" x2="12.01" y2="8"></Line>
-        </Svg>
+        
+          <Svg className={className + ' mr-0 ml-0'} fill='currentColor' viewBox="0 0 24 24">
+            <Path d="M22.601 2.062a1 1 0 0 0-.713-.713A11.252 11.252 0 0 0 10.47 4.972L9.354 6.296 6.75 5.668a2.777 2.777 0 0 0-3.387 1.357l-2.2 3.9a1 1 0 0 0 .661 1.469l3.073.659a13.42 13.42 0 0 0-.555 2.434 1 1 0 0 0 .284.836l3.1 3.1a1 1 0 0 0 .708.293c.028 0 .057-.001.086-.004a12.169 12.169 0 0 0 2.492-.49l.644 3.004a1 1 0 0 0 1.469.661l3.905-2.202a3.035 3.035 0 0 0 1.375-3.304l-.668-2.76 1.237-1.137A11.204 11.204 0 0 0 22.6 2.062ZM3.572 10.723l1.556-2.76a.826.826 0 0 1 1.07-.375l1.718.416-.65.772a13.095 13.095 0 0 0-1.59 2.398Zm12.47 8.222-2.715 1.532-.43-2.005a11.34 11.34 0 0 0 2.414-1.62l.743-.683.404 1.664a1.041 1.041 0 0 1-.416 1.112Zm1.615-6.965-3.685 3.386a9.773 9.773 0 0 1-5.17 2.304l-2.405-2.404a10.932 10.932 0 0 1 2.401-5.206l1.679-1.993a.964.964 0 0 0 .078-.092L11.99 6.27a9.278 9.278 0 0 1 8.81-3.12 9.218 9.218 0 0 1-3.143 8.829Zm-.923-6.164a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0-1.5-1.5Z"/></Svg>
       )
       break
 
@@ -231,18 +221,7 @@ export function Icon(props) {
 
     case 'contact':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Line x1="22" y1="2" x2="11" y2="13"></Line>
-          <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'}  viewBox="0 0 24 24" ><path fill="currentColor" d="M20.34,9.32l-14-7a3,3,0,0,0-4.08,3.9l2.4,5.37h0a1.06,1.06,0,0,1,0,.82l-2.4,5.37A3,3,0,0,0,5,22a3.14,3.14,0,0,0,1.35-.32l14-7a3,3,0,0,0,0-5.36Zm-.89,3.57-14,7a1,1,0,0,1-1.35-1.3l2.39-5.37A2,2,0,0,0,6.57,13h6.89a1,1,0,0,0,0-2H6.57a2,2,0,0,0-.08-.22L4.1,5.41a1,1,0,0,1,1.35-1.3l14,7a1,1,0,0,1,0,1.78Z"/></Svg>
       )
       break
 
@@ -282,16 +261,8 @@ export function Icon(props) {
 
     case 'messages':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></Path>
+        <Svg className={className + ' mr-0 ml-0'} fill='currentColor' viewBox="0 0 24 24">
+          <Path d="M17,9H7a1,1,0,0,0,0,2H17a1,1,0,0,0,0-2Zm-4,4H7a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,0-1.41A8,8,0,1,1,12,20Z"/>
         </Svg>
       )
       break
@@ -299,11 +270,11 @@ export function Icon(props) {
     case 'notifications':
       data = (
         <Svg
-          className={className + ' mr-0 ml-0'}
+          className={className + ' mr-0 ml-0 p-[1px]'}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -332,18 +303,7 @@ export function Icon(props) {
 
     case 'account':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></Path>
-          <Circle cx="12" cy="7" r="4"></Circle>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24"><path fill="currentColor" d="M15.71,12.71a6,6,0,1,0-7.42,0,10,10,0,0,0-6.22,8.18,1,1,0,0,0,2,.22,8,8,0,0,1,15.9,0,1,1,0,0,0,1,.89h.11a1,1,0,0,0,.88-1.1A10,10,0,0,0,15.71,12.71ZM12,12a4,4,0,1,1,4-4A4,4,0,0,1,12,12Z"/></Svg>
       )
       break
 
@@ -368,18 +328,9 @@ export function Icon(props) {
 
     case 'plus':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Line x1="12" y1="5" x2="12" y2="19"></Line>
-          <Line x1="5" y1="12" x2="19" y2="12"></Line>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0 '}
+        viewBox="0 0 24 24"
+        fill="none"><Path fill="currentColor" d="M19,11H13V5a1,1,0,0,0-2,0v6H5a1,1,0,0,0,0,2h6v6a1,1,0,0,0,2,0V13h6a1,1,0,0,0,0-2Z"/></Svg>
       )
       break
 
@@ -404,11 +355,11 @@ export function Icon(props) {
     case 'hash':
       data = (
         <Svg
-          className={className + ' mr-0 ml-0'}
+          className={className + ' mr-0 ml-0 p-[1px]'}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
         >
@@ -430,46 +381,15 @@ export function Icon(props) {
 
     case 'group':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M22 5V2l-5.89 5.89"></Path>
-          <Circle cx="16.6" cy="15.89" r="3"></Circle>
-          <Circle cx="8.11" cy="7.4" r="3"></Circle>
-          <Circle cx="12.35" cy="11.65" r="3"></Circle>
-          <Circle cx="13.91" cy="5.85" r="3"></Circle>
-          <Circle cx="18.15" cy="10.09" r="3"></Circle>
-          <Circle cx="6.56" cy="13.2" r="3"></Circle>
-          <Circle cx="10.8" cy="17.44" r="3"></Circle>
-          <Circle cx="5" cy="19" r="3"></Circle>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24"><path fill="currentColor" d="M19.68,6.88a4.4,4.4,0,0,0-3.31-.32,4.37,4.37,0,0,0-8.73,0,4.48,4.48,0,0,0-3.31.29,4.37,4.37,0,0,0,.61,8,4.4,4.4,0,0,0-.8,2.5,5,5,0,0,0,.07.75A4.34,4.34,0,0,0,8.5,21.73a4.68,4.68,0,0,0,.64,0A4.42,4.42,0,0,0,12,20a4.42,4.42,0,0,0,2.86,1.69,4.68,4.68,0,0,0,.64,0,4.36,4.36,0,0,0,3.56-6.87,4.36,4.36,0,0,0,.62-8ZM10.34,4.94a2.4,2.4,0,0,1,3.32,0,2.43,2.43,0,0,1,.52,2.66l-.26.59-.66.58A4.07,4.07,0,0,0,12,8.55a4,4,0,0,0-1.61.34L9.83,7.6A2.39,2.39,0,0,1,10.34,4.94Zm-6.1,6.84A2.37,2.37,0,0,1,7.94,9l.49.43.35.8A3.92,3.92,0,0,0,8,12.55,2.85,2.85,0,0,0,8,13l-.55,0h0l-.84.08A2.37,2.37,0,0,1,4.24,11.78Zm6.6,6.08a2.38,2.38,0,0,1-4.66-.08,3.07,3.07,0,0,1,0-.42,2.33,2.33,0,0,1,1.17-2L7.86,15l.91-.1a4,4,0,0,0,2.38,1.57ZM12,14.55a2,2,0,1,1,2-2A2,2,0,0,1,12,14.55Zm5.82,3.22a2.36,2.36,0,0,1-2.68,1.94,2.39,2.39,0,0,1-2-1.85l-.14-.6.21-.92a4,4,0,0,0,2.2-1.76l.5.3.09,0,.66.39A2.38,2.38,0,0,1,17.82,17.77Zm1.94-6a2.39,2.39,0,0,1-2.13,1.33h-.24L16.75,13,16,12.59v0a4,4,0,0,0-1-2.64l.43-.37,0,0L16.06,9a2.37,2.37,0,0,1,3.7,2.82Z"/></Svg>
       )
       break
 
     case 'people':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></Path>
-          <Circle cx="9" cy="7" r="4"></Circle>
-          <Path d="M22 21v-2a4 4 0 0 0-3-3.87"></Path>
-          <Path d="M16 3.13a4 4 0 0 1 0 7.75"></Path>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'}
+        viewBox="0 0 24 24"
+        fill="currentColor"><Path d="M12.3,12.22A4.92,4.92,0,0,0,14,8.5a5,5,0,0,0-10,0,4.92,4.92,0,0,0,1.7,3.72A8,8,0,0,0,1,19.5a1,1,0,0,0,2,0,6,6,0,0,1,12,0,1,1,0,0,0,2,0A8,8,0,0,0,12.3,12.22ZM9,11.5a3,3,0,1,1,3-3A3,3,0,0,1,9,11.5Zm9.74.32A5,5,0,0,0,15,3.5a1,1,0,0,0,0,2,3,3,0,0,1,3,3,3,3,0,0,1-1.5,2.59,1,1,0,0,0-.5.84,1,1,0,0,0,.45.86l.39.26.13.07a7,7,0,0,1,4,6.38,1,1,0,0,0,2,0A9,9,0,0,0,18.74,11.82Z"/></Svg>
       )
       break
   }
