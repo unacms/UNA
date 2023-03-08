@@ -19,8 +19,8 @@ export default function ElementPopup(oProps) {
                         {oProps?.title && 
                         <View className="flex-row items-start justify-between p-4 border-b border-gray-200 dark:border-gray-600 rounded-t">
                             <Text className="text-xl font-semibold text-gray-900 dark:text-white">{oProps?.title}</Text>
-                            <A className="" onPress={() => setPopupVisible(!popupVisible)}>
-                                <Text>X</Text>
+                            <A className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" onPress={() => setPopupVisible(!popupVisible)}>
+                                <Text className="w-5 h-5 text-center">X</Text>
                             </A>
                         </View>
                         }

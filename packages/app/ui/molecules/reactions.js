@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Modal, Platform } from 'react-native';
+import { StyleSheet, Modal, Platform, FlatList } from 'react-native';
 
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
@@ -14,7 +14,9 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
+import { Icon } from 'app/components/svg';
 import Profile from './profile';
+import SliderBottom from './slider-bottom';
 
 export default function ElementReactions(oProps) {
     const getName = (sName) => {
@@ -74,7 +76,6 @@ export default function ElementReactions(oProps) {
     };
 
     const handleDo = (event, oProps) => {
-        alert(event);
         //event.preventDefault();
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
@@ -83,7 +84,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleUndo = (event) => {
-        event.preventDefault();
+        //event.preventDefault();
 
         let sReaction = oProps.action.reaction;
         if(isPageVar('reaction'))
@@ -95,7 +96,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleGetPerformedBy = (event, aItem) => {
-        event.preventDefault();
+        //event.preventDefault();
 
         const sReaction = aItem?.name || '';
         if(!sReaction)
@@ -134,6 +135,9 @@ export default function ElementReactions(oProps) {
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
+    const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
+    const [ pickedEmoji, setPickedEmoji ] = useState(null);
+
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
@@ -168,43 +172,86 @@ export default function ElementReactions(oProps) {
     else {
         let sClassNameDo = '';
         if(bShowActionDisabled)
-            sClassNameDo = 'group flex-auto  flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed hover:no-underline';
+            sClassNameDo = 'group flex-auto  flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 hover:no-underline cursor-not-allowed';
         else
             sClassNameDo = 'group flex-auto flex-row shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline'
 
-        const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
-            const aItem = oAction.menu.items[iKey];
+        const sButtonDo = (
+            <View className="flex flex-row flex-nowrap gap-1 mx-auto">
+                {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
+            </View>
+        );
 
-            return (
-                <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
-                    {Platform.OS == 'web' && 
-                    <>
+        if(Platform.OS === 'web') {
+            const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
+                const aItem = oAction.menu.items[iKey];
+                                    
+                return (
+                    <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
                         <DropdownMenuItemIcon>
                             <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
                         </DropdownMenuItemIcon>
                         <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-                    </>
-                    }
-                    {(Platform.OS == 'android' || Platform.OS == 'ios') && 
-                    <DropdownMenuItemTitle>{aItem.name}</DropdownMenuItemTitle>
-                    }
-                </DropdownMenuItemH>
-            );
-        });
+                    </DropdownMenuItemH>
+                );
+            });
 
-        sAction = (
-            <DropdownMenuRoot>
-                <DropdownMenuTrigger>
-                    <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo}>
-                        <View className="flex flex-row flex-nowrap gap-1 mx-auto">
-                            {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                            {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                        </View>
-                    </A>
-                </DropdownMenuTrigger>
-                <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
-            </DropdownMenuRoot>
-        );
+            sAction = (
+                <DropdownMenuRoot>
+                    <DropdownMenuTrigger>
+                        <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo} onPress={() => {}}>{sButtonDo}</A>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
+                </DropdownMenuRoot>
+            );
+        }
+        else {
+            const stylesSlider = StyleSheet.create({
+                listContainer: {
+                    width: '100%',
+                    borderTopRightRadius: 10,
+                    borderTopLeftRadius: 10,
+                    paddingHorizontal: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                },
+            });
+
+            const onSliderDoShow = () => {
+                setSliderDoVisible(true);
+            };
+
+            const onSliderDoClose = () => {
+                setSliderDoVisible(false);
+            };
+
+            sAction = (
+                <View>
+                    <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}}>{sButtonDo}</A>
+                    <View>
+                        <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
+                            <View className="p-4">
+                                <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                                    //let sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{item.icon}</Text>
+                                    let sIcon = <Icon icon={item.name} className="flex h-6 w-6"></Icon>
+
+                                    return (
+                                        <A key={item.name} className={sClassNameDo} onPress={(event) => {
+                                            handleDo(event, item);
+
+                                            onSliderDoClose();
+                                        }}>{sIcon}</A>
+                                    );
+                                  }}
+                                />
+                            </View>
+                        </SliderBottom>
+                    </View>
+                </View>
+            );
+        }
     }
 
     //--- show counter
