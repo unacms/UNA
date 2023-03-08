@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+
 import Svg, {
   Circle,
   Path,
@@ -190,17 +191,11 @@ export function Icon(props) {
 
     case 'discover':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Circle cx="12" cy="12" r="10"></Circle>
-          <Polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></Polygon>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24">
+          <Path
+            fill="currentColor"
+            d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm1,17.93V19a1,1,0,0,0-2,0v.93A8,8,0,0,1,4.07,13H5a1,1,0,0,0,0-2H4.07A8,8,0,0,1,11,4.07V5a1,1,0,0,0,2,0V4.07A8,8,0,0,1,19.93,11H19a1,1,0,0,0,0,2h.93A8,8,0,0,1,13,19.93ZM15.14,7.55l-5,2.12a1,1,0,0,0-.52.52l-2.12,5a1,1,0,0,0,.21,1.1,1,1,0,0,0,.7.3.93.93,0,0,0,.4-.09l5-2.12a1,1,0,0,0,.52-.52l2.12-5a1,1,0,0,0-1.31-1.31Zm-2.49,5.1-2.28,1,1-2.28,2.28-1Z"
+          />
         </Svg>
       )
       break
@@ -225,17 +220,11 @@ export function Icon(props) {
 
     case 'home':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></Path>
-          <Polyline points="9 22 9 12 15 12 15 22"></Polyline>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24">
+          <Path
+            fill="currentColor"
+            d="M20,8h0L14,2.74a3,3,0,0,0-4,0L4,8a3,3,0,0,0-1,2.26V19a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V10.25A3,3,0,0,0,20,8ZM14,20H10V15a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1Zm5-1a1,1,0,0,1-1,1H16V15a3,3,0,0,0-3-3H11a3,3,0,0,0-3,3v5H6a1,1,0,0,1-1-1V10.25a1,1,0,0,1,.34-.75l6-5.25a1,1,0,0,1,1.32,0l6,5.25a1,1,0,0,1,.34.75Z"
+          />
         </Svg>
       )
       break
@@ -433,20 +422,8 @@ export function Icon(props) {
 
     case 'post':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></Path>
-          <Polyline points="14 2 14 8 20 8"></Polyline>
-          <Line x1="16" y1="13" x2="8" y2="13"></Line>
-          <Line x1="16" y1="17" x2="8" y2="17"></Line>
-          <Line x1="10" y1="9" x2="8" y2="9"></Line>
+        <Svg className={className + ' mr-0 ml-0'} fill="currentColor" viewBox="0 0 24 24">
+          <Path d="M13,11H7a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2Zm4-4H7A1,1,0,0,0,7,9H17a1,1,0,0,0,0-2Zm2-5H5A3,3,0,0,0,2,5V15a3,3,0,0,0,3,3H16.59l3.7,3.71A1,1,0,0,0,21,22a.84.84,0,0,0,.38-.08A1,1,0,0,0,22,21V5A3,3,0,0,0,19,2Zm1,16.59-2.29-2.3A1,1,0,0,0,17,16H5a1,1,0,0,1-1-1V5A1,1,0,0,1,5,4H19a1,1,0,0,1,1,1Z" />
         </Svg>
       )
       break
