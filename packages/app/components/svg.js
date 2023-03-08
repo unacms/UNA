@@ -244,18 +244,7 @@ export function Icon(props) {
 
     case 'reply':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <Polyline points="9 14 4 9 9 4"></Polyline>
-          <Path d="M20 20v-7a4 4 0 0 0-4-4H4"></Path>
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24"><Path fill="currentColor" d="M14.7,6.6h-7l2.9-2.9c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0L4.6,6.9l0,0c-0.4,0.4-0.4,1,0,1.4L9.2,13c0.2,0.2,0.4,0.3,0.7,0.3v0c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L7.7,8.6h7c1.7,0,3,1.3,3,3V21c0,0.6,0.4,1,1,1s1-0.4,1-1v-9.4C19.7,8.9,17.4,6.6,14.7,6.6z"/></Svg>
       )
       break
 
