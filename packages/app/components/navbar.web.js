@@ -43,12 +43,12 @@ export default function () {
     </TouchableOpacity>
     <TouchableOpacity className="flex-auto" onPress={hideMenu}>
       <Link
-        href="/home"><View className="group hover:scale-110   duration-500 mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-1"
+        href="/home"><View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-2"
       >
-        <Icon icon="logo-mark" className="h-14 w-14"></Icon>
+        <Icon icon="logo-mark" className="group-hover:scale-110 text-orange-500 dark:text-orange-400  duration-300 h-10 w-10"></Icon>
         <Icon
           icon="logo-text"
-          className="h-14 w-14 hidden sm:block text-brand dark:text-brand-dark  "
+          className="h-10 w-14 hidden sm:block text-brand dark:text-brand-dark  "
         ></Icon>
         </View>
       </Link>

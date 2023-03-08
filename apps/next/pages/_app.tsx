@@ -39,7 +39,9 @@ function MyApp({ Component, pageProps }: SolitoAppProps) {
           content="#181b20"
           media="(prefers-color-scheme: dark)"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico"/>
+        <link rel="icon" href="/favicon.svg"/>
+        <link rel="icon" href="/favicon.png"/>
       </Head>
       <Provider>
         <Component {...pageProps} />
