@@ -1,5 +1,5 @@
 import { TextInput as TextInputDef } from 'react-native'
-import { Pressable } from 'app/design/view'
+import { Pressable,View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
@@ -36,7 +36,7 @@ export const Hidden = styled(TextInputDef, 'hidden')
 
 /* buttons */
 export function Button(props: ButtonProps) {
-  let { className, classTextName, classIconName, ...rest } = props
+  let { className, classTextName, classIconName, onPress, ...rest } = props
   let buttonType = props.variant ? props.variant : 'default'
   let buttonSize = props.size ? props.size : 'base'
   let buttonDisabled = props.disabled ? true : false
@@ -51,7 +51,7 @@ export function Button(props: ButtonProps) {
   let sClassContainer = ' group relative flex-row items-center '
   let sIconContainer = ' h-6 w-6 mr-2 '
 
-  if (!buttonFull) sClassContainer += ' w-fit m-0 '
+  if (!buttonFull) sClassContainer += ' w-fit m-0  bg-red-900'
 
   if (buttonDisabled) sClassContainer += ' opacity-50 '
 
@@ -128,7 +128,7 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    <Pressable className={sClassContainer} {...rest}>
+    onPress ? <Pressable className={sClassContainer} {...rest} onPress={onPress}>
       {buttonIconStart != '' && !buttonIconEnd && (
         <Icon
           className={
@@ -146,6 +146,24 @@ export function Button(props: ButtonProps) {
           icon={buttonIconEnd}
         ></Icon>
       )}
-    </Pressable>
+    </Pressable> : <View className={sClassContainer} {...rest} >
+      {buttonIconStart != '' && !buttonIconEnd && (
+        <Icon
+          className={
+            classIconName ? classIconName : sClassText + sIconContainer
+          }
+          icon={buttonIconStart}
+        ></Icon>
+      )}
+      {buttonTitle && <Text className={sClassText}>{buttonTitle}</Text>}
+      {buttonIconEnd != '' && buttonIconEnd && (
+        <Icon
+          className={
+            classIconName ? classIconName : sClassText + sIconContainer
+          }
+          icon={buttonIconEnd}
+        ></Icon>
+      )}
+    </View>
   )
 }

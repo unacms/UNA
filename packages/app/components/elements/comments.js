@@ -6,7 +6,8 @@ import { fetcher } from '../../lib/util';
 import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import InView from 'react-native-component-inview'
+import CommentForm from '../elements/commentForm';
+
 
 export default function ElementComments(props) {
 
@@ -167,59 +168,18 @@ export default function ElementComments(props) {
         }
     }
 
-    const [isInView, setIsInView] = useState(false);
-        
-    const [viewParams, setViewParams] = useState({
-        width:0,
-        height:0
-    });
-
-    const checkVisible = (isVisible) => {
-        if (isInView != isVisible && isVisible){
-            console.log(555)
-            handleMore();
-        }
-        if (isVisible){
-            setIsInView(isVisible)
-        } else {
-            setIsInView(isVisible)
-        }
-    }
-
-
-    let styles = StyleSheet.create({
-        form: {
-            width: viewParams.width-2,
-            position: 'absolute',
-            bottom: 0
-        },
-        list: {
-            marginBottom: viewParams.height,
-        },
-        view: {
-            top: -500,
-        },
-      });
-    
+   
     return (
-        <View onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout;
-            setViewParams({height:viewParams.height, width:width})
-          }} className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
-           <View className='jkjn' style={styles.list} ref={(ref) => {
-            setRef(ref);
-          }}>
+        <View className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
+           <View className='jkjn' >
                 <Browse {...browse} addCommentData={addCommentData} disablescroll={true} /> 
-                { ( commentData.startFrom > 0) && <View style={styles.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /><Text>789</Text></InView></View> }
+                { /*( commentData.startFrom > 0) && <View ></View>*/ }
             </View>
-            { form && <View onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout;
-            if (height >0)
-                setViewParams({width:viewParams.width, height:height})
-          }}  style={styles.form} className="fixed bottom-0 border-t border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50 dark:bg-neo-700">
-                <Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} />
-                </View>  
-            }
+            { /*form && 
+                
+                <CommentForm><Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} /></CommentForm>
+
+    */ }
         </View>
     );
 }

@@ -5,10 +5,10 @@ import Page from 'app/components/page';
 import { View, Text } from 'dripsy'
 import { TextLink } from 'solito/link'
 
-export default function ({uri, data}) {
+export default function ({path, data}) {
     return (
-        <Layout uri={uri}>
-            <Page uri={uri} data={data} />
+        <Layout uri={path}>
+            <Page uri={path} data={data} />
         </Layout>
     );
 }

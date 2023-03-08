@@ -15,9 +15,10 @@ export default function ElementBrowse(props) {
     
 
     let defParams = data.params;
-    console.log('dataa', data)
+    
     if (defParams){
         defParams.moduleName = data.module ? data.module : '';
+        
         defParams.loadedAll = data.data.length > 0 ? false : true;
     }
     const [browseParams, setbrowseParams] = useState(defParams);
@@ -46,8 +47,10 @@ export default function ElementBrowse(props) {
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
         const sResponse = await fetcher(sRequest);
+        
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
+            
             updateBrowseParams({
                 start: sResponse.data[0].data.params.start, 
                 per_page: sResponse.data[0].data.params.per_page, 
@@ -83,16 +86,16 @@ export default function ElementBrowse(props) {
     }
     
     let stylesScroll = StyleSheet.create({
-        view: {
+       /* view: {
           top: -500,
-        },
+        },*/
       });
-   
+
     return (
         <View><View className={classes} style={styles.cardList}>
             {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
             </View>
-        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><View /></InView></View> }
+        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text>Loading, please wait</Text><View /></InView></View> }
         </View>
         
     );

@@ -6,32 +6,26 @@ import Breadcrumb from './breadcrumb';
 import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
 import { View, ScrollView } from 'app/design/view'
+import CommentForm from 'app/components/elements/commentForm';
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {
 
+
     var oBreadCrump = null;
     var oComments = null;
 
-/*
-      props.children[1].forEach(element => {
-        element.props.blocks.forEach(block => {
-          if (block.content && block.content.type == 'breadcrumb'){
-            oBreadCrump = block.content.data;
-          }
-            
-          if (block.content && block.content[0] && block.content[0].type == 'comments'){
-            oComments = true;
-          }
-        });
-      });
-*/
+    // TODO IMPROVE
+    if (props.uri && props.uri.includes('view-post')){
+        oComments = true;
+    }
 
     const [loading, skeleton] = useSkeleton();
     const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
 
     return (
+        <View className="">
         <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
             <Navbar />
             {(oBreadCrump == null ) && <Tabsbar />}
@@ -40,7 +34,10 @@ export default function Layout(props) {
                 {props.children}
             </View>
             {(oComments == null ) && <Footer />}
+            
         </ScrollView>
+        { (oComments != null ) &&   <CommentForm/>}
+        </View>
     );
 /*
     return (
