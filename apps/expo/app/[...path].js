@@ -11,8 +11,8 @@ export default function Root (props) {
   const path = router?.path;
 
   useEffect(() => {
-    (async () => {
-      const d = await getData(path);
+    (async () => {      
+      const d = await getData(path, '', 'neo://app');
       if (d?.props?.data) {
         setPageData (d?.props?.data)
       }

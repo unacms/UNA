@@ -13,7 +13,7 @@ export default function Root (props) {
 
   useEffect(() => {
     (async () => {
-      const d = await getData(path);
+      const d = await getData(path, '', 'neo://app');
       if (d?.props?.data) {
         setPageData (d?.props?.data)
       }

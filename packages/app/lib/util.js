@@ -2,19 +2,23 @@ import * as Haptics from 'expo-haptics';
 
 export function fetcher (mixed) {
     console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
-    let url, token, data;
+    let url, token, data, origin, headers = {};
     if (Array.isArray(mixed)){
-        [url, token, data] = mixed;
+        [url, token, data, origin] = mixed;
     }
     else{
         url = mixed;
     }
+
+    if (token)
+        headers['Authorization'] = 'Bearer ' + token;
+    if (origin)
+        headers['Origin'] = origin;
+    
     return fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
         method: data ? 'post' : 'get',
         body: data ? data : null,
-        headers:{
-            Authorization: 'Bearer ' + token
-        }
+        headers: headers
     }).then(r => r.json()).catch((error) => {
         console.log("Api call error: " + error.message);
     });

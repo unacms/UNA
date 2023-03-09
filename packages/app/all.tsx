@@ -25,14 +25,14 @@ export default function (props) {
 }
 
 // this function is called in Next as serverSideProps and in Expo to get data dynamically
-export async function getData(path, token) {
+export async function getData(path, token, origin) {
     if (!path)
 	    path = 'home';
     path = path.startsWith('/') ? path.substr(1) : path;    
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
     
     // TODO: pass GET&POST params
-    const data = await fetcher(token ? [path, token, ''] : path)
+    const data = await fetcher(token || origin ? [path, token, '', origin] : path)
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
 }
 
