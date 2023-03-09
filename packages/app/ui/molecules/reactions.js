@@ -4,6 +4,8 @@ import { StyleSheet, Modal, Platform, FlatList } from 'react-native';
 
 import { fetcher } from '../../lib/util';
 import { PageData } from '../../context/page';
+import Link from 'app/ui/atoms/link';
+import { Button } from 'app/design/controls';
 import { A, Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
@@ -161,11 +163,9 @@ export default function ElementReactions(oProps) {
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-blue-600 hover:text-blue-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
-                <View className="flex flex-row flex-nowrap gap-1 mx-auto">
-                    {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                    {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                </View>
+            
+            <A onPress={handleUndo}>
+                <Button variant="text" variant="default" startDecorator='joy' title={sTitle} />
             </A>
         );
     }
@@ -181,9 +181,10 @@ export default function ElementReactions(oProps) {
                 {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
                 {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
             </View>
+
         );
 
-        if(Platform.OS === 'web') {
+        if(Platform.OS !== 'web') {
             const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
                 const aItem = oAction.menu.items[iKey];
                                     
@@ -291,7 +292,7 @@ export default function ElementReactions(oProps) {
                         {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                     </A>
-                    <Modal visible={popupVisibleBy[aItem.name]} presentation="formSheet" animationType="slide" transparent={Platform.OS != 'ios'}>
+                    <Modal visible={popupVisibleBy[aItem.name]} presentation="formSheet" animationType="fade" transparent={Platform.OS != 'ios'}>
                         <View id={getName('performed-by-ddp-' + aItem.name)} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
                             <View className="relative w-full h-full max-w-2xl md:h-auto">
                                 <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">

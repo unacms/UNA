@@ -12,7 +12,7 @@ export default function ElementPopup(oProps) {
     };
 
     return (
-        <Modal visible={popupVisible} onRequestClose={onClose} presentation="formSheet" animationType="slide" transparent={Platform.OS != 'ios'}>
+        <Modal visible={popupVisible} onRequestClose={onClose} presentation="formSheet" animationType="fade" transparent={Platform.OS != 'ios'}>
             <View id={oProps.id} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
                 <View className="relative w-full h-full max-w-2xl md:h-auto">
                     <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
