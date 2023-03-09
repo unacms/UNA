@@ -34,6 +34,7 @@ export function Icon(props) {
             rx="4"
             transform="rotate(-45 21.0051 120)"
             fill="currentColor"
+            className=""
           />
           <Rect
             x="77.5736"
@@ -43,7 +44,7 @@ export function Icon(props) {
             rx="4"
             transform="rotate(-45 77.5736 63.4315)"
             fill="currentColor"
-            className="group-hover:animate-pulse "
+            className=""
           />
           <Rect
             x="77.5736"
@@ -53,6 +54,7 @@ export function Icon(props) {
             rx="4"
             transform="rotate(-45 77.5736 176.569)"
             fill="currentColor"
+            className=""
           />
           <Rect
             x="134.142"
@@ -62,6 +64,7 @@ export function Icon(props) {
             rx="4"
             transform="rotate(-45 134.142 120)"
             fill="currentColor"
+            className=""
           />
           <Defs>
             <linearGradient
