@@ -6,7 +6,7 @@ import { fetcher } from '../../lib/util';
 import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-//import CommentForm from '../elements/commentForm';
+import CommentForm from '../elements/commentForm';
 
 
 export default function ElementComments(props) {
