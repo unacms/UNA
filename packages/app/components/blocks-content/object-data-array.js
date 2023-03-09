@@ -22,7 +22,7 @@ export default function BlockContentObjectDataArray(props) {
 
     // get data from URL if needed
     let { data: dynamicData, error } = useSWR(
-        postData ? [requestUrl, '555', postData] : null,
+        postData ? [requestUrl, '', postData] : null,
         fetcher,
         !immutable ? undefined : {
             revalidateIfStale: false,

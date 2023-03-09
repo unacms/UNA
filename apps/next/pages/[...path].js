@@ -10,5 +10,8 @@ export default function Path (props) {
 }
 
 export async function getServerSideProps(context) {
-    return getData(context.params?.path?.join('/'));
+    const data = await getData(context.params?.path?.join('/'), process.env.UNA_API_KEY);
+    if (200 !== parseInt(data.props.status))
+        context.res.statusCode = parseInt(data.props.status)
+    return data;
 }
