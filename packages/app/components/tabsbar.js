@@ -5,5 +5,7 @@ import { Text } from 'app/design/typography'
 
 export default function ({ children }) {
     //TODO: 
-    return <View></View>
+    return <View>
+        
+    </View>
 }
