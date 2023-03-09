@@ -4,6 +4,7 @@ import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
 import { TouchableOpacityProps } from 'react-native'
+import { ThemeCssClasses } from 'app/design/vars'
 
 type ButtonProps = TouchableOpacityProps & {
   align?: 'center' | 'start' | 'end'
@@ -59,15 +60,14 @@ export function Button(props: ButtonProps) {
 
   if (buttonType != 'custom') {
     sClassContainer +=
-      (buttonSolid ? '' : 'u-btn-' + buttonType + '-trans') +
-      ' u-btn-' +
-      buttonType +
-      '-cnt '
-    sClassText += ' u-btn-' + buttonType + '-text '
+      (buttonSolid ? '' : ThemeCssClasses['u-btn-' + buttonType + '-trans']) +
+      ThemeCssClasses['u-btn-' + buttonType + '-cnt']
+    sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
   } else {
     sClassContainer += className
     sClassText += classTextName
   }
+  
 
   sClassContainer += ' justify-' + buttonAlign + ' '
 

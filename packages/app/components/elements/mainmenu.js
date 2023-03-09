@@ -9,7 +9,6 @@ import { Button } from 'app/design/controls'
 export default function ElementMainMenu(props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
-    console.log(path);
 
     let menu = [
         {'title': 'Home', 'url': '/home', 'icon': 'home'},

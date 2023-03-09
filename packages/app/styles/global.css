@@ -179,61 +179,6 @@ html {
         width: calc(100% - 288px);
     }
 }
-
-/* BUTTONS */
-.u-btn-default-cnt{
-    @apply shadow-sm border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600; 
-}
-.u-btn-default-text{
-    @apply font-semibold text-neo-700 dark:text-neo-200; 
-}
-.u-btn-default-trans{
-    @apply hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none; 
-}
-
-.u-btn-primary-cnt{
-    @apply shadow-sm  border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-blue-600 hover:bg-blue-500; 
-}
-.u-btn-primary-text{
-    @apply font-semibold text-neo-50; 
-}
-.u-btn-primary-trans{
-    @apply hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none; 
-}
-
-.u-btn-danger-cnt{
-    @apply shadow-sm border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-red-600 hover:bg-red-500; 
-}
-.u-btn-danger-text{
-    @apply font-semibold text-neo-50; 
-}
-.u-btn-danger-trans{
-    @apply hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none; 
-}
-
-.u-btn-text-cnt{
-    @apply hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50
-}
-.u-btn-text-text{
-    @apply group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200
-}
-.u-btn-text-trans{
-    @apply hover:-translate-y-[1px] active:translate-y-[1px]  duration-200
-}
-
-.u-btn-link-cnt{
-}
-.u-btn-link-text{
-    @apply group-hover:text-blue-600  dark:group-hover:text-blue-500 font-semibold text-blue-500 dark:text-blue-400
-}
-.u-btn-link-trans{
-}
-
-.u-btn-outline-cnt{
-    @apply duration-200  border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20
-}
-.u-btn-outline-text{
-    @apply group-hover:text-neo-900  dark:group-hover:text-neo-50 font-semibold text-neo-700 dark:text-neo-200
-}
-.u-btn-outline-trans{
+.u-hidden{
+    @apply hidden;
 }

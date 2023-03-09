@@ -6,9 +6,10 @@ import { fetcher } from '../../lib/util';
 import { View, ScrollView } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import CommentForm from '../elements/commentForm';
 
-
+import { Button } from 'app/design/controls'
+import { Platform, PlatformIOSStatic } from 'react-native'
+import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
 export default function ElementComments(props) {
 
     let browse = props.browse;
@@ -168,18 +169,58 @@ export default function ElementComments(props) {
         }
     }
 
+
+    const handleAddComment = async () => {
+        console.log('add comment')
+    };
+
+    const [viewParams, setViewParams] = useState({
+        width:0,
+        height:0
+    });
+
+    let cmtsBrs = <Browse {...browse} addCommentData={addCommentData}  /> 
+    let cmtForm = null;
+    let cmts = null
+    let styles = {};
+    if(Platform.OS !== 'web') {
+        const {height, width, scale, fontScale} = useWindowDimensions(); 
+        let heightS = height * 0.9 - 70;
+        styles.browse = {height: heightS};
+        styles.form = {marginBottom:20 };
+        cmts = <ScrollViewNative className=' w-full'>{cmtsBrs}</ScrollViewNative>
+    }
+    else{
+        styles.form = {
+            width: viewParams.width-2,
+            position: 'fixed',
+            bottom: 0
+        };
+        styles.list = {
+            marginBottom: viewParams.height,
+        }
+
+        cmts = <View style={styles.list} className=' w-full'>{cmtsBrs}</View>;
+    }
+
+    if (form){ 
+        cmtForm = <View onLayout={(event) => {
+        var {x, y, width, height} = event.nativeEvent.layout;
+        if (height >0)
+            setViewParams({width:viewParams.width, height:height})
+    }}  style={styles.form} className=" fixed w-full bottom-0  border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50 dark:bg-neo-7000">
+        <Text className='text-center u-hidden'>Comments (100)</Text>
+        <Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} />
+    </View> }
    
     return (
-        <View className='bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10'>
-           <View className='jkjn' >
-                <Browse {...browse} addCommentData={addCommentData} disablescroll={true} /> 
-                { /*( commentData.startFrom > 0) && <View ></View>*/ }
-            </View>
-            { /*form && 
-                
-                <CommentForm><Form {...form} commentData={commentData} onFormSubmit={onFormSubmit} handleValues={handleFormValues} /></CommentForm>
-
-    */ }
+        <View  onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout;
+            setViewParams({height:viewParams.height, width:width})
+          }}  style={styles.browse} className="bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+           { Platform.OS !== 'web' && cmtForm}
+           {cmts}
+           { Platform.OS === 'web' && cmtForm}
         </View>
     );
 }

@@ -5,7 +5,6 @@ import Vote from '../../ui/molecules/vote';
 import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
 import { fetcher } from '../../lib/util';
-
 import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'
@@ -28,6 +27,7 @@ export default function UnitComments(props) {
 
     const reply = async (id) => {
         // TODO SCROOL
+        console.log('reply'+id)
         props.addCommentData({parentId:id});
     };
 
@@ -54,12 +54,7 @@ export default function UnitComments(props) {
         <View className='w-full'>
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
-                    
-                    
                     <View className="mr-2"><Profile {...data.author_data} displaySize='base' showInfo={(<Time className="" ts={data.cmt_time}></Time>)} displayType="full" className="" /></View>
-                        
-                        
-                    
                     <View  className=" flex-row ml-8 pb-1">
                        <View className="w-8 flex-0 h-full absolute top-0 -left-7">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>

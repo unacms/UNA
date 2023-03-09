@@ -4,10 +4,7 @@ import { A, H1, P, Text, TextLink } from 'app/design/typography'
 
 export default function Cell ({blocks}) {
     return blocks ? blocks.map(block => {
-        
-        // console.log('xxx');
-        // console.log(block.hidden);
-        
+
         if (!block?.content)
             return null;
 

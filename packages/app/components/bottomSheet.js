@@ -1,23 +1,23 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useContext } from 'react';
 import { View, Row } from 'app/design/view'
 import {StyleSheet } from 'react-native';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
+import { LayoutData } from 'app/context/layout';
 
 export default function ElementCommentForm(props) {
     
+    const { layoutData, setLayoutData } = useContext(LayoutData);
     // ref
     const bottomSheetRef = useRef(null);
-
     // variables
-    const snapPoints = useMemo(() => ['80%', '10%'], []);
-
+    const snapPoints = useMemo(() => ['90%', '10%'], []);
     // callbacks
     const handleSheetChanges = useCallback((index) => {
     console.log('handleSheetChanges', index);
     }, []);
 
-   
+
 
     return ( 
       <BottomSheet
@@ -26,9 +26,7 @@ export default function ElementCommentForm(props) {
       snapPoints={snapPoints}
       onChange={handleSheetChanges}
     >
-      <View className='items-center w-full text-xl h-full'>
-        <Text className='text-base'>write your comment</Text>
-      </View>
+      {layoutData}
     </BottomSheet>
   )
 }
