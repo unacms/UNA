@@ -15,13 +15,15 @@ export function fetcher (mixed) {
     if (origin)
         headers['Origin'] = origin;
     
-    return fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
+    const res = fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
         method: data ? 'post' : 'get',
         body: data ? data : null,
         headers: headers
     }).then(r => r.json()).catch((error) => {
         console.log("Api call error: " + error.message);
     });
+    // console.log(res); // to make this log working then add async & await
+    return res;
 }
 
 export function mergeDeep(target, ...sources) {
