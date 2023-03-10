@@ -9,7 +9,7 @@ export default function FormFieldText(props) {
     const { formState } = formContext;
     let rules = {};
     let name = props.name;
-    let defaultValue = props.value;
+    let defaultValue = props.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });
     
     return (
@@ -17,7 +17,7 @@ export default function FormFieldText(props) {
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
-            value={defaultValue}
+            value={field.value}
         />
     );
 }

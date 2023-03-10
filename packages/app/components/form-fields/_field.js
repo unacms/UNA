@@ -6,9 +6,9 @@ export default function FormField(props) {
     const sClassName = 'form-control w-full  mb-4 form-control-' + props.name ;
     return (
         <View className={sClassName}>
-            <View className="label">
+            { props.caption && <View className="label">
                 <Text className="label-text capitalize block mb-1 ml-1 text-sm font-medium text-gray-900 dark:text-white">{props.caption}</Text>
-            </View>
+            </View> }
             {props.children}
             {props.error &&
                 <View className="label">

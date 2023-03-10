@@ -30,7 +30,6 @@ export default function BlockContentObjectDataArray(props) {
             revalidateOnReconnect: false
         }
     );
-
     // update state when form is submitted
     const onFormSubmit = (formData, d) => {
         setPostData(formData);

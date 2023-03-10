@@ -10,13 +10,14 @@ export default function FormFieldText(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
+    
     const { field } = useController({ name, rules, defaultValue });
     
     return (
         <Field {...props}>
             <Input
                 multiline
-                numberOfLines={4}
+                numberOfLines={props.numLines ? props.numLines : 4}
                 name={props.name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
