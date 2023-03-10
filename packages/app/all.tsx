@@ -3,9 +3,6 @@ import Layout from 'app/components/layout';
 import Page from 'app/components/page';
 import PageError from 'app/components/pages/error';
 
-import { View, Text } from 'dripsy'
-import { TextLink } from 'solito/link'
-
 export default function (props) {
     
     if (200 == parseInt(props.status)) {
@@ -20,7 +17,7 @@ export default function (props) {
             <Layout uri={props.path}>
                 <PageError uri={props.path} {...props} />
             </Layout>
-        );      
+        );
     }
 }
 

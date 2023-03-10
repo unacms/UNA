@@ -1,4 +1,5 @@
 import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 export function fetcher (mixed) {
     console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
@@ -6,7 +7,7 @@ export function fetcher (mixed) {
     if (Array.isArray(mixed)){
         [url, token, data, origin] = mixed;
     }
-    else{
+    else {
         url = mixed;
     }
 
@@ -14,14 +15,18 @@ export function fetcher (mixed) {
         headers['Authorization'] = 'Bearer ' + token;
     if (origin)
         headers['Origin'] = origin;
+    else if ('web' !== Platform.OS)
+        headers['Origin'] = 'neo://app';
     
-    return fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
+    const res = fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
         method: data ? 'post' : 'get',
         body: data ? data : null,
         headers: headers
     }).then(r => r.json()).catch((error) => {
         console.log("Api call error: " + error.message);
     });
+    // console.log(res); // to make this log working then add async & await
+    return res;
 }
 
 export function mergeDeep(target, ...sources) {

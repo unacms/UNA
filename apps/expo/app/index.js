@@ -13,9 +13,9 @@ export default function Root (props) {
 
   useEffect(() => {
     (async () => {
-      const d = await getData(path, '', 'neo://app');
-      if (d?.props?.data) {
-        setPageData (d?.props?.data)
+      const d = await getData(path);
+      if (d?.props) {
+        setPageData (d?.props)
       }
     })();
   }, [path]);
@@ -24,5 +24,5 @@ export default function Root (props) {
   if (undefined === pageData)
     return <Text sx={{ textAlign: 'center', mb: 16, fontWeight: 'bold' }}><Stack.Screen options={{ title: "..." }} />Loading...</Text>
 
-  return <View style={{flex:1}}><Stack.Screen options={{ title: pageData.title }} /><All path={path} data={pageData} {...props}>{props.children}</All></View>
+  return <View style={{flex:1}}><Stack.Screen options={{ title: pageData.data.title }} /><All path={path} {...pageData} {...props}>{props.children}</All></View>
 }
