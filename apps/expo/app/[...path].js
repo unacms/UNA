@@ -23,5 +23,5 @@ export default function Root (props) {
   if (undefined === pageData)
     return <Text sx={{ textAlign: 'center', mb: 16, fontWeight: 'bold' }}><Stack.Screen options={{ title: "..." }} />Loading...</Text>
 
-  return <View ><Stack.Screen options={{ title: pageData.title }} /><All path={path} {...pageData} {...props}>{props.children}</All></View>
+  return <View ><Stack.Screen options={{ title: pageData.data.title }} /><All path={path} {...pageData} {...props}>{props.children}</All></View>
 }
