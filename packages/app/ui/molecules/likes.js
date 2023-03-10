@@ -6,6 +6,8 @@ import Profile from './profile';
 
 import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
+import { Button } from 'app/design/controls';
+import { Icon } from 'app/components/svg';
 import Popup from './popup'
 
 export default function ElementLikes(oProps) {
@@ -45,6 +47,8 @@ export default function ElementLikes(oProps) {
         else
             setPageData({...pageData, ...oValue});
     };
+
+    const bUseInternalIcons = true;
 
     const oParams = oProps.params;
     const oAction = oProps.action;
@@ -129,11 +133,10 @@ export default function ElementLikes(oProps) {
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
-                <View className="flex-row flex-nowrap items-center gap-1 mx-auto">
-                    {sIcon && <Text className='w-6 h-6 flex justify-center group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                    {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                </View>
+            <A onPress={handleUndo}>
+                <Button variant="text" variant="default" startDecorator="like" title={sTitle} />
+    
+                
             </A>
         );
     }
@@ -160,8 +163,13 @@ export default function ElementLikes(oProps) {
     //--- Counter
     let sCounter = '';
     if(bShowCounter) {
-        let iCount = oCounter.count;
+        let sIcon = '';
+        if(bUseInternalIcons)
+            sIcon = <Icon icon="like" className="flex h-6 w-6"></Icon>
+        else
+            sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{oCounter.icon}</Text>
 
+        let iCount = oCounter.count;
         if(isPageVar('counter')) {
             const oCounterGlobal = getPageVar('counter');
             if(oCounterGlobal?.count)
@@ -183,7 +191,7 @@ export default function ElementLikes(oProps) {
         return (
             <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
                 <A id={getName('performed-by-ddb')} className="group flex-none flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-gray-700 bg-white border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={(event) => {handleGetPerformedBy(event)}}>
-                    {oCounter?.icon && <Text className='w-6 h-6 flex justify-center text-base'>{oCounter.icon}</Text>}
+                    {sIcon}
                     <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                 </A>
                 <Popup id={getName('performed-by-ddp')} visible={[popupVisible, setPopupVisible]}>
