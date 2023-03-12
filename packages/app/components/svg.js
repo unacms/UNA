@@ -18,116 +18,20 @@ export function Icon(props) {
   let data = null
 
   switch (icon) {
-    case 'default-mark':
-      data = (
-        <Svg
-          className={className}
-          viewBox="0 0 240 240"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <Rect
-            x="21.0051"
-            y="120"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 21.0051 120)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="77.5736"
-            y="63.4315"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 77.5736 63.4315)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="77.5736"
-            y="176.569"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 77.5736 176.569)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="134.142"
-            y="120"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 134.142 120)"
-            fill="currentColor"
-            className=""
-          />
-          <Defs>
-            <linearGradient
-              id="paint0_linear_90_6"
-              x1="81.0086"
-              y1="119.996"
-              x2="20.9045"
-              y2="180.101"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint1_linear_90_6"
-              x1="137.577"
-              y1="63.4279"
-              x2="77.4731"
-              y2="123.532"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint2_linear_90_6"
-              x1="137.577"
-              y1="176.565"
-              x2="77.4731"
-              y2="236.669"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint3_linear_90_6"
-              x1="194.146"
-              y1="119.996"
-              x2="134.042"
-              y2="180.101"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-          </Defs>
-        </Svg>
-      )
-      break
-
+   
     case 'logo-mark':
       data = (
     
 <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<Rect x="218.995" y="120" width="60" height="60" rx="8" transform="rotate(135 218.995 120)" fill="#53B1B1"/>
-<Rect x="162.426" y="176.569" width="60" height="60" rx="8" transform="rotate(135 162.426 176.569)" fill="#53B1B1"/>
-<Rect x="162.426" y="63.4315" width="60" height="60" rx="8" transform="rotate(135 162.426 63.4315)" fill="#53B1B1"/>
-<Rect x="105.858" y="120" width="25.7143" height="25.7143" rx="6" transform="rotate(135 105.858 120)" fill="#F69000"/>
-<Rect x="81.6143" y="144.244" width="25.7143" height="25.7143" rx="6" transform="rotate(135 81.6143 144.244)" fill="#F69000"/>
-<Rect x="81.6142" y="95.7563" width="25.7143" height="25.7143" rx="6" transform="rotate(135 81.6142 95.7563)" fill="#F69000"/>
-<Rect x="57.3706" y="120" width="25.7143" height="25.7143" rx="6" transform="rotate(135 57.3706 120)" fill="#F69000"/>
+<Rect x="218.995" y="120" width="60" height="60" rx="4" transform="rotate(135 218.995 120)" fill="currentColor"/>
+<Rect x="162.426" y="176.569" width="60" height="60" rx="4" transform="rotate(135 162.426 176.569)" fill="currentColor"/>
+<Rect x="162.426" y="63.4314" width="60" height="60" rx="4" transform="rotate(135 162.426 63.4314)" fill="currentColor"/>
+<Rect x="105.858" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 105.858 120)" fill="#FF5511"/>
+<Rect x="81.6143" y="144.244" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 144.244)" fill="#FF5511"/>
+<Rect x="81.6143" y="95.7563" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 95.7563)" fill="#FF5511"/>
+<Rect x="57.3707" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 57.3707 120)" fill="#FF5511"/>
 </Svg>
+
 
 
       )
