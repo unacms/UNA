@@ -43,6 +43,12 @@ export default function ElementReactions(oProps) {
         return pageData[sPageKey][sName];
     };
 
+    const getPageVars = () => {
+        const sPageKey = getName();
+
+        return pageData && pageData[sPageKey] ? pageData[sPageKey] : null;
+    };
+
     const setPageVars = (mValue) => {
         const sPageKey = getName();
         const oValue = {[sPageKey]: mValue};
@@ -88,9 +94,12 @@ export default function ElementReactions(oProps) {
     const handleDo = (event, oProps) => {
         //event.preventDefault();
 
+        updateLayout(oProps.name, 1);
+
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setPageVars(oData);
         });
+
     };
 
     const handleUndo = (event) => {
@@ -99,6 +108,8 @@ export default function ElementReactions(oProps) {
         let sReaction = oProps.action.reaction;
         if(isPageVar('reaction'))
             sReaction = getPageVar('reaction');
+
+        updateLayout(sReaction, -1);
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
             setPageVars(oData);
@@ -134,6 +145,39 @@ export default function ElementReactions(oProps) {
             setPopupVisibleByDvd(state => ({...state, [sReaction]: true}));
         });
     };
+
+    const updateLayout = (sReaction, iValueAdd) => {
+        const sCounterKey = 'count_' + sReaction;
+
+        let sTitleNew = '';
+        let sIconNew = '';
+        let iCounterValue = 0;
+        for (const i in oCounter.items) {
+            if(sReaction != oCounter.items[i].name) 
+                continue;
+
+            sTitleNew = oCounter.items[i].title;
+            sIconNew = oCounter.items[i].icon;
+            iCounterValue = oCounter.items[i].count + iValueAdd;
+            break;
+        }
+
+        let oPageVars = {};
+        if(isPageVar('counter')) {
+            oPageVars = getPageVars();
+            iCounterValue = oPageVars.counter[sCounterKey] + iValueAdd;
+        }
+
+        oPageVars['is_voted'] = true;
+        oPageVars['reaction'] = sReaction;
+        oPageVars['title'] = sTitleNew;
+        oPageVars['icon'] = sIconNew;
+        if(!oPageVars['counter'])
+            oPageVars['counter'] = {};
+        oPageVars['counter'][sCounterKey] = iCounterValue;
+
+        setPageVars(oPageVars);
+    }
 
     const getSkeleton = () => {
         return (
@@ -295,9 +339,9 @@ export default function ElementReactions(oProps) {
             let iCount = aItem.count;
             if(isPageVar('counter')) {
                 const oCounterGlobal = getPageVar('counter');
-                const sCounteKey = 'count_' + aItem.name;
-                if(oCounterGlobal[sCounteKey] != undefined)
-                    iCount = oCounterGlobal[sCounteKey];
+                const sCounterKey = 'count_' + aItem.name;
+                if(oCounterGlobal[sCounterKey] != undefined)
+                    iCount = oCounterGlobal[sCounterKey];
             }
 
             let sUsers = '';
@@ -356,9 +400,9 @@ export default function ElementReactions(oProps) {
             let iCount = aItem.count;
             if(isPageVar('counter')) {
                 const oCounterGlobal = getPageVar('counter');
-                const sCounteKey = 'count_' + aItem.name;
-                if(oCounterGlobal[sCounteKey] != undefined)
-                    iCount = oCounterGlobal[sCounteKey];
+                const sCounterKey = 'count_' + aItem.name;
+                if(oCounterGlobal[sCounterKey] != undefined)
+                    iCount = oCounterGlobal[sCounterKey];
             }
 
             if(!sSelected && iCount != 0)
@@ -468,10 +512,12 @@ export default function ElementReactions(oProps) {
         //Note. Client side code can be executed here. 
     }, []);
 
+    const sObject = getName();
+
     return (
         <View className="inline-flex gap-1 sm:gap-0">
-            {bShowAction && <View>{sAction}</View>}
-            {bShowCounter && <View className="flex-row">{aCounter}</View>}
+            {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className="flex-row">{aCounter}</View>}
         </View>
     );
  }
