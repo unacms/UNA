@@ -56,16 +56,21 @@ export default function Form(props) {
     }   
     const {...methods} = useForm({defaultValues: defaultValues});  
 
-    
-    if (props.handleValues){
-        if(props.commentData && props.commentData.parentId != defaultValues['cmt_parent_id']){
-            //TODO: Set Value without timeout
-            setTimeout(() => {
-                methods.setValue('cmt_parent_id', props.commentData.parentId);   
-            }, 100);
+    React.useEffect(() => {
+        if (methods.formState.isSubmitSuccessful) {
+            methods.reset();
         }
+      }, [methods.formState, methods.submittedData, methods.reset]);
+
+
+    if(data.reset){
+        //TODO: Set Value without timeout
+        setTimeout(() => {
+            methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);   
+        }, 100);
     }
-    
+
+
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
         const InputType = components[a.type];
@@ -78,10 +83,8 @@ export default function Form(props) {
     });    
     
     return (
-        <View className="w-full  grid place-items-center px-4 first:pt-4" >
-            <FormProvider {...methods}> 
-                {inputs}
-            </FormProvider>
-        </View>
+        <FormProvider {...methods}> 
+            {inputs}
+        </FormProvider>
     );
 }

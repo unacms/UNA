@@ -23,8 +23,7 @@ export default function FormFieldSubmit(props) {
                 variant='primary' fullWidth
                 onPress={props.handleSubmit}
             />
-            <View style={{width:0,height:0}}>
-            <Hidden 
+            <View style={{width:0,height:0}}><Hidden 
                     name={props.name}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}

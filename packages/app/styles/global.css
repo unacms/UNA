@@ -182,3 +182,13 @@ html {
 .u-hidden{
     @apply hidden;
 }
+.form-comment{
+    flex-direction: row;;
+}
+.form-control-cmt_text.w-full{
+    width:calc(100% - 66px);
+}
+.form-control-cmt_submit.w-full{
+    width:46px;
+    margin-left:20px;
+}

@@ -25,10 +25,8 @@ export default function UnitComments(props) {
     }
     // request form for reply
 
-    const reply = async (id) => {
-        // TODO SCROOL
-        console.log('reply'+id)
-        props.addCommentData({parentId:id});
+    const reply = async (id, text) => {
+        props.handleReply(id, text);
     };
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
@@ -63,7 +61,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass} >
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
                             </View>
-                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id)}  />
+                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id, data.cmt_text)}  />
                         </View>
                     </View>
                     
@@ -77,7 +75,7 @@ export default function UnitComments(props) {
                         <View className="w-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
                        </View>
                 <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  addCommentData={props.addCommentData} data={items[a]} />)}
+                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
                 </View>
             </View> 
             }

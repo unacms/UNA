@@ -3,7 +3,7 @@ import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/util';
-import { View, ScrollView } from 'app/design/view'
+import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
 
@@ -17,23 +17,29 @@ export default function ElementComments(props) {
     let browse = props.browse;
     let form = props.form;
     let requestUrl = props.url;
-    let count = browse.data.count;
-    const [ref, setRef] = useState(null);
-    const [postData, setPostData] = useState(null);
+    let count = browse.data.total_count;
+
+    //const [postData, setPostData] = useState(null);
     const [commentData, setCommentData] = useState({
         parentId: 0, 
         startFrom: browse.data.start, 
         perView: browse.data.per_view,
+        count: browse.data.count,
         moduleName: browse.data.module, 
         orderWay: browse.data.order,
-        objectId: browse.data.object_id
+        objectId: browse.data.object_id,
+        formText: '',
+        postData: null
     });
 
-    // check if any element in a block has request URL
-    let immutable = false;props.form.request.immutable;
 
+    // check if any element in a block has request URL
+    let immutable = props.form.request.immutable;
+    
+    console.log('dbgs', 'IN');
+    
     let { data: dynamicData, error } = useSWR(
-        postData ? [prepareUrl(), '', postData] : null,
+        commentData.postData ? [prepareUrl(), '', commentData.postData] : null,
         fetcher,
         !immutable ? undefined : {
             revalidateIfStale: false,
@@ -42,7 +48,7 @@ export default function ElementComments(props) {
         }
     ); 
     function prepareUrl (params) {
-        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'per_view': commentData.perView, 'order_way': commentData.orderWay};
+        let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
         console.log("prepare" + requestUrl + JSON.stringify({...def, ...params}))
         return requestUrl + JSON.stringify({...def, ...params});
     }
@@ -51,29 +57,36 @@ export default function ElementComments(props) {
     // add new values to state
     const addCommentData =  (params) => {
         //scrollHandler();
+        if (!params.postData)
+            params.postData = null;
         setCommentData(Object.assign({}, commentData, params));
-        if (params.parentId)
-            setPostData(null);
+       // if (params.parentId)
+        //    setPostData(null);
     } 
     
     const onFormSubmit = (formData, d) => {
-        setPostData(formData);
-        addCommentData({parentId:0});
+        addCommentData({postData: formData});
+      //  setPostData(formData);
+       // addCommentData({parentId:0});
     }
 
     // handle errors and loading 
     if (error || dynamicData?.error) return "An error has occurred:${error ? error : data?.error}";
-    if (postData && !dynamicData) {
+    /*if (postData && !dynamicData) {
         form = null
+    }*/
+    if(form){
+        form.data.inputs.cmt_parent_id.value = commentData.parentId;
+        form.data.reset = true;
     }
     if (dynamicData && dynamicData.data.form){
-        let parentId = dynamicData.data.form.data.inputs.cmt_parent_id.value;
         form = dynamicData.data.form;
+        form.data.reset = true;
     }
 
     if (dynamicData && dynamicData.data.browse && dynamicData.data.browse.insert){
         browse = parseData(browse, dynamicData);
-        count = dynamicData.data.browse.data.count;
+        count = dynamicData.data.browse.data.total_count;
     }
     
     function parseData (browse, dynamicData) {
@@ -81,19 +94,19 @@ export default function ElementComments(props) {
             let o = c[Object.keys(c)[0]];
             // add in root
             if(o.data.cmt_vparent_id == 0){
-                let key1 = Object.keys(dynamicData.data.browse.data.data[0])[0];
                 let bPresent = false;
+                //tofix
                 browse.data.data.forEach(function (k) { 
-                    if(Object.keys(k)[0] == key1)
+                    if(Object.keys(k)[0] == Object.keys(c)[0])
                     bPresent = true;
                 });
 
                 if (!bPresent){
                     if (dynamicData.data.browse.insert == 'before'){
-                        browse.data.data = [c].concat(browse.data.data);
+                        browse.data.data = browse.data.data.concat([c]);
                     }
                     else{
-                        browse.data.data = browse.data.data.concat([c]);
+                        browse.data.data = [c].concat(browse.data.data);
                     }
                 }
             }
@@ -101,8 +114,19 @@ export default function ElementComments(props) {
                 browse.data.data = findParent(browse.data.data, c, o, dynamicData.data.browse.insert);
             }
         });
+        browse.data.data.sort( sortComments );
         return browse;
     }
+
+    function sortComments( a, b ) {
+        if (a[Object.keys(a)[0]].data.cmt_time < b[Object.keys(b)[0]].data.cmt_time){
+            return commentData.orderWay == 'asc' ? -1 : 1;
+        }
+        if (a[Object.keys(a)[0]].data.cmt_time > b[Object.keys(b)[0]].data.cmt_time){
+            return commentData.orderWay == 'asc' ? 1 : -1;
+        }
+        return 0;
+      }
 
     function findParent (data, c, o, insert) {
         if (Array.isArray(data)){
@@ -135,48 +159,43 @@ export default function ElementComments(props) {
     }
     
     // handle change order
-   /* const handleOrder =  async (orderWay) => { 
-        setPostData(null);
+    const handleOrder =  async (orderWay) => { 
+       
         const sRequest = prepareUrl({'start_from': 0, 'is_form' : false, 'order_way': orderWay});
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             browse.data.data = [];
             browse = parseData(browse, sResponse);
-            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start})
-        }
-    }*/
-
-    // process form data
-    const handleFormValues =  (defaultValues, setValue) => {
-        if(commentData && commentData.parentId != defaultValues['cmt_parent_id'] && commentData.parentId > 0){
-            setValue('cmt_parent_id', commentData.parentId);
-            commentData.parentId = 0;
+            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start, postData:null})
         }
     }
+
    
     // handle more button
     const handleMore =  async () => {
-        setPostData(null);
         const sRequest = prepareUrl({'is_form' : false}) ;
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             browse = parseData(browse, sResponse);
-            addCommentData({startFrom: sResponse.data.browse.data.start, perView: sResponse.data.browse.data.per_view})
+            addCommentData({startFrom: sResponse.data.browse.data.start, count: sResponse.data.browse.data.count, postData:null})
         }
     }
 
-
-    const [viewParams, setViewParams] = useState({
-        width:0,
-        height:0
-    });
+    const handleReply =  async (id, text) => {
+      
+        const regex = /(<([^>]+)>)/ig;
+        text = text.replace(regex, '');
+        form.data.inputs.cmt_parent_id.value = id;
+        form.data.reset = true;
+        addCommentData({parentId:id, formText: text});
+    }
 
     const [keyboardStatus, setKeyboardStatus] = useState(false);
 
     useEffect(() => {
         const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
           setKeyboardStatus(true);
-          setPostData(null);
+         // setPostData(null);
         });
         const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
           setKeyboardStatus(false);
@@ -190,7 +209,7 @@ export default function ElementComments(props) {
       }, []);
 
 
-    let cmtsBrs = <Browse {...browse} addCommentData={addCommentData}  /> 
+    let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtForm = null;
     let cmts = null
     let styles = {};
@@ -202,37 +221,30 @@ export default function ElementComments(props) {
         cmts = <ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >{cmtsBrs}</ScrollViewNative>
     }
     else{
-        styles.form = {
-            width: viewParams.width-2,
-            position: 'fixed',
-            bottom: 0
-        };
-        styles.list = {
-            marginBottom: 128,
-        }
-
-        cmts = <View style={styles.list} className=' w-full'>{cmtsBrs}</View>;
+        cmts = <View style={styles.list} className=' w-full'>
+            {cmtsBrs}
+            {(commentData.count == commentData.perView) && <View className={keyboardStatus ? 'hidden mx-auto' : 'mx-auto'}><Button align="start" title={"Show more comments"} size ="xs" variant="text" onPress={() => handleMore()} /></View>}
+        </View>;
     }
-
     if (form){ 
-        cmtForm = <View style={styles.form} className=" fixed w-full bottom-0  border-bordercolor/10 dark:border-bordercolor-dark/10 bg-neo-50 dark:bg-neo-7000">
-        
-        <Form {...form} commentData={commentData}  onFormSubmit={onFormSubmit} handleValues={handleFormValues} />
-    </View> }
+        cmtForm = <View style={styles.form} className=" w-full bottom-0 ">
+            <Text className='mx-4 font-bold text-xs'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : 'In reply to: ' + commentData.formText}</Text>
+            <Form {...form}  onFormSubmit={onFormSubmit}  />
+        </View> }
    
+
     return (
-        <View onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout;
-            if (viewParams.width != width){
-                setViewParams({width:width})
-                setPostData(null);
-            }
-          }}   style={styles.browse} className="bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg sm:border overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
-           { /* Platform.OS !== 'web' && cmtForm */ }
-           <Text className='text-center u-hidden1 mb-4'>Comments ({count})</Text>
-            {commentData.perView>0 && <View className={keyboardStatus ? 'hidden mb-2' : 'mb-2'}><Button align="start" title={"Show more " + commentData.perView + " comments"} size ="xs" variant="text" onPress={handleMore}/></View>}
+        <View style={styles.browse} className="bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+            <Row className='mb-4 mx-4 items-center justify-between'>
+                <Text className='text-xs w-24 font-bold'>Comments ({count})</Text>
+                <Row className='w-40'>
+                    <Button align="start" title="Newest first" size ="xs" disabled={commentData.orderWay =='desc' ? 'disabled' : ''} variant="text" onPress={() => handleOrder('desc')}/>
+                    <Button align="start" title="Oldest first" size ="xs" disabled={commentData.orderWay =='asc' ? 'disabled' : ''} variant="text" onPress={() => handleOrder('asc')}/>
+                </Row>
+            </Row>
+            {(commentData.orderWay == 'asc') && cmtForm}
             {cmts}
-            { /*Platform.OS === 'web' && */ cmtForm}
+            {(commentData.orderWay == 'desc') && cmtForm}
         </View>
     );
 }
