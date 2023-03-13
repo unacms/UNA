@@ -36,8 +36,8 @@ export default function BlockContentObjectDataArray(props) {
     }
 
     // handle errors and loading 
-    if (error || dynamicData?.error) return <Text>An error has occurred:${error ? error : data?.error}</Text>;
-    if (postData && !dynamicData) return <Text>Loading...</Text>;
+    if (error || dynamicData?.error) return <Text className="text-black dark:text-white">An error has occurred: {error ? error : dynamicData?.error}</Text>;
+    if (postData && !dynamicData) return <Text className="text-black dark:text-white">Loading...</Text>;
     
     let realData = props.data;
     if (dynamicData){
