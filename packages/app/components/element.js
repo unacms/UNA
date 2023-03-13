@@ -28,14 +28,17 @@ export default function Element(a) {
     if ('undefined' === typeof componentsMap[a.type])
         return <Text>Undefined element type({a.type}): {JSON.stringify(a)}</Text>;
     else{
+        let el = <ElementType {...a} />
         if (setLayoutData && a.type == 'comments'){
-            setTimeout(() => {
-                setLayoutData(<ElementType {...a} />)
-            }, 100);
+            if (layoutData == null){
+                setTimeout(() => {
+                    setLayoutData(el)
+                }, 100);
+            }
            
         }
         else{
-            return <ElementType {...a} />;
+            return el;
         }
     }
 }

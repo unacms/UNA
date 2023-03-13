@@ -42,11 +42,11 @@ export default function () {
             <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-2">
               <Icon
                 icon="logo-mark"
-                className="group-hover:rotate-45 text-brand dark:text-brand-dark  duration-300 h-10 w-10"
+                className="group-hover:-rotate-45 text-neo-600 dark:text-neo-200 group-hover:text-neo-800 dark:group-hover:text-neo-50   duration-300 h-10 w-10"
               ></Icon>
               <Icon
                 icon="logo-text"
-                className="h-10 w-14 hidden sm:block text-orange-600 dark:text-orange-400  "
+                className="h-10 w-14 hidden sm:block text-brand dark:text-brand-dark  "
               ></Icon>
             </View>
           </Link>
@@ -71,7 +71,7 @@ export default function () {
                 />
               </Link>
             </Row>
-            <Row className=" lg:hidden flex-row  flex-none ">
+            <Row className="hidden sm:flex lg:hidden  flex-row  flex-none ">
               <Link href="/">
                 <Button
                   variant="text"
@@ -89,7 +89,7 @@ export default function () {
                 />
               </Link>
             </Row>
-          <Row className="flex-auto flex-col">
+          <Row className="hidden sm:block flex-auto flex-col">
             <Button
               solid
               variant="outline"
@@ -101,7 +101,7 @@ export default function () {
             />
           </Row>
           
-          <Row className="flex-row  justify-end ">
+          <Row className="flex-row flex-auto sm:flex-none justify-end  ">
             
             
             <Link href="/about">

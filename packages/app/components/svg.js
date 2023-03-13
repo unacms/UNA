@@ -18,177 +18,33 @@ export function Icon(props) {
   let data = null
 
   switch (icon) {
+   
     case 'logo-mark':
       data = (
-        <Svg
-          className={className}
-          viewBox="0 0 240 240"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <Rect
-            x="21.0051"
-            y="120"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 21.0051 120)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="77.5736"
-            y="63.4315"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 77.5736 63.4315)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="77.5736"
-            y="176.569"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 77.5736 176.569)"
-            fill="currentColor"
-            className=""
-          />
-          <Rect
-            x="134.142"
-            y="120"
-            width="60"
-            height="60"
-            rx="4"
-            transform="rotate(-45 134.142 120)"
-            fill="currentColor"
-            className=""
-          />
-          <Defs>
-            <linearGradient
-              id="paint0_linear_90_6"
-              x1="81.0086"
-              y1="119.996"
-              x2="20.9045"
-              y2="180.101"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint1_linear_90_6"
-              x1="137.577"
-              y1="63.4279"
-              x2="77.4731"
-              y2="123.532"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint2_linear_90_6"
-              x1="137.577"
-              y1="176.565"
-              x2="77.4731"
-              y2="236.669"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-            <linearGradient
-              id="paint3_linear_90_6"
-              x1="194.146"
-              y1="119.996"
-              x2="134.042"
-              y2="180.101"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stop-color="#F59E0B" />
-              <stop offset="1" stop-color="#F97316" />
-            </linearGradient>
-          </Defs>
-        </Svg>
-      )
-      break
+    
+<Svg className={className + ' mr-0 ml-0'} viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+<Rect x="218.995" y="120" width="60" height="60" rx="4" transform="rotate(135 218.995 120)"  fill="currentColor"/>
+<Rect x="162.426" y="176.569" width="60" height="60" rx="4" transform="rotate(135 162.426 176.569)" fill="currentColor"/>
+<Rect x="162.426" y="63.4314" width="60" height="60" rx="4" transform="rotate(135 162.426 63.4314)" fill="currentColor"/>
+<Rect x="105.858" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 105.858 120)" class="group-hover:animate-pulse " fill="#FF5511"/>
+<Rect x="81.6143" y="144.244" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 144.244)" class="group-hover:animate-pulse "  fill="#FF5511"/>
+<Rect x="81.6143" y="95.7563" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 95.7563)" class="group-hover:animate-pulse "  fill="#FF5511"/>
+<Rect x="57.3707" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 57.3707 120)" class="group-hover:animate-pulse "  fill="#FF5511"/>
+</Svg>
 
-    case 'neo-mark':
-      data = (
-        <Svg
-          className={className}
-          viewBox="0 0 280 280"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <G opacity="0.7">
-            <Path
-              d="M122.564 96.8414L20.0986 199.307L114.682 152.015L122.564 96.8414Z"
-              fill="url(#paint0_linear_2_130597)"
-            />
-            <Path
-              d="M156.72 182.23L259.185 79.7637L164.602 127.056L156.72 182.23Z"
-              fill="url(#paint1_linear_2_130597)"
-            />
-          </G>
-          <Path
-            d="M156.72 62.6862L122.564 96.8415V216.385L156.72 182.23V62.6862Z"
-            fill="url(#paint2_linear_2_130597)"
-          />
-          <Defs>
-            <LinearGradient
-              id="paint0_linear_2_130597"
-              x1="139.642"
-              y1="79.7637"
-              x2="139.642"
-              y2="199.307"
-              gradientUnits="userSpaceOnUse"
-            >
-              <Stop stop-color="#FB923C" />
-              <Stop offset="1" stop-color="#EA580C" />
-            </LinearGradient>
-            <LinearGradient
-              id="paint1_linear_2_130597"
-              x1="139.642"
-              y1="79.7637"
-              x2="139.642"
-              y2="199.307"
-              gradientUnits="userSpaceOnUse"
-            >
-              <Stop stopColor="#FB923C" />
-              <Stop offset="1" stopColor="#EA580C" />
-            </LinearGradient>
-            <LinearGradient
-              id="paint2_linear_2_130597"
-              x1="139.642"
-              y1="62.6862"
-              x2="139.642"
-              y2="216.385"
-              gradientUnits="userSpaceOnUse"
-            >
-              <Stop stopColor="#FB923C" />
-              <Stop offset="1" stop-color="#EA580C" />
-            </LinearGradient>
-          </Defs>
-        </Svg>
+
+
       )
       break
 
     case 'logo-text':
       data = (
-        <Svg
-          className={className + ' mr-0 ml-0'}
-          viewBox="0 0 326 118"
-          fill="none"
-        >
-          <Path
-            d="M0.63664 116V2.38114H15.9905L22.617 24.3615V116H0.63664ZM79.184 116L11.7884 28.7252L15.9905 2.38114L83.3861 89.6559L79.184 116ZM79.184 116L72.8808 94.6662V2.38114H95.0227V116H79.184ZM118.064 116V2.38114H140.044V116H118.064ZM134.226 116V96.6056H197.096V116H134.226ZM134.226 67.3524V48.6045H191.439V67.3524H134.226ZM134.226 21.7755V2.38114H196.288V21.7755H134.226ZM266.409 117.778C258.113 117.778 250.355 116.269 243.136 113.252C236.025 110.236 229.775 106.087 224.388 100.808C219.109 95.4204 214.96 89.1711 211.943 82.0598C208.927 74.8408 207.418 67.1369 207.418 58.9481C207.418 50.7594 208.873 43.1633 211.782 36.1597C214.799 29.0484 218.947 22.853 224.227 17.5734C229.614 12.1861 235.863 8.03784 242.974 5.12868C250.086 2.11177 257.79 0.603316 266.086 0.603316C274.49 0.603316 282.248 2.11177 289.359 5.12868C296.471 8.03784 302.666 12.1861 307.946 17.5734C313.333 22.853 317.535 29.0484 320.552 36.1597C323.569 43.271 325.077 50.921 325.077 59.1098C325.077 67.2985 323.569 74.9485 320.552 82.0598C317.535 89.1711 313.333 95.4204 307.946 100.808C302.666 106.087 296.471 110.236 289.359 113.252C282.356 116.269 274.706 117.778 266.409 117.778ZM266.086 97.2521C273.413 97.2521 279.77 95.6359 285.157 92.4035C290.545 89.1711 294.747 84.6996 297.764 78.989C300.888 73.2784 302.451 66.5982 302.451 58.9481C302.451 53.3453 301.589 48.2273 299.865 43.5942C298.141 38.9611 295.663 34.9745 292.43 31.6344C289.198 28.1865 285.373 25.5467 280.955 23.715C276.538 21.8833 271.581 20.9674 266.086 20.9674C258.975 20.9674 252.672 22.5836 247.177 25.816C241.789 28.9407 237.533 33.3583 234.409 39.0689C231.392 44.7795 229.883 51.4059 229.883 58.9481C229.883 64.6587 230.745 69.8844 232.469 74.6253C234.301 79.3661 236.779 83.4066 239.904 86.7468C243.136 90.0869 246.961 92.6728 251.379 94.5045C255.904 96.3362 260.807 97.2521 266.086 97.2521Z"
-            fill="currentColor"
-          />
-        </Svg>
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 224 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<Path d="M66.3277 80L14.4935 33.2075L14.7954 76.9811H0V0H0.603894L52.3375 47.4969L52.0356 2.91824H66.7303V80H66.3277Z" fill="currentColor"/>
+<Path d="M85.8073 2.91824H136.333V17.0063H100.401V32.805H132.206V46.8931H100.401V62.8931H137.742V76.9811H85.8073V2.91824Z" fill="currentColor"/>
+<Path d="M148.312 40.0503C148.312 34.9518 149.285 30.1216 151.231 25.5597C153.177 20.9979 155.861 16.9727 159.283 13.4843C162.772 9.92872 166.798 7.14466 171.361 5.13208C175.923 3.1195 180.822 2.11321 186.055 2.11321C191.222 2.11321 196.087 3.1195 200.649 5.13208C205.212 7.14466 209.238 9.92872 212.727 13.4843C216.284 16.9727 219.035 20.9979 220.981 25.5597C222.994 30.1216 224 34.9518 224 40.0503C224 45.283 222.994 50.1803 220.981 54.7421C219.035 59.304 216.284 63.3291 212.727 66.8176C209.238 70.239 205.212 72.9224 200.649 74.8679C196.087 76.8134 191.222 77.7862 186.055 77.7862C180.822 77.7862 175.923 76.8134 171.361 74.8679C166.798 72.9224 162.772 70.239 159.283 66.8176C155.861 63.3291 153.177 59.304 151.231 54.7421C149.285 50.1803 148.312 45.283 148.312 40.0503ZM163.409 40.0503C163.409 44.4109 164.416 48.4025 166.429 52.0252C168.509 55.5807 171.293 58.4319 174.783 60.5786C178.272 62.6583 182.197 63.6981 186.559 63.6981C190.786 63.6981 194.577 62.6583 197.932 60.5786C201.354 58.4319 204.038 55.5807 205.984 52.0252C207.93 48.4025 208.903 44.4109 208.903 40.0503C208.903 35.5556 207.896 31.5304 205.883 27.9748C203.87 24.3522 201.153 21.501 197.731 19.4214C194.309 17.2746 190.45 16.2013 186.156 16.2013C181.862 16.2013 178.003 17.2746 174.581 19.4214C171.159 21.501 168.442 24.3522 166.429 27.9748C164.416 31.5304 163.409 35.5556 163.409 40.0503Z" fill="currentColor"/>
+</Svg>
+
       )
       break
 
@@ -436,6 +292,21 @@ export function Icon(props) {
       )
       break
 
+      case 'dislike':
+        data = (
+          <Svg
+            className={className}
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            class='translate-y-[0.5px]'
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <Path fill="currentColor" d="M19,2H6.27A3,3,0,0,0,3.32,4.46l-1.27,7A3,3,0,0,0,5,15H9.56L9,16.43A4.13,4.13,0,0,0,12.89,22a1,1,0,0,0,.91-.59L16.65,15H19a3,3,0,0,0,3-3V5A3,3,0,0,0,19,2ZM15,13.79l-2.72,6.12a2.13,2.13,0,0,1-1.38-2.78l.53-1.43A2,2,0,0,0,9.56,13H5a1,1,0,0,1-.77-.36A1,1,0,0,1,4,11.82l1.27-7a1,1,0,0,1,1-.82H15ZM20,12a1,1,0,0,1-1,1H17V4h2a1,1,0,0,1,1,1Z"/>
+          </Svg>
+        )
+        break
+
     case 'love':
       data = (
         <Svg
@@ -501,16 +372,53 @@ export function Icon(props) {
     case 'anger':
       data = (
         <Svg
-        className={className}
-        aria-hidden="true"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+          className={className}
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <Path d="M10,11a1,1,0,0,0,.89-.55,1,1,0,0,0-.44-1.34l-2-1a1,1,0,1,0-.9,1.78l2,1A.93.93,0,0,0,10,11Zm2-9A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20ZM8.36,15.33a1,1,0,0,0-.13,1.4,1,1,0,0,0,1.41.13,3.76,3.76,0,0,1,4.72,0,1,1,0,0,0,.64.23,1,1,0,0,0,.64-1.76A5.81,5.81,0,0,0,8.36,15.33Zm7.19-7.22-2,1a1,1,0,0,0-.44,1.34A1,1,0,0,0,14,11a.93.93,0,0,0,.45-.11l2-1a1,1,0,0,0-.9-1.78Z" />
         </Svg>
       )
       break
+
+      case 'comment':
+        data = (
+          <Svg
+            className={className}
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 24 24"><Path fill="currentColor" d="M12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,0-1.41A8,8,0,1,1,12,20Z"/></Svg>
+        )
+        break
+
+
+        case 'share':
+          data = (
+            <Svg
+              className={className}
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 24 24">
+                <Path fill="currentColor" d="M21.707,11.293l-8-8A.99991.99991,0,0,0,12,4V7.54492A11.01525,11.01525,0,0,0,2,18.5V20a1,1,0,0,0,1.78418.62061,11.45625,11.45625,0,0,1,7.88672-4.04932c.0498-.00635.1748-.01611.3291-.02588V20a.99991.99991,0,0,0,1.707.707l8-8A.99962.99962,0,0,0,21.707,11.293ZM14,17.58594V15.5a.99974.99974,0,0,0-1-1c-.25488,0-1.2959.04932-1.56152.085A14.00507,14.00507,0,0,0,4.05176,17.5332,9.01266,9.01266,0,0,1,13,9.5a.99974.99974,0,0,0,1-1V6.41406L19.58594,12Z"/></Svg>
+                
+          )
+          break
+
+          case 'more':
+            data = (
+              <Svg
+                className={className}
+                aria-hidden="true"
+                
+                viewBox="0 0 24 22">
+                  <path fill="currentColor" d="M12,10a2,2,0,1,0,2,2A2,2,0,0,0,12,10ZM5,10a2,2,0,1,0,2,2A2,2,0,0,0,5,10Zm14,0a2,2,0,1,0,2,2A2,2,0,0,0,19,10Z"/></Svg>
+                  
+            )
+            break
+
+
   }
 
   if (data)

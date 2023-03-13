@@ -62,12 +62,11 @@ export function Button(props: ButtonProps) {
     sClassContainer +=
       (buttonSolid ? '' : ThemeCssClasses['u-btn-' + buttonType + '-trans']) +
       ThemeCssClasses['u-btn-' + buttonType + '-cnt']
-    sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
+      sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
   } else {
     sClassContainer += className
     sClassText += classTextName
   }
-  
 
   sClassContainer += ' justify-' + buttonAlign + ' '
 

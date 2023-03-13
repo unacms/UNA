@@ -16,7 +16,7 @@ import {
 import Animated from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import HomeSVG from 'app/design/HomeSVG';
-import AnimatedTabBar, {AnimatedTabBarView, TabsConfig, BubbleTabBarItemConfig} from '@gorhom/animated-tabbar';
+//import AnimatedTabBar, {AnimatedTabBarView, TabsConfig, BubbleTabBarItemConfig} from '@gorhom/animated-tabbar';
 
 
 export function PostScreen() {
@@ -61,7 +61,7 @@ export function PostScreen() {
     );
   };
 
-
+/*
   const tabs: TabsConfig<BubbleTabBarItemConfig> = {
     Home: {
       labelStyle: {
@@ -92,7 +92,7 @@ export function PostScreen() {
       },
     },
   };
-  
+  */
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -107,12 +107,8 @@ export function PostScreen() {
 
   const [index, setIndex] = useState(0);
 
-
-  
-  return (
-    <View style={styles.container}>
-      <Text>{index}</Text>
-      <AnimatedTabBarView
+/*
+ <AnimatedTabBarView
         tabs={tabs}
         itemOuterSpace={{
           horizontal: 6,
@@ -124,6 +120,12 @@ export function PostScreen() {
         index={index}
         onIndexChange={setIndex}
       />
+      */
+  
+  return (
+    <View style={styles.container}>
+      <Text>{index}</Text>
+     
     </View>
   );
 };

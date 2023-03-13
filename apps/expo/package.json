@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@gorhom/animated-tabbar": "2.1.2",
     "@gorhom/bottom-sheet": "^4",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-menu/menu": "^0.7.3",
@@ -34,9 +33,6 @@
     "react-native-web": "~0.18.9",
     "react-native-webview": "11.23.1",
     "swr": "^2.0.3"
-  },
-  "resolutions": {
-    "react-native-redash": "16.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

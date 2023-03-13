@@ -1,12 +1,14 @@
 import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 export function fetcher (mixed) {
+    console.log(555);
     console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
     let url, token, data, origin, headers = {};
     if (Array.isArray(mixed)){
         [url, token, data, origin] = mixed;
     }
-    else{
+    else {
         url = mixed;
     }
 
@@ -14,6 +16,8 @@ export function fetcher (mixed) {
         headers['Authorization'] = 'Bearer ' + token;
     if (origin)
         headers['Origin'] = origin;
+    else if ('web' !== Platform.OS)
+        headers['Origin'] = 'neo://app';
     
     const res = fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
         method: data ? 'post' : 'get',

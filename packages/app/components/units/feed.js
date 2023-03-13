@@ -8,7 +8,8 @@ import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native'
+import { Platform, PlatformIOSStatic } from 'react-native';
+import { Button } from 'app/design/controls';
 
 export default function UnitFeed({data}) {
     var oImage = null;
@@ -108,58 +109,23 @@ export default function UnitFeed({data}) {
                         </View>
                         }
                   </View>
-                  <View className='flex-row w-full space-x-4'>
-                      <View className=" mb-3 flex-auto flex-row space-x-4  ">
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">16</Text> comments
-                        </Text>
-                      </View>
-                      <View className="mb-3  flex-row space-x-4  ">
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">12</Text> views
-                        </Text>
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">48</Text> likes
-                        </Text>
-                
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">32</Text> reposts
-                        </Text>
-                      </View>
-                  </View>
+              
  </View>
-                  <View className=" px-4 py-2  border-t border-bordercolor/10 dark:border-bordercolor-dark/10  flex-row space-x-1  ">
+                  <View className=" p-2  border-t border-bordercolor/10 dark:border-bordercolor-dark/10  flex-row space-x-1  ">
                     
-                  <View className='flex-row w-full space-x-4'>
+                  <View className='flex-row w-full space-x-2'>
                       <View className=" flex-row space-x-2  ">
-                          <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                            Like
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Comment
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Repost
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Share
-                          </Text>
-                        </View>
+                      
+                      <Button title="902" startDecorator="comment" size="sm" solid rounded variant="text"/>
+                      
+                      <Button title="12" startDecorator="share" size="sm" solid rounded variant="text"/>
+                      <Button title="306" startDecorator="like" size="sm" solid rounded variant="text"/>
+                      <Button title="8" startDecorator="dislike" size="sm" solid rounded variant="text"/>
+                        
 
                       </View>
-                      <View className=" flex-auto space-x-2 flex-row justify-end ">
-                        <View className="group/item   py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                        <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                            More
-                          </Text>
-                        </View>
+                      <View className=" flex-auto space-x-4 flex-row justify-end ">
+                      <Button title="" startDecorator="more" size="sm" solid rounded variant="text"/>
                       </View>
                   </View>
                     
