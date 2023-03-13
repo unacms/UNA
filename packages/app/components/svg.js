@@ -413,7 +413,7 @@ export function Icon(props) {
                 aria-hidden="true"
                 
                 viewBox="0 0 24 22">
-                  <path fill="currentColor" d="M12,10a2,2,0,1,0,2,2A2,2,0,0,0,12,10ZM5,10a2,2,0,1,0,2,2A2,2,0,0,0,5,10Zm14,0a2,2,0,1,0,2,2A2,2,0,0,0,19,10Z"/></Svg>
+                  <Path fill="currentColor" d="M12,10a2,2,0,1,0,2,2A2,2,0,0,0,12,10ZM5,10a2,2,0,1,0,2,2A2,2,0,0,0,5,10Zm14,0a2,2,0,1,0,2,2A2,2,0,0,0,19,10Z"/></Svg>
                   
             )
             break
