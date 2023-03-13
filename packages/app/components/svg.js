@@ -23,13 +23,13 @@ export function Icon(props) {
       data = (
     
 <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<Rect x="218.995" y="120" width="60" height="60" rx="4" transform="rotate(135 218.995 120)" fill="currentColor"/>
+<Rect x="218.995" y="120" width="60" height="60" rx="4" transform="rotate(135 218.995 120)"  fill="currentColor"/>
 <Rect x="162.426" y="176.569" width="60" height="60" rx="4" transform="rotate(135 162.426 176.569)" fill="currentColor"/>
 <Rect x="162.426" y="63.4314" width="60" height="60" rx="4" transform="rotate(135 162.426 63.4314)" fill="currentColor"/>
-<Rect x="105.858" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 105.858 120)" fill="#FF5511"/>
-<Rect x="81.6143" y="144.244" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 144.244)" fill="#FF5511"/>
-<Rect x="81.6143" y="95.7563" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 95.7563)" fill="#FF5511"/>
-<Rect x="57.3707" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 57.3707 120)" fill="#FF5511"/>
+<Rect x="105.858" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 105.858 120)" class="group-hover:animate-pulse " fill="#FF5511"/>
+<Rect x="81.6143" y="144.244" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 144.244)" class="group-hover:animate-pulse "  fill="#FF5511"/>
+<Rect x="81.6143" y="95.7563" width="25.7143" height="25.7143" rx="4" transform="rotate(135 81.6143 95.7563)" class="group-hover:animate-pulse "  fill="#FF5511"/>
+<Rect x="57.3707" y="120" width="25.7143" height="25.7143" rx="4" transform="rotate(135 57.3707 120)" class="group-hover:animate-pulse "  fill="#FF5511"/>
 </Svg>
 
 
