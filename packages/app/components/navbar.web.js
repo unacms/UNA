@@ -71,7 +71,7 @@ export default function () {
                 />
               </Link>
             </Row>
-            <Row className=" lg:hidden flex-row  flex-none ">
+            <Row className="hidden sm:flex lg:hidden  flex-row  flex-none ">
               <Link href="/">
                 <Button
                   variant="text"
@@ -89,7 +89,7 @@ export default function () {
                 />
               </Link>
             </Row>
-          <Row className="flex-auto flex-col">
+          <Row className="hidden sm:block flex-auto flex-col">
             <Button
               solid
               variant="outline"
@@ -101,7 +101,7 @@ export default function () {
             />
           </Row>
           
-          <Row className="flex-row  justify-end ">
+          <Row className="flex-row flex-auto sm:flex-none justify-end  ">
             
             
             <Link href="/about">

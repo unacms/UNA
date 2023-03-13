@@ -42,7 +42,7 @@ export default function ElementBrowse(props) {
     if (data.unit != 'feed' && data.unit != 'comments')
         classes = 'u-card-list';
     if (data.unit == 'feed')
-        classes = 'flex-auto flex-col space-y-2 w-full  max-w-3xl mx-auto';
+        classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full  max-w-3xl mx-auto';
 
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
