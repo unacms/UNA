@@ -1,0 +1,40 @@
+import { Button } from 'app/design/controls'
+import { Wrapper } from '../../../components/wrapper'
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Unit } from 'app/components/units/general-content-list'
+
+# Group Card
+
+Group card is used to display group information and actions most relevant in the context of the card.
+
+## Variants
+
+```jsx
+import { Button } from 'app/design/controls'
+;<Button text onPress={() => alert('Hello World!')}>
+  Default Button
+</Button>
+```
+
+<Wrapper className='bg-neo-50 flex-row flex-wrap gap-4'>
+ 
+
+   <View className="flex-col space-y-4 w-72 mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+      <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  "></View>
+      <View className=" px-4 ">
+        <View className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          Angry Mushrooms
+        </View>
+        <View>
+          <Text  className='text-sm text-neo-600 dark:text-neo-400'>25 members</Text>
+          <Text  className='text-sm text-neo-600 dark:text-neo-400'>7 </Text>
+        </View>     
+      </View>
+      <View className="text-center px-4 space-y-2">
+        
+        <Button title="Join Group" variant="primary" fullWidth />
+        
+      </View>
+  </View>
+</Wrapper>
