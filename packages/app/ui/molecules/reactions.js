@@ -3,10 +3,11 @@ import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Modal, Platform, FlatList } from 'react-native';
 
 import { fetcher } from '../../lib/util';
+
 import { PageData } from '../../context/page';
 import Link from 'app/ui/atoms/link';
 import { Button } from 'app/design/controls';
-import { A, Text } from 'app/design/typography';
+import { A, Text, } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -476,7 +477,7 @@ export default function ElementReactions(oProps) {
                 <Modal visible={popupVisibleByCpd} presentation="formSheet" animationType="fade" transparent={Platform.OS != 'ios'}>
                     <View id={getName('performed-by-ddp')} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
                         <View className="relative w-full h-full max-w-2xl md:h-auto">
-                            <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
+                            <View className="relative bg-white dark:bg-neo-700 rounded-lg shadow-2xl border border-bordercolor/10 dark:border-bordercolor-dark/10">
                                 <View className="p-4">
                                     <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
                                     <View className="p-4">{aPerformedByUsers}</View>

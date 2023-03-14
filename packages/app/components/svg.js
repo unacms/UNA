@@ -505,7 +505,8 @@ export function Icon(props) {
     case 'person-avatar':
       data = (
         <Svg
-          className={className} aria-hidden="true"
+          className={className}
+          aria-hidden="true"
           enableBackground="new 0 0 24 24"
           viewBox="0 0 24 24"
         >
