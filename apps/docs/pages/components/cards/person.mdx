@@ -6,10 +6,7 @@ import { Unit } from 'app/components/units/general-content-list'
 
 # Person Card
 
-Buttons let users perform actions and make choices with a click or tap.
-
-The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text
-that will be displayed on its surface.
+Person Card is a card that displays a brief person's information and actions most relevant in the context of the card.
 
 ## Variants
 
@@ -54,24 +51,4 @@ import { Button } from 'app/design/controls'
         <Button title="Remove" variant="default" fullWidth/>
       </View>
   </View>
-</Wrapper>
-
-## Text Primary Button
-
-```jsx
-import { Button } from 'app/design/controls'
-;<Button text variant="primary" onPress={() => alert('Hello World!')}>
-  Primary Button
-</Button>
-```
-
-<Wrapper>
-  <Button
-    text
-    variant="primary"
-    className="mx-auto"
-    onPress={() => alert('Hello World!')}
-  >
-    Primary Button
-  </Button>
 </Wrapper>
