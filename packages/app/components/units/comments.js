@@ -47,7 +47,7 @@ export default function UnitComments(props) {
             lineHeight:22
         }
     };            
-
+    console.log(data.author_data);
     return (
         <View className='w-full'>
             <View className={ 'cmt-' + data.cmt_id }>
@@ -61,7 +61,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass} >
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
                             </View>
-                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id, data.cmt_text)}  />
+                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id, data.author_data.display_name)}  />
                         </View>
                     </View>
                     

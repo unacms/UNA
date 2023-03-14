@@ -185,13 +185,17 @@ export default function ElementComments(props) {
     }
 
     const handleReply =  async (id, text) => {
-      
         const regex = /(<([^>]+)>)/ig;
         text = text.replace(regex, '');
         form.data.inputs.cmt_parent_id.value = id;
         form.data.reset = true;
         addCommentData({parentId:id, formText: text});
     }
+
+    const handleCancel =  async () => {
+        handleReply(0, '')
+    }
+    
 
     const [keyboardStatus, setKeyboardStatus] = useState(false);
 
@@ -234,7 +238,10 @@ export default function ElementComments(props) {
     }
     if (form){ 
         cmtForm = <View style={styles.form} className=" w-full bottom-0 ">
-            <Text className='mx-4 font-bold text-xs'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : 'In reply to: ' + commentData.formText}</Text>
+            {
+                form.data.inputs.cmt_parent_id.value != 0 && (<Row className='items-center'><Text className='mx-4 font-bold text-sm'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : 'Reply to: ' + commentData.formText}</Text>
+                <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} /></Row>)
+            }
             <Form {...form} classContainerName="flex-row px-4 w-full  px-4 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
    
@@ -245,14 +252,15 @@ export default function ElementComments(props) {
                 <Text className='text-sm w-24 font-bold'>Comments ({count})</Text>
                 <Row className=' justify-end'>
                     <Text className='text-sm '>Sort by:</Text>
-                    <Select defaultButtonText='Newest' buttonStyle={{width:100, height:20, backgroundColor: 'transparent', }} rowTextStyle={{fontSize: 14}} dropdownStyle = {{height: 'auto', marginTop:10}} buttonTextStyle ={{fontSize: 14, fontWeight:'bold'}} 
+                   { <Select defaultButtonText='Newest' buttonStyle={{width:100, height:20, backgroundColor: 'transparent', }} rowTextStyle={{fontSize: 14}} dropdownStyle = {{height: 'auto', marginTop:10}} buttonTextStyle ={{fontSize: 14, fontWeight:'bold'}} 
                         data={['Newest','Oldest']}
                         onSelect={(selectedItem, index) => {
                             let sort = selectedItem == 'Newest' ? 'desc' : 'asc';
-               
                             handleOrder(sort)
                         }}
                     />
+                    } 
+                    
                     
                     </Row>
             </Row>

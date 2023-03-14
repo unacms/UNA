@@ -26,8 +26,10 @@ export async function getData(path, token, origin) {
     if (!path)
 	    path = 'home';
     path = path.startsWith('/') ? path.substr(1) : path;    
+    if (path.startsWith('expo-development-client'))
+        path = 'home'
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    
+   
     // TODO: pass GET&POST params
     const data = await fetcher(token || origin ? [path, token, '', origin] : path)
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
