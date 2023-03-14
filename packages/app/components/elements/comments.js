@@ -7,7 +7,7 @@ import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
 
-import { Button } from 'app/design/controls'
+import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
 
@@ -60,6 +60,7 @@ export default function ElementComments(props) {
         if (!params.postData)
             params.postData = null;
         setCommentData(Object.assign({}, commentData, params));
+
        // if (params.parentId)
         //    setPostData(null);
     } 
@@ -114,11 +115,12 @@ export default function ElementComments(props) {
                 browse.data.data = findParent(browse.data.data, c, o, dynamicData.data.browse.insert);
             }
         });
-        browse.data.data.sort( sortComments );
+       // browse.data.data.sort( sortComments );
         return browse;
     }
 
     function sortComments( a, b ) {
+
         if (a[Object.keys(a)[0]].data.cmt_time < b[Object.keys(b)[0]].data.cmt_time){
             return commentData.orderWay == 'asc' ? -1 : 1;
         }
@@ -165,8 +167,9 @@ export default function ElementComments(props) {
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             browse.data.data = [];
-            browse = parseData(browse, sResponse);
             addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start, postData:null})
+            browse = parseData(browse, sResponse);
+           
         }
     }
 
@@ -217,30 +220,41 @@ export default function ElementComments(props) {
         const {height, width, scale, fontScale} = useWindowDimensions(); 
         let heightS = height * 0.9 - 70;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
-        styles.form = {marginBottom:20, paddingTop:10 };
-        cmts = <ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >{cmtsBrs}</ScrollViewNative>
+
+        cmts = <ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >
+            {cmtsBrs}
+            {(commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>}
+            </ScrollViewNative>
     }
     else{
         cmts = <View style={styles.list} className=' w-full'>
             {cmtsBrs}
-            {(commentData.count == commentData.perView) && <View className={keyboardStatus ? 'hidden mx-auto' : 'mx-auto'}><Button align="start" title={"Show more comments"} size ="xs" variant="text" onPress={() => handleMore()} /></View>}
+            {(commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>}
         </View>;
     }
     if (form){ 
         cmtForm = <View style={styles.form} className=" w-full bottom-0 ">
             <Text className='mx-4 font-bold text-xs'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : 'In reply to: ' + commentData.formText}</Text>
-            <Form {...form}  onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row px-4 w-full  px-4 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
    
 
     return (
-        <View style={styles.browse} className="bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
-            <Row className='mb-4 mx-4 items-center justify-between'>
-                <Text className='text-xs w-24 font-bold'>Comments ({count})</Text>
-                <Row className='w-40'>
-                    <Button align="start" title="Newest first" size ="xs" disabled={commentData.orderWay =='desc' ? 'disabled' : ''} variant="text" onPress={() => handleOrder('desc')}/>
-                    <Button align="start" title="Oldest first" size ="xs" disabled={commentData.orderWay =='asc' ? 'disabled' : ''} variant="text" onPress={() => handleOrder('asc')}/>
-                </Row>
+        <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+            <Row className='mb-4 mx-4 items-center justify-between '>
+                <Text className='text-sm w-24 font-bold'>Comments ({count})</Text>
+                <Row className=' justify-end'>
+                    <Text className='text-sm '>Sort by:</Text>
+                    <Select defaultButtonText='Newest' buttonStyle={{width:100, height:20, backgroundColor: 'transparent', }} rowTextStyle={{fontSize: 14}} dropdownStyle = {{height: 'auto', marginTop:10}} buttonTextStyle ={{fontSize: 14, fontWeight:'bold'}} 
+                        data={['Newest','Oldest']}
+                        onSelect={(selectedItem, index) => {
+                            let sort = selectedItem == 'Newest' ? 'desc' : 'asc';
+               
+                            handleOrder(sort)
+                        }}
+                    />
+                    
+                    </Row>
             </Row>
             {(commentData.orderWay == 'asc') && cmtForm}
             {cmts}

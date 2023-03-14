@@ -5,6 +5,9 @@ import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
 import { TouchableOpacityProps } from 'react-native'
 import { ThemeCssClasses } from 'app/design/vars'
+import SelectDropdown from 'react-native-select-dropdown'
+import SelectList from 'react-native-dropdown-select-list'
+ 
 
 type ButtonProps = TouchableOpacityProps & {
   align?: 'center' | 'start' | 'end'
@@ -29,10 +32,10 @@ type ButtonProps = TouchableOpacityProps & {
 }
 
 /* inputs */
-export const Input = styled(
-  TextInputDef,
-  'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base'
+export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
+export const Select = styled(SelectDropdown,'border'
 )
+
 export const Hidden = styled(TextInputDef, 'hidden')
 
 /* buttons */
@@ -127,7 +130,7 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    onPress ? <Pressable className={sClassContainer} {...rest} onPress={onPress}>
+    onPress !== undefined ? <Pressable className={sClassContainer} {...rest} onPress={onPress}>
       {buttonIconStart != '' && !buttonIconEnd && (
         <Icon
           className={
@@ -136,7 +139,7 @@ export function Button(props: ButtonProps) {
           icon={buttonIconStart}
         ></Icon>
       )}
-      {buttonTitle && <Text className={sClassText}>{buttonTitle}</Text>}
+      {buttonTitle !== undefined && <Text className={sClassText}>{buttonTitle}</Text>}
       {buttonIconEnd != '' && buttonIconEnd && (
         <Icon
           className={
@@ -154,7 +157,7 @@ export function Button(props: ButtonProps) {
           icon={buttonIconStart}
         ></Icon>
       )}
-      {buttonTitle && <Text className={sClassText}>{buttonTitle}</Text>}
+      {buttonTitle !== undefined && <Text className={sClassText}>{buttonTitle}</Text>}
       {buttonIconEnd != '' && buttonIconEnd && (
         <Icon
           className={

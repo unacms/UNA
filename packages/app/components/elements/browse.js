@@ -74,7 +74,6 @@ export default function ElementBrowse(props) {
     const [isInView, setIsInView] = useState(false);
 
     const checkVisible = (isVisible) => {
-        console.log(5);
         if (isInView != isVisible && isVisible){
             handleMore();
         }

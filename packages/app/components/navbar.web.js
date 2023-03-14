@@ -18,7 +18,7 @@ export default function () {
   if (width > 1280 && menuPopup) setMenuPopup(false)
 
   const showMenu = (params) => {
-    console.log(123)
+
     setMenuPopup(!menuPopup)
   }
 

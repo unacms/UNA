@@ -19,18 +19,20 @@ export default function FormFieldSubmit(props) {
     return (
         <Field {...props}>
             <Button
-                title={props.value}
+                title={!props.rounded ? props.value : ''}
                 variant='primary' fullWidth
                 onPress={props.handleSubmit}
+                startDecorator={props.icon}
+                rounded={props.rounded}
             />
-            <View style={{width:0,height:0}}><Hidden 
+            <Hidden 
                     name={props.name}
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
                     defaultValue={defaultValue}
 
             />
-            </View>
+           
         </Field>
         
     );

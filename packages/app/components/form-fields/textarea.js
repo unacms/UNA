@@ -23,7 +23,6 @@ export default function FormFieldText(props) {
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
-
     />
     if (props.autoheight)
         input = <Input
@@ -31,17 +30,14 @@ export default function FormFieldText(props) {
             editable
             style={{height: height}}
             numberOfLines={props.numLines ? props.numLines : 4}
-            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height)}
+            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height <44 ? 44 : e.nativeEvent.contentSize.height)}
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-
         />
 
     return (
-        <Field {...props}>
-            {input}
-        </Field>
+        <Field {...props}>{input}</Field>
     );
 }

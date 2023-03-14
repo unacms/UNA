@@ -8,7 +8,7 @@ import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native';
+import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 
 export default function UnitFeed({data}) {
@@ -22,6 +22,8 @@ export default function UnitFeed({data}) {
     }
     
     const [showFull, setShowFull] = useState(false)
+    const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
+
     
     const {height, width, scale, fontScale} = useWindowDimensions();
 
@@ -55,6 +57,12 @@ export default function UnitFeed({data}) {
       if (sImages.length > 0){
           sFirstImg = sImages[0].attributes[0].value
       }
+    }
+    if (sFirstImg){
+      ImageNative.getSize(sFirstImg, (width, height) => {
+        if (width > height)
+          setImageAspect('aspect-video');
+      });
     }
     let bShowMore = false;
 
@@ -98,8 +106,8 @@ export default function UnitFeed({data}) {
                             }
                         </View>
                         {sFirstImg &&
-                            <View className="w-full rounded mt-4 aspect-square bg-blue-500/50 overflow-hidden" >
-                                <Image src={sFirstImg} alt={data.title} view="cover"   />
+                            <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
+                                <Image src={sFirstImg} alt={data.title} view="cover"    />
                             </View>
                         }  
                         </View>

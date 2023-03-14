@@ -14,7 +14,6 @@ export default function ElementCommentForm(props) {
     const snapPoints = useMemo(() => ['90%', '10%'], []);
     // callbacks
     const handleSheetChanges = useCallback((index) => {
-    console.log('handleSheetChanges', index);
     }, []);
 
 
