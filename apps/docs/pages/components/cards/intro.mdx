@@ -3,13 +3,11 @@ import { Wrapper } from '../../../components/wrapper'
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Unit } from 'app/components/units/general-content-list'
+import Link from "app/ui/atoms/link"
 
-# Person Card
+# Intro Card
 
-Buttons let users perform actions and make choices with a click or tap.
-
-The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text
-that will be displayed on its surface.
+Intro card is a card that is used to display the welcome message, member stats and authentication buttons.
 
 ## Variants
 
@@ -38,20 +36,25 @@ import { Button } from 'app/design/controls'
       </View>
   </View>
 
-   <View className="flex-col space-y-4 w-72 mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
-      <View className="w-full aspect-square  bg-secondary-500/10  mx-auto  "></View>
-      <View className="text-center px-4 ">
-        <View className="text-lg font-bold text-gray-800 dark:text-gray-100">
-          John Doe
+   <View className="flex-col space-y-4 w-72 h-min mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+      <View className="w-full h-4 bg-brand/10  mx-auto  "></View>
+      <View className="px-4 space-y-2">
+        <View className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          NEO is a community of 88,000+ active members
         </View>
         <View>
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>@johndoe</Text>
+          
+            <View className='text-base text-neo-600 dark:text-neo-400 leading-4'>
+              The place to share, connect and grow with people you trust. Create account to join the community. 
+            </View>
+          
         </View>     
       </View>
       <View className="text-center px-4 space-y-2">
+        <Button title="About us" variant="link" fullWidth/>
+        <Button title="Sign up" variant="primary" fullWidth />
+        <Button title="Log in" variant="default" fullWidth/>
         
-        <Button title="Follow" variant="primary" fullWidth />
-        <Button title="Remove" variant="default" fullWidth/>
       </View>
   </View>
 </Wrapper>
