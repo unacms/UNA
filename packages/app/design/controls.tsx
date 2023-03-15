@@ -16,7 +16,7 @@ type ModalPropsCustom = ModalProps & {
   presentation?: 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen'
   title?: string
   animation? : 'fade' | 'slide' | 'none'
-  onVisible?: string,
+  onVisible?: boolean,
   onClose?: string
 }
 export function Modal(props: ModalPropsCustom) {
