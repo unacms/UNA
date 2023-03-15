@@ -1,5 +1,5 @@
-import { TextInput as TextInputDef, Modal as ModalDef, Platform, TouchableOpacityProps, ModalProps } from 'react-native'
-import { Pressable, View, Row } from 'app/design/view'
+import { TextInput as TextInputDef } from 'react-native'
+import { Pressable,View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
@@ -66,6 +66,7 @@ type ButtonProps = TouchableOpacityProps & {
   classIconName?: string
 }
 
+/* buttons */
 export function Button(props: ButtonProps) {
   let { className, classTextName, classIconName, onPress, ...rest } = props
   let buttonType = props.variant ? props.variant : 'default'
