@@ -21,8 +21,13 @@ export default function ElementMainMenu(props) {
         {'title': 'About', 'url': '/about', 'icon': 'about'}
     ]
 
+    const hideMenu = (params) => {
+       console.log(999)
+      }
+    
+
     return (
-        <View className="h-full xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
+        <View onPress={hideMenu} className="h-full xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
             <View className="flex-col space-y-0.5">
                 {
                     menu.map( item => <Link href={item.url} key={item.icon.toString()}><Button variant="text" startDecorator={item.icon} fullWidth solid align='start' title ={item.title} /></Link>)

@@ -4,7 +4,7 @@ import ElementMainMenu from 'app/components/elements/mainmenu'
 export default function Home(props) {
     const feed = Object.assign({}, props.children[2]);
     //TODO: make flexable
-    feed.props.blocks[0].hidden = true;
+    //feed.props.blocks[0].hidden = true;
     let post = Object.assign({}, props.children[3]);
 
     return (

@@ -18,7 +18,6 @@ export default function () {
   if (width > 1280 && menuPopup) setMenuPopup(false)
 
   const showMenu = (params) => {
-
     setMenuPopup(!menuPopup)
   }
 
@@ -257,9 +256,9 @@ export default function () {
         delay: 100,*/
               }}
             >
-              <View className="w-72 h-screen" onPress={showMenu}>
+              <TouchableOpacity className="w-72 h-screen bg-red-500" onPress={showMenu}>
                 <ElementMainMenu />
-              </View>
+              </TouchableOpacity>
             </MotiView>
           </View>
         )}
