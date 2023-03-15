@@ -20,10 +20,10 @@ export default function FormFieldSubmit(props) {
         <Field {...props}>
             <Button
                 title={!props.rounded ? props.value : ''}
-                variant='primary' fullWidth
+                variant='text' fullWidth
                 onPress={props.handleSubmit}
                 startDecorator={props.icon}
-                rounded={props.rounded}
+               
             />
             <Hidden 
                     name={props.name}

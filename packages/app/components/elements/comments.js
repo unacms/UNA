@@ -10,7 +10,7 @@ import { StyleSheet, useWindowDimensions } from 'react-native';
 import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
-
+import Picker  from 'app/ui/atoms/picker';
 
 export default function ElementComments(props) {
 
@@ -29,6 +29,7 @@ export default function ElementComments(props) {
         orderWay: browse.data.order,
         objectId: browse.data.object_id,
         formText: '',
+        formAuthor: '',
         postData: null
     });
 
@@ -66,6 +67,7 @@ export default function ElementComments(props) {
     } 
     
     const onFormSubmit = (formData, d) => {
+        Keyboard.dismiss();
         addCommentData({postData: formData});
       //  setPostData(formData);
        // addCommentData({parentId:0});
@@ -167,13 +169,13 @@ export default function ElementComments(props) {
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             browse.data.data = [];
-            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start, postData:null})
             browse = parseData(browse, sResponse);
+            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start,count: sResponse.data.browse.data.count, postData:null})
+            
            
         }
     }
 
-   
     // handle more button
     const handleMore =  async () => {
         const sRequest = prepareUrl({'is_form' : false}) ;
@@ -184,16 +186,16 @@ export default function ElementComments(props) {
         }
     }
 
-    const handleReply =  async (id, text) => {
+    const handleReply =  async (id, author, text) => {
         const regex = /(<([^>]+)>)/ig;
         text = text.replace(regex, '');
         form.data.inputs.cmt_parent_id.value = id;
         form.data.reset = true;
-        addCommentData({parentId:id, formText: text});
+        addCommentData({parentId:id, formAuthor: author, formText: text});
     }
 
     const handleCancel =  async () => {
-        handleReply(0, '')
+        handleReply(0, '', '')
     }
     
 
@@ -215,58 +217,70 @@ export default function ElementComments(props) {
         };
       }, []);
 
+    let sortItems = [
+        {label: 'Newest', value: 'desc'},
+        {label: 'Oldest', value: 'asc'}
+    ];
 
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
-    let cmtForm = null;
-    let cmts = null
-    let styles = {};
-    if(Platform.OS !== 'web') {
-        const {height, width, scale, fontScale} = useWindowDimensions(); 
-        let heightS = height * 0.9 - 70;
-        styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
+    let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
+    let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between z-50'>
+        <Text className='text-sm font-bold'>Comments ({count})</Text>
+        <Row className=' justify-end  items-center '>
+            <Text className='text-sm w-40'>Sort&nbsp;by:&nbsp;</Text>
+            <Picker  items={sortItems} value="desc" onSelect={(value) => {
+                handleOrder(value) 
+                }} /> 
+            </Row>
+    </Row>  
 
-        cmts = <ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >
-            {cmtsBrs}
-            {(commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>}
-            </ScrollViewNative>
-    }
-    else{
-        cmts = <View style={styles.list} className=' w-full'>
-            {cmtsBrs}
-            {(commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>}
-        </View>;
-    }
+   
+
+
+    let cmtForm = null;
+
     if (form){ 
-        cmtForm = <View style={styles.form} className=" w-full bottom-0 ">
+        cmtForm = <View className=" w-full bottom-0 ">
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<Row className='items-center'><Text className='mx-4 font-bold text-sm'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : 'Reply to: ' + commentData.formText}</Text>
-                <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} /></Row>)
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 m-4'>
+                    <Row className=' justify-between items-center'>
+                    <Row className='mx-2'><Text className='text-sm'>Reply to: </Text><Text className='font-bold text-sm'>{ commentData.formAuthor}</Text></Row>
+                    <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
+                    
+                </Row>
+                <Text className='mx-2 text-sm max-h-10 mb-2 overflow-hidden'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text></View>)
             }
             <Form {...form} classContainerName="flex-row px-4 w-full  px-4 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
-   
 
-    return (
-        <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
-            <Row className='mb-4 mx-4 items-center justify-between '>
-                <Text className='text-sm w-24 font-bold'>Comments ({count})</Text>
-                <Row className=' justify-end'>
-                    <Text className='text-sm '>Sort by:</Text>
-                   { <Select defaultButtonText='Newest' buttonStyle={{width:100, height:20, backgroundColor: 'transparent', }} rowTextStyle={{fontSize: 14}} dropdownStyle = {{height: 'auto', marginTop:10}} buttonTextStyle ={{fontSize: 14, fontWeight:'bold'}} 
-                        data={['Newest','Oldest']}
-                        onSelect={(selectedItem, index) => {
-                            let sort = selectedItem == 'Newest' ? 'desc' : 'asc';
-                            handleOrder(sort)
-                        }}
-                    />
-                    } 
-                    
-                    
-                    </Row>
-            </Row>
-            {(commentData.orderWay == 'asc') && cmtForm}
-            {cmts}
-            {(commentData.orderWay == 'desc') && cmtForm}
-        </View>
-    );
+    let cmts = null
+    let styles = {};
+    const {height, width, scale, fontScale} = useWindowDimensions(); 
+    if(Platform.OS !== 'web') {
+       
+        let heightS = height * 0.9 - 30;
+        styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
+
+        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+        {cmtsHeader}<ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >
+            {cmtsBrs}
+            {cmtsMore}
+            </ScrollViewNative>{cmtForm}</View>
+    }
+    else{
+        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+            <View style={styles.list} className=' w-full max-h-screen'>
+            {cmtsHeader}
+            <ScrollView className='mt-4' style={{maxHeight:height-250}}>
+            {cmtsBrs}
+            {cmtsMore}
+            </ScrollView>
+            <View className='mt-4'>
+            {cmtForm}
+            </View>
+        </View></View>;
+    }
+    
+
+    return cmts;
 }
