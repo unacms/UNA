@@ -10,7 +10,12 @@ Animated.addWhitelistedNativeProps({
   stroke: true,
 });
 
-const HomeSVG = ({ color, size }) => {
+interface HomeSVGProps {
+  color: string;
+  size: number;
+}
+
+const HomeSVG: React.FC<HomeSVGProps> = ({ color, size }) => {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <AnimatedPath
