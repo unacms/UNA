@@ -25,7 +25,7 @@
     "react-native-tab-view": "^3.5.0"
   },
   "devDependencies": {
-    "@types/node": "18.14.2",
+    "@types/node": "18.15.2",
     "next-compose-plugins": "^2.2.1",
     "next-fonts": "^1.5.1",
     "next-images": "^1.8.4",

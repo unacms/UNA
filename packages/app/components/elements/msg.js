@@ -6,9 +6,7 @@ export default function ElementMsg({data}) {
         return null;
     return (
         <View className="alert alert-info shadow-lg ">
-            <View>
-                <Text>{data}</Text>
-            </View>
+                <Text className="text-black dark:text-white">{data}</Text>
         </View>
     );
 }

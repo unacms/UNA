@@ -1,8 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 
-export function fetcher (mixed) {
-    console.log(555);
+export function fetcher (mixed) {    
     console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
     let url, token, data, origin, headers = {};
     if (Array.isArray(mixed)){
@@ -25,7 +24,7 @@ export function fetcher (mixed) {
         headers: headers
     }).then(r => r.json()).catch((error) => {
         console.log("Api call error: " + error.message);
-    });
+    });    
     // console.log(res); // to make this log working then add async & await
     return res;
 }
