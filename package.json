@@ -33,6 +33,7 @@
     "**/expo-router/**"
   ],
   "dependencies": {
+    "@react-native-picker/picker": "^2.4.8",
     "dotenv-cli": "^7.0.0"
   }
 }
