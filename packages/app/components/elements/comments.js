@@ -34,9 +34,8 @@ export default function ElementComments(props) {
     });
 
 
-    // check if any element in a block has request URL
-    let immutable = props.form.request.immutable;
-    
+    let immutable = props.form? props.form.request.immutable : false;
+   
     console.log('dbgs', 'IN');
     
     let { data: dynamicData, error } = useSWR(
