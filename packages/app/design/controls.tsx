@@ -1,50 +1,14 @@
-import { TextInput as TextInputDef, Modal as ModalDef, Platform, TouchableOpacityProps, ModalProps } from 'react-native'
-import { Pressable, View, Row } from 'app/design/view'
+import { TextInput as TextInputDef } from 'react-native'
+import { Pressable,View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
-import {  } from 'react-native'
+import { TouchableOpacityProps } from 'react-native'
 import { ThemeCssClasses } from 'app/design/vars'
 import SelectDropdown from 'react-native-select-dropdown'
 
-/* inputs */
-export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
-export const Select = styled(SelectDropdown,'border')
-export const Hidden = styled(TextInputDef, 'hidden')
+ 
 
-/* modal */
-type ModalPropsCustom = ModalProps & {
-  presentation?: 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen'
-  title?: string
-  animation? : 'fade' | 'slide' | 'none'
-  onVisible?: string,
-  onClose?: string
-}
-export function Modal(props: ModalPropsCustom) {
-
-  let animationType = props.animation ? props.animation : 'fade';
-  let presentationType = props.presentation ? props.presentation : 'fullScreen';
-
-  return (
-    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={Platform.OS != 'ios'}>
-        <View className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-            <View className="relative w-full h-full max-w-2xl md:h-auto">
-                <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
-                    <View className="p-4">
-                    <Row className={(!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
-                      { !!props.title && <View><Text className='text-lg font-bold'>{props.title}</Text></View>}
-                      { !!props.onClose && <View className=''> <Button variant='default' size='xs' startDecorator='close' onPress={props.onClose}/></View>}
-                    </Row>
-                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
-                    </View>
-                </View>
-            </View>
-        </View>
-    </ModalDef>
-  )
-}
-
-/* buttons */
 type ButtonProps = TouchableOpacityProps & {
   align?: 'center' | 'start' | 'end'
   disabled?: boolean
@@ -67,6 +31,15 @@ type ButtonProps = TouchableOpacityProps & {
   classIconName?: string
 }
 
+/* inputs */
+export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
+export const Select = styled(SelectDropdown,'border'
+)
+
+
+export const Hidden = styled(TextInputDef, 'hidden')
+
+/* buttons */
 export function Button(props: ButtonProps) {
   let { className, classTextName, classIconName, onPress, ...rest } = props
   let buttonType = props.variant ? props.variant : 'default'

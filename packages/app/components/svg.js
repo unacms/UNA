@@ -156,20 +156,25 @@ export function Icon(props) {
       break
 
     case 'contact':
-        data = (
-          <Svg className={className + ' mr-0 ml-0'} style={props.style} viewBox="0 0 24 24">
-            <Path 
-              fill="currentColor"
-              d="M20.34,9.32l-14-7a3,3,0,0,0-4.08,3.9l2.4,5.37h0a1.06,1.06,0,0,1,0,.82l-2.4,5.37A3,3,0,0,0,5,22a3.14,3.14,0,0,0,1.35-.32l14-7a3,3,0,0,0,0-5.36Zm-.89,3.57-14,7a1,1,0,0,1-1.35-1.3l2.39-5.37A2,2,0,0,0,6.57,13h6.89a1,1,0,0,0,0-2H6.57a2,2,0,0,0-.08-.22L4.1,5.41a1,1,0,0,1,1.35-1.3l14,7a1,1,0,0,1,0,1.78Z"
-            />
-          </Svg>
-        )
-        break
+      data = (
+        <Svg
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
+          viewBox="0 0 24 24"
+        >
+          <Path
+            fill="currentColor"
+            d="M20.34,9.32l-14-7a3,3,0,0,0-4.08,3.9l2.4,5.37h0a1.06,1.06,0,0,1,0,.82l-2.4,5.37A3,3,0,0,0,5,22a3.14,3.14,0,0,0,1.35-.32l14-7a3,3,0,0,0,0-5.36Zm-.89,3.57-14,7a1,1,0,0,1-1.35-1.3l2.39-5.37A2,2,0,0,0,6.57,13h6.89a1,1,0,0,0,0-2H6.57a2,2,0,0,0-.08-.22L4.1,5.41a1,1,0,0,1,1.35-1.3l14,7a1,1,0,0,1,0,1.78Z"
+          />
+        </Svg>
+      )
+      break
 
     case 'contact2':
       data = (
         <Svg
-          className={className + ' mr-0 ml-0'} style={props.style}
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -182,27 +187,25 @@ export function Icon(props) {
         </Svg>
       )
       break
-    
-      case 'close':
-        data = (
-          <Svg
-            className={className + ' mr-0 ml-0'}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <Line x1="22" y1="2" x2="11" y2="13"></Line>
-            <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-          </Svg>
-        )
-        break  
+
+    case 'close':
+      data = (
+        <Svg className={className + ' mr-0 ml-0'} viewBox="0 0 24 24">
+          <Path
+            fill="currentColor"
+            d="M13.41,12l6.3-6.29a1,1,0,1,0-1.42-1.42L12,10.59,5.71,4.29A1,1,0,0,0,4.29,5.71L10.59,12l-6.3,6.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l6.29,6.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z"
+          />
+        </Svg>
+      )
+      break
 
     case 'reply':
       data = (
-        <Svg className={className + ' mr-0 ml-0'} style={props.style} viewBox="0 0 24 24">
+        <Svg
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
+          viewBox="0 0 24 24"
+        >
           <Path
             fill="currentColor"
             d="M14.7,6.6h-7l2.9-2.9c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0L4.6,6.9l0,0c-0.4,0.4-0.4,1,0,1.4L9.2,13c0.2,0.2,0.4,0.3,0.7,0.3v0c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L7.7,8.6h7c1.7,0,3,1.3,3,3V21c0,0.6,0.4,1,1,1s1-0.4,1-1v-9.4C19.7,8.9,17.4,6.6,14.7,6.6z"
