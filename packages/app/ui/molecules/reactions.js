@@ -1,12 +1,12 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Modal, Platform, FlatList } from 'react-native';
+import { StyleSheet, Platform, FlatList } from 'react-native';
 
 import { fetcher } from '../../lib/util';
 
 import { PageData } from '../../context/page';
 import Link from 'app/ui/atoms/link';
-import { Button } from 'app/design/controls';
+import { Button, Modal } from 'app/design/controls';
 import { A, Text, } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
@@ -363,21 +363,8 @@ export default function ElementReactions(oProps) {
                         {sIcon}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
                     </A>
-                    <Modal visible={popupVisibleByDvd[aItem.name]} presentation="formSheet" animationType="fade" transparent={Platform.OS != 'ios'}>
-                        <View id={getName('performed-by-ddp-' + aItem.name)} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-                            <View className="relative w-full h-full max-w-2xl md:h-auto">
-                                <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
-                                    <View className="p-4">
-                                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                                    </View>
-                                    <View className="flex-row items-center p-6 border-t border-gray-200 dark:border-gray-600 rounded-b">
-                                        <A className="group flex-none shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
-                                            <Text>Close</Text>
-                                        </A>                        
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                    <Modal onVisible={popupVisibleByDvd[aItem.name]}  onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
+                        {sUsers}
                     </Modal>
                 </View>
             );
@@ -474,22 +461,9 @@ export default function ElementReactions(oProps) {
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="pl-2">{iTotal}</View>
                 </A>
-                <Modal visible={popupVisibleByCpd} presentation="formSheet" animationType="fade" transparent={Platform.OS != 'ios'}>
-                    <View id={getName('performed-by-ddp')} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-                        <View className="relative w-full h-full max-w-2xl md:h-auto">
-                            <View className="relative bg-white dark:bg-neo-700 rounded-lg shadow-2xl border border-bordercolor/10 dark:border-bordercolor-dark/10">
-                                <View className="p-4">
-                                    <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
-                                    <View className="p-4">{aPerformedByUsers}</View>
-                                </View>
-                                <View className="flex-row items-center p-6 border-t border-gray-200 dark:border-gray-600 rounded-b">
-                                    <A className="group flex-none shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={() => {setPopupVisibleByCpd(false)}}>
-                                        <Text>Close</Text>
-                                    </A>                        
-                                </View>
-                            </View>
-                        </View>
-                    </View>
+                <Modal title="Test Title" onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                    <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
+                    <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
             </View>
         );
