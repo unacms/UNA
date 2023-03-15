@@ -17,7 +17,7 @@ type ModalPropsCustom = ModalProps & {
   title?: string
   animation? : 'fade' | 'slide' | 'none'
   onVisible?: boolean,
-  onClose?: string
+  onClose?: void
 }
 export function Modal(props: ModalPropsCustom) {
 
