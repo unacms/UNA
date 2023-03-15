@@ -97,7 +97,7 @@ body {
    
 }
 .u-card-list > * {
-    min-width: calc(33.33% - 8px) !important;
+   /* */
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;
@@ -105,6 +105,16 @@ body {
     margin:4px
 }
 .u-card {
+    min-width: calc(33.33% - 8px) !important;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;  
+    align-content: flex-start;
+    flex-shrink: 1 !important;
+    flex-direction: row !important;
+}
+.u-card-4 {
+    min-width: calc(25% - 8px) !important;
     width: 100%;
     display: flex;
     flex-wrap: wrap;  
