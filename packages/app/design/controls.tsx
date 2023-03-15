@@ -6,7 +6,7 @@ import { Icon } from 'app/components/svg'
 import { TouchableOpacityProps } from 'react-native'
 import { ThemeCssClasses } from 'app/design/vars'
 import SelectDropdown from 'react-native-select-dropdown'
-import {Picker} from '@react-native-community/picker';
+
  
 
 type ButtonProps = TouchableOpacityProps & {
