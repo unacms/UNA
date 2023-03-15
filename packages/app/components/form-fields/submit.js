@@ -15,12 +15,12 @@ export default function FormFieldSubmit(props) {
     let defaultValue = props.value;
     
     const { field } = useController({ name, rules, defaultValue });
-    
+    console.log(props);
     return (
         <Field {...props}>
             <Button
-                title={!props.rounded ? props.value : ''}
-                variant='text' fullWidth
+                title={!props.icon_only ? props.value : ''}
+                variant={!!props.variant ? props.variant : 'primary'} fullWidth
                 onPress={props.handleSubmit}
                 startDecorator={props.icon}
                
