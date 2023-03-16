@@ -18,6 +18,11 @@ H1.defaultProps = {
   accessibilityRole: 'header',
 }
 
+export const H2 = styled(NativeText, 'text-xl font-extrabold my-4')
+H1.defaultProps = {
+  accessibilityRole: 'header',
+}
+
 /**
  * This is a more advanced component with custom styles and per-platform functionality
  */

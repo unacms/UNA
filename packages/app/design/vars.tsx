@@ -21,13 +21,13 @@ type ThemeCssClassesType = {
 };
 
 export const ThemeCssClasses: ThemeCssClassesType = {
-  'u-btn-default-cnt': " shadow-sm  bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ",
+  'u-btn-default-cnt': " shadow-sm border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 bg-neo-50 hover:bg-white dark:bg-neo-700 dark:hover:bg-neo-600 ",
   'u-btn-default-text': " font-semibold text-neo-700 dark:text-neo-200",
   'u-btn-default-trans': " hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none ",
-  'u-btn-primary-cnt': " shadow-sm   font-semibold  bg-blue-600 hover:bg-blue-500 ",
+  'u-btn-primary-cnt': " shadow-sm border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20  font-semibold  bg-blue-600 hover:bg-blue-500 ",
   'u-btn-primary-text': " font-semibold text-neo-50",
   'u-btn-primary-trans': " hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none ",
-  'u-btn-danger-cnt': " shadow-sm  font-semibold  bg-red-600 hover:bg-red-500 ",
+  'u-btn-danger-cnt': " shadow-sm border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 font-semibold  bg-red-600 hover:bg-red-500 ",
   'u-btn-danger-text': " font-semibold text-neo-50",
   'u-btn-danger-trans': " hover:-translate-y-0.5 active:translate-y-0.5 hover:shadow-lg duration-200 active:shadow-none ",
   'u-btn-text-cnt': " hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50",
@@ -36,7 +36,7 @@ export const ThemeCssClasses: ThemeCssClassesType = {
   'u-btn-link-cnt': "  ",
   'u-btn-link-text': " group-hover:text-blue-600  dark:group-hover:text-blue-500 font-medium text-blue-500 dark:text-blue-400 ",
   'u-btn-link-trans': "",
-  'u-btn-outline-cnt': " duration-200   ",
+  'u-btn-outline-cnt': " duration-200 border border-bordercolor/10 dark:border-bordercolor-dark/10  hover:border-bordercolor/20 dark:hover:border-bordercolor-dark/20 ",
   'u-btn-outline-text': " group-hover:text-neo-900  dark:group-hover:text-neo-50 font-medium text-neo-700 dark:text-neo-200 ",
   'u-btn-outline-trans': "",
 };

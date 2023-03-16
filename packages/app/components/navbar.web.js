@@ -112,7 +112,7 @@ export default function () {
             <Link href="/about">
               <Button variant="text" rounded startDecorator="plus" />
             </Link>
-            <Link href="/about">
+            <Link href="/login">
               <Button variant="text" rounded startDecorator="account" />
             </Link>
           </Row>

@@ -16,7 +16,7 @@ import {
 import Menu from '../menu';
 import Profile from '../../ui/molecules/profile';
 
-export default function ElementAuthor(oProps) {
+export default function ElementEntityAuthor(oProps) {
     const session = true;//const { data: session } = useSession();
 
     let oAuthor = oProps.data.author;

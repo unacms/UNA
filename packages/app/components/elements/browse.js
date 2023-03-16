@@ -39,8 +39,12 @@ export default function ElementBrowse(props) {
         });
     }
     let classes = '';
-    if (data.unit != 'feed' && data.unit != 'comments')
-        classes = 'u-card-list';
+    if (data.unit.startsWith('general-')){
+        if (data.module == 'bx_posts')
+            classes = 'u-card-list';
+        else
+            classes = ' flex-wrap flex-row w-full justify-center gap-2 lalalb';
+    }
     if (data.unit == 'feed')
         classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full  max-w-3xl mx-auto';
 
@@ -85,16 +89,21 @@ export default function ElementBrowse(props) {
     }
     
     let stylesScroll = StyleSheet.create({
-       /* view: {
-          top: -500,
-        },*/
+        view: {
+          top: -50,
+        },
       });
 
     return (
-        <View><View className={classes} style={styles.cardList}>
-            {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
+        <View>
+            <View className={classes} style={styles.cardList}>
+                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
             </View>
-        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text>Loading, please wait</Text><View /></InView></View> }
+        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View className='text-center ' style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text>Loading, please wait</Text><View /></InView></View> }
         </View>
         
     );

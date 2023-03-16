@@ -113,15 +113,14 @@ body {
     flex-shrink: 1 !important;
     flex-direction: row !important;
 }
-.u-card-4 {
-    min-width: calc(25% - 8px) !important;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;  
-    align-content: flex-start;
-    flex-shrink: 1 !important;
-    flex-direction: row !important;
+.u-card-45{
+    background: blue;
 }
+.u-card-4{
+    min-width: 250px;
+    max-width: 400px;
+}
+
 .u-feed-card {
     display: flex;
     flex-wrap: wrap;  

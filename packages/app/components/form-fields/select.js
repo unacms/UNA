@@ -26,13 +26,7 @@ export default function FormFieldSelect(props) {
     
     return (
         <Field {...props}>
-            <Select defaultButtonText={ props.defaultButtonText ? props.defaultButtonText: "Please select" }
-                data={values}
-                onSelect={(selectedItem, index) => {
-                    setValue(selectedItem);
-                    props.handleChange
-                }}
-            />
+            TODO
             <Hidden 
                 name={props.name}
                 onChangeText={field.onChange}
