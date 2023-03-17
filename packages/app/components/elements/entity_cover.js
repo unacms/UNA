@@ -5,7 +5,6 @@ import { Text, H1 } from 'app/design/typography';
 import { Button } from 'app/design/controls'
 
 export default function ElementEntityCover({data}) {
-    console.log('log', data);
     return (
         <View className="flex-col  w-full mx-auto  bg-card h-min dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
       <View className="w-28 h-28 mt-4 mx-4 overflow-hidden bg-neo-100 dark:bg-neo-700  rounded-full  ">

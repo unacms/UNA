@@ -18,6 +18,7 @@
     "react-native-component-inview": "^1.0.2",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-dropdown-select-list": "^2.0.4",
+    "react-native-element-dropdown": "^2.8.1",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "~2.9.0",

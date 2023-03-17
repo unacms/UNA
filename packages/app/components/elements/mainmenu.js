@@ -22,7 +22,6 @@ export default function ElementMainMenu(props) {
     ]
 
     const hideMenu = (params) => {
-       console.log(999)
       }
     
 

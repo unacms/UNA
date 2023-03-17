@@ -103,13 +103,13 @@ export default function () {
           <Row className="flex-row flex-auto sm:flex-none justify-end  ">
             
             
-            <Link href="/about">
+            <Link href="/notifications-view">
               <Button variant="text" rounded startDecorator="notifications" />
             </Link>
-            <Link href="/about">
+            <Link href="/messenger">
               <Button variant="text" rounded startDecorator="messages" />
             </Link>
-            <Link href="/about">
+            <Link href="/create-post">
               <Button variant="text" rounded startDecorator="plus" />
             </Link>
             <Link href="/login">

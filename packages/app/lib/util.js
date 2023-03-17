@@ -74,5 +74,9 @@ export function FeedbackHaptics(type) {
 }
 
 function isObject(item) {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+    return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+export function stripTags(s) {
+    return s.replace(/(<([^>]+)>)/ig, '');
 }

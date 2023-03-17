@@ -11,6 +11,7 @@ import TextField from './form-fields/text';
 import Textarea from './form-fields/textarea';
 import Select from './form-fields/select';
 import Files from './form-fields/files';
+import Location from './form-fields/location';
 import {useEffect, useState, useContext } from 'react';
 import { GlobalsData } from '../context/context';
 import { View } from 'app/design/view';
@@ -27,14 +28,15 @@ const components = {
     text: TextField,
     textarea: Textarea,
     select: Select,
-    files: Files
+    files: Files,
+    location: Location
 }
 
 export default function Form(props) {
 
     let data = props.data;
     let onFormSubmit = props.onFormSubmit;
-    
+
     const defaultValues = {}
 
     Object.keys(data.inputs).forEach(function (key) {  
@@ -73,15 +75,17 @@ export default function Form(props) {
 
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
-        const InputType = components[a.type];
+        const InputType = components[String(a.type)];
+        let k = data.inputs[key].name;
         if (InputType){
-            return <InputType key={data.inputs[key].name} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
+            return <InputType key={k} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
         }
         else{
             return <Text>Unsupporded field type: {a.type}</Text>
         }
-    });    
-    
+
+    });   
+
     return (
         <FormProvider {...methods}> 
             {inputs}
