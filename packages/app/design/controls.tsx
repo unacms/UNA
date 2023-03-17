@@ -5,12 +5,14 @@ import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
 import { ThemeCssClasses } from 'app/design/vars'
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import { Dropdown as DropdownDef } from 'react-native-element-dropdown';
 
 /* inputs */
 export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
 export const Hidden = styled(TextInputDef, 'hidden')
 export const DDPicker = styled(DropDownPicker, 'bg-red-500 border-0')
+export const Dropdown = styled(DropdownDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
+
 /* modal */
 type ModalPropsCustom = ModalProps & {
   presentation?: 'fullScreen' | 'pageSheet' | 'formSheet' | 'overFullScreen'

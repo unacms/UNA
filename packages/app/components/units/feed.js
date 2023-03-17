@@ -1,4 +1,5 @@
 import Image from '../../ui/atoms/image';
+import { stripTags } from '../../lib/util';
 import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
@@ -66,11 +67,10 @@ export default function UnitFeed({data}) {
     }
     let bShowMore = false;
 
-    const regex = /(<([^>]+)>)/ig;
     let sPlainFull = '';
     let sPlain = '';
     if (data.content.text){
-      sPlainFull = data.content.text.replace(regex, '');
+      sPlainFull = stripTags(data.content.text);
       sPlain = sPlainFull.substr(0,200);
       
       if (sPlain != sPlainFull || sImages.length > 1){

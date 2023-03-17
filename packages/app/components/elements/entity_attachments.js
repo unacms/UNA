@@ -5,8 +5,6 @@ import { Text, H1, H2 } from 'app/design/typography';
 import Link from '../../ui/atoms/link';
 
 export default function ElementEntityAttachments(props) {
-    console.log(props);
-
     let aImages = [];
     props.data.forEach(function (item) { 
         /*if (item.type == 'image'){
@@ -14,7 +12,7 @@ export default function ElementEntityAttachments(props) {
         }*/
         aImages.push(getLink(item));
     });
-    if (aImages){
+    if (aImages.length > 0){
         return (
             <View className="relative p-4 sm:my-0 bg-card dark:bg-card-dark border-t border-bordercolor/10 dark:border-bordercolor-dark/10 sm:border-x w-full mx-auto max-w-5xl">
                 <H2>Attachments</H2>

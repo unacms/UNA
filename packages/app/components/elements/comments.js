@@ -6,7 +6,7 @@ import { fetcher } from '../../lib/util';
 import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-
+import { stripTags } from '../../lib/util';
 import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
@@ -186,8 +186,7 @@ export default function ElementComments(props) {
     }
 
     const handleReply =  async (id, author, text) => {
-        const regex = /(<([^>]+)>)/ig;
-        text = text.replace(regex, '');
+        text = stripTags(text);
         form.data.inputs.cmt_parent_id.value = id;
         form.data.reset = true;
         addCommentData({parentId:id, formAuthor: author, formText: text});

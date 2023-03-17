@@ -11,8 +11,6 @@ import InView from 'react-native-component-inview'
 export default function ElementBrowse(props) {
     let data = props.data;
     const {height, width, scale, fontScale} = useWindowDimensions(); 
-    
-    
 
     let defParams = data.params;
     
@@ -68,10 +66,7 @@ export default function ElementBrowse(props) {
         if (data.unit != 'comments'){
             let params = Object.assign({}, browseParams)
             params.start = parseInt(browseParams.start) + parseInt(browseParams.per_page);
-            if(data.unit != 'feed')
-                return "/api.php?r=" + browseParams.moduleName + "/browse/&params[]=" + JSON.stringify({'params': params});
-            else
-                return "/api.php?r=bx_timeline/get_posts/&params[]=" + JSON.stringify({'params': params});
+            return data.request_url + JSON.stringify({'params': params});
         }
     }    
 
@@ -92,7 +87,7 @@ export default function ElementBrowse(props) {
         view: {
           top: -50,
         },
-      });
+    });
 
     return (
         <View>
