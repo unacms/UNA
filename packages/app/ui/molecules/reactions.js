@@ -5,9 +5,8 @@ import { StyleSheet, Platform, FlatList } from 'react-native';
 import { fetcher } from '../../lib/util';
 
 import { PageData } from '../../context/page';
-import Link from 'app/ui/atoms/link';
 import { Button, Modal } from 'app/design/controls';
-import { A, Text, } from 'app/design/typography';
+import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -18,8 +17,8 @@ import {
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
 import { Icon } from 'app/components/svg';
-import Profile from './profile';
-import SliderBottom from './slider-bottom';
+import Profile from 'app/ui/molecules/profile';
+import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
     const getName = (sName) => {
@@ -65,7 +64,8 @@ export default function ElementReactions(oProps) {
     const oParams = oProps.params;
     const oAction = oProps.action;
     const oCounter = oProps.counter;
-    const sCounteType = 'compound'; //divided
+    const sCounteType = 'compound';
+    //const sCounteType = 'divided';
 
     let oCounterState = {};
     for (const i in oAction.menu.items) {
@@ -198,8 +198,6 @@ export default function ElementReactions(oProps) {
         );
     };
 
-
-    
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
@@ -234,16 +232,10 @@ export default function ElementReactions(oProps) {
     let sAction = '';
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <A onPress={handleUndo}>
-                <Button variant="text" variant="default" startDecorator={sReaction} title={sTitle} />
-            </A>
+            <Button variant="default" startDecorator={sReaction} title={sTitle} onPress={handleUndo} />
         );
     }
     else {
-        const sButtonDo = (
-            <Button variant="text" variant="default" startDecorator={sReaction} title={sTitle} />
-        );
-
         if(Platform.OS === 'web') {
             const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
                 const aItem = oAction.menu.items[iKey];
@@ -265,7 +257,7 @@ export default function ElementReactions(oProps) {
             sAction = (
                 <DropdownMenuRoot>
                     <DropdownMenuTrigger>
-                        <A id={getName('action-ddb')} disabled={bShowActionDisabled} onPress={() => {}}>{sButtonDo}</A>
+                        <Button id={getName('action-ddb')} variant="default" startDecorator={sReaction} title={sTitle} disabled={bShowActionDisabled} onPress={() => {}} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                 </DropdownMenuRoot>
@@ -294,7 +286,7 @@ export default function ElementReactions(oProps) {
 
             sAction = (
                 <View>
-                    <A id={getName('action-ddb')} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}}>{sButtonDo}</A>
+                    <Button id={getName('action-ddb')} variant="text" variant="default" startDecorator={sReaction} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
                     <View>
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">
@@ -306,11 +298,11 @@ export default function ElementReactions(oProps) {
                                         sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{item.icon}</Text>
 
                                     return (
-                                        <A key={item.name} className={sClassNameDo} onPress={(event) => {
+                                        <Button key={item.name} variant="text" rounded="true" onPress={(event) => {
                                             handleDo(event, item);
 
                                             onSliderDoClose();
-                                        }}>{sIcon}</A>
+                                        }}>{sIcon}</Button>
                                     );
                                   }}
                                 />
@@ -359,11 +351,11 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <A id={getName('performed-by-ddb-' + aItem.name)} className="group flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 hover:no-underline" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
+                    <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
                         {sIcon}
                         <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
-                    </A>
-                    <Modal onVisible={popupVisibleByDvd[aItem.name]}  onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
+                    </Button>
+                    <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
                     </Modal>
                 </View>
@@ -414,13 +406,13 @@ export default function ElementReactions(oProps) {
             else
                 sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
 
-            let sClass = 'flex-1 top-px';
+            let sClass = 'flex-1 flex flex-row justify-center top-px';
             if(aItem.name == sSelected)
                 sClass += ' border-b border-gray-400 dark:border-gray-400';
 
             return (
                 <View className={sClass}>
-                    <A className="flex flex-row justify-center items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={() => {setTabVisibleByCpd(aItem.name)}}>{sIcon}</A>
+                    <Button variant="text" rounded="true" onPress={() => {setTabVisibleByCpd(aItem.name)}}>{sIcon}</Button>
                 </View>
             );
         });
@@ -457,11 +449,11 @@ export default function ElementReactions(oProps) {
 
         return (
             <View>
-                <A className="group flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 hover:no-underline" onPress={handleGetPerformedByCpd}>
+                <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="pl-2">{iTotal}</View>
-                </A>
-                <Modal title="Test Title" onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                </Button>
+                <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
@@ -477,7 +469,7 @@ export default function ElementReactions(oProps) {
                 aCounter = getCounterCompound()
                 break;
 
-            case 'compound':
+            case 'divided':
                 aCounter = getCounterDivided();
                 break;
         }

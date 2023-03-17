@@ -176,6 +176,7 @@ export function Button(props: ButtonProps) {
           icon={buttonIconEnd}
         ></Icon>
       )}
+      {props.children}
     </Pressable> : <View className={sClassContainer} {...rest} >
       {buttonIconStart != '' && !buttonIconEnd && (
         <Icon
@@ -194,6 +195,7 @@ export function Button(props: ButtonProps) {
           icon={buttonIconEnd}
         ></Icon>
       )}
+      {props.children}
     </View>
   )
 }
