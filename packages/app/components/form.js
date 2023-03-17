@@ -77,7 +77,6 @@ export default function Form(props) {
         const a = data.inputs[key];
         const InputType = components[String(a.type)];
         let k = data.inputs[key].name;
-        console.log('a' + k, InputType)
         if (InputType){
             return <InputType key={k} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
         }
@@ -86,8 +85,6 @@ export default function Form(props) {
         }
 
     });   
-    console.log(data.inputs); 
-    console.log(inputs);
 
     return (
         <FormProvider {...methods}> 

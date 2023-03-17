@@ -1,4 +1,4 @@
-import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, TouchableOpacityProps } from 'react-native'
+import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, TouchableOpacityProps, Switch as SwitchDef } from 'react-native'
 import { Pressable,View,Row  } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
@@ -9,6 +9,8 @@ import { Dropdown as DropdownDef } from 'react-native-element-dropdown';
 
 /* inputs */
 export const Input = styled(TextInputDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')
+export const Switch = styled(SwitchDef, ' text-neo-800 ')
+
 export const Hidden = styled(TextInputDef, 'hidden')
 export const DDPicker = styled(DropDownPicker, 'bg-red-500 border-0')
 export const Dropdown = styled(DropdownDef, 'bg-neo-100/50 border border-bordercolor/20 text-neo-800 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-1 dark:bg-neo-900/50 dark:border-bordercolor-dark/20 dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-blue-500 dark:focus:border-blue-500 text-base')

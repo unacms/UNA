@@ -30,7 +30,6 @@ export default function FormFieldSelect(props) {
     }
     if (Array.isArray(props.values)){
         values = props.values.map(function (key) {
-            console.log('log888',key);
             return key.value ? {label: key.value, value: key.key} : null
         }); 
         values = values.filter(Boolean);
