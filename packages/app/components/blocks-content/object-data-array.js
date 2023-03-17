@@ -10,7 +10,6 @@ import { Text} from 'app/design/typography'
 export default function BlockContentObjectDataArray(props) {
 
     const [postData, setPostData] = useState(null);
-
     // check if any element in a block has request URL
     let immutable = false;
     let requestUrl = null;
