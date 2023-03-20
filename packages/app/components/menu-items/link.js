@@ -1,30 +1,39 @@
 import React from 'react';
-import Time from '../../ui/atoms/time';
-import { A, Text } from 'app/design/typography'
+import { Text } from 'app/design/typography'
+import Link from 'app/ui/atoms/link';
+import Time from 'app/ui/atoms/time';
+import Profile from 'app/ui/molecules/profile';
 
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
 
-    const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || oProps.params?.onclick || false;
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
+    const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
+    const bShowButton = (!bShowLink && oProps.params?.onclick) || false;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'block text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
+        return (
+            <Link className={sClassName} href={oProps.link}>{oProps.title}</Link>
+        );
+    }
+
+    const DisplayButton = (oProps) => {
         const handleClick = () => {
             if(oProps.params?.onclick)
                 oProps.params.onclick(event, oProps);
         }
 
         return (
-            <A className={sClassName} href={oProps.url} onPress={handleClick}>{oProps.title}</A>
+             <Button variant="link" title={oProps.title} onPress={handleClick} />
         );
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'menu-item block px-4 py-2');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'block');
 
         return (
             <Text className={sClassName}>{oProps.title}</Text>
@@ -34,7 +43,11 @@ export default function MenuItemLink(oProps) {
     let sTitle = '';
     switch(oProps.content_type) {
         case 'time':
-            sTitle = <Time ts={oProps.title}></Time>;
+            sTitle = <Time ts={oProps.title}></Time>
+            break;
+            
+        case 'profile':
+            sTitle = <Profile {...oProps.data} displayType="minimal" displaySize="xs"  className="" />
             break;
 
         default:
@@ -49,6 +62,10 @@ export default function MenuItemLink(oProps) {
     );
 
     return (
-        <Text>{bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />}</Text>
+        <Text>
+            {bShowLink && <DisplayLink {...oProps} title={sTitle} />}
+            {bShowButton && <DisplayButton {...oProps} title={sTitle} />}
+            {!bShowLink && !bShowButton && <DisplayText {...oProps} title={sTitle} />}
+        </Text>
     );
 }

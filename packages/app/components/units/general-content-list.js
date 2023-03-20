@@ -8,6 +8,7 @@ import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import {Platform, PlatformIOSStatic} from 'react-native'
 import { Button } from 'app/design/controls';
+import Menu from 'app/components/menu';
 
 // g-med style browsing
 export default function Unit(props) {
@@ -175,6 +176,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     function defaultUnit(){
+        let sMeta = '';
+
+        if(data?.meta)
+            sMeta = <Menu {...data.meta} displayType="link" />
+        else
+            sMeta = <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
+
         return (
             <View className="u-card" style={styles.card}>
                 <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
@@ -192,9 +200,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                                 </Text>
                                 <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
                             </View>
-                            <View className='pb-3'>
-                                <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
-                            </View>
+                            <View className='pb-3'>{sMeta}</View>
                         </View>
                     </Link>
                 </View>
