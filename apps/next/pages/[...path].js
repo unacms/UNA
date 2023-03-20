@@ -10,7 +10,13 @@ export default function Path (props) {
 }
 
 export async function getServerSideProps(context) {
-    const data = await getData(context.params?.path?.join('/'), process.env.UNA_API_KEY);
+    const cookies = context.req.headers.cookie;
+    const data = await getData(
+        context.params?.path?.join('/'), 
+        process.env.UNA_API_KEY, 
+        undefined, 
+        cookies ? { 'Cookie': cookies } : undefined
+    );
     if (200 !== parseInt(data.props.status))
         context.res.statusCode = parseInt(data.props.status)
     return data;

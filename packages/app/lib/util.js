@@ -1,17 +1,35 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 
-export function fetcher (mixed) {  
-    console.log(555,process.env.NEXT_PUBLIC_UNA_URL);  
-    console.log(process.env.NEXT_PUBLIC_UNA_URL+mixed)
-    let url, token, data, origin, headers = {};
+export async function fetcher (mixed) {
+    return await fetcherRaw(process.env.NEXT_PUBLIC_UNA_URL, mixed).then(r => {
+        return r.json();
+    });
+}
+
+export async function fetcherRaw (host, mixed) {
+    console.log(host + mixed)
+    let path, token, data, origin, headers;
+
+    // gen incoming variables
     if (Array.isArray(mixed)){
-        [url, token, data, origin] = mixed;
+        [path, token, data, origin, headers] = mixed;
     }
     else {
-        url = mixed;
+        path = mixed;
+    }
+    if (undefined === headers)
+        headers = {};
+
+    // TODO: replace http://localhost:3000 with actual value
+    // in case of login we need to set cookies on UNA domain (for CSR) and NEO domain (for SSR), so need to make 2 calls to different domains
+    if ('web' === Platform.OS && process.env.NEXT_PUBLIC_UNA_URL === host && data && path.includes('system/login_form/') && !process.env.UNA_API_KEY) {
+        const dataResubmit = await fetcherRaw ('http://localhost:3000/api', mixed).then(r => {        
+            return r.text();
+        });
     }
 
+    // add token and origin headers when necessary
     if (token)
         headers['Authorization'] = 'Bearer ' + token;
     if (origin)
@@ -19,15 +37,16 @@ export function fetcher (mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
     
-    const res = fetch(process.env.NEXT_PUBLIC_UNA_URL + url, {
-        method: data ? 'post' : 'get',
+    // perform fetch
+    return fetch(host + path, {
+        method: data ? 'POST' : 'GET',
         body: data ? data : null,
-        headers: headers
-    }).then(r => r.json()).catch((error) => {
+        headers: headers,
+        credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
+    })
+    .catch((error) => {
         console.log("Api call error: " + error.message);
-    });    
-    // console.log(res); // to make this log working then add async & await
-    return res;
+    });
 }
 
 export function mergeDeep(target, ...sources) {
