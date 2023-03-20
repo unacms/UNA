@@ -17,17 +17,18 @@ const oComponentsMap = {
 
 export default function ElementMenu(oProps) {
 
-    //--- default display type: link, button, element, etc.
-    const sDisplayType = oProps.displayType ? oProps.displayType : 'link-hor';
-    if(!oComponentsMap[sDisplayType])
-        return <Msg data="Unsupporded menu item type"/>;
+    /*
+     * Display type specified in menu can be overwritten with display type specified in item.
+     * default display types: mixed, link, button, element, etc.
+     */
+    const sDisplayType = oProps.displayType ? oProps.displayType : 'link';
 
     //--- show only items which match with menu's display_type
     const bShowMatched = oProps?.showMatched === 'true';
 
     //--- show only items with selected display_type and doesn't take in account the menu's display_type
     const sShowSelected = oProps?.showSelected || false;
-    
+
     //--- except the following items from output
     const aExcept = oProps?.except || [];
 
@@ -49,10 +50,11 @@ export default function ElementMenu(oProps) {
         if(!(aItem.id || aItem.name) || aExcept.includes(aItem.name))
             return;
 
-        const ItemType = oComponentsMap[aItem.display_type ? aItem.display_type : sDisplayType];
-        if(!ItemType)
+        const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
+        if(!oComponentsMap[sDisplayTypeItem])
             return;
 
+        const ItemType = oComponentsMap[sDisplayTypeItem];
         return <ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} />;
     });
 
@@ -63,7 +65,7 @@ export default function ElementMenu(oProps) {
             </View>
         );
 
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex-row ' + (bShowVertical ? 'py-2 space-y-2' : 'flex-wrap justify-start items-center p-2 web:space-x-2');
+    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu ' + (bShowVertical ? 'flex-col space-y-2' : 'flex-row flex-wrap justify-start items-center p-2 web:space-x-2');
 
     return (
         <View className={sClassName}>{sItems}</View>

@@ -3,14 +3,16 @@ import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
+import { Icon } from 'app/components/svg';
 
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
 
+    const bUseInternalIcons = true;
+
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
-    const bShowButton = (!bShowLink && oProps.params?.onclick) || false;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
@@ -18,17 +20,6 @@ export default function MenuItemLink(oProps) {
 
         return (
             <Link className={sClassName} href={oProps.link}>{oProps.title}</Link>
-        );
-    }
-
-    const DisplayButton = (oProps) => {
-        const handleClick = () => {
-            if(oProps.params?.onclick)
-                oProps.params.onclick(event, oProps);
-        }
-
-        return (
-             <Button variant="link" title={oProps.title} onPress={handleClick} />
         );
     }
 
@@ -45,27 +36,32 @@ export default function MenuItemLink(oProps) {
         case 'time':
             sTitle = <Time ts={oProps.title}></Time>
             break;
-            
+
         case 'profile':
             sTitle = <Profile {...oProps.data} displayType="minimal" displaySize="xs"  className="" />
             break;
 
+        case 'text':
         default:
             sTitle = oProps.title;
     }
 
+    let sIcon = '';
+    if(oProps?.icon && !bTitleOnly) {
+        if(bUseInternalIcons)
+            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6"></Icon>;
+        else
+            sIcon = <Text className="h-6 w-6 text-base">{oProps.icon}</Text>;
+    }
+
     sTitle = (
         <Text className="flex-row gap-1 mx-auto">
-            {oProps.icon && !bTitleOnly && <Text className='h-6 w-6 text-base'>{oProps.icon}</Text>}
+            {sIcon}
             {sTitle && <Text className='mr-2'>{sTitle}</Text>}
         </Text>
     );
 
     return (
-        <Text>
-            {bShowLink && <DisplayLink {...oProps} title={sTitle} />}
-            {bShowButton && <DisplayButton {...oProps} title={sTitle} />}
-            {!bShowLink && !bShowButton && <DisplayText {...oProps} title={sTitle} />}
-        </Text>
+        <Text>{bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />}</Text>
     );
 }

@@ -146,33 +146,42 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     function personUnit(){
+        let sMeta = '';
+
+        if(data?.meta)
+            sMeta = (
+                <View className="text-center px-4">
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
+                </View>
+            );
+        else
+            sMeta = (
+                <>
+                    <View className="text-center">
+                        <Text  className='text-sm text-neo-600 dark:text-neo-400'>some text from menu</Text>
+                    </View>
+                    <View className="text-center px-4 space-y-2">
+                        <Button title="Follow" variant="primary" fullWidth />
+                        <Button title="Remove" variant="default" fullWidth/>
+                    </View>
+                </>
+            );
 
         return (
             <View style={styles.card} className="u-card-4 flex-1">
                 <Link href={data.url}>  
-            <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
-      <View className="w-2/3 aspect-square  bg-secondary-500/10  mx-auto rounded-full mt-4 ">
-        {
-            !!data.image && <Image alt={data.fullname} className="rounded-full" view="cover"
-
-            src={data.image}
-
-          />
-        }
-      </View>
-      <View className="text-center px-4 flex-auto">
-        <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">{data.fullname}</Text>
-        <View>
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>some text from menu</Text>
-        </View>     
-      </View>
-      <View className="text-center px-4 space-y-2">
-      <Button title="Follow" variant="primary" fullWidth />
-        <Button title="Remove" variant="default" fullWidth/>
-      </View>
-  </View></Link></View>
-           
-        )  
+                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+                        <View className="w-2/3 aspect-square  bg-secondary-500/10  mx-auto rounded-full mt-4 ">
+                        {!!data.image && <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image} />}
+                        </View>
+                        <View className="text-center px-4 flex-auto">
+                            <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">{data.fullname}</Text>
+                        </View>
+                        {sMeta}
+                    </View>
+                </Link>
+            </View>
+        )
     }
 
     function defaultUnit(){
@@ -205,6 +214,6 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                     </Link>
                 </View>
             </View>  
-        )  
+        )
     }
 }
