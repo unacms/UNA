@@ -448,7 +448,7 @@ export default function ElementReactions(oProps) {
         });
 
         return (
-            <View>
+            <View className={!iTotal ? "hidden" : ""}>
                 <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="pl-2">{iTotal}</View>

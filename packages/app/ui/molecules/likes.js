@@ -137,10 +137,15 @@ export default function ElementLikes(oProps) {
         );
     }
     else {
+        if(bUseInternalIcons)
+            sIcon = sIcon && <Icon icon="like" className="flex h-6 w-6"></Icon>
+        else
+            sIcon = sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>
+
         sAction = (
             <Button id={getName('action-ddb')} variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
                 <View className="flex-row flex-nowrap items-center gap-1 mx-auto">
-                    {sIcon && <Text className='w-6 h-6 flex justify-center group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
+                    {sIcon}
                     {sTitle && <Text className='hidden sm:block pl-0.5'>{sTitle}</Text>}
                 </View>
             </Button>
