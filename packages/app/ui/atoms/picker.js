@@ -1,7 +1,7 @@
 import DropDownPicker from 'react-native-dropdown-picker';
 import React, {  useState } from 'react';
 import { Platform} from 'react-native'
-import { DDPicker } from 'app/design/controls'
+
 import { View} from 'app/design/view'
 
 export default function ElementPicker(props) {

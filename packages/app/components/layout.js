@@ -34,24 +34,12 @@ export default function Layout(props) {
                 <View className = {sClassName}>
                     {props.children}
                 </View>
-                {(oComments == null ) && <Footer />}
+
                 
             </ScrollView>
             { (oComments != null ) &&   <BottomSheet/>}
             </View>
         </LayoutDataContext>
     );
-/*
-    return (
-        <View>
-            <Navbar />
-            {(oBreadCrump == null ) && <Tabsbar />}
-            {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className = {sClassName}>
-                {loading ? skeleton : <Main> {props.children} </Main>}
-            </View>
-            {(oComments == null ) && <Footer />}
-        </View>
-    );
-*/
+
 }
