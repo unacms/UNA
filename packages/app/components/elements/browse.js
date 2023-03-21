@@ -5,7 +5,7 @@ import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
 import { Text, H1 ,TextLink} from 'app/design/typography'
 import { StyledButton } from 'app/design/controls'
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
 
 export default function ElementBrowse(props) {

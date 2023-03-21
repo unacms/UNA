@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import useSWR from "swr";
 
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
 import Element from '../element';
 
 import { View } from 'app/design/view'
