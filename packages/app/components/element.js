@@ -39,8 +39,9 @@ export default function Element(a) {
     if ('undefined' === typeof componentsMap[a.type])
         return <Text>Undefined element type({a.type}): {JSON.stringify(a)}</Text>;
     else{
-        let el = <ElementType type={a.type} {...a} />
-        if (setLayoutData && a.type == 'comments'){
+        let el = <ElementType  type={a.type} {...a} />
+        return el;
+        /*if (setLayoutData && a.type == 'comments'){
             if (layoutData == null){
                 setTimeout(() => {
                     setLayoutData(el)
@@ -48,7 +49,7 @@ export default function Element(a) {
             }
         }
         else{
-            return el;
-        }
+            
+        }*/
     }
 }

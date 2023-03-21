@@ -116,9 +116,13 @@ body {
 .u-card-45{
     background: blue;
 }
+.u-card-list4{
+    gap: 0.5rem;
+}
 .u-card-4{
     min-width: 250px;
     max-width: 400px;
+    flex: 1 1 0%;
 }
 
 .u-feed-card {

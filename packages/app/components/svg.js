@@ -183,40 +183,6 @@ export function Icon(props) {
       )
       break
 
-      case 'bottom':
-        console.log(props)
-        data = (
-          <Svg 
-            
-            width={props.width} height={props.height}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={props.color}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <Line x1="22" y1="2" x2="11" y2="13"></Line>
-            <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-          </Svg>
-        )
-        break 
-
-        case 'menu2':
-          data = (
-            <Svg
-            width={props.width} height={props.height}
-              viewBox="0 0 24 24"
-              fill={props.color}
-            >
-              <Path
-                stroke={props.color}
-                d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm1 5a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2H4z"
-              />
-            </Svg>
-          )
-          break  
-    
       case 'close':
         data = (
           <Svg
@@ -568,6 +534,55 @@ export function Icon(props) {
         </Svg>
       )
       break
+      case 'app-menu':
+        data = (
+          <Svg
+          width={props.width} height={props.height}
+            viewBox="0 0 24 24"
+            fill={props.color}
+          >
+            <Path
+              stroke={props.color}
+              d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm1 5a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2H4z"
+            />
+          </Svg>
+        )
+        break  
+
+      case 'app-back':
+          data = (
+            <Svg 
+              width={props.width} height={props.height}
+              viewBox="0 0 24 24"
+              fill={props.color}
+              stroke={props.color}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <Line x1="22" y1="2" x2="11" y2="13"></Line>
+              <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
+            </Svg>
+          )
+        break 
+      case 'app-bottom':
+
+        data = (
+          <Svg 
+            
+            width={props.width} height={props.height}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={props.color}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <Line x1="22" y1="2" x2="11" y2="13"></Line>
+            <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
+          </Svg>
+        )
+        break 
   }
 
   if (data)

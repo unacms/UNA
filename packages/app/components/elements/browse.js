@@ -41,7 +41,7 @@ export default function ElementBrowse(props) {
         if (data.module == 'bx_posts')
             classes = 'u-card-list';
         else
-            classes = ' flex-wrap flex-row w-full justify-center gap-2 lalalb';
+            classes = ' flex-wrap flex-row w-full justify-center u-card-list4 w-full';
     }
     if (data.unit == 'feed')
         classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full  max-w-3xl mx-auto';
@@ -90,7 +90,7 @@ export default function ElementBrowse(props) {
     });
 
     return (
-        <View>
+        <View className='w-full '>
             <View className={classes} style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
                 <View className="u-card-4 flex-1"></View>

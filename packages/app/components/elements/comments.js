@@ -11,6 +11,7 @@ import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
 import Picker  from 'app/ui/atoms/picker';
+import { useTheme } from '@react-navigation/native';
 
 export default function ElementComments(props) {
 
@@ -195,7 +196,7 @@ export default function ElementComments(props) {
     const handleCancel =  async () => {
         handleReply(0, '', '')
     }
-    
+    /*
 
     const [keyboardStatus, setKeyboardStatus] = useState(false);
 
@@ -214,7 +215,7 @@ export default function ElementComments(props) {
           hideSubscription.remove();
         };
       }, []);
-
+*/
     let sortItems = [
         {label: 'Newest', value: 'desc'},
         {label: 'Oldest', value: 'asc'}
@@ -234,11 +235,12 @@ export default function ElementComments(props) {
 
    
 
+    const { colors } = useTheme();
 
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className=" w-full bottom-0 ">
+        cmtForm = <View className=" w-full bottom-0 " style={{backgroundColor: colors.barsBackground, paddingTop:15}}>
             {
                 form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 m-4'>
                     <Row className=' justify-between items-center'>
@@ -258,9 +260,9 @@ export default function ElementComments(props) {
        
         let heightS = height * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
-
+/*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
         cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
-        {cmtsHeader}<ScrollViewNative className={keyboardStatus ? 'hidden w-full' : 'w-full'} >
+        {cmtsHeader}<ScrollViewNative  >
             {cmtsBrs}
             {cmtsMore}
             </ScrollViewNative>{cmtForm}</View>

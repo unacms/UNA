@@ -22,7 +22,7 @@ export default function Layout(props) {
     }
 
     const [loading, skeleton] = useSkeleton();
-    const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
+    const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
     return (
         <LayoutDataContext>
@@ -37,7 +37,7 @@ export default function Layout(props) {
 
                 
             </ScrollView>
-            { (oComments != null ) &&   <BottomSheet/>}
+            {/* (oComments != null ) &&   <BottomSheet/>*/}
             </View>
         </LayoutDataContext>
     );

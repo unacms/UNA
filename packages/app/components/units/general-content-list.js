@@ -43,7 +43,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             borderRadius: 0,
             marginLeft:0,
             marginRight:0,
-            marginBottom:8,
+            marginTop:8,
           
           },
          card_image: {
@@ -73,18 +73,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     function groupUnit(){
  
         return (
-            <View className="u-card-4 flex-1" style={styles.card}>
+            <View className="u-card-4" style={styles.card}>
                 <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
-      {
-            !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} 
-
-            src={data.cover}
-
-          />
-        }
-
+      { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
       </View>
       <View className=" px-4 ">
         <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
@@ -110,18 +103,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     function channelUnit(){
         return (
-            <View className="u-card-4 flex-1" style={styles.card}>
+            <View className="u-card-4" style={styles.card}>
                 <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
-      {
-            !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} 
-
-            src={data.cover}
-
-          />
-        }
-
+        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} />  }
       </View>
       <View className=" px-4 ">
         <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
@@ -150,17 +136,15 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
         if(data?.meta)
             sMeta = (
-                <View className="text-center px-4">
+                <View className="text-center px-4 mt-4">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
             );
         else
             sMeta = (
                 <>
-                    <View className="text-center">
-                        <Text  className='text-sm text-neo-600 dark:text-neo-400'>some text from menu</Text>
-                    </View>
-                    <View className="text-center px-4 space-y-2">
+                    <Text  className='text-sm text-neo-600 text-center dark:text-neo-400 mt-2'>some text from menu</Text>
+                    <View className="text-center px-4 space-y-2 mt-4">
                         <Button title="Follow" variant="primary" fullWidth />
                         <Button title="Remove" variant="default" fullWidth/>
                     </View>
@@ -168,15 +152,13 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             );
 
         return (
-            <View style={styles.card} className="u-card-4 flex-1">
+            <View style={styles.card} className="u-card-4">
                 <Link href={data.url}>  
-                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden rounded-lg">  
+                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden sm:rounded-lg">  
                         <View className="w-2/3 aspect-square  bg-secondary-500/10  mx-auto rounded-full mt-4 ">
-                        {!!data.image && <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image} />}
+                        {!!data.image && <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image.src} />}
                         </View>
-                        <View className="text-center px-4 flex-auto">
-                            <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">{data.fullname}</Text>
-                        </View>
+                        <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.fullname}</Text>
                         {sMeta}
                     </View>
                 </Link>

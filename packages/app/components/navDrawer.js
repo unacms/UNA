@@ -9,15 +9,18 @@ import { useRoute } from '@react-navigation/native';
 import { Stack } from 'expo-router'
 import { Icon } from 'app/components/svg';
 import { NavScreen } from 'app/components/navScreen'
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {Pressable, StyleSheet, Text, } from 'react-native';
+import { useRouter, Tabs  } from "expo-router";
+import { Button } from 'app/design/controls'
+import { useTheme } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-
-
-
 function HomeScreen1(params) {
+
+    const { colors } = useTheme();
+
     let route = params.route
    
     const [pageData, setPageData] = useState(undefined)
@@ -40,10 +43,16 @@ function HomeScreen1(params) {
     return (
         <Drawer.Navigator 
         screenOptions={({ navigation }) => ({
+          headerStyle: {
+            backgroundColor: colors.barsBackground,
+          },
+          headerTitleStyle: {
+            color: colors.barsColor,
+          },
           headerLeft: () =>
              <Pressable onPress={navigation.toggleDrawer}>
                <Text>
-               <Icon  onPress={navigation.toggleDrawer} icon="menu2" width={50} height={50} color={'#ff00ff'} />
+               <Icon  icon="app-menu" width={40} height={40}  />
                </Text>
               </Pressable >
              })}
@@ -69,7 +78,7 @@ function HomeScreen1(params) {
                 component={NavScreen}
                 initialParams={{ path: '/home' }}
                 options={{  title: 'Home'  , drawerIcon: ({focused, size}) => (
-                  <Icon  icon="bottom" width={24} height={24} color={'#ff00ff'} />  
+                  <Icon  icon="app-bottom" width={24} height={24} color={'#ff00ff'} />  
                ), }}
             />
             <Drawer.Screen
@@ -84,9 +93,38 @@ function HomeScreen1(params) {
                 initialParams={{ path: '/persons-home' }}
                 options={{  title: 'Persons Home'   }}
             />
+            <Drawer.Screen
+                name="groups-home"
+                component={NavScreen}
+                initialParams={{ path: '/groups-home' }}
+                options={{  title: 'Groups Home'   }}
+            />
         </Drawer.Navigator>
         
     );
+  }
+
+  function getHeaderVisibility(route, navigation, initial) {
+    if (initial != 'home'){
+      return true;
+    }
+    else{
+    
+      if (navigation.isFocused() && route.name != 'home' ){
+        console.log('aaaaaaaaa', route.name);
+        return false;
+      }
+    }
+    return false;
+  }
+
+  function getHeaderAction(navigation, route){
+    const routerExpo = useRouter();
+    return (navigation.isFocused && route.name=='/pages' || true) ? <Pressable onPress={ routerExpo.back}>
+        <Text>
+        <Icon  icon="app-back" width={40} height={40}  />
+        </Text>
+       </Pressable> : null;
   }
 
 export function DrawerNav(params) {
@@ -95,11 +133,31 @@ export function DrawerNav(params) {
 
     let iconWidth = 24;
     let iconHeight = 24;
-    let activeIconColor = "#ff00ff";
-    let inactiveIconColor = "#cccccc";
 
+    const routerExpo = useRouter();
+
+    const { colors } = useTheme();
+    
+  //console.log("aaaaaa",router);
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }} initialRouteName={params.initial?params.initial:''}>
+       
+
+        <Tab.Navigator
+        
+        screenOptions={({ navigation, route  }) => ({
+        tabBarStyle: {
+            backgroundColor: colors.barsBackground,
+        },
+        headerStyle: {
+          backgroundColor: colors.barsBackground,
+        },
+        tabBarInactiveTintColor: colors.barsColor,
+        
+        headerLeft: () => getHeaderAction(navigation, route)
+             })
+        }
+       
+       initialRouteName={params.initial?params.initial:''}>
           <Tab.Screen
               name="/pages"
               component={NavScreen}
@@ -111,9 +169,11 @@ export function DrawerNav(params) {
                 component={HomeScreen1}
                 initialParams={{ path: '/home' }}
                 options={{  
+                 
+                  headerShown: false,
                     title: 'Home',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
                     )
                 }}
             />
@@ -124,7 +184,7 @@ export function DrawerNav(params) {
                 options={{  
                     title: 'Messenger',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
                     )
 
                  }}
@@ -136,7 +196,7 @@ export function DrawerNav(params) {
                 options={{ 
                     title: 'Notifications',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
                     )
 
                   }}
@@ -147,7 +207,7 @@ export function DrawerNav(params) {
                 initialParams={{ path: '/contact' }}
                 options={{ title: 'Contact',
                 tabBarIcon: ({color}) => (
-                    <Icon icon="bottom" width={iconWidth} height={iconHeight} color={color} />  
+                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
                 )
                }}
             />
