@@ -4,7 +4,6 @@ import Score from '../../ui/molecules/score';
 import Vote from '../../ui/molecules/vote';
 import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
-import { fetcher } from '../../lib/util';
 import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
 import { View } from 'app/design/view'

@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
 
 import { PageData } from '../../context/page';
 import { Button, Modal } from 'app/design/controls';

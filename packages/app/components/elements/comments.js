@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
 import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
 import { StyleSheet, useWindowDimensions } from 'react-native';

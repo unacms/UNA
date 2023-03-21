@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
 import { PageData } from '../../context/page';
 import Profile from './profile';
 

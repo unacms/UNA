@@ -1,4 +1,4 @@
-import { fetcherRaw } from 'app/lib/util';
+import { fetcherRaw } from 'app/lib/fetcher';
 
 const setCookie = require('set-cookie-parser');
 
