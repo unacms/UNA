@@ -10,9 +10,7 @@ import { Text } from 'app/design/typography'
 const oComponentsMap = {
     link: Link,
     button: Button,
-    element: Element,
-    //element_action: ElementAction,
-    //element_counter: ElementCounter,
+    element: Element
 };
 
 export default function ElementMenu(oProps) {
