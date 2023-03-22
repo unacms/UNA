@@ -20,6 +20,7 @@ export const CustomDarkTheme= {
         colors: {
           ...DarkTheme.colors,
           primary: '#3B82F6',
+          background : '#000000',
           barsBackground : '#111827',
           barsColor : '#D1D5DB',
         },
