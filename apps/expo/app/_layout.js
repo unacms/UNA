@@ -13,7 +13,7 @@ export default function Root(props) {
     <Provider>
       <CurrentUserProvider>
         <Stack screenOptions={{  headerStyle: {
-                    backgroundColor: '#ff00ff',
+                    
                     headerTintColor: '#fff',
                   },headerShown: false, }}></Stack>
       </CurrentUserProvider>

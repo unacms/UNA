@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect} from 'react';
 import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
@@ -225,7 +225,7 @@ export default function ElementComments(props) {
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
         <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
-        <Row className='  items-center '>
+        <Row className='  items-center  mr-12'>
             <Text className='text-sm text-neo-900 dark:text-neo-50'>Sort&nbsp;by:&nbsp;</Text>
             <Dropdown className='w-40'
                 labelField="label"
@@ -264,9 +264,12 @@ export default function ElementComments(props) {
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
     if(Platform.OS !== 'web') {
-        setTimeout(() => {
-            setLayoutData(cmtForm)
-        }, 100);
+        
+        if (!layoutData ){
+            setTimeout(() => {
+                setLayoutData(cmtForm)
+            }, 1000);
+        }
     }
 
     let cmts = null

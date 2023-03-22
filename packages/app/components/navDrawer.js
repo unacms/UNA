@@ -60,7 +60,7 @@ function HomeScreen1(params) {
                   ]}
                 >
                <Text>
-               <Icon  icon="app-menu" width={24} height={24} color={'#ff00ff'}  />
+               <Icon  icon="app-menu" width={24} height={24} color={colors.barsColor}  />
                </Text>
               </Pressable >
              })}
@@ -126,7 +126,7 @@ function HomeScreen1(params) {
 
   function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
-  
+    const { colors } = useTheme();
     if (navigation.isFocused() && route.name === '/pages') {
       return (
         <Pressable
@@ -138,7 +138,7 @@ function HomeScreen1(params) {
             },
           ]}
         >
-          <Icon icon="app-back" width={24} height={24} />
+          <Icon icon="app-back" width={24} height={24} color={colors.barsColor} />
         </Pressable>
       );
     } else {
