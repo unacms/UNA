@@ -86,7 +86,7 @@ function HomeScreen1(params) {
                 component={NavScreen}
                 initialParams={{ path: '/home' }}
                 options={{  title: 'Home'  , drawerIcon: ({focused, size}) => (
-                  <Icon  icon="app-bottom" width={24} height={24} color={'#ff00ff'} />  
+                  <Icon  icon="app-home" width={24} height={24} color={'#ff00ff'} />  
                ), }}
             />
             <Drawer.Screen
