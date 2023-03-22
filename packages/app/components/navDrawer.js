@@ -60,7 +60,7 @@ function HomeScreen1(params) {
                   ]}
                 >
                <Text>
-               <Icon  icon="app-menu" width={24} height={24}  />
+               <Icon  icon="app-menu" width={24} height={24} color={'#ff00ff'}  />
                </Text>
               </Pressable >
              })}
@@ -85,9 +85,7 @@ function HomeScreen1(params) {
                 name="/home"
                 component={NavScreen}
                 initialParams={{ path: '/home' }}
-                options={{  title: 'Home'  , drawerIcon: ({focused, size}) => (
-                  <Icon  icon="app-home" width={24} height={24} color={'#ff00ff'} />  
-               ), }}
+                options={{  title: 'Home'  }}
             />
             <Drawer.Screen
                 name="posts-home"

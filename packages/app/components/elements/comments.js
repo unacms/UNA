@@ -224,9 +224,9 @@ export default function ElementComments(props) {
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
-        <Text className='text-sm font-bold'>Comments ({count})</Text>
+        <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
         <Row className='  items-center '>
-            <Text className='text-sm'>Sort&nbsp;by:&nbsp;</Text>
+            <Text className='text-sm text-neo-900 dark:text-neo-50'>Sort&nbsp;by:&nbsp;</Text>
             <Dropdown className='w-40'
                 labelField="label"
                 valueField="value"
@@ -246,20 +246,20 @@ export default function ElementComments(props) {
     if (form){ 
         cmtForm = <View className=" w-full bottom-0 " style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 mx-4 my-1'>
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 mx-2 my-1'>
                     <Row className=' justify-between items-center'>
                         <View>
                             <Row className='mx-2'>
-                                <Text className='text-sm'>Reply to: </Text>
-                                <Text className='font-bold text-sm'>{ commentData.formAuthor}</Text>
+                                <Text className='text-sm text-neo-900 dark:text-neo-50'>Reply to: </Text>
+                                <Text className='font-bold text-sm text-neo-900 dark:text-neo-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Text className='mx-2 text-sm max-h-10 overflow-hidden'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neo-900 dark:text-neo-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
                         <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row px-4 w-full  px-4 items-end " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row px-4 w-full px-4 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
