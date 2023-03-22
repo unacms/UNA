@@ -41,7 +41,7 @@ function DefaultUnit(data) {
             </View>
         }    
         <View className="px-4 pt-4">
-        <Profile {...data.author_data} displayType="full" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+        <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
         <View className="w-full    pb-4 flex-col space-y-4 pt-4">
             <Text className="text-neo-700    group-hover:text-neo-900 duration-200 dark:group-hover:text-white dark:text-neo-200    text-2xl    tracking-tight font-bold">
                 {data.content.title}

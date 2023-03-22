@@ -3,6 +3,23 @@ import { View } from 'app/design/view'
 import Image from '../atoms/image'
 import Link from '../atoms/link'
 
+
+/**
+ * displayType: 
+ *  1. unit, 
+ *  2. minimal (unit without meta info), 
+ *  3. unit_wo_image (unit without image = username + meta info), 
+ *  4. unit_wo_info (unit without info = image only)
+ *  
+ * displaySize: xs, sm, base, lg, xl, 2xl,3xl
+ * 
+ * showLinks: true, false
+ * show Unit with or without a link to profile.
+ * 
+ * showInfo: true, false
+ * show Unit with or without a meta info.
+ * 
+ */
 export default function AtomProfile(oProps) {
   let sResult = ''
   //--- display type
@@ -66,7 +83,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className="font-bold text-sm text-neo-700 dark:text-neo-200 hover:text-neo-900 dark:hover:text-neo-50 hover:underline">
+      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold hover:underline">
         {oProps.title}
       </Text>
     )
@@ -74,7 +91,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="font-bold text-neo-700 dark:text-neo-200 hover:text-neo-900 dark:hover:text-neo-50 text-sm  tracking-tight mr-2">
+      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold tracking-tight hover:underline">
         {oProps.title}
       </Text>
     )
@@ -104,22 +121,13 @@ export default function AtomProfile(oProps) {
       sResult = (
         <Link haptics="Select" href={oProps.url}>
           <View className="flex-row items-center space-x-2 ">
-            <Image
-              className={sSize}
-              width={iSizeWidth}
-              height={iSizeHeight}
-              src={oProps.url_avatar}
-              alt={oProps.display_name}
-            />
-            <View className=" my-auto  flex-col ">
-              <Text className="text-neo-700 hover:text-neo-900 duration-200 dark:hover:text-neo-50 dark:text-neo-300 text-base tracking-tight hover:underline font-medium">
-                <DisplayNameText title={oProps.display_name} />
-              </Text>
-            </View>
+            <AtomProfile {...oProps} displayType="unit_wo_info" />
+            <AtomProfile {...oProps} displayType="unit_wo_image" showInfo="false" />
           </View>
         </Link>
       )
       break
+
     case 'unit':
       sResult = (
         <Link haptics="Select" href={oProps.url}>
@@ -133,34 +141,9 @@ export default function AtomProfile(oProps) {
           </View>
         </Link>
       )
-      break
-    case 'full':
-      sResult = (
-        <Link haptics="Select" href={oProps.url}>
-          <View className="flex-row items-center space-x-2 ">
-            <Image
-              className={sSize}
-              width={iSizeWidth}
-              height={iSizeHeight}
-              src={oProps.url_avatar}
-              alt={oProps.display_name}
-            />
-            <View className=" my-auto  flex-col ">
-              <Text className="text-neo-700 hover:text-neo-900 duration-200 dark:hover:text-neo-50 dark:text-neo-300 text-base tracking-tight hover:underline font-bold">
-                <DisplayNameText title={oProps.display_name} />
-              </Text>
-              <Text className="text-neo-600 dark:text-neo-400 text-sm  ">
-                {sShowInfo}
-              </Text>
-            </View>
-          </View>
-        </Link>
-      )
-      break
-      
+      break     
 
     case 'unit_wo_info':
-      //
       sResult = (
         <Link haptics="Select" href={oProps.url}>
           <View className="relative flex-row">
@@ -179,22 +162,16 @@ export default function AtomProfile(oProps) {
     case 'unit_wo_image':
       sResult = (
         <Link haptics="Select" href={oProps.url}>
-          <View className="flex-col ">
-            <View className="flex-row ">
-              <View className="">
-                {bShowLinks ? (
-                  <DisplayNameLink
-                    title={oProps.display_name}
-                    url={oProps.url}
-                  />
-                ) : (
-                  <DisplayNameText title={oProps.display_name} />
-                )}
-              </View>
-            </View>
-            <View className="flex-row items-center">
-              <Text>{sShowInfo}</Text>
-            </View>
+          <View className="flex-col my-auto">
+            {bShowLinks ? (
+              <DisplayNameLink
+                title={oProps.display_name}
+                url={oProps.url}
+              />
+            ) : (
+              <DisplayNameText title={oProps.display_name} />
+            )}
+            <Text className="text-neo-600 dark:text-neo-400 text-sm">{sShowInfo}</Text>
           </View>
         </Link>
       )
