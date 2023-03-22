@@ -52,7 +52,7 @@ function HomeScreen1(params) {
           headerLeft: () =>
              <Pressable onPress={navigation.toggleDrawer}>
                <Text>
-               <Icon  icon="app-menu" width={40} height={40}  />
+               <Icon  icon="app-menu" width={50} height={50}  />
                </Text>
               </Pressable >
              })}
@@ -146,10 +146,14 @@ export function DrawerNav(params) {
         
         screenOptions={({ navigation, route  }) => ({
         tabBarStyle: {
-            backgroundColor: colors.barsBackground,
+            backgroundColor: colors.barsBackground, 
         },
         headerStyle: {
           backgroundColor: colors.barsBackground,
+        },
+        tabBarItemStyle: {
+          marginBottom: 5, 
+          marginTop: 5,
         },
         tabBarInactiveTintColor: colors.barsColor,
         
@@ -173,21 +177,30 @@ export function DrawerNav(params) {
                   headerShown: false,
                     title: 'Home',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-home" width={iconWidth} height={iconHeight} color={color} />  
                     )
                 }}
             />
             <Tab.Screen
-                name="messenger"
+                name="discover"
                 component={NavScreen}
-                initialParams={{ path: '/messenger' }}
-                options={{  
-                    title: 'Messenger',
-                    tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                    )
-
-                 }}
+                initialParams={{ path: '/contact' }}
+                options={{ title: 'Discover',
+                tabBarIcon: ({color}) => (
+                    <Icon icon="app-discover" width={iconWidth} height={iconHeight} color={color} />  
+                )
+               }}
+            />
+            
+            <Tab.Screen
+                name="create-post"
+                component={NavScreen}
+                initialParams={{ path: '/create-post' }}
+                options={{ title: 'Create',
+                tabBarIcon: ({color}) => (
+                    <Icon icon="app-create" width={iconWidth} height={iconHeight} color={color} />  
+                )
+               }}
             />
             <Tab.Screen
                 name="notifications-view"
@@ -196,30 +209,24 @@ export function DrawerNav(params) {
                 options={{ 
                     title: 'Notifications',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-notifications" width={iconWidth} height={iconHeight} color={color} />  
                     )
 
                   }}
             />
-             <Tab.Screen
-                name="create-post"
+             
+             
+            <Tab.Screen
+                name="messenger"
                 component={NavScreen}
-                initialParams={{ path: '/create-post' }}
-                options={{ title: 'Create post',
-                tabBarIcon: ({color}) => (
-                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                )
-               }}
-            />
-             <Tab.Screen
-                name="contact"
-                component={NavScreen}
-                initialParams={{ path: '/contact' }}
-                options={{ title: 'Contact',
-                tabBarIcon: ({color}) => (
-                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                )
-               }}
+                initialParams={{ path: '/messenger' }}
+                options={{  
+                    title: 'Messenger',
+                    tabBarIcon: ({color}) => (
+                        <Icon icon="app-messenger" width={iconWidth} height={iconHeight} color={color} />  
+                    )
+
+                 }}
             />
         </Tab.Navigator>
     );

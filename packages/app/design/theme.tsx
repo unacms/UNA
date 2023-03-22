@@ -8,9 +8,9 @@ export const CustomLightTheme = {
         ...DefaultTheme,
         colors: {
           ...DefaultTheme.colors,
-          primary: 'rgb(255, 0, 255)',
-          barsBackground : '#cccccc',
-          barsColor : 'rgb(0, 0, 0)',
+          primary: '#3B82F6',
+          barsBackground : '#FFFFFF',
+          barsColor : '#1F2937',
         },
     };
    
@@ -19,8 +19,8 @@ export const CustomDarkTheme= {
         ...DarkTheme,
         colors: {
           ...DarkTheme.colors,
-          primary: 'rgb(255, 0, 255)',
-          barsBackground : '#181b20',
-          barsColor : 'rgb(255, 255, 255)',
+          primary: '#3B82F6',
+          barsBackground : '#111928',
+          barsColor : '#F3F4F6',
         },
     };
