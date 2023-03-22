@@ -8,9 +8,9 @@ export const CustomLightTheme = {
         ...DefaultTheme,
         colors: {
           ...DefaultTheme.colors,
-          primary: '#3B82F6',
+          primary: '#2563EB',
           barsBackground : '#FFFFFF',
-          barsColor : '#1F2937',
+          barsColor : '#4B5563',
         },
     };
    
@@ -20,7 +20,7 @@ export const CustomDarkTheme= {
         colors: {
           ...DarkTheme.colors,
           primary: '#3B82F6',
-          barsBackground : '#111928',
-          barsColor : '#F3F4F6',
+          barsBackground : '#111827',
+          barsColor : '#D1D5DB',
         },
     };
