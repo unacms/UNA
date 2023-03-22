@@ -39,12 +39,12 @@ const colors = {
     
   },
   screen: {
-    DEFAULT: '#f3f5f6',
-    dark: '#0d0f11',
+    DEFAULT: '#F3F4F6',
+    dark: '#000000',
   },
   navbar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   'item-hover': {
     DEFAULT: '#dbe1e6',
@@ -52,27 +52,27 @@ const colors = {
   },
   sidebar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   tabbar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   block: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   card: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   button: {
     DEFAULT: '#2F5E8E',
     dark: '#2F5E8E',
   },
   bordercolor: {
-    DEFAULT: '#252a32',
-    dark: '#607385',
+    DEFAULT: '#E5E7EB',
+    dark: '#1F2937',
   },
   neo: {
     50: '#F9FAFB',
