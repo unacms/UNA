@@ -55,9 +55,8 @@ export default function ElementLikes(oProps) {
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
-        if(aParams)
-            aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
 
+        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
         const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
