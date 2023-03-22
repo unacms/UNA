@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
@@ -10,8 +10,9 @@ import { stripTags } from '../../lib/util';
 import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
-import Picker  from 'app/ui/atoms/picker';
+import { Dropdown } from 'app/design/controls'
 import { useTheme } from '@react-navigation/native';
+import { LayoutData } from 'app/context/layout';
 
 export default function ElementComments(props) {
 
@@ -36,8 +37,7 @@ export default function ElementComments(props) {
 
 
     let immutable = props.form? props.form.request.immutable : false;
-   
-    console.log('dbgs', 'IN');
+  
     
     let { data: dynamicData, error } = useSWR(
         commentData.postData ? [prepareUrl(), '', commentData.postData] : null,
@@ -223,35 +223,51 @@ export default function ElementComments(props) {
 
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
-    let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between z-50'>
-        <Text className='text-sm font-bold'>Comments ({count})</Text>
-        <Row className=' justify-end  items-center '>
-            <Text className='text-sm w-40'>Sort&nbsp;by:&nbsp;</Text>
-            <Picker  items={sortItems} value="desc" onSelect={(value) => {
-                handleOrder(value) 
-                }} /> 
-            </Row>
+    let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
+        <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
+        <Row className='  items-center '>
+            <Text className='text-sm text-neo-900 dark:text-neo-50'>Sort&nbsp;by:&nbsp;</Text>
+            <Dropdown className='w-40'
+                labelField="label"
+                valueField="value"
+                onChange={item => {
+                    handleOrder(item.value);
+                }}
+                value={commentData.orderWay}
+                data={sortItems}
+            />
+        </Row>
     </Row>  
-
-   
 
     const { colors } = useTheme();
 
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className=" w-full bottom-0 " style={{backgroundColor: colors.barsBackground, paddingTop:15}}>
+        cmtForm = <View className=" w-full bottom-0 " style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 m-4'>
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 mx-2 my-1'>
                     <Row className=' justify-between items-center'>
-                    <Row className='mx-2'><Text className='text-sm'>Reply to: </Text><Text className='font-bold text-sm'>{ commentData.formAuthor}</Text></Row>
-                    <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
-                    
-                </Row>
-                <Text className='mx-2 text-sm max-h-10 mb-2 overflow-hidden'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text></View>)
+                        <View>
+                            <Row className='mx-2'>
+                                <Text className='text-sm text-neo-900 dark:text-neo-50'>Reply to: </Text>
+                                <Text className='font-bold text-sm text-neo-900 dark:text-neo-50'>{ commentData.formAuthor}</Text>
+                            </Row>
+                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neo-900 dark:text-neo-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                        </View>
+                        <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
+                    </Row>
+                </View>)
             }
-            <Form {...form} classContainerName="flex-row px-4 w-full  px-4 items-end " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row px-4 w-full px-4 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
+
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+    if(Platform.OS !== 'web') {
+        setTimeout(() => {
+            setLayoutData(cmtForm)
+        }, 100);
+    }
 
     let cmts = null
     let styles = {};
@@ -261,11 +277,11 @@ export default function ElementComments(props) {
         let heightS = height * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
 /*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
-        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
-        {cmtsHeader}<ScrollViewNative  >
+        cmts = <View  className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">
+            {cmtsHeader}
             {cmtsBrs}
             {cmtsMore}
-            </ScrollViewNative>{cmtForm}</View>
+           </View>
     }
     else{
         cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-bordercolor/10 dark:border-bordercolor-dark/10">

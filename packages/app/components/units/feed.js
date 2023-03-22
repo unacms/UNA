@@ -34,7 +34,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20"    style={styles.card}>
+        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-bordercolor border-bordercolor/90 dark:border-bordercolor-dark dark:hover:border-bordercolor-dark/90"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
@@ -101,7 +101,7 @@ function SmallUnit(data) {
                 </View>
                 <View className='flex-row space-x-2'>
                     <Text className="flex-auto text-lg font-bold text-neo-900 dark:text-neo-50 truncate">{data.content.title}</Text>
-                    <Text className='text-sm font-medium flex-none text-end bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5 text-neo-50'>{data.cmts.count}</Text>
+                    <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'><Text className='text-sm text-neo-50 dark:text-neo-900 font-medium'>{data.cmts.count}</Text></View>
                 </View>
                 <View className='flex-row space-x-1'>
                     <Text className='text-sm text-neo-600 dark:text-neo-400 truncate'>{data.plainText}</Text>

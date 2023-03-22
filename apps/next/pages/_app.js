@@ -13,14 +13,13 @@ const fixReanimatedIssue = () => {
 fixReanimatedIssue()
 
 import { Provider } from 'app/provider'
+import { CurrentUserProvider } from 'app/context/user';
 import Head from 'next/head'
 import React from 'react'
 
 import '../../../packages/app/styles/global.css'
 
-import type { SolitoAppProps } from 'solito'
-
-function MyApp({ Component, pageProps }: SolitoAppProps) {
+function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -44,8 +43,10 @@ function MyApp({ Component, pageProps }: SolitoAppProps) {
         <link rel="icon" href="/favicon.png"/>
       </Head>
       <Provider>
-        <Component {...pageProps} />
-        <Analytics />
+        <CurrentUserProvider>
+          <Component {...pageProps} />
+          <Analytics />
+        </CurrentUserProvider>
       </Provider>
     </>
   )

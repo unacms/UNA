@@ -156,20 +156,25 @@ export function Icon(props) {
       break
 
     case 'contact':
-        data = (
-          <Svg className={className + ' mr-0 ml-0'} style={props.style} viewBox="0 0 24 24">
-            <Path 
-              fill="currentColor"
-              d="M20.34,9.32l-14-7a3,3,0,0,0-4.08,3.9l2.4,5.37h0a1.06,1.06,0,0,1,0,.82l-2.4,5.37A3,3,0,0,0,5,22a3.14,3.14,0,0,0,1.35-.32l14-7a3,3,0,0,0,0-5.36Zm-.89,3.57-14,7a1,1,0,0,1-1.35-1.3l2.39-5.37A2,2,0,0,0,6.57,13h6.89a1,1,0,0,0,0-2H6.57a2,2,0,0,0-.08-.22L4.1,5.41a1,1,0,0,1,1.35-1.3l14,7a1,1,0,0,1,0,1.78Z"
-            />
-          </Svg>
-        )
-        break
+      data = (
+        <Svg
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
+          viewBox="0 0 24 24"
+        >
+          <Path
+            fill="currentColor"
+            d="M20.34,9.32l-14-7a3,3,0,0,0-4.08,3.9l2.4,5.37h0a1.06,1.06,0,0,1,0,.82l-2.4,5.37A3,3,0,0,0,5,22a3.14,3.14,0,0,0,1.35-.32l14-7a3,3,0,0,0,0-5.36Zm-.89,3.57-14,7a1,1,0,0,1-1.35-1.3l2.39-5.37A2,2,0,0,0,6.57,13h6.89a1,1,0,0,0,0-2H6.57a2,2,0,0,0-.08-.22L4.1,5.41a1,1,0,0,1,1.35-1.3l14,7a1,1,0,0,1,0,1.78Z"
+          />
+        </Svg>
+      )
+      break
 
     case 'contact2':
       data = (
         <Svg
-          className={className + ' mr-0 ml-0'} style={props.style}
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -183,26 +188,30 @@ export function Icon(props) {
       )
       break
 
-      case 'close':
-        data = (
-          <Svg
-            className={className + ' mr-0 ml-0'}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <Line x1="22" y1="2" x2="11" y2="13"></Line>
-            <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-          </Svg>
-        )
-        break  
+    case 'close':
+      data = (
+        <Svg
+          className={className + ' mr-0 ml-0'}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <Line x1="22" y1="2" x2="11" y2="13"></Line>
+          <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
+        </Svg>
+      )
+      break
 
     case 'reply':
       data = (
-        <Svg className={className + ' mr-0 ml-0'} style={props.style} viewBox="0 0 24 24">
+        <Svg
+          className={className + ' mr-0 ml-0'}
+          style={props.style}
+          viewBox="0 0 24 24"
+        >
           <Path
             fill="currentColor"
             d="M14.7,6.6h-7l2.9-2.9c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0L4.6,6.9l0,0c-0.4,0.4-0.4,1,0,1.4L9.2,13c0.2,0.2,0.4,0.3,0.7,0.3v0c0.3,0,0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4L7.7,8.6h7c1.7,0,3,1.3,3,3V21c0,0.6,0.4,1,1,1s1-0.4,1-1v-9.4C19.7,8.9,17.4,6.6,14.7,6.6z"
@@ -308,6 +317,8 @@ export function Icon(props) {
             d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm1 5a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2H4z"
           />
         </Svg>
+
+        
       )
       break
 
@@ -534,55 +545,128 @@ export function Icon(props) {
         </Svg>
       )
       break
-      case 'app-menu':
-        data = (
-          <Svg
-          width={props.width} height={props.height}
-            viewBox="0 0 24 24"
+    case 'app-menu':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          fill={props.color}
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <Path d="M3 6.28571H21C21.2652 6.28571 21.5196 6.16531 21.7071 5.95098C21.8946 5.73665 22 5.44596 22 5.14286C22 4.83975 21.8946 4.54906 21.7071 4.33474C21.5196 4.12041 21.2652 4 21 4H3C2.73478 4 2.48043 4.12041 2.29289 4.33474C2.10536 4.54906 2 4.83975 2 5.14286C2 5.44596 2.10536 5.73665 2.29289 5.95098C2.48043 6.16531 2.73478 6.28571 3 6.28571ZM21 17.7143H3C2.73478 17.7143 2.48043 17.8347 2.29289 18.049C2.10536 18.2633 2 18.554 2 18.8571C2 19.1602 2.10536 19.4509 2.29289 19.6653C2.48043 19.8796 2.73478 20 3 20H21C21.2652 20 21.5196 19.8796 21.7071 19.6653C21.8946 19.4509 22 19.1602 22 18.8571C22 18.554 21.8946 18.2633 21.7071 18.049C21.5196 17.8347 21.2652 17.7143 21 17.7143ZM21 10.8571H3C2.73478 10.8571 2.48043 10.9776 2.29289 11.1919C2.10536 11.4062 2 11.6969 2 12C2 12.3031 2.10536 12.5938 2.29289 12.8081C2.48043 13.0224 2.73478 13.1429 3 13.1429H21C21.2652 13.1429 21.5196 13.0224 21.7071 12.8081C21.8946 12.5938 22 12.3031 22 12C22 11.6969 21.8946 11.4062 21.7071 11.1919C21.5196 10.9776 21.2652 10.8571 21 10.8571Z" 
+fill={props.color}
+          />
+        </Svg>
+      )
+      break
+
+    case 'app-back':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          
+          
+          fill={props.color}
+          
+          
+         viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
+<Path d="M7.35622 12.9552L14.1243 19.6418C14.5993 20.1194 15.3117 20.1194 15.7866 19.6418C16.2616 19.1642 16.2616 18.4478 15.7866 17.9701L9.96846 12L15.7866 6.02985C16.2616 5.55224 16.2616 4.83582 15.7866 4.35821C15.5492 4.1194 15.3117 4 14.9555 4C14.5993 4 14.3618 4.1194 14.1243 4.35821L7.35622 11.0448C6.88126 11.6418 6.88126 12.3582 7.35622 12.9552C7.35622 12.8358 7.35622 12.8358 7.35622 12.9552Z" />
+        </Svg>
+        
+      )
+      break
+    case 'app-home':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <Path
             fill={props.color}
-          >
-            <Path
-              stroke={props.color}
-              d="M3 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm0 6a1 1 0 0 1 1-1h16a1 1 0 1 1 0 2H4a1 1 0 0 1-1-1zm1 5a1 1 0 1 0 0 2h16a1 1 0 1 0 0-2H4z"
-            />
-          </Svg>
-        )
-        break  
+            d="M20,8h0L14,2.74a3,3,0,0,0-4,0L4,8a3,3,0,0,0-1,2.26V19a3,3,0,0,0,3,3H18a3,3,0,0,0,3-3V10.25A3,3,0,0,0,20,8ZM14,20H10V15a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1Zm5-1a1,1,0,0,1-1,1H16V15a3,3,0,0,0-3-3H11a3,3,0,0,0-3,3v5H6a1,1,0,0,1-1-1V10.25a1,1,0,0,1,.34-.75l6-5.25a1,1,0,0,1,1.32,0l6,5.25a1,1,0,0,1,.34.75Z"
+          />
+        </Svg>
+      )
+      break
 
-      case 'app-back':
-          data = (
-            <Svg 
-              width={props.width} height={props.height}
-              viewBox="0 0 24 24"
-              fill={props.color}
-              stroke={props.color}
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <Line x1="22" y1="2" x2="11" y2="13"></Line>
-              <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-            </Svg>
-          )
-        break 
-      case 'app-bottom':
+    case 'app-discover':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <Path
+            fill={props.color}
+            d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm1,17.93V19a1,1,0,0,0-2,0v.93A8,8,0,0,1,4.07,13H5a1,1,0,0,0,0-2H4.07A8,8,0,0,1,11,4.07V5a1,1,0,0,0,2,0V4.07A8,8,0,0,1,19.93,11H19a1,1,0,0,0,0,2h.93A8,8,0,0,1,13,19.93ZM15.14,7.55l-5,2.12a1,1,0,0,0-.52.52l-2.12,5a1,1,0,0,0,.21,1.1,1,1,0,0,0,.7.3.93.93,0,0,0,.4-.09l5-2.12a1,1,0,0,0,.52-.52l2.12-5a1,1,0,0,0-1.31-1.31Zm-2.49,5.1-2.28,1,1-2.28,2.28-1Z"
+          />
+        </Svg>
+      )
+      break
+    case 'app-create':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <Path
+            fill={props.color}
+            d="M19,11H13V5a1,1,0,0,0-2,0v6H5a1,1,0,0,0,0,2h6v6a1,1,0,0,0,2,0V13h6a1,1,0,0,0,0-2Z"
+          />
+        </Svg>
+        
+      )
+      break
+    case 'app-notifications':
+      data = (
+        
+        <Svg
+        width={props.width}
+        height={props.height}
+        
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={props.color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <Path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></Path>
+        <Path d="M13.73 21a2 2 0 0 1-3.46 0"></Path>
+      </Svg>
+      )
+      break
+    case 'app-messenger':
+      data = (
+        <Svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <Path
+            fill={props.color}
+            d="M17,9H7a1,1,0,0,0,0,2H17a1,1,0,0,0,0-2Zm-4,4H7a1,1,0,0,0,0,2h6a1,1,0,0,0,0-2ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,0-1.41A8,8,0,1,1,12,20Z" />
 
-        data = (
-          <Svg 
-            
-            width={props.width} height={props.height}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={props.color}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <Line x1="22" y1="2" x2="11" y2="13"></Line>
-            <Polygon points="22 2 15 22 11 13 2 9 22 2"></Polygon>
-          </Svg>
-        )
-        break 
+        </Svg>
+        
+      )
+      break
   }
 
   if (data)

@@ -17,6 +17,11 @@ const colors = {
     800: '#9e200e',
     900: '#7f1e0f',
   },
+  primary: {
+    DEFAULT: '#2563EB',
+    dark: '#3B82F6',
+  
+  },
   secondary: {
     DEFAULT: '#0489c5',
     dark: '#11aae6',
@@ -34,12 +39,12 @@ const colors = {
     
   },
   screen: {
-    DEFAULT: '#f3f5f6',
-    dark: '#0d0f11',
+    DEFAULT: '#F3F4F6',
+    dark: '#000000',
   },
   navbar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   'item-hover': {
     DEFAULT: '#dbe1e6',
@@ -47,39 +52,39 @@ const colors = {
   },
   sidebar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   tabbar: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   block: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   card: {
     DEFAULT: '#FFFFFF',
-    dark: '#181b20',
+    dark: '#111827',
   },
   button: {
     DEFAULT: '#2F5E8E',
     dark: '#2F5E8E',
   },
   bordercolor: {
-    DEFAULT: '#252a32',
-    dark: '#607385',
+    DEFAULT: '#E5E7EB',
+    dark: '#1F2937',
   },
   neo: {
-    50: '#f3f5f6',
-    100: '#dbe1e6',
-    200: '#bdc8d1',
-    300: '#90a2b2',
-    400: '#607385',
-    500: '#465462',
-    600: '#2f3742',
-    700: '#252a32',
-    800: '#181b20',
-    900: '#0d0f11',
+    50: '#F9FAFB',
+    100: '#F3F4F6',
+    200: '#E5E7EB',
+    300: '#D1D5DB',
+    400: '#9CA3AF',
+    500: '#6B7280',
+    600: '#4B5563',
+    700: '#374151',
+    800: '#1F2937',
+    900: '#111827',
   },
 }
 

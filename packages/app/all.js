@@ -1,10 +1,17 @@
+import { createContext, useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import Page from 'app/components/page';
 import PageError from 'app/components/pages/error';
+import { useCurrentUser } from 'app/context/user';
 
 export default function (props) {
-    
+
+    let { currentUser, setCurrentUser } = useCurrentUser();
+
+    if (props?.data?.user)
+        setCurrentUser(props.data.user);
+
     if (200 == parseInt(props.status)) {
         return (
             <Layout uri={props.path}>
@@ -34,15 +41,3 @@ export async function getData(path, token, origin, headers, callback) {
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path)
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
 }
-
-/*
-// this function is called in Next as serverSideProps and in Expo to get data dynamically
-export async function getData(path) {
-  // Fetch data from external API
-  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${path}`)
-  const data = await res.json()
-
-  // Pass data to the page via props
-  return { props: { path, data } }
-}
-*/

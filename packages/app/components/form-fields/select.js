@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import Field from './_field';
-import {Text} from 'app/design/typography'
-import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
-import { Hidden , Select, Dropdown } from 'app/design/controls'
-import { View } from 'app/design/view';
-
-
+import { useController, useFormContext } from 'react-hook-form';
+import { Dropdown } from 'app/design/controls'
 
 export default function FormFieldSelect(props) {
 

@@ -50,9 +50,17 @@ function HomeScreen1(params) {
             color: colors.barsColor,
           },
           headerLeft: () =>
-             <Pressable onPress={navigation.toggleDrawer}>
+                  <Pressable
+                  onPress={navigation.toggleDrawer}
+                  style={({ pressed }) => [
+                    {
+                      padding: 14, // Adjust padding to position the icon
+                      opacity: pressed ? 0.5 : 1,
+                    },
+                  ]}
+                >
                <Text>
-               <Icon  icon="app-menu" width={40} height={40}  />
+               <Icon  icon="app-menu" width={24} height={24} color={'#ff00ff'}  />
                </Text>
               </Pressable >
              })}
@@ -77,9 +85,7 @@ function HomeScreen1(params) {
                 name="/home"
                 component={NavScreen}
                 initialParams={{ path: '/home' }}
-                options={{  title: 'Home'  , drawerIcon: ({focused, size}) => (
-                  <Icon  icon="app-bottom" width={24} height={24} color={'#ff00ff'} />  
-               ), }}
+                options={{  title: 'Home'  }}
             />
             <Drawer.Screen
                 name="posts-home"
@@ -118,13 +124,26 @@ function HomeScreen1(params) {
     return false;
   }
 
-  function getHeaderAction(navigation, route){
+  function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
-    return (navigation.isFocused && route.name=='/pages' || true) ? <Pressable onPress={ routerExpo.back}>
-        <Text>
-        <Icon  icon="app-back" width={40} height={40}  />
-        </Text>
-       </Pressable> : null;
+  
+    if (navigation.isFocused() && route.name === '/pages') {
+      return (
+        <Pressable
+          onPress={routerExpo.back}
+          style={({ pressed }) => [
+            {
+              padding: 14, // Adjust padding to position the icon
+              opacity: pressed ? 0.5 : 1,
+            },
+          ]}
+        >
+          <Icon icon="app-back" width={24} height={24} />
+        </Pressable>
+      );
+    } else {
+      return null;
+    }
   }
 
 export function DrawerNav(params) {
@@ -146,10 +165,14 @@ export function DrawerNav(params) {
         
         screenOptions={({ navigation, route  }) => ({
         tabBarStyle: {
-            backgroundColor: colors.barsBackground,
+            backgroundColor: colors.barsBackground, 
         },
         headerStyle: {
           backgroundColor: colors.barsBackground,
+        },
+        tabBarItemStyle: {
+          marginBottom: 5, 
+          marginTop: 5,
         },
         tabBarInactiveTintColor: colors.barsColor,
         
@@ -173,21 +196,30 @@ export function DrawerNav(params) {
                   headerShown: false,
                     title: 'Home',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-home" width={iconWidth} height={iconHeight} color={color} />  
                     )
                 }}
             />
             <Tab.Screen
-                name="messenger"
+                name="discover"
                 component={NavScreen}
-                initialParams={{ path: '/messenger' }}
-                options={{  
-                    title: 'Messenger',
-                    tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                    )
-
-                 }}
+                initialParams={{ path: '/posts-home' }}
+                options={{ title: 'Discover',
+                tabBarIcon: ({color}) => (
+                    <Icon icon="app-discover" width={iconWidth} height={iconHeight} color={color} />  
+                )
+               }}
+            />
+            
+            <Tab.Screen
+                name="create-post"
+                component={NavScreen}
+                initialParams={{ path: '/create-post' }}
+                options={{ title: 'Create',
+                tabBarIcon: ({color}) => (
+                    <Icon icon="app-create" width={iconWidth} height={iconHeight} color={color} />  
+                )
+               }}
             />
             <Tab.Screen
                 name="notifications-view"
@@ -196,30 +228,24 @@ export function DrawerNav(params) {
                 options={{ 
                     title: 'Notifications',
                     tabBarIcon: ({color}) => (
-                        <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
+                        <Icon icon="app-notifications" width={iconWidth} height={iconHeight} color={color} />  
                     )
 
                   }}
             />
-             <Tab.Screen
-                name="create-post"
+             
+             
+            <Tab.Screen
+                name="messenger"
                 component={NavScreen}
-                initialParams={{ path: '/create-post' }}
-                options={{ title: 'Create post',
-                tabBarIcon: ({color}) => (
-                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                )
-               }}
-            />
-             <Tab.Screen
-                name="contact"
-                component={NavScreen}
-                initialParams={{ path: '/contact' }}
-                options={{ title: 'Contact',
-                tabBarIcon: ({color}) => (
-                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
-                )
-               }}
+                initialParams={{ path: '/messenger' }}
+                options={{  
+                    title: 'Messenger',
+                    tabBarIcon: ({color}) => (
+                        <Icon icon="app-messenger" width={iconWidth} height={iconHeight} color={color} />  
+                    )
+
+                 }}
             />
         </Tab.Navigator>
     );
