@@ -2,16 +2,16 @@ import { TouchableOpacity } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
-import Toggle from '../ui/atoms/toggle'
-import React, { useState, useReducer } from 'react'
+import { useState } from 'react'
 import { View, Row } from 'app/design/view'
-import { A, Text } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import ElementMainMenu from 'app/components/elements/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
+import { useCurrentUser } from 'app/context/user';
 
 export default function () {
-  const session = null //const { data: session } = useSession();
+  const { currentUser, setCurrentUser } = useCurrentUser();
   const [menuPopup, setMenuPopup] = useState(false)
   let { width } = useWindowDimensions()
 
@@ -100,9 +100,8 @@ export default function () {
             />
           </Row>
           
+          {!!currentUser &&
           <Row className="flex-row flex-auto sm:flex-none justify-end  ">
-            
-            
             <Link href="/notifications-view">
               <Button variant="text" rounded startDecorator="notifications" />
             </Link>
@@ -112,10 +111,19 @@ export default function () {
             <Link href="/create-post">
               <Button variant="text" rounded startDecorator="plus" />
             </Link>
+            <Link href="/logout">
+              <Button variant="text" rounded startDecorator="account" />
+            </Link>
+          </Row>
+          }
+
+          {!currentUser &&
+          <Row className="flex-row flex-auto sm:flex-none justify-end  ">
             <Link href="/login">
               <Button variant="text" rounded startDecorator="account" />
             </Link>
           </Row>
+          }
 
           <TouchableOpacity className="hidden " onPress={hideMenu}>
             <Link href="/timeline-view-home">
