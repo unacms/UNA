@@ -172,7 +172,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         if(data?.meta)
             sMeta = <Menu {...data.meta} displayType="link" />
         else
-            sMeta = <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
+            sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
         return (
             <View className="u-card" style={styles.card}>

@@ -7,8 +7,7 @@ import Link from '../atoms/link'
 /**
  * displayType: 
  *  1. unit, 
- *  2. minimal (unit without meta info), 
- *  3. unit_wo_image (unit without image = username + meta info), 
+ *  2. unit_wo_image (unit without image = username + meta info), 
  *  4. unit_wo_info (unit without info = image only)
  *  
  * displaySize: xs, sm, base, lg, xl, 2xl,3xl
@@ -117,17 +116,6 @@ export default function AtomProfile(oProps) {
   else sShowInfo = <DisplayInfo {...oProps} />
 
   switch (sDisplayType) {
-    case 'minimal':
-      sResult = (
-        <Link haptics="Select" href={oProps.url}>
-          <View className="flex-row items-center space-x-2 ">
-            <AtomProfile {...oProps} displayType="unit_wo_info" />
-            <AtomProfile {...oProps} displayType="unit_wo_image" showInfo="false" />
-          </View>
-        </Link>
-      )
-      break
-
     case 'unit':
       sResult = (
         <Link haptics="Select" href={oProps.url}>

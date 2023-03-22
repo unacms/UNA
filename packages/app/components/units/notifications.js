@@ -30,7 +30,7 @@ export default function UnitFeed({data}) {
         <Link href={url} className="w-full">
         
         <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20" >
-                <Profile {...data.author_data} displayType="minimal" displaySize="lg" />   
+                <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo="false" />   
                <Text>{stripTags(data.content_parsed)}</Text>
                 </View>
         

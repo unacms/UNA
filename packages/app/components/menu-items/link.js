@@ -38,7 +38,7 @@ export default function MenuItemLink(oProps) {
             break;
 
         case 'profile':
-            sTitle = <Profile {...oProps.data} displayType="minimal" displaySize="xs"  className="" />
+            sTitle = <Profile {...oProps.data} displayType="unit" displaySize="xs" showInfo="false" />
             break;
 
         case 'text':
