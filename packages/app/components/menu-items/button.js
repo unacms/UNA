@@ -37,10 +37,10 @@ export default function MenuItemButton(oProps) {
     let sContent = '';
     if(sIcon)
         sContent = (
-            <>
+            <View>
                 {sIcon}
                 {oProps?.title && <Text>{oProps.title}</Text>}
-            </>
+            </View>
         );
     else
         oButtonProps['title'] = oProps?.title ? oProps.title : '';
