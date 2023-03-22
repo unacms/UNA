@@ -50,9 +50,17 @@ function HomeScreen1(params) {
             color: colors.barsColor,
           },
           headerLeft: () =>
-             <Pressable onPress={navigation.toggleDrawer}>
+                  <Pressable
+                  onPress={navigation.toggleDrawer}
+                  style={({ pressed }) => [
+                    {
+                      padding: 14, // Adjust padding to position the icon
+                      opacity: pressed ? 0.5 : 1,
+                    },
+                  ]}
+                >
                <Text>
-               <Icon  icon="app-menu" width={50} height={50}  />
+               <Icon  icon="app-menu" width={24} height={24}  />
                </Text>
               </Pressable >
              })}
@@ -118,13 +126,26 @@ function HomeScreen1(params) {
     return false;
   }
 
-  function getHeaderAction(navigation, route){
+  function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
-    return (navigation.isFocused && route.name=='/pages' || true) ? <Pressable onPress={ routerExpo.back}>
-        <Text>
-        <Icon  icon="app-back" width={40} height={40}  />
-        </Text>
-       </Pressable> : null;
+  
+    if (navigation.isFocused() && route.name === '/pages') {
+      return (
+        <Pressable
+          onPress={routerExpo.back}
+          style={({ pressed }) => [
+            {
+              padding: 14, // Adjust padding to position the icon
+              opacity: pressed ? 0.5 : 1,
+            },
+          ]}
+        >
+          <Icon icon="app-back" width={24} height={24} />
+        </Pressable>
+      );
+    } else {
+      return null;
+    }
   }
 
 export function DrawerNav(params) {
@@ -184,7 +205,7 @@ export function DrawerNav(params) {
             <Tab.Screen
                 name="discover"
                 component={NavScreen}
-                initialParams={{ path: '/contact' }}
+                initialParams={{ path: '/posts-home' }}
                 options={{ title: 'Discover',
                 tabBarIcon: ({color}) => (
                     <Icon icon="app-discover" width={iconWidth} height={iconHeight} color={color} />  
