@@ -8,13 +8,13 @@ export default function FormField(props) {
     let w ='w-full';
     let { width } = useWindowDimensions()
     if (props.name == 'cmt_text'){
-        w ='w-5/6';
+        w ='w-11/12';
     }
     if (props.name == 'cmt_submit'){
-        w ='w-1/6 ml-2';
+        w ='w-1/12 ml-1';
     }
 
-    const sClassName = w +' form-control mb-4 form-control-' + props.name ;
+    const sClassName = w +' form-control ' + (w == 'w-full' ? 'mb-4' : '')+ ' form-control-' + props.name ;
 
     return (
         <View className={sClassName}>

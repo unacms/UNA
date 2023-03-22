@@ -6,7 +6,7 @@ import { Platform, PlatformIOSStatic } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
-import Picker  from 'app/ui/atoms/picker';
+import { Dropdown } from 'app/design/controls'
 
 export default function ElementBrowse(props) {
     let data = props.data;
@@ -15,9 +15,6 @@ export default function ElementBrowse(props) {
 
     /* unit mode & change unit mode */
     const [unitMode, setUnitMode] = useState('');
-    const changeView = (val) => {
-        setUnitMode(val)
-    }
     
     if (defParams){
         defParams.moduleName = data.module ? data.module : '';
@@ -104,9 +101,15 @@ export default function ElementBrowse(props) {
 
     return (
         <View className='w-full '>
-            { (data.unit == 'feed') && <View className='h-12 items-end z-50'><Picker items={modeItems} value="" onSelect={(value) => {
-                changeView(value) 
-                }} /></View>}
+            { (data.unit == 'feed') && <View className='h-12 items-end z-50'><Dropdown 
+                labelField="label"
+                valueField="value"
+                onChange={item => {
+                    setUnitMode(item.value);
+                }}
+                value={unitMode}
+                data={modeItems}
+            /></View>}
             <View className={classes} style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
                 <View className="u-card-4 flex-1"></View>

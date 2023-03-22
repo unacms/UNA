@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import Navbar from './navbar';
 import Tabsbar from './tabsbar';
 import Main from './main';
@@ -6,7 +6,9 @@ import Breadcrumb from './breadcrumb';
 import Footer from './footer';
 import useSkeleton from '../lib/hooks/skeleton';
 import { View, ScrollView } from 'app/design/view'
+import { Text } from 'app/design/typography'
 import BottomSheet from 'app/components/bottomSheet';
+import BottomBar from 'app/components/bottomBar';
 import LayoutDataContext from 'app/context/layout';
 
 export const siteTitle = 'NEO';
@@ -15,6 +17,7 @@ export default function Layout(props) {
 
     var oBreadCrump = null;
     var oComments = null;
+
 
     // TODO IMPROVE
     if (props.uri && props.uri.includes('view-post')){
@@ -37,7 +40,7 @@ export default function Layout(props) {
 
                 
             </ScrollView>
-            {/* (oComments != null ) &&   <BottomSheet/>*/}
+            { (oComments != null ) &&   <View><BottomBar/></View>}
             </View>
         </LayoutDataContext>
     );
