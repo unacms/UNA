@@ -3,48 +3,45 @@ import { useState, useContext } from 'react';
 import { View, ScrollView  } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
-import { Text, H1 ,TextLink} from 'app/design/typography'
-import { StyledButton } from 'app/design/controls'
+import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
+import Picker  from 'app/ui/atoms/picker';
 
 export default function ElementBrowse(props) {
     let data = props.data;
     const {height, width, scale, fontScale} = useWindowDimensions(); 
-
     let defParams = data.params;
+
+    /* unit mode & change unit mode */
+    const [unitMode, setUnitMode] = useState('');
+    const changeView = (val) => {
+        setUnitMode(val)
+    }
     
     if (defParams){
         defParams.moduleName = data.module ? data.module : '';
-        
         defParams.loadedAll = data.data.length > 0 ? false : true;
     }
-    const [browseParams, setbrowseParams] = useState(defParams);
 
+    /* browse params & change browse params */
+    const [browseParams, setbrowseParams] = useState(defParams);
     const updateBrowseParams =  (params) => {
         setbrowseParams(Object.assign({}, browseParams, params));
     } 
-    
-    let styles = StyleSheet.create({});
-    
-    if (Platform.OS != 'web'){
-        styles = StyleSheet.create({
-            cardList: {
-                flexWrap: 'wrap',
-                flexDirection:'row',
-                flexShrink:1 
-            },
-        });
+
+     /* show more button & load data */
+    const [isInView, setIsInView] = useState(false);
+    const checkVisible = (isVisible) => {
+        if (isInView != isVisible && isVisible){
+            handleMore();
+        }
+        if (isVisible){
+            setIsInView(isVisible)
+        } else {
+            setIsInView(isVisible)
+        }
     }
-    let classes = '';
-    if (data.unit.startsWith('general-')){
-        if (data.module == 'bx_posts')
-            classes = 'u-card-list';
-        else
-            classes = ' flex-wrap flex-row w-full justify-center u-card-list4 w-full';
-    }
-    if (data.unit == 'feed')
-        classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full  max-w-3xl mx-auto';
 
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
@@ -60,8 +57,38 @@ export default function ElementBrowse(props) {
             }) 
         }
     } 
-        
-        
+    
+    let styles = StyleSheet.create({});
+    if (Platform.OS != 'web'){
+        styles = StyleSheet.create({
+            cardList: {
+                flexWrap: 'wrap',
+                flexDirection:'row',
+                flexShrink:1 
+            },
+        });
+    }
+
+    let stylesScroll = StyleSheet.create({
+        view: {
+          top: -50,
+        },
+    });
+
+    let classes = '';
+    if (data.unit.startsWith('general-')){
+        if (data.module == 'bx_posts')
+            classes = 'u-card-list';
+        else
+            classes = ' flex-wrap flex-row w-full justify-center u-card-list4 w-full';
+    }
+    if (data.unit == 'feed'){
+        if (unitMode == '')
+            classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full max-w-3xl mx-auto';
+        else
+            classes = 'flex-auto flex-col w-full  max-w-3xl mx-auto';
+    }
+
     function prepareUrl (params) {
         if (data.unit != 'comments'){
             let params = Object.assign({}, browseParams)
@@ -70,29 +97,18 @@ export default function ElementBrowse(props) {
         }
     }    
 
-    const [isInView, setIsInView] = useState(false);
-
-    const checkVisible = (isVisible) => {
-        if (isInView != isVisible && isVisible){
-            handleMore();
-        }
-        if (isVisible){
-            setIsInView(isVisible)
-        } else {
-            setIsInView(isVisible)
-        }
-    }
-    
-    let stylesScroll = StyleSheet.create({
-        view: {
-          top: -50,
-        },
-    });
+    let modeItems = [
+        {label: 'Full', value: ''},
+        {label: 'Mini', value: 'small'}
+    ];
 
     return (
         <View className='w-full '>
+            { (data.unit == 'feed') && <View className='h-12 items-end z-50'><Picker items={modeItems} value="" onSelect={(value) => {
+                changeView(value) 
+                }} /></View>}
             <View className={classes} style={styles.cardList}>
-                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
+                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>

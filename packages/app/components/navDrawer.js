@@ -202,6 +202,16 @@ export function DrawerNav(params) {
                   }}
             />
              <Tab.Screen
+                name="create-post"
+                component={NavScreen}
+                initialParams={{ path: '/create-post' }}
+                options={{ title: 'Create post',
+                tabBarIcon: ({color}) => (
+                    <Icon icon="app-bottom" width={iconWidth} height={iconHeight} color={color} />  
+                )
+               }}
+            />
+             <Tab.Screen
                 name="contact"
                 component={NavScreen}
                 initialParams={{ path: '/contact' }}

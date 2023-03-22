@@ -14,31 +14,20 @@ export default function ElementPicker(props) {
         props.onSelect(v)
         setValue(v)
     }
-    //
-
     return (
-        <View className='absolute' style={{
-            ...(Platform.OS !== 'android' && {
-                zIndex: 10,
-            }),
-        }}
-        >
-        <DropDownPicker className=" m-0 p-0" dropDownDirection="BOTTOM" bottomOffset={100}
-       
-        items={props.items}
-        open={open}
-        value={value}
-        setOpen={setOpen}
-        setValue={handleSelect}
-        style={{
-            borderWidth: 0, 
-            width:100,
-            minHeight: 30, 
-            borderRadius: 0,  
-          }}
-          containerStyle={{
-            width:100,
-          }} 
-      /></View>
+        <View className='absolute'>
+            <DropDownPicker className=" m-0 p-0" dropDownDirection="BOTTOM" bottomOffset={100}
+                items={props.items}
+                open={open}
+                value={value}
+                setOpen={setOpen}
+                setValue={handleSelect}
+                style={{
+                    borderWidth: 0, 
+                    minHeight: 30, 
+                    borderRadius: 0,  
+                }}
+        />
+      </View>
   )
 }
