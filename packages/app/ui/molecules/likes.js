@@ -8,7 +8,6 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/components/svg';
-import Popup from './popup'
 
 export default function ElementLikes(oProps) {
 
