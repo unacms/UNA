@@ -280,14 +280,14 @@ export default function ElementComments(props) {
         let heightS = height * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
 /*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
-        cmts = <View  className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/40 dark:border-neoborder-dark/40">
+        cmts = <View  className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
             {cmtsHeader}
             {cmtsBrs}
             {cmtsMore}
            </View>
     }
     else{
-        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/40 dark:border-neoborder-dark/40">
+        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
             <View style={styles.list} className=' w-full max-h-screen'>
             {cmtsHeader}
             <ScrollView className='mt-4' style={{maxHeight:height-250}}>
