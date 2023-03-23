@@ -380,6 +380,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -397,6 +398,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -491,6 +493,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -506,6 +509,7 @@ export function Icon(props) {
     case 'share':
       data = (
         <Svg
+          style={props.style}
           className={className}
           aria-hidden="true"
           fill="currentColor"

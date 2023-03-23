@@ -15,8 +15,10 @@ export default function ElementTime(props) {
     }, []);
     
     let s = props.ts
-    if (!isNaN(props.ts))
-        s = formatDistance(new Date(props.ts * 1000), date, { addSuffix: true })
+    if (!isNaN(props.ts)){
+        s = formatDistance(new Date(props.ts * 1000), date, { addSuffix: false })
+        s = s.replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm');
+    }
 
     return <Text className="leading-5 text-gray-600 dark:text-gray-400">{s}</Text>
 }
