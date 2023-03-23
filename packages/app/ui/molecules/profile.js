@@ -110,16 +110,17 @@ export default function AtomProfile(oProps) {
     )
   }
 
-  let sShowInfo = ''
+  let sShowInfo = undefined;
   if (oProps.showInfo != undefined)
-    sShowInfo = oProps.showInfo !== 'false' ? oProps.showInfo : ''
-  else sShowInfo = <DisplayInfo {...oProps} />
+    sShowInfo = oProps.showInfo !== 'false' ? oProps.showInfo : undefined;
+  else 
+    sShowInfo = <DisplayInfo {...oProps} />
 
   switch (sDisplayType) {
     case 'unit':
       sResult = (
         <Link haptics="Select" href={oProps.url}>
-          <View className="flex-row items-center w-full space-x-2">
+          <View className="flex-row items-center w-full web:space-x-2">
             <View className="flex-none relative">
               <AtomProfile {...oProps} displayType="unit_wo_info" />
             </View>
@@ -159,7 +160,7 @@ export default function AtomProfile(oProps) {
             ) : (
               <DisplayNameText title={oProps.display_name} />
             )}
-            <Text className="text-neo-600 dark:text-neo-400 text-sm">{sShowInfo}</Text>
+            <View className="flex text-neo-600 dark:text-neo-400 text-sm">{sShowInfo}</View>
           </View>
         </Link>
       )

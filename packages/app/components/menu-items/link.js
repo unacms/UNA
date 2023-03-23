@@ -17,22 +17,28 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex ios:pr-2 android:pr-2 text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
-            <Link className={sClassName} href={oProps.link}>{oProps.title}</Link>
+            <View className={sClassName}>
+                <Link href={oProps.link}>
+                    <Text>{oProps.title}</Text>
+                </Link>
+            </View>
         );
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex ios:pr-2 android:pr-2');
 
         return (
-            <View className={sClassName}>{oProps.title}</View>
+            <View className={sClassName}>
+                <Text>{oProps.title}</Text>
+            </View>
         );
     }
 
-    let sTitle = '';
+    let sTitle = undefined;
     switch(oProps.content_type) {
         case 'time':
             sTitle = <Time ts={oProps.title}></Time>
@@ -44,22 +50,19 @@ export default function MenuItemLink(oProps) {
 
         case 'text':
         default:
-            sTitle = oProps.title;
+            sTitle = <Text className="flex">{oProps.title}</Text>
     }
 
-    let sIcon = '';
+    let sIcon = undefined;
     if(oProps?.icon && !bTitleOnly) {
         if(bUseInternalIcons)
-            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6"></Icon>;
+            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6 ios:pr-1 android:pr-1"></Icon>;
         else
-            sIcon = <Text className="h-6 w-6 text-base">{oProps.icon}</Text>;
+            sIcon = <Text className="h-6 w-6 ios:pr-1 android:pr-1 text-base">{oProps.icon}</Text>;
     }
 
     sTitle = (
-        <View className="flex flex-row gap-1">
-            {sIcon}
-            {sTitle && <Text className='flex'>{sTitle}</Text>}
-        </View>
+        <View className="flex flex-row web:space-x-1">{sIcon}{sTitle}</View>
     );
 
     return bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />;
