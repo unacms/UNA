@@ -123,7 +123,7 @@ export default function AtomProfile(oProps) {
             <View className="flex-none relative">
               <AtomProfile {...oProps} displayType="unit_wo_info" />
             </View>
-            <View className="flex-auto mb-auto my-auto sm:my-auto">
+            <View className="flex-auto">
               <AtomProfile {...oProps} displayType="unit_wo_image" />
             </View>
           </View>

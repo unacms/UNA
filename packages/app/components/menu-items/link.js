@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text } from 'app/design/typography'
+import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
@@ -16,7 +17,7 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'block text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
             <Link className={sClassName} href={oProps.link}>{oProps.title}</Link>
@@ -24,10 +25,10 @@ export default function MenuItemLink(oProps) {
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'block');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex');
 
         return (
-            <Text className={sClassName}>{oProps.title}</Text>
+            <View className={sClassName}>{oProps.title}</View>
         );
     }
 
@@ -55,13 +56,11 @@ export default function MenuItemLink(oProps) {
     }
 
     sTitle = (
-        <Text className="flex-row gap-1 mx-auto">
+        <View className="flex flex-row gap-1">
             {sIcon}
-            {sTitle && <Text className='mr-2'>{sTitle}</Text>}
-        </Text>
+            {sTitle && <Text className='flex'>{sTitle}</Text>}
+        </View>
     );
 
-    return (
-        <Text>{bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />}</Text>
-    );
+    return bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />;
 }
