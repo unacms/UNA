@@ -8,9 +8,11 @@ import { LayoutData } from 'app/context/layout';
 export default function ElementCommentForm(props) {
     
     const { layoutData, setLayoutData } = useContext(LayoutData);
+
     return ( 
       <View>
-        {layoutData[0]}
+        {!!layoutData && layoutData[0]}
+      <Text>{!!layoutData && layoutData[1]}</Text>
     </View>
   )
 }

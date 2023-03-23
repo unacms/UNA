@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect} from 'react';
+import { useState, useContext} from 'react';
 import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
@@ -39,7 +39,7 @@ export default function ElementComments(props) {
 
     let immutable = props.form? props.form.request.immutable : false;
   
-    
+    console.log(99999, commentData.postData);
     let { data: dynamicData, error } = useSWR(
         commentData.postData ? [prepareUrl(), '', commentData.postData] : null,
         fetcher,
@@ -49,9 +49,10 @@ export default function ElementComments(props) {
             revalidateOnReconnect: false
         }
     ); 
+
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-        console.log("prepare" + requestUrl + JSON.stringify({...def, ...params}))
+        console.log("prepare:" + requestUrl + JSON.stringify({...def, ...params}))
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
@@ -60,6 +61,7 @@ export default function ElementComments(props) {
     const addCommentData =  (params) => {
         if (!params.postData)
             params.postData = null;
+            //, {num:commentData.num+1}
         setCommentData(Object.assign({}, commentData, params, {num:commentData.num+1}));
     } 
     
@@ -237,9 +239,9 @@ export default function ElementComments(props) {
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className=" w-full bottom-0 " style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
+        cmtForm = <View className=" w-full bottom-0 border-t  border-neoborder/30 dark:border-neoborder-dark/30" style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1 px-1 mx-2 my-1'>
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg   px-1 mx-2 mb-1'>
                     <Row className=' justify-between items-center'>
                         <View>
                             <Row className='mx-2'>
@@ -252,7 +254,7 @@ export default function ElementComments(props) {
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row px-4 w-full px-4 items-end " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row px-4 w-full px-2 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
@@ -266,7 +268,6 @@ export default function ElementComments(props) {
         }
        
     }
-    console.log("99999",commentData.num);
     let cmts = null
     let styles = {};
     const {height, width, scale, fontScale} = useWindowDimensions(); 
