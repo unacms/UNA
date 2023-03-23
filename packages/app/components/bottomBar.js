@@ -12,7 +12,6 @@ export default function ElementCommentForm(props) {
     return ( 
       <View>
         {!!layoutData && layoutData[0]}
-      <Text>{!!layoutData && layoutData[1]}</Text>
     </View>
   )
 }
