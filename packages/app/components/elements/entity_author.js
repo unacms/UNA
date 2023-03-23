@@ -24,10 +24,10 @@ export default function ElementEntityAuthor(oProps) {
 
     const sInfo = (
         <Menu {...oAuthor.author_desc} displayType="link" params={{
-            className: 'bx-menu flex-row flex-wrap justify-start items-stretch ',
+            className: 'bx-menu flex flex-row flex-wrap justify-start items-center web:space-x-2',
             classNameItem: {
-                link: 'block text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline',
-                text: 'block'
+                link: 'flex text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline ios:pr-2 android:pr-2',
+                text: 'flex ios:pr-2 android:pr-2'
             }
         }} />
     );

@@ -63,7 +63,7 @@ export default function ElementMenu(oProps) {
             </View>
         );
 
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu ' + (bShowVertical ? 'flex-col items-center space-y-2' : 'flex-row flex-wrap justify-start items-center web:space-x-2');
+    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex ' + (bShowVertical ? 'flex-col items-center space-y-2' : 'flex-row flex-wrap justify-start items-center web:space-x-2');
 
     return (
         <View className={sClassName}>{sItems}</View>
