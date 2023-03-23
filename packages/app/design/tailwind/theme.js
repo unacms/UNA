@@ -5,7 +5,7 @@
 const colors = {
   brand: {
     DEFAULT: '#3B82F6',
-    dark: '#60A5FA',
+    dark: '#3B82F6',
     50: '#EFF6FF',
     100: '#DBEAFE',
     200: '#BFDBFE',
@@ -18,7 +18,7 @@ const colors = {
     900: '#1E3A8A',
   },
   primary: {
-    DEFAULT: '#2563EB',
+    DEFAULT: '#3B82F6',
     dark: '#3B82F6',
   
   },
@@ -67,11 +67,11 @@ const colors = {
     dark: '#111827',
   },
   button: {
-    DEFAULT: '#2F5E8E',
-    dark: '#2F5E8E',
+    DEFAULT: '#D1D5DB',
+    dark: '#374151',
   },
   neoborder: {
-    DEFAULT: '#D1D5DB',
+    DEFAULT: '#9CA3AF',
     dark: '#374151',
   },
   form: {

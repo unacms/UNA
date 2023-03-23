@@ -29,7 +29,7 @@ export default function UnitFeed({data}) {
     return (
         <Link href={url} className="w-full">
         
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/20 border-neoborder/40 dark:border-neoborder-dark/40 dark:hover:border-neoborder-dark/20" >
+        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30" >
                 <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo="false" />   
                <Text>{stripTags(data.content_parsed)}</Text>
                 </View>
