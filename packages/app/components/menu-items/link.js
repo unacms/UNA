@@ -17,7 +17,7 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex ios:pr-2 android:pr-2 text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' ios:pr-2 android:pr-2') + ' text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
             <View className={sClassName}>
@@ -29,7 +29,7 @@ export default function MenuItemLink(oProps) {
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex ios:pr-2 android:pr-2');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' ios:pr-2 android:pr-2'));
 
         return (
             <View className={sClassName}>
