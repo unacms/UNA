@@ -21,7 +21,7 @@ export function Dropdown(props) {
   let { className,  ...rest } = props;
 
   return (
-    <DropdownDef1 {...rest} itemContainerStyle = {{backgroundColor:colors.background}} itemTextStyle = {{color:colors.primary}} activeColor = {{color:colors.primary}}>{props.children}</DropdownDef1>
+    <DropdownDef1 {...rest} style={{height:48}} placeholderStyle={{}}  containerStyle={{borderRadius:8}} itemTextStyle={{padding:0, borderRadius:8}} itemContainerStyle = {{backgroundColor:colors.selectBackground, padding:0,   }} activeColor={colors.selectBackgroundActive} >{props.children}</DropdownDef1>
 );
 }
 
