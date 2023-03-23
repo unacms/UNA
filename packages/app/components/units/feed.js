@@ -34,7 +34,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-bordercolor border-bordercolor/90 dark:border-bordercolor-dark dark:hover:border-bordercolor-dark/90"    style={styles.card}>
+        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/40 dark:border-neoborder-dark/40 dark:hover:border-neoborder-dark/60"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
@@ -71,7 +71,7 @@ function DefaultUnit(data) {
                 }
         </View>
     </View>
-        <View className=" p-2 border-t border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row space-x-1 ">
+        <View className=" p-2 border-t border-neoborder/40 dark:border-neoborder-dark/40 flex-row space-x-1 ">
             <View className='flex-row w-full space-x-2'>
                     <View className=" flex-row space-x-2    ">
                         <Button title="902" startDecorator="comment" size="sm" solid rounded variant="text"/>
@@ -90,7 +90,7 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-card dark:bg-card-dark border-b hover:bg-item-hover/10 dark:hover:bg-item-hover-dark/60 border-bordercolor/10 dark:border-bordercolor-dark/10 overflow-hidden ">    
+        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-card dark:bg-card-dark border-b hover:bg-item-hover/10 dark:hover:bg-item-hover-dark/60 border-neoborder/40 dark:border-neoborder-dark/40 overflow-hidden ">    
             <View className="w-14 h-14 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xl" />
             </View>

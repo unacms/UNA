@@ -31,7 +31,7 @@ export default function () {
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className=" backdrop-blur pt-[1px]  h-16 px-2 sm:px-4  items-center w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-bordercolor/10 dark:border-bordercolor-dark/10 flex-row space-x-2 sm:space-x-4 ">
+      <View className=" backdrop-blur pt-[1px]  h-16 px-2 sm:px-4  items-center w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-neoborder/40 dark:border-neoborder-dark/40 flex-row space-x-2 sm:space-x-4 ">
       <Row className="  flex-row space-x-1 flex-none items-center "> 
         <TouchableOpacity className="xl:hidden " onPress={showMenu}>
           <Button variant="text" startDecorator="menu" rounded align="start" />
@@ -161,7 +161,7 @@ export default function () {
               <Link href="/search">
                 <View
                   className="lg:w-full group flex-col lg:flex-row lg:bg-hover dark:lg:bg-hover-dark   
-                              lg:border-bordercolor/10 dark:lg:border-bordercolor-dark/20 lg:space-x-3 items-center rounded-full 
+                              lg:border-neoborder/40 dark:lg:border-border-dark/20 lg:space-x-3 items-center rounded-full 
                               md:rounded-lg p-2.5 md:py-1.5 lg:py-2.5 lg:rounded-full bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 
                               my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent 
                               duration-200 lg:bg-item-hover/50 dark:lg:bg-item-hover-dark/50 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 

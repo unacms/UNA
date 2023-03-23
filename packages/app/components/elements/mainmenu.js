@@ -26,7 +26,7 @@ export default function ElementMainMenu(props) {
     
 
     return (
-        <View onPress={hideMenu} className="h-full xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10 flex-col space-y-2">
+        <View onPress={hideMenu} className="h-full xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder/40 dark:border-neoborder-dark/40 flex-col space-y-2">
             <View className="flex-col space-y-0.5">
                 {
                     menu.map( item => <Link href={item.url} key={item.icon.toString()}><Button variant="text" startDecorator={item.icon} fullWidth solid align='start' title ={item.title} /></Link>)

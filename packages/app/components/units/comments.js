@@ -54,7 +54,7 @@ export default function UnitComments(props) {
                     <View className="mr-2"><Profile {...data.author_data} displaySize='base' showInfo={(<Time className="" ts={data.cmt_time}></Time>)} displayType="unit" className="" /></View>
                     <View  className=" flex-row ml-8 pb-1">
                        <View className="w-8 flex-0 h-full absolute top-0 -left-7">
-                        <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                        <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
                        </View>
                        <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
                             <View className={sCommentClass} >
@@ -68,10 +68,10 @@ export default function UnitComments(props) {
             </View>
             {(items.length != 0) && <View className='relative flex-row  ml-12  '>
                         <View className="w-14 absolute top-0 -left-10 h-full flex-col space-y-0.5">
-                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10 "></View>
-                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
-                        <View className="w-1 rounded-full h-1 mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
-                        <View className="w-0.5 rounded-full flex-auto mx-auto bg-bordercolor/10 dark:bg-bordercolor-dark/10"></View>
+                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10 "></View>
+                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
+                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
+                        <View className="w-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
                        </View>
                 <View className = 'flex-auto '>
                     {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}

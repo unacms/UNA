@@ -4,18 +4,18 @@
 
 const colors = {
   brand: {
-    DEFAULT: '#f03906',
-    dark: '#ff5511',
-    50: '#fff5ed',
-    100: '#ffe8d4',
-    200: '#ffcca8',
-    300: '#ffa870',
-    400: '#ff7837',
-    500: '#11aae6',
-    600: '#f03906',
-    700: '#c72707',
-    800: '#9e200e',
-    900: '#7f1e0f',
+    DEFAULT: '#3B82F6',
+    dark: '#60A5FA',
+    50: '#EFF6FF',
+    100: '#DBEAFE',
+    200: '#BFDBFE',
+    300: '#93C5FD',
+    400: '#60A5FA',
+    500: '#3B82F6',
+    600: '#2563EB',
+    700: '#1D4ED8',
+    800: '#1E40AF',
+    900: '#1E3A8A',
   },
   primary: {
     DEFAULT: '#2563EB',
@@ -40,7 +40,7 @@ const colors = {
   },
   screen: {
     DEFAULT: '#F3F4F6',
-    dark: '#000000',
+    dark: '#030407',
   },
   navbar: {
     DEFAULT: '#FFFFFF',
@@ -70,9 +70,14 @@ const colors = {
     DEFAULT: '#2F5E8E',
     dark: '#2F5E8E',
   },
-  bordercolor: {
-    DEFAULT: '#E5E7EB',
-    dark: '#1F2937',
+  neoborder: {
+    DEFAULT: '#D1D5DB',
+    dark: '#374151',
+  },
+  form: {
+    DEFAULT: '#D1D5DB',
+    dark: '#374151',
+     
   },
   neo: {
     50: '#F9FAFB',
@@ -85,6 +90,7 @@ const colors = {
     700: '#374151',
     800: '#1F2937',
     900: '#111827',
+    950: '#030407',
   },
 }
 
