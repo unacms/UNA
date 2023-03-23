@@ -1,9 +1,7 @@
-import React from 'react';
-import { Platform } from 'react-native';
+import { useRef } from 'react';
 //import { useSession, signIn, signOut } from "next-auth/react";
 
 import { Button } from 'app/design/controls';
-import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -13,12 +11,13 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-import Link from 'app/ui/atoms/link';
+import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import Menu from 'app/components/menu';
 
 export default function ElementEntityAuthor(oProps) {
     const session = true;//const { data: session } = useSession();
+    const redirectdRef = useRef();
 
     let oAuthor = oProps.data.author;
 
@@ -35,6 +34,10 @@ export default function ElementEntityAuthor(oProps) {
     const oMenuManage = oProps.data.menu_manage;
     const aMenuManageExcept = ['more-auto'];
 
+    const handleClick = (sUrl) => {
+        redirectdRef.current.redirect(sUrl);
+    }
+
     const sMenuManageItems = Object.keys(oMenuManage.items).map(function(iKey) {
         const aItem = oMenuManage.items[iKey];
 
@@ -45,21 +48,22 @@ export default function ElementEntityAuthor(oProps) {
             return;
 
         return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name}>
-                <Link href={aItem.link}>
-                    <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-                </Link>
+            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick(aItem.link)}>
+                <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
             </DropdownMenuItemV>
         );
     });
 
     const sMenuManage = (
-        <DropdownMenuRoot>
-            <DropdownMenuTrigger>
-                <Button id="mm-button" variant="text" rounded="true" startDecorator="more" onPress={() => {}} />
-            </DropdownMenuTrigger>
-            <DropdownMenuContentV>{sMenuManageItems}</DropdownMenuContentV>
-        </DropdownMenuRoot>
+        <View>
+            <Redirect ref={redirectdRef} />
+            <DropdownMenuRoot>
+                <DropdownMenuTrigger>
+                    <Button id="mm-button" variant="text" rounded="true" startDecorator="more" onPress={() => {}} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContentV>{sMenuManageItems}</DropdownMenuContentV>
+            </DropdownMenuRoot>
+        </View>
     );
 
     return (

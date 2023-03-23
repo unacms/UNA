@@ -121,7 +121,7 @@ export default function AtomProfile(oProps) {
       sResult = (
         <Link haptics="Select" href={oProps.url}>
           <View className="flex-row items-center w-full web:space-x-2">
-            <View className="flex-none relative">
+            <View className="flex-none ios:pr-2 android:pr-2">
               <AtomProfile {...oProps} displayType="unit_wo_info" />
             </View>
             <View className="flex-auto">
