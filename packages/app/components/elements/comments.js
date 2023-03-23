@@ -32,7 +32,8 @@ export default function ElementComments(props) {
         objectId: browse.data.object_id,
         formText: '',
         formAuthor: '',
-        postData: null
+        postData: null,
+        num:0
     });
 
 
@@ -57,27 +58,19 @@ export default function ElementComments(props) {
 
     // add new values to state
     const addCommentData =  (params) => {
-        //scrollHandler();
         if (!params.postData)
             params.postData = null;
-        setCommentData(Object.assign({}, commentData, params));
-
-       // if (params.parentId)
-        //    setPostData(null);
+        setCommentData(Object.assign({}, commentData, params, {num:commentData.num+1}));
     } 
     
     const onFormSubmit = (formData, d) => {
         Keyboard.dismiss();
         addCommentData({postData: formData});
-      //  setPostData(formData);
-       // addCommentData({parentId:0});
     }
 
     // handle errors and loading 
     if (error || dynamicData?.error) return "An error has occurred:${error ? error : data?.error}";
-    /*if (postData && !dynamicData) {
-        form = null
-    }*/
+
     if(form){
         form.data.inputs.cmt_parent_id.value = commentData.parentId;
         form.data.reset = true;
@@ -265,13 +258,15 @@ export default function ElementComments(props) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
     if(Platform.OS !== 'web') {
         
-        if (!layoutData ){
+        if (!layoutData || layoutData[1] != commentData.num){
             setTimeout(() => {
-                setLayoutData(cmtForm)
+                let a = [cmtForm,commentData.num];
+                setLayoutData(a)
             }, 1000);
         }
+       
     }
-
+    console.log("99999",commentData.num);
     let cmts = null
     let styles = {};
     const {height, width, scale, fontScale} = useWindowDimensions(); 
