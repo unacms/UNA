@@ -15,11 +15,17 @@ fixReanimatedIssue()
 import { Provider } from 'app/provider'
 import { CurrentUserProvider } from 'app/context/user';
 import Head from 'next/head'
-import React from 'react'
+import { useColorScheme } from 'react-native';
+import { CustomLightTheme, CustomDarkTheme } from 'app/design/theme'
+import { ThemeProvider } from "@react-navigation/native";
+
 
 import '../../../packages/app/styles/global.css'
 
 function MyApp({ Component, pageProps }) {
+
+  const scheme = useColorScheme();
+
   return (
     <>
       <Head>
@@ -42,12 +48,14 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.svg"/>
         <link rel="icon" href="/favicon.png"/>
       </Head>
-      <Provider>
-        <CurrentUserProvider>
-          <Component {...pageProps} />
-          <Analytics />
-        </CurrentUserProvider>
-      </Provider>
+      <ThemeProvider value={scheme === 'dark' ? CustomDarkTheme : CustomLightTheme} >
+        <Provider>
+          <CurrentUserProvider>
+            <Component {...pageProps} />
+            <Analytics />
+          </CurrentUserProvider>
+        </Provider>
+      </ThemeProvider>
     </>
   )
 }
