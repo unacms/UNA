@@ -9,10 +9,6 @@ export default function MenuItemButton(oProps) {
     const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
-    let sClassName = 'menu-item whitespace-nowrap'
-    if(bShowVertical)
-        sClassName += ' w-full';
-
     const handleClick = () => {
         if(oProps.params?.onclick)
             oProps.params.onclick(event, oProps);
@@ -39,12 +35,13 @@ export default function MenuItemButton(oProps) {
         sContent = (
             <View>
                 {sIcon}
-                {oProps?.title && <Text>{oProps.title}</Text>}
+                {oProps?.title && <Text className='flex'>{oProps.title}</Text>}
             </View>
         );
     else
         oButtonProps['title'] = oProps?.title ? oProps.title : '';
 
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full' : ' flex-row');
     return (
         <View className={sClassName}>
             <Button {...oButtonProps}>{sContent}</Button>

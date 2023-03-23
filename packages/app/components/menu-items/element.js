@@ -15,6 +15,8 @@ export default function MenuItemElement(oProps) {
     if(!oProps.data || !oProps.data.type)
         return;
 
+    const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
+
     const Element = oComponentsMap[oProps.data.type];
     if(!Element)
         return;
@@ -22,8 +24,9 @@ export default function MenuItemElement(oProps) {
     if(oProps.data.params != undefined && oProps.params != undefined)
         oProps.data.params = {...oProps.data.params, ...oProps.params}
 
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full' : ' flex-row');
     return (
-        <View className="menu-item android:mr-2 ios:mr-2 whitespace-nowrap">
+        <View className={sClassName}>
             <Element key={oProps.id ? oProps.id : oProps.name} {...oProps.data} />
         </View>
     );
