@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         path += '?' + params.substring(1);
     
     // perform fetch
-    const data = await fetcherRaw(process.env.NEXT_PUBLIC_UNA_URL, [path, process.env.UNA_API_KEY, body, undefined, headers]).then(r => {
+    const data = await fetcherRaw(process.env.UNA_URL, [path, process.env.UNA_API_KEY, body, undefined, headers]).then(r => {
         if (r.headers.has('Set-Cookie')) {
             var combinedCookieHeader = r.headers.get('Set-Cookie');            
             var splitCookieHeaders = setCookie.splitCookiesString(combinedCookieHeader)
