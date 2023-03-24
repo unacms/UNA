@@ -1,8 +1,8 @@
-import { DrawerNav } from 'app/components/navDrawer'
+import { NavBottomTabs } from 'app/components/navBottomTabs'
 
 export default function Root (props) {
   return (
-      <DrawerNav/>
+      <NavBottomTabs/>
   );
 }
 

@@ -5,12 +5,12 @@ import { Icon } from 'app/components/svg'
 import { useState } from 'react'
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import ElementMainMenu from 'app/components/elements/mainmenu'
+import MainMenu from 'app/components/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
 
-export default function () {
+export default function (props) {
   const { currentUser, setCurrentUser } = useCurrentUser();
   const [menuPopup, setMenuPopup] = useState(false)
   let { width } = useWindowDimensions()
@@ -265,7 +265,7 @@ export default function () {
               }}
             >
               <TouchableOpacity className="w-72 h-screen bg-red-500" onPress={showMenu}>
-                <ElementMainMenu />
+                <MainMenu {...props} />
               </TouchableOpacity>
             </MotiView>
           </View>

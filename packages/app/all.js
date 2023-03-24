@@ -16,7 +16,7 @@ export default function (props) {
 
     if (200 == parseInt(props.status)) {
         return (
-            <Layout uri={props.path}>
+            <Layout uri={props.path} data={props.data}>
                 <Page uri={props.path} data={props.data} />
             </Layout>
         );

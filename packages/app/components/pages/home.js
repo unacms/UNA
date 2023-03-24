@@ -1,5 +1,4 @@
 import { View, Row } from 'app/design/view'
-import ElementMainMenu from 'app/components/elements/mainmenu'
 
 export default function Home(props) {
     const feed = Object.assign({}, props.children[2]);

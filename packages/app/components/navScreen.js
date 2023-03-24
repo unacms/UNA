@@ -3,54 +3,38 @@ import { useState, useEffect } from 'react'
 import All, { getData } from 'app/all'
 import { Text } from 'dripsy'
 import { View } from 'app/design/view'
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useRoute } from '@react-navigation/native';
 import { Stack } from 'expo-router'
-import { Icon } from 'app/components/svg';
-
+import { NavDrawer } from 'app/components/navDrawer'
 
 export function NavScreen(params) {
-    let route = params.route
-    let navigation = params.navigation;
-    const [pageData, setPageData] = useState(undefined);
+    const _path = params.route.params.url;
+    let _isFocused = params.navigation.isFocused();
 
-    let path = (route.name == '/pages' ? route.params.path : route.name);
-    if (!path.startsWith('/'))
-      path = '/' + path;
-    
-    console.log('++++', path)
-    console.log('++++', navigation)
+    const [pageData, setPageData] = useState(null);
+    const [isFocused, setIsFocused] = useState(_isFocused);
 
+    if (isFocused != _isFocused){
+        setIsFocused(_isFocused)
+    }
     useEffect(() => {
-      (async () => {
-        if (path.startsWith('/') && !path.includes(",") && path != '/'){
-        const d = await getData(path);
-        console.log('12345', '|'+path+'|');
-        if (d?.props) {
-          setPageData (d?.props)
-        }
-      }
-      })();
-    }, [navigation]);
+        (async () => {
+            if (isFocused && _path && _path.startsWith('/')){
+                const d = await getData(_path);
+                if (d?.props) {
+                    setPageData (d?.props)
+                }
+            }
+        })();
+    }, [_path, isFocused]);
 
-    useEffect(() => {
-      (async () => {
-        if (path.startsWith('/') && !path.includes(",") && path != '/'){
-        const d = await getData(path);
-        console.log('12345', '|'+path+'|');
-        if (d?.props) {
-          setPageData (d?.props)
-        }
-      }
-      })();
-    }, [path]);
-    
-    console.log('-----', path);
-
-    return (
-      <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        {pageData && <View className='bg-red-500 w-full'><Stack.Screen  options={{'title': pageData.data.title}}  /><All path={path} {...pageData} ></All></View> }
-      </View>
-    );
-  }
+if (params.route.params.checkDrawer && pageData && pageData.data.menu && pageData.data.menu.items.length > 1){
+    params.navigation.setOptions({ headerShown: false })
+    return <NavDrawer menu = {pageData.data.menu} />
+}
+else{
+    params.navigation.setOptions({ headerShown: true })
+    return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {pageData && <View className='bg-red-500 w-full'><Stack.Screen options={{'title': pageData.data.title}}/><All path={_path} {...pageData} ></All></View> }
+        </View>
+}
+}
