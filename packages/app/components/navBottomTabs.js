@@ -48,7 +48,7 @@ export function NavBottomTabs(params) {
       },
       {
         title: (currentUser ? 'Logout': 'Login'),
-        url: (currentUser ? '/logout': '/login'),
+        url: (currentUser ? '/logout': '/logout'),
         icon: 'app-usermenu'
       },
     ];
