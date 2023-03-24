@@ -9,8 +9,10 @@ export default function (props) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
 
-    if (props?.data?.user)
-        setCurrentUser(props.data.user);
+    useEffect(() => {
+        if (props?.data?.user)
+            setCurrentUser(props.data.user);
+    }, [props?.data?.user]);
 
     if (200 == parseInt(props.status)) {
         return (
