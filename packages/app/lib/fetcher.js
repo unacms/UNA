@@ -11,7 +11,7 @@ function getUrlPrefix() {
 
     s = `${proto}//${host}`;
     if (port && 80 !== port && 443 !== port)
-        s += ":" + process.env.PORT;
+        s += ":" + port;
     return s;
 }
 
