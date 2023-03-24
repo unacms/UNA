@@ -6,7 +6,7 @@ import { Platform, PlatformIOSStatic } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
-import { Dropdown } from 'app/design/controls'
+import Dropdown from 'app/ui/atoms/dropdown'
 
 export default function ElementBrowse(props) {
     let data = props.data;

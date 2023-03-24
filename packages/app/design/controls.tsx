@@ -11,19 +11,9 @@ import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 /* inputs */
 export const Input = styled(TextInputDef, 'bg-form/50 focus:bg-white focus:ring text-neo-800 rounded-lg focus:ring-brand/5  w-full p-2.5 dark:bg-form-dark/50 dark:focus:bg-neo-900  dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-brand-dark/5 text-base')
 export const Switch = styled(SwitchDef, ' text-neo-800 ')
-
 export const Hidden = styled(TextInputDef, 'hidden')
-
-export function Dropdown(props: ViewProps) {
-  const { colors } = useTheme();
-
-  let DropdownDef1 = styled(DropdownDef, 'bg-form/50 focus:bg-white focus:ring text-neo-800 rounded-lg focus:ring-brand/5  w-full p-2.5 dark:bg-form-dark/50 dark:focus:bg-neo-900  dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-brand-dark/5 text-base  px-2.5 py-1 ')
-  let { className,  ...rest } = props;
-
-  return (
-    <DropdownDef1 {...rest} style={{height:48}} placeholderStyle={{}}  containerStyle={{borderRadius:8}} itemTextStyle={{padding:0, borderRadius:8}} itemContainerStyle = {{backgroundColor:colors.selectBackground, padding:0,   }} activeColor={colors.selectBackgroundActive} ></DropdownDef1>
-);
-}
+export const Dropdown = styled(DropdownDef, 'bg-form/50 focus:bg-white focus:ring text-neo-800 rounded-lg focus:ring-brand/5  w-full p-2.5 dark:bg-form-dark/50 dark:focus:bg-neo-900  dark:placeholder-neo-400 dark:text-neo-200 dark:focus:ring-brand-dark/5 text-base  px-2.5 py-1 ')
+ 
 
 /* modal */
 type ModalPropsCustom = ModalProps & {

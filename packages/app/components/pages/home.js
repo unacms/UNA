@@ -2,6 +2,7 @@ import { View, Row } from 'app/design/view'
 
 export default function Home(props) {
     const feed = Object.assign({}, props.children[2]);
+    console.log('111111111', props.children[2]);
     //TODO: make flexable
     //feed.props.blocks[0].hidden = true;
     let post = Object.assign({}, props.children[3]);

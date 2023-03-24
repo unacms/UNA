@@ -9,17 +9,20 @@ import { Icon } from 'app/components/svg';
 import { NavScreen } from 'app/components/navScreen'
 import { useRouter } from "expo-router";
 import { useTheme } from '@react-navigation/native';
+import { useCurrentUser } from 'app/context/user';
 
 const Tab = createBottomTabNavigator();
 
 export function NavBottomTabs(params) {
+
+    let { currentUser, setCurrentUser } = useCurrentUser();
+
     const router = useRoute()
     const path = router?.path;
 
     let iconWidth = 24;
     let iconHeight = 24;
 
-    const routerExpo = useRouter();
     const { colors } = useTheme();
 
     const TabList = [
@@ -29,14 +32,14 @@ export function NavBottomTabs(params) {
         icon: 'app-home'
       },
       {
-        title: 'Discover',
+        title: 'Explore',
         url: '/posts-home',
-        icon: 'app-discover'
+        icon: 'app-explore'
       },
       {
-        title: 'Create',
+        title: 'Messages',
         url: '/persons-home',
-        icon: 'app-create'
+        icon: 'app-messages'
       },
       {
         title: 'Notifications',
@@ -44,9 +47,9 @@ export function NavBottomTabs(params) {
         icon: 'app-notifications'
       },
       {
-        title: 'Messenger',
-        url: '/messenger',
-        icon: 'app-messenger'
+        title: (currentUser ? 'Logout': 'Login'),
+        url: (currentUser ? '/logout': '/login'),
+        icon: 'app-usermenu'
       },
     ];
 
@@ -66,7 +69,7 @@ export function NavBottomTabs(params) {
                 tabBarInactiveTintColor: colors.barsColor,
             })}
         
-            initialRouteName={params.initial?params.initial:''}
+            initialRouteName={params.initial?'tab-0':''}
         >
             <Tab.Screen
                 name="/pages"

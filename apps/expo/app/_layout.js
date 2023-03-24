@@ -11,12 +11,11 @@ export default function Root(props) {
   return (
     <ThemeProvider value={scheme === 'dark' ? CustomDarkTheme : CustomLightTheme} >
       <Provider>
-        <CurrentUserProvider>
+        
           <Stack screenOptions={{  headerStyle: {
                       
                       headerTintColor: '#fff',
                     },headerShown: false, }}></Stack>
-        </CurrentUserProvider>
       </Provider>    
     </ThemeProvider>
 

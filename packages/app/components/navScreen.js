@@ -9,7 +9,7 @@ import { NavDrawer } from 'app/components/navDrawer'
 export function NavScreen(params) {
     const _path = params.route.params.url;
     let _isFocused = params.navigation.isFocused();
-
+    console.log('11111111111', _path);
     const [pageData, setPageData] = useState(null);
     const [isFocused, setIsFocused] = useState(_isFocused);
 
@@ -27,7 +27,7 @@ export function NavScreen(params) {
         })();
     }, [_path, isFocused]);
 
-if (params.route.params.checkDrawer && pageData && pageData.data.menu && pageData.data.menu.items.length > 1){
+if (params.route.params.checkDrawer && pageData && pageData.data.menu && pageData.data.menu.items && pageData.data.menu.items.length > 1){
     params.navigation.setOptions({ headerShown: false })
     return <NavDrawer menu = {pageData.data.menu} />
 }

@@ -10,7 +10,7 @@ import { stripTags } from '../../lib/util';
 import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
-import { Dropdown } from 'app/design/controls'
+import Dropdown from 'app/ui/atoms/dropdown'
 import { useTheme } from '@react-navigation/native';
 import { LayoutData } from 'app/context/layout';
 
