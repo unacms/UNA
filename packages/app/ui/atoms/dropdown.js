@@ -9,7 +9,7 @@ export default function Dropdown(props) {
   
     return (
       <DropdownDef {...rest} 
-      style={{height:48}} 
+      style={{}} 
       placeholderStyle={{color:colors.text}}  
       containerStyle={{borderRadius:8, background:colors.selectBackground}} 
       itemTextStyle={{padding:0, borderRadius:8, color:colors.text}} 
