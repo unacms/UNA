@@ -453,7 +453,9 @@ export default function ElementReactions(oProps) {
             <View className={!iTotal ? "hidden" : ""}>
                 <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
-                    <View className="pl-2">{iTotal}</View>
+                    <View className="pl-2">
+                        <Text>{iTotal}</Text>
+                    </View>
                 </Button>
                 <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
