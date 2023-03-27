@@ -17,40 +17,21 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' ios:pr-2 android:pr-2') + ' text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
             <View className={sClassName}>
-                <Link href={oProps.link}>
-                    <Text>{oProps.title}</Text>
-                </Link>
+                <Link href={oProps.link}>{oProps.content}</Link>
             </View>
         );
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' ios:pr-2 android:pr-2'));
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full');
 
         return (
-            <View className={sClassName}>
-                <Text>{oProps.title}</Text>
-            </View>
+            <View className={sClassName}>{oProps.content}</View>
         );
-    }
-
-    let sTitle = undefined;
-    switch(oProps.content_type) {
-        case 'time':
-            sTitle = <Time ts={oProps.title}></Time>
-            break;
-
-        case 'profile':
-            sTitle = <Profile {...oProps.data} displayType="unit" displaySize="xs" showInfo="false" />
-            break;
-
-        case 'text':
-        default:
-            sTitle = <Text className="flex">{oProps.title}</Text>
     }
 
     let sIcon = undefined;
@@ -61,9 +42,36 @@ export default function MenuItemLink(oProps) {
             sIcon = <Text className="h-6 w-6 ios:pr-1 android:pr-1 text-base">{oProps.icon}</Text>;
     }
 
-    sTitle = (
-        <View className="flex flex-row web:space-x-1">{sIcon}{sTitle}</View>
-    );
+    const sClassContent = 'flex flex-row web:space-x-1';
 
-    return bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />;
+    let sContent = undefined;
+    switch(oProps.content_type) {
+        case 'time':
+            sContent = (
+                <View className={sClassContent}>
+                    {sIcon}
+                    <Time ts={oProps.title}></Time>
+                </View>
+            );
+            break;
+
+        case 'profile':
+            sContent = (
+                <View className="flex">
+                    <Profile {...oProps.data} displayType="unit" displaySize="xs" showInfo="false" />
+                </View>
+            );
+            break;
+
+        case 'text':
+        default:
+            sContent = (
+                <View className={sClassContent}>
+                    {sIcon}
+                    <Text className="flex">{oProps.title}</Text>
+                </View>
+            );
+    }
+
+    return bShowLink ? <DisplayLink {...oProps} content={sContent} /> : <DisplayText {...oProps} content={sContent} />;
 }
