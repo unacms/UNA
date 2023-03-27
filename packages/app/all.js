@@ -8,10 +8,12 @@ import { useCurrentUser } from 'app/context/user';
 export default function (props) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
-
+    
     useEffect(() => {
         if (props?.data?.user)
             setCurrentUser(props.data.user);
+        else
+            setCurrentUser(null);
     }, [props?.data?.user]);
 
     if (200 == parseInt(props.status)) {

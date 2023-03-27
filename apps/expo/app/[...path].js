@@ -1,11 +1,9 @@
-import { NavBottomTabs } from 'app/components/navBottomTabs'
+import { NavBottomTabs } from 'app/components/nav/bottomtabs'
 import { CurrentUserProvider } from 'app/context/user';
 
 export default function Root (props) {
   return (
-    <CurrentUserProvider>
       <NavBottomTabs/>
-    </CurrentUserProvider>
   );
 }
 
