@@ -74,7 +74,7 @@ export function NavBottomTabs(params) {
             <Tab.Screen
                 name="/pages"
                 component={NavScreen}
-                options={{  tabBarButton: () => null, tabBarVisible: false}}
+                options={{  tabBarButton: () => null, tabBarVisible: false, unmountOnBlur: true}}
                 initialParams={{ url: path, useUrl: true}}
             />
             {

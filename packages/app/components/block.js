@@ -15,9 +15,9 @@ export default function Block({block}) {
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
     //TODO: conatiners @lg/main:flex https://tailwindcss.com/blog/tailwindcss-v3-2#container-queries
-    if (block.type == 'service' && !Array.isArray(block.content))
-        return null;
-
+    //if (block.type == 'service' && !Array.isArray(block.content))
+    //    return null;
+    console.log('xxxx', block);
     return (
         
         <View key={block.id} className="w-full">
