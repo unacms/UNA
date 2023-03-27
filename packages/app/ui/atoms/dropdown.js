@@ -9,9 +9,9 @@ export default function Dropdown(props) {
   
     return (
       <DropdownDef {...rest} 
-      style={{height:48}} 
+      style={{}} 
       placeholderStyle={{color:colors.text}}  
-      containerStyle={{borderRadius:8, background:colors.selectBackground}} 
+      containerStyle={{borderRadius:8, background:colors.selectBackground, borderColor: colors.selectBackground}} 
       itemTextStyle={{padding:0, borderRadius:8, color:colors.text}} 
       selectedTextStyle={{color:colors.text}} 
       itemContainerStyle = {{backgroundColor:colors.selectBackground, padding:0,  overflow:'hidden', borderRadius:8 }} 
