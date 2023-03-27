@@ -156,7 +156,7 @@ export default function ElementLikes(oProps) {
     //--- Counter
     let sCounter = '';
     if(bShowCounter) {
-        let sIcon = '';
+        let sIcon = undefined;
         if(bUseInternalIcons)
             sIcon = <Icon icon="like" className="flex h-6 w-6"></Icon>
         else
@@ -169,7 +169,7 @@ export default function ElementLikes(oProps) {
                 iCount = oCounterGlobal.count;
         }
 
-        let sUsers = '';
+        let sUsers = undefined;
         if(performedBy) {
             sUsers = performedBy.map(aUser => {
                 return (

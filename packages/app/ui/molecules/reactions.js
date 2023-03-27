@@ -239,7 +239,7 @@ export default function ElementReactions(oProps) {
             const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
                 const aItem = oAction.menu.items[iKey];
 
-                let sIcon = '';
+                let sIcon = undefined;
                 if(bUseInternalIcons)
                     sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>;
                 else
@@ -290,7 +290,7 @@ export default function ElementReactions(oProps) {
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">
                                 <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
-                                    let sIcon = '';
+                                    let sIcon = undefined;
                                     if(bUseInternalIcons)
                                         sIcon = <Icon icon={item.name} className="flex h-6 w-6"></Icon>
                                     else
@@ -322,7 +322,7 @@ export default function ElementReactions(oProps) {
             if(aItem.name == 'default')
                 return;
 
-            let sIcon = '';
+            let sIcon = undefined;
             if(bUseInternalIcons)
                 sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
             else
@@ -336,7 +336,7 @@ export default function ElementReactions(oProps) {
                     iCount = oCounterGlobal[sCounterKey];
             }
 
-            let sUsers = '';
+            let sUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
                     return (
@@ -370,7 +370,7 @@ export default function ElementReactions(oProps) {
             if(aItem.name == 'default')
                 return;
 
-            let sIcon = '';
+            let sIcon = undefined;
             if(bUseInternalIcons)
                 sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
             else
@@ -402,7 +402,7 @@ export default function ElementReactions(oProps) {
             if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
                 return;
 
-            let sIcon = '';
+            let sIcon = undefined;
             if(bUseInternalIcons)
                 sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
             else
@@ -427,7 +427,7 @@ export default function ElementReactions(oProps) {
             if(!sSelected && aItem.count != 0)
                 sSelected = aItem.name;
 
-            let sUsers = '';
+            let sUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
                     return (
