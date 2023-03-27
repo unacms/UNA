@@ -14,7 +14,7 @@ export const DropdownMenuContentV = DropdownMenu.create(
 export const DropdownMenuItemV = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'block px-4 p-2 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 font-medium text-neo-700 dark:text-neo-200 dark:hover:text-white'
+    'block px-4 p-2 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 font-medium text-neo-700 dark:text-neo-200 dark:hover:text-white hover:cursor-pointer'
   ),
   'Item'
 )
@@ -30,7 +30,7 @@ export const DropdownMenuContentH = DropdownMenu.create(
 export const DropdownMenuItemH = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'block px-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-600  dark:hover:text-white rounded-lg'
+    'block px-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg hover:cursor-pointer'
   ),
   'Item'
 )

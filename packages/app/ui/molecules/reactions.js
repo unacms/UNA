@@ -352,7 +352,7 @@ export default function ElementReactions(oProps) {
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
                     <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
                         {sIcon}
-                        <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
+                        <Text className="pl-1.5 pr-0.5 text-neo-700 dark:text-neo-200">{iCount}</Text>
                     </Button>
                     <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
@@ -454,7 +454,7 @@ export default function ElementReactions(oProps) {
                 <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="pl-2">
-                        <Text>{iTotal}</Text>
+                        <Text className="text-neo-700 dark:text-neo-200">{iTotal}</Text>
                     </View>
                 </Button>
                 <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
