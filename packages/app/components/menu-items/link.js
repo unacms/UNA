@@ -68,7 +68,7 @@ export default function MenuItemLink(oProps) {
             sContent = (
                 <View className={sClassContent}>
                     {sIcon}
-                    <Text className="flex">{oProps.title}</Text>
+                    <Text className="flex text-neo-600 dark:text-neo-400">{oProps.title}</Text>
                 </View>
             );
     }
