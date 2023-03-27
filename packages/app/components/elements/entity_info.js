@@ -10,10 +10,10 @@ export default function ElementEntityInfo({data}) {
         const a = data.inputs[key];
 
         if (a.type){
-            return <Row><Text className='font-bold'>{a.caption}: </Text>{getValue(a)}</Row>
+            return <Row key={a.name}><Text className='font-bold'>{a.caption}: </Text>{getValue(a)}</Row>
         }
         else{
-            return <Text>Unsupporded field type: {a.type}</Text>
+            return <Text key={a.name}>Unsupporded field type: {a.type}</Text>
         }
     }); 
 

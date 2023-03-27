@@ -228,7 +228,7 @@ export default function ElementReactions(oProps) {
     if(isPageVar('title'))
         sTitle = getPageVar('title');
 
-    let sAction = '';
+    let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
             <Button variant="default" startDecorator={sReaction} title={sTitle} onPress={handleUndo} />
@@ -398,6 +398,9 @@ export default function ElementReactions(oProps) {
             const aItem = oCounter.items[iKey];
             if(aItem.name == 'default')
                 return;
+            
+            if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
+                return;
 
             let sIcon = '';
             if(bUseInternalIcons)
@@ -410,7 +413,7 @@ export default function ElementReactions(oProps) {
                 sClass += ' border-b border-gray-400 dark:border-gray-400';
 
             return (
-                <View className={sClass}>
+                <View key={aItem.name} className={sClass}>
                     <Button variant="text" rounded="true" onPress={() => {setTabVisibleByCpd(aItem.name)}}>{sIcon}</Button>
                 </View>
             );
@@ -442,7 +445,7 @@ export default function ElementReactions(oProps) {
             sClass += 'space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200';
 
             return (
-                <View className={sClass}>{sUsers}</View>
+                <View key={aItem.name} className={sClass}>{sUsers}</View>
             );
         });
 
@@ -461,15 +464,15 @@ export default function ElementReactions(oProps) {
     };
 
     //--- Counter
-    let aCounter = [];
+    let sCounter = undefined;
     if(bShowCounter)
         switch(sCounteType) {
             case 'compound':
-                aCounter = getCounterCompound()
+                sCounter = getCounterCompound()
                 break;
 
             case 'divided':
-                aCounter = getCounterDivided();
+                sCounter = getCounterDivided();
                 break;
         }
 
@@ -483,7 +486,7 @@ export default function ElementReactions(oProps) {
     return (
         <View className="inline-flex gap-1 sm:gap-0">
             {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className="flex-row">{aCounter}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className="flex-row">{sCounter}</View>}
         </View>
     );
  }
