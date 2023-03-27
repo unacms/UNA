@@ -15,6 +15,7 @@ export default function FormFieldPassword(props) {
     return (
         <Field {...props}>
             <Input 
+                secureTextEntry={true}
                 name={props.name}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}

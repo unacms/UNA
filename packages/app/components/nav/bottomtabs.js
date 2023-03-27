@@ -1,13 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
 import All, { getData } from 'app/all'
-
-import { View } from 'app/design/view'
+import { useRouter } from 'expo-router';
+import { View,Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 import { Icon } from 'app/components/svg';
-import { NavScreen } from 'app/components/navScreen'
-import { useRouter } from "expo-router";
+import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 
@@ -48,7 +47,7 @@ export function NavBottomTabs(params) {
       },
       {
         title: (currentUser ? 'Logout': 'Login'),
-        url: (currentUser ? '/logout': '/logout'),
+        url: (currentUser ? '/logout': '/login'),
         icon: 'app-usermenu'
       },
     ];
@@ -67,6 +66,7 @@ export function NavBottomTabs(params) {
                     marginTop: 5,
                 },
                 tabBarInactiveTintColor: colors.barsColor,
+                headerLeft: () => getHeaderAction(navigation, route)
             })}
         
             initialRouteName={params.initial?'tab-0':''}
@@ -95,3 +95,25 @@ export function NavBottomTabs(params) {
         </Tab.Navigator>
     );
 }
+
+function getHeaderAction(navigation, route) {
+    const routerExpo = useRouter();
+  
+    if (navigation.isFocused() && route.name === '/pages') {
+      return (
+        <Pressable
+          onPress={routerExpo.back}
+          style={({ pressed }) => [
+            {
+              padding: 14, // Adjust padding to position the icon
+              opacity: pressed ? 0.5 : 1,
+            },
+          ]}
+        >
+          <Icon icon="app-back" width={24} height={24} />
+        </Pressable>
+      );
+    } else {
+      return null;
+    }
+  }

@@ -2,7 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Icon } from 'app/components/svg';
 import { Pressable, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { NavScreen } from 'app/components/navScreen'
+import { NavScreen } from 'app/components/nav/screen'
 
 const Drawer = createDrawerNavigator();
 

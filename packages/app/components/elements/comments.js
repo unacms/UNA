@@ -39,7 +39,6 @@ export default function ElementComments(props) {
 
     let immutable = props.form? props.form.request.immutable : false;
   
-    console.log(99999, commentData.postData);
     let { data: dynamicData, error } = useSWR(
         commentData.postData ? [prepareUrl(), '', commentData.postData] : null,
         fetcher,
