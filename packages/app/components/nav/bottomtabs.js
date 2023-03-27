@@ -98,6 +98,7 @@ export function NavBottomTabs(params) {
 
 function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
+    const { colors } = useTheme();
   
     if (navigation.isFocused() && route.name === '/pages') {
       return (
@@ -110,7 +111,7 @@ function getHeaderAction(navigation, route) {
             },
           ]}
         >
-          <Icon icon="app-back" width={24} height={24} />
+          <Icon icon="app-back" width={24} height={24}  color={colors.barsColor} />
         </Pressable>
       );
     } else {

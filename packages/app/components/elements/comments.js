@@ -211,16 +211,17 @@ export default function ElementComments(props) {
       }, []);
 */
     let sortItems = [
-        {label: 'Newest', value: 'desc'},
-        {label: 'Oldest', value: 'asc'}
+        {label: 'Newest first', value: 'desc'},
+        {label: 'Oldest first', value: 'asc'}
     ];
 
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
         <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
-        <Row className='  items-center  mr-12'>
-            <Text className='text-sm text-neo-900 dark:text-neo-50'>Sort&nbsp;by:&nbsp;</Text>
+       
+           
+            <View className='w-40'>
             <Dropdown className='w-40'
                 labelField="label"
                 valueField="value"
@@ -230,7 +231,7 @@ export default function ElementComments(props) {
                 value={commentData.orderWay}
                 data={sortItems}
             />
-        </Row>
+            </View>
     </Row>  
 
     const { colors } = useTheme();
