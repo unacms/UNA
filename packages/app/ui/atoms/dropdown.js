@@ -1,15 +1,21 @@
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Dropdown as DropdownDef } from 'app/design/controls'
-import { useTheme } from '@react-navigation/native';
-
+import  {Theme}  from 'app/design/theme'
 
 export default function Dropdown(props) {
-    const { colors } = useTheme();
-  
+    const { colors } = Theme();
     let { className,  ...rest } = props;
   
     return (
-      <DropdownDef {...rest} style={{height:48}} placeholderStyle={{}}  containerStyle={{borderRadius:8}} itemTextStyle={{padding:0, borderRadius:8}} itemContainerStyle = {{backgroundColor:colors.selectBackground, padding:0,   }} activeColor={colors.selectBackgroundActive} ></DropdownDef>
+      <DropdownDef {...rest} 
+      style={{height:48}} 
+      placeholderStyle={{color:colors.text}}  
+      containerStyle={{borderRadius:8, background:colors.selectBackground}} 
+      itemTextStyle={{padding:0, borderRadius:8, color:colors.text}} 
+      selectedTextStyle={{color:colors.text}} 
+      itemContainerStyle = {{backgroundColor:colors.selectBackground, padding:0,  overflow:'hidden', borderRadius:8 }} 
+      activeColor={colors.selectBackgroundActive} >
+      </DropdownDef>
   );
   }

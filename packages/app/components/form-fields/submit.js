@@ -15,7 +15,6 @@ export default function FormFieldSubmit(props) {
     let defaultValue = props.value;
     
     const { field } = useController({ name, rules, defaultValue });
-    console.log(props);
     return (
         <Field {...props}>
             <Button
