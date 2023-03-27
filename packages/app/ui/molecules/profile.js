@@ -82,7 +82,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold hover:underline">
+      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold truncate hover:underline">
         {oProps.title}
       </Text>
     )
@@ -90,7 +90,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold tracking-tight hover:underline">
+      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold tracking-tight truncate hover:underline">
         {oProps.title}
       </Text>
     )
