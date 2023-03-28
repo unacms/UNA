@@ -36,7 +36,7 @@ export function Modal(props: ModalPropsCustom) {
                     <View className="p-4">
                     <Row className={(!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
                       { !!props.title && <View><Text className='text-lg font-bold'>{props.title}</Text></View>}
-                      { !!props.onClose && <View className=''> <Button variant='default' size='xs' startDecorator='close' onPress={props.onClose}/></View>}
+                      { !!props.onClose && <View className=''><Button variant='default' size='xs' startDecorator='close' onPress={props.onClose}/></View>}
                     </Row>
                         <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
                     </View>
