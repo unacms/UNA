@@ -61,15 +61,6 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
-    headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
-    headers['Pragma'] = "no-cache";
-    headers['Expires'] = "0";
-
-    console.log("---------- Request Headers Begin -----------");
-    console.log(headers);
-    //console.log(await r.text());
-    console.log("---------- Request Headers End -----------");
-
     // perform fetch
     return fetch(host + path, {
         method: data ? 'POST' : 'GET',
@@ -78,11 +69,6 @@ export async function fetcherRaw (host, mixed) {
         credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
     })
     .then(async (r) => {
-
-        console.log("---------- Response Headers Begin -----------");
-        console.log(r.headers);
-        //console.log(await r.text());
-        console.log("---------- Response Headers End -----------");
 
         if (callback)
             callback(r);
