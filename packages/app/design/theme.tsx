@@ -12,8 +12,8 @@ export const CustomLightTheme = {
           primary: '#2563EB',
           barsBackground : '#FFFFFF',
           barsColor : '#4B5563',
-          selectBackground: 'rgba(209, 213, 219, 1)',
-          selectBackgroundActive: 'rgba(255, 255, 255, 1)'
+          selectBackground: 'rgba(255, 255, 255, 1)',
+          selectBackgroundActive: 'rgba(209, 213, 219, 0.3)'
         },
     };
     
