@@ -61,6 +61,10 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
+    headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
+    headers['Pragma'] = "no-cache";
+    headers['Expires'] = "0";
+
     console.log("---------- Request Headers Begin -----------");
     console.log(headers);
     //console.log(await r.text());
