@@ -1,11 +1,12 @@
 import { useRouter } from 'expo-router';
-import { View,Pressable } from 'app/design/view'
+import { Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 import { Icon } from 'app/components/svg';
 import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
+import { NavBottomTabsList } from 'app/components/nav/settings'
 
 const Tab = createBottomTabNavigator();
 
@@ -14,7 +15,7 @@ export function NavBottomTabs(params) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const router = useRoute()
-    let path = router?.path;
+    const path = router?.path;
     if (!path || path.startsWith('expo-development-client/'))
       path = '/home';
 
@@ -23,33 +24,7 @@ export function NavBottomTabs(params) {
 
     const { colors } = useTheme();
 
-    const TabList = [
-      {
-        title: 'Home',
-        url: '/home',
-        icon: 'app-home'
-      },
-      {
-        title: 'Explore',
-        url: '/posts-home',
-        icon: 'app-explore'
-      },
-      {
-        title: 'Messages',
-        url: '/persons-home',
-        icon: 'app-messages'
-      },
-      {
-        title: 'Notifications',
-        url: '/notifications-view',
-        icon: 'app-notifications'
-      },
-      {
-        title: (currentUser ? 'Logout': 'Login'),
-        url: (currentUser ? '/logout': '/login'),
-        icon: 'app-usermenu'
-      },
-    ];
+    const TabList = NavBottomTabsList();
 
     return (
         <Tab.Navigator
@@ -79,8 +54,8 @@ export function NavBottomTabs(params) {
             {
                 TabList.map((tab, index) => (
                     <Tab.Screen
-                        key={`tab-${tab.title}`}
-                        name={`tab-${tab.title}`}
+                        key={`tab-${index}`}
+                        name={`tab-${index}`}
                         component={NavScreen}
                         initialParams={{ url: tab.url, checkDrawer: true}}
                         options={{  

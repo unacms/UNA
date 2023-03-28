@@ -51,7 +51,7 @@ export default function ElementComments(props) {
 
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-        console.log("prepare:" + requestUrl + JSON.stringify({...def, ...params}))
+        //console.log("prepare:" + requestUrl + JSON.stringify({...def, ...params}))
         return requestUrl + JSON.stringify({...def, ...params});
     }
     

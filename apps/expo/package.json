@@ -28,6 +28,8 @@
     "react-native-html-parser": "^0.1.0",
     "react-native-ios-context-menu": "^1.15.3",
     "react-native-multibar": "^1.1.5",
+    "react-native-pager-view": "6.0.1",
+    "react-native-paper": "^5.5.2",
     "react-native-reanimated": "~2.14.4",
     "react-native-redash": "^18.1.0",
     "react-native-render-html": "^6.3.4",

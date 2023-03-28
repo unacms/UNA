@@ -187,11 +187,11 @@ html {
         width: 1536px
     }
 }
-@media (min-width: 1280px){
+/*@media (min-width: 1280px){
     .u-content4{
         width: calc(100% - 304px);
     }
-}
+}*/
 .u-hidden{
     @apply hidden;
 }

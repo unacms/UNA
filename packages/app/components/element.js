@@ -16,6 +16,8 @@ import EntityActions from './elements/entity_actions';
 import EntityInfo from './elements/entity_info';
 import EntityCover from './elements/entity_cover';
 
+import ProfileMenu from './elements/profile_menu';
+
 const componentsMap = {
     browse: Browse,
     form: Form,
@@ -28,7 +30,8 @@ const componentsMap = {
     entity_actions: EntityActions,
     entity_attachments: EntityAttachments,
     entity_info: EntityInfo,
-    entity_cover: EntityCover
+    entity_cover: EntityCover,
+    profile_menu: ProfileMenu
 };
 
 export default function Element(a) {
