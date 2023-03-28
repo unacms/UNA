@@ -19,7 +19,7 @@ export default function (props) {
   }, [])
 
   var skeleton = ''
-  console.log(url)
+  console.log("Skeleton URL: " + url);
   if (url) {
     skeleton = url == '/' || url == '' || url == '/home' ? 'home' : skeleton
     skeleton = url == '/posts-home' ? 'posts-home' : skeleton

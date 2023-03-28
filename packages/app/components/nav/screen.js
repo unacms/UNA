@@ -18,16 +18,15 @@ export function NavScreen(params) {
     if (isFocused != _isFocused){
         setIsFocused(_isFocused)
     }
-    console.log('222',_isFocused,_path,  '*****');
+    console.log(`NavScreen 1 - focused:${_isFocused} / path: ${_path}`);
     useEffect(() => {
         (async () => {
-            if (isFocused && _path && _path.startsWith('/')){
-                console.log('333',_isFocused,_path,  '*****');
+            if (isFocused && _path && _path.startsWith('/')){                
+                console.log(`NavScreen 2 - focused:${_isFocused} / path: ${_path}`);
                 const d = await getData(_path);
 
                 if (d?.props) {
-                    setPageData (d?.props)
-                    console.log(params.route.params.checkDrawer,d.props.data.menu, '*****');
+                    setPageData (d?.props)                    
                     if (params.route.params.checkDrawer && d.props.data.menu && d.props.data.menu.items && d.props.data.menu.items.length > 1){
                         setTimeout(() => {
                             params.navigation.setOptions({ headerShown: false })

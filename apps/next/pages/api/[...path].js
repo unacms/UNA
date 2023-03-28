@@ -1,3 +1,32 @@
+/*
+import { createProxyMiddleware } from "http-proxy-middleware"
+
+const proxy = createProxyMiddleware({
+    target: process.env.UNA_URL,
+    secure: false,
+    pathRewrite: { 
+        "^/api": "" // remove `/api` prefix
+    }, 
+    logLevel: 'debug',
+    changeOrigin: true,
+    headers: {
+        authorization: 'Bearer ' + process.env.UNA_API_KEY
+    },
+});
+
+export default function handler(req, res) {
+    proxy(req, res, (err) => {        
+      if (err) {
+        throw err;
+      }
+      throw new Error(
+        `Request '${req.url}' is not proxied! We should never reach here!`
+      );
+    });    
+}
+*/
+/* OLD implementation: */
+
 import { fetcherRaw } from 'app/lib/fetcher';
 
 const setCookie = require('set-cookie-parser');
@@ -29,7 +58,7 @@ export default async function handler(req, res) {
     const data = await fetcherRaw(process.env.UNA_URL, [path, process.env.UNA_API_KEY, body, undefined, headers]).then(r => {
         if (r.headers.has('Set-Cookie')) {
             var combinedCookieHeader = r.headers.get('Set-Cookie');            
-            var splitCookieHeaders = setCookie.splitCookiesString(combinedCookieHeader)
+            var splitCookieHeaders = setCookie.splitCookiesString(combinedCookieHeader)            
             res.setHeader('Set-Cookie', splitCookieHeaders);
         }
         return r.json();
@@ -38,4 +67,3 @@ export default async function handler(req, res) {
     // return result
     res.status(data.props?.status ? data.props.status : 200).json(data);
 }
-

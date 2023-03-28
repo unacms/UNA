@@ -32,8 +32,7 @@ export async function fetcher (mixed) {
 }
 
 export async function fetcherRaw (host, mixed) {
-    console.log(host + mixed);
-    typeof(window) !== 'undefined' && console.log(window.location);
+    console.log("fetcherRaw: ", host + mixed);
     let path, token, data, origin, headers, callback;
 
     // gen incoming variables
@@ -62,6 +61,11 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
+    console.log("---------- Request Headers Begin -----------");
+    console.log(headers);
+    //console.log(await r.text());
+    console.log("---------- Request Headers End -----------");
+
     // perform fetch
     return fetch(host + path, {
         method: data ? 'POST' : 'GET',
@@ -69,7 +73,13 @@ export async function fetcherRaw (host, mixed) {
         headers: headers,
         credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
     })
-    .then((r) => {
+    .then(async (r) => {
+
+        console.log("---------- Response Headers Begin -----------");
+        console.log(r.headers);
+        //console.log(await r.text());
+        console.log("---------- Response Headers End -----------");
+
         if (callback)
             callback(r);
         return r;

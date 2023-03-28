@@ -1,6 +1,3 @@
-import React from 'react';
-import { useState, useEffect } from 'react'
-import All, { getData } from 'app/all'
 import { useRouter } from 'expo-router';
 import { View,Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -17,7 +14,9 @@ export function NavBottomTabs(params) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const router = useRoute()
-    const path = router?.path;
+    let path = router?.path;
+    if (!path || path.startsWith('expo-development-client/'))
+      path = '/home';
 
     let iconWidth = 24;
     let iconHeight = 24;
@@ -80,8 +79,8 @@ export function NavBottomTabs(params) {
             {
                 TabList.map((tab, index) => (
                     <Tab.Screen
-                        key={`tab-${index}`}
-                        name={`tab-${index}`}
+                        key={`tab-${tab.title}`}
+                        name={`tab-${tab.title}`}
                         component={NavScreen}
                         initialParams={{ url: tab.url, checkDrawer: true}}
                         options={{  
