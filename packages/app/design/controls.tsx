@@ -12,7 +12,7 @@ import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 export const Input = styled(TextInputDef, 'bg-form/30 h-11 border border-neoborder/30 focus:bg-white focus:border-neoborder text-neo-800 rounded-lg   w-full p-2 dark:bg-form-dark/50 dark:focus:bg-neo-950  dark:placeholder-neo-400 dark:text-neo-200 dark:border-neoborder-dark/50 text-base')
 export const Switch = styled(SwitchDef, ' text-neo-800 ')
 export const Hidden = styled(TextInputDef, 'hidden')
-export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder/30 focus:bg-white  text-neo-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-neo-900  dark:placeholder-neo-400 dark:text-neo-200  text-base  ')
+export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder/30 focus:bg-white  text-neo-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-neo-900  dark:placeholder-neo-400 dark:text-neo-200 dark:border-neoborder-dark/50  text-base  ')
  
 
 /* modal */
