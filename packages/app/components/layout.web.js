@@ -9,7 +9,7 @@ import { ScrollView, SafeAreaView } from 'app/design/view'
 import { useRouter } from "next/router";
 import { View } from 'app/design/view'
 import { NavigationContainer } from '@react-navigation/native';
-import { NavMaterialTabs } from 'app/components/nav/materialtabs'
+import { NavMaterialTabs } from 'app/components/nav/materialtabsweb'
 import Page from 'app/components/page'
 export const siteTitle = 'NEO';
 
@@ -56,7 +56,7 @@ export default function Layout(props) {
                 <View className=" u-content3 mx-auto flex-1 flex-row -top-[1px]" > 
                 <View className={sClassName}>
                     {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
-                    {(!bTabsPresent) &&  <Page data={props.data}/>}
+                    {(!bTabsPresent) && <Page data={props.data}/>}
                 </View>
                 </View>
                 <View className="fixed bottom-0 w-full lg:hidden"><Footer/></View>

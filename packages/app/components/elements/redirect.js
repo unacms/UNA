@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 export default function ElementRedirect({data}) {
     const router = useRouter();
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Redirect to:", data?.uri);
+    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Redirect to:", data);
     useEffect(() => {
         if (data?.uri) {
             if (data?.timeout)

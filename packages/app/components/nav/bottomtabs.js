@@ -11,11 +11,10 @@ import { NavBottomTabsList } from 'app/components/nav/settings'
 const Tab = createBottomTabNavigator();
 
 export function NavBottomTabs(params) {
-
     let { currentUser, setCurrentUser } = useCurrentUser();
+    const router = useRoute();
+    let path = router?.path;
 
-    const router = useRoute()
-    const path = router?.path;
     if (!path || path.startsWith('expo-development-client/'))
       path = '/home';
 
@@ -43,12 +42,12 @@ export function NavBottomTabs(params) {
                 headerLeft: () => getHeaderAction(navigation, route)
             })}
         
-            initialRouteName={params.initial?'tab-0':''}
+            initialRouteName={params.initial ? 'tab-0' : '' }
         >
             <Tab.Screen
                 name="/pages"
                 component={NavScreen}
-                options={{  tabBarButton: () => null, tabBarVisible: false, unmountOnBlur: true}}
+                options={{tabBarButton: () => null, tabBarVisible: false, unmountOnBlur: true}}
                 initialParams={{ url: path, useUrl: true}}
             />
             {

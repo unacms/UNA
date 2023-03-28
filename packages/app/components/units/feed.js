@@ -48,7 +48,7 @@ function DefaultUnit(data) {
             </Text>
                 { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
                     <Text className="text-neo-700    dark:text-neo-200 text-base">
-                        {data.sPlain}{data.cmts.count}
+                        {data.plainText}
                     </Text>
                         { data.showMore && <View className='absolute    flex-row bottom-0    right-0 bg-gradient-to-r '    >
                             <View className='    w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
@@ -100,11 +100,12 @@ function SmallUnit(data) {
                     <Text className='text-sm flex-none text-neo-600 dark:text-neo-400'><Time ts={data.date}></Time></Text>
                 </View>
                 <View className='flex-row space-x-2'>
-                    <Text className="flex-auto text-lg font-bold text-neo-900 dark:text-neo-50 truncate">{data.content.title}</Text>
-                    <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'><Text className='text-sm text-neo-50 dark:text-neo-900 font-medium'>{data.cmts.count}</Text></View>
+                    <Text className="flex-auto text-lg font-bold text-neo-900 dark:text-neo-50" numberOfLines={1}>{data.content.title}</Text>
+                    <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'>
+                        <Text className='text-sm text-neo-50 dark:text-neo-900 font-medium'>{data.cmts.count}</Text></View>
                 </View>
                 <View className='flex-row space-x-1'>
-                    <Text className='text-sm text-neo-600 dark:text-neo-400 truncate'>{data.plainText}</Text>
+                    <Text className='text-sm text-neo-600 dark:text-neo-400' numberOfLines={1}>{data.plainText}</Text>
                 </View>         
             </View>
     </View>

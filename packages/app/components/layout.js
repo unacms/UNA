@@ -4,7 +4,6 @@ import Tabsbar from './tabsbar';
 
 import Breadcrumb from './breadcrumb';
 import Footer from './footer';
-import useSkeleton from '../lib/hooks/skeleton';
 import { View, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import BottomSheet from 'app/components/bottomSheet';
@@ -22,13 +21,11 @@ export default function Layout(props) {
     if (props.uri && props.uri.includes('view-post')){
         oComments = true;
     }
-
-    const [loading, skeleton] = useSkeleton();
     const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
     return (
         <LayoutDataContext>
-            <View className="h-full">
+            <View className="h-full bg-red">
             <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
                 {(oBreadCrump == null ) && <Tabsbar />}
                 {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}

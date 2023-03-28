@@ -4,6 +4,7 @@ import Layout from 'app/components/layout';
 import Page from 'app/components/page';
 import PageError from 'app/components/pages/error';
 import { useCurrentUser } from 'app/context/user';
+import { Platform, PlatformIOSStatic } from 'react-native'
 
 export default function (props) {
 
@@ -19,7 +20,7 @@ export default function (props) {
     if (200 == parseInt(props.status)) {
         return (
             <Layout uri={props.path} data={props.data}>
-               
+               {Platform.OS != 'web' && <Page uri={props.path} data={props.data} />}
             </Layout>
         );
     }
