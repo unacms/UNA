@@ -192,6 +192,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className + ' mr-0 ml-0'}
+          style={props.style}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -417,6 +418,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -434,6 +436,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -451,6 +454,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -465,6 +469,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -479,6 +484,7 @@ export function Icon(props) {
       data = (
         <Svg
           className={className}
+          style={props.style}
           aria-hidden="true"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -525,7 +531,12 @@ export function Icon(props) {
 
     case 'more':
       data = (
-        <Svg className={className} aria-hidden="true" viewBox="0 0 24 22">
+        <Svg 
+          className={className} 
+          style={props.style} 
+          aria-hidden="true" 
+          viewBox="0 0 24 22"
+        >
           <Path
             fill="currentColor"
             d="M12,10a2,2,0,1,0,2,2A2,2,0,0,0,12,10ZM5,10a2,2,0,1,0,2,2A2,2,0,0,0,5,10Zm14,0a2,2,0,1,0,2,2A2,2,0,0,0,19,10Z"

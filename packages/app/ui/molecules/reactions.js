@@ -21,6 +21,11 @@ import Profile from 'app/ui/molecules/profile';
 import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
+    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
+    const sClassIconInternal = 'flex h-6 w-6 text-neo-700 dark:text-neo-200';
+    const sCounteType = 'compound';
+    //const sCounteType = 'divided';
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -64,8 +69,6 @@ export default function ElementReactions(oProps) {
     const oParams = oProps.params;
     const oAction = oProps.action;
     const oCounter = oProps.counter;
-    const sCounteType = 'compound';
-    //const sCounteType = 'divided';
 
     let oCounterState = {};
     for (const i in oAction.menu.items) {
@@ -202,8 +205,7 @@ export default function ElementReactions(oProps) {
 
     //--- show action
     const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
-    const [ pickedEmoji, setPickedEmoji ] = useState(null);
-
+    
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
@@ -241,9 +243,9 @@ export default function ElementReactions(oProps) {
 
                 let sIcon = undefined;
                 if(bUseInternalIcons)
-                    sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>;
+                    sIcon = <Icon className={sClassIconInternal} icon={aItem.name}></Icon>;
                 else
-                    sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>;
+                    sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>;
 
                 return (
                     <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
@@ -292,9 +294,9 @@ export default function ElementReactions(oProps) {
                                 <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                                     let sIcon = undefined;
                                     if(bUseInternalIcons)
-                                        sIcon = <Icon icon={item.name} className="flex h-6 w-6"></Icon>
+                                        sIcon = <Icon className={sClassIconInternal} icon={item.name}></Icon>
                                     else
-                                        sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{item.icon}</Text>
+                                        sIcon = <Text className={sClassIconExternal}>{item.icon}</Text>
 
                                     return (
                                         <Button key={item.name} variant="text" rounded="true" onPress={(event) => {
@@ -324,9 +326,9 @@ export default function ElementReactions(oProps) {
 
             let sIcon = undefined;
             if(bUseInternalIcons)
-                sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
+                sIcon = <Icon className={sClassIconInternal} icon={aItem.name}></Icon>
             else
-                sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
+                sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>
 
             let iCount = aItem.count;
             if(isPageVar('counter')) {
@@ -372,9 +374,9 @@ export default function ElementReactions(oProps) {
 
             let sIcon = undefined;
             if(bUseInternalIcons)
-                sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
+                sIcon = <Icon className={sClassIconInternal} icon={aItem.name}></Icon>
             else
-                sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
+                sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>
 
             let iCount = aItem.count;
             if(isPageVar('counter')) {
@@ -404,9 +406,9 @@ export default function ElementReactions(oProps) {
 
             let sIcon = undefined;
             if(bUseInternalIcons)
-                sIcon = <Icon icon={aItem.name} className="flex h-6 w-6"></Icon>
+                sIcon = <Icon className={sClassIconInternal} icon={aItem.name}></Icon>
             else
-                sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
+                sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>
 
             let sClass = 'flex-1 flex flex-row justify-center top-px';
             if(aItem.name == sSelected)

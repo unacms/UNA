@@ -10,6 +10,8 @@ import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/components/svg';
 
 export default function ElementLikes(oProps) {
+    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
+    const sClassIconInternal = 'flex h-6 w-6 text-neo-700 dark:text-neo-200';
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -128,7 +130,7 @@ export default function ElementLikes(oProps) {
     if(isPageVar('title'))
         sTitle = getPageVar('title');
 
-    let sAction = '';
+    let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
             <Button variant="default" startDecorator="like" title={sTitle} onPress={handleUndo} />
@@ -136,16 +138,14 @@ export default function ElementLikes(oProps) {
     }
     else {
         if(bUseInternalIcons)
-            sIcon = sIcon && <Icon icon="like" className="flex h-6 w-6"></Icon>
+            sIcon = !!sIcon && <Icon className={sClassIconInternal} icon="like" ></Icon>
         else
-            sIcon = sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>
+            sIcon = !!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>
 
         sAction = (
             <Button id={getName('action-ddb')} variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
-                <View className="flex-row flex-nowrap items-center gap-1 mx-auto">
-                    {sIcon}
-                    {sTitle && <Text className='hidden sm:block pl-0.5'>{sTitle}</Text>}
-                </View>
+                {sIcon}
+                {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neo-700 dark:text-neo-200">{sTitle}</Text>}
             </Button>
         );
     }
@@ -154,13 +154,13 @@ export default function ElementLikes(oProps) {
     const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
 
     //--- Counter
-    let sCounter = '';
+    let sCounter = undefined;
     if(bShowCounter) {
         let sIcon = undefined;
         if(bUseInternalIcons)
-            sIcon = <Icon icon="like" className="flex h-6 w-6"></Icon>
+            sIcon = <Icon className={sClassIconInternal} icon="like" />
         else
-            sIcon = <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{oCounter.icon}</Text>
+            sIcon = <Text className={sClassIconExternal}>{oCounter.icon}</Text>
 
         let iCount = oCounter.count;
         if(isPageVar('counter')) {
