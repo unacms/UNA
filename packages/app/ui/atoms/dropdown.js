@@ -1,6 +1,8 @@
 import { Dropdown as DropdownDef } from 'app/design/controls'
 import { Theme }  from 'app/design/theme'
 import { Platform, PlatformIOSStatic } from 'react-native'
+import {Picker} from '@react-native-picker/picker';
+import { useState } from 'react'
 
 export default function Dropdown(props) {
     const { colors } = Theme();
@@ -14,6 +16,16 @@ export default function Dropdown(props) {
       itemContainerStyle = {backgroundColor:colors.selectBackground, borderRadius:6, overflow:'hidden'}
     }
 
+    const [selectedLanguage, setSelectedLanguage] = useState();
+
+    return (<Picker
+      selectedValue={selectedLanguage}
+      onValueChange={(itemValue, itemIndex) =>
+        setSelectedLanguage(itemValue)
+      }>
+      <Picker.Item label="Java" value="java" />
+      <Picker.Item label="JavaScript" value="js" />
+    </Picker>);
     return (
       <DropdownDef {...rest} 
         style={{}} 
