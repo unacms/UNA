@@ -26,8 +26,20 @@ export async function fetcher (mixed) {
             prefix = process.env.API_PROXY_URL;
     }
 
-    return await fetcherRaw(prefix, mixed).then(r => {
-        return r.json();
+    return await fetcherRaw(prefix, mixed).then(async (r) => {
+        let a;
+        try {
+            a = await r.json();
+        } catch (error) {
+            console.log("----------- Response isn't valid JSON for " + process.env.UNA_URL + path);
+            if ('readable' == r.body.state)
+                console.log(await r.text());
+            else
+                console.log("RESPONSE BODY ISN'T READABLE");
+            console.log("----------- END --------------");
+            a = {};
+        }
+        return a;
     });
 }
 
@@ -69,7 +81,6 @@ export async function fetcherRaw (host, mixed) {
         credentials: 'include' // Set to true on UNA side - Access-Control-Allow-Credentials
     })
     .then(async (r) => {
-
         if (callback)
             callback(r);
         return r;

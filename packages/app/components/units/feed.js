@@ -34,7 +34,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/60"    style={styles.card}>
+        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/60"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
@@ -43,16 +43,16 @@ function DefaultUnit(data) {
         <View className="px-4 pt-4">
         <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
         <View className="w-full    pb-4 flex-col space-y-4 pt-4">
-            <Text className="text-neo-700    group-hover:text-neo-900 duration-200 dark:group-hover:text-white dark:text-neo-200    text-2xl    tracking-tight font-bold">
+            <Text className="text-neogray-700    group-hover:text-neogray-900 duration-200 dark:group-hover:text-white dark:text-neogray-200    text-2xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
-                    <Text className="text-neo-700    dark:text-neo-200 text-base">
+                    <Text className="text-neogray-700    dark:text-neogray-200 text-base">
                         {data.plainText}
                     </Text>
                         { data.showMore && <View className='absolute    flex-row bottom-0    right-0 bg-gradient-to-r '    >
                             <View className='    w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
-                                <TouchableOpacity className='pl-2    bg-card dark:bg-card-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
+                                <TouchableOpacity className='pl-2    bg-neocard dark:bg-neocard-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
                                         <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
                                 </TouchableOpacity>
                             </View>
@@ -90,22 +90,22 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-card dark:bg-card-dark border-b hover:bg-item-hover/10 dark:hover:bg-item-hover-dark/60 border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden ">    
+        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-neocard-darkhover border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden ">    
             <View className="w-14 h-14 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xl" />
             </View>
             <View className="flex-auto my-auto ">
                 <View className='flex-row space-x-2'>
-                    <Text className='text-sm flex-auto font-bold text-neo-700 dark:text-neo-300'>{data.author_data.display_name}</Text>
-                    <Text className='text-sm flex-none text-neo-600 dark:text-neo-400'><Time ts={data.date}></Time></Text>
+                    <Text className='text-sm flex-auto font-bold text-neogray-700 dark:text-neogray-300'>{data.author_data.display_name}</Text>
+                    <Text className='text-sm flex-none text-neogray-600 dark:text-neogray-400'><Time ts={data.date}></Time></Text>
                 </View>
                 <View className='flex-row space-x-2'>
-                    <Text className="flex-auto text-lg font-bold text-neo-900 dark:text-neo-50" numberOfLines={1}>{data.content.title}</Text>
+                    <Text className="flex-auto text-lg font-bold text-neogray-900 dark:text-neogray-50" numberOfLines={1}>{data.content.title}</Text>
                     <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'>
-                        <Text className='text-sm text-neo-50 dark:text-neo-900 font-medium'>{data.cmts.count}</Text></View>
+                        <Text className='text-sm text-neogray-50 dark:text-neogray-900 font-medium'>{data.cmts.count}</Text></View>
                 </View>
                 <View className='flex-row space-x-1'>
-                    <Text className='text-sm text-neo-600 dark:text-neo-400' numberOfLines={1}>{data.plainText}</Text>
+                    <Text className='text-sm text-neogray-600 dark:text-neogray-400' numberOfLines={1}>{data.plainText}</Text>
                 </View>         
             </View>
     </View>

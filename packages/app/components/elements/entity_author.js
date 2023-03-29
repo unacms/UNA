@@ -25,7 +25,7 @@ export default function ElementEntityAuthor(oProps) {
         <Menu {...oAuthor.author_desc} displayType="link" params={{
             className: 'bx-menu flex flex-row flex-wrap justify-start items-center web:space-x-2',
             classNameItem: {
-                link: 'flex text-neo-600 dark:text-neo-400 hover:text-neo-900 dark:hover:text-gray-100 hover:underline ios:pr-2 android:pr-2',
+                link: 'flex text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline ios:pr-2 android:pr-2',
                 text: 'flex ios:pr-2 android:pr-2'
             }
         }} />
@@ -67,7 +67,7 @@ export default function ElementEntityAuthor(oProps) {
     );
 
     return (
-        <View className="mx-auto w-full max-w-5xl flex-row items-center justify-between  pt-4 px-4 sm:rounded-t-lg bg-card dark:bg-card-dark border-t  border-neoborder/30 dark:border-neoborder-dark/30 sm:border-x">
+        <View className="mx-auto w-full max-w-5xl flex-row items-center justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark border-t  border-neoborder/30 dark:border-neoborder-dark/30 sm:border-x">
             <Profile {...oAuthor.author_unit} displayType="unit" displaySize="xl" showInfo={sInfo} />
             {session && sMenuManage}
         </View>

@@ -219,7 +219,7 @@ export default function ElementComments(props) {
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
-        <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
+        <Text className='text-sm font-bold text-neogray-900 dark:text-neogray-50'>Comments ({count})</Text>
        
            
             <View className='w-40'>
@@ -242,14 +242,14 @@ export default function ElementComments(props) {
     if (form){ 
         cmtForm = <View className=" w-full bottom-0 border-t  border-neoborder/30 dark:border-neoborder-dark/30" style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg   px-1 mx-2 mb-1'>
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neoitem dark:bg-neoitem-dark rounded-lg   px-1 mx-2 mb-1'>
                     <Row className=' justify-between items-center'>
                         <View>
                             <Row className='mx-2'>
-                                <Text className='text-sm text-neo-900 dark:text-neo-50'>Reply to: </Text>
-                                <Text className='font-bold text-sm text-neo-900 dark:text-neo-50'>{ commentData.formAuthor}</Text>
+                                <Text className='text-sm text-neogray-900 dark:text-neogray-50'>Reply to: </Text>
+                                <Text className='font-bold text-sm text-neogray-900 dark:text-neogray-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neo-900 dark:text-neo-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neogray-900 dark:text-neogray-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
                         <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
                     </Row>
@@ -277,14 +277,14 @@ export default function ElementComments(props) {
         let heightS = height * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
 /*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
-        cmts = <View  className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
+        cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
             {cmtsHeader}
             {cmtsBrs}
             {cmtsMore}
            </View>
     }
     else{
-        cmts = <View style={styles.browse} className=" bg-card dark:bg-card-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
+        cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
             <View style={styles.list} className=' w-full max-h-screen'>
             {cmtsHeader}
             <ScrollView className='mt-4' style={{maxHeight:height-250}}>

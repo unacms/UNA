@@ -49,7 +49,7 @@ export default function Layout(props) {
                
             </Head>
             <NavigationContainer linking={linking}>
-            <View className="bg-screen dark:bg-screen-dark text-neo-900 dark:text-neo-50 h-full items-stretch flex-row">
+            <View className="bg-screen dark:bg-screen-dark text-neogray-900 dark:text-neogray-50 h-full items-stretch flex-row">
                 {(props.data && props.data.menu_top) &&  <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
                 {(oBreadCrump == null ) && <Tabsbar />}
                 {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}

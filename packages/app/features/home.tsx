@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'app/design/view'
 export function HomeScreen() {
   return (
     <View className="w-full h-screen bg-screen dark:bg-screen-dark flex-row">
-      <View className="flex-none flex-col bg-neo-900 border-r border-black/50 space-y-4 hidden  p-4 ">
+      <View className="flex-none flex-col bg-neogray-900 border-r border-black/50 space-y-4 hidden  p-4 ">
         <Link href="/" className="">
           <View className="bg-green-500 rounded-lg w-10 h-10 items-center shadow my-auto">
             <View className="bg-green-300 rounded-full w-8 h-8 items-center shadow my-auto"></View>
@@ -52,7 +52,7 @@ export function HomeScreen() {
             >
               <Icon
                 icon="menu"
-                className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
               ></Icon>
             </Link>
           </TouchableOpacity>
@@ -77,10 +77,10 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="home"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
 
-                <Text className="hidden md:block text-sm lg:text-base font-medium duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                <Text className="hidden md:block text-sm lg:text-base font-medium duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                   Home
                 </Text>
               </Link>
@@ -92,18 +92,18 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="discover"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
 
-                <Text className="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                <Text className="hidden md:block text-sm lg:text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                   Discover
                 </Text>
               </Link>
             </TouchableOpacity>
 
             <TouchableOpacity className="lg:flex-auto md:pr-2">
-              <View className="hidden lg:w-full  bg-neo-100/50 dark:bg-neo-900/50 border border-transparent hover:border-neoborder/30 dark:border-neoborder-dark/30 rounded-full w-50 h-full px-3 py-2">
-                <Text className="text-neo-400 text-base dark:text-neo-600">
+              <View className="hidden lg:w-full  bg-neogray-100/50 dark:bg-neogray-900/50 border border-transparent hover:border-neoborder/30 dark:border-neoborder-dark/30 rounded-full w-50 h-full px-3 py-2">
+                <Text className="text-neogray-400 text-base dark:text-neogray-600">
                   Search...
                 </Text>
               </View>
@@ -118,10 +118,10 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="search"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
 
-                <Text className="hidden md:block text-sm lg:text-base font- lg:font-normal duration-200 group-hover:text-neo-900 text-neo-700 lg:text-neo-400 dark:lg:text-neo-600 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                <Text className="hidden md:block text-sm lg:text-base font- lg:font-normal duration-200 group-hover:text-neogray-900 text-neogray-700 lg:text-neogray-400 dark:lg:text-neogray-600 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                   Search
                 </Text>
               </Link>
@@ -133,7 +133,7 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="notifications"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
               </Link>
             </TouchableOpacity>
@@ -144,7 +144,7 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="messages"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
               </Link>
             </TouchableOpacity>
@@ -155,7 +155,7 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="plus"
-                  className="h-7 w-7 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-7 w-7 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
               </Link>
             </TouchableOpacity>
@@ -166,7 +166,7 @@ export function HomeScreen() {
               >
                 <Icon
                   icon="account"
-                  className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                  className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                 ></Icon>
               </Link>
             </TouchableOpacity>
@@ -183,10 +183,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="home"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Home
                   </Text>
                 </Link>
@@ -198,10 +198,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="discover"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Discover
                   </Text>
                 </Link>
@@ -213,10 +213,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="post"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Posts
                   </Text>
                 </Link>
@@ -228,10 +228,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="group"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Groups
                   </Text>
                 </Link>
@@ -243,10 +243,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="hash"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Channels
                   </Text>
                 </Link>
@@ -258,10 +258,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="people"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     People
                   </Text>
                 </Link>
@@ -273,10 +273,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="contact"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className=" text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className=" text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     Contact
                   </Text>
                 </Link>
@@ -288,10 +288,10 @@ export function HomeScreen() {
                 >
                   <Icon
                     icon="about"
-                    className="h-6 w-6 group-hover:text-neo-800 text-neo-500 dark:group-hover:text-neo-100 dark:text-neo-300 "
+                    className="h-6 w-6 group-hover:text-neogray-800 text-neogray-500 dark:group-hover:text-neogray-100 dark:text-neogray-300 "
                   ></Icon>
 
-                  <Text className="text-sm lg:text-base font- duration-200 group-hover:text-neo-900 text-neo-700 dark:group-hover:text-neo-50 dark:text-neo-200 ">
+                  <Text className="text-sm lg:text-base font- duration-200 group-hover:text-neogray-900 text-neogray-700 dark:group-hover:text-neogray-50 dark:text-neogray-200 ">
                     About
                   </Text>
                 </Link>
@@ -301,27 +301,27 @@ export function HomeScreen() {
 
           <View className="flex-auto relative w-full sm:p-4  flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
             <View className="mt-16 flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
-            <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30   ">
+            <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30   ">
                 <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
                 <View className="flex-row p-4 space-x-2 ">
                   <View className="w-12 h-12  bg-blue-500/50 rounded-full"></View>
                   <View className=" my-auto  flex-col ">
-                    <Text className="text-neo-800 hover:text-gray-900 duration-200 dark:hover:text-neo-50 dark:text-neo-200 text-base tracking-tight hover:underline font-bold">
+                    <Text className="text-neogray-800 hover:text-gray-900 duration-200 dark:hover:text-neogray-50 dark:text-neogray-200 text-base tracking-tight hover:underline font-bold">
                       Dr Sponge Bob Jr
                     </Text>
-                    <Text className="text-neo-600 dark:text-neo-400 text-sm  ">
+                    <Text className="text-neogray-600 dark:text-neogray-400 text-sm  ">
                       2 min ago
                     </Text>
                   </View>
                 </View>
                 <View className="w-full px-4 pb-4 flex-col space-y-4">
-                  <Text className="text-neo-800  group-hover:text-neo-900 duration-200 dark:group-hover:text-neo-50 dark:text-neo-100  text-2xl  tracking-tight font-bold">
+                  <Text className="text-neogray-800  group-hover:text-neogray-900 duration-200 dark:group-hover:text-neogray-50 dark:text-neogray-100  text-2xl  tracking-tight font-bold">
                     From Classroom to Career: Navigating the Modern Challenges
                     of Transitioning into the Workforce
                   </Text>
                   <View className="flex-row space-x-2 h-12 overflow-hidden relative">
-                    <Text className="text-neo-700  dark:text-neo-200 text-base">
+                    <Text className="text-neogray-700  dark:text-neogray-200 text-base">
                       Our app provides an intuitive and easy-to-use interface
                       for users to publish and share content on their social
                       media accounts. Leveraging the power of UNA's community
@@ -330,8 +330,8 @@ export function HomeScreen() {
                       that is both fun and functional.
                     </Text>
                     <View className="absolute  flex-row bottom-0  right-0 bg-gradient-to-r ">
-                      <View className="  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-neo-800"></View>
-                      <View className="pl-2  bg-white dark:bg-neo-800">
+                      <View className="  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-neogray-800"></View>
+                      <View className="pl-2  bg-white dark:bg-neogray-800">
                         <Text className="text-brand dark:text-brand-dark text-base font-medium">
                           More...
                         </Text>
@@ -344,29 +344,29 @@ export function HomeScreen() {
                 </View>
                 <View className="flex-row w-full space-x-4">
                   <View className="px-4 mb-3 flex-auto flex-row space-x-4  ">
-                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                      <Text className="font-bold text-neo-700 dark:text-neo-200">
+                    <Text className="text-neogray-600 dark:text-neogray-400 text-sm">
+                      <Text className="font-bold text-neogray-700 dark:text-neogray-200">
                         16
                       </Text>{' '}
                       comments
                     </Text>
                   </View>
                   <View className="px-4 mb-3  flex-row space-x-4  ">
-                  <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                      <Text className="font-bold text-neo-700 dark:text-neo-200">
+                  <Text className="text-neogray-600 dark:text-neogray-400 text-sm">
+                      <Text className="font-bold text-neogray-700 dark:text-neogray-200">
                         12
                       </Text>{' '}
                       views
                     </Text>
-                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                      <Text className="font-bold text-neo-700 dark:text-neo-200">
+                    <Text className="text-neogray-600 dark:text-neogray-400 text-sm">
+                      <Text className="font-bold text-neogray-700 dark:text-neogray-200">
                         48
                       </Text>{' '}
                       likes
                     </Text>
 
-                    <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                      <Text className="font-bold text-neo-700 dark:text-neo-200">
+                    <Text className="text-neogray-600 dark:text-neogray-400 text-sm">
+                      <Text className="font-bold text-neogray-700 dark:text-neogray-200">
                         32
                       </Text>{' '}
                       reposts
@@ -378,29 +378,29 @@ export function HomeScreen() {
                   <View className="flex-row w-full space-x-4">
                     <View className=" flex-row space-x-2  ">
                       <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
-                        <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
+                        <Text className="group-hover:text-neogray-900 text-neogray-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Like
                         </Text>
                       </View>
                       <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
-                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <Text className="group-hover:text-neogray-900 text-neogray-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Comment
                         </Text>
                       </View>
                       <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
-                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <Text className="group-hover:text-neogray-900 text-neogray-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Repost
                         </Text>
                       </View>
                       <View className="group flex-auto flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
-                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <Text className="group-hover:text-neogray-900 text-neogray-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           Share
                         </Text>
                       </View>
                     </View>
                     <View className=" flex-auto space-x-2 flex-row justify-end ">
                     <View className="group flex-none flex py-2.5 px-3 hover:bg-item-hover dark:hover:bg-item-hover-dark rounded-lg">
-                      <Text className="group-hover:text-neo-900 text-neo-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
+                      <Text className="group-hover:text-neogray-900 text-neogray-600 dark:group-hover:text-gray-50 dark:text-gray-400 text-sm font-semibold mx-auto">
                           More
                         </Text>
                       </View>

@@ -18,7 +18,7 @@ export default function ElementEntityInfo({data}) {
     }); 
 
     return (
-        <View className="relative p-4 sm:my-0 bg-card dark:bg-card-dark border-t border-neoborder/30 dark:border-neoborder-dark/30 sm:border-x w-full mx-auto max-w-5xl">
+        <View className="relative p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-t border-neoborder/30 dark:border-neoborder-dark/30 sm:border-x w-full mx-auto max-w-5xl">
             <H2>Info</H2>
             {inputs}
         </View>

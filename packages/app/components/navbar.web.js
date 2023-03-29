@@ -42,7 +42,7 @@ export default function (props) {
             <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-2">
               <Icon
                 icon="logo-mark"
-                className="group-hover:-rotate-45 text-neo-600 dark:text-neo-200 group-hover:text-neo-800 dark:group-hover:text-neo-50   duration-300 h-10 w-10"
+                className="group-hover:-rotate-45 text-neogray-600 dark:text-neogray-200 group-hover:text-neogray-800 dark:group-hover:text-neogray-50   duration-300 h-10 w-10"
               ></Icon>
               <Icon
                 icon="logo-text"

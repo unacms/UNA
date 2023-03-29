@@ -35,7 +35,7 @@ export default function UnitComments(props) {
 
     let sCommentStyle =  " mx-4 space-y-1 ";
 
-    let sCommentClass = "bg-item-hover/50 dark:bg-item-hover-dark/50 rounded-lg  py-1.5 px-2 u-vanilla-html-small";
+    let sCommentClass = "bg-neoitem dark:bg-neoitem-dark rounded-lg  py-1.5 px-2 u-vanilla-html-small";
     if(bSmallSize){
         sCommentStyle = " mr-4 space-y-1";
     }

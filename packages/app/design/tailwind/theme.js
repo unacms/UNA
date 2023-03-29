@@ -62,24 +62,34 @@ const colors = {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
   },
-  card: {
+  neocard: {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
+    hover: '#F3F4F6',
+    darkhover: '#1F2937',
   },
-  button: {
-    DEFAULT: '#D1D5DB',
-    dark: '#374151',
+  neoitem: {
+    DEFAULT: '#E5E7EB',
+    dark: '#1F2937',
+  },
+  neobutton: {
+    DEFAULT: '#6B7280',
+    dark: '#6B7280',
   },
   neoborder: {
     DEFAULT: '#9CA3AF',
     dark: '#374151',
   },
-  form: {
+  neolink: {
+    DEFAULT: '#3B82F6',
+    dark: '#3B82F6',
+  },
+  neoinput: {
     DEFAULT: '#D1D5DB',
     dark: '#374151',
      
   },
-  neo: {
+  neogray: {
     50: '#F9FAFB',
     100: '#F3F4F6',
     200: '#E5E7EB',
@@ -90,7 +100,7 @@ const colors = {
     700: '#374151',
     800: '#1F2937',
     900: '#111827',
-    950: '#030407',
+    950: '#030712',
   },
 }
 
