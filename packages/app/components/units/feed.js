@@ -34,7 +34,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/60"    style={styles.card}>
+        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/60"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
@@ -52,7 +52,7 @@ function DefaultUnit(data) {
                     </Text>
                         { data.showMore && <View className='absolute    flex-row bottom-0    right-0 bg-gradient-to-r '    >
                             <View className='    w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
-                                <TouchableOpacity className='pl-2    bg-card dark:bg-card-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
+                                <TouchableOpacity className='pl-2    bg-neocard dark:bg-neocard-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
                                         <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
                                 </TouchableOpacity>
                             </View>
@@ -90,7 +90,7 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-card dark:bg-card-dark border-b hover:bg-item-hover/10 dark:hover:bg-item-hover-dark/60 border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden ">    
+        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-neocard-darkhover border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden ">    
             <View className="w-14 h-14 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xl" />
             </View>

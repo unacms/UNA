@@ -301,7 +301,7 @@ export function HomeScreen() {
 
           <View className="flex-auto relative w-full sm:p-4  flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
             <View className="mt-16 flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
-            <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30   ">
+            <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30   ">
                 <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
                 <View className="flex-row p-4 space-x-2 ">

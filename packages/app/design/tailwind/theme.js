@@ -62,16 +62,22 @@ const colors = {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
   },
-  card: {
+  neocard: {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
+    hover: '#F3F4F6',
+    darkhover: '#1F2937',
+  },
+  neoitem: {
+    DEFAULT: '#E5E7EB',
+    dark: '#1F2937',
   },
   neobutton: {
     DEFAULT: '#6B7280',
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: '#D1D5DB',
+    DEFAULT: '#9CA3AF',
     dark: '#374151',
   },
   neolink: {

@@ -75,7 +75,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         return (
             <View className="u-card-4" style={styles.card}>
                 <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
       { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
       </View>
@@ -105,7 +105,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         return (
             <View className="u-card-4" style={styles.card}>
                 <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card dark:bg-card-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} />  }
       </View>
@@ -154,7 +154,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         return (
             <View style={styles.card} className="u-card-4">
                 <Link href={data.url}>  
-                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
+                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard h-min dark:bg-neocard-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
                         <View className="w-2/3 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full mt-4 ">
                         
 
@@ -180,7 +180,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
         return (
             <View className="u-card" style={styles.card}>
-                <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20  border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30  w-full">
+                <View className="bg-neocard  duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20  border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30  w-full">
                     <Link href={data.url}>            
                         {data.image &&
                             <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >

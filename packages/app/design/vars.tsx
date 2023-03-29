@@ -21,7 +21,7 @@ type ThemeCssClassesType = {
 };
 
 export const ThemeCssClasses: ThemeCssClassesType = {
-  'u-btn-default-cnt': " border border-transparent  bg-neobutton/30 hover:bg-neobutton/40 active:bg-neobutton/50 dark:bg-neobutton-dark/30 dark:hover:bg-neobutton-dark/40 dark:active:bg-neobutton-dark/50 ",
+  'u-btn-default-cnt': " border border-transparent  bg-neobutton/30 hover:bg-neobutton/40 active:bg-neobutton/40 dark:bg-neobutton-dark/30 dark:hover:bg-neobutton-dark/40 dark:active:bg-neobutton-dark/50 ",
   'u-btn-default-text': " font-semibold text-neogray-800 dark:text-neogray-200",
   'u-btn-default-trans': "  duration-200 ",
   'u-btn-primary-cnt': " border border-transparent   bg-primary hover:bg-primary/90 active:bg-primary/80 dark:bg-primary-dark dark:hover:bg-primary-dark/90 dark:active:bg-primary-dark/80  ",
