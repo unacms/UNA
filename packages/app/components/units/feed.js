@@ -17,6 +17,13 @@ function DefaultUnit(data) {
     const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
     const {height, width, scale, fontScale} = useWindowDimensions();
 
+    if (data.sFirstImg){
+        ImageNative.getSize(data.sFirstImg, (width, height) => {
+            if (width > height)
+                setImageAspect('aspect-video');
+        });
+    }
+
     let styles = StyleSheet.create({});
     
     if (Platform.OS != 'web'){
@@ -138,13 +145,6 @@ export default function UnitFeed(props) {
             if (sImages.length > 0){
                 data.sFirstImg = sImages[0].attributes[0].value
             }
-        }
-
-        if (data.sFirstImg){
-            ImageNative.getSize(data.sFirstImg, (width, height) => {
-                if (width > height)
-                    setImageAspect('aspect-video');
-            });
         }
 
         data.showMore = false;

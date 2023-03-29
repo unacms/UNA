@@ -11,16 +11,13 @@ import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 
 export function NavScreen(params) {
     const _path = params.route.params.url;
-    //let _isFocused = params.navigation.isFocused();
     const [pageData, setPageData] = useState(null);
-    //const [isFocused, setIsFocused] = useState(_isFocused);
+
     const isFocused2 = useIsFocused();
 
     const isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
-    const isTabs = !params.route.params.ignoreTabs && pageData && pageData.data.menu && pageData.data.menu.items && pageData.data.menu.items.length > 1 && _path != '/home';               
-    /*if (isFocused != _isFocused){
-        setIsFocused(_isFocused)
-    }*/
+    const isTabs = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
+
 
     useEffect(() => {
         (async () => {

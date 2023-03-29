@@ -9,7 +9,7 @@ import { ScrollView, SafeAreaView } from 'app/design/view'
 import { useRouter } from "next/router";
 import { View } from 'app/design/view'
 import { NavigationContainer } from '@react-navigation/native';
-import { NavMaterialTabs } from 'app/components/nav/materialtabsweb'
+import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Page from 'app/components/page'
 export const siteTitle = 'NEO';
 

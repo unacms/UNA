@@ -1,16 +1,14 @@
 import { Provider } from 'app/provider'
 import { Stack } from 'expo-router'
 import { useColorScheme } from 'react-native';
-import { CustomLightTheme, CustomDarkTheme } from 'app/design/theme'
+import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
 import { CurrentUserProvider } from 'app/context/user';
 
 export default function Root(props) {
-  const scheme = useColorScheme();
-
   return (
     
-    <ThemeProvider value={scheme === 'dark' ? CustomDarkTheme : CustomLightTheme} >
+    <ThemeProvider value={Theme()} >
       <Provider>
       <CurrentUserProvider>
           <Stack screenOptions={{  headerStyle: {

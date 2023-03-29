@@ -6,11 +6,14 @@ import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
 import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
-import { View } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import Html from '../../ui/atoms/html';
 import { Button } from 'app/design/controls'
+import { stripTags } from '../../lib/util';
 
 export default function UnitComments(props) {
+
+    const [showFull, setShowFull] = useState(false)
 
     var data = '';
     var items = '';
@@ -48,7 +51,12 @@ export default function UnitComments(props) {
             fontSize: 16,
             lineHeight:22
         }
-    };            
+    };   
+    
+    const handleShowMore = () => {
+        setShowFull(!showFull);
+    } 
+    
 
     return (
         <View className='w-full'>
@@ -59,23 +67,39 @@ export default function UnitComments(props) {
                        <View className="w-8 flex-0 h-full absolute top-0 -left-7">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
                        </View>
+                       
                        <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
                             <View className={sCommentClass} >
+                                {
+                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='bg-gray-300 rounded-lg py-1.5 px-2'>
+                                        <View  className=" flex-row" >
+                                            <Text>In Reply to: </Text>
+                                            <View className="mr-2 mb-2"><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
+                                        </View>
+                                        <Pressable onPress={handleShowMore}>
+                                            <View className={showFull ? 'hidden' : ''}>
+                                                <Text className='text-base text-gray-800 dark:text-gray-100' numberOfLines={1} htmlStyles={oCommentTextStyle}>{stripTags(data.cmt_parent.data.cmt_text)}</Text>
+                                            </View>
+                                            <View className={!showFull ? 'hidden' : ''}>
+                                                <Html data={data.cmt_parent.data.cmt_text} htmlStyles={oCommentTextStyle}  />
+                                            </View>
+                                        </Pressable>
+                                    </View>
+                                }
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
-                            </View>
+                                </View>
                             <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
                         </View>
                     </View>
-                    
                 </View>
             </View>
             {(items.length != 0 && view != 'flat') && <View className='relative flex-row  ml-12  '>
-                        <View className="w-14 absolute top-0 -left-10 h-full flex-col space-y-0.5">
-                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10 "></View>
-                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
-                        <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
-                        <View className="w-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
-                       </View>
+                <View className="w-14 absolute top-0 -left-10 h-full flex-col space-y-0.5">
+                    <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10 "></View>
+                    <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
+                    <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
+                    <View className="w-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
+                </View>
                 <View className = 'flex-auto '>
                     {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
                 </View>

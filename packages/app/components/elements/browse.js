@@ -7,6 +7,7 @@ import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
 import Dropdown from 'app/ui/atoms/dropdown'
+import { appSetting } from 'app/settings'
 
 export default function ElementBrowse(props) {
     let data = props.data;
@@ -14,7 +15,7 @@ export default function ElementBrowse(props) {
     let defParams = data.params;
 
     /* unit mode & change unit mode */
-    const [unitMode, setUnitMode] = useState('');
+    const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
     
     if (defParams){
         defParams.moduleName = data.module ? data.module : '';
@@ -101,7 +102,7 @@ export default function ElementBrowse(props) {
 
     return (
         <View className='w-full '>
-            { (data.unit == 'feed') && <View className='h-12 items-end z-50'><Dropdown 
+            { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
                 onChange={item => {

@@ -3,8 +3,8 @@ import { Pressable, View , Row   } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
-import { ThemeCssClasses } from 'app/design/vars'
 import { useTheme } from '@react-navigation/native';
+import { appSetting } from 'app/settings'
 
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
@@ -93,6 +93,8 @@ export function Button(props: ButtonProps) {
   if (buttonDisabled) sClassContainer += ' opacity-50 '
 
   let sClassText = '  text-center '
+
+  let ThemeCssClasses = appSetting('theme', 'button_styles');
 
   if (buttonType != 'custom') {
     sClassContainer +=

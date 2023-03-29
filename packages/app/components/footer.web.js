@@ -1,12 +1,13 @@
 import Link from '../ui/atoms/link';
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { NavBottomTabsList } from 'app/components/nav/settings'
+import { appSetting } from 'app/settings'
 import { Icon } from 'app/components/svg';
+import { useCurrentUser } from 'app/context/user';
 
 export default function () {
-
-    let TabList = NavBottomTabsList();
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
 
  	return (
         <View className="border-t-2 border-red-200 bg-orange-100 w-full">

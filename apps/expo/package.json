@@ -41,6 +41,7 @@
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.9",
     "react-native-webview": "11.23.1",
+    "react-router-dom": "^6.9.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {

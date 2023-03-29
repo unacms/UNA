@@ -6,7 +6,7 @@ import { Icon } from 'app/components/svg';
 import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
-import { NavBottomTabsList } from 'app/components/nav/settings'
+import { appSetting } from 'app/settings'
 
 const Tab = createBottomTabNavigator();
 
@@ -23,7 +23,7 @@ export function NavBottomTabs(params) {
 
     const { colors } = useTheme();
 
-    const TabList = NavBottomTabsList();
+    const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
 
     return (
         <Tab.Navigator
@@ -54,7 +54,7 @@ export function NavBottomTabs(params) {
                 TabList.map((tab, index) => (
                     <Tab.Screen
                         key={`tab-${index}`}
-                        name={`tab-${index}`}
+                        name={'tab-' + tab.title}
                         component={NavScreen}
                         initialParams={{ url: tab.url, checkDrawer: true}}
                         options={{  
