@@ -4,16 +4,31 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Icon } from 'app/components/svg';
 import { A, Text } from 'app/design/typography'
 import { NavScreenWeb } from 'app/components/nav/screenweb'
-import { useTheme } from '@react-navigation/native';
+import { Theme }  from 'app/design/theme'
 
 
 export function NavMaterialTabs(params) {
-
-  const Tab = createMaterialTopTabNavigator();
+    
+    const { colors } = Theme();
+    
+    const Tab = createMaterialTopTabNavigator();
+    /*https://reactnavigation.org/docs/material-top-tab-navigator*/
     return (
       <Tab.Navigator
-      screenOptions={{ tabBarScrollEnabled: (params.data.length>5? true: false),tabBarIndicatorStyle:{       
-    } }}
+        screenOptions={{ 
+          tabBarIndicatorStyle:{},
+          tabBarLabelStyle: { fontSize: 14, textTransform: "none", color: colors.barsColor, fontWeight:600 },
+          tabBarItemStyle: { width: 'auto' },
+          tabBarStyle: {
+            backgroundColor: colors.barsBackground, 
+          },
+          tabBarIndicatorStyle:{
+              color: 'red'
+          },
+          tabBarIndicatorContainerStyle:{
+            
+          }
+        }}
       >
           {
               params.data.map((tab, index) => (
@@ -23,6 +38,7 @@ export function NavMaterialTabs(params) {
                       component={NavScreenWeb}
                       options={{  
                           unmountOnBlur: true,
+                          upperCaseLabel: false,
                           title: tab.title,
                       }}
                   />

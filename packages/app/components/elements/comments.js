@@ -29,6 +29,7 @@ export default function ElementComments(props) {
         count: browse.data.count,
         moduleName: browse.data.module, 
         orderWay: browse.data.order,
+        view: browse.data.view,
         objectId: browse.data.object_id,
         formText: '',
         formAuthor: '',
@@ -214,7 +215,7 @@ export default function ElementComments(props) {
         {label: 'Newest first', value: 'desc'},
         {label: 'Oldest first', value: 'asc'}
     ];
-
+  
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>

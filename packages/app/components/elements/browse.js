@@ -111,7 +111,7 @@ export default function ElementBrowse(props) {
                 data={modeItems}
             /></View>}
             <View className={classes} style={styles.cardList}>
-                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} {...props} data={a} />)}
+                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>

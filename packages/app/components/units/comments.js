@@ -14,13 +14,16 @@ export default function UnitComments(props) {
 
     var data = '';
     var items = '';
+    let view = '';
     if (props.data.data){
         data = props.data.data;
         items = props.data.items;
+        view = props.view
     }
     else{
         data = props.data[Object.keys(props.data)[0]].data;
         items = props.data[Object.keys(props.data)[0]].items;
+        view = props.view
     }
     // request form for reply
 
@@ -66,7 +69,7 @@ export default function UnitComments(props) {
                     
                 </View>
             </View>
-            {(items.length != 0) && <View className='relative flex-row  ml-12  '>
+            {(items.length != 0 && view != 'flat') && <View className='relative flex-row  ml-12  '>
                         <View className="w-14 absolute top-0 -left-10 h-full flex-col space-y-0.5">
                         <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10 "></View>
                         <View className="w-1 rounded-full h-1 mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
@@ -74,7 +77,7 @@ export default function UnitComments(props) {
                         <View className="w-0.5 rounded-full flex-auto mx-auto bg-neoborder/10 dark:bg-neoborder-dark/10"></View>
                        </View>
                 <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
+                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
                 </View>
             </View> 
             }
