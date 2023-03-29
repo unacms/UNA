@@ -84,10 +84,10 @@ const {height, width, scale, fontScale} = useWindowDimensions();
           {data.group_name}
         </Text>
         <View className='flex-row space-x-1'>
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>25 members</Text>
-          <Text  className='text-sm text-neo-400 dark:text-neo-600'>·</Text>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>25 members</Text>
+          <Text  className='text-sm text-neogray-400 dark:text-neogray-600'>·</Text>
           
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>Active 24 min ago </Text>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>Active 24 min ago </Text>
         </View>     
       </View>
       <View className="text-center px-4 space-y-2">
@@ -114,10 +114,10 @@ const {height, width, scale, fontScale} = useWindowDimensions();
           {data.channel_name}
         </Text>
         <View className='flex-row space-x-1'>
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>25 members</Text>
-          <Text  className='text-sm text-neo-400 dark:text-neo-600'>·</Text>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>25 members</Text>
+          <Text  className='text-sm text-neogray-400 dark:text-neogray-600'>·</Text>
           
-          <Text  className='text-sm text-neo-600 dark:text-neo-400'>Active 24 min ago </Text>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>Active 24 min ago </Text>
         </View>     
       </View>
       <View className="text-center px-4 space-y-2">
@@ -143,7 +143,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         else
             sMeta = (
                 <>
-                    <Text  className='text-sm text-neo-600 text-center dark:text-neo-400 mt-2'>some text from menu</Text>
+                    <Text  className='text-sm text-neogray-600 text-center dark:text-neogray-400 mt-2'>some text from menu</Text>
                     <View className="text-center px-4 space-y-2 mt-4">
                         <Button title="Follow" variant="primary" fullWidth />
                         <Button title="Remove" variant="default" fullWidth/>
@@ -155,11 +155,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             <View style={styles.card} className="u-card-4">
                 <Link href={data.url}>  
                     <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-card h-min dark:bg-card-dark border hover:shadow-lg border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden sm:rounded-lg">  
-                        <View className="w-2/3 aspect-square overflow-hidden bg-neo-100 dark:bg-neo-700 mx-auto rounded-full mt-4 ">
+                        <View className="w-2/3 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full mt-4 ">
                         
 
-                        <View className="w-[50%] z-20 aspect-square bg-neo-200  dark:bg-neo-600 border-4 border-neo-100 dark:border-neo-700  mx-auto rounded-full mt-[15%] "></View>
-          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neo-200  dark:bg-neo-600  mx-auto rounded-t-full  "></View>
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-4 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
            {!!data.image && <Image alt={data.fullname} className="rounded-full absolute top-0 z-50" view="cover" src={data.image.src} />}
                         </View>
                         <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.fullname}</Text>

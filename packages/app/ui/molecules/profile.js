@@ -82,7 +82,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold truncate hover:underline">
+      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold truncate hover:underline">
         {oProps.title}
       </Text>
     )
@@ -90,7 +90,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="text-neo-700 hover:text-neo-900 dark:text-neo-200 dark:hover:text-neo-50 text-sm font-bold tracking-tight truncate hover:underline">
+      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
         {oProps.title}
       </Text>
     )
@@ -100,10 +100,10 @@ export default function AtomProfile(oProps) {
   function DisplayInfo(oProps) {
     return (
       <View className="flex-row ">
-        <Text className="mr-2 text-neo-600 dark:text-neo-400 text-sm  tracking-tight">
+        <Text className="mr-2 text-neogray-600 dark:text-neogray-400 text-sm  tracking-tight">
           AU
         </Text>
-        <Text className="text-neo-600 dark:text-neo-400 text-sm  tracking-tight">
+        <Text className="text-neogray-600 dark:text-neogray-400 text-sm  tracking-tight">
           Dermatology
         </Text>
       </View>
@@ -136,9 +136,9 @@ export default function AtomProfile(oProps) {
       sResult = (
         <Link haptics="Select" href={oProps.url}>
           <View className="relative flex-row">
-          <View className={sSize +"aspect-square overflow-hidden bg-neo-100 dark:bg-neo-700 mx-auto rounded-full "}>
-          <View className="w-[50%] z-20 aspect-square bg-neo-200  dark:bg-neo-600 border-4 border-neo-100 dark:border-neo-700  mx-auto rounded-full"></View>
-          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neo-200  dark:bg-neo-600  mx-auto rounded-t-full  "></View>
+          <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full "}>
+          <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-4 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full"></View>
+          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
             <Image
               className={sSize+" absolute top-0 z-50"}
               width={iSizeWidth}
@@ -164,7 +164,7 @@ export default function AtomProfile(oProps) {
             ) : (
               <DisplayNameText title={oProps.display_name} />
             )}
-            <View className="flex text-neo-600 dark:text-neo-400 text-sm">{sShowInfo}</View>
+            <View className="flex text-neogray-600 dark:text-neogray-400 text-sm">{sShowInfo}</View>
           </View>
         </Link>
       )

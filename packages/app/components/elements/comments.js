@@ -218,7 +218,7 @@ export default function ElementComments(props) {
     let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
-        <Text className='text-sm font-bold text-neo-900 dark:text-neo-50'>Comments ({count})</Text>
+        <Text className='text-sm font-bold text-neogray-900 dark:text-neogray-50'>Comments ({count})</Text>
        
            
             <View className='w-40'>
@@ -245,10 +245,10 @@ export default function ElementComments(props) {
                     <Row className=' justify-between items-center'>
                         <View>
                             <Row className='mx-2'>
-                                <Text className='text-sm text-neo-900 dark:text-neo-50'>Reply to: </Text>
-                                <Text className='font-bold text-sm text-neo-900 dark:text-neo-50'>{ commentData.formAuthor}</Text>
+                                <Text className='text-sm text-neogray-900 dark:text-neogray-50'>Reply to: </Text>
+                                <Text className='font-bold text-sm text-neogray-900 dark:text-neogray-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neo-900 dark:text-neo-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className='mx-2 text-sm max-h-10 overflow-hidden text-neogray-900 dark:text-neogray-50'>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
                         <Button align="start" title={"Cancel"} size ="sm" variant="link" onPress={() => handleCancel()} />
                     </Row>

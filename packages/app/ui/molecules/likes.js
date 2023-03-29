@@ -11,7 +11,7 @@ import { Icon } from 'app/components/svg';
 
 export default function ElementLikes(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-    const sClassIconInternal = 'flex h-6 w-6 text-neo-700 dark:text-neo-200';
+    const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -145,7 +145,7 @@ export default function ElementLikes(oProps) {
         sAction = (
             <Button id={getName('action-ddb')} variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
                 {sIcon}
-                {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neo-700 dark:text-neo-200">{sTitle}</Text>}
+                {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
             </Button>
         );
     }
@@ -185,7 +185,7 @@ export default function ElementLikes(oProps) {
             <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
                 <Button id={getName('performed-by-ddb')} variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
                     {sIcon}
-                    <Text className="pl-1.5 pr-0.5 text-neo-700 dark:text-neo-200">{iCount}</Text>
+                    <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
                 </Button>
                 <Modal id={getName('performed-by-ddp')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>

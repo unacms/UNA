@@ -55,66 +55,66 @@ export default function (props) {
     home: (
       <View className="justify-center flex-auto space-x-6 w-full flex-row  mx-auto">
         <View className="flex-auto flex-col space-y-4 max-w-3xl">
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
             <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
               <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
             <View className="flex-1 space-y-4 py-1">
               <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
+                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
+                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
               </View>
               <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
           </View>
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
             <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
               <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
             <View className="flex-1 space-y-4 py-1">
               <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
+                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
+                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
               </View>
               <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
           </View>
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
             <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
               <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
             <View className="flex-1 space-y-4 py-1">
               <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
+                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
+                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
               </View>
               <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
               </View>
             </View>
           </View>
@@ -122,43 +122,43 @@ export default function (props) {
         <View className="hidden lg:flex flex-col flex-none space-y-4 w-2/5">
           <View>
             <View className="space-y-4 flex-col">
-                <View className="bg-neo-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neo-500/10">
+                <View className="bg-neogray-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
+                     <View className="w-full aspect-video bg-neogray-500/10">
                         
                     </View>
                     
                     <View className="flex-1 space-y-4 p-4">
                         <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neo-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neo-500/30 rounded-full"></View>
+                            <View className="h-5 w-full bg-neogray-500/30 rounded-full"></View>
+                            <View className="h-5 w-3/4 bg-neogray-500/30 rounded-full"></View>
                         </View>
                         <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+                        <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
 
                         <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+                            <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
+                            <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
                         </View>
                         </View>
                     </View>
                     
                 </View>
-                <View className="bg-neo-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neo-500/10">
+                <View className="bg-neogray-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
+                     <View className="w-full aspect-video bg-neogray-500/10">
                         
                     </View>
                     
                     <View className="flex-1 space-y-4 p-4">
                         <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neo-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neo-500/30 rounded-full"></View>
+                            <View className="h-5 w-full bg-neogray-500/30 rounded-full"></View>
+                            <View className="h-5 w-3/4 bg-neogray-500/30 rounded-full"></View>
                         </View>
                         <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+                        <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
 
                         <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+                            <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
+                            <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
                         </View>
                         </View>
                     </View>

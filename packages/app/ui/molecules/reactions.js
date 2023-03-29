@@ -22,7 +22,7 @@ import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-    const sClassIconInternal = 'flex h-6 w-6 text-neo-700 dark:text-neo-200';
+    const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
     const sCounteType = 'compound';
     //const sCounteType = 'divided';
 
@@ -354,7 +354,7 @@ export default function ElementReactions(oProps) {
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
                     <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
                         {sIcon}
-                        <Text className="pl-1.5 pr-0.5 text-neo-700 dark:text-neo-200">{iCount}</Text>
+                        <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
                     </Button>
                     <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
@@ -456,7 +456,7 @@ export default function ElementReactions(oProps) {
                 <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="pl-2">
-                        <Text className="text-neo-700 dark:text-neo-200">{iTotal}</Text>
+                        <Text className="text-neogray-700 dark:text-neogray-200">{iTotal}</Text>
                     </View>
                 </Button>
                 <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
