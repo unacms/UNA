@@ -93,7 +93,5 @@ export function appSetting(section, name){
             ]
         }
     };
-    console.log('aaaaaaaaaaa', section, name);
-    console.log('aaaaaaaaaaa', settings[section][name]);
     return settings[section] ? settings[section][name] : '';
 }
