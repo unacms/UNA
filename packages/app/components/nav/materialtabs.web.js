@@ -18,19 +18,24 @@ export function NavMaterialTabs(params) {
         screenOptions={{ 
           tabBarLabelStyle: { fontSize: 14, textTransform: "none", /*color: colors.barsColor,*/ fontWeight:600 },
           tabBarItemStyle: { width: 'auto' },
-          tabBarContentContainerStyle: {
+          /*tabBarContentContainerStyle: {
             alignItems: 'center',
             justifyContent: 'center',
             
+          },*/
+          tabBarContentContainerStyle: {
+            maxWidth:500
           },
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.text,
           tabBarStyle: {
             backgroundColor: colors.barsBackground, 
+            maxWidth: 1536,
+            margin:"0 auto"
           },
-          tabBarIndicatorStyle: {
+          /*tabBarIndicatorStyle: {
             display: 'none',
-          },
+          },*/
 
          
         }}

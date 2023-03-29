@@ -25,7 +25,7 @@ export default function Page(props) {
     else
         return (
             <PageDataContext>
-                <View className="flex-row u-content3 2xl:justify-center mx-auto" > 
+                <View className="flex-row u-content3 mx-auto" > 
                     <View className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{content}</View>
                 </View>
             </PageDataContext>

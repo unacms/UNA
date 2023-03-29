@@ -54,7 +54,7 @@ export default function (props) {
       </Row>
       
       <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between">
-        <Row className="hidden lg:flex flex-row flex-none max-w-xl overflow-hidden">
+        <Row className="hidden lg:flex flex-row flex-none u-navbar">
             {props.menu_top.items.map((item, index) => (
                 <Link href={item.link} key={`menu-${index}`}>
                   <Button

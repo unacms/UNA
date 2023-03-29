@@ -216,7 +216,7 @@ export default function ElementComments(props) {
         {label: 'Oldest first', value: 'asc'}
     ];
   
-    let cmtsBrs = <Browse {...browse} handleReply={handleReply}  /> 
+    let cmtsBrs = <View className="px-4"><Browse {...browse} handleReply={handleReply}  /></View> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
         <Text className='text-sm font-bold text-neogray-900 dark:text-neogray-50'>Comments ({count})</Text>

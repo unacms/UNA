@@ -71,7 +71,7 @@ export default function UnitComments(props) {
                        <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
                             <View className={sCommentClass} >
                                 {
-                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='bg-gray-300 dark:red rounded-lg py-1.5 px-2'>
+                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='bg-neoborder/30 dark:bg-neoborder/30 rounded-lg py-1.5 px-2'>
                                         <View  className=" flex-row" >
                                             <Text>In Reply to: </Text>
                                             <View className="mr-2 mb-2"><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>

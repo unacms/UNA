@@ -161,7 +161,14 @@ body {
 .u-cover{
     object-fit: cover !important;
 }
-
+.u-navbar{
+    width:calc(100% - 350px);
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.u-navbar::-webkit-scrollbar {
+    display: none;
+}
 .u-image{
     object-fit: cover !important;
 }
@@ -171,6 +178,9 @@ body {
 .u-content3{
     width: 100%;
     overflow: hidden;
+}
+.u-content3-bg{
+    height: 49px;;
 }
 .u-content4{
     width: 100%;

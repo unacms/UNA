@@ -15,11 +15,6 @@ export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
     var oBreadCrump = null;
-    var oComments = null;
-
-    
-   
-    const sClassName = 'w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 flex-1 flex-row' + (oComments ? ' sm:mb-24' : '');
 
     const linking = {
         prefixes: [
@@ -51,13 +46,15 @@ export default function Layout(props) {
             <NavigationContainer linking={linking}>
             <View className="bg-screen dark:bg-screen-dark text-neogray-900 dark:text-neogray-50 h-full items-stretch flex-row">
                 {(props.data && props.data.menu_top) &&  <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
-                {(oBreadCrump == null ) && <Tabsbar />}
-                {(oBreadCrump != null ) && <Breadcrumb content={oBreadCrump} />}
-                <View className=" u-content3 mx-auto flex-1 flex-row -top-[1px]" > 
-                <View className={sClassName}>
-                    {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
-                    {(!bTabsPresent) && <Page data={props.data}/>}
-                </View>
+                <View className=" w-full mx-auto flex-row -top-[1px]" > 
+                    <View className='w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 mx-auto'>
+                    <View className ="absolute u-content3-bg  bg-navbar/90 dark:bg-navbar-dark/90 border-b border-neoborder/30 dark:border-neoborder-dark/30 w-full pb-1"></View>
+                        <View className='u-content3 mx-auto'>
+                            
+                            {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
+                            {(!bTabsPresent) && <Page data={props.data}/>}
+                        </View>
+                    </View>
                 </View>
                 <View className="fixed bottom-0 w-full lg:hidden"><Footer/></View>
             </View>
