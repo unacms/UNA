@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import Navbar from './navbar';
 import Tabsbar from './tabsbar';
@@ -33,8 +32,6 @@ export default function Layout(props) {
         });
     }
 
-   
-
     return (
         <>
             <Head>
@@ -48,8 +45,8 @@ export default function Layout(props) {
                 {(props.data && props.data.menu_top) &&  <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
                 <View className=" w-full mx-auto flex-row -top-[1px]" > 
                     <View className='w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 mx-auto'>
-                    <View className ="absolute u-content3-bg  bg-navbar/90 dark:bg-navbar-dark/90 border-b border-neoborder/30 dark:border-neoborder-dark/30 w-full pb-1"></View>
-                        <View className='u-content3 mx-auto'>
+                        {/* Modify this View's className to make it take full width */}
+                        <View className='w-full mx-auto'>
                             
                             {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
                             {(!bTabsPresent) && <Page data={props.data}/>}
