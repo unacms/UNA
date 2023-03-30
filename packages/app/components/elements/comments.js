@@ -240,7 +240,7 @@ export default function ElementComments(props) {
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className=" w-full bottom-0 border-t  border-neoborder/30 dark:border-neoborder-dark/30" style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
+        cmtForm = <View className=" w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
             {
                 form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neoitem dark:bg-neoitem-dark rounded-lg   px-1 mx-2 mb-1'>
                     <Row className=' justify-between items-center'>
@@ -277,14 +277,14 @@ export default function ElementComments(props) {
         let heightS = height * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
 /*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
-        cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
+        cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             {cmtsHeader}
             {cmtsBrs}
             {cmtsMore}
            </View>
     }
     else{
-        cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder/30 dark:border-neoborder-dark/30">
+        cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             <View style={styles.list} className=' w-full max-h-screen'>
             {cmtsHeader}
             <ScrollView className='mt-4' style={{maxHeight:height-250}}>

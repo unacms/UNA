@@ -39,7 +39,7 @@ const colors = {
     
   },
   screen: {
-    DEFAULT: '#F3F4F6',
+    DEFAULT: '#E5E7EB',
     dark: '#030407',
   },
   navbar: {
@@ -65,7 +65,7 @@ const colors = {
   neocard: {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
-    hover: '#F3F4F6',
+    hover: '#F9FAFB',
     darkhover: '#1F2937',
   },
   neoitem: {
@@ -77,8 +77,8 @@ const colors = {
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: '#9CA3AF',
-    dark: '#374151',
+    DEFAULT: '#E5E7EB',
+    dark: '#1F2937',
   },
   neolink: {
     DEFAULT: '#3B82F6',

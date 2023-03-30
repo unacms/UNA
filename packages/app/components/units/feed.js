@@ -41,7 +41,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-neoborder/60 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/60"    style={styles.card}>
+        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg  border-neoborder dark:border-neoborder-dark"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
@@ -78,7 +78,7 @@ function DefaultUnit(data) {
                 }
         </View>
     </View>
-        <View className=" p-2 border-t border-neoborder/30 dark:border-neoborder-dark/30 flex-row space-x-1 ">
+        <View className=" p-2 border-t border-neoborder dark:border-neoborder-dark flex-row space-x-1 ">
             <View className='flex-row w-full space-x-2'>
                     <View className=" flex-row space-x-2    ">
                         <Button title="902" startDecorator="comment" size="sm" solid rounded variant="text"/>
@@ -97,11 +97,11 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="flex-row space-x-2 w-full mx-auto p-4 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-neocard-darkhover border-neoborder/30 dark:border-neoborder-dark/30 overflow-hidden ">    
-            <View className="w-14 h-14 rounded-full flex-none bg-secondary-500/10">
-                <Profile {...data.author_data} displayType="unit_wo_info" displaySize="xl" />
+        <View className="flex-row space-x-3 w-full mx-auto p-4 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-neogray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
+            <View className="w-12 h-12 rounded-full flex-none bg-secondary-500/10">
+                <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
-            <View className="flex-auto my-auto ">
+            <View className="flex-auto my-auto space-y-0.5 ">
                 <View className='flex-row space-x-2'>
                     <Text className='text-sm flex-auto font-bold text-neogray-700 dark:text-neogray-300'>{data.author_data.display_name}</Text>
                     <Text className='text-sm flex-none text-neogray-600 dark:text-neogray-400'><Time ts={data.date}></Time></Text>
@@ -109,7 +109,7 @@ function SmallUnit(data) {
                 <View className='flex-row space-x-2'>
                     <Text className="flex-auto text-lg font-bold text-neogray-900 dark:text-neogray-50" numberOfLines={1}>{data.content.title}</Text>
                     <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'>
-                        <Text className='text-sm text-neogray-50 dark:text-neogray-900 font-medium'>{data.cmts.count}</Text></View>
+                        <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text></View>
                 </View>
                 <View className='flex-row space-x-1'>
                     <Text className='text-sm text-neogray-600 dark:text-neogray-400' numberOfLines={1}>{data.plainText}</Text>

@@ -44,7 +44,7 @@ export function HomeScreen() {
           for more info.
         </Text>
 
-        <View className="absolute z-30 backdrop-blur-sm  h-16 px-2 sm:px-3   w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-neoborder/30 dark:border-neoborder-dark/30 flex-row space-x-1 sm:space-x-2 ">
+        <View className="absolute z-30 backdrop-blur-sm  h-16 px-2 sm:px-3   w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-neoborder dark:border-neoborder-dark flex-row space-x-1 sm:space-x-2 ">
           <TouchableOpacity>
             <Link
               href="/"
@@ -102,7 +102,7 @@ export function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity className="lg:flex-auto md:pr-2">
-              <View className="hidden lg:w-full  bg-neogray-100/50 dark:bg-neogray-900/50 border border-transparent hover:border-neoborder/30 dark:border-neoborder-dark/30 rounded-full w-50 h-full px-3 py-2">
+              <View className="hidden lg:w-full  bg-neogray-100/50 dark:bg-neogray-900/50 border border-transparent hover:border-neoborder dark:border-neoborder-dark rounded-full w-50 h-full px-3 py-2">
                 <Text className="text-neogray-400 text-base dark:text-neogray-600">
                   Search...
                 </Text>
@@ -110,7 +110,7 @@ export function HomeScreen() {
               <Link
                 href="/search"
                 className="lg:w-full group flex-col lg:flex-row lg:bg-hover dark:lg:bg-hover-dark lg:border  
-                lg:border-neoborder-dark/30 dark:lg:border-neoborder-dark/30 lg:space-x-3 items-center rounded-full 
+                lg:border-neoborder-dark dark:lg:border-neoborder-dark lg:space-x-3 items-center rounded-full 
                 md:rounded-lg p-3 md:py-1 lg:py-2.5 lg:rounded-full bg-transparent dark:bg-transparent sm:bg-item-hover/50 dark:sm:bg-item-hover-dark/50 
                 my-auto sm:hover:bg-item-hover dark:sm:hover:bg-item-hover-dark   md:bg-transparent dark:md:bg-transparent 
                 duration-200 lg:bg-item-hover/50 dark:lg:bg-item-hover-dark/50 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 md:hover:bg-item-hover/50 
@@ -174,7 +174,7 @@ export function HomeScreen() {
         </View>
         { /* content */ }
         <View className=" flex-row flex-1 2xl:mx-auto ">
-          <View className="w-72 mt-16 flex-none hidden xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder/30 dark:border-neoborder-dark/30 flex-col space-y-2">
+          <View className="w-72 mt-16 flex-none hidden xl:flex px-3 py-4 2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder dark:border-neoborder-dark flex-col space-y-2">
             <View className="flex-col space-y-0.5">
               <TouchableOpacity>
                 <Link
@@ -301,7 +301,7 @@ export function HomeScreen() {
 
           <View className="flex-auto relative w-full sm:p-4  flex-row space-x-4 lg:space-x-6 overflow-scroll max-w-6xl mx-auto">
             <View className="mt-16 flex-auto  flex-col space-y-2 sm:space-y-4 max-w-2xl mx-auto ">
-            <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder/30 dark:border-neoborder-dark/30 dark:hover:border-neoborder-dark/30   ">
+            <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg hover:border-neoborder/20 border-neoborder dark:border-neoborder-dark dark:hover:border-neoborder-dark   ">
                 <View className="bg-teal-500/40 w-full aspect-3/1   "></View>
 
                 <View className="flex-row p-4 space-x-2 ">
