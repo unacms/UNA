@@ -98,7 +98,7 @@ export function Button(props/*: ButtonProps*/) {
 
   if (buttonDisabled) sClassContainer += ' opacity-50 '
 
-  let sClassText = '  text-center '
+  let sClassText = '  '
 
   let ThemeCssClasses = appSetting('theme', 'button_styles');
 
