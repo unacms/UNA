@@ -78,7 +78,7 @@ const colors = {
   },
   neoborder: {
     DEFAULT: '#E5E7EB',
-    dark: '#1F2937',
+    dark: '#030712',
   },
   neolink: {
     DEFAULT: '#3B82F6',
