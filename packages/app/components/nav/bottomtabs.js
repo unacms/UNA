@@ -85,7 +85,7 @@ function getHeaderAction(navigation, route) {
             },
           ]}
         >
-          <Icon icon="app-back" width={24} height={24}  color={colors.barsColor} />
+          <Icon icon="ArrowLeft" width={24} height={24}  color={colors.barsColor} />
         </Pressable>
       );
     } else {
