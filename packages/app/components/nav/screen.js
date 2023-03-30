@@ -8,6 +8,7 @@ import { NavDrawer } from 'app/components/nav/drawer'
 import { useCurrentUser } from 'app/context/user';
 import { useIsFocused } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'
+import Cover from 'app/components/elements/cover';
 
 export function NavScreen(params) {
     const _path = params.route.params.url;
@@ -18,6 +19,7 @@ export function NavScreen(params) {
     const isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
     const isTabs = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
 
+    let isCover = pageData?.data?.cover_block?.profile ? true : false;
 
     useEffect(() => {
         (async () => {
@@ -29,7 +31,7 @@ export function NavScreen(params) {
                 }
             }
         })();
-    }, [_path, /*isFocused,*/ isFocused2]);
+    }, [_path, isFocused2]);
 
     if (isDrawer){
         setTimeout(() => {
@@ -42,13 +44,15 @@ export function NavScreen(params) {
             params.navigation.setOptions({ headerShown: true })
         }, 100);
     }
-    if (isTabs){
-       
-        return <NavMaterialTabs data = {pageData.data.menu.items} />
+    if (isTabs){   
+        return (<View className='flex-1'>
+            {(isCover) && <Cover data={pageData.data.cover_block}/>}
+            <NavMaterialTabs data = {pageData.data.menu.items} />
+        </View>);
     }
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            {pageData && <View className='bg-red-500 w-full'><Stack.Screen options={{'title': pageData.data.title}}/><All path={_path} {...pageData} ></All></View> }
+            {pageData && <View className='bg-red-500 w-full'><Stack.Screen /><All path={_path} {...pageData} ></All></View> }
         </View>
     }
 }

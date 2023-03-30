@@ -68,7 +68,7 @@ export function appSetting(section, name) {
         },
         {
           title: 'Messages',
-          url: '/persons-home',
+          url: '/view-persons-profile/dr-andrey-yasko-phd',
           icon: 'app-messages',
         },
         {
@@ -95,7 +95,7 @@ export function appSetting(section, name) {
         },
         {
           title: 'Messages',
-          url: '/persons-home',
+          url: '/view-persons-profile/dr-andrey-yasko-phd',
           icon: 'app-messages',
         },
         {

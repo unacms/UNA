@@ -10,12 +10,10 @@ export function Slider(props) {
     const scrollViewRef = useRef();
 
     const scrollLeft = () => {
-        console.log('7878',scrollViewRef.current.contentOffset)
         scrollViewRef.current.scrollTo({ x: scrollOffset.x - props.offset, y: 0, animated: true });
     };
 
     const scrollRight = () => {
-        console.log('7878',scrollViewRef.current.contentOffset)
         scrollViewRef.current.scrollTo({ x: scrollOffset.x + props.offset, y: 0, animated: true });
     }
 
@@ -35,22 +33,26 @@ export function Slider(props) {
 
     return (
         <Row className="w-full">
-            <Button variant="text" startDecorator='left'  disabled={isLeftButtonDisabled()} onPress={scrollLeft} />
+            <View className={isLeftButtonDisabled() ? 'invisible' : ''}>
+                <Button variant="text" startDecorator='left'  disabled={isLeftButtonDisabled()} onPress={scrollLeft} />
+            </View>
             <ScrollView className='w-72 relative '>
-                <View className='absolute -left-1 top-0 h-full w-8  bg-gradient-to-r from-neocard via-neocard dark:via-neocard-dark dark:from-neocard-dark  z-50'></View>
-                <View className='absolute -right-1 top-0 h-full w-8   bg-gradient-to-l from-neocard via-neocard dark:via-neocard-dark dark:from-neocard-dark z-50'></View>
+                { !isLeftButtonDisabled() && <View className='absolute -left-1 top-0 h-full w-8 bg-gradient-to-r from-neocard via-neocard dark:via-neocard-dark dark:from-neocard-dark z-50'></View> }
+                { !isRightButtonDisabled() && <View className='absolute -right-1 top-0 h-full w-8 bg-gradient-to-l from-neocard via-neocard dark:via-neocard-dark dark:from-neocard-dark z-50'></View> }
                 <ScrollView onScroll={handleScroll} ref={scrollViewRef} className='relative w-full' contentContainerStyle={{paddingHorizontal: 8}}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     onLayout={(event) =>
-                    setScrollViewWidth(event.nativeEvent.layout.width)
+                        setScrollViewWidth(event.nativeEvent.layout.width)
                     }
                     onContentSizeChange={(width, height) => setContentWidth(width)}
                 >
                     {props.children}
                 </ScrollView>
             </ScrollView>
-            <Button variant="text" startDecorator='right' disabled={isRightButtonDisabled()} onPress={scrollRight}/>
+            <View className={isRightButtonDisabled() ? 'invisible' : ''}>
+                <Button variant="text" startDecorator='right' disabled={isRightButtonDisabled()} onPress={scrollRight}  />
+            </View>
         </Row>
     )
 }
