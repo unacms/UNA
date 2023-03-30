@@ -85,8 +85,8 @@ const colors = {
     dark: '#3B82F6',
   },
   neoinput: {
-    DEFAULT: '#D1D5DB',
-    dark: '#374151',
+    DEFAULT: '#F9FAFB',
+    dark: '#030712',
      
   },
   neogray: {

@@ -9,7 +9,7 @@ import { appSetting } from 'app/settings'
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, 'bg-neoinput/30  border border-neoborder focus:bg-white   text-neogray-800 rounded-lg   w-full p-2 dark:bg-neoinput-dark/30 dark:focus:bg-black  dark:placeholder-neogray-400 dark:text-neogray-200 dark:border-neoborder-dark text-base')
+export const Input = styled(TextInputDef, ' bg-neoinput  border border-black/10 dark:border-white/10 focus:bg-white focus:outline-none  text-neogray-800 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-black  dark:placeholder-neogray-400 dark:text-neogray-200 text-base')
 export const Switch = styled(SwitchDef, ' text-neogray-800 ')
 export const Hidden = styled(TextInputDef, 'hidden')
 export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder focus:bg-white  text-neogray-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-neogray-900  dark:placeholder-neogray-400 dark:text-neogray-200 dark:border-neoborder-dark/50  text-base  ')
