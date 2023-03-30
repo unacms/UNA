@@ -9,6 +9,9 @@ export default function ElementImage(props) {
     
     let {width, height, ...rest} = props; // remove width & height
 
+    if (!rest.src)
+        return null;
+
     if (rest.view == "cover"){
         rest.fill = 'fill'
     }

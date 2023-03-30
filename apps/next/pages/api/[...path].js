@@ -1,4 +1,4 @@
-/*
+
 import { createProxyMiddleware } from "http-proxy-middleware"
 
 export const config = {
@@ -31,8 +31,8 @@ export default function handler(req, res) {
       );
     });    
 }
-*/
-/* OLD implementation: */
+
+/* OLD implementation: 
 
 import { fetcherRaw } from 'app/lib/fetcher';
 
@@ -86,3 +86,4 @@ export default async function handler(req, res) {
     // return result
     res.status(data.props?.status ? data.props.status : 200).json(data);
 }
+*/

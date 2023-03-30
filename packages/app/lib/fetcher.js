@@ -27,6 +27,10 @@ export async function fetcher (mixed) {
     }
 
     return await fetcherRaw(prefix, mixed).then(async (r) => {
+        // console.log("----------- Response headers ");
+        // console.log(r.headers);
+        // console.log("----------- END -------------");
+
         let a;
         try {
             a = await r.json();
@@ -73,6 +77,10 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
+    headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
+    headers['Pragma'] = "no-cache";
+    headers['Expires'] = "0";
+    
     // perform fetch
     return fetch(host + path, {
         method: data ? 'POST' : 'GET',
