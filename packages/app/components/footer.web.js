@@ -2,7 +2,7 @@ import Link from '../ui/atoms/link';
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { appSetting } from 'app/settings'
-import { Icon } from 'app/components/svg';
+import { Icon } from 'app/components/icon';
 import { useCurrentUser } from 'app/context/user';
 
 export default function () {

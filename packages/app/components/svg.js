@@ -13,6 +13,8 @@ import Svg, {
   Defs,
 } from 'react-native-svg'
 import { StyleSheet } from 'react-native'
+
+
 export function Icon(props) {
   let { icon, className, ...rest } = props
   let data = null

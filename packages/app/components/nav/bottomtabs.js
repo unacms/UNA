@@ -2,7 +2,8 @@ import { useRouter } from 'expo-router';
 import { Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
-import { Icon } from 'app/components/svg';
+//import { Icon, IconPh } from 'app/components/svg';
+import { Icon } from 'app/components/icon';
 import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
