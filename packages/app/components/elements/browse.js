@@ -105,9 +105,7 @@ export default function ElementBrowse(props) {
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
-                onChange={item => {
-                    setUnitMode(item.value);
-                }}
+                onChange={setUnitMode}
                 value={unitMode}
                 data={modeItems}
             /></View>}

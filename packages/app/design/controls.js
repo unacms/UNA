@@ -5,6 +5,7 @@ import { styled } from 'nativewind'
 import { Icon } from 'app/components/svg'
 import { useTheme } from '@react-navigation/native';
 import { appSetting } from 'app/settings'
+import {Picker as PickerDef} from '@react-native-picker/picker';
 
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
@@ -14,6 +15,8 @@ export const Switch = styled(SwitchDef, ' text-neogray-800 ')
 export const Hidden = styled(TextInputDef, 'hidden')
 export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder focus:bg-white  text-neogray-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-neogray-900  dark:placeholder-neogray-400 dark:text-neogray-200 dark:border-neoborder-dark/50  text-base  ')
  
+export const PickerStyled = styled(PickerDef, ' bg-neoinput  border border-black/10 dark:border-white/10 focus:bg-white focus:outline-none  text-neogray-800 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-black  dark:placeholder-neogray-400 dark:text-neogray-200 text-base')
+
 
 /* modal */
 /*

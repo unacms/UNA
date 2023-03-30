@@ -36,9 +36,7 @@ export default function FormFieldSelect(props) {
             <Dropdown 
                 labelField="label"
                 valueField="value"
-                onChange={item => {
-                    setValue(item.value);
-                }}
+                onChange={setValue}
                 value={value}
                 data={values}
             />

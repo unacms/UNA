@@ -18,6 +18,7 @@
     "moti": "0.23.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-horizontal-scrolling-menu": "^4.0.1",
     "react-native": "0.70.5",
     "react-native-component-inview": "^1.0.2",
     "react-native-dropdown-picker": "^5.4.6",

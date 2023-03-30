@@ -223,12 +223,10 @@ export default function ElementComments(props) {
        
            
             <View className='w-40'>
-            <Dropdown className='w-40'
+            <Dropdown
                 labelField="label"
                 valueField="value"
-                onChange={item => {
-                    handleOrder(item.value);
-                }}
+                onChange={handleOrder}
                 value={commentData.orderWay}
                 data={sortItems}
             />
