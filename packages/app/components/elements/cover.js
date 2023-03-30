@@ -2,7 +2,6 @@ import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
 
 import { Text, H1 } from 'app/design/typography';
-import MenuSimple from 'app/components/menu_simple';
 import Link from 'app/ui/atoms/link'
 import Html from 'app/ui/atoms/html';
 
