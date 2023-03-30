@@ -77,9 +77,9 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
-    headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
-    headers['Pragma'] = "no-cache";
-    headers['Expires'] = "0";
+    // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
+    // headers['Pragma'] = "no-cache";
+    // headers['Expires'] = "0";
     
     // perform fetch
     return fetch(host + path, {
