@@ -2,17 +2,20 @@ import { TouchableOpacity } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/components/svg'
-import { useState } from 'react'
-import { View, Row } from 'app/design/view'
+import { useState, useRef } from 'react'
+import { View,ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import MainMenu from 'app/components/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
 
+import { Slider } from 'app/ui/molecules/slider';
+
 export default function (props) {
   const { currentUser, setCurrentUser } = useCurrentUser();
   const [menuPopup, setMenuPopup] = useState(false)
+
   let { width } = useWindowDimensions()
 
   if (width > 1280 && menuPopup) setMenuPopup(false)
@@ -53,10 +56,11 @@ export default function (props) {
         </TouchableOpacity>
       </Row>
       
-      <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between">
-        <Row className="hidden lg:flex flex-row flex-none u-navbar">
+      <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between ">
+        <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
+          <Slider offset={300}>
             {props.menu_top.items.map((item, index) => (
-                <Link href={item.link} key={`menu-${index}`}>
+                  <Link href={item.link} key={`menu-${index}`}>
                   <Button
                     variant="text"
                     startDecorator={item.icon}
@@ -64,7 +68,8 @@ export default function (props) {
                     title={item.title}
                   />
                 </Link>
-            ))}
+              ))}
+          </Slider>
         </Row>
         <Row>
         {!!currentUser &&
