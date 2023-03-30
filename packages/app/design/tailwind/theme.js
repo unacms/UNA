@@ -69,7 +69,7 @@ const colors = {
     darkhover: '#1F2937',
   },
   neoitem: {
-    DEFAULT: '#E5E7EB',
+    DEFAULT: '#F3F4F6',
     dark: '#1F2937',
   },
   neobutton: {
