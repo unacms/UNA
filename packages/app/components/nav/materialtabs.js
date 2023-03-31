@@ -5,8 +5,13 @@ import { Icon } from 'app/components/svg';
 import { A, Text } from 'app/design/typography'
 import { NavScreen } from 'app/components/nav/screen'
 import { Theme } from 'app/design/theme';
+import Animated from 'react-native-reanimated';
+
+
 
 export function NavMaterialTabs(params) {
+
+
 
   const Tab = createMaterialTopTabNavigator();
   const { colors } = Theme();
@@ -14,27 +19,38 @@ export function NavMaterialTabs(params) {
     return (
       <Tab.Navigator
         screenOptions={({ route, focused, navigation }) => {
-         // const { options } = descriptors[route.key];
-          //const label = options.title;
           const indicatorWidth = 100 / params.data.length;
           return {
-            tabBarScrollEnabled: (params.data.length > 3? true: false),
+            tabBarScrollEnabled: true,
             tabBarLabel: ({ focused, color, size }) => (
-              <Text style={{ color: focused ? colors.primary : colors.text, fontSize: 14,  textTransform: 'capitalize', paddingLeft:5, paddingRight:5 }}>
+              <View>
+                <View style={{padding:10}}>
+                  <Text style={{ color: focused ? colors.primary : colors.text, fontSize: 14, fontWeight: '600', textTransform: 'capitalize', paddingLeft:5, paddingRight:5 }}>
                 {route.params?.title || route.name}
-              </Text>
+                  </Text>
+                </View>
+                <Animated.View
+                  style={[
+                    {
+                    width:'100%',
+                      bottom: 0,
+                      borderRadius: 2,
+                      height: 3,
+                      backgroundColor: focused ? colors.primary : 'transparent',
+                    },
+                  
+                  ]}
+                />
+              </View>
             ),
-            tabBarIndicatorStyle: {
-              backgroundColor: colors.primary,
-              height: 3,
-              borderRadius: 2
+            tabBarIndicator: () => <></>,
+            
+            tabBarContentContainerStyle:{
+               minWidth:'100%',
+              justifyContent:'center',
             },
-            tabBarItemStyle: { width: 'auto' },
+            tabBarItemStyle: { width: 'auto', padding: 0 },
           };
-        }}
-        tabBarOptions={{
-          tabBarItemStyle: { backgroundColor: 'white' },
-          tabBarIndicatorStyle: { backgroundColor: 'red' }, // Change the indicator color here
         }}
       >
           {

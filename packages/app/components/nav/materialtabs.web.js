@@ -10,103 +10,6 @@ import { Text } from 'app/design/typography';
 import { NavScreen } from 'app/components/nav/screen';
 import { Theme } from 'app/design/theme';
 
-function CustomTabBar({ state, descriptors, navigation, position }) {
-  const { colors } = Theme();
-  const [tabWidths, setTabWidths] = useState({});
-
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'center',
-        backgroundColor: colors.barsBackground,
-        width: '100%',
-      }}
-    >
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
-            const label = options.title;
-            const isFocused = state.index === index;
-
-            const onPress = () => {
-              const event = navigation.emit({
-                type: 'tabPress',
-                target: route.key,
-              });
-
-              if (!isFocused && !event.defaultPrevented) {
-                navigation.navigate(route.name);
-              }
-            };
-
-            const translateX = position.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [-tabWidths[index] / 2, 0, tabWidths[index] / 2],
-            });
-
-            const animatedStyle = { transform: [{ translateX }] };
-
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={onPress}
-                style={{
-                  paddingHorizontal: 16,
-                  paddingVertical: 16,
-                }}
-              >
-                <View
-                  onLayout={(event) => {
-                    const { width } = event.nativeEvent.layout;
-                    setTabWidths((prevWidths) => ({
-                      ...prevWidths,
-                      [index]: width,
-                    }));
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: isFocused ? colors.primary : colors.text,
-                      fontWeight: '600',
-                    }}
-                  >
-                    {label}
-                  </Text>
-                </View>
-                {isFocused && (
-                  <Animated.View
-                    style={[
-                      {
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        width: '100%',
-                        height: 3,
-                        borderRadius: 2,
-                        backgroundColor: colors.primary,
-                      },
-                      animatedStyle,
-                    ]}
-                  />
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </ScrollView>
-    </View>
-  );
-}
 
 export function NavMaterialTabs(params) {
   const { colors } = Theme();
@@ -114,17 +17,51 @@ export function NavMaterialTabs(params) {
   const Tab = createMaterialTopTabNavigator();
   return (
     <Tab.Navigator
-      tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.text,
-      }}
+    screenOptions={({ route, focused, navigation }) => {
+      const indicatorWidth = 100 / params.data.length;
+      return {
+        tabBarScrollEnabled: true,
+        tabBarLabel: ({ focused, color, size }) => (
+          <View  style={{}}>
+            <View style={{padding:10,}}>
+              <Text style={{ color: focused ? colors.primary : colors.text, fontSize: 14,  textTransform: 'capitalize', lineHeight:30, fontWeight: '600', paddingLeft:5, paddingRight:5 }}>
+            {route.params?.title || route.name}
+              </Text>
+            </View>
+            <Animated.View
+              style={[
+                {
+                width:'100%',
+                  bottom: 0,
+                  borderRadius: 2,
+                  height: 3,
+                  backgroundColor: focused ? colors.primary : 'transparent',
+                },
+              
+              ]}
+            />
+          </View>
+        ),
+        tabBarIndicator: () => <></>,
+        
+        tabBarContentContainerStyle:{
+           minWidth:'100%',
+           padding:0,
+           margin:0,
+
+           borderWidth:0,
+         
+        },
+        tabBarItemStyle: { width: 'auto', padding: 0,  minHeight:'auto'},
+      };
+    }}
     >
       {params.data.map((tab, index) => (
         <Tab.Screen
           key={`tab-${index}`}
           name={tab.link}
           component={NavScreen}
+          initialParams={{  title:tab.title}}
           options={{
             unmountOnBlur: true,
             upperCaseLabel: false,
