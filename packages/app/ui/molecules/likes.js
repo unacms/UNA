@@ -7,7 +7,7 @@ import Profile from './profile';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls';
-import { Icon } from 'app/components/svg';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function ElementLikes(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';

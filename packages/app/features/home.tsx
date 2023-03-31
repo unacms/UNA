@@ -1,6 +1,6 @@
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import Link from '../ui/atoms/link'
-import { Icon } from '../components/svg'
+import { Icon } from 'app/ui/atoms/icon'
 import Image from '../ui/atoms/image'
 import { View, Row } from 'app/design/view'
 import { TouchableOpacity } from 'app/design/view'

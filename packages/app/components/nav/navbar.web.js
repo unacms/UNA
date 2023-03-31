@@ -1,14 +1,14 @@
 import { TouchableOpacity } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
-import { Icon } from 'app/components/svg'
 import { useState, useRef } from 'react'
 import { View,ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import MainMenu from 'app/components/mainmenu'
+import MainMenu from 'app/components/nav/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
+import { appSetting } from 'app/settings'
 
 import { Slider } from 'app/ui/molecules/slider';
 
@@ -43,14 +43,8 @@ export default function (props) {
         <TouchableOpacity className="" onPress={hideMenu}>
           <Link href="/home">
             <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-2">
-              <Icon
-                icon="logo-mark"
-                className="group-hover:-rotate-45 text-neogray-600 dark:text-neogray-200 group-hover:text-neogray-800 dark:group-hover:text-neogray-50   duration-300 h-10 w-10"
-              ></Icon>
-              <Icon
-                icon="logo-text"
-                className="h-10 w-14 hidden sm:block text-brand dark:text-brand-dark  "
-              ></Icon>
+              {appSetting('theme', 'svg', 'logo-mark')}
+              {appSetting('theme', 'svg', 'logo-text')}
             </View>
           </Link>
         </TouchableOpacity>

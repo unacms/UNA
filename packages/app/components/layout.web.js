@@ -1,11 +1,6 @@
 import Head from 'next/head';
-import Navbar from './navbar';
-import Tabsbar from './tabsbar';
-import Breadcrumb from './breadcrumb';
+import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
-
-import { ScrollView, SafeAreaView } from 'app/design/view'
-import { useRouter } from "next/router";
 import { View } from 'app/design/view'
 import { NavigationContainer } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'

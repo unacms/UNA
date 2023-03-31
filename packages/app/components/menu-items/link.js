@@ -4,7 +4,7 @@ import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
-import { Icon } from 'app/components/svg';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)

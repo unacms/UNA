@@ -25,7 +25,7 @@ export default function Block({block}) {
     return (
         
         <View key={block.id} className="w-full">
-            <View key={block.id} className="sm:mx-2 lolo ">
+            <View key={block.id} className="">
                 <H1 className="hidden text-xl border-b-2 border-base-100 my-auto pb-1">{block.title}</H1>
                 <BlockType data={block.content} type={block.type} />
             </View>

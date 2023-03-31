@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';
-import { Icon } from 'app/components/svg';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function MenuItemButton(oProps) {
     const bUseInternalIcons = true;

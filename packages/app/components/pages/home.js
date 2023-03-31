@@ -10,13 +10,13 @@ export default function Home(props) {
 
     return (
         <View className="flex-auto relative w-full flex-row mx-auto ">
-             <View className="flex-auto hidden lg:flex w-2/12">
+             <View className="flex-auto hidden lg:flex w-2/12 sm:mr-4">
                 {profile}
             </View>
-            <View className="flex-auto w-6/12">
+            <View className="flex-auto w-6/12 sm:m-4">
                 {feed}
             </View>
-            <View className="hidden sticky top-0 lg:flex flex-none w-4/12">
+            <View className="hidden sticky top-0 lg:flex flex-none w-4/12 sm:m-4">
                 {post}
             </View>
         </View>

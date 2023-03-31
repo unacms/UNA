@@ -16,7 +16,7 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-import { Icon } from 'app/components/svg';
+import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 import SliderBottom from 'app/ui/molecules/slider-bottom';
 

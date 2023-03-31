@@ -52,7 +52,7 @@ export function NavScreen(params) {
     }
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            {pageData && <View className='bg-red-500 w-full'><Stack.Screen /><All path={_path} {...pageData} ></All></View> }
+            {pageData && <View className='bg-red-500 w-full'><Stack.Screen options={{'title': pageData.data.title}} /><All path={_path} {...pageData} ></All></View> }
         </View>
     }
 }

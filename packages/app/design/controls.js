@@ -2,7 +2,7 @@ import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, Tou
 import { Pressable, View , Row   } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
-import { Icon } from 'app/components/svg'
+import { Icon } from 'app/ui/atoms/icon'
 import { useTheme } from '@react-navigation/native';
 import { appSetting } from 'app/settings'
 import {Picker as PickerDef} from '@react-native-picker/picker';

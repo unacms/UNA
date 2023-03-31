@@ -133,7 +133,6 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
     function personUnit(){
         let sMeta = '';
-        console.log(55555, data?.meta);
         if(data?.meta)
             sMeta = (
                 <View className="text-center px-4 mt-4">

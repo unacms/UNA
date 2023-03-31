@@ -1,7 +1,6 @@
 
 import { Pressable, View } from 'app/design/view'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Icon } from 'app/components/svg';
 import { A, Text } from 'app/design/typography'
 import { NavScreen } from 'app/components/nav/screen'
 import { Theme } from 'app/design/theme';
@@ -25,7 +24,7 @@ export function NavMaterialTabs(params) {
             tabBarLabel: ({ focused, color, size }) => (
               <View>
                 <View style={{padding:10}}>
-                  <Text style={{ color: focused ? colors.primary : colors.text, fontSize: 14, fontWeight: '600', textTransform: 'capitalize', paddingLeft:5, paddingRight:5 }}>
+                  <Text style={{ color: focused ? colors.primary : colors.text, fontSize: 14, fontWeight: '600', textTransform: 'capitalize', paddingLeft:5, paddingRight:5, paddingTop:3, paddingBottom:3 }}>
                 {route.params?.title || route.name}
                   </Text>
                 </View>
@@ -48,6 +47,7 @@ export function NavMaterialTabs(params) {
             tabBarContentContainerStyle:{
                minWidth:'100%',
               justifyContent:'center',
+              
             },
             tabBarItemStyle: { width: 'auto', padding: 0 },
           };

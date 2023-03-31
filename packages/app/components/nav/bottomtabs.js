@@ -2,12 +2,12 @@ import { useRouter } from 'expo-router';
 import { Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
-//import { Icon, IconPh } from 'app/components/svg';
-import { Icon } from 'app/components/icon';
+import { Icon } from 'app/ui/atoms/icon';
 import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/settings'
+import { Text } from 'app/design/typography'
 
 const Tab = createBottomTabNavigator();
 
@@ -77,15 +77,16 @@ function getHeaderAction(navigation, route) {
     if (navigation.isFocused() && route.name === '/pages') {
       return (
         <Pressable
+        className="pl-4"
           onPress={routerExpo.back}
           style={({ pressed }) => [
             {
-              padding: 14, // Adjust padding to position the icon
               opacity: pressed ? 0.5 : 1,
+              backgroundColor:'red'
             },
           ]}
         >
-          <Icon icon="ArrowLeft" width={24} height={24}  color={colors.barsColor} />
+          <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
         </Pressable>
       );
     } else {
