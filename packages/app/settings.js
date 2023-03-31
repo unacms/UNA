@@ -177,6 +177,7 @@ export function appSetting(section, name, path) {
         'account': 'UserCircle',
         'comments': 'ChatsCircle',
         'file-alt': 'NoteBlank',
+        'contact': 'PaperPlaneRight'
         
       }
     },

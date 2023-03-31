@@ -14,6 +14,7 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import { useTheme } from '@react-navigation/native';
 import { LayoutData } from 'app/context/layout';
 
+
 export default function ElementComments(props) {
 
     let browse = props.browse;
@@ -215,7 +216,7 @@ export default function ElementComments(props) {
         {label: 'Newest first', value: 'desc'},
         {label: 'Oldest first', value: 'asc'}
     ];
-  
+
     let cmtsBrs = <View className="px-4"><Browse {...browse} handleReply={handleReply}  /></View> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
@@ -270,6 +271,14 @@ export default function ElementComments(props) {
     let cmts = null
     let styles = {};
     const {height, width, scale, fontScale} = useWindowDimensions(); 
+
+    const [elementWidth, setElementWidth] = useState(0);
+    const onLayout = (event) => {
+        const { width } = event.nativeEvent.layout;
+        setElementWidth(width);
+    };
+  
+
     if(Platform.OS !== 'web') {
        
         let heightS = height * 0.9 - 30;
@@ -283,16 +292,18 @@ export default function ElementComments(props) {
     }
     else{
         cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
-            <View style={styles.list} className=' w-full max-h-screen'>
-            {cmtsHeader}
-            <ScrollView className='mt-4' style={{maxHeight:height-250}}>
-            {cmtsBrs}
-            {cmtsMore}
-            </ScrollView>
-            <View className='mt-4'>
-            {cmtForm}
+            <View style={styles.list} className=' w-full '>
+                {cmtsHeader}
+                
+                {cmtsBrs}
+                {cmtsMore}
+                <View className='relative mt-12 bg-red-500'  onLayout={onLayout}>
+                    <View className='mt-4 fixed bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark' style={{width:elementWidth}}>
+                        {cmtForm}
+                    </View>
+                </View>
             </View>
-        </View></View>;
+        </View>;
     }
     
 
