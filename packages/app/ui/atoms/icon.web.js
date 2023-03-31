@@ -1,7 +1,6 @@
 import * as IconSet from "@phosphor-icons/react";
 import { appSetting } from 'app/settings'
 
-
 export function Icon(props) {
     let { icon, className, ...rest } = props
 

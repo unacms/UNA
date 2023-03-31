@@ -11,9 +11,9 @@ export default function ElementCommentForm(props) {
 
     return (
       <KeyboardAvoidingView>
-      <View>
-        {!!layoutData && layoutData[0]}
-    </View>
-    </KeyboardAvoidingView> 
+        <View>
+          {!!layoutData && layoutData[0]}
+        </View>
+      </KeyboardAvoidingView> 
   )
 }

@@ -7,7 +7,6 @@ import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/settings'
-import { Text } from 'app/design/typography'
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +42,7 @@ export function NavBottomTabs(params) {
                 headerLeft: () => getHeaderAction(navigation, route)
             })}
         
-            initialRouteName={params.initial ? 'tab-Home' : '' }
+            initialRouteName={params.initial ? 'tab-0' : '' }
         >
             <Tab.Screen
                 name="/pages"

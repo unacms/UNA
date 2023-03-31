@@ -8,7 +8,7 @@ const Drawer = createDrawerNavigator();
 
 export function NavDrawer(params) {
     const { colors } = useTheme();
-
+    console.log('!!-----------------', params.pageData);
     if (!params.menu)
         return <></>
     else 
@@ -42,7 +42,7 @@ export function NavDrawer(params) {
                     key={`drawer-${index}`}
                     name={`drawer-${index}`}
                     component={NavScreen}
-                    initialParams={{ url: '/' + menu.link}}
+                    initialParams={{ url: '/' + menu.link, pageData: params.pageData}}
                     options={{    title: menu.title    }}
                 />
             ))}

@@ -12,7 +12,7 @@ import Cover from 'app/components/elements/cover';
 
 export function NavScreen(params) {
     const _path = params.route.params.url;
-    const [pageData, setPageData] = useState(null);
+    const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
 
@@ -37,7 +37,7 @@ export function NavScreen(params) {
         setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
         }, 100);
-        return <NavDrawer menu = {pageData.data.menu_top} />
+        return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData.data} />
     }
     else{
         setTimeout(() => {
@@ -52,7 +52,7 @@ export function NavScreen(params) {
     }
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            {pageData && <View className='bg-red-500 w-full'><Stack.Screen options={{'title': pageData.data.title}} /><All path={_path} {...pageData} ></All></View> }
+            {pageData && <View className='bg-red-500 w-full'><Stack.Screen options={{'title': pageData?.data?.title}} /><All path={_path} {...pageData} ></All></View> }
         </View>
     }
 }

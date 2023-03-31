@@ -239,7 +239,7 @@ export default function ElementComments(props) {
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className=" w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:5, paddingBottom:5}}>
+        cmtForm = <View className="  w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
                 form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neoitem dark:bg-neoitem-dark rounded-lg   px-1 mx-2 mb-1'>
                     <Row className=' justify-between items-center'>
@@ -298,7 +298,7 @@ export default function ElementComments(props) {
                 {cmtsBrs}
                 {cmtsMore}
                 <View className='relative mt-12 bg-red-500'  onLayout={onLayout}>
-                    <View className='mt-4 fixed bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark' style={{width:elementWidth}}>
+                    <View className='mt-4 fixed bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark' style={{width:elementWidth}}>
                         {cmtForm}
                     </View>
                 </View>

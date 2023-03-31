@@ -54,7 +54,7 @@ export default function Layout(props) {
                         </View>
                     </View>
                 </View>
-                <View className="fixed bottom-0 w-full lg:hidden"><Footer/></View>
+                <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
             </View>
             </NavigationContainer>
         </>

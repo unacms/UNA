@@ -4,6 +4,18 @@ import { parseISO, format, formatDistance } from 'date-fns';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+  
+    return `${day} ${month} ${year}`;
+  }
+
 export default function ElementTime(props) {
     const [date, setDate] = useState(new Date());
 
@@ -24,7 +36,7 @@ export default function ElementTime(props) {
             s = s.replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm');
         }
         else{
-            s = d.toLocaleString();
+            s = formatDate(d);
         }
     }
 
