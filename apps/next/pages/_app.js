@@ -25,27 +25,6 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
-      <Head>
-        <title>NEO App</title>
-        <meta
-          name="description"
-          content="Expo + Next.js with Solito. By Fernando Rojo."
-        />
-        <meta
-          name="theme-color"
-          content="#ffffff"
-          media="(prefers-color-scheme: light)"
-        />
-        <meta
-          name="theme-color"
-          content="#181b20"
-          media="(prefers-color-scheme: dark)"
-        />
-        <link rel="icon" href="/favicon.ico"/>
-        <link rel="icon" href="/favicon.svg"/>
-        <link rel="icon" href="/favicon.png"/>
-      </Head>
-      
         <Provider>
           <CurrentUserProvider>
             <Component {...pageProps} />
