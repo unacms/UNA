@@ -27,6 +27,7 @@ export function appSetting(section, name, path) {
         selectBorder: 'rgba(156, 163, 175, 0.3)',
         selectBackground: 'rgba(255, 255, 255, 1)',
         selectBackgroundActive: 'rgba(209, 213, 219, 0.3)',
+        blockBorder: '#E5E7EB',
       },
       dark: {
         primary: '#3B82F6',
@@ -36,6 +37,7 @@ export function appSetting(section, name, path) {
         selectBorder: 'rgba(55, 65, 81, 0.3)',
         selectBackground: 'rgba(17, 24, 39, 1)',
         selectBackgroundActive: 'rgba(55, 65, 81, 0.5)',
+        blockBorder: '#030712',
       },
       button_styles: {
         'u-btn-default-cnt':
