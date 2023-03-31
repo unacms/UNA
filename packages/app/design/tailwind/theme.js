@@ -55,7 +55,7 @@ const colors = {
     dark: '#111827',
   },
   tabbar: {
-    DEFAULT: 'red',
+    DEFAULT: '#FFFFFF',
     dark: '#111827',
   },
   block: {

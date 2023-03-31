@@ -42,7 +42,7 @@ export function NavBottomTabs(params) {
                 headerLeft: () => getHeaderAction(navigation, route)
             })}
         
-            initialRouteName={params.initial ? 'tab-0' : '' }
+            initialRouteName={params.initial ? 'tab-Home' : '' }
         >
             <Tab.Screen
                 name="/pages"

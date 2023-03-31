@@ -10,10 +10,7 @@ export default function Root(props) {
     <ThemeProvider value={Theme()} >
       <Provider>
       <CurrentUserProvider>
-          <Stack screenOptions={{  headerStyle: {
-                      
-                      headerTintColor: '#fff',
-                    },headerShown: false, }}></Stack>
+          <Stack screenOptions={{ headerShown: false, }}></Stack>
         </CurrentUserProvider>
       </Provider>    
     </ThemeProvider>
