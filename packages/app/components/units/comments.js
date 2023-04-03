@@ -9,7 +9,7 @@ import { Row } from 'app/design/layout'
 import { View, Pressable } from 'app/design/view'
 import Html from '../../ui/atoms/html';
 import { Button } from 'app/design/controls'
-import { stripTags } from '../../lib/util';
+import { ContentMore } from 'app/ui/molecules/contentmore';
 
 export default function UnitComments(props) {
 
@@ -76,14 +76,7 @@ export default function UnitComments(props) {
                                             <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                             <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
                                         </View>
-                                        <Pressable onPress={handleShowMore}>
-                                            <View className={showFull ? 'hidden' : ''}>
-                                                <Text className='text-sm text-gray-600 dark:text-gray-400' numberOfLines={1} htmlStyles={oCommentTextStyle}>{stripTags(data.cmt_parent.data.cmt_text)}</Text>
-                                            </View>
-                                            <View className={!showFull ? 'hidden' : ''}>
-                                                <Html data={data.cmt_parent.data.cmt_text} htmlStyles={oCommentTextStyle}  />
-                                            </View>
-                                        </Pressable>
+                                        <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
                                     </View>
                                 }
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />

@@ -17,6 +17,9 @@ export function appSetting(section, name, path) {
       show_selector_view: false,
       default_view: 'small',
     },
+    entry:{
+      default_view: 'small',
+    },
 
 
     theme: {

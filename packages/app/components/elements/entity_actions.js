@@ -2,8 +2,15 @@ import { Platform } from 'react-native';
 import { A, Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import Menu from '../menu';
+import { appSetting } from 'app/settings'
 
 export default function ElementEntityActions(props) {
+
+    const view = appSetting('entry', 'default_view');
+
+    if (view == 'small')
+        return <></>
+
     return (
         <View className="relative p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-t border-neoborder dark:border-neoborder-dark sm:border-x w-full mx-auto max-w-5xl">
             <View className="flex flex-col w-full">
