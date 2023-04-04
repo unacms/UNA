@@ -19,7 +19,7 @@ export default function Dropdown(props) {
             handleChange(itemValue, itemIndex)
         }>
             {props.data.map((item, index) => (
-                <Picker.Item label={item[props.labelField]} value={item[props.valueField]} />
+                <Picker.Item key={'item-' + item[props.valueField]} label={item[props.labelField]} value={item[props.valueField]} />
             ))}
         </PickerStyled>
     );

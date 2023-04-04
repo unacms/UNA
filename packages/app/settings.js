@@ -206,7 +206,7 @@ export function appSetting(section, name, path) {
         },
         {
           title: 'Notifications',
-          url: '/view-persons-profile/dr-andrey-yasko-phd',
+          url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
           icon: 'app-usermenu',
         },
         {
@@ -233,7 +233,7 @@ export function appSetting(section, name, path) {
         },
         {
           title: 'Notifications',
-          url: '/view-persons-profile/dr-andrey-yasko-phd',
+          url: '/create-post',
           icon: 'app-notifications',
         },
         {

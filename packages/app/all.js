@@ -43,6 +43,6 @@ export async function getData(path, token, origin, headers, callback) {
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
     // TODO: pass GET&POST params
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
-    console.log("************** load data:", path, "**************", data);
+    //console.log("************** load data:", path, "**************", data);
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
 }

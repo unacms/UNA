@@ -21,7 +21,14 @@ export function NavScreen(params) {
     const isFocused2 = useIsFocused();
 
     const isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
-    const isTabs = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
+    let isTabs1 = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
+    let isTabs = false;
+    if (isTabs1){
+        pageData.data.menu.items.forEach(function (k) { 
+            if ('/' + k.link == _path)
+                isTabs = true;
+        });
+    }
 
     let isCover = pageData?.data?.cover_block?.profile ? true : false;
     
