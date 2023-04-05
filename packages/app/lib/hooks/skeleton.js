@@ -3,33 +3,22 @@ import { useEffect, useState } from 'react'
 import { View } from 'app/design/view'
 
 export default function (props) {
-  const [loading, setLoading] = useState(false)
-  const [url, setUrl] = useState(false)
-  useEffect(() => {
-    Router.events.on('routeChangeStart', (url, { shallow }) => {
-      setLoading(true)
-      setUrl(url)
+    const [loading, setLoading] = useState(false)
+    const [url, setUrl] = useState(false)
+    useEffect(() => {
+        Router.events.on('routeChangeStart', (url, { shallow }) => {
+            setLoading(true)
+            setUrl(url)
     })
     Router.events.on('routeChangeComplete', (url, { shallow }) => {
-      setLoading(false)
+        setLoading(false)
     })
     Router.events.on('routeChangeError', (url, { shallow }) => {
-      setLoading(false)
+        setLoading(false)
     })
-  }, [])
+    }, [])
 
-  var skeleton = ''
-  if (url) {
-    skeleton = url == '/' || url == '' || url == '/home' ? 'home' : skeleton
-    skeleton = url == '/posts-home' ? 'posts-home' : skeleton
-    skeleton = url == '/groups-home' ? 'groups-home' : skeleton
-    skeleton = url == '/persons-home' ? 'persons-home' : skeleton
-    skeleton = url.includes('view-post') ? 'view-post' : skeleton
-    skeleton = url.includes('view-group-profile') ? 'view-group' : skeleton
-    skeleton = url.includes('view-persons-profile') ? 'view-person' : skeleton
-  }
-
-  var skeletons = {
+    var skeletons = {
     '': (
       <View>
         <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
@@ -436,5 +425,16 @@ export default function (props) {
     ),
   }
 
-  return [loading, skeletons[skeleton]]
+    var skeleton = ''
+    if (url =='' || url =='/')
+        url =='/home'
+    if (url) {
+        let u = url.split('/');
+        u = u.filter(Boolean);
+        skeleton = skeletons['' + u[0]];
+        if (!skeleton)
+            skeleton = skeletons[''];
+    }  
+
+    return [loading, skeleton]
 }

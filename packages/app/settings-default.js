@@ -186,29 +186,6 @@ export const settingsDefault = {
       'file-alt': 'NoteBlank',
       'contact': 'PaperPlaneRight' 
     },
-    skeletons: {
-      'posts-home': 'aaa',
-      'view-post': 'bbb',
-      'default': <View>
-      <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
-        <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
-          <View className="flex-1 space-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-            <View className="h-3 w-1/3 bg-gray-600/20 rounded"></View>
-          </View>
-        </View>
-        <View className="flex-1 animate-pulse space-y-4 py-1">
-          <View className="h-6 w-2/3 bg-gray-600/20 rounded"></View>
-          <View className="space-y-2">
-            <View className="h-4 bg-gray-600/20 rounded"></View>
-            <View className="h-4 bg-gray-600/20 rounded"></View>
-            <View className="h-4 bg-gray-600/20 rounded"></View>
-          </View>
-        </View>
-      </View>
-    </View>
-    }
   },
 
   menu: {

@@ -6,11 +6,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Page from 'app/components/page'
 import Cover from 'app/components/elements/cover';
+import useSkeleton from '../lib/hooks/skeleton';
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
     var oBreadCrump = null;
+    const [loading, skeleton] = useSkeleton();
 
     const linking = {
         prefixes: [
@@ -38,12 +40,12 @@ export default function Layout(props) {
             {(props.data && props.data.menu_top) &&  <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
             <View className=" w-full mx-auto flex-row -top-[1px]" > 
                 <View className='w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 mx-auto'>
-                    {/* Modify this View's className to make it take full width */}
-                    <View className='w-full mx-auto'>
+
+                  {loading ? <View className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{skeleton}</View> :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
                         {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
                         {(!bTabsPresent) && <Page data={props.data}/>}
-                    </View>
+                    </View>}
                 </View>
             </View>
             <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
@@ -57,8 +59,8 @@ export default function Layout(props) {
                 <meta name="og:title" content={siteTitle} />
                 <title>{props.data.title}</title>
             </Head>
-            {bTabsPresent &&  <NavigationContainer linking={linking}>{cnt}</NavigationContainer>}
-            {!bTabsPresent && cnt}
+            {(bTabsPresent) && <NavigationContainer linking={linking}>{cnt}</NavigationContainer>}
+            {(!bTabsPresent) && cnt}
            
         </>
     );
