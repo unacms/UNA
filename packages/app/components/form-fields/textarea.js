@@ -10,8 +10,6 @@ import { View } from 'app/design/view'
 
 export default function FormFieldText(props) {
     
-   // const formContext = useFormContext();
-//    const { formState } = formContext;
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';

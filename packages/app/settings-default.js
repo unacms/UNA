@@ -124,8 +124,7 @@ export const settingsDefault = {
       barsBackground: '#FFFFFF',
       barsColor: '#4B5563',
       selectBorder: 'rgba(156, 163, 175, 0.3)',
-      selectBackground: 'rgba(255, 255, 255, 1)',
-      selectBackgroundActive: 'rgba(209, 213, 219, 0.3)',
+      fieldBackground: '#ccccccc',
       blockBorder: '#E5E7EB',
     },
     dark: {
@@ -134,8 +133,7 @@ export const settingsDefault = {
       barsBackground: '#111827',
       barsColor: '#D1D5DB',
       selectBorder: 'rgba(55, 65, 81, 0.3)',
-      selectBackground: 'rgba(17, 24, 39, 1)',
-      selectBackgroundActive: 'rgba(55, 65, 81, 0.5)',
+      fieldBackground: '#ccccccc',
       blockBorder: '#030712',
     },
     button_styles: {
@@ -189,9 +187,9 @@ export const settingsDefault = {
       'contact': 'PaperPlaneRight' 
     },
     skeletons: {
-      'posts-home' : 'aaa',
-      'view-post' : 'bbb',
-      'default':<View>
+      'posts-home': 'aaa',
+      'view-post': 'bbb',
+      'default': <View>
       <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
         <View className="animate-pulse flex gap-3">
           <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
