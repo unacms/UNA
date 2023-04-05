@@ -2,15 +2,11 @@
 import { Pressable, View } from 'app/design/view'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { A, Text } from 'app/design/typography'
-import { NavScreen } from 'app/components/nav/screen'
+import { NavScreenMaterial } from 'app/components/nav/screen-material'
 import { Theme } from 'app/design/theme';
 import Animated from 'react-native-reanimated';
 
-
-
 export function NavMaterialTabs(params) {
-
-
 
   const Tab = createMaterialTopTabNavigator();
   const { colors } = Theme();
@@ -58,7 +54,7 @@ export function NavMaterialTabs(params) {
                   <Tab.Screen
                       key={`toptab-${index}`}
                       name={`toptab-${index}`}
-                      component={NavScreen}
+                      component={NavScreenMaterial}
                       initialParams={{ url: '/'+ tab.link, ignoreTabs: true, title:tab.title, pageData: params.pageData}}
                       options={{  
                           unmountOnBlur: true,

@@ -2,7 +2,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Icon } from 'app/ui/atoms/icon'
 import { Pressable, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { NavScreen } from 'app/components/nav/screen'
+import { NavScreenDrawer } from 'app/components/nav/screen-drawer'
 
 const Drawer = createDrawerNavigator();
 
@@ -41,7 +41,7 @@ export function NavDrawer(params) {
                 <Drawer.Screen
                     key={`drawer-${index}`}
                     name={`drawer-${index}`}
-                    component={NavScreen}
+                    component={NavScreenDrawer}
                     initialParams={{ url: '/' + menu.link, pageData: params.pageData, title:menu.title}}
                     options={{    title: menu.title    }}
                 />

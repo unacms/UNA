@@ -22,7 +22,7 @@ export default function ElementEntityAttachments(props) {
     }
 
     function getLink(data){
-        return <View >
+        return <View key={"file" + data.url}>
             <Link href={data.url} ><Text>{data.file_name}</Text></Link>
         </View>
     }

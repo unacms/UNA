@@ -76,7 +76,7 @@ export default function FormFieldFiles(props) {
         if (props.src){
             return (
                 props.src.map((img, index) => (
-                    <View className='mr-2 mb-2'>
+                    <View className='mr-2 mb-2' key={"file" + index}>
                         {img.file_type.includes('image/') && <Image style={{ width: 64, height: 64 }} source={{ uri: img.file_url }} /> }
                         {!img.file_type.includes('image/') && <Icon icon="File" className="w-16 h-16" size={64} /> }
                         <View className='absolute bottom-1 left-4 w-10 text-center mx-auto'>

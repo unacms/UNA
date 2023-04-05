@@ -138,14 +138,20 @@ export default function UnitFeed(props) {
 
         data.sFirstImg = '';
         let sImages = [];
-        var DomParser = require('react-native-html-parser').DOMParser
-        let doc = new DomParser().parseFromString(data.content.text,'text/html')
+        try {
 
-        if (doc){
-            sImages = doc.getElementsByTagName('img');
-            if (sImages.length > 0){
-                data.sFirstImg = sImages[0].attributes[0].value
+            var DomParser = require('react-native-html-parser').DOMParser
+            
+            let doc = new DomParser().parseFromString('<div>' + data.content.text + '</div>','text/html')
+
+            if (doc){
+                sImages = doc.getElementsByTagName('img');
+                if (sImages.length > 0){
+                    data.sFirstImg = sImages[0].attributes[0].value
+                }
             }
+
+        } catch (error) {
         }
 
         data.showMore = false;

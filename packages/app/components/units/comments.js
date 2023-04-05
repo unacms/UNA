@@ -1,8 +1,5 @@
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
-import Score from '../../ui/molecules/score';
-import Vote from '../../ui/molecules/vote';
-import Unit from '../unit';
 import {useEffect, useState, useContext } from 'react';
 import { Text} from 'app/design/typography'
 import { Row } from 'app/design/layout'
@@ -94,7 +91,7 @@ export default function UnitComments(props) {
                     <View className="w-0.5 rounded-full flex-auto mx-auto bg-black/10 dark:bg-white/10"></View>
                 </View>
                 <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <Unit key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
+                    {Object.keys(items).map(a => <UnitComments key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
                 </View>
             </View> 
             }

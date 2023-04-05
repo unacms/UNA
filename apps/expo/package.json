@@ -23,6 +23,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.70.5",
+    "react-native-cn-quill": "^0.7.17",
     "react-native-component-inview": "^1.0.2",
     "react-native-document-picker": "^8.2.0",
     "react-native-dropdown-picker": "^5.4.6",
@@ -46,7 +47,7 @@
     "react-native-tab-view": "^3.5.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.9",
-    "react-native-webview": "11.23.1",
+    "react-native-webview": "^12.0.0",
     "swr": "^2.0.3"
   },
   "devDependencies": {
