@@ -67,6 +67,8 @@ const colors = {
     dark: '#111827',
     hover: '#F9FAFB',
     darkhover: '#1F2937',
+    active: '#F3F4F6',
+    darkactive: '#030712',
   },
   neoitem: {
     DEFAULT: '#F3F4F6',

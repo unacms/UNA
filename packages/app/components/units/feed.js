@@ -97,22 +97,23 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="flex-row space-x-3 w-full mx-auto p-4 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-neogray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
+        <View className="sm:rounded-lg flex-row space-x-3 w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark border-t sm:mb-1 hover:bg-neocard-hover dark:hover:bg-neogray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
             <View className="w-12 h-12 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
-            <View className="flex-auto my-auto space-y-0.5 ">
-                <View className='flex-row space-x-2'>
-                    <Text className='text-sm flex-auto font-bold text-neogray-700 dark:text-neogray-300'>{data.author_data.display_name}</Text>
-                    <Text className='text-sm flex-none text-neogray-600 dark:text-neogray-400'><Time ts={data.date}></Time></Text>
+            <View className="flex-auto my-auto ">
+                <View className='flex-row space-x-2 pb-0.5'>
+                    <Text className='text-sm flex-auto font-semibold text-neogray-900 dark:text-neogray-100'>{data.author_data.display_name}</Text>
+                    <Text className='text-sm flex-none text-neogray-500'><Time ts={data.date}></Time></Text>
                 </View>
                 <View className='flex-row space-x-2'>
-                    <Text className="flex-auto text-lg font-bold text-neogray-900 dark:text-neogray-50" numberOfLines={1}>{data.content.title}</Text>
-                    <View className='flex-none bg-brand dark:bg-brand-dark rounded-full my-auto h-min px-1.5'>
+                    <Text className="flex-auto text-base font-bold text-neogray-900 dark:text-neogray-100" numberOfLines={1}>{data.content.title}</Text>
+                    
+                </View>
+                <View className='flex-row space-x-1 w-full  items-end content-end'>
+                    <Text className='flex-auto text-sm text-neogray-900 dark:text-neogray-100' numberOfLines={1}>{data.plainText}</Text>
+                    <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
                         <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text></View>
-                </View>
-                <View className='flex-row space-x-1'>
-                    <Text className='text-sm text-neogray-600 dark:text-neogray-400' numberOfLines={1}>{data.plainText}</Text>
                 </View>         
             </View>
     </View>
