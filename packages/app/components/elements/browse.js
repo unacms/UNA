@@ -7,7 +7,7 @@ import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'
 import Dropdown from 'app/ui/atoms/dropdown'
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 export default function ElementBrowse(props) {
     let data = props.data;

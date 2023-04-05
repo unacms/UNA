@@ -2,7 +2,7 @@ import { View, Pressable } from 'app/design/view';
 import Image from '../../ui/atoms/image';
 import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 import { useState } from 'react';
 import { stripTags } from '../../lib/util';
 import { ContentMore } from 'app/ui/molecules/contentmore';

@@ -1,5 +1,5 @@
 import * as IconSet from "phosphor-react-native";
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 export function Icon(props) {
     let { icon, className, ...rest } = props

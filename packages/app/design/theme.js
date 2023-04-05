@@ -1,6 +1,6 @@
 import { DarkTheme, DefaultTheme } from "@react-navigation/native";
 import { useColorScheme } from 'react-native';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 export function Theme() {
 

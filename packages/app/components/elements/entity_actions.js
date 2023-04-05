@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { A, Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import Menu from '../menu';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 export default function ElementEntityActions(props) {
 

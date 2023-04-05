@@ -6,7 +6,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 const Tab = createBottomTabNavigator();
 

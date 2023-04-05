@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTheme } from '@react-navigation/native';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 import {Picker as PickerDef} from '@react-native-picker/picker';
 
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';

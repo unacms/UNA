@@ -8,7 +8,7 @@ import MainMenu from 'app/components/nav/mainmenu'
 import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting } from 'app/settings'
+import { appSetting } from 'app/lib/util'
 
 import { Slider } from 'app/ui/molecules/slider';
 
