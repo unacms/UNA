@@ -135,20 +135,20 @@ export default function AtomProfile(oProps) {
     case 'unit_wo_info':
       sResult = (
         <Link haptics="Select" href={oProps.url}>
-          <View className="relative flex-row">
-          <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full"}>
-          <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
-          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
-          { oProps.url_avatar && <Image
-              className={sSize+" absolute top-0 z-50"}
-              width={iSizeWidth}
-              height={iSizeHeight}
-              src={oProps.url_avatar}
-              alt={oProps.display_name}
-            />
-          }
-          </View>
-          </View>
+            <View className="relative flex-row">
+                <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full"}>
+                    <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                    {!!oProps.url_avatar && <Image
+                        className={sSize+" absolute top-0 z-50"}
+                        width={iSizeWidth}
+                        height={iSizeHeight}
+                        src={oProps.url_avatar}
+                        alt={oProps.display_name}
+                      />
+                    }
+                </View>
+            </View>
         </Link>
       )
       break
