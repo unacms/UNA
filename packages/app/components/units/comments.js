@@ -2,32 +2,37 @@ import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
 import {useEffect, useState, useContext } from 'react';
 import { Text} from 'app/design/typography'
-import { Row } from 'app/design/layout'
-import { View, Pressable } from 'app/design/view'
+
+import { View, Pressable, Row } from 'app/design/view'
 import Html from '../../ui/atoms/html';
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import { ContentMore } from 'app/ui/molecules/contentmore';
+import Image from '../../ui/atoms/image';
+
 
 export default function UnitComments(props) {
 
-    const [showFull, setShowFull] = useState(false)
+    const [showImage, setShowImage] = useState(false)
 
-    var data = '';
-    var items = '';
+    let data = '';
+    let items = '';
     let view = '';
+    let files = [];
     if (props.data.data){
         data = props.data.data;
         items = props.data.items;
+        files = props.data.files;
         view = props.view
     }
     else{
         data = props.data[Object.keys(props.data)[0]].data;
         items = props.data[Object.keys(props.data)[0]].items;
+        files = props.data[Object.keys(props.data)[0]].files;
         view = props.view
     }
     // request form for reply
 
-    const reply = async (id, author, text) => {
+    const handleReply = async (id, author, text) => {
         props.handleReply(id, author, text);
     };
 
@@ -50,13 +55,17 @@ export default function UnitComments(props) {
         }
     };   
     
-    const handleShowMore = () => {
-        setShowFull(!showFull);
+    const handleShowImage = (img) => {
+        setShowImage(img);
     } 
     
-
     return (
         <View className='w-full'>
+            <Modal id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
+                <View className="w-full h-96">
+                    <Image className="w-full" src={showImage} alt='' view="cover" />
+                </View>
+            </Modal>
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
                     <View className="mr-2"><Profile {...data.author_data} displaySize='base' showInfo={(<Time className="" ts={data.cmt_time}></Time>)} displayType="unit" className="" /></View>
@@ -64,7 +73,6 @@ export default function UnitComments(props) {
                        <View className="w-8 flex-0 h-full absolute top-0 -left-7">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-black/5 dark:bg-white/5"></View>
                        </View>
-                       
                        <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
                             <View className={sCommentClass} >
                                 {
@@ -77,8 +85,15 @@ export default function UnitComments(props) {
                                     </View>
                                 }
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
+                                <Row className='flex-wrap'>
+                                    {files.map(a => (
+                                        <Pressable key={'file-'+a.file_id} className='w-24 h-24 mr-2 mb-2' onPress={() => handleShowImage(a.file)} >
+                                            <Image src={a.file} alt={a.file_name} view="cover" className="rounded" />
+                                        </Pressable>
+                                    ))}
+                                </Row>
                                 </View>
-                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => reply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
                         </View>
                     </View>
                 </View>

@@ -5,7 +5,7 @@ import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
 import { useTheme } from '@react-navigation/native';
 import { appSetting } from 'app/lib/util'
-import {Picker as PickerDef} from '@react-native-picker/picker';
+import { Picker as PickerDef } from '@react-native-picker/picker';
 
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
@@ -31,7 +31,7 @@ type ModalPropsCustom = ModalProps & {
 export function Modal(props/*: ModalPropsCustom*/) {
 
   let animationType = props.animation ? props.animation : 'fade';
-  let presentationType = props.presentation ? props.presentation : 'fullScreen';
+  let presentationType = props.presentation ? props.presentation : 'overFullScreen';
 
   return (
     <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={Platform.OS != 'ios'}>
@@ -41,7 +41,7 @@ export function Modal(props/*: ModalPropsCustom*/) {
                     <View className="p-4">
                     <Row className={(!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
                       { !!props.title && <View><Text className='text-lg font-bold'>{props.title}</Text></View>}
-                      { !!props.onClose && <View className=''><Button variant='default' size='xs' startDecorator='close' onPress={props.onClose}/></View>}
+                      { !!props.onClose && <View className=''><Button variant='default' size='xs' startDecorator='x' onPress={props.onClose}/></View>}
                     </Row>
                         <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
                     </View>

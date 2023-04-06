@@ -116,7 +116,7 @@ export default function ElementBrowse(props) {
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>
             </View>
-        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View className='text-center ' style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text>Loading, please wait</Text><View /></InView></View> }
+        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View className='text-center ' style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text></Text><View /></InView></View> }
         </View>
         
     );

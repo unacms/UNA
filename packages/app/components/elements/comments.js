@@ -1,11 +1,11 @@
-import { useState, useContext} from 'react';
+import { useState, useContext, useRef } from 'react';
 import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/fetcher';
 import { View, ScrollView, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { StyleSheet, useWindowDimensions, Dimensions  } from 'react-native';
 import { stripTags } from '../../lib/util';
 import { Button, Select } from 'app/design/controls'
 import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
@@ -13,7 +13,6 @@ import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useTheme } from '@react-navigation/native';
 import { LayoutData } from 'app/context/layout';
-
 
 export default function ElementComments(props) {
 
@@ -239,7 +238,7 @@ export default function ElementComments(props) {
     let cmtForm = null;
 
     if (form){ 
-        cmtForm = <View className="  w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
+        cmtForm = <View className="w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
                 form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neoitem dark:bg-neoitem-dark rounded-lg   px-1 mx-2 mb-1'>
                     <Row className=' justify-between items-center'>
@@ -254,7 +253,7 @@ export default function ElementComments(props) {
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row px-4 w-full px-2 items-end " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row flex-wrap px-4 w-full px-2 items-end " onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
@@ -270,20 +269,27 @@ export default function ElementComments(props) {
     }
     let cmts = null
     let styles = {};
-    const {height, width, scale, fontScale} = useWindowDimensions(); 
+    const {pageHeight, pageWidth, scale, fontScale} = useWindowDimensions(); 
+    
+    const [formSize, setFormSize] = useState({width: 100, pageY:0, height:0});
 
-    const [elementWidth, setElementWidth] = useState(0);
-    const onLayout = (event) => {
-        const { width } = event.nativeEvent.layout;
-        setElementWidth(width);
+    const viewRef = useRef();
+    const viewFormRef = useRef();
+    const handleLayout = () => {
+        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+            let heightForm = height
+            viewRef.current.measure((x, y, width, height, pageX, pageY) => {
+                setFormSize({width: width, pageY:pageY, height:heightForm});
+            });
+        });
+        
     };
   
 
     if(Platform.OS !== 'web') {
        
-        let heightS = height * 0.9 - 30;
+        let heightS = pageHeight * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
-/*className={keyboardStatus ? 'hidden w-full' : 'w-full'}*/
         cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             {cmtsHeader}
             {cmtsBrs}
@@ -291,21 +297,23 @@ export default function ElementComments(props) {
            </View>
     }
     else{
+        console.log('aaaaaaaaaa--get',formSize)
+        const windowHeight = Dimensions.get('window').height;
         cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             <View style={styles.list} className=' w-full '>
                 {cmtsHeader}
                 
                 {cmtsBrs}
                 {cmtsMore}
-                <View className='relative mt-12 bg-red-500'  onLayout={onLayout}>
-                    <View className='mt-4 fixed bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark' style={{width:elementWidth}}>
+                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                    <View ref={viewFormRef}  className={((windowHeight < formSize.pageY) ? 'fixed' : '') + ' mt-4 bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark'} style={{width:formSize.width}}>
                         {cmtForm}
                     </View>
                 </View>
             </View>
         </View>;
     }
-    
+    /*fixed mt-12 bg-red-500*/
 
     return cmts;
 }
