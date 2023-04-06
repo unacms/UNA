@@ -98,7 +98,7 @@ export function Button(props/*: ButtonProps*/) {
 
   if (buttonDisabled) sClassContainer += ' opacity-50 '
 
-  let sClassText = '  '
+  let sClassText = ' whitespace-nowrap text-ellipsis overflow-hidden'
 
   let ThemeCssClasses = appSetting('theme', 'button_styles');
 
