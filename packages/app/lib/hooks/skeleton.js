@@ -41,8 +41,8 @@ export default function (props) {
       </View>
     ),
     home: (
-      <View className="justify-center h-screen lg:p-0 sm:-mt-4 flex-auto  w-full max-w-screen-2xl flex-row  mx-auto">
-        <View className='w-2/12 hidden lg:flex bg-neocard 2xl:bg-transparent dark:bg-neocard-dark sm:mr-2'>
+      <View className="justify-center h-screen lg:p-0  flex-auto  w-full max-w-screen-2xl flex-row  mx-auto">
+        <View className='w-2/12 hidden lg:flex bg-neocard 2xl:bg-transparent dark:bg-neocard-dark sm:mr-4'>
           <View className="flex-col flex-auto p-4 animate-pulse space-y-0.5 ">
             <View className="p-2 border border-transparent flex-row space-x-2 ">
               <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>

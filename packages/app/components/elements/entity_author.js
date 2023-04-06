@@ -59,7 +59,7 @@ export default function ElementEntityAuthor(oProps) {
             <Redirect ref={redirectdRef} />
             <DropdownMenuRoot>
                 <DropdownMenuTrigger>
-                    <Button id="mm-button" variant="text" rounded="true" startDecorator="more" onPress={() => {}} />
+                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutlineVertical" onPress={() => {}} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContentV>{sMenuManageItems}</DropdownMenuContentV>
             </DropdownMenuRoot>

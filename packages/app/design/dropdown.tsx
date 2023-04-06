@@ -6,7 +6,7 @@ export const DropdownMenuTrigger = DropdownMenu.Trigger
 export const DropdownMenuContentV = DropdownMenu.create(
   styled(
     DropdownMenu.Content,
-    'z-10 w-44 py-2 bg-white/90 dark:bg-neogray-800/95 divide-y divide-neoborder/40 dark:divide-neoborder-dark/40 text-sm  border dark:border-neoborder-dark border-neoborder-dark rounded-lg shadow-xl'
+    'z-10 w-44 overflow-hidden backdrop-blur bg-white/80 dark:bg-neogray-900/80   divide-y divide-neoborder-dark/10 dark:divide-neoborder/5 text-sm  border dark:border-neoborder/5 border-neoborder-dark/20 rounded-lg shadow-lg'
   ),
   'Content'
 )

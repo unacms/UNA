@@ -41,7 +41,7 @@ export default function Layout(props) {
             <View className=" w-full mx-auto flex-row -top-[1px]" > 
                 <View className='w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 mx-auto'>
 
-                  {loading ? <View className="u-content4 mx-auto 2xl:m-0 py-2 sm:py-4">{skeleton}</View> :<View className='w-full mx-auto'>
+                  {loading ? <View className="u-content4 mx-auto">{skeleton}</View> :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
                         {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
                         {(!bTabsPresent) && <Page data={props.data}/>}
