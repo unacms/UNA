@@ -102,7 +102,7 @@ body {
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;
     flex-direction: row !important;
-    margin:4px
+    
 }
 .u-card {
     min-width: calc(33.33% - 8px) !important;

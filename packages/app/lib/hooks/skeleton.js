@@ -41,120 +41,290 @@ export default function (props) {
       </View>
     ),
     home: (
-      <View className="justify-center flex-auto space-x-6 w-full flex-row  mx-auto">
-        <View className="flex-auto flex-col space-y-4 max-w-3xl">
-          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
-              </View>
+      <View className="justify-center h-screen lg:p-0 sm:-mt-4 flex-auto  w-full max-w-screen-2xl flex-row  mx-auto">
+        <View className='w-2/12 hidden lg:flex bg-neocard 2xl:bg-transparent dark:bg-neocard-dark sm:mr-2'>
+          <View className="flex-col flex-auto p-4 animate-pulse space-y-0.5 ">
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 flex-auto my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
-              </View>
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 w-3/4 my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
-          </View>
-          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
-              </View>
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 flex-auto my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
-              </View>
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 w-3/4 my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
-          </View>
-          <View className="bg-neogray-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
-              </View>
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 flex-auto my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neogray-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neogray-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 bg-neogray-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neogray-500/20 rounded-full"></View>
-              </View>
+            <View className="p-2 border border-transparent flex-row space-x-2 ">
+              <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+              <View className="h-5 w-3/4 my-0.5  bg-neogray-500/20 rounded-full"></View>
             </View>
+            
+
           </View>
         </View>
-        <View className="hidden lg:flex flex-col flex-none space-y-4 w-2/5">
-          <View>
-            <View className="space-y-4 flex-col">
-                <View className="bg-neogray-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neogray-500/10">
-                        
-                    </View>
-                    
-                    <View className="flex-1 space-y-4 p-4">
-                        <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neogray-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neogray-500/30 rounded-full"></View>
-                        </View>
-                        <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
 
-                        <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
-                        </View>
-                        </View>
-                    </View>
-                    
+        <View className="flex-auto sm:m-4 flex-col max-w-3xl space sm:space-y-1 w-7/12">
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-3 my-1 w-1/4 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-3 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
                 </View>
-                <View className="bg-neogray-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neogray-500/10">
-                        
-                    </View>
-                    
-                    <View className="flex-1 space-y-4 p-4">
-                        <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neogray-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neogray-500/30 rounded-full"></View>
-                        </View>
-                        <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neogray-500/20 h-12 w-12"></View>
-
-                        <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neogray-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neogray-500/20 rounded-full"></View>
-                        </View>
-                        </View>
-                    </View>
-                    
-                </View>
+                <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
                 
-                </View>
+                  <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                
+              </View>
+            </View>
+          
           </View>
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-3 my-1 w-1/4 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-3 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                </View>
+                <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                
+                  <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                
+              </View>
+            </View>
+          
+          </View>
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-3 my-1 w-1/4 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-3 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                </View>
+                <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                
+                  <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                
+              </View>
+            </View>
+          
+          </View>
+
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-2 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-4 my-1 w-1/3 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-4 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                </View>
+                <View className="h-3 my-1  w-1/4 bg-neogray-500/30 rounded-full"></View>
+                
+                
+                
+              </View>
+              
+            </View>
+            <View className="h-4 my-1 w-full bg-neogray-500/30 rounded-full"></View>
+            <View className="h-4 my-1 w-3/4 bg-neogray-500/30 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+
+            <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+          
+          </View>
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-2 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-4 my-1 w-1/3 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-4 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                </View>
+                <View className="h-3 my-1  w-1/4 bg-neogray-500/30 rounded-full"></View>
+                
+                
+                
+              </View>
+              
+            </View>
+            <View className="h-4 my-1 w-full bg-neogray-500/30 rounded-full"></View>
+            <View className="h-4 my-1 w-3/4 bg-neogray-500/30 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+
+            <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+          
+          </View>
+          <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-2 animate-pulse">
+            <View className="flex-row space-x-2">
+              
+              <View className="relative flex-row">
+                        <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                        <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                        <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                      
+                  </View>
+              </View>
+              <View className="flex-col flex-auto my-auto">
+                <View className="w-full flex-row justify-between"> 
+                  <View className="h-4 my-1 w-1/3 bg-neogray-500/20 rounded-full"></View>
+                  <View className="h-4 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                </View>
+                <View className="h-3 my-1  w-1/4 bg-neogray-500/30 rounded-full"></View>
+                
+                
+                
+              </View>
+              
+            </View>
+            <View className="h-4 my-1 w-full bg-neogray-500/30 rounded-full"></View>
+            <View className="h-4 my-1 w-3/4 bg-neogray-500/30 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+            <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+
+            <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+          
+          </View>
+
+
+
+
+
+         
+     
+
+        </View>
+
+        <View className="hidden sm:m-4 lg:flex flex-col flex-none space-y-2 w-3/12">
+                  <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
+                  <View className="bg-primary/10 w-full aspect-video">
+                    
+                    
+                    
+                  </View>
+                  <View className="flex-row space-x-2 p-4">
+                    
+                    <View className="relative flex-row">
+                              <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                              <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                              <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            
+                        </View>
+                    </View>
+                    <View className="flex-col flex-auto my-auto">
+                      
+                      <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                      
+                        <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                      
+                    </View>
+                  </View>
+                
+                  </View>
+
+                  <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
+                  <View className="bg-primary/10 w-full aspect-video">
+                    
+                    
+                    
+                  </View>
+                  <View className="flex-row space-x-2 p-4">
+                    
+                    <View className="relative flex-row">
+                              <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                              <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                              <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            
+                        </View>
+                    </View>
+                    <View className="flex-col flex-auto my-auto">
+                      
+                      <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                      
+                        <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                      
+                    </View>
+                  </View>
+                
+                  </View>
+
+                  <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
+                  <View className="bg-primary/10 w-full aspect-video">
+                    
+                    
+                    
+                  </View>
+                  <View className="flex-row space-x-2 p-4">
+                    
+                    <View className="relative flex-row">
+                              <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                              <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                              <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            
+                        </View>
+                    </View>
+                    <View className="flex-col flex-auto my-auto">
+                      
+                      <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                      
+                        <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                      
+                    </View>
+                  </View>
+                
+                  </View>
         </View>
       </View>
     ),

@@ -140,7 +140,7 @@ export default function (props) {
         delay: 100,*/
               }}
             >
-              <TouchableOpacity className="w-72 h-screen bg-red-500" onPress={showMenu}>
+              <TouchableOpacity className="w-72 h-screen" onPress={showMenu}>
                 <MainMenu {...props} />
               </TouchableOpacity>
             </MotiView>

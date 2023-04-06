@@ -44,6 +44,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             marginLeft:0,
             marginRight:0,
             marginTop:8,
+            
           
           },
          card_image: {
