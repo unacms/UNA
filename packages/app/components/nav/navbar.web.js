@@ -42,7 +42,7 @@ export default function (props) {
         }
         <TouchableOpacity className="" onPress={hideMenu}>
           <Link href="/home">
-            <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-2">
+            <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto space-x-[5px]">
               {appSetting('theme', 'svg', 'logo-mark')}
               {appSetting('theme', 'svg', 'logo-text')}
             </View>
