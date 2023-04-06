@@ -7,6 +7,9 @@ module.exports = {
     './pages/**/*.{js,jsx,ts,tsx}',
     '../../packages/**/*.{js,jsx,ts,tsx}',
   ],
+  safelist: [
+    'space-x-2',
+  ],
   theme: {
     ...theme,
   },
