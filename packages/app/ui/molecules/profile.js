@@ -58,9 +58,9 @@ export default function AtomProfile(oProps) {
       break
 
     case 'xl':
-      sSize = 'w-14 h-14'
-      iSizeWidth = 56
-      iSizeHeight = 56
+      sSize = 'w-16 h-16'
+      iSizeWidth = 64
+      iSizeHeight = 64
       break
 
     case '2xl':
@@ -119,38 +119,43 @@ export default function AtomProfile(oProps) {
   switch (sDisplayType) {
     case 'unit':
       sResult = (
+        <Link haptics="Select" href={oProps.url}>
           <View className="flex-row items-center w-full web:space-x-2">
             <View className="flex-none ios:pr-2 android:pr-2">
-              <AtomProfile {...oProps} displayType="unit_wo_info" noLink={true} />
+              <AtomProfile {...oProps} displayType="unit_wo_info" />
             </View>
             <View className="flex-auto">
-              <AtomProfile {...oProps} displayType="unit_wo_image" noLink={true} />
+              <AtomProfile {...oProps} displayType="unit_wo_image" />
             </View>
           </View>
+        </Link>
       )
       break     
 
     case 'unit_wo_info':
       sResult = (
+        <Link haptics="Select" href={oProps.url}>
           <View className="relative flex-row">
-            <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full"}>
-            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
-            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
-            { !!oProps.url_avatar && <Image
-                className={sSize+" absolute top-0 z-50"}
-                width={iSizeWidth}
-                height={iSizeHeight}
-                src={oProps.url_avatar}
-                alt={oProps.display_name}
-              />
-            }
-            </View>
+          <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full"}>
+          <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+          { oProps.url_avatar && <Image
+              className={sSize+" absolute top-0 z-50"}
+              width={iSizeWidth}
+              height={iSizeHeight}
+              src={oProps.url_avatar}
+              alt={oProps.display_name}
+            />
+          }
           </View>
+          </View>
+        </Link>
       )
       break
 
     case 'unit_wo_image':
       sResult = (
+        <Link haptics="Select" href={oProps.url}>
           <View className="flex-col my-auto">
             {bShowLinks ? (
               <DisplayNameLink
@@ -160,13 +165,15 @@ export default function AtomProfile(oProps) {
             ) : (
               <DisplayNameText title={oProps.display_name} />
             )}
-            <View className="flex text-neogray-600 dark:text-neogray-400 text-sm"><Text>{sShowInfo}</Text></View>
+            <View className="flex text-neogray-600 dark:text-neogray-400 text-sm">{sShowInfo}</View>
           </View>
+        </Link>
       )
       break
 
     case 'text':
         sResult = (
+          <Link haptics="Select" href={oProps.url}>
             <View className="flex-col my-auto">
               {bShowLinks ? (
                 <DisplayNameLink
@@ -177,20 +184,20 @@ export default function AtomProfile(oProps) {
                 <DisplayNameText title={oProps.display_name} />
               )}
             </View>
+          </Link>
         )
         break
 
     default:
       sResult = (
+        <Link haptics="Select" href={oProps.url}>
           <View className="relative flex-row">
             <View className={sSize}>
               <Text>Undefined</Text>
             </View>
           </View>
+        </Link>
       )
   }
-  if (oProps.noLink)
-    return sResult;
-
-  return <Link haptics="Select" href={oProps.url}>{sResult}</Link>
+  return sResult
 }
