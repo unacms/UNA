@@ -9,15 +9,17 @@ export default function Home(props) {
     let profile = Object.assign({}, props.children[1]);
 
     return (
-        <View className="flex-auto relative w-full flex-row mx-auto ">
-             <View className="flex-auto hidden lg:flex w-2/12 sm:mr-4">
+        <View className="flex-auto relative w-full flex-row mx-auto">
+             <View className="hidden lg:flex w-1/3 max-w-xs ">
                 {profile}
             </View>
-            <View className="flex-auto w-7/12 sm:m-4">
-                {feed}
-            </View>
-            <View className="hidden sticky top-0 lg:flex flex-none w-3/12 sm:m-4">
-                {post}
+            <View className="flex-auto w-2/3 flex-row">
+                <View className="flex-auto w-2/3 sm:m-4 sm:mr-0">
+                    {feed}
+                </View>
+                <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4">
+                    {post}
+                </View>
             </View>
         </View>
     );
