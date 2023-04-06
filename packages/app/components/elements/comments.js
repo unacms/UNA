@@ -253,7 +253,7 @@ export default function ElementComments(props) {
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row flex-wrap px-4 w-full px-2 items-end " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row flex-wrap px-4 w-full px-2 items-start " onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
@@ -270,7 +270,6 @@ export default function ElementComments(props) {
     let cmts = null
     let styles = {};
     const {pageHeight, pageWidth, scale, fontScale} = useWindowDimensions(); 
-    
     const [formSize, setFormSize] = useState({width: 100, pageY:0, height:0});
 
     const viewRef = useRef();
@@ -279,7 +278,8 @@ export default function ElementComments(props) {
         viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
             let heightForm = height
             viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-                setFormSize({width: width, pageY:pageY, height:heightForm});
+                const windowHeight = Dimensions.get('window').height;
+                setFormSize({width: width, pageY:pageY, height:heightForm, windowHeight: windowHeight});
             });
         });
         
@@ -297,16 +297,16 @@ export default function ElementComments(props) {
            </View>
     }
     else{
-        console.log('aaaaaaaaaa--get',formSize)
-        const windowHeight = Dimensions.get('window').height;
+
+        
         cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             <View style={styles.list} className=' w-full '>
                 {cmtsHeader}
                 
                 {cmtsBrs}
                 {cmtsMore}
-                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((windowHeight < formSize.pageY) ? formSize.height : 0)}}>
-                    <View ref={viewFormRef}  className={((windowHeight < formSize.pageY) ? 'fixed' : '') + ' mt-4 bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark'} style={{width:formSize.width}}>
+                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'fixed' : '') + ' mt-4 bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark'} style={{width:formSize.width}}>
                         {cmtForm}
                     </View>
                 </View>

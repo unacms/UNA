@@ -184,7 +184,8 @@ export const settingsDefault = {
       'account': 'UserCircle',
       'comments': 'ChatsCircle',
       'file-alt': 'NoteBlank',
-      'contact': 'PaperPlaneRight' 
+      'contact': 'PaperPlaneRight',
+      'reply': 'ArrowBendUpLeft'
     },
   },
 

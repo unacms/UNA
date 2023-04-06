@@ -13,7 +13,7 @@ import { useController, useFormContext } from 'react-hook-form';
 
 export default function FormFieldFiles(props) {
     
-    const [imageSource, setImageSource] = useState(null);
+    const [imageSource, setImageSource] = useState({images:null, preload:0});
     const isWeb = Platform.OS == 'web'
     const formContext = useFormContext();
 
@@ -27,7 +27,7 @@ export default function FormFieldFiles(props) {
 
     const  isComments = (props.name == 'cmt_image');
 
-    const RestoreGhosts =  async () => { 
+    const RestoreGhosts =  async (inc) => { 
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
         let a = [];
         if (!!result.data[0]){
@@ -37,16 +37,24 @@ export default function FormFieldFiles(props) {
         }
         a.forEach(function (k) {
             setTimeout(() => {
-                formContext.setValue(name, k.file_id)
+                if (k.file_id)
+                    formContext.setValue(name, k.file_id)
             }, 100);
         });
-        setImageSource(a);
+        //console.log('aaaaaaaaa????',imageSource);
+        let b = imageSource.preload - inc;
+        //console.log('aaaaaaaaa---',imageSource.preload, b);
+        setImageSource({images:a, preload:imageSource.preload});
+    }
+    
+    if (!imageSource.images){
+        RestoreGhosts(0);
     }
 
-    
-    if (!imageSource || formContext.formState.isSubmitted){
-       
-        RestoreGhosts();
+    if(formContext.formState.isSubmitted){
+        setTimeout(() => {
+            RestoreGhosts(0);
+        }, 500);
     }
 
     const selectImage = async () => {
@@ -66,9 +74,13 @@ export default function FormFieldFiles(props) {
             });
 
             if (!result.canceled) {
+                let b = imageSource.preload;
                 result.assets.forEach(function (i) {
+                    b = b + 1;
                     uploadImage(i.uri);
                 });
+                //console.log('aaaaaaaaa+++', b);
+                setImageSource({images:imageSource.images, preload:b});
             }
         }
         else{
@@ -77,8 +89,7 @@ export default function FormFieldFiles(props) {
                     type: '*/*', // This allows all file types
                 });
                 if (result.type === 'success') {
-                  uploadImage(result.uri);
-                  
+                    uploadImage(result.uri);
                 }
               } catch (err) {
                 console.error('Error picking document:', err);
@@ -86,21 +97,31 @@ export default function FormFieldFiles(props) {
         }
     };
 
-    function GhostsList(props) {
-        let atts = null;
-        if (props.src){
-            return (
-                props.src.map((img, index) => (
-                    <View className='mr-2 mb-2 h-24 w-24' >
-                        { img.file_type.includes('image/') && <Image view='cover' alt='cx' src={img.file_url} /> }
-                        { !img.file_type.includes('image/') && <Icon icon="File" className="w-16 h-16" size={64} /> }
-                        <View className='absolute bottom-1 left-4 w-10 text-center mx-auto'>
-                            <Button  onPress={() => handleDelete(img.file_id)} startDecorator="trash" align="start"  size ="xs" />
-                        </View>
-                    </View>
-                ))
-            )
+    function PrevList(props) {
+        
+        const elements = [];
+        for (let i = 1; i <= imageSource.preload; i++) {
+            elements.push(
+                <View className="mr-2 mb-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>
+            );
         }
+        return elements;
+    }
+
+    function GhostsList(props) {
+        return (
+            imageSource.images?.map((img, index) => (
+                <View className='mr-2 mb-2 h-16 w-16' >
+                    { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                    { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-16 h-16" size={64} /> }
+                    { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
+                    { img !='' && <View className='absolute bottom-1 left-4 w-10 text-center mx-auto'>
+                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="trash" align="start"  size ="xs" />
+                    </View> }
+                </View>
+            ))
+        )
+
         return <></>;
     }
 
@@ -120,7 +141,8 @@ export default function FormFieldFiles(props) {
             .then(async function(file){
                 formData.append("file", file);
                 const result = await fetcher([url + '&a=upload', null, formData]);
-                RestoreGhosts();
+                
+                RestoreGhosts(-1);
             });
         }
         else{
@@ -135,27 +157,29 @@ export default function FormFieldFiles(props) {
               });
             
             const result = await fetcher([url + '&a=upload', null, formData]);
-            RestoreGhosts();
+
+            RestoreGhosts(-1);
         }
     };
 
     const handleDelete = async (id) => {
         const result = await fetcher(url + "&a=delete&id=" + id);
-        RestoreGhosts();
+        RestoreGhosts(0);
     } 
 
     let button = <Button startDecorator={ isComments ? "image" : "plus"} title={ isComments ? "" : "Select " + props.name} onPress={selectImage} />
-
+    //console.log('aaaaaaaaa===', imageSource);
     return (
         <Field {...props}>
             { !isComments && <View className="mr-2 mb-2" >
                 {button}
             </View>
             }
-                <Row className='mt-2 flex-wrap'>
-                    { isComments && <View className="mr-2 " >{button}</View> }
-                    <GhostsList src={imageSource}/>
-                </Row>
+            <Row className='mt-2 flex-wrap'>
+                { isComments && <View className="mr-2 " >{button}</View> }
+                <GhostsList/>
+                <PrevList/>
+            </Row>
         </Field>
        
     );

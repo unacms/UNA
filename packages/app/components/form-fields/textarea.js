@@ -33,7 +33,7 @@ export default function FormFieldText(props) {
             editable
             style={{height: height}}
             numberOfLines={props.numLines ? props.numLines : 4}
-            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 46 ? 46 : e.nativeEvent.contentSize.height)}
+            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 42 ? 42 : e.nativeEvent.contentSize.height)}
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}

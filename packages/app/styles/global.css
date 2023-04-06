@@ -220,7 +220,7 @@ html {
 }
 .form-control-cmt_image{
     margin-bottom: 0px !important;
-    margin-top: 8px;
+    margin-top: 0px;
 }
 .form-control-cmt_image > div{
     margin-bottom: 0px !important;
