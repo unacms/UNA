@@ -82,7 +82,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold truncate hover:underline">
+      <Text numberOfLines={1} className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold truncate hover:underline">
         {oProps.title}
       </Text>
     )
@@ -90,7 +90,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
+      <Text numberOfLines={1} className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
         {oProps.title}
       </Text>
     )
