@@ -3,7 +3,7 @@ import Html from '../../ui/atoms/html';
 
 export default function BlockContentString(props) {
 
-    const aAllowTypes = ['html', 'raw'];
+    const aAllowTypes = ['html', 'raw', 'lang'];
 
     if (!props.data?.length || !aAllowTypes.includes(props.type))
         return null;

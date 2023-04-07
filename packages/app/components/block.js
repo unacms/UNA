@@ -15,10 +15,10 @@ const componentsMap = {
 export default function Block({block}) {
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
-    //TODO: conatiners @lg/main:flex https://tailwindcss.com/blog/tailwindcss-v3-2#container-queries
-    //if (block.type == 'service' && !Array.isArray(block.content))
-    //    return null;
-    if (type== 'string')
+
+    const aAllowTypes = ['html', 'raw', 'lang'];
+
+    if (type == 'string' && !aAllowTypes.includes(block.type))
         return null;
 
     if (block.menu && block.menu.items > 0){
