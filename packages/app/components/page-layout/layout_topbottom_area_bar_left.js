@@ -1,5 +1,6 @@
 
 import { View, Row } from 'app/design/view';
+import { appSetting } from 'app/lib/util'
 export default function PageLayout(props) {
     return (<View className="flex-auto relative w-full flex-row mx-auto">
     <View className="hidden lg:flex w-1/3 max-w-xs ">

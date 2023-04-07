@@ -82,9 +82,9 @@ export default function ElementBrowse(props) {
     }
     if (data.unit == 'feed'){
         if (unitMode == '')
-            classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full max-w-3xl mx-auto';
+            classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full mx-auto sm:mt-4';
         else
-            classes = 'flex-auto flex-col w-full  max-w-3xl mx-auto';
+            classes = 'flex-auto flex-col w-full mx-auto sm:mt-4';
     }
 
     function prepareUrl (params) {
