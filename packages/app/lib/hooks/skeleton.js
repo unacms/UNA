@@ -20,10 +20,10 @@ export default function (props) {
     }, []);
 
     const items = ['', '', '', '', ''];
-
+    const maxWidth = appSetting('layout', 'max_width');
     var skeletons = {
     '': (
-      <View>
+      <View className={maxWidth + ' mx-auto w-full '}>
         <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
             <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
@@ -44,8 +44,9 @@ export default function (props) {
       </View>
     ),
     home: (
-      <View className="justify-center h-screen lg:p-0  flex-auto  w-full max-w-screen-2xl flex-row  mx-auto">
-        <View className='w-2/12 hidden lg:flex bg-neocard 2xl:bg-transparent dark:bg-neocard-dark sm:mr-4'>
+      <View className={maxWidth + ' mx-auto w-full '}>
+      <View className="flex-auto relative w-full flex-row mx-auto">
+    <View className="hidden lg:flex w-1/3 max-w-xs ">
           <View className="flex-col flex-auto p-4 animate-pulse space-y-0.5 ">
             {items.map((item, index) => (
                 <View>
@@ -62,7 +63,8 @@ export default function (props) {
           </View>
         </View>
 
-        <View className="flex-auto sm:m-4 flex-col max-w-3xl space sm:space-y-1 w-7/12">
+        <View className="flex-auto w-2/3 flex-row">
+       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 space-y-2">
         {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
                 <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
                 <View className="flex-row space-x-2">
@@ -124,8 +126,9 @@ export default function (props) {
               </View>
             ))}
         </View>
+        
 
-        <View className="hidden sm:m-4 lg:flex flex-col flex-none space-y-2 w-3/12">
+        <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4 space-y-2">
         {items.map((item, index) => (
                 <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
                 <View className="bg-primary/10 w-full aspect-video">
@@ -156,12 +159,13 @@ export default function (props) {
                   
 
                 
-
+                  </View>
                 
         </View>
       </View>
     ),
     'posts-home': (
+      <View className={maxWidth + ' mx-auto w-full '}>
       <View className="flex flex-col @xl/cell:gap-2">
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
           <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">
@@ -224,97 +228,10 @@ export default function (props) {
           </View>
         </View>
       </View>
-    ),
-    'groups-home': (
-      <View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          groups-home
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    ),
-    'persons-home': (
-      <View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          persons-home
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+      </View></View>
     ),
     'view-post': (
-      <View>
+      <View className={maxWidth + ' mx-auto w-full '}>
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
             <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>

@@ -3,11 +3,11 @@ import Image from '../../ui/atoms/image';
 import { Text, H1, H1C } from 'app/design/typography';
 import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
+import { appSetting } from 'app/lib/util'
 
 export default function ElementCover(props) {
     //TODO: implements menus
     const data = props.data;
-    console.log('aaaaaaaaa', props.data)
     let sType = 'lg:rounded'
 
     if (props.data.profile.module == "bx_persons")
@@ -15,7 +15,7 @@ export default function ElementCover(props) {
 
     return (
         <View className='bg-white'>
-            <View className='max-w-7xl mx-auto w-full'>
+            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <View className='h-48 lg:h-auto'>
                     <View className='w-full h-32 lg:h-80 bg-blue-500 lg:rounded-b-2xl '>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover lg:rounded-b-2xl" src={data.cover.src} />  }

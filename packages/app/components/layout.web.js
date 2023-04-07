@@ -24,14 +24,14 @@ export default function Layout(props) {
     };
     
     let bTabsPresent = false;
-    if (props.data.menu.items && props.data.menu.items.length > 0 && props.uri != 'home'){
+    if (props?.data?.menu?.items?.length > 0 && props?.uri != 'home'){
         props.data.menu.items.forEach(function (k) { 
             if (k.link == props.uri)
                 bTabsPresent = true;
         });
     }
     let bCoverPresent = false;
-    if (props.data.cover_block && props.data.cover_block.profile){
+    if (props?.data?.cover_block?.profile){
         bCoverPresent = true;
     }
 
@@ -41,7 +41,7 @@ export default function Layout(props) {
             <View className=" w-full mx-auto flex-row -top-[1px]" > 
                 <View className='w-full mt-16 relative overflow-hidden mb-24 sm:mb-0 mx-auto'>
 
-                  {loading ? <View className="u-content4 mx-auto">{skeleton}</View> :<View className='w-full mx-auto'>
+                  {loading ? skeleton :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
                         {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
                         {(!bTabsPresent) && <Page data={props.data}/>}

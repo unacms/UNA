@@ -117,6 +117,9 @@ export const settingsDefault = {
   entry:{
     default_view: 'small',
   },
+  layout:{
+    max_width: 'max-w-7xl',
+  },
 
   theme: {
     light: {

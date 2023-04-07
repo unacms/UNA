@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import Page from 'app/components/page';
-import PageError from 'app/components/pages/error';
+import PageError from 'app/components/page-layout/error';
 import { useCurrentUser } from 'app/context/user';
 import { Platform, PlatformIOSStatic } from 'react-native'
 
