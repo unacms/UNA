@@ -39,5 +39,5 @@ export default function ElementTime(props) {
     }
   }
 
-  return <Text className="text-neogray-500 leading-5 text-base">{s}</Text>;
+  return <Text className="text-neogray-500  text-base">{s}</Text>;
 }
