@@ -112,11 +112,11 @@ export default function FormFieldFiles(props) {
         return (
             imageSource.images?.map((img, index) => (
                 <View className='mr-2 mb-2 h-16 w-16' >
-                    { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                    { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-16 h-16" size={64} /> }
                     { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
-                    { img !='' && <View className='absolute bottom-1 left-4 w-10 text-center mx-auto'>
-                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="trash" align="start"  size ="xs" />
+                    { img !='' && <View className='absolute -top-2 -right-5 w-10 text-center mx-auto'>
+                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="trash" align="start" rounded size ="xs" />
                     </View> }
                 </View>
             ))
@@ -167,7 +167,7 @@ export default function FormFieldFiles(props) {
         RestoreGhosts(0);
     } 
 
-    let button = <Button startDecorator={ isComments ? "image" : "plus"} title={ isComments ? "" : "Select " + props.name} onPress={selectImage} />
+    let button = <Button  startDecorator={ isComments ? "ImageSquare" : "plus"} title={ isComments ? "" : "Select " + props.name} onPress={selectImage} />
     //console.log('aaaaaaaaa===', imageSource);
     return (
         <Field {...props}>
