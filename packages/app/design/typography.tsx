@@ -23,7 +23,7 @@ H1.defaultProps = {
   accessibilityRole: 'header',
 }
 
-export const H2 = styled(NativeText, 'text-xl font-extrabold my-4')
+export const H2 = styled(NativeText, 'text-xl font-extrabold mb-4')
 H1.defaultProps = {
   accessibilityRole: 'header',
 }

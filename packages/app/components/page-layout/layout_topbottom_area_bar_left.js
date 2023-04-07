@@ -7,7 +7,7 @@ export default function PageLayout(props) {
        {props.children[1]}
    </View>
    <View className="flex-auto w-2/3 flex-row">
-       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0">
+       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 gap-1">
            {props.children[2]}
        </View>
        <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4">

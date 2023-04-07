@@ -120,6 +120,7 @@ export const settingsDefault = {
   layout:{
     max_width: 'max-w-7xl',
     cell_gap: 4,
+    cell_style: '',
   },
 
   theme: {

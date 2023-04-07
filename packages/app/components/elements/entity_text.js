@@ -29,7 +29,7 @@ function Small({ data }) {
     }; 
 
     return (
-        <View className="relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto  ">
+        <View className=" bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto  ">
            <View className=' bg-neoitem dark:bg-neoitem-dark rounded-lg flex-col space-y-1 p-2 mx-4 mb-4 mt-4'>
                 <Text className="font-bold text-neogray-900 dark:text-neogray-50 text-base ">{data.entry_title}</Text>
                 <ContentMore content={data.entry_text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>

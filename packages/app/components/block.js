@@ -18,6 +18,8 @@ export default function Block({block}) {
     //TODO: conatiners @lg/main:flex https://tailwindcss.com/blog/tailwindcss-v3-2#container-queries
     //if (block.type == 'service' && !Array.isArray(block.content))
     //    return null;
+    if (type== 'string')
+        return null;
 
     if (block.menu && block.menu.items > 0){
         return <NavBottomTabs></NavBottomTabs>
@@ -27,7 +29,7 @@ export default function Block({block}) {
         <View key={block.id} className="w-full">
             <View key={block.id} className="">
                 <H1 className="hidden text-xl border-b-2 border-base-100 my-auto pb-1">{block.title}</H1>
-                <BlockType data={block.content} type={block.type} />
+                <BlockType data={block.content} type={block.type}  />
             </View>
         </View>
     );

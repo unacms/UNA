@@ -21,6 +21,7 @@ export default function (props) {
 
     const items = ['', '', '', '', ''];
     const maxWidth = appSetting('layout', 'max_width');
+    
     var skeletons = {
     '': (
       <View className={maxWidth + ' mx-auto w-full '}>

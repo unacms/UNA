@@ -7,6 +7,7 @@ import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Page from 'app/components/page'
 import Cover from 'app/components/elements/cover';
 import useSkeleton from '../lib/hooks/skeleton';
+import { appSetting } from 'app/lib/util'
 
 export const siteTitle = 'NEO';
 
@@ -43,7 +44,7 @@ export default function Layout(props) {
 
                   {loading ? skeleton :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
-                        {(bTabsPresent) && <NavMaterialTabs data = {props.data.menu.items} />}
+                        {(bTabsPresent) && <View className='w-full'><View className='absolute bg-white h-12 w-full'></View><View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}><NavMaterialTabs data = {props.data.menu.items} /></View></View>}
                         {(!bTabsPresent) && <Page data={props.data}/>}
                     </View>}
                 </View>

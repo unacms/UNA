@@ -18,9 +18,11 @@ export default function ElementEntityInfo({data}) {
     }); 
 
     return (
-        <View className="relative p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-t border-neoborder dark:border-neoborder-dark sm:border-x w-full mx-auto max-w-5xl">
-            <H2>Info</H2>
-            {inputs}
+        <View className="bg-neocard dark:bg-neocard-dark">
+            <View className='mx-4 mb-4 mt-4'>
+                <H2>Info</H2>
+                {inputs}
+            </View>
         </View>
     );
 

@@ -93,7 +93,6 @@ body {
     --margin2: 0.5rem;
     --col2w: 1000px;  
     --col1w: 700px; 
-    margin-top: -4px;
    
 }
 .u-card-list > * {
@@ -224,4 +223,9 @@ html {
 }
 .form-control-cmt_image > div{
     margin-bottom: 0px !important;
+}
+.ggg
+{
+  
+
 }

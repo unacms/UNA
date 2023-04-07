@@ -1,4 +1,5 @@
 import PageLayoutDefault from './page-layout/default';
+import PageCustomPost from './page-layout/custom_post';
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
 import PageLayout2 from './page-layout/layout_topbottom_area_bar_left';
 import PageLayout3 from './page-layout/layout_topbottom_area_bar_right';
@@ -12,8 +13,10 @@ const componentsMap = {
 };
 
 export default function PageLayout(props) {
-    console.log('aaaaaaaaa', props.data.layout);
     const Component = componentsMap[props.data.layout];
+    if (props.data.uri == 'view-post')
+        return <PageCustomPost {...props} />;
+
     if (!Component)
        return <PageLayoutDefault {...props} />;
 

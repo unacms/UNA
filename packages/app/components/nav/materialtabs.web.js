@@ -9,13 +9,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text } from 'app/design/typography';
 import { NavScreen } from 'app/components/nav/screen';
 import { Theme } from 'app/design/theme';
-
+import { appSetting } from 'app/lib/util'
 function CustomTabBar({ state, descriptors, navigation, position }) {
   const { colors } = Theme();
   const [tabWidths, setTabWidths] = useState({});
+  const maxWidth = appSetting('layout', 'max_width');
 
   return (
-    <View
+    <View 
       style={{
         flexDirection: 'row',
         justifyContent: 'center',

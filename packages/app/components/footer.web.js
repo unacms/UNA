@@ -13,12 +13,14 @@ export default function () {
         <View className="border-t-1 bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark w-full h-16">
             <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                 {TabList.map((tab, index) => (
-                    <Link key={"fl" + index} href={tab.url}>
-                        <View className='flex items-center  rounded-lg text-base font-semibold text-gray-700 hover:text-gray-900 duration-200 hover:bg-gray-200/50 dark:hover:text-white dark:text-gray-300 dark:hover:bg-gray-700/50 '>
-                            <Icon icon={tab.icon} width={24} height={24} color="black"/>
-                            <Text>{tab.title}</Text>
+                        <View key={"fl" + index} className='w-1/5  flex items-center rounded-lg text-base  duration-200 hover:bg-gray-200/50  dark:hover:bg-gray-700/50 '>
+                           <Link  href={tab.url} >
+                           <View className='flex items-center'>
+                            <Icon icon={tab.icon} width={24} height={24} />
+                                <Text className='font-semibold text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-xs'>{tab.title}</Text>
+                            </View>
+                            </Link>
                         </View>
-                    </Link>
                 ))}
           </Row>
         </View>
