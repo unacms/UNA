@@ -38,11 +38,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  " mx-4 space-y-1 ";
+    let sCommentStyle =  " mx-4 gap-y-0 ";
 
-    let sCommentClass = "bg-neoitem dark:bg-neoitem-dark rounded-lg flex-col space-y-1 p-2 u-vanilla-html-small";
+    let sCommentClass = " bg-neoitem dark:bg-neoitem-dark rounded-lg rounded-tl-[4px] flex-col   px-2.5 u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = " mr-4 space-y-1";
+        sCommentStyle = " gap-y-0";
     }
     
     if (!data)
@@ -68,12 +68,19 @@ export default function UnitComments(props) {
             </Modal>
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
-                    <View className="mr-2"><Profile {...data.author_data} displaySize='base' showInfo={(<Time className="" ts={data.cmt_time}></Time>)} displayType="unit" className="" /></View>
-                    <View  className=" flex-row ml-8 pb-1">
-                       <View className="w-8 flex-0 h-full absolute top-0 -left-7">
+                    
+                    <View className="flex-row gap-1 items-center">
+                    <Profile {...data.author_data} displayType="unit" displaySize="sm" showInfo="false" />
+                    <Text className="text-neogray-500">·</Text>
+                    
+                    <Time className="" ts={data.cmt_time}></Time>
+                    </View>
+                    
+                    <View  className=" flex-row ml-5 ">
+                       <View className="w-8 flex-0 h-full absolute top-0 -left-5">
                         <View className="w-0.5 my-0.5 rounded-full flex-auto mx-auto bg-black/5 dark:bg-white/5"></View>
                        </View>
-                       <View className='flex-1 flex-col ml-2 mb-4  space-y-2 '>
+                       <View className='flex-1 flex-col ml-4 mb-2  space-y-2 '>
                             <View className={sCommentClass} >
                                 {
                                     (view == 'flat' && data.cmt_parent_id > 0) && <View   className='bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-md p-2'>
@@ -84,16 +91,18 @@ export default function UnitComments(props) {
                                         <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
                                     </View>
                                 }
+                                <View className='my-2'>
                                 <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
-                                <Row className='flex-wrap'>
+                                </View>
+                                <Row className='flex-wrap gap-x-1 '>
                                     {files.map(a => (
-                                        <Pressable key={'file-'+a.file_id} className='w-24 h-24 mr-2 mb-2' onPress={() => handleShowImage(a.file)} >
-                                            <Image src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder border rounded-lg"  />
+                                        <Pressable key={'file-'+a.file_id} className='w-24 h-24 mb-2 ' onPress={() => handleShowImage(a.file)} >
+                                            <Image src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
                                         </Pressable>
                                     ))}
                                 </Row>
                                 </View>
-                            <Button  align="start" title="Reply" size ="xs" startDecorator="reply" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                            <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
                         </View>
                     </View>
                 </View>
