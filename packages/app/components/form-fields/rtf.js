@@ -1,3 +1,20 @@
+import { useRef } from "react";
+import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
+
+export default function FormFieldFtf(props) {
+    const _editor = useRef();
+
+    return (<>
+      <QuillEditor
+        className="h-48"
+        ref={_editor}
+        initialHtml="<h1>Quill Editor for react-native</h1>"
+      />
+      <QuillToolbar editor={_editor} options="full" theme="light" />
+    </>);
+}
+
+/*
 import { useRef, useState } from "react";
 import { Pressable } from 'app/design/view'
 import { actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
@@ -108,7 +125,7 @@ export default function FormFieldFtf(props) {
             iconTint = {colors.default}
             actions={[
                 actions.insertImage,
-                /*actions.insertVideo,*/
+                // actions.insertVideo,
                 actions.undo,
                 actions.redo,
                 actions.setBold,
@@ -124,3 +141,4 @@ export default function FormFieldFtf(props) {
         </Pressable>
   );
 }
+*/
