@@ -5,8 +5,8 @@ export default function BlockContentString(props) {
 
     const aAllowTypes = ['html', 'raw'];
 
-    //if (!props.data?.length || !aAllowTypes.includes(props.type))
-    //    return null;
+    if (!props.data?.length || !aAllowTypes.includes(props.type))
+        return null;
     return (
         <Html data={props.data} />
     );
