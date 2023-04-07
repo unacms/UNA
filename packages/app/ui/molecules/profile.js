@@ -47,14 +47,14 @@ export default function AtomProfile(oProps) {
 
     case 'base':
       sSize = 'w-10 h-10'
-      iSizeWidth = 40
-      iSizeHeight = 40
+      iSizeWidth = 48
+      iSizeHeight = 48
       break
 
     case 'lg':
       sSize = 'w-12 h-12'
-      iSizeWidth = 48
-      iSizeHeight = 48
+      iSizeWidth = 56
+      iSizeHeight = 56
       break
 
     case 'xl':
@@ -82,7 +82,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text numberOfLines={1} className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold truncate hover:underline">
+      <Text className="text-neogray-900 hover:text-primary dark:text-neogray-100 dark:hover:text-primary-dark text-base font-semibold truncate ">
         {oProps.title}
       </Text>
     )
@@ -90,7 +90,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text numberOfLines={1} className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
+      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
         {oProps.title}
       </Text>
     )
@@ -101,11 +101,8 @@ export default function AtomProfile(oProps) {
     return (
       <View className="flex-row ">
         <Text className="mr-2 text-neogray-600 dark:text-neogray-400 text-sm  tracking-tight">
-          AU
-        </Text>
-        <Text className="text-neogray-600 dark:text-neogray-400 text-sm  tracking-tight">
-          Dermatology
-        </Text>
+          user
+        </Text>   
       </View>
     )
   }
@@ -132,11 +129,13 @@ export default function AtomProfile(oProps) {
       )
       break     
 
+    
+
     case 'unit_wo_info':
       sResult = (
         <Link haptics="Select" href={oProps.url}>
             <View className="relative flex-row">
-                <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full"}>
+                <View className={sSize +"aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full border border-neoborder dark:border-neoborder-dark"}>
                     <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
                     <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
                     {!!oProps.url_avatar && <Image
