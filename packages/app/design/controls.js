@@ -3,7 +3,6 @@ import { Pressable, View , Row   } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
-import { useTheme } from '@react-navigation/native';
 import { appSetting } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 
@@ -37,11 +36,11 @@ export function Modal(props/*: ModalPropsCustom*/) {
     <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={Platform.OS != 'ios'}>
         <View className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
             <View className="relative w-full h-full max-w-2xl md:h-auto">
-                <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
-                    <View className="p-4">
+                <View className="relative bg-neocard border border-neoborder dark:border-neoborder-dark dark:bg-neocard-dark rounded-lg shadow-2xl">
+                    <View className="p-2">
                     <Row className={(!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
                       { !!props.title && <View><Text className='text-lg font-bold'>{props.title}</Text></View>}
-                      { !!props.onClose && <View className=''><Button variant='default' size='xs' startDecorator='x' onPress={props.onClose}/></View>}
+                      { !!props.onClose && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={props.onClose}/></View>}
                     </Row>
                         <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
                     </View>
@@ -120,8 +119,8 @@ export function Button(props/*: ButtonProps*/) {
       case 'xs':
         sClassContainer += buttonRounded
           ? 'rounded-full p-1 '
-          : 'rounded-lg px-1.5 py-1 '
-        sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-[1px] ' : '');
+          : 'rounded-lg px-1 py-1 '
+        sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? 'mx-[1px] ' : '');
         sClassText += ' text-xs '
         sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' // Conditionally add 'mx-2' class
         break
