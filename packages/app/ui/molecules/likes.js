@@ -133,21 +133,21 @@ export default function ElementLikes(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant="default" startDecorator="like" title={sTitle} onPress={handleUndo} />
+            <Button variant="default" startDecorator="ThumbsUp" title={sTitle} onPress={handleUndo} />
         );
     }
     else {
         if(bUseInternalIcons)
-            sIcon = !!sIcon && <Icon className={sClassIconInternal} icon="like" ></Icon>
-        else
-            sIcon = !!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>
-
-        sAction = (
-            <Button id={getName('action-ddb')} variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
-                {sIcon}
-                {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
-            </Button>
-        );
+            sAction = (
+                <Button variant="default" startDecorator="ThumbsUp" title={sTitle} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
+            );
+        else 
+            sAction = (
+                <Button variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
+                    {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
+                    {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
+                </Button>
+            );
     }
 
     //--- show counter
@@ -156,12 +156,6 @@ export default function ElementLikes(oProps) {
     //--- Counter
     let sCounter = undefined;
     if(bShowCounter) {
-        let sIcon = undefined;
-        if(bUseInternalIcons)
-            sIcon = <Icon className={sClassIconInternal} icon="like" />
-        else
-            sIcon = <Text className={sClassIconExternal}>{oCounter.icon}</Text>
-
         let iCount = oCounter.count;
         if(isPageVar('counter')) {
             const oCounterGlobal = getPageVar('counter');
@@ -181,28 +175,34 @@ export default function ElementLikes(oProps) {
         if(!sUsers || sUsers.length == 0)
             sUsers = getSkeleton();
 
-        return (
-            <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
-                <Button id={getName('performed-by-ddb')} variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
-                    {sIcon}
+        let sButton = undefined;
+        if(bUseInternalIcons)
+            sButton = (
+                <Button variant="text" rounded="true" startDecorator="ThumbsUp" title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
+            );
+        else
+            sButton = (
+                <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
+                    <Text className={sClassIconExternal}>{oCounter.icon}</Text>
                     <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
                 </Button>
-                <Modal id={getName('performed-by-ddp')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+            );
+        
+        sCounter = (
+            <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
+                {sButton}
+                <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             </View>
         );
     }
-
-    //--- CSR: Initialize.
-    useEffect(() => {
-        //Note. Client side code can be executed here. 
-    }, []);
-
+    
+    const sObject = getName();
     return (
         <View className="inline-flex gap-1 sm:gap-0">
-            {bShowAction && <View>{sAction}</View>}
-            {bShowCounter && <View>{sCounter}</View>}
+            {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
+            {bShowCounter && <View key={sObject + '-counter'}>{sCounter}</View>}
         </View>
     );
  }

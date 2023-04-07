@@ -11,7 +11,7 @@ export default function SliderBottom({ isVisible, title, children, onClose }) {
                 {(!!title || !!onClose) && 
                 <View className={"flex flex-row items-center" + (!!title ? " justify-between" : " justify-end") + " p-2 border-b border-gray-200 dark:border-gray-600 rounded-t-lg"}>
                     {!!title && <Text className="text-xl font-medium text-gray-900 dark:text-white">{title}</Text>}
-                    {!!onClose && <View className=""><Button variant="default" size="xs" startDecorator="close" onPress={onClose}/></View>}
+                    {!!onClose && <View className=""><Button variant="default" size="xs" startDecorator="x" onPress={onClose}/></View>}
                 </View>
                 }
                 <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{children}</View>
