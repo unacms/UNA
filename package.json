@@ -7,7 +7,6 @@
   ],
   "devDependencies": {
     "@types/react": "^18.0.17",
-    "@types/react-native": "^0.69.5",
     "cross-env": "^7.0.3",
     "eslint": "^8.21.0",
     "lerna-update-wizard": "^1.1.2",
