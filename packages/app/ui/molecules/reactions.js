@@ -3,7 +3,6 @@ import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util';
 import { PageData } from 'app/context/page';
 import { Button, Modal } from 'app/design/controls';
 import { Text } from 'app/design/typography';
@@ -21,9 +20,6 @@ import Profile from 'app/ui/molecules/profile';
 import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
-    const sView = appSetting('entry', 'default_view');
-    const bViewSmall = sView == 'small';
-
     const bUseInternalIcons = true;
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
     const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
@@ -237,8 +233,8 @@ export default function ElementReactions(oProps) {
     if(isPageVar('icon'))
         sIcon = getPageVar('icon');
 
-    let sTitle = oAction?.title && !bViewSmall || '';
-    if(isPageVar('title') && !bViewSmall)
+    let sTitle = oAction?.title || '';
+    if(isPageVar('title'))
         sTitle = getPageVar('title');
 
     let sAction = undefined;
@@ -434,9 +430,9 @@ export default function ElementReactions(oProps) {
                     </Button>
                 );
 
-            let sClass = 'flex-1 flex flex-row justify-center top-px';
+            let sClass = 'flex-0 flex flex-row w-min top-px';
             if(aItem.name == sSelected)
-                sClass += ' border-b border-gray-400 dark:border-gray-400';
+                sClass += ' border-b-2  border-primary dark:border-primary-dark ';
 
             return (
                 <View key={aItem.name} className={sClass}>{sButton}</View>
@@ -481,8 +477,8 @@ export default function ElementReactions(oProps) {
                         <Text className="text-neogray-700 dark:text-neogray-200">{iTotal}</Text>
                     </View>
                 </Button>
-                <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
+                <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                    <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
             </View>
