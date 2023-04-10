@@ -1,5 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { settings } from 'app/settings';
+import { Platform } from 'react-native'
+import { fetcher } from 'app/lib/fetcher';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -60,6 +62,54 @@ export function stripTags(s) {
         
     return s;
 }
+
+function urltoFile(url, filename, mimeType){
+    return (fetch(url)
+        .then(function(res){return res.arrayBuffer();})
+        .then(function(buf){return new File([buf], filename,{type:mimeType});})
+    );
+}
+
+export const uploadImage = async (uri, fetchUrl, calback) => {
+    const isWeb = Platform.OS == 'web'
+    const formData = new FormData();
+    if (isWeb){
+        const fileExt = uri.split(';').shift().split('/').pop();
+        const fileType = uri.split(';').shift().split(':').pop();
+        urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
+        .then(async function(file){
+            formData.append("file", file);
+            const result = await fetcher([fetchUrl, null, formData]);
+            if (result?.data?.link){
+                calback(result?.data?.link);
+            }
+            else{
+                calback()
+            }
+                
+        });
+    }
+    else{
+        const formData = new FormData();
+        const fileName = uri.split('/').pop();
+        const fileType = uri.match(/\.([a-z]+)$/i)[1];
+
+        formData.append("file",  {
+            uri,
+            name: fileName,
+            type: `image/${fileType}`,
+        });
+
+        const result = await fetcher([fetchUrl, null, formData]);
+        console.log(result?.data?.link)
+        if (result?.data?.link){
+            calback(result?.data?.link);
+        }
+        else{
+            calback()
+        }
+    }
+};
 
 export function genRnd(length) {
     let result = '';

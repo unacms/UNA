@@ -10,6 +10,7 @@ import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
+import { uploadImage } from '../../lib/util';
 
 export default function FormFieldFiles(props) {
     
@@ -77,9 +78,12 @@ export default function FormFieldFiles(props) {
                 let b = imageSource.preload;
                 result.assets.forEach(function (i) {
                     b = b + 1;
-                    uploadImage(i.uri);
+                    uploadImage(
+                        i.uri, 
+                        url + '&a=upload', 
+                        handleInsertImageFinish
+                    );
                 });
-                //console.log('aaaaaaaaa+++', b);
                 setImageSource({images:imageSource.images, preload:b});
             }
         }
@@ -89,7 +93,11 @@ export default function FormFieldFiles(props) {
                     type: '*/*', // This allows all file types
                 });
                 if (result.type === 'success') {
-                    uploadImage(result.uri);
+                    uploadImage(
+                        result.uri, 
+                        url + '&a=upload', 
+                        handleInsertImageFinish
+                    );
                 }
               } catch (err) {
                 console.error('Error picking document:', err);
@@ -124,44 +132,10 @@ export default function FormFieldFiles(props) {
 
         return <></>;
     }
-
-    function urltoFile(url, filename, mimeType){
-        return (fetch(url)
-            .then(function(res){return res.arrayBuffer();})
-            .then(function(buf){return new File([buf], filename,{type:mimeType});})
-        );
+    const handleInsertImageFinish = async (url) => {
+        RestoreGhosts(-1);
     }
   
-    const uploadImage = async (uri) => {
-        const formData = new FormData();
-        if (isWeb){
-            const fileExt = uri.split(';').shift().split('/').pop();
-            const fileType = uri.split(';').shift().split(':').pop();
-            urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
-            .then(async function(file){
-                formData.append("file", file);
-                const result = await fetcher([url + '&a=upload', null, formData]);
-                
-                RestoreGhosts(-1);
-            });
-        }
-        else{
-            const formData = new FormData();
-            const fileName = uri.split('/').pop();
-            const fileType = uri.match(/\.([a-z]+)$/i)[1];
-
-            formData.append("file",  {
-                uri,
-                name: fileName,
-                type: `image/${fileType}`,
-              });
-            
-            const result = await fetcher([url + '&a=upload', null, formData]);
-
-            RestoreGhosts(-1);
-        }
-    };
-
     const handleDelete = async (id) => {
         const result = await fetcher(url + "&a=delete&id=" + id);
         RestoreGhosts(0);
