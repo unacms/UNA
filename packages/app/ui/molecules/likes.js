@@ -1,18 +1,20 @@
 import React from 'react';
-import { useEffect, useState, useContext } from 'react';
-import { fetcher } from '../../lib/fetcher';
-import { PageData } from '../../context/page';
-import Profile from './profile';
+import { useState, useContext } from 'react';
 
+import { fetcher } from 'app/lib/fetcher';
+import { appSetting } from 'app/lib/util';
+import { PageData } from 'app/context/page';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls';
-import { Icon } from 'app/ui/atoms/icon'
+import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
-    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-    const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
+    const sView = appSetting('entry', 'default_view');
+    const bViewSmall = sView == 'small';
 
+    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
+    
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -126,8 +128,8 @@ export default function ElementLikes(oProps) {
     if(isPageVar('icon'))
         sIcon = getPageVar('icon');
 
-    let sTitle = oAction?.title || '';
-    if(isPageVar('title'))
+    let sTitle = oAction?.title && !bViewSmall || '';
+    if(isPageVar('title') && !bViewSmall)
         sTitle = getPageVar('title');
 
     let sAction = undefined;
