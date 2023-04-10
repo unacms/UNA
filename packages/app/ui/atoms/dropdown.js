@@ -13,24 +13,23 @@ export default function Dropdown(props) {
     const [showImage, setShowImage] = useState(false)
     const [selectedVal, setSelectedVal] = useState(props.value? props.value : '');
     const { colors } = useTheme();
-    const isWeb = Platform.OS == 'web'
+    const isShow = Platform.OS == 'ios'
 
     function handleChange(itemValue, itemIndex) {
         setSelectedVal(itemValue)
         props.onChange(itemValue);
-        if (!isWeb)
+        if (!isShow)
             setShowImage(false);
     }
-    let selectedText = 'xs';
+    let selectedText = '';
     props.data.forEach(function (item) {
 
         if (item[props.valueField] == selectedVal)
             selectedText = item[props.labelField];
     });
-    console.log(selectedVal)
-    console.log(selectedText)
 
-    if (isWeb){
+
+    if (!isShow){
         return (
             <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, height:40, backgroundColor:colors.fieldBackground, borderRadius:0 }}
                 selectedValue={selectedVal}
@@ -46,12 +45,11 @@ export default function Dropdown(props) {
     else{
         return ( <View>
             <Pressable onPress={() => setShowImage(true)}><Input 
-                 editable = {false}
-                    name={props.name}
-                    value={selectedText}
-                    
+                editable = {false}
+                name={props.name}
+                value={selectedText} 
             /></Pressable>
-            <Modal id={'dropdown'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
+            <Modal id={'dropdown'} onVisible={showImage} onClose={() => {setShowImage(null)}}>
                 <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground,  }}
                     selectedValue={selectedVal}
                     onValueChange={(itemValue, itemIndex) =>
@@ -65,5 +63,4 @@ export default function Dropdown(props) {
         </View>
         );
     }
-    
 }
