@@ -48,6 +48,8 @@ export function NavMaterialTabs(params) {
           },
           tabBarItemStyle: {
             width: 'auto',
+            padding: 0,
+            marginHorizontal: 4,
             
             
             
