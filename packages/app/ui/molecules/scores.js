@@ -2,7 +2,6 @@ import React from 'react';
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util';
 import { PageData } from 'app/context/page';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
@@ -11,9 +10,6 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementScore(oProps) {
-    const sView = appSetting('entry', 'default_view');
-    const bViewSmall = sView == 'small';
-
     const bUseInternalIcons = true;
     const oIconAliases = {
         'arrow-up': 'ArrowUp',
@@ -122,12 +118,12 @@ export default function ElementScore(oProps) {
         const bShowActionDisabled = oItem?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
 
         let sIcon = oItem?.icon || '';
-        let sTitle = oItem?.title && !bViewSmall || '';
+        let sTitle = oItem?.title || '';
         if(isPageVar(sAction)) {
             const oItemGlobal = getPageVar(sAction);
             if(oItemGlobal?.icon)
                 sIcon = oItemGlobal.icon;
-            if(oItemGlobal?.title && !bViewSmall)
+            if(oItemGlobal?.title)
                 sTitle = oItemGlobal.title;
         }
 
