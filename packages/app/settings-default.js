@@ -129,7 +129,7 @@ export const settingsDefault = {
       barsBackground: '#FFFFFF',
       barsColor: '#4B5563',
       selectBorder: 'rgba(156, 163, 175, 0.3)',
-      fieldBackground: '#ccccccc',
+      fieldBackground: '#ffffff',
       blockBorder: '#E5E7EB',
       tabsBackground: '#F3F4F6',
       activeTabBackground: '#DBEAFE',
@@ -140,7 +140,7 @@ export const settingsDefault = {
       barsBackground: '#111827',
       barsColor: '#D1D5DB',
       selectBorder: 'rgba(55, 65, 81, 0.3)',
-      fieldBackground: '#ccccccc',
+      fieldBackground: '#D1D5DB',
       blockBorder: '#030712',
     },
     button_styles: {
