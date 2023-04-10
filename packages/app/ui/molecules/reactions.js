@@ -434,9 +434,9 @@ export default function ElementReactions(oProps) {
                     </Button>
                 );
 
-            let sClass = 'flex-1 flex flex-row justify-center top-px';
+            let sClass = 'flex-0 flex flex-row w-min top-px';
             if(aItem.name == sSelected)
-                sClass += ' border-b border-gray-400 dark:border-gray-400';
+                sClass += ' border-b-2  border-primary dark:border-primary-dark ';
 
             return (
                 <View key={aItem.name} className={sClass}>{sButton}</View>
@@ -481,8 +481,8 @@ export default function ElementReactions(oProps) {
                         <Text className="text-neogray-700 dark:text-neogray-200">{iTotal}</Text>
                     </View>
                 </Button>
-                <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
+                <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                    <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
             </View>
