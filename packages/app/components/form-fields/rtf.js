@@ -6,11 +6,15 @@ import { Platform } from 'react-native'
 import { fetcher } from '../../lib/fetcher';
 import { KeyboardAvoidingView } from 'react-native';
 import { uploadImage } from '../../lib/util';
+import { useTheme } from '@react-navigation/native';
+import { SafeAreaView, StyleSheet, StatusBar } from 'react-native';
+import { View } from 'app/design/view'
 
 export default function FormFieldFtf(props) {
     const _editor = useRef();
     const isWeb = Platform.OS == 'web'
     const formContext = useFormContext();
+    const { colors } = useTheme();
 
     let rules = {};
     let name = props.name;
@@ -50,8 +54,6 @@ export default function FormFieldFtf(props) {
         );
     }
 
-   
-
     const handleCustomClick = (name,value) => {
         if (name === 'image') {
             handleInsertImage();
@@ -60,10 +62,16 @@ export default function FormFieldFtf(props) {
         }
     };
 
+    
+     
+
     return (
-        <KeyboardAvoidingView>
+
+            <View className="w-full">
+
             <QuillEditor
-                className="h-48"
+                className="h-32"
+                autoSize
                 onHtmlChange={handleChange}
                 ref={_editor}
                 initialHtml={field.value}
@@ -75,8 +83,10 @@ export default function FormFieldFtf(props) {
                 }}
                 editor={_editor}  
                 options={['bold', 'italic', 'underline', 'strike', 'image']} 
-                theme="light" 
+                
             />
-        </KeyboardAvoidingView>
+
+            </View>
+
     );
 }

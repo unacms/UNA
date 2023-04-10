@@ -110,7 +110,7 @@ export default function FormFieldFiles(props) {
         const elements = [];
         for (let i = 1; i <= imageSource.preload; i++) {
             elements.push(
-                <View className="mr-2 mb-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>
+                <View className="mr-2 mb-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={32} /></View>
             );
         }
         return elements;
@@ -119,7 +119,7 @@ export default function FormFieldFiles(props) {
     function GhostsList(props) {
         return (
             imageSource.images?.map((img, index) => (
-                <View className='mr-2 mb-2 h-16 w-16' >
+                <View key={'file-'+index} className='mr-2 mb-2 h-16 w-16' >
                     { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-16 h-16" size={64} /> }
                     { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}

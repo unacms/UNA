@@ -3,41 +3,67 @@ import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { useTheme } from '@react-navigation/native';
-
+import { Button, Modal } from 'app/design/controls'
+import { Input } from 'app/design/controls'
+import { View,Pressable } from 'app/design/view'
+import { Platform } from 'react-native'
 //settings https://www.npmjs.com/package/@react-native-picker/picker#mode
 export default function Dropdown(props) {
 
-    const [selectedVal, setSelectedVal] = useState(props.value);
+    const [showImage, setShowImage] = useState(false)
+    const [selectedVal, setSelectedVal] = useState(props.value? props.value : '');
     const { colors } = useTheme();
+    const isWeb = Platform.OS == 'web'
 
     function handleChange(itemValue, itemIndex) {
         setSelectedVal(itemValue)
         props.onChange(itemValue);
+        if (!isWeb)
+            setShowImage(false);
     }
+    let selectedText = 'xs';
+    props.data.forEach(function (item) {
 
-    const customPickerStyles = StyleSheet.create({
-        inputIOS: {
-          fontSize: 14,
-          paddingVertical: 10,
-          paddingHorizontal: 12,
-          borderWidth: 1,
-          borderColor: 'green',
-          borderRadius: 8,
-          color: 's',
-          paddingRight: 30, // to ensure the text is never behind the icon
-        }
+        if (item[props.valueField] == selectedVal)
+            selectedText = item[props.labelField];
+    });
+    console.log(selectedVal)
+    console.log(selectedText)
+
+    if (isWeb){
+        return (
+            <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, height:40, backgroundColor:colors.fieldBackground, borderRadius:0 }}
+                selectedValue={selectedVal}
+                onValueChange={(itemValue, itemIndex) =>
+                handleChange(itemValue, itemIndex)
+            }>
+                {props.data.map((item, index) => (
+                    <Picker.Item key={'item-' + item[props.valueField]} label={item[props.labelField]} value={item[props.valueField]} />
+                ))}
+            </PickerStyled>
+        );
     }
-    );
-
-    return (
-        <Picker style={{backgroundColor:'#ffffff'}} itemStyle={{fontSize:14, height:40, backgroundColor:'#ffffff', borderRadius:0 }}
-            selectedValue={selectedVal}
-            onValueChange={(itemValue, itemIndex) =>
-            handleChange(itemValue, itemIndex)
-        }>
-            {props.data.map((item, index) => (
-                <Picker.Item key={'item-' + item[props.valueField]} label={item[props.labelField]} value={item[props.valueField]} />
-            ))}
-        </Picker>
-    );
+    else{
+        return ( <View>
+            <Pressable onPress={() => setShowImage(true)}><Input 
+                 editable = {false}
+                    name={props.name}
+                    value={selectedText}
+                    
+            /></Pressable>
+            <Modal id={'dropdown'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
+                <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground,  }}
+                    selectedValue={selectedVal}
+                    onValueChange={(itemValue, itemIndex) =>
+                    handleChange(itemValue, itemIndex)
+                }>
+                    {props.data.map((item, index) => (
+                        <Picker.Item key={'item-' + item[props.valueField]} label={item[props.labelField]} value={item[props.valueField]} />
+                    ))}
+                </PickerStyled>
+            </Modal>
+        </View>
+        );
+    }
+    
 }

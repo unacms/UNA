@@ -42,7 +42,7 @@ export function NavDrawer(params) {
                     key={`drawer-${index}`}
                     name={`drawer-${index}`}
                     component={NavScreenDrawer}
-                    initialParams={{ url: '/' + menu.link, pageData: params.pageData, title:menu.title}}
+                    initialParams={{ url: '/' + menu.link, pageData: params.pageData,  title: 'Profile Screen'}}
                     options={{    title: menu.title    }}
                 />
             ))}

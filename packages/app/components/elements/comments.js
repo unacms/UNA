@@ -248,8 +248,12 @@ export default function ElementComments(props) {
                                 <Text className='text-xs text-neogray-900 dark:text-neogray-50'>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-neogray-900 dark:text-neogray-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Text className='text-sm overflow-hidden text-neogray-900 dark:text-neogray-50 '>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
-                            <Button align="start" rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
+                            <Row className='justify-between w-full items-start'>
+                                <Text className='text-sm overflow-hidden text-neogray-900 dark:text-neogray-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                                <View className="pr-1">
+                                    <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
+                                </View>
+                            </Row>
                         </View>
                     </Row>
                 </View>)
