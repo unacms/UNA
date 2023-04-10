@@ -9,47 +9,85 @@ Buttons let users perform actions and make choices with a click or tap.
 The Neo UI Button behaves similar to the native HTML `<button>`, so it wraps around the text 
 that will be displayed on its surface.
 
-## Text Button
+## Variants
 
 ```jsx
 import { Button } from 'app/design/controls';
 
-<Button title="default"  type="default" />
+<Button title="Default"  variant="default" />
+<Button title="Primary"  variant="primary"  />
+<Button title="Danger" variant="danger"/>
+<Button title="Outline" variant="outline"/>
+<Button title="text" variant="text"/>
+<Button title="Link" variant="link"/>
+```
+
+<Wrapper className='flex-col gap-12'>
+  <Row className='flex-wrap items-start gap-4'>
+        <Button title="Default"  variant="default" />
+        <Button title="Primary"  variant="primary"  />
+        <Button title="Danger" variant="danger"/>
+        <Button title="Outline" variant="outline"/>
+        <Button title="text" variant="text"/>
+        <Button title="Link" variant="link"/>
+
+  </Row>
+</Wrapper>
+
+
+## Decorations
+
+```jsx
+import { Button } from 'app/design/controls';
+
+<Button title="Rounded" rounded />
+<Button title="Disabled" disabled />
+<Button title="Icon End" endDecorator="home" iconend />
+<Button rounded startDecorator="home" />
+<Button  startDecorator="home" title="Solid" solid />
+```
+
+<Wrapper className='flex-col gap-12'>
+  
+  <Row className='flex-wrap items-start gap-4'>
+        <Button title="Rounded" rounded />
+        <Button title="Disabled" disabled />
+        <Button title="Icon End" endDecorator="home" iconend />
+        <Button rounded startDecorator="home" />
+        <Button  startDecorator="home" title="Solid" solid />
+  </Row>
+
+</Wrapper>
+
+
+## Sizes
+
+```jsx
+import { Button } from 'app/design/controls';
+
+<Button title="XSmall" startDecorator="home" size="xs" />
+<Button title="Small" startDecorator="home" size="sm" />
+<Button title="Base" startDecorator="home" size="base" />
+<Button title="Large" startDecorator="home" size="lg" />
+<Button title="XLarge" startDecorator="home" size="xl" />
+<Button title="Full Width" fullWidth />
+<Button title="Full Width Left" fullWidth align="start" startDecorator="home" />
+<Button title="Full Width Right "  fullWidth align="end" endDecorator="home" />
 ```
 
 <Wrapper className='flex-col gap-4'>
   <Row className='flex-wrap items-start gap-4'>
-        <Button title="Default"  type="default" />
-        <Button title="Primary"  type="primary"  />
-        <Button title="Danger" type="danger"/>
-        <Button title="text" type="text"/>
-        <Button title="Link" type="link"/>
-        <Button title="Outline" type="outline"/>
-
-        <Button title="Disabled" disabled />
-        <Button title="XSmall" icon="home" size ="xs" />
-        <Button title="Small" icon="home" size ="sm" />
-        <Button title="Base" icon="home" size ="base" />
-        <Button title="Large" icon="home" size ="lg" />
-        <Button title="XLarge" icon="home" size ="xl" />
-    </Row>
-        <Button title="Full Width" full ="full" />
+        <Button title="XSmall" startDecorator="home" size="xs" />
+        <Button title="Small" startDecorator="home" size="sm" />
+        <Button title="Base" startDecorator="home" size="base" />
+        <Button title="Large" startDecorator="home" size="lg" />
+        <Button title="XLarge" startDecorator="home" size="xl" />
+  </Row>
+        <Button title="Full Width" fullWidth />
+        <Button title="Full Width Left" fullWidth align="start" startDecorator="home" />
+        <Button title="Full Width Right "  fullWidth align="end" endDecorator="home" />
 </Wrapper>
 
 
 
-## Text Primary Button
 
-```jsx
-import { Button } from 'app/design/controls';
-
-<Button text variant="primary"  onPress={() => alert('Hello World!')}>
-  Primary Button
-</Button>
-```
-
-<Wrapper>
-  <Button text variant="primary" className='mx-auto' onPress={() => alert('Hello World!')}>
-    Primary Button
-  </Button>
-</Wrapper>

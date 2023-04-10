@@ -1,10 +1,12 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Modal, Platform } from 'react-native';
+import { StyleSheet, Platform, FlatList } from 'react-native';
 
-import { fetcher } from '../../lib/util';
+import { fetcher } from '../../lib/fetcher';
+
 import { PageData } from '../../context/page';
-import { A, Text } from 'app/design/typography';
+import { Button, Modal } from 'app/design/controls';
+import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -14,9 +16,26 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-import Profile from './profile';
+import { Icon } from 'app/ui/atoms/icon'
+import Profile from 'app/ui/molecules/profile';
+import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
+    const bUseInternalIcons = true;
+    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
+    const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
+    const oIconAliases = {
+        like: 'ThumbsUp',
+        love: 'Heart',
+        joy: 'Smiley',
+        surprise: 'SmileyXEyes',
+        sadness: 'SmileySad',
+        anger: 'SmileyAngry'
+    };
+
+    const sCounterType = 'compound';
+    //const sCounterType = 'divided';
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -39,6 +58,12 @@ export default function ElementReactions(oProps) {
         return pageData[sPageKey][sName];
     };
 
+    const getPageVars = () => {
+        const sPageKey = getName();
+
+        return pageData && pageData[sPageKey] ? pageData[sPageKey] : null;
+    };
+
     const setPageVars = (mValue) => {
         const sPageKey = getName();
         const oValue = {[sPageKey]: mValue};
@@ -52,20 +77,24 @@ export default function ElementReactions(oProps) {
     const oParams = oProps.params;
     const oAction = oProps.action;
     const oCounter = oProps.counter;
-    
+
     let oCounterState = {};
     for (const i in oAction.menu.items) {
         oCounterState[oAction.menu.items[i].name] = false;
     }
 
-    const [ popupVisibleBy, setPopupVisibleBy ] = useState(oCounterState);
     const [ performedBy, setPerformedBy ] = useState();
+
+    const [ popupVisibleByCpd, setPopupVisibleByCpd ] = useState(false);
+    const [ tabVisibleByCpd, setTabVisibleByCpd ] = useState('');
+
+    const [ popupVisibleByDvd, setPopupVisibleByDvd ] = useState(oCounterState);
+
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
-        if(aParams)
-            aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
 
+        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
         const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
@@ -74,28 +103,46 @@ export default function ElementReactions(oProps) {
     };
 
     const handleDo = (event, oProps) => {
-        alert(event);
         //event.preventDefault();
+
+        updateLayout(oProps.name, 1);
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setPageVars(oData);
         });
+
     };
 
     const handleUndo = (event) => {
-        event.preventDefault();
+        //event.preventDefault();
 
         let sReaction = oProps.action.reaction;
         if(isPageVar('reaction'))
             sReaction = getPageVar('reaction');
+
+        updateLayout(sReaction, -1);
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
             setPageVars(oData);
         });
     };
 
-    const handleGetPerformedBy = (event, aItem) => {
-        event.preventDefault();
+    const handleGetPerformedByCpd = (event) => {
+        //event.preventDefault();
+
+        performAction('get_performed_by', {}, (oData) => {
+            if(!oData?.performed_by)
+                return;
+
+            setPerformedBy(oData.performed_by);
+
+            setTabVisibleByCpd('');
+            setPopupVisibleByCpd(true);
+        });
+    };
+
+    const handleGetPerformedByDvd = (event, aItem) => {
+        //event.preventDefault();
 
         const sReaction = aItem?.name || '';
         if(!sReaction)
@@ -106,9 +153,42 @@ export default function ElementReactions(oProps) {
                 return;
             
             setPerformedBy(oData.performed_by);
-            setPopupVisibleBy(state => ({...state, [sReaction]: true}));
+            setPopupVisibleByDvd(state => ({...state, [sReaction]: true}));
         });
     };
+
+    const updateLayout = (sReaction, iValueAdd) => {
+        const sCounterKey = 'count_' + sReaction;
+
+        let sTitleNew = '';
+        let sIconNew = '';
+        let iCounterValue = 0;
+        for (const i in oCounter.items) {
+            if(sReaction != oCounter.items[i].name) 
+                continue;
+
+            sTitleNew = oCounter.items[i].title;
+            sIconNew = oCounter.items[i].icon;
+            iCounterValue = oCounter.items[i].count + iValueAdd;
+            break;
+        }
+
+        let oPageVars = {};
+        if(isPageVar('counter')) {
+            oPageVars = getPageVars();
+            iCounterValue = oPageVars.counter[sCounterKey] + iValueAdd;
+        }
+
+        oPageVars['is_voted'] = true;
+        oPageVars['reaction'] = sReaction;
+        oPageVars['title'] = sTitleNew;
+        oPageVars['icon'] = sIconNew;
+        if(!oPageVars['counter'])
+            oPageVars['counter'] = {};
+        oPageVars['counter'][sCounterKey] = iCounterValue;
+
+        setPageVars(oPageVars);
+    }
 
     const getSkeleton = () => {
         return (
@@ -128,12 +208,12 @@ export default function ElementReactions(oProps) {
         );
     };
 
-
-    
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
+    const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
+    
     const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
 
     const bShowActionUndo = oAction?.is_undo === true;
@@ -146,6 +226,10 @@ export default function ElementReactions(oProps) {
     if(isPageVar('is_disabled'))
         bShowActionDisabled = getPageVar('is_disabled') === true;
 
+    let sReaction = oAction?.reaction || '';
+    if(isPageVar('reaction'))
+        sReaction = getPageVar('reaction');
+
     let sIcon = oAction?.icon || '';
     if(isPageVar('icon'))
         sIcon = getPageVar('icon');
@@ -154,66 +238,99 @@ export default function ElementReactions(oProps) {
     if(isPageVar('title'))
         sTitle = getPageVar('title');
 
-    let sAction = '';
+    let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <A className="group flex-auto shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-blue-600 hover:text-blue-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-blue-500 dark:hover:text-blue-400 dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={handleUndo}>
-                <View className="flex flex-row flex-nowrap gap-1 mx-auto">
-                    {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                    {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                </View>
-            </A>
+            <Button variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} onPress={handleUndo} />
         );
     }
     else {
-        let sClassNameDo = '';
-        if(bShowActionDisabled)
-            sClassNameDo = 'group flex-auto  flex-row items-center p-2 shadow-sm bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-700/50 rounded-lg text-sm font-medium text-blue-600 dark:text-blue-500 cursor-not-allowed hover:no-underline';
-        else
-            sClassNameDo = 'group flex-auto flex-row shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline'
+        if(Platform.OS === 'web') {
+            const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
+                const aItem = oAction.menu.items[iKey];
 
-        const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
-            const aItem = oAction.menu.items[iKey];
+                let sIcon = undefined;
+                if(bUseInternalIcons)
+                    sIcon = <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>;
+                else
+                    sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>;
 
-            return (
-                <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
-                    {Platform.OS == 'web' && 
-                    <>
-                        <DropdownMenuItemIcon>
-                            <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{aItem.icon}</Text>
-                        </DropdownMenuItemIcon>
+                return (
+                    <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
+                        <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>
                         <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-                    </>
-                    }
-                    {(Platform.OS == 'android' || Platform.OS == 'ios') && 
-                    <DropdownMenuItemTitle>{aItem.name}</DropdownMenuItemTitle>
-                    }
-                </DropdownMenuItemH>
-            );
-        });
+                    </DropdownMenuItemH>
+                );
+            });
 
-        sAction = (
-            <DropdownMenuRoot>
-                <DropdownMenuTrigger>
-                    <A id={getName('action-ddb')} disabled={bShowActionDisabled} className={sClassNameDo}>
-                        <View className="flex flex-row flex-nowrap gap-1 mx-auto">
-                            {sIcon && <Text className='w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base'>{sIcon}</Text>}
-                            {sTitle && <Text className='hidden sm:block pl-1.5 pr-0.5 my-auto'>{sTitle}</Text>}
-                        </View>
-                    </A>
-                </DropdownMenuTrigger>
-                <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
-            </DropdownMenuRoot>
-        );
+            sAction = (
+                <DropdownMenuRoot>
+                    <DropdownMenuTrigger>
+                        <Button id={getName('action-ddb')} variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={() => {}} />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
+                </DropdownMenuRoot>
+            );
+        }
+        else {
+            const stylesSlider = StyleSheet.create({
+                listContainer: {
+                    width: '100%',
+                    borderTopRightRadius: 10,
+                    borderTopLeftRadius: 10,
+                    paddingHorizontal: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                },
+            });
+
+            const onSliderDoShow = () => {
+                setSliderDoVisible(true);
+            };
+
+            const onSliderDoClose = () => {
+                setSliderDoVisible(false);
+            };
+
+            const onSliderDoSelect = (event, item) => {
+                handleDo(event, item);
+
+                onSliderDoClose();
+            };
+
+            sAction = (
+                <View>
+                    <Button id={getName('action-ddb')} variant="text" variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
+                    <View>
+                        <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
+                            <View className="p-4">
+                                <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                                    if(bUseInternalIcons)
+                                        return (
+                                            <Button key={item.name} variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                                        );
+                                    else
+                                        return (
+                                            <Button key={item.name} variant="text" rounded="true" onPress={(event) => {onSliderDoSelect(event, item)}}>
+                                                <Text className={sClassIconExternal}>{item.icon}</Text>
+                                            </Button>
+                                        );
+                                  }}
+                                />
+                            </View>
+                        </SliderBottom>
+                    </View>
+                </View>
+            );
+        }
     }
 
     //--- show counter
-    const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
+    const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
 
-    //--- Counter
-    let sCounter = '';
-    if(bShowCounter)
-        sCounter = Object.keys(oCounter.items).map(function(iKey) {
+    const getCounterDivided = () => {
+        return Object.keys(oCounter.items).map(function(iKey) {
             const aItem = oCounter.items[iKey];
             if(aItem.name == 'default')
                 return;
@@ -221,12 +338,25 @@ export default function ElementReactions(oProps) {
             let iCount = aItem.count;
             if(isPageVar('counter')) {
                 const oCounterGlobal = getPageVar('counter');
-                const sCounteKey = 'count_' + aItem.name;
-                if(oCounterGlobal[sCounteKey] != undefined)
-                    iCount = oCounterGlobal[sCounteKey];
+                const sCounterKey = 'count_' + aItem.name;
+                if(oCounterGlobal[sCounterKey] != undefined)
+                    iCount = oCounterGlobal[sCounterKey];
             }
 
-            let sUsers = '';
+            let sButton = undefined;
+            if(bUseInternalIcons)
+                sButton = (
+                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
+                );
+            else
+                sButton = (
+                    <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
+                        <Text className={sClassIconExternal}>{aItem.icon}</Text>
+                        <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
+                    </Button>
+                );
+
+            let sUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
                     return (
@@ -240,39 +370,140 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <A id={getName('performed-by-ddb-' + aItem.name)} className="group flex flex-row flex-nowrap active:opacity-80 active:shadow-none items-center p-1.5 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border-gray-200 hover:border-gray-300 rounded-full hover:bg-gray-100 bg-transparent hover:text-gray-900 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 hover:no-underline" onPress={(event) => {handleGetPerformedBy(event, aItem)}}>
-                        {aItem?.icon && <Text className='w-6 h-6 text-base'>{aItem.icon}</Text>}
-                        <Text className='pl-1.5 pr-0.5'>{iCount}</Text>
-                    </A>
-                    <Modal visible={popupVisibleBy[aItem.name]} presentation="formSheet" animationType="slide" transparent={Platform.OS != 'ios'}>
-                        <View id={getName('performed-by-ddp-' + aItem.name)} className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
-                            <View className="relative w-full h-full max-w-2xl md:h-auto">
-                                <View className="relative bg-white dark:bg-gray-700 rounded-lg shadow">
-                                    <View className="p-4">
-                                        <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                                    </View>
-                                    <View className="flex-row items-center p-6 border-t border-gray-200 dark:border-gray-600 rounded-b">
-                                        <A className="group flex-none shadow-sm hover:shadow active:opacity-80 active:shadow-none items-center p-2 dark:hover:bg-gray-800 dark:active:bg-gray-700 active:bg-gray-200 text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white hover:no-underline" onPress={() => {setPopupVisibleBy(state => ({...state, [aItem.name]: false}))}}>
-                                            <Text>Close</Text>
-                                        </A>                        
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                    {sButton}
+                    <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
+                        {sUsers}
                     </Modal>
                 </View>
             );
         });
+    };
 
-    //--- CSR: Initialize.
-    useEffect(() => {
-        //Note. Client side code can be executed here. 
-    }, []);
+    const getCounterCompound = () => {
+        let iTotal = 0;
+        let sSelected = tabVisibleByCpd;
+        const aCounter = Object.keys(oCounter.items).map(function(iKey) {
+            const aItem = oCounter.items[iKey];
+            if(aItem.name == 'default')
+                return;
 
+            let sIcon = undefined;
+            if(bUseInternalIcons)
+                sIcon = <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
+            else
+                sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>
+
+            let iCount = aItem.count;
+            if(isPageVar('counter')) {
+                const oCounterGlobal = getPageVar('counter');
+                const sCounterKey = 'count_' + aItem.name;
+                if(oCounterGlobal[sCounterKey] != undefined)
+                    iCount = oCounterGlobal[sCounterKey];
+            }
+
+            if(!sSelected && iCount != 0)
+                sSelected = aItem.name;
+
+            iTotal += iCount;
+
+            return (
+                <View key={iKey} className={"flex flex-none" + (!iCount ? " hidden" : "")}>{sIcon}</View>
+            );
+        });
+
+        const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
+            const aItem = oCounter.items[iKey];
+            if(aItem.name == 'default')
+                return;
+            
+            if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
+                return;
+
+            let sButton = undefined;
+            if(bUseInternalIcons)
+                sButton = (
+                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
+                );
+            else
+                sButton = (
+                    <Button variant="text" rounded="true" onPress={() => {setTabVisibleByCpd(aItem.name)}}>
+                        <Text className={sClassIconExternal}>{aItem.icon}</Text>
+                    </Button>
+                );
+
+            let sClass = 'flex-1 flex flex-row justify-center top-px';
+            if(aItem.name == sSelected)
+                sClass += ' border-b border-gray-400 dark:border-gray-400';
+
+            return (
+                <View key={aItem.name} className={sClass}>{sButton}</View>
+            );
+        });
+
+        const aPerformedByUsers = Object.keys(oCounter.items).map(function(iKey) {
+            const aItem = oCounter.items[iKey];
+            if(aItem.name == 'default')
+                return;
+
+            if(!sSelected && aItem.count != 0)
+                sSelected = aItem.name;
+
+            let sUsers = undefined;
+            if(performedBy && performedBy[aItem.name]) {
+                sUsers = performedBy[aItem.name].map(aUser => {
+                    return (
+                        <View key={aUser.id}><Profile {...aUser} /></View>
+                    );
+                });
+            }
+
+            if(!sUsers || sUsers.length == 0)
+                sUsers = getSkeleton();
+
+            let sClass = '';
+            if(aItem.name != sSelected) 
+                sClass = 'hidden ';
+            sClass += 'space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200';
+
+            return (
+                <View key={aItem.name} className={sClass}>{sUsers}</View>
+            );
+        });
+
+        return (
+            <View className={!iTotal ? "hidden" : ""}>
+                <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
+                    <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
+                    <View className="pl-2">
+                        <Text className="text-neogray-700 dark:text-neogray-200">{iTotal}</Text>
+                    </View>
+                </Button>
+                <Modal onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                    <View className="relative flex-row justify-around border-b border-gray-200 dark:border-gray-600">{aPerformedByMenu}</View>
+                    <View className="p-4">{aPerformedByUsers}</View>
+                </Modal>
+            </View>
+        );
+    };
+
+    //--- Counter
+    let sCounter = undefined;
+    if(bShowCounter)
+        switch(sCounterType) {
+            case 'compound':
+                sCounter = getCounterCompound()
+                break;
+
+            case 'divided':
+                sCounter = getCounterDivided();
+                break;
+        }
+
+    const sObject = getName();
     return (
         <View className="inline-flex gap-1 sm:gap-0">
-            {bShowAction && <View>{sAction}</View>}
-            {bShowCounter && <View className="flex-row">{sCounter}</View>}
+            {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className="flex-row">{sCounter}</View>}
         </View>
     );
  }

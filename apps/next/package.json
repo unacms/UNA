@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env-shell next dev --hostname $HOST --port $PORT",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,10 +11,11 @@
   "dependencies": {
     "@expo/next-adapter": "^4.0.12",
     "@react-navigation/bottom-tabs": "^6.5.6",
-    "@react-navigation/material-top-tabs": "^6.6.1",
+    "@react-navigation/material-top-tabs": "6.6.2",
     "@vercel/analytics": "^0.1.10",
     "app": "*",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.14",
+    "http-proxy-middleware": "^2.0.6",
     "lucide-react-native": "^0.115.0",
     "moti": "0.23.7",
     "next": "13.1.6",
@@ -23,18 +24,19 @@
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-html-parser": "^0.1.0",
     "react-native-multibar": "^1.1.5",
-    "react-native-svg": "^13.8.0",
+    "react-native-select-dropdown": "^3.3.0",
+    "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-tab-view": "^3.5.0",
+    "react-native-tab-view": "3.5.1",
     "swr": "^2.0.3"
   },
   "devDependencies": {
-    "@types/node": "18.14.2",
+    "@types/node": "18.15.2",
     "eslint-config-next": "13.0.1",
     "next-compose-plugins": "^2.2.1",
     "next-fonts": "^1.5.1",
     "next-images": "^1.8.4",
     "next-transpile-modules": "10.0.0",
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.3.1"
   }
 }

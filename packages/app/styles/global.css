@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .u-vanilla-html {
-    @apply text-gray-700 dark:text-gray-300 ;
+    @apply text-neogray-700 dark:text-neogray-300 ;
     font-size: 1rem;
     line-height: 1.5rem; 
     max-width: none;
@@ -13,7 +13,7 @@
     padding-bottom: 1rem;
 }
 .u-vanilla-html H1, H2, H3, H4{
-    @apply text-gray-900 dark:text-gray-100; 
+    @apply text-neogray-900 dark:text-neogray-100; 
 }
 .u-vanilla-html H1{
     font-weight: 800;
@@ -93,18 +93,18 @@ body {
     --margin2: 0.5rem;
     --col2w: 1000px;  
     --col1w: 700px; 
-    margin-top: -4px;
    
 }
 .u-card-list > * {
-    min-width: calc(33.33% - 8px) !important;
+   /* */
     flex-grow: 0;
     flex-basis: calc((var(--col2w) - 100%) * 2000) !important;
     flex-shrink: 1;
     flex-direction: row !important;
-    margin:4px
+    
 }
 .u-card {
+    min-width: calc(33.33% - 11px) !important;
     width: 100%;
     display: flex;
     flex-wrap: wrap;  
@@ -112,6 +112,18 @@ body {
     flex-shrink: 1 !important;
     flex-direction: row !important;
 }
+.u-card-45{
+    background: blue;
+}
+.u-card-list4{
+    gap: 0.5rem;
+}
+.u-card-4{
+    min-width: 250px;
+    max-width: 400px;
+    flex: 1 1 0%;
+}
+
 .u-feed-card {
     display: flex;
     flex-wrap: wrap;  
@@ -148,7 +160,14 @@ body {
 .u-cover{
     object-fit: cover !important;
 }
-
+.u-navbar{
+    width:calc(100% - 350px);
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+.u-navbar::-webkit-scrollbar {
+    display: none;
+}
 .u-image{
     object-fit: cover !important;
 }
@@ -158,6 +177,9 @@ body {
 .u-content3{
     width: 100%;
     overflow: hidden;
+}
+.u-content3-bg{
+    height: 49px;;
 }
 .u-content4{
     width: 100%;
@@ -174,8 +196,34 @@ html {
         width: 1536px
     }
 }
-@media (min-width: 1280px){
+/*@media (min-width: 1280px){
     .u-content4{
-        width: calc(100% - 288px);
+        width: calc(100% - 304px);
     }
+}*/
+.u-hidden{
+    @apply hidden;
+}
+.form-comment{
+    flex-direction: row;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+.form-control-cmt_text{
+    width:calc(100% - 56px) !important;
+}
+.form-control-cmt_submit{
+    width:46px !important;
+    height: 46px;
+    margin-left:10px !important;
+}
+.form-control-cmt_image{
+    margin-bottom: 0px !important;
+    margin-top: 0px;
+}
+.form-control-cmt_image > div{
+    margin-bottom: 0px !important;
+}
+.profile-menu::-webkit-scrollbar {
+    display: none;
 }

@@ -1,54 +1,77 @@
 import React from 'react';
-import Time from '../../ui/atoms/time';
-import { A, Text } from 'app/design/typography'
+import { Text } from 'app/design/typography'
+import { View } from 'app/design/view'
+import Link from 'app/ui/atoms/link';
+import Time from 'app/ui/atoms/time';
+import Profile from 'app/ui/molecules/profile';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
 
-    const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || oProps.params?.onclick || false;
+    const bUseInternalIcons = true;
+
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
+    const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white') + (!bShowVertical ? ' rounded-lg' : '') + ' cursor-pointer';
-
-        const handleClick = () => {
-            if(oProps.params?.onclick)
-                oProps.params.onclick(event, oProps);
-        }
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
-            <A className={sClassName} href={oProps.url} onPress={handleClick}>{oProps.title}</A>
+            <View className={sClassName}>
+                <Link href={oProps.link}>{oProps.content}</Link>
+            </View>
         );
     }
 
     const DisplayText = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'menu-item block px-4 py-2');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.text) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full');
 
         return (
-            <Text className={sClassName}>{oProps.title}</Text>
+            <View className={sClassName}>{oProps.content}</View>
         );
     }
 
-    let sTitle = '';
-    switch(oProps.content_type) {
-        case 'time':
-            sTitle = <Time ts={oProps.title}></Time>;
-            break;
-
-        default:
-            sTitle = oProps.title;
+    let sIcon = undefined;
+    if(oProps?.icon && !bTitleOnly) {
+        if(bUseInternalIcons)
+            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6 ios:pr-1 android:pr-1"></Icon>;
+        else
+            sIcon = <Text className="h-6 w-6 ios:pr-1 android:pr-1 text-base">{oProps.icon}</Text>;
     }
 
-    sTitle = (
-        <Text className="flex-row gap-1 mx-auto">
-            {oProps.icon && !bTitleOnly && <Text className='h-6 w-6 text-base'>{oProps.icon}</Text>}
-            {sTitle && <Text className='mr-2'>{sTitle}</Text>}
-        </Text>
-    );
+    const sClassContent = 'flex flex-row web:space-x-1';
 
-    return (
-        <Text>{bShowLink ? <DisplayLink {...oProps} title={sTitle} /> : <DisplayText {...oProps} title={sTitle} />}</Text>
-    );
+    let sContent = undefined;
+    switch(oProps.content_type) {
+        case 'time':
+            sContent = (
+                <View className={sClassContent}>
+                    {sIcon}
+                    <Time ts={oProps.title}></Time>
+                </View>
+            );
+            break;
+
+        case 'profile':
+            sContent = (
+                <View className="flex">
+                    <Profile {...oProps.data} displayType="unit" displaySize="xs" showInfo="false" />
+                </View>
+            );
+            break;
+
+        case 'text':
+        default:
+            sContent = (
+                <View className={sClassContent}>
+                    {sIcon}
+                    <Text className="flex text-neogray-600 dark:text-neogray-400">{oProps.title}</Text>
+                </View>
+            );
+    }
+
+    return bShowLink ? <DisplayLink {...oProps} content={sContent} /> : <DisplayText {...oProps} content={sContent} />;
 }

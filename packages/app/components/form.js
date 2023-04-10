@@ -11,6 +11,7 @@ import TextField from './form-fields/text';
 import Textarea from './form-fields/textarea';
 import Select from './form-fields/select';
 import Files from './form-fields/files';
+import Location from './form-fields/location';
 import {useEffect, useState, useContext } from 'react';
 import { GlobalsData } from '../context/context';
 import { View } from 'app/design/view';
@@ -27,14 +28,15 @@ const components = {
     text: TextField,
     textarea: Textarea,
     select: Select,
-    files: Files
+    files: Files,
+    location: Location
 }
 
 export default function Form(props) {
 
     let data = props.data;
     let onFormSubmit = props.onFormSubmit;
-    
+
     const defaultValues = {}
 
     Object.keys(data.inputs).forEach(function (key) {  
@@ -56,32 +58,37 @@ export default function Form(props) {
     }   
     const {...methods} = useForm({defaultValues: defaultValues});  
 
-    
-    if (props.handleValues){
-        if(props.commentData && props.commentData.parentId != defaultValues['cmt_parent_id']){
-            //TODO: Set Value without timeout
-            setTimeout(() => {
-                methods.setValue('cmt_parent_id', props.commentData.parentId);   
-            }, 100);
+    React.useEffect(() => {
+        if (methods.formState.isSubmitSuccessful) {
+            methods.reset();
         }
+      }, [methods.formState, methods.submittedData, methods.reset]);
+
+
+    if(data.reset){
+        //TODO: Set Value without timeout
+        setTimeout(() => {
+            methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);   
+        }, 100);
     }
-    
+
+
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
-        const InputType = components[a.type];
+        const InputType = components[String(a.type)];
+        let k = data.inputs[key].name;
         if (InputType){
-            return <InputType key={data.inputs[key].name} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
+            return <InputType key={k} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
         }
         else{
             return <Text>Unsupporded field type: {a.type}</Text>
         }
-    });    
-    
+
+    });   
+
     return (
-        <View className="w-full  grid place-items-center px-4 first:pt-4" >
-            <FormProvider {...methods}> 
-                {inputs}
-            </FormProvider>
-        </View>
+        <FormProvider {...methods}> 
+            {inputs}
+        </FormProvider>
     );
 }

@@ -1,22 +1,19 @@
 import { Provider } from 'app/provider'
-import { Stack,Tabs } from 'expo-router'
+import { Stack } from 'expo-router'
+import { useColorScheme } from 'react-native';
+import { Theme } from 'app/design/theme'
+import { ThemeProvider } from "@react-navigation/native";
+import { CurrentUserProvider } from 'app/context/user';
 
-export default function Root() {
-  return (
-    
-    <Provider>
-      <Stack screenOptions={
-        { // https://reactnavigation.org/docs/native-stack-navigator/#options        
-          headerStyle: {
-            backgroundColor: "#2F5E8E",
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          }
-        }
-      } ></Stack>
-    </Provider>
+export default function Root(props) {
+  return (    
+    <ThemeProvider value={Theme()} >
+      <Provider>
+      <CurrentUserProvider>
+          <Stack screenOptions={{ headerShown: false, }}></Stack>
+        </CurrentUserProvider>
+      </Provider>    
+    </ThemeProvider>
 
   )
 }

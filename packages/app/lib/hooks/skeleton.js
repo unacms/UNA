@@ -1,38 +1,30 @@
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
 import { View } from 'app/design/view'
+import { appSetting } from 'app/lib/util'
 
 export default function (props) {
-  const [loading, setLoading] = useState(false)
-  const [url, setUrl] = useState(false)
-  useEffect(() => {
-    Router.events.on('routeChangeStart', (url, { shallow }) => {
-      setLoading(true)
-      setUrl(url)
+    const [loading, setLoading] = useState(false)
+    const [url, setUrl] = useState(false)
+    useEffect(() => {
+        Router.events.on('routeChangeStart', (url, { shallow }) => {
+            setLoading(true)
+            setUrl(url)
     })
     Router.events.on('routeChangeComplete', (url, { shallow }) => {
-      setLoading(false)
+        setLoading(false)
     })
     Router.events.on('routeChangeError', (url, { shallow }) => {
-      setLoading(false)
+        setLoading(false)
     })
-  }, [])
+    }, []);
 
-  var skeleton = ''
-  console.log(url)
-  if (url) {
-    skeleton = url == '/' || url == '' || url == '/home' ? 'home' : skeleton
-    skeleton = url == '/posts-home' ? 'posts-home' : skeleton
-    skeleton = url == '/groups-home' ? 'groups-home' : skeleton
-    skeleton = url == '/persons-home' ? 'persons-home' : skeleton
-    skeleton = url.includes('view-post') ? 'view-post' : skeleton
-    skeleton = url.includes('view-group-profile') ? 'view-group' : skeleton
-    skeleton = url.includes('view-persons-profile') ? 'view-person' : skeleton
-  }
-
-  var skeletons = {
+    const items = ['', '', '', '', ''];
+    const maxWidth = appSetting('layout', 'max_width');
+    
+    var skeletons = {
     '': (
-      <View>
+      <View className={maxWidth + ' mx-auto w-full '}>
         <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
             <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
@@ -53,124 +45,128 @@ export default function (props) {
       </View>
     ),
     home: (
-      <View className="justify-center flex-auto space-x-6 w-full flex-row  mx-auto">
-        <View className="flex-auto flex-col space-y-4 max-w-3xl">
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
+      <View className={maxWidth + ' mx-auto w-full '}>
+      <View className="flex-auto relative w-full flex-row mx-auto">
+    <View className="hidden lg:flex w-1/3 max-w-xs ">
+          <View className="flex-col flex-auto p-4 animate-pulse space-y-0.5 ">
+            {items.map((item, index) => (
+                <View>
+                    <View className="p-2 border border-transparent flex-row space-x-2 ">
+                        <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+                        <View className="h-5 flex-auto my-0.5  bg-neogray-500/20 rounded-full"></View>
+                    </View>
+                    <View className="p-2 border border-transparent flex-row space-x-2 ">
+                        <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
+                        <View className="h-5 w-3/4 my-0.5  bg-neogray-500/20 rounded-full"></View>
+                    </View>
               </View>
-            </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
-              </View>
-            </View>
-          </View>
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
-              </View>
-            </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
-              </View>
-            </View>
-          </View>
-          <View className="bg-neo-500/10 rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-            <View className="flex-row space-x-2">
-              <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
-              <View className="flex-col space-y-2 my-auto">
-                <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
-              </View>
-            </View>
-            <View className="flex-1 space-y-4 py-1">
-              <View className="space-y-2">
-                <View className="h-6 w-full bg-neo-500/30 rounded-full"></View>
-                <View className="h-6 w-3/4 bg-neo-500/30 rounded-full"></View>
-              </View>
-              <View className="space-y-2">
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 bg-neo-500/20 rounded-full"></View>
-                <View className="h-4 w-2/3 bg-neo-500/20 rounded-full"></View>
-              </View>
-            </View>
+            ))}
           </View>
         </View>
-        <View className="hidden lg:flex flex-col flex-none space-y-4 w-2/5">
-          <View>
-            <View className="space-y-4 flex-col">
-                <View className="bg-neo-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neo-500/10">
-                        
-                    </View>
-                    
-                    <View className="flex-1 space-y-4 p-4">
-                        <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neo-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neo-500/30 rounded-full"></View>
-                        </View>
-                        <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
 
-                        <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
-                        </View>
-                        </View>
+        <View className="flex-auto w-2/3 flex-row">
+       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 space-y-2">
+        {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
+                <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
+                <View className="flex-row space-x-2">
+                  
+                  <View className="relative flex-row">
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                          
+                      </View>
+                  </View>
+                  <View className="flex-col flex-auto my-auto">
+                    <View className="w-full flex-row justify-between"> 
+                      <View className="h-3 my-1 w-1/4 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-3 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
                     </View>
+                    <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
                     
+                      <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                    
+                  </View>
                 </View>
-                <View className="bg-neo-500/10 rounded-lg overflow-hidden  flex flex-col animate-pulse">
-                     <View className="w-full aspect-video bg-neo-500/10">
-                        
+              
+              </View>
+            ))}
+          
+          
+          {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
+                <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-2 animate-pulse">
+                <View className="flex-row space-x-2">
+                  
+                  <View className="relative flex-row">
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                          
+                      </View>
+                  </View>
+                  <View className="flex-col flex-auto my-auto">
+                    <View className="w-full flex-row justify-between"> 
+                      <View className="h-4 my-1 w-1/3 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-4 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
                     </View>
+                    <View className="h-3 my-1  w-1/4 bg-neogray-500/30 rounded-full"></View>
                     
-                    <View className="flex-1 space-y-4 p-4">
-                        <View className="space-y-2 ">
-                            <View className="h-5 w-full bg-neo-500/30 rounded-full"></View>
-                            <View className="h-5 w-3/4 bg-neo-500/30 rounded-full"></View>
-                        </View>
-                        <View className="flex-row space-x-2">
-                        <View className="rounded-full bg-neo-500/20 h-12 w-12"></View>
+                    
+                    
+                  </View>
+                  
+                </View>
+                <View className="h-4 my-1 w-full bg-neogray-500/30 rounded-full"></View>
+                <View className="h-4 my-1 w-3/4 bg-neogray-500/30 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+    
+                <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+              
+              </View>
+            ))}
+        </View>
+        
 
-                        <View className="flex-col space-y-2 my-auto">
-                            <View className="h-4 w-32 bg-neo-500/20 rounded-full"></View>
-                            <View className="h-3 w-24 bg-neo-500/20 rounded-full"></View>
-                        </View>
-                        </View>
-                    </View>
-                    
+        <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4 space-y-2">
+        {items.map((item, index) => (
+                <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
+                <View className="bg-primary/10 w-full aspect-video">
+                  
+                  
+                  
                 </View>
+                <View className="flex-row space-x-2 p-4">
+                  
+                  <View className="relative flex-row">
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                          
+                      </View>
+                  </View>
+                  <View className="flex-col flex-auto my-auto">
+                    
+                    <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                    
+                      <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                    
+                  </View>
+                </View>
+              
+                </View>
+            ))}
+                  
+
                 
-                </View>
-          </View>
+                  </View>
+                
         </View>
       </View>
     ),
     'posts-home': (
+      <View className={maxWidth + ' mx-auto w-full '}>
       <View className="flex flex-col @xl/cell:gap-2">
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
           <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">
@@ -233,97 +229,10 @@ export default function (props) {
           </View>
         </View>
       </View>
-    ),
-    'groups-home': (
-      <View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          groups-home
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-    ),
-    'persons-home': (
-      <View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          persons-home
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="space-y-1">
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-                <View className="h-3 bg-gray-600/20 rounded"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+      </View></View>
     ),
     'view-post': (
-      <View>
+      <View className={maxWidth + ' mx-auto w-full '}>
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 mt-[1px] @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
             <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
@@ -437,5 +346,16 @@ export default function (props) {
     ),
   }
 
-  return [loading, skeletons[skeleton]]
+    var skeleton = ''
+    if (url =='' || url =='/')
+        url =='/home'
+    if (url) {
+        let u = url.split('/');
+        u = u.filter(Boolean);
+        skeleton = skeletons['' + u[0]];
+        if (!skeleton)
+            skeleton = skeletons[''];
+    }  
+
+    return [loading, skeleton]
 }

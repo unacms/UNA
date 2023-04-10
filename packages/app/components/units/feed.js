@@ -1,4 +1,5 @@
 import Image from '../../ui/atoms/image';
+import { stripTags } from '../../lib/util';
 import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
@@ -8,169 +9,167 @@ import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native'
+import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native';
+import { Button } from 'app/design/controls';
 
-export default function UnitFeed({data}) {
-    var oImage = null;
-    if (data.content.images)  
-      oImage = data.content.images.length > 0 ? data.content.images[0] : null;
-
-    var oCmt = null;
-    if (data.cmts.data.length > 0){
-        oCmt = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
-    }
-    
+function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
-    
+    const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
     const {height, width, scale, fontScale} = useWindowDimensions();
 
-    //TODO: rework url
-    let url = '/' + data.url;
-    
-    let styles = StyleSheet.create({
-    });
-    
-    if (Platform.OS != 'web'){
-        styles = StyleSheet.create({
-          card: {
-            borderRadius: 0,
-            marginLeft:0,
-            marginRight:0,
-            marginBottom:8,
-
-          }, 
-          card_image: {
-             borderRadius: 0,
-          }     
+    if (data.sFirstImg){
+        ImageNative.getSize(data.sFirstImg, (width, height) => {
+            if (width > height)
+                setImageAspect('aspect-video');
         });
     }
-    let sFirstImg = '';
-    let sImages = [];
-    var DomParser = require('react-native-html-parser').DOMParser
-    let doc = new DomParser().parseFromString(data.content.text,'text/html')
 
-    if (doc){
-      sImages = doc.getElementsByTagName('img');
-      if (sImages.length > 0){
-          sFirstImg = sImages[0].attributes[0].value
-      }
+    let styles = StyleSheet.create({});
+    
+    if (Platform.OS != 'web'){
+            styles = StyleSheet.create({
+                card: {
+                    borderRadius: 0,
+                    marginLeft:0,
+                    marginRight:0,
+                    marginBottom:8,
+                }, 
+                card_image: {
+                     borderRadius: 0,
+                }         
+            });
     }
-    let bShowMore = false;
 
-    const regex = /(<([^>]+)>)/ig;
-    let sPlainFull = '';
-    let sPlain = '';
-    if (data.content.text){
-      sPlainFull = data.content.text.replace(regex, '');
-      sPlain = sPlainFull.substr(0,200);
-      
-      if (sPlain != sPlainFull || sImages.length > 1){
-          bShowMore = true;
-      }
-    }
     return (
-        <Link href={url} className="w-full">
-        
-        <View className="bg-card group duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border-y sm:border sm:rounded-lg hover:border-bordercolor/20 border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20"  style={styles.card}>
-                {oImage &&
-                    <View className="w-full aspect-[3/1] " style={styles.card_image}>
-                        <Image {...oImage} alt={data.title} view="cover" className="u-cover"  />
-                    </View>
-                }  
-                  <View className="px-4 pt-4">
-                  <Profile {...data.author_data} displayType="full" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)} className="" />
-        
-                  <View className="w-full  pb-4 flex-col space-y-4 pt-4">
-                    <Text className="text-neo-700  group-hover:text-neo-900 duration-200 dark:group-hover:text-white dark:text-neo-200  text-2xl  tracking-tight font-bold">
-                      {data.content.title}
+        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg  border-neoborder dark:border-neoborder-dark"    style={styles.card}>
+        {data.mainImage &&
+            <View className="w-full aspect-[3/1] " style={styles.card_image}>
+                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
+            </View>
+        }    
+        <View className="px-4 pt-4">
+        <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+        <View className="w-full    pb-4 flex-col space-y-4 pt-4">
+            <Text className="text-neogray-700    group-hover:text-neogray-900 duration-200 dark:group-hover:text-white dark:text-neogray-200    text-2xl    tracking-tight font-bold">
+                {data.content.title}
+            </Text>
+                { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
+                    <Text className="text-neogray-700    dark:text-neogray-200 text-base">
+                        {data.plainText}
                     </Text>
-                        { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
-                            <Text className="text-neo-700  dark:text-neo-200 text-base">
-                                 {sPlain}{data.cmts.count}
-                          </Text>
-                           { bShowMore && <View className='absolute  flex-row bottom-0  right-0 bg-gradient-to-r '  >
-                                <View className='  w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
-                                <TouchableOpacity className='pl-2  bg-card dark:bg-card-dark'  onPress={(e) => {setShowFull(true);e.preventDefault() }}>
-                                    <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
+                        { data.showMore && <View className='absolute    flex-row bottom-0    right-0 bg-gradient-to-r '    >
+                            <View className='    w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
+                                <TouchableOpacity className='pl-2    bg-neocard dark:bg-neocard-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
+                                        <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
                                 </TouchableOpacity>
                             </View>
-                            }
-                        </View>
-                        {sFirstImg &&
-                            <View className="w-full rounded mt-4 aspect-square bg-blue-500/50 overflow-hidden" >
-                                <Image src={sFirstImg} alt={data.title} view="cover"   />
-                            </View>
-                        }  
-                        </View>
-                          :
-                        <View>
-                            <Html data={data.content.text} />
-                        </View>
                         }
-                  </View>
-                  <View className='flex-row w-full space-x-4'>
-                      <View className=" mb-3 flex-auto flex-row space-x-4  ">
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">16</Text> comments
-                        </Text>
-                      </View>
-                      <View className="mb-3  flex-row space-x-4  ">
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">12</Text> views
-                        </Text>
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">48</Text> likes
-                        </Text>
-                
-                        <Text className="text-neo-600 dark:text-neo-400 text-sm">
-                          <Text className="font-bold text-neo-700 dark:text-neo-200">32</Text> reposts
-                        </Text>
-                      </View>
-                  </View>
- </View>
-                  <View className=" px-4 py-2  border-t border-bordercolor/10 dark:border-bordercolor-dark/10  flex-row space-x-1  ">
-                    
-                  <View className='flex-row w-full space-x-4'>
-                      <View className=" flex-row space-x-2  ">
-                          <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                            Like
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Comment
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Repost
-                          </Text>
-                        </View>
-                        <View className="group/item  py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                          <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                              Share
-                          </Text>
-                        </View>
-
-                      </View>
-                      <View className=" flex-auto space-x-2 flex-row justify-end ">
-                        <View className="group/item   py-2 px-3 hover:bg-item-hover/50 dark:hover:bg-item-hover-dark/50 rounded-lg">
-                        <Text className="group-hover/item:text-neo-800 text-neo-600 dark:group-hover/item:text-neo-200 dark:text-neo-400 text-sm font-medium mx-auto">
-                            More
-                          </Text>
-                        </View>
-                      </View>
-                  </View>
-                    
-                    
-                    
-                    
-                  </View>
                 </View>
-        
-        
-      
-        </Link>     
-    );
+                {data.sFirstImg &&
+                    <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
+                        <Image src={data.sFirstImg} alt={data.title} view="cover"        />
+                    </View>
+                }    
+                </View>
+                    :
+                <View>
+                    <Html data={data.content.text} />
+                </View>
+                }
+        </View>
+    </View>
+        <View className=" p-2 border-t border-neoborder dark:border-neoborder-dark flex-row space-x-1 ">
+            <View className='flex-row w-full space-x-2'>
+                    <View className=" flex-row space-x-2    ">
+                        <Button title="902" startDecorator="comment" size="sm" solid rounded variant="text"/>
+                        <Button title="12" startDecorator="share" size="sm" solid rounded variant="text"/>
+                        <Button title="306" startDecorator="like" size="sm" solid rounded variant="text"/>
+                        <Button title="8" startDecorator="dislike" size="sm" solid rounded variant="text"/>
+                    </View>
+                    <View className=" flex-auto space-x-4 flex-row justify-end ">
+                        <Button title="" startDecorator="more" size="sm" solid rounded variant="text"/>
+                    </View>
+            </View>
+        </View>
+    </View>);
+}
+
+function SmallUnit(data) {
+    
+    return (
+        <View className="sm:rounded-lg flex-row  w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark border-b sm:mb-1 hover:bg-neocard-hover dark:hover:bg-neogray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
+            <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+                <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
+            </View>
+            <View className="flex-auto my-auto ">
+                <View className='flex-row '>
+                    <Text className='text-sm flex-auto mr-2 font-semibold text-neogray-900 dark:text-neogray-100'>{data.author_data.display_name}</Text>
+                    <Text className='text-sm flex-none text-neogray-500'><Time ts={data.date}></Time></Text>
+                </View>
+                <View className='flex-row '>
+                    <Text className="flex-auto text-base font-bold text-neogray-900 dark:text-neogray-100" numberOfLines={1}>{data.content.title}</Text>
+                    
+                </View>
+                <View className='flex-row  w-full items-end content-end'>
+                    <Text className='flex-auto mr-2 text-sm text-neogray-900 dark:text-neogray-100' numberOfLines={1}>{data.plainText}</Text>
+                    <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
+                        <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text></View>
+                    </View>         
+            </View>
+    </View>
+    )
+}
+
+export default function UnitFeed(props) {
+
+        let data = props.data;
+
+        //TODO: rework url
+        let url = '/' + data.url;
+
+        data.mainImage = null;
+        if (data.content.images)    
+            data.mainImage = data.content.images.length > 0 ? data.content.images[0] : null;
+
+        data.comments = null;
+        if (data.cmts.data.length > 0){
+            data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
+        }
+
+        data.sFirstImg = '';
+        let sImages = [];
+        try {
+
+            var DomParser = require('react-native-html-parser').DOMParser
+            
+            let doc = new DomParser().parseFromString('<div>' + data.content.text + '</div>','text/html')
+
+            if (doc){
+                sImages = doc.getElementsByTagName('img');
+                if (sImages.length > 0){
+                    data.sFirstImg = sImages[0].attributes[0].value
+                }
+            }
+
+        } catch (error) {
+        }
+
+        data.showMore = false;
+        data.plainTextFull = '';
+        data.plainText = '';
+
+        if (data.content.text){
+            data.plainTextFull = stripTags(data.content.text);
+            data.plainText = data.plainTextFull.substr(0,200);
+            
+            if (data.plainText != data.plainTextFull || sImages.length > 1){
+                data.showMore = true;
+            }
+        }
+
+        let unit = props.mode == '' ? DefaultUnit(data) : SmallUnit(data);
+
+        return (
+            <Link href={url} className="w-full">{unit}</Link>         
+        );
 }

@@ -15,15 +15,15 @@ export default function FormFieldSubmit(props) {
     let defaultValue = props.value;
     
     const { field } = useController({ name, rules, defaultValue });
-    
     return (
         <Field {...props}>
             <Button
-                title={props.value}
-                type='primary' full
+                title={!props.icon_only ? props.value : ''}
+                variant={!!props.variant ? props.variant : 'primary'} fullWidth
                 onPress={props.handleSubmit}
+                startDecorator={props.icon}
+               
             />
-            <View style={{width:0,height:0}}>
             <Hidden 
                     name={props.name}
                     onChangeText={field.onChange}
@@ -31,7 +31,7 @@ export default function FormFieldSubmit(props) {
                     defaultValue={defaultValue}
 
             />
-            </View>
+           
         </Field>
         
     );

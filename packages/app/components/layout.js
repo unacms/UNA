@@ -1,58 +1,32 @@
-import { useEffect } from 'react';
-import Navbar from './navbar';
-import Tabsbar from './tabsbar';
-import Main from './main';
-import Breadcrumb from './breadcrumb';
-import Footer from './footer';
-import useSkeleton from '../lib/hooks/skeleton';
+import { useEffect, useContext } from 'react';
 import { View, ScrollView } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import BottomBar from 'app/ui/molecules/bottombar';
+import LayoutDataContext from 'app/context/layout';
 
-export const siteTitle = 'G-Med';
+export const siteTitle = 'NEO';
 
 export default function Layout(props) {
 
     var oBreadCrump = null;
     var oComments = null;
-
-/*
-      props.children[1].forEach(element => {
-        element.props.blocks.forEach(block => {
-          if (block.content && block.content.type == 'breadcrumb'){
-            oBreadCrump = block.content.data;
-          }
-            
-          if (block.content && block.content[0] && block.content[0].type == 'comments'){
-            oComments = true;
-          }
-        });
-      });
-*/
-
-    const [loading, skeleton] = useSkeleton();
-    const sClassName = 'relative overflow-hidden mb-24 sm:mb-0' + (oComments ? ' sm:mb-24' : '');
+    
+    // TODO IMPROVE
+    if (props.uri && props.uri.includes('view-post')){
+        oComments = true;
+    }
+    const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
     return (
-        <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
-            <Navbar />
-            {(oBreadCrump == null ) && <Tabsbar />}
-            {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className = {sClassName}>
-                {props.children}
+        <LayoutDataContext>
+            <View className="h-full bg-red">
+            <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
+                <View className = {sClassName}>
+                    {props.children}
+                </View>
+            </ScrollView>
+            { (oComments != null ) &&   <View><BottomBar/></View>}
             </View>
-            {(oComments == null ) && <Footer />}
-        </ScrollView>
+        </LayoutDataContext>
     );
-/*
-    return (
-        <View>
-            <Navbar />
-            {(oBreadCrump == null ) && <Tabsbar />}
-            {(oBreadCrump != null ) && <Breadcrumb content ={oBreadCrump} />}
-            <View className = {sClassName}>
-                {loading ? skeleton : <Main> {props.children} </Main>}
-            </View>
-            {(oComments == null ) && <Footer />}
-        </View>
-    );
-*/
 }

@@ -1,7 +1,8 @@
 {
   "index": "Introduction",
-  "another": "Another Page",
-  "advanced": "Advanced (A Folder)",
+
+  "components": "Components",
+  "atoms": "Atoms",
   "components": "Components",
   "about": {
     "title": "About",

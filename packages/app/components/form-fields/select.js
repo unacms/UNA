@@ -1,12 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Field from './_field';
-import {Text} from 'app/design/typography'
+import { useController, useFormContext } from 'react-hook-form';
+import Dropdown from 'app/ui/atoms/dropdown'
 
 export default function FormFieldSelect(props) {
+
+    const formContext = useFormContext();
+    const { formState } = formContext;
+    let rules = {};
+    let name = props.name;
+    let defaultValue = props.value;
+    const [value, setValue] = useState(defaultValue)
+    
+    const { field } = useController({ name, rules, defaultValue });
+
+    setTimeout(() => {
+        formContext.setValue(props.name, value)
+    }, 100);
+
+    let values = [];
+    if (!Array.isArray(props.values)){
+        values = Object.keys(props.values).map(function (key) {
+            return {label: props.values[key], value: key}
+        }); 
+    }
+    if (Array.isArray(props.values)){
+        values = props.values.map(function (key) {
+            return key.value ? {label: key.value, value: key.key} : null
+        }); 
+        values = values.filter(Boolean);
+    }
+
     return (
         <Field {...props}>
-            <Text>TODO: select input</Text>
+            <Dropdown 
+                labelField="label"
+                valueField="value"
+                onChange={setValue}
+                value={value}
+                data={values}
+            />
         </Field>
     );
-// <select className="input input-bordered bg-gray-50 border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"></select>
 }

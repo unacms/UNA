@@ -9,11 +9,11 @@
       "android"
     ],
     "ios": {
-      "bundleIdentifier": "com.una.gmed2",
+      "bundleIdentifier": "com.una.neo",
       "backgroundColor": "#FF0000"
     },
     "android": {
-      "package": "com.una.gmed2"
+      "package": "com.una.neo"
     }
   }
 }

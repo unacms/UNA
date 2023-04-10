@@ -1,17 +1,50 @@
 import React from 'react';
-import Link from '../../ui/atoms/link';
-import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Button } from 'app/design/controls';
+import { View } from 'app/design/view';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function MenuItemButton(oProps) {
+    const bUseInternalIcons = true;
     const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
+    const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
-    let sClassName = 'group inline-flex items-center py-2.5 px-5 shadow-sm hover:shadow active:opacity-80 active:shadow-none text-sm focus:outline-none font-medium text-gray-700 bg-white border focus:z-10 focus:ring-4 focus:ring-gray-200  border-gray-200 hover:border-gray-300 rounded-lg hover:bg-gray-100 bg-transparent hover:text-gray-900  focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700/50 dark:hover:border-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700/80 dark:focus:text-white';
+    const handleClick = () => {
+        if(oProps.params?.onclick)
+            oProps.params.onclick(event, oProps);
+    }
+
+    let oButtonProps = {
+        variant: oProps.primary ? 'primary' : 'default',
+        onPress: handleClick,
+    };
+
     if(bShowVertical)
-        sClassName += ' w-full justify-center';
+        oButtonProps['fullWidth'] = true;
 
+    let sIcon = '';
+    if(oProps?.icon && !bTitleOnly) {
+        if(bUseInternalIcons)
+            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6"></Icon>;
+        else
+            sIcon = <Text className="h-6 w-6 text-base">{oProps.icon}</Text>;
+    }
+
+    let sContent = '';
+    if(sIcon)
+        sContent = (
+            <View>
+                {sIcon}
+                {oProps?.title && <Text className='flex'>{oProps.title}</Text>}
+            </View>
+        );
+    else
+        oButtonProps['title'] = oProps?.title ? oProps.title : '';
+
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full ios:pb-2 android:pb-2' : ' flex-row pr-2');
     return (
-        <View className="menu-item whitespace-nowrap">
-            <Link href={oProps.link && oProps.link != 'javascript:void(0)' ? oProps.link : ''} className={sClassName}>{oProps.title ? oProps.title : 'Unsupported'}</Link>
+        <View className={sClassName}>
+            <Button {...oButtonProps}>{sContent}</Button>
         </View>
     );
 }

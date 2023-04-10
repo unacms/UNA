@@ -7,6 +7,8 @@ import { Text, H1 ,TextLink} from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import {Platform, PlatformIOSStatic} from 'react-native'
+import { Button } from 'app/design/controls';
+import Menu from 'app/components/menu';
 
 // g-med style browsing
 export default function Unit(props) {
@@ -41,7 +43,8 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             borderRadius: 0,
             marginLeft:0,
             marginRight:0,
-            marginBottom:8,
+            marginTop:8,
+            
           
           },
          card_image: {
@@ -69,93 +72,113 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     function groupUnit(){
+ 
         return (
-            <View className="u-card" style={styles.card}>
-                <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
-                    <Link href={data.url}>            
-                        {data.image &&
-                            <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
-                            </View>
-                        } 
-                        {!data.image &&<View className="bg-brand/10 dark:bg-brand-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
-                        <View className="px-4">
-                            <View className=" overflow-hidden w-full my-3 h-10  ">
-                                <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
-                                    {data.title} FOR GROUPS
-                                </Text>
-                                <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
-                            </View>
-                            <View className='pb-3'>
-                                <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
-                            </View>
-                        </View>
-                    </Link>
-                </View>
+            <View className="u-card-4" style={styles.card}>
+                <Link href={data.url}>    
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
+      <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
+      { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
+      </View>
+      <View className=" px-4 ">
+        <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          {data.group_name}
+        </Text>
+        <View className='flex-row space-x-1'>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>25 members</Text>
+          <Text  className='text-sm text-neogray-400 dark:text-neogray-600'>·</Text>
+          
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>Active 24 min ago </Text>
+        </View>     
+      </View>
+      <View className="text-center px-4 space-y-2">
+        
+        <Button title="Join Group" variant="primary" fullWidth />
+        
+      </View>
+      </View>
+      </Link>
             </View>  
         )  
     }
 
     function channelUnit(){
         return (
-            <View className="u-card" style={styles.card}>
-                <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
-                    <Link href={data.url}>            
-                        {data.image &&
-                            <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
-                            </View>
-                        } 
-                        {!data.image &&<View className="bg-brand/10 dark:bg-brand-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
-                        <View className="px-4">
-                            <View className=" overflow-hidden w-full my-3 h-10  ">
-                                <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
-                                    {data.title} FOR channels
-                                </Text>
-                                <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
-                            </View>
-                            <View className='pb-3'>
-                                <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
-                            </View>
-                        </View>
-                    </Link>
-                </View>
-            </View>  
+            <View className="u-card-4" style={styles.card}>
+                <Link href={data.url}>    
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
+      <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
+        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} />  }
+      </View>
+      <View className=" px-4 ">
+        <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
+          {data.channel_name}
+        </Text>
+        <View className='flex-row space-x-1'>
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>25 members</Text>
+          <Text  className='text-sm text-neogray-400 dark:text-neogray-600'>·</Text>
+          
+          <Text  className='text-sm text-neogray-600 dark:text-neogray-400'>Active 24 min ago </Text>
+        </View>     
+      </View>
+      <View className="text-center px-4 space-y-2">
+        
+        <Button title="Join Group" variant="primary" fullWidth />
+        
+      </View>
+      </View>
+      </Link>
+            </View> 
         )  
     }
 
     function personUnit(){
-        return (
-            <View className="u-card" style={styles.card}>
-                <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
-                    <Link href={data.url}>            
-                        {data.image &&
-                            <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
-                            </View>
-                        } 
-                        {!data.image &&<View className="bg-brand/10 dark:bg-brand-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
-                        <View className="px-4">
-                            <View className=" overflow-hidden w-full my-3 h-10  ">
-                                <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
-                                    {data.title} FOR PERSONS
-                                </Text>
-                                <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
-                            </View>
-                            <View className='pb-3'>
-                                <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
-                            </View>
-                        </View>
-                    </Link>
+        let sMeta = '';
+        if(data?.meta)
+            sMeta = (
+                <View className="text-center px-4 mt-4">
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
-            </View>  
-        )  
+            );
+        else
+            sMeta = (
+                <>
+                    <Text  className='text-sm text-neogray-600 text-center dark:text-neogray-400 mt-2'>some text from menu</Text>
+                    <View className="text-center px-4 space-y-2 mt-4">
+                        <Button title="Follow" variant="primary" fullWidth />
+                        <Button title="Remove" variant="default" fullWidth/>
+                    </View>
+                </>
+            );
+
+        return (
+            <View style={styles.card} className="u-card-4">
+                <Link href={data.url}>  
+                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard h-min dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
+                        <View className="w-2/3 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full mt-4 ">
+                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-4 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            {!!data.image && <Image alt={data.fullname} className="rounded-full absolute top-0 z-50" view="cover" src={data.image.src} />}
+                        </View>
+                        <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.fullname}</Text>
+                        {sMeta}
+                    </View>
+                </Link>
+            </View>
+        )
     }
 
     function defaultUnit(){
+        let sMeta = '';
+
+        if(data?.meta)
+            sMeta = <Menu {...data.meta} displayType="link" />
+        else
+            sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
+
         return (
             <View className="u-card" style={styles.card}>
-                <View className="bg-card  duration-200 hover:shadow-lg active:shadow-none dark:bg-card-dark overflow-hidden border sm:rounded-lg hover:border-bordercolor/20  border-bordercolor/10 dark:border-bordercolor-dark/10 dark:hover:border-bordercolor-dark/20  w-full">
+                <View className="bg-neocard hover:bg-neocard-hover dark:hover:bg-neocard-darkhover duration-200   active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg   border-neoborder dark:border-neoborder-dark  w-full">
                     <Link href={data.url}>            
                         {data.image &&
                             <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
@@ -170,13 +193,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                                 </Text>
                                 <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
                             </View>
-                            <View className='pb-3'>
-                                <Profile {...data.author_data} displayType="minimal" displaySize="xs"  className="" />
-                            </View>
+                            <View className='pb-3'>{sMeta}</View>
                         </View>
                     </Link>
                 </View>
             </View>  
-        )  
+        )
     }
 }

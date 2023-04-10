@@ -25,7 +25,8 @@ const nextConfig = {
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },
   images: {
-    domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com']
+    domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com', 'hihi.com'],
+    disableStaticImages: true
   }
 }
 
