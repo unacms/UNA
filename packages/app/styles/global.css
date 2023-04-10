@@ -104,7 +104,7 @@ body {
     
 }
 .u-card {
-    min-width: calc(33.33% - 8px) !important;
+    min-width: calc(33.33% - 11px) !important;
     width: 100%;
     display: flex;
     flex-wrap: wrap;  
