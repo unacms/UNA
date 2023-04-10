@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view';
 import { appSetting } from 'app/lib/util'
 export default function PageLayout(props) {
     return (<View className="flex-auto relative w-full flex-row mx-auto">
-    <View className="hidden lg:flex w-1/3 max-w-xs ">
+    <View className="hidden lg:flex w-1/3 max-w-xs 2xl:bg-transparent 2xl:dark:bg-transparent bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder dark:border-neoborder-dark ">
        {props.children[1]}
    </View>
    <View className="flex-auto w-2/3 flex-row">

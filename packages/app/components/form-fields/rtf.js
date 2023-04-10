@@ -1,14 +1,24 @@
 import { useRef } from "react";
 import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
+import { useController, useFormContext } from 'react-hook-form';
 
 export default function FormFieldFtf(props) {
     const _editor = useRef();
+    const formContext = useFormContext();
+    const { field } = useController({ name, rules, defaultValue });
+
+    const setContent = () => {
+        setTimeout(() => {
+            formContext.setValue(name, value)
+        }, 100);
+    }
 
     return (<>
       <QuillEditor
         className="h-48"
         ref={_editor}
-        initialHtml="<h1>Quill Editor for react-native</h1>"
+        onEditorChange = {setContent}
+        initialHtml={field.value}
       />
       <QuillToolbar editor={_editor} options="full" theme="light" />
     </>);

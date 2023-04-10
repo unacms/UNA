@@ -224,8 +224,6 @@ html {
 .form-control-cmt_image > div{
     margin-bottom: 0px !important;
 }
-.ggg
-{
-  
-
+.profile-menu::-webkit-scrollbar {
+    display: none;
 }
