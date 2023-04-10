@@ -8,8 +8,12 @@ export default function ElementEntityActions(props) {
 
     const view = appSetting('entry', 'default_view');
 
+/*
+ * Commented out to check actions.
+ * 
     if (view == 'small')
         return <></>
+*/
 
     return (
         <View className="relative p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-t border-neoborder dark:border-neoborder-dark sm:border-x w-full mx-auto max-w-5xl">
