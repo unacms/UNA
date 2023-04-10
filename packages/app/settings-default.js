@@ -131,6 +131,8 @@ export const settingsDefault = {
       selectBorder: 'rgba(156, 163, 175, 0.3)',
       fieldBackground: '#ccccccc',
       blockBorder: '#E5E7EB',
+      tabsBackground: '#F3F4F6',
+      activeTabBackground: '#DBEAFE',
     },
     dark: {
       primary: '#3B82F6',
