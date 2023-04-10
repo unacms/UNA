@@ -36,7 +36,7 @@ export default function Layout(props) {
                 <View className=" u-content3 mx-auto flex-1 flex-row -top-[1px]" > 
                 <View className={sClassName}>
                     <View className=" flex-row u-content3 2xl:justify-center mx-auto" > 
-                        <View className="w-72 flex-none hidden xl:flex bg-white 2xl:bg-transparent   2xl:bg-transparent 2xl:dark:bg-transparent bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-bordercolor/10 dark:border-bordercolor-dark/10">
+                        <View className="w-72 flex-none hidden xl:flex bg-white 2xl:bg-transparent">
                             <View className="w-72 fixed max-h-screen overflow-auto u-sidebar pb-4">
                                 <ElementMainMenu className="w-full flex-none hidden" />
                             </View>
