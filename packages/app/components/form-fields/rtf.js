@@ -1,91 +1,27 @@
 import { useRef } from "react";
 import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
 import { useController, useFormContext } from 'react-hook-form';
-
-export default function FormFieldFtf(props) {
-    const _editor = useRef();
-    const formContext = useFormContext();
-    const { field } = useController({ name, rules, defaultValue });
-
-    const setContent = () => {
-        setTimeout(() => {
-            formContext.setValue(name, value)
-        }, 100);
-    }
-
-    return (<>
-      <QuillEditor
-        className="h-48"
-        ref={_editor}
-        onEditorChange = {setContent}
-        initialHtml={field.value}
-      />
-      <QuillToolbar editor={_editor} options="full" theme="light" />
-    </>);
-}
-
-/*
-import { useRef, useState } from "react";
-import { Pressable } from 'app/design/view'
-import { actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
-import { useController, useFormContext } from 'react-hook-form';
-import { useTheme } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native'
 import { fetcher } from '../../lib/fetcher';
+import { KeyboardAvoidingView } from 'react-native';
+import { uploadImage } from '../../lib/util';
 
 export default function FormFieldFtf(props) {
-
+    const _editor = useRef();
     const isWeb = Platform.OS == 'web'
-    const richText = useRef();
     const formContext = useFormContext();
 
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-    
-    const [value, setValue] = useState(defaultValue)
+
     const { field } = useController({ name, rules, defaultValue });
 
-
-    const uploadImage = async (uri) => {
-        const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline';
-        console.log(uri);
-        const formData = new FormData();
-        if (isWeb){
-            const fileExt = uri.split(';').shift().split('/').pop();
-            const fileType = uri.split(';').shift().split(':').pop();
-            urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
-            .then(async function(file){
-                formData.append("file", file);
-                const result = await fetcher([url, null, formData]);
-                if (result.data.link)
-                    richText.current.insertImage(result.data.link); ;
-            });
-        }
-        else{
-            const formData = new FormData();
-            const fileName = uri.split('/').pop();
-            const fileType = uri.match(/\.([a-z]+)$/i)[1];
-
-            formData.append("file",  {
-                uri,
-                name: fileName,
-                type: `image/${fileType}`,
-              });
-            const result = await fetcher([url, null, formData]);
-            if (result.data.link)
-                richText.current.insertImage(result.data.link); ;
-        }
-    };
-
-    const handleChange = (descriptionText) => {
-        if (descriptionText) {
-            setValue(descriptionText);
-            setContent();
-        } else {
-            setValue("");
-        }
+    const handleChange = (value) => {
+        setTimeout(() => {
+            formContext.setValue(name, value.html)
+        }, 100);
     };
 
     const handleInsertImage = async () => {
@@ -97,58 +33,50 @@ export default function FormFieldFtf(props) {
 
         if (!result.canceled) {
             result.assets.forEach(function (i) {
-                uploadImage(i.uri);
-                
+                uploadImage(
+                    i.uri, 
+                    '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+                    handleInsertImageFinish
+                );
             });
         }
     };
 
-    const handleBlur = () => {
-        setContent();
+    const handleInsertImageFinish = async (url) => {
+        _editor.current?.insertEmbed(
+            0,
+            'image',
+            url
+        );
     }
 
-    const setContent = () => {
-        setTimeout(() => {
-            formContext.setValue(name, value)
-        }, 100);
-    }
+   
 
-    const { colors } = useTheme();
+    const handleCustomClick = (name,value) => {
+        if (name === 'image') {
+            handleInsertImage();
+        } else {
+          console.log(`${name} clicked with value: ${value}`);
+        }
+    };
 
     return (
-        <Pressable onPress={() => richText.current?.dismissKeyboard()} >
-        <RichEditor 
-            ref={richText}
-            onChange = {handleChange}
-            onBlur = {handleBlur}
-            
-            initialContentHTML={field.value}
-            androidHardwareAccelerationDisabled={true}
-            initialHeight={250}
-            editorStyle={{ backgroundColor: colors.fieldBackground }}
-        />
-        <RichToolbar
-            style={{backgroundColor: colors.barsBackground}}
-            editor={richText}
-            onPressAddImage = {handleInsertImage}
-            selectedIconTint = {colors.primary}
-            iconTint = {colors.default}
-            actions={[
-                actions.insertImage,
-                // actions.insertVideo,
-                actions.undo,
-                actions.redo,
-                actions.setBold,
-                actions.setItalic,
-                actions.insertBulletsList,
-                actions.insertOrderedList,
-                actions.insertLink,
-                actions.setStrikethrough,
-                actions.setUnderline,
-            ]}
-            
-        />
-        </Pressable>
-  );
+        <KeyboardAvoidingView>
+            <QuillEditor
+                className="h-48"
+                onHtmlChange={handleChange}
+                ref={_editor}
+                initialHtml={field.value}
+            />
+            <QuillToolbar 
+                custom={{
+                    handler: handleCustomClick,
+                    actions: ['image'],
+                }}
+                editor={_editor}  
+                options={['bold', 'italic', 'underline', 'strike', 'image']} 
+                theme="light" 
+            />
+        </KeyboardAvoidingView>
+    );
 }
-*/
