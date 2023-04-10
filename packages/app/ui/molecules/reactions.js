@@ -1,10 +1,10 @@
 import React from 'react';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
-import { fetcher } from '../../lib/fetcher';
-
-import { PageData } from '../../context/page';
+import { fetcher } from 'app/lib/fetcher';
+import { appSetting } from 'app/lib/util';
+import { PageData } from 'app/context/page';
 import { Button, Modal } from 'app/design/controls';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
@@ -21,6 +21,9 @@ import Profile from 'app/ui/molecules/profile';
 import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
+    const sView = appSetting('entry', 'default_view');
+    const bViewSmall = sView == 'small';
+
     const bUseInternalIcons = true;
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
     const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
@@ -234,8 +237,8 @@ export default function ElementReactions(oProps) {
     if(isPageVar('icon'))
         sIcon = getPageVar('icon');
 
-    let sTitle = oAction?.title || '';
-    if(isPageVar('title'))
+    let sTitle = oAction?.title && !bViewSmall || '';
+    if(isPageVar('title') && !bViewSmall)
         sTitle = getPageVar('title');
 
     let sAction = undefined;
@@ -301,7 +304,7 @@ export default function ElementReactions(oProps) {
 
             sAction = (
                 <View>
-                    <Button id={getName('action-ddb')} variant="text" variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
+                    <Button id={getName('action-ddb')} variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
                     <View>
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">

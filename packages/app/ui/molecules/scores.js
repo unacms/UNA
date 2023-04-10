@@ -1,15 +1,19 @@
 import React from 'react';
-import { useEffect, useState, useContext } from 'react';
-import { fetcher } from '../../lib/fetcher';
-import { PageData } from '../../context/page';
-import Profile from './profile';
+import { useState, useContext } from 'react';
 
-import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { fetcher } from 'app/lib/fetcher';
+import { appSetting } from 'app/lib/util';
+import { PageData } from 'app/context/page';
+import { Text } from 'app/design/typography';
+import { View } from 'app/design/view';
 import { Button, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
+import Profile from 'app/ui/molecules/profile';
 
 export default function ElementScore(oProps) {
+    const sView = appSetting('entry', 'default_view');
+    const bViewSmall = sView == 'small';
+
     const bUseInternalIcons = true;
     const oIconAliases = {
         'arrow-up': 'ArrowUp',
@@ -118,12 +122,12 @@ export default function ElementScore(oProps) {
         const bShowActionDisabled = oItem?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
 
         let sIcon = oItem?.icon || '';
-        let sTitle = oItem?.title || '';
+        let sTitle = oItem?.title && !bViewSmall || '';
         if(isPageVar(sAction)) {
             const oItemGlobal = getPageVar(sAction);
             if(oItemGlobal?.icon)
                 sIcon = oItemGlobal.icon;
-            if(oItemGlobal?.title)
+            if(oItemGlobal?.title && !bViewSmall)
                 sTitle = oItemGlobal.title;
         }
 
