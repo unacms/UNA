@@ -7,14 +7,14 @@ import { Text } from 'app/design/typography'
 export default function FormField(props) {
     let w ='w-full';
     let { width } = useWindowDimensions()
-    if (props.name == 'cmt_text'){
+    /*if (props.name == 'cmt_text'){
         w ='w-11/12';
-    }
+    }*/
     if (props.name == 'cmt_submit'){
-        w ='w-1/12';
+        w ='w-1/12 mt-2 absolute right-3 bottom-0';
     }
     if (props.name == 'cmt_image'){
-        w ='w-full';
+        w ='w-11/12 ';
     }
 
     const sClassName = w +' form-control ' + (w == 'w-full' ? '' : '')+ ' form-control-' + props.name ;

@@ -241,19 +241,20 @@ export default function ElementComments(props) {
         cmtForm = <View className="w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
                 form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neocard dark:bg-neocard-dark rounded-sm border-l-2 border-primary/50  py-1 px-2 mx-3 mb-2'>
-                    <Row className='items-start justify-between gap-2 '>
+                    <Row className='items-start justify-between max-w-full relative'>
 
-                        <View className='w-full flex'>
-                            <Row className=''>
+                        <View className=' max-w-full pr-4'>
+                            <Row className='max-w-full '>
                                 <Text className='text-xs text-neogray-900 dark:text-neogray-50'>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-neogray-900 dark:text-neogray-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Row className='justify-between w-full items-start'>
+                          
                                 <Text className='text-sm overflow-hidden text-neogray-900 dark:text-neogray-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
-                                <View className="pr-1">
-                                    <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
-                                </View>
-                            </Row>
+                                
+                
+                        </View>
+                        <View className="absolute right-0 t-0 ">
+                            <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
                         </View>
                     </Row>
                 </View>)
