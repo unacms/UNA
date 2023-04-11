@@ -11,6 +11,7 @@ import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
+import Menu from '../menu';
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
@@ -78,17 +79,17 @@ function DefaultUnit(data) {
                 }
         </View>
     </View>
-        <View className=" p-2 border-t border-neoborder dark:border-neoborder-dark flex-row space-x-1 ">
+        <View className="flex-row w-full px-2 pb-2">
+            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
+        </View>
+        <View className="p-2 border-t border-neoborder dark:border-neoborder-dark flex-row space-x-1 ">
             <View className='flex-row w-full space-x-2'>
-                    <View className=" flex-row space-x-2    ">
-                        <Button title="902" startDecorator="comment" size="sm" solid rounded variant="text"/>
-                        <Button title="12" startDecorator="share" size="sm" solid rounded variant="text"/>
-                        <Button title="306" startDecorator="like" size="sm" solid rounded variant="text"/>
-                        <Button title="8" startDecorator="dislike" size="sm" solid rounded variant="text"/>
-                    </View>
-                    <View className=" flex-auto space-x-4 flex-row justify-end ">
-                        <Button title="" startDecorator="more" size="sm" solid rounded variant="text"/>
-                    </View>
+                <View className="flex-row">
+                    <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
+                </View>
+                <View className="flex-auto flex-row justify-end">
+                    <Button title="" startDecorator="more" size="sm" solid rounded variant="text"/>
+                </View>
             </View>
         </View>
     </View>);

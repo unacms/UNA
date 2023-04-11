@@ -109,8 +109,9 @@ export default function ElementScore(oProps) {
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
-    const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
-        
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
+
     const aActions = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
 
@@ -129,11 +130,11 @@ export default function ElementScore(oProps) {
 
         if(bUseInternalIcons)
             return (
-                <Button variant="default" startDecorator={oIconAliases[sIcon]} title={sTitle} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sIcon]} title={sTitle} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
             );
         else
             return (
-                <Button variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}}>
+                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}}>
                     {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
                     {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
                 </Button>
@@ -141,11 +142,11 @@ export default function ElementScore(oProps) {
     });
 
     //--- show counter
-    const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
 
     //--- Counter
     let sCounter = undefined;
-    if(bShowCounter) {
+    if(bShowCounter && oCounter?.score != undefined) {
         let iScore = oCounter.score;
         if(isPageVar('counter')) {
             const oCounterGlobal = getPageVar('counter');
@@ -171,7 +172,7 @@ export default function ElementScore(oProps) {
         let sButton = undefined;
         if(bUseInternalIcons)
             sButton = (
-                <Button variant="text" rounded="true" startDecorator="ArrowsDownUp"  title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <Button variant="text" rounded="true" startDecorator="ArrowsDownUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
             );
         else
             sButton = (

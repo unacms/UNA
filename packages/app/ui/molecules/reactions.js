@@ -102,7 +102,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleDo = (event, oProps) => {
-        //event.preventDefault();
+        event.preventDefault();
 
         updateLayout(oProps.name, 1);
 
@@ -113,7 +113,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleUndo = (event) => {
-        //event.preventDefault();
+        event.preventDefault();
 
         let sReaction = oProps.action.reaction;
         if(isPageVar('reaction'))
@@ -127,7 +127,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleGetPerformedByCpd = (event) => {
-        //event.preventDefault();
+        event.preventDefault();
 
         performAction('get_performed_by', {}, (oData) => {
             if(!oData?.performed_by)
@@ -141,7 +141,7 @@ export default function ElementReactions(oProps) {
     };
 
     const handleGetPerformedByDvd = (event, aItem) => {
-        //event.preventDefault();
+        event.preventDefault();
 
         const sReaction = aItem?.name || '';
         if(!sReaction)
@@ -213,7 +213,8 @@ export default function ElementReactions(oProps) {
     //--- show action
     const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
     
-    const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
 
@@ -240,7 +241,7 @@ export default function ElementReactions(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} onPress={handleUndo} />
+            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} onPress={handleUndo} />
         );
     }
     else {
@@ -265,7 +266,7 @@ export default function ElementReactions(oProps) {
             sAction = (
                 <DropdownMenuRoot>
                     <DropdownMenuTrigger>
-                        <Button id={getName('action-ddb')} variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={() => {}} />
+                        <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={() => {}} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                 </DropdownMenuRoot>
@@ -300,7 +301,7 @@ export default function ElementReactions(oProps) {
 
             sAction = (
                 <View>
-                    <Button id={getName('action-ddb')} variant="default" startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
+                    <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
                     <View>
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">
@@ -326,7 +327,7 @@ export default function ElementReactions(oProps) {
     }
 
     //--- show counter
-    const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
 
     const getCounterDivided = () => {
         return Object.keys(oCounter.items).map(function(iKey) {
@@ -487,7 +488,7 @@ export default function ElementReactions(oProps) {
 
     //--- Counter
     let sCounter = undefined;
-    if(bShowCounter)
+    if(bShowCounter && oCounter?.items != undefined)
         switch(sCounterType) {
             case 'compound':
                 sCounter = getCounterCompound()
