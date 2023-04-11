@@ -17,7 +17,7 @@ export default function FormField(props) {
         w ='w-11/12 ';
     }
 
-    const sClassName = w +' form-control ' + (w == 'w-full' ? '' : '')+ ' form-control-' + props.name ;
+    const sClassName = w +' form-control ' + (w == 'w-full' ? 'mb-4' : '')+ ' form-control-' + props.name ;
 
     return (
         <View className={sClassName}>
