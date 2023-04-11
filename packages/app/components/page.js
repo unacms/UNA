@@ -12,7 +12,7 @@ export default function Page(props) {
         return <></>
     
     let cells = Object.keys(data.elements).map(key => {
-        return <Cell key={key} blocks={data.elements[key]} />
+        return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
     });
     let content = cells;
     

@@ -71,7 +71,6 @@ export default function UnitComments(props) {
     let childs = Object.keys(items);
     let last_child = 0;
     if (childs.length > 0){
-        //console.log('xxxxxxxx',level, items[childs[childs.length-1]].id)
         last_child = items[childs[childs.length-1]].id;
     }
     

@@ -2,7 +2,8 @@ import Block from './block';
 import { View, Row } from 'app/design/view'
 import { A, H1, P, Text, TextLink } from 'app/design/typography'
 
-export default function Cell ({blocks}) {
+export default function Cell (props) {
+    let blocks = props.blocks;
     return blocks ? blocks.map(block => {
 
         if (!block?.content)
@@ -12,7 +13,7 @@ export default function Cell ({blocks}) {
             return null;
         else{
             return (
-                <Block key={block.id} block={block} />
+                <Block key={block.id} uri={props.uri} block={block} />
             );
         }
     }) : null;

@@ -64,6 +64,7 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
                 style={{
                   paddingHorizontal: 16,
                   paddingVertical: 14.5,
+                  height:48
                 }}
               >
                 <View
@@ -115,6 +116,8 @@ export function NavMaterialTabs(params) {
   const Tab = createMaterialTopTabNavigator();
   return (
     <Tab.Navigator
+      sceneContainerStyle={{ backgroundColor: colors.screenBackground }}
+      style={{height:20}}
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         tabBarScrollEnabled: true,
