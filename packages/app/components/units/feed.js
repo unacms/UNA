@@ -42,29 +42,38 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard group duration-200 hover:shadow-lg active:shadow-none dark:bg-neocard-dark overflow-hidden border-y sm:border sm:rounded-lg  border-neoborder dark:border-neoborder-dark"    style={styles.card}>
+        <View className="bg-neocard hover:bg-neocard-hover  dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1   group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
         {data.mainImage &&
-            <View className="w-full aspect-[3/1] " style={styles.card_image}>
-                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover"    />
+            <View className="w-full  aspect-[3/1] " style={styles.card_image}>
+                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
             </View>
         }    
-        <View className="px-4 pt-4">
+        <View className="p-3 gap-3">
         <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
-        <View className="w-full    pb-4 flex-col space-y-4 pt-4">
-            <Text className="text-neogray-700    group-hover:text-neogray-900 duration-200 dark:group-hover:text-white dark:text-neogray-200    text-2xl    tracking-tight font-bold">
+        <View className="w-full    flex-col gap-1">
+            <Text className=" duration-200  text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50   text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
-                { !showFull ? <View><View className="flex-row space-x-2 max-h-12 overflow-hidden relative">
-                    <Text className="text-neogray-700    dark:text-neogray-200 text-base">
+                { !showFull ? <View><View className="flex-col gap-3    relative">
+                    <Text className="text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50  text-base">
                         {data.plainText}
                     </Text>
-                        { data.showMore && <View className='absolute    flex-row bottom-0    right-0 bg-gradient-to-r '    >
-                            <View className='    w-10 right-0 bg-gradient-to-r from-transparent to-card dark:to-card-dark'></View>
-                                <TouchableOpacity className='pl-2    bg-neocard dark:bg-neocard-dark'    onPress={(e) => {setShowFull(true);e.preventDefault() }}>
-                                        <Text className="text-brand dark:text-brand-dark text-base font-medium">More...</Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
+                    <View className='flex-row gap-2  flex-wrap'>
+                    { data.showMore && <View className='   flex-auto  flex-row  right-0 '    >
+                            
+                                
+                            <Button title="2m read"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="outline"/>  
+                            
+                        </View>
+                    }
+                        <Button title="902" startDecorator="ChatTeardropText" size="xs" solid rounded variant="text"/>
+                        <Button title="12" startDecorator="ShareFat" size="xs" solid rounded variant="text"/>
+                        <Button title="306" startDecorator="Heart" size="xs" solid rounded variant="text"/>
+                        <Button title="55" startDecorator="Smiley" size="xs" solid rounded variant="text"/>
+                        <Button title="8" startDecorator="ArrowFatUp" size="xs" solid rounded variant="text"/>
+                        
+                    </View>
+                    
                 </View>
                 {data.sFirstImg &&
                     <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
@@ -78,41 +87,50 @@ function DefaultUnit(data) {
                 </View>
                 }
         </View>
+       
+        <View className=" border-t pt-3 border-neoborder dark:border-neoborder-dark flex-row gap-1 ">
+            
+                    <View className=" flex-row gap-2 flex-auto flex-wrap ">
+                    
+                        <Button  startDecorator="ChatTeardropText" size="sm" title="Comment" solid rounded variant="text"/>
+                        <Button  startDecorator="ShareFat" size="sm" title="Share" solid rounded variant="text"/>
+                        <Button title="Like" startDecorator="Heart" size="sm" solid rounded variant="text"/>
+                        <Button title="React" startDecorator="Smiley" size="sm" solid rounded variant="text"/>
+                        
+                            <Button  startDecorator="ArrowFatUp" size="sm" solid  rounded variant="text"/>
+                            <Button  startDecorator="ArrowFatDown" size="sm" solid rounded  variant="text"/>
+                        
+                        
+                        
+                    </View>
+                    <View className=" flex-none   ">
+                        <Button title="" startDecorator="DotsThreeOutline" size="sm" solid rounded variant="text"/>
+                    </View>
+            
+        </View>
     </View>
-        <View className="flex-row w-full px-2 pb-2">
-            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
-        </View>
-        <View className="p-2 border-t border-neoborder dark:border-neoborder-dark flex-row space-x-1 ">
-            <View className='flex-row w-full space-x-2'>
-                <View className="flex-row">
-                    <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
-                </View>
-                <View className="flex-auto flex-row justify-end">
-                    <Button title="" startDecorator="more" size="sm" solid rounded variant="text"/>
-                </View>
-            </View>
-        </View>
+        
     </View>);
 }
 
 function SmallUnit(data) {
     
     return (
-        <View className="sm:rounded-lg flex-row  w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark border-b sm:mb-1 hover:bg-neocard-hover dark:hover:bg-neogray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
+        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark   hover:bg-neocard-hover dark:hover:bg-neogray-800  overflow-hidden ">    
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
             <View className="flex-auto my-auto ">
-                <View className='flex-row '>
-                    <Text className='text-sm flex-auto mr-2 font-semibold text-neogray-900 dark:text-neogray-100'>{data.author_data.display_name}</Text>
-                    <Text className='text-sm flex-none text-neogray-500'><Time ts={data.date}></Time></Text>
+                <View className='flex-row gap-2'>
+                    <Text className='text-sm flex-auto  font-semibold text-neogray-800 dark:text-neogray-200'>{data.author_data.display_name}</Text>
+                    <Time className='text-sm flex-none' ts={data.date}></Time>
                 </View>
                 <View className='flex-row '>
-                    <Text className="flex-auto text-base font-bold text-neogray-900 dark:text-neogray-100" numberOfLines={1}>{data.content.title}</Text>
+                    <Text className="flex-auto text-lg font-bold text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50" numberOfLines={1}>{data.content.title}</Text>
                     
                 </View>
                 <View className='flex-row  w-full items-end content-end'>
-                    <Text className='flex-auto mr-2 text-sm text-neogray-900 dark:text-neogray-100' numberOfLines={1}>{data.plainText}</Text>
+                    <Text className='flex-auto mr-2 text-sm text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50' numberOfLines={1}>{data.plainText}</Text>
                     <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
                         <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text></View>
                     </View>         

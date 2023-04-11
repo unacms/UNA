@@ -77,15 +77,15 @@ export default function ElementBrowse(props) {
     let classes = '';
     if (data.unit.startsWith('general-')){
         if (data.module == 'bx_posts')
-            classes = 'u-card-list sm:gap-4';
+            classes = 'u-card-list sm:gap-2';
         else
             classes = ' flex-wrap flex-row w-full justify-center u-card-list4 w-full ';
     }
     if (data.unit == 'feed'){
         if (unitMode == '')
-            classes = 'flex-auto flex-col space-y-2 sm:space-y-4 w-full mx-auto';
+            classes = 'flex-auto flex-col gap-[1px] sm:gap-2 w-full mx-auto';
         else
-            classes = 'flex-auto flex-col w-full mx-auto';
+            classes = 'flex-auto flex-col w-full mx-auto gap-1 sm:gap-2';
     }
 
     function prepareUrl (params) {

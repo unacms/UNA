@@ -80,11 +80,11 @@ const colors = {
   },
   neocard: {
     DEFAULT: '#FFFFFF',
-    dark: '#111827',
-    hover: '#F9FAFB',
-    darkhover: '#1F2937',
-    active: '#F3F4F6',
-    darkactive: '#030712',
+    dark: '#0f172a',
+    hover: '#f8fafc',
+    darkhover: '#1e293b',
+    active: '#f1f5f9',
+    darkactive: '#020617',
   },
   neoitem: {
     DEFAULT: '#F3F4F6',
@@ -95,8 +95,8 @@ const colors = {
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: '#E5E7EB',
-    dark: '#030712',
+    DEFAULT: '#e2e8f0',
+    dark: '#1e293b',
   },
   neolink: {
     DEFAULT: '#3B82F6',
