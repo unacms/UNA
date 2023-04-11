@@ -14,7 +14,7 @@ import Svg, {
 
 const svgLogoText = (
   <Svg
-    className='h-10 w-14 hidden sm:block text-brand dark:text-brand-dark mr-0 ml-0'
+    className='h-10 w-14 hidden sm:block text-neogray-800  dark:text-neogray-200 mr-0 ml-0'
     viewBox="0 0 224 80"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -34,80 +34,20 @@ const svgLogoText = (
   </Svg>);
 
 const svgLogoMark = (
-  <Svg
-    className='group-hover:-rotate-45 text-neogray-600 dark:text-neogray-200 group-hover:text-neogray-800 dark:group-hover:text-neogray-50   duration-300 h-10 w-10 mr-0 ml-0'
-    viewBox="0 0 240 240"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <Rect
-      x="218.995"
-      y="120"
-      width="60"
-      height="60"
-      rx="4"
-      transform="rotate(135 218.995 120)"
-      fill="currentColor"
-    />
-    <Rect
-      x="162.426"
-      y="176.569"
-      width="60"
-      height="60"
-      rx="4"
-      transform="rotate(135 162.426 176.569)"
-      fill="currentColor"
-    />
-    <Rect
-      x="162.426"
-      y="63.4314"
-      width="60"
-      height="60"
-      rx="4"
-      transform="rotate(135 162.426 63.4314)"
-      fill="currentColor"
-    />
-    <Rect
-      x="105.858"
-      y="120"
-      width="25.7143"
-      height="25.7143"
-      rx="4"
-      transform="rotate(135 105.858 120)"
-      // class="group-hover:animate-pulse "
-      fill="#FF5511"
-    />
-    <Rect
-      x="81.6143"
-      y="144.244"
-      width="25.7143"
-      height="25.7143"
-      rx="4"
-      transform="rotate(135 81.6143 144.244)"
-      // class="group-hover:animate-pulse "
-      fill="#FF5511"
-    />
-    <Rect
-      x="81.6143"
-      y="95.7563"
-      width="25.7143"
-      height="25.7143"
-      rx="4"
-      transform="rotate(135 81.6143 95.7563)"
-      // class="group-hover:animate-pulse "
-      fill="#FF5511"
-    />
-    <Rect
-      x="57.3707"
-      y="120"
-      width="25.7143"
-      height="25.7143"
-      rx="4"
-      transform="rotate(135 57.3707 120)"
-      // class="group-hover:animate-pulse "
-      fill="#FF5511"
-    />
-  </Svg>);
+  <Svg className='group-hover:rotate-45  text-neogray-600 dark:text-neogray-200 group-hover:text-neogray-800 dark:group-hover:text-neogray-50   duration-300 h-10 w-10 mr-0 ml-0'
+  viewBox="0 0 240 240"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg">
+<Path d="M117.672 24.3335C119.234 22.7714 121.766 22.7714 123.329 24.3335L160.098 61.103C161.66 62.6651 161.66 65.1978 160.098 66.7599L123.329 103.529C121.766 105.092 119.234 105.092 117.672 103.529L80.9021 66.7599C79.34 65.1978 79.34 62.6651 80.9021 61.1031L117.672 24.3335Z" className=' text-primary dark:text-primary-dark' fill="currentColor"/>
+<Path d="M174.24 80.902C175.802 79.3399 178.335 79.3399 179.897 80.902L216.667 117.672C218.229 119.234 218.229 121.766 216.667 123.328L179.897 160.098C178.335 161.66 175.802 161.66 174.24 160.098L137.471 123.328C135.909 121.766 135.909 119.234 137.471 117.672L174.24 80.902Z"  className=' text-primary dark:text-primary-dark' fill="currentColor"/>
+<Path d="M61.103 80.902C62.6651 79.3399 65.1978 79.3399 66.7599 80.902L103.529 117.672C105.092 119.234 105.092 121.766 103.529 123.328L66.7599 160.098C65.1978 161.66 62.6651 161.66 61.1031 160.098L24.3335 123.328C22.7714 121.766 22.7714 119.234 24.3335 117.672L61.103 80.902Z"  className=' text-primary dark:text-primary-dark' fill="currentColor"/>
+<Path d="M117.672 137.471C119.234 135.908 121.766 135.908 123.328 137.471L135.854 149.996C137.416 151.559 137.416 154.091 135.854 155.653L123.328 168.179C121.766 169.741 119.234 169.741 117.672 168.179L105.146 155.653C103.584 154.091 103.584 151.559 105.146 149.996L117.672 137.471Z" className='text-secondary dark:text-secondary-dark' fill="currentColor"/>
+<Path d="M141.915 161.714C143.477 160.152 146.01 160.152 147.572 161.714L160.098 174.24C161.66 175.802 161.66 178.335 160.098 179.897L147.572 192.423C146.01 193.985 143.477 193.985 141.915 192.423L129.389 179.897C127.827 178.335 127.827 175.802 129.389 174.24L141.915 161.714Z" className=' text-secondary dark:text-secondary-dark' fill="currentColor"/>
+<Path d="M93.428 161.714C94.9901 160.152 97.5227 160.152 99.0848 161.714L111.611 174.24C113.173 175.802 113.173 178.335 111.611 179.897L99.0848 192.423C97.5227 193.985 94.9901 193.985 93.428 192.423L80.9021 179.897C79.34 178.335 79.34 175.802 80.9021 174.24L93.428 161.714Z" className=' text-secondary dark:text-secondary-dark' fill="currentColor"/>
+<Path d="M117.672 185.958C119.234 184.396 121.766 184.396 123.328 185.958L135.854 198.484C137.416 200.046 137.416 202.578 135.854 204.141L123.328 216.666C121.766 218.229 119.234 218.229 117.672 216.666L105.146 204.141C103.584 202.578 103.584 200.046 105.146 198.484L117.672 185.958Z" className='group-hover:animate-pulse  text-accent dark:text-accent-dark' fill="currentColor"/>
+</Svg>
+
+  );
 
 export const settingsDefault = {
   feed: {
@@ -129,7 +69,7 @@ export const settingsDefault = {
       barsBackground: '#FFFFFF',
       barsColor: '#4B5563',
       selectBorder: 'rgba(156, 163, 175, 0.3)',
-      fieldBackground: 'rgba(249, 240, 251, 1)',
+      fieldBackground: '#ccccccc',
       blockBorder: '#E5E7EB',
       tabsBackground: '#F3F4F6',
       activeTabBackground: '#DBEAFE',
@@ -140,7 +80,7 @@ export const settingsDefault = {
       barsBackground: '#111827',
       barsColor: '#D1D5DB',
       selectBorder: 'rgba(55, 65, 81, 0.3)',
-      fieldBackground: '#030712',
+      fieldBackground: '#ccccccc',
       blockBorder: '#030712',
     },
     button_styles: {
