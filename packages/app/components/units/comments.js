@@ -39,7 +39,7 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  " mx-4 gap-y-0 ";
+    let sCommentStyle =  " gap-y-0 ";
 
     let sCommentClass = " bg-neoitem dark:bg-neoitem-dark rounded-lg   px-2.5 u-vanilla-html-small";
     if(bSmallSize){
@@ -65,7 +65,6 @@ export default function UnitComments(props) {
     for (let i = 0; i < level; i++){
         cells.push(<View className='w-10 h-full '>
         {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-4 w-0.5 bg-rxed-500 rounded-full flex-auto  bg-black/5 dark:bg-white/5"></View> }
-      
         {(i == level - 1) && <View className="ml-4 h-4 w-full border-black/5  dark:border-white/5 border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
@@ -96,7 +95,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass+ ' py-1'} >
                                 <View className="flex-row gap-1 items-center">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-neogray-500">·{data.cmt_id}--{current_last_child}--{last_child}--</Text>
+                                    <Text className="text-neogray-500">·</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 
