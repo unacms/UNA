@@ -55,7 +55,7 @@ export const settingsDefault = {
     default_view: '',
   },
   entry:{
-    default_view: 'small',
+    default_view: '',
   },
   layout:{
     max_width: 'max-w-7xl',

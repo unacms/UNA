@@ -23,10 +23,10 @@ export default function ElementEntityAuthor(oProps) {
 
     const sInfo = (
         <Menu {...oAuthor.author_desc} displayType="link" params={{
-            className: 'bx-menu flex flex-row flex-wrap justify-start items-center web:space-x-2',
+            className: 'bx-menu flex flex-row flex-wrap justify-start items-center gap-2',
             classNameItem: {
-                link: 'flex text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline ios:pr-2 android:pr-2',
-                text: 'flex ios:pr-2 android:pr-2'
+                link: 'flex text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline gap-2',
+                text: 'flex gap-2'
             }
         }} />
     );
@@ -59,7 +59,7 @@ export default function ElementEntityAuthor(oProps) {
             <Redirect ref={redirectdRef} />
             <DropdownMenuRoot>
                 <DropdownMenuTrigger>
-                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutlineVertical" onPress={() => {}} />
+                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => {}} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContentV>{sMenuManageItems}</DropdownMenuContentV>
             </DropdownMenuRoot>
