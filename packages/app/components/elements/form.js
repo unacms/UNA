@@ -6,7 +6,7 @@ export default function ElementForm(props) {
     let { classContainerName, ...rest } = props
 
     return (
-        <View className = {(props.name? 'form-' + props.name : '') + ' ' + (classContainerName? classContainerName : 'px-4 first:pt-4 w-full grid place-items-center px-4 first:pt-4')}>
+        <View className = {(props.name? 'form-' + props.name : '') + ' ' + (classContainerName? classContainerName : ' w-full grid place-items-center ')}>
             <Form {...rest} />
         </View>
     );

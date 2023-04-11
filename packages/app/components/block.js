@@ -3,8 +3,8 @@ import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
 import React, { useState } from 'react';
 import { View } from 'app/design/view'
-import { H1 } from 'app/design/typography'
-//import { NavBottomTabs } from 'app/components/nav/bottomtabs'
+import { H1,Text } from 'app/design/typography'
+import { stripTags } from '../lib/util';
 
 const componentsMap = {
     object: ObjectDataObject,
@@ -12,7 +12,10 @@ const componentsMap = {
     string: String,
 };
 
-export default function Block({block}) {
+
+export default function Block(props) {
+    let block = props.block;
+
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
 
@@ -24,12 +27,40 @@ export default function Block({block}) {
     if (block.menu && block.menu.items > 0){
         return <NavBottomTabs></NavBottomTabs>
     }
+
+    const aNoTitle = [0,10,13,3];
+    const aNoBg = [0,10,14,4];
+    let bIsShowTitle = true;
+    if(aNoTitle.indexOf(block.designbox_id) != -1){
+        bIsShowTitle = false;
+    }
+
+    let bIsShowBg = true;
+    if(aNoBg.indexOf(block.designbox_id) != -1){
+        bIsShowBg = false;
+    }
+
+    if (props.uri == 'view-post'){
+        bIsShowBg = false;
+        bIsShowTitle = false;
+    }
+
+    if (props.uri == 'home' && block.source == 'system-profile_stats'){
+        bIsShowBg = false;
+        bIsShowTitle = false;
+    }
+
+    if (block.source.includes('-browse_') || block.source.includes('bx_timeline-get_block_view')){
+        bIsShowBg = false;
+        bIsShowTitle = false;
+    }
+
     return (
         
         <View key={block.id} className="w-full">
-            <View key={block.id} className="">
-                <H1 className="hidden text-xl border-b-2 border-base-100 my-auto pb-1">{block.title}</H1>
-                <BlockType data={block.content} type={block.type}  />
+            <View key={block.id} className={bIsShowBg ? 'bg-neocard dark:bg-neocard-dark p-4 sm:rounded-lg' : ''}>
+                {bIsShowTitle && <Text className=" text-lg my-auto pb-1">{stripTags(block.title)}</Text>}
+                <View><BlockType data={block.content} type={block.type}  /></View>
             </View>
         </View>
     );

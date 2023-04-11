@@ -12,6 +12,7 @@ import Textarea from './form-fields/textarea';
 import Select from './form-fields/select';
 import Files from './form-fields/files';
 import Location from './form-fields/location';
+import Datetime from './form-fields/dattime';
 import {useEffect, useState, useContext } from 'react';
 import { GlobalsData } from '../context/context';
 import { View } from 'app/design/view';
@@ -29,7 +30,8 @@ const components = {
     textarea: Textarea,
     select: Select,
     files: Files,
-    location: Location
+    location: Location,
+    datetime: Datetime
 }
 
 export default function Form(props) {
@@ -75,6 +77,8 @@ export default function Form(props) {
 
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
+        
+       
         const InputType = components[String(a.type)];
         let k = data.inputs[key].name;
         if (InputType){

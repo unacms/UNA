@@ -73,6 +73,7 @@ export const settingsDefault = {
       blockBorder: '#E5E7EB',
       tabsBackground: '#F3F4F6',
       activeTabBackground: '#DBEAFE',
+      screenBackground: '#E5E7EB',
     },
     dark: {
       primary: '#3B82F6',
@@ -82,6 +83,7 @@ export const settingsDefault = {
       selectBorder: 'rgba(55, 65, 81, 0.3)',
       fieldBackground: '#030712',
       blockBorder: '#030712',
+      screenBackground: '#030407',
     },
     button_styles: {
       'u-btn-default-cnt':

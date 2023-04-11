@@ -21,7 +21,12 @@ export default function FormFieldSelect(props) {
     let values = [];
     if (!Array.isArray(props.values)){
         values = Object.keys(props.values).map(function (key) {
-            return {label: props.values[key], value: key}
+            if (typeof props.values[key] == 'string')
+                return {label: props.values[key], value: key}
+            else{
+                return {label: props.values[key].value, value: props.values[key].key}
+            }
+                
         }); 
     }
     if (Array.isArray(props.values)){
