@@ -8,13 +8,15 @@ import Page from 'app/components/page'
 import Cover from 'app/components/elements/cover';
 import useSkeleton from '../lib/hooks/skeleton';
 import { appSetting } from 'app/lib/util'
+import { Theme } from 'app/design/theme';
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
     var oBreadCrump = null;
     const [loading, skeleton] = useSkeleton();
-
+    const { colors } = Theme();
+    
     const linking = {
         prefixes: [
           /* your linking prefixes */
@@ -44,7 +46,7 @@ export default function Layout(props) {
 
                   {loading ? skeleton :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
-                        {(bTabsPresent) && <View className='w-full'><View className='absolute bg-white h-12 w-full'></View><View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}><NavMaterialTabs data = {props.data.menu.items} /></View></View>}
+                        {(bTabsPresent) && <View className='w-full'><View className='absolute h-12 w-full' style={{backgroundColor:colors.barsBackground}}></View><View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}><NavMaterialTabs data = {props.data.menu.items} /></View></View>}
                         {(!bTabsPresent) && <Page data={props.data}/>}
                     </View>}
                 </View>

@@ -6,7 +6,7 @@ import { Platform } from 'react-native'
 import { fetcher } from '../../lib/fetcher';
 import { KeyboardAvoidingView } from 'react-native';
 import { uploadImage } from '../../lib/util';
-import { useTheme } from '@react-navigation/native';
+import { Theme } from 'app/design/theme';
 import { SafeAreaView, StyleSheet, StatusBar } from 'react-native';
 import { View } from 'app/design/view'
 
@@ -14,15 +14,20 @@ export default function FormFieldFtf(props) {
     const _editor = useRef();
     const isWeb = Platform.OS == 'web'
     const formContext = useFormContext();
-    const { colors } = useTheme();
+    const { colors } = Theme();
 
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
 
+    
+
+
+
     const { field } = useController({ name, rules, defaultValue });
 
     const handleChange = (value) => {
+        _editor.current.setPlaceholder('Hello World');
         setTimeout(() => {
             formContext.setValue(name, value.html)
         }, 100);
@@ -62,18 +67,15 @@ export default function FormFieldFtf(props) {
         }
     };
 
-    
-     
-
     return (
 
-            <View className="w-full">
+            <View className="w-full mb-4">
 
             <QuillEditor
                 theme={{
-                    background: '#ffff00', 
-                    color: '#00ff00', 
-                    placeholder: '#0000ff'
+                    background: colors.fieldBackground, 
+                    /*color: '#00ff00', */
+                    placeholder: 'black'
                 }}
                 className="h-32"
                 autoSize
@@ -83,38 +85,38 @@ export default function FormFieldFtf(props) {
             />
             <QuillToolbar 
                 theme={{
-                    background: 'blue',
-                    color: 'green',
-                    overlay: 'rgba(255,0,0,0.5)',
-                    size: 18,
+                    background: colors.barsBackground,
+                    color: colors.default,
+                    overlay: 'rgba(255,0,0,0)',
+                    size: 32,
                 }}
                 styles={{
                     selection: {
                         provider: (provided) => ({
                             ...provided,
-                            backgroundColor: 'cyan',
+                            backgroundColor: colors.primary,
                         }),
                     },
                     toolbar: {
                         provider: (provided) => ({
                             ...provided,
-                            borderTopWidth: 3,
+                            borderTopWidth: 0,
                             borderTopColor: '#ff0000',
                         }),
                         root: () => ({
-                            backgroundColor: '#ffff00',
+                            backgroundColor: colors.barsBackground,
                         }),
-                        toolset: { root: () => ({
+                        /*toolset: { root: () => ({
                             flexDirection: 'row',
                             justifyContent: 'flex-start',
                             alignItems: 'flex-start',
-                            paddingTop: 2,
-                            paddingBottom: 2,
-                            paddingLeft: 3,
-                            paddingRight: 3,
-                            marginRight: 1,
-                            backgroundColor:'orange'
-                        })}
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                            paddingLeft: 0,
+                            paddingRight: 0,
+                            marginRight: 0,
+                            backgroundColor: colors.barsBackground,
+                        })}*/
                     },
                 }}
                 custom={{
@@ -122,7 +124,7 @@ export default function FormFieldFtf(props) {
                     actions: ['image'],
                 }}
                 editor={_editor}  
-                options={['bold', 'italic', 'underline', 'strike', 'image']} 
+                options={['bold', 'italic', 'underline', 'strike', 'strike',{'list':'ordered'}, {'list':'bullet'},{ 'align':''},{'align':'center'},{'align':'right'},'blockquote','link', 'image']} 
                 
             />
 

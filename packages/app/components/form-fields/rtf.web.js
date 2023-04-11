@@ -4,7 +4,8 @@ import * as ImagePicker from 'expo-image-picker';
 import React, { useMemo, useRef } from 'react'
 import { fetcher } from '../../lib/fetcher';
 import { Platform } from 'react-native'
-import { uploadImage } from '../../lib/util';
+import { uploadImage } from '../../lib/util'
+;
 
 export default function FormFieldFtf(props) {
     const quillRef = useRef(null);
@@ -32,7 +33,11 @@ export default function FormFieldFtf(props) {
 
         if (!result.canceled) {
             result.assets.forEach(function (i) {
-                uploadImage(i.uri, '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', handleInsertImageFinish);
+                uploadImage(
+                    i.uri, 
+                    '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+                    handleInsertImageFinish
+                );
             });
         }
     };

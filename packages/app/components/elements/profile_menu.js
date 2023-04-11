@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls'
 //2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder dark:border-neoborder-dark
 export default function ElementProfileMenu(props) {
     return (
-        <View className="hidden lg:fixed  top-100 w-80 h-full xl:flex px-3 py-4  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
+        <View className="hidden sm:visible lg:block  top-100 w-80 h-full xl:flex px-3 py-4  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
             <View className="flex-col space-y-0.5 mb-16">
             {props.data.items.map((item, index) => (
                 <Link key={`menu-${index}`} href= {'/' + item.link}>

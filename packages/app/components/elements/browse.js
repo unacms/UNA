@@ -10,6 +10,7 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
 
 export default function ElementBrowse(props) {
+    console.log('!!!!!!!!',props);
     let data = props.data;
     const {height, width, scale, fontScale} = useWindowDimensions(); 
     let defParams = data.params;

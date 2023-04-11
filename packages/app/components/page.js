@@ -11,12 +11,16 @@ export default function Page(props) {
     if (!data || !data.elements)
         return <></>
     
-    const cells = Object.keys(data.elements).map(key => {
+    let cells = Object.keys(data.elements).map(key => {
         return <Cell key={key} blocks={data.elements[key]} />
     });
-
-
     let content = cells;
+    
+    if (props.data.uri == 'home' && Platform.OS != 'web'){
+        content = [cells[2]];
+    }
+
+    
 
     if (Platform.OS == 'web'){
         content = <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
