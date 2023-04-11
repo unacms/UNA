@@ -132,7 +132,7 @@ export const settingsDefault = {
       'comments': 'ChatsCircle',
       'file-alt': 'NoteBlank',
       'contact': 'PaperPlaneRight',
-      'reply': 'ArrowBendUpLeft'
+      'reply': 'ArrowBenDownRight'
     },
   },
 
