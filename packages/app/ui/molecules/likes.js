@@ -114,7 +114,8 @@ export default function ElementLikes(oProps) {
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
-    const bShowAction = (oParams.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
     const bShowActionVoted = oAction?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
@@ -131,17 +132,17 @@ export default function ElementLikes(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant="default" startDecorator="ThumbsUp" title={sTitle} onPress={handleUndo} />
+            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator="ThumbsUp" title={sTitle} onPress={handleUndo} />
         );
     }
     else {
         if(bUseInternalIcons)
             sAction = (
-                <Button variant="default" startDecorator="ThumbsUp" title={sTitle} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
+                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator="ThumbsUp" title={sTitle} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
             );
         else 
             sAction = (
-                <Button variant="default" disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
+                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
                     {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
                     {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
                 </Button>
@@ -149,11 +150,11 @@ export default function ElementLikes(oProps) {
     }
 
     //--- show counter
-    const bShowCounter = oParams.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
 
     //--- Counter
     let sCounter = undefined;
-    if(bShowCounter) {
+    if(bShowCounter && oCounter?.count != undefined) {
         let iCount = oCounter.count;
         if(isPageVar('counter')) {
             const oCounterGlobal = getPageVar('counter');
