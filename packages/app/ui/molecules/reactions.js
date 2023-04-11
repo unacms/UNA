@@ -31,7 +31,7 @@ export default function ElementReactions(oProps) {
         sadness: 'SmileySad',
         anger: 'SmileyAngry'
     };
-
+    
     const sCounterType = 'compound';
     //const sCounterType = 'divided';
 
@@ -215,6 +215,7 @@ export default function ElementReactions(oProps) {
     
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
+    const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
 
@@ -241,7 +242,7 @@ export default function ElementReactions(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} onPress={handleUndo} />
+            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
@@ -266,7 +267,7 @@ export default function ElementReactions(oProps) {
             sAction = (
                 <DropdownMenuRoot>
                     <DropdownMenuTrigger>
-                        <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={() => {}} />
+                        <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={() => {}} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                 </DropdownMenuRoot>
@@ -301,7 +302,7 @@ export default function ElementReactions(oProps) {
 
             sAction = (
                 <View>
-                    <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={sTitle} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
+                    <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
                     <View>
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">

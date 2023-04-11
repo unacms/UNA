@@ -30,49 +30,57 @@ export default function AtomProfile(oProps) {
   const sDisplaySize = oProps.displaySize ? oProps.displaySize : 'base'
 
   let sSize = ''
-  let iSizeWidth = 0,
-    iSizeHeight = 0
+  let iSizeWidth = 0;
+  let iSizeHeight = 0;
+  let sSizeFont = '';
   switch (sDisplaySize) {
     case 'xs':
       sSize = 'w-6 h-6'
       iSizeWidth = 24
       iSizeHeight = 24
+      sSizeFont = 'text-xs font-semibold';
       break
 
     case 'sm':
       sSize = 'w-8 h-8'
       iSizeWidth = 32
       iSizeHeight = 32
+      sSizeFont = 'text-sm font-semibold';
       break
 
     case 'base':
       sSize = 'w-10 h-10'
       iSizeWidth = 48
       iSizeHeight = 48
+      sSizeFont = 'text-base font-semibold';
       break
 
     case 'lg':
       sSize = 'w-12 h-12'
       iSizeWidth = 56
       iSizeHeight = 56
+      sSizeFont = 'text-lg font-semibold';
       break
 
     case 'xl':
       sSize = 'w-16 h-16'
       iSizeWidth = 64
       iSizeHeight = 64
+      sSizeFont = 'text-xl font-semibold';
       break
 
     case '2xl':
       sSize = 'w-24 h-24'
       iSizeWidth = 96
       iSizeHeight = 96
+      sSizeFont = 'text-xl font-semibold';
       break
 
     case '3xl':
       sSize = 'w-32 h-32'
       iSizeWidth = 128
       iSizeHeight = 128
+      sSizeFont = 'text-xl font-semibold';
       break
   }
   sSize += ' rounded-full '
@@ -82,7 +90,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className="text-neogray-900 hover:text-primary dark:text-neogray-100 dark:hover:text-primary-dark text-base font-semibold truncate ">
+      <Text className={'text-neogray-900 hover:text-primary dark:text-neogray-100 dark:hover:text-primary-dark ' + sSizeFont + ' truncate'}>
         {oProps.title}
       </Text>
     )
@@ -90,7 +98,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className="text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 text-sm font-bold tracking-tight truncate hover:underline">
+      <Text className={'text-neogray-700 hover:text-neogray-900 dark:text-neogray-200 dark:hover:text-neogray-50 ' + sSizeFont + ' tracking-tight truncate hover:underline'}>
         {oProps.title}
       </Text>
     )

@@ -12,8 +12,8 @@ import Profile from 'app/ui/molecules/profile';
 export default function ElementScore(oProps) {
     const bUseInternalIcons = true;
     const oIconAliases = {
-        'arrow-up': 'ArrowUp',
-        'arrow-down': 'ArrowDown'
+        'arrow-up': 'ArrowFatUp',
+        'arrow-down': 'ArrowFatDown'
     };
 
     const getName = (sName) => {
@@ -111,6 +111,7 @@ export default function ElementScore(oProps) {
     //--- show action
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
+    const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
     const aActions = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
@@ -130,13 +131,13 @@ export default function ElementScore(oProps) {
 
         if(bUseInternalIcons)
             return (
-                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sIcon]} title={sTitle} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
             );
         else
             return (
                 <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}}>
                     {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
-                    {!!sTitle && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
+                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
                 </Button>
             );
     });
@@ -172,7 +173,7 @@ export default function ElementScore(oProps) {
         let sButton = undefined;
         if(bUseInternalIcons)
             sButton = (
-                <Button variant="text" rounded="true" startDecorator="ArrowsDownUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <Button variant="text" rounded="true" startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
             );
         else
             sButton = (

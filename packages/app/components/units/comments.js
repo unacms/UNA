@@ -64,8 +64,8 @@ export default function UnitComments(props) {
     let cells = [];
     for (let i = 0; i < level; i++){
         cells.push(<View className='w-10 h-full '>
-        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-4 w-0.5 bg-rxed-500 rounded-full flex-auto  bg-black/5 dark:bg-white/5"></View> }
-        {(i == level - 1) && <View className="ml-4 h-4 w-full border-black/5  dark:border-white/5 border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-4 w-0.5  rounded-full flex-auto  bg-neoborder dark:bg-neoborder-dark"></View> }
+        {(i == level - 1) && <View className="ml-4 h-4 w-full border-neoborder  dark:border-neoborder-dark border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
     let childs = Object.keys(items);
@@ -89,7 +89,7 @@ export default function UnitComments(props) {
                     {cells}
                        <View className="w-8 flex-0 h-full">
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
-                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-4  rounded-full flex-auto  bg-black/5 dark:bg-white/5"></View> }
+                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-4 mt-0.5 rounded-full flex-auto  bg-neoborder dark:bg-neoborder-dark"></View> }
                        </View>
                        <View className='flex-1 flex-col ml-2 mb-2  space-y-2 '>
                             <View className={sCommentClass+ ' py-1'} >
@@ -100,7 +100,7 @@ export default function UnitComments(props) {
                                 </View>
 
                                 {
-                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className=' mt-1 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-md p-2 mb-1'>
+                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className=' mt-1 bg-neoborder dark:bg-neoborder-dark border bg-neoborder dark:bg-neoborder-dark rounded-md p-2 mb-1'>
                                         <View  className="flex-row items-baseline" >
                                             <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                             <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>

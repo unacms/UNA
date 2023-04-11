@@ -66,12 +66,7 @@ function DefaultUnit(data) {
                             
                         </View>
                     }
-                        <Button title="902" startDecorator="ChatTeardropText" size="xs" solid rounded variant="text"/>
-                        <Button title="12" startDecorator="ShareFat" size="xs" solid rounded variant="text"/>
-                        <Button title="306" startDecorator="Heart" size="xs" solid rounded variant="text"/>
-                        <Button title="55" startDecorator="Smiley" size="xs" solid rounded variant="text"/>
-                        <Button title="8" startDecorator="ArrowFatUp" size="xs" solid rounded variant="text"/>
-                        
+                        <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     </View>
                     
                 </View>
@@ -88,25 +83,13 @@ function DefaultUnit(data) {
                 }
         </View>
        
-        <View className=" border-t pt-3 border-neoborder dark:border-neoborder-dark flex-row gap-1 ">
-            
-                    <View className=" flex-row gap-2 flex-auto flex-wrap ">
-                    
-                        <Button  startDecorator="ChatTeardropText" size="sm" title="Comment" solid rounded variant="text"/>
-                        <Button  startDecorator="ShareFat" size="sm" title="Share" solid rounded variant="text"/>
-                        <Button title="Like" startDecorator="Heart" size="sm" solid rounded variant="text"/>
-                        <Button title="React" startDecorator="Smiley" size="sm" solid rounded variant="text"/>
-                        
-                            <Button  startDecorator="ArrowFatUp" size="sm" solid  rounded variant="text"/>
-                            <Button  startDecorator="ArrowFatDown" size="sm" solid rounded  variant="text"/>
-                        
-                        
-                        
-                    </View>
-                    <View className=" flex-none   ">
-                        <Button title="" startDecorator="DotsThreeOutline" size="sm" solid rounded variant="text"/>
-                    </View>
-            
+        <View className=" border-t pt-3 border-neoborder dark:border-neoborder-dark flex-row items-center gap-1 ">
+            <View className=" flex-row gap-2 flex-auto flex-wrap ">
+                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
+            </View>
+            <View className="flex-none">
+                <Button title="" startDecorator="DotsThreeOutline" size="sm" solid rounded variant="text"/>
+            </View>
         </View>
     </View>
         
