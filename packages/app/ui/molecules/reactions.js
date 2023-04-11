@@ -24,6 +24,7 @@ export default function ElementReactions(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
     const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
     const oIconAliases = {
+        default: 'Smiley',
         like: 'ThumbsUp',
         love: 'Heart',
         joy: 'Smiley',
@@ -104,7 +105,11 @@ export default function ElementReactions(oProps) {
     const handleDo = (event, oProps) => {
         event.preventDefault();
 
-        updateLayout(oProps.name, 1);
+        /*
+         * Disabled for now because user's language differ for initial and dynamic calls.
+         * 
+         * updateLayout(oProps.name, 1);
+         */
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setPageVars(oData);
@@ -119,7 +124,11 @@ export default function ElementReactions(oProps) {
         if(isPageVar('reaction'))
             sReaction = getPageVar('reaction');
 
-        updateLayout(sReaction, -1);
+        /*
+         * Disabled for now because user's language differ for initial and dynamic calls.
+         * 
+         * updateLayout(sReaction, -1);
+         */
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
             setPageVars(oData);
