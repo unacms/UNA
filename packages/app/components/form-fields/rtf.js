@@ -70,6 +70,11 @@ export default function FormFieldFtf(props) {
             <View className="w-full">
 
             <QuillEditor
+                theme={{
+                    background: '#ffff00', 
+                    color: '#00ff00', 
+                    placeholder: '#0000ff'
+                }}
                 className="h-32"
                 autoSize
                 onHtmlChange={handleChange}
@@ -77,6 +82,41 @@ export default function FormFieldFtf(props) {
                 initialHtml={field.value}
             />
             <QuillToolbar 
+                theme={{
+                    background: 'blue',
+                    color: 'green',
+                    overlay: 'rgba(255,0,0,0.5)',
+                    size: 18,
+                }}
+                styles={{
+                    selection: {
+                        provider: (provided) => ({
+                            ...provided,
+                            backgroundColor: 'cyan',
+                        }),
+                    },
+                    toolbar: {
+                        provider: (provided) => ({
+                            ...provided,
+                            borderTopWidth: 3,
+                            borderTopColor: '#ff0000',
+                        }),
+                        root: () => ({
+                            backgroundColor: '#ffff00',
+                        }),
+                        toolset: { root: () => ({
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'flex-start',
+                            paddingTop: 2,
+                            paddingBottom: 2,
+                            paddingLeft: 3,
+                            paddingRight: 3,
+                            marginRight: 1,
+                            backgroundColor:'orange'
+                        })}
+                    },
+                }}
                 custom={{
                     handler: handleCustomClick,
                     actions: ['image'],
