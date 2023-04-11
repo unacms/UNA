@@ -98,6 +98,10 @@ const colors = {
     DEFAULT: '#e2e8f0',
     dark: '#1e293b',
   },
+  neodivider: {
+    DEFAULT: '#f1f5f9',
+    dark: '#1e293b',
+  },
   neolink: {
     DEFAULT: '#3B82F6',
     dark: '#3B82F6',
