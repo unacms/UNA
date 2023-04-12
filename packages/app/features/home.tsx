@@ -26,7 +26,7 @@ export function HomeScreen() {
         </Link>
       </View>
       <View className="relative w-full h-screen  ">
-        <Text className=" text-white px-4 py-3 bg-brand text-base text-center hidden">
+        <Text className=" text-white px-4 py-3 bg-primary text-base text-center hidden">
           Announcement1! Read{' '}
           <TextLink
             className="text-white font-semibold underline text-base"
@@ -64,7 +64,7 @@ export function HomeScreen() {
               <Icon icon="logo-mark" className="h-14 w-14"></Icon>
               <Icon
                 icon="logo-text"
-                className="h-14 w-14 hidden sm:block text-brand dark:text-brand-dark  "
+                className="h-14 w-14 hidden sm:block text-primary dark:text-primary-dark  "
               ></Icon>
             </Link>
           </TouchableOpacity>
@@ -332,7 +332,7 @@ export function HomeScreen() {
                     <View className="absolute  flex-row bottom-0  right-0 bg-gradient-to-r ">
                       <View className="  w-10 right-0 bg-gradient-to-r from-transparent to-white dark:to-neogray-800"></View>
                       <View className="pl-2  bg-white dark:bg-neogray-800">
-                        <Text className="text-brand dark:text-brand-dark text-base font-medium">
+                        <Text className="text-primary dark:text-primary-dark text-base font-medium">
                           More...
                         </Text>
                       </View>

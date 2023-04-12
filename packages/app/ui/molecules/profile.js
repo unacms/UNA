@@ -38,7 +38,7 @@ export default function AtomProfile(oProps) {
       sSize = 'w-6 h-6'
       iSizeWidth = 24
       iSizeHeight = 24
-      sSizeFont = 'text-xs font-semibold';
+      sSizeFont = 'text-sm font-semibold';
       break
 
     case 'sm':
@@ -52,21 +52,21 @@ export default function AtomProfile(oProps) {
       sSize = 'w-10 h-10'
       iSizeWidth = 48
       iSizeHeight = 48
-      sSizeFont = 'text-base font-semibold';
+      sSizeFont = 'text-sm font-semibold';
       break
 
     case 'lg':
       sSize = 'w-12 h-12'
       iSizeWidth = 56
       iSizeHeight = 56
-      sSizeFont = 'text-lg font-semibold';
+      sSizeFont = 'text-base font-semibold';
       break
 
     case 'xl':
       sSize = 'w-16 h-16'
       iSizeWidth = 64
       iSizeHeight = 64
-      sSizeFont = 'text-xl font-semibold';
+      sSizeFont = 'text-lg font-semibold';
       break
 
     case '2xl':
