@@ -274,12 +274,14 @@ export default function ElementReactions(oProps) {
             });
 
             sAction = (
-                <DropdownMenuRoot>
-                    <DropdownMenuTrigger>
-                        <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={() => {}} />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
-                </DropdownMenuRoot>
+                <Button variant="custom" onPress={(event) => {event.preventDefault()}}>
+                    <DropdownMenuRoot>
+                        <DropdownMenuTrigger>
+                            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={() => {}} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
+                    </DropdownMenuRoot>
+                </Button>
             );
         }
         else {
