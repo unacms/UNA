@@ -92,7 +92,7 @@ export const settingsDefault = {
         ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
       'u-btn-default-trans': '  duration-200 ',
       'u-btn-primary-cnt':
-        ' border active:shadow-none border-black/10   dark:border-white/10 shadow bg-brand-600 hover:bg-brand-500 active:bg-brand-700 dark:bg-brand-800 dark:hover:bg-brand-700 dark:active:bg-brand-900  ',
+        ' border active:shadow-none border-black/10   dark:border-white/10 shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900  ',
       'u-btn-primary-text': ' font-semibold text-neogray-100 group-hover:text-white ',
       'u-btn-primary-trans': '  duration-200 ',
       'u-btn-danger-cnt':
@@ -105,7 +105,7 @@ export const settingsDefault = {
       ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
       'u-btn-text-trans': ' duration-200 ',
       'u-btn-link-cnt': ' border border-transparent   ',
-      'u-btn-link-text': ' group-active:text-brand-700 dark:group-active:text-brand-600 group-hover:text-brand-500  dark:group-hover:text-brand-400 font-semibold text-brand-600 dark:text-brand-500 ',
+      'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500  dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
       'u-btn-link-trans': ' duration-200 ',
       'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-neogray-100 active:bg-neogray-300  dark:hover:bg-neogray-700 dark:active:bg-neogray-900 ',
       'u-btn-outline-text':
