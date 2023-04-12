@@ -47,7 +47,7 @@ export default function Block(props) {
         bIsShowTitle = false;
     }
 
-    if (props.uri == 'home' && block.source == 'system-profile_stats'){
+    if (props.uri == 'home' && (block.source == 'system-profile_stats' || block.source == 'system-profile_menu')){
         bIsShowBg = false;
         bIsShowTitle = false;
     }
