@@ -107,8 +107,8 @@ const colors = {
     dark: '#3B82F6',
   },
   neoinput: {
-    DEFAULT: '#F9FAFB',
-    dark: '#030712',
+    DEFAULT: 'rgba(241, 245, 249, 0.5)',
+    dark: 'rgba(30, 41, 59, 0.5)',
      
   },
   neogray: {
