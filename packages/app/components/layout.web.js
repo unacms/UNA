@@ -60,6 +60,8 @@ export default function Layout(props) {
                 <link rel="icon" href="/favicon.ico" />
                 <meta name="description" content={siteTitle} />
                 <meta name="og:title" content={siteTitle} />
+                <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+                <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
                 <title>{props.data.title}</title>
             </Head>
             {(bTabsPresent) && <NavigationContainer linking={linking}>{cnt}</NavigationContainer>}
