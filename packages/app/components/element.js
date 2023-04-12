@@ -18,6 +18,8 @@ import EntityCover from './elements/entity_cover';
 
 import ProfileMenu from './elements/profile_menu';
 
+import FeedItem from './elements/feed_item';
+
 const componentsMap = {
     browse: Browse,
     form: Form,
@@ -31,7 +33,9 @@ const componentsMap = {
     entity_attachments: EntityAttachments,
     entity_info: EntityInfo,
     entity_cover: EntityCover,
-    profile_menu: ProfileMenu
+    profile_menu: ProfileMenu,
+
+    feed_item: FeedItem,
 };
 
 export default function Element(a) {
