@@ -1,10 +1,30 @@
 import { useWindowDimensions, useColorScheme, SafeAreaView, View} from 'react-native'
+/*import {
+    useHtmlIframeProps,
+    HTMLIframe,
+    iframeModel
+  } from '@native-html/iframe-plugin';*/
+import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
+import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { colors } from 'app/design/tailwind/theme'
 import { mergeDeep } from '../../lib/util';
 import { Text, H1 ,TextLink} from 'app/design/typography'
 import { removeElement, isTag } from 'domutils';
 
+/*const IframeRenderer = function IframeRenderer(props) {
+    const iframeProps = useHtmlIframeProps(props);
+    // Do customize the props here; wrap with your own container...
+    return <View className="w-24 bg-red-500"><HTMLIframe {...iframeProps} /></View>;
+  };
+*/
+const renderers = {
+    iframe: IframeRenderer
+  };
+  
+  const customHTMLElementModels = {
+    iframe: iframeModel
+  };
 
 function onElement(element) {
     if (element.parent.children[0] === 'p') {
@@ -86,15 +106,42 @@ export default function ElementHtml(props) {
     if (props.htmlStyles)
         tagsStyles = mergeDeep(tagsStyles, props.htmlStyles);
 
+    let data = props.data;
+    var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
+    data = data.replace(pattern,'');
+    const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
+    data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
+
     return (
         <View className="w-full">
             <RenderHtml
-          contentWidth={width}
-          tagsStyles={tagsStyles}
-        classesStyles={classesStyles} 
-          source={{html: props.data}}
-          domVisitors={domVisitors}
-        />
+                renderers={renderers}
+                WebView={WebView}
+                customHTMLElementModels={customHTMLElementModels}
+                defaultWebViewProps={
+                    {
+                        bounces:false,         // IOS Only
+                        dataDetectorTypes:'link',
+                        scalesPageToFit:true,
+                        scrollEnabled:true,
+                        automaticallyAdjustContentInsets:true,
+                        mediaPlaybackRequiresUserAction:true,
+                    }
+                }
+                renderersProps={{
+                    iframe: {
+                    scalesPageToFit: true,
+                    webViewProps: {
+                        /* Any prop you want to pass to iframe WebViews */
+                    }
+                    }
+                }}
+                contentWidth={width}
+                tagsStyles={tagsStyles}
+                classesStyles={classesStyles} 
+                source={{html: data}}
+                domVisitors={domVisitors}
+            />
         </View>
     );
 }
