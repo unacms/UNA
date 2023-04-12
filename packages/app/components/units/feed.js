@@ -115,8 +115,9 @@ function SmallUnit(data) {
                 <View className='flex-row  w-full items-end content-end'>
                     <Text className='flex-auto mr-2 text-sm text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50' numberOfLines={1}>{data.plainText}</Text>
                     <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
-                        <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text></View>
-                    </View>         
+                        { data.cmts.count > 0 && <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text> }
+                    </View>
+                </View>         
             </View>
     </View>
     )

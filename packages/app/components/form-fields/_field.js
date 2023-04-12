@@ -11,7 +11,7 @@ export default function FormField(props) {
         w ='w-11/12';
     }*/
     if (props.name == 'cmt_submit'){
-        w ='w-1/12 mt-2 absolute right-3 bottom-0';
+        w ='w-1/12 mt-2 ';
     }
     if (props.name == 'cmt_image'){
         w ='w-11/12 ';

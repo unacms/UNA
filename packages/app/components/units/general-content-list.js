@@ -185,7 +185,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
                             </View>
                         } 
-                        {!data.image &&<View className="bg-brand/10 dark:bg-brand-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
+                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
                         <View className="px-4">
                             <View className=" overflow-hidden w-full my-3 h-10  ">
                                 <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>

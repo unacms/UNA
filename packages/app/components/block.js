@@ -28,6 +28,8 @@ export default function Block(props) {
         return <NavBottomTabs></NavBottomTabs>
     }
 
+    block.designbox_id = Number(block.designbox_id);
+
     const aNoTitle = [0,10,13,3];
     const aNoBg = [0,10,14,4];
     let bIsShowTitle = true;
@@ -59,7 +61,7 @@ export default function Block(props) {
         
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? 'bg-neocard dark:bg-neocard-dark p-4 sm:rounded-lg' : ''}>
-                {bIsShowTitle && <Text className=" text-lg my-auto pb-1">{stripTags(block.title)}</Text>}
+                {bIsShowTitle && <Text className=" text-lg my-auto pb-1">{stripTags(block.title+block.designbox_id)}</Text>}
                 <View><BlockType data={block.content} type={block.type}  /></View>
             </View>
         </View>

@@ -259,7 +259,7 @@ export default function ElementComments(props) {
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row flex-wrap px-3 w-full  items-start " onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row flex-wrap px-3 w-full  items-start justify-between" onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
