@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
@@ -42,7 +42,7 @@ export default function MenuItemLink(oProps) {
             sIcon = <Text className="h-6 w-6 ios:pr-1 android:pr-1 text-base">{oProps.icon}</Text>;
     }
 
-    const sClassContent = 'flex flex-row web:space-x-1';
+    const sClassContent = 'flex flex-row gap-1';
 
     let sContent = undefined;
     switch(oProps.content_type) {
