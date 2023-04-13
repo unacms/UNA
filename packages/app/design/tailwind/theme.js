@@ -55,8 +55,8 @@ const colors = {
     
   },
   screen: {
-    DEFAULT: '#E5E7EB',
-    dark: '#030407',
+    DEFAULT: '#f1f5f9',
+    dark: '#020617',
   },
   navbar: {
     DEFAULT: '#FFFFFF',
@@ -87,16 +87,16 @@ const colors = {
     darkactive: '#020617',
   },
   neoitem: {
-    DEFAULT: '#F3F4F6',
-    dark: '#1F2937',
+    DEFAULT: 'rgba(226, 232, 240, 0.8)',
+    dark: 'rgba(30, 41, 59, 0.8)',
   },
   neobutton: {
     DEFAULT: '#6B7280',
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: '#e2e8f0',
-    dark: '#1e293b',
+    DEFAULT: 'rgba(226, 232, 240, 0.8)',
+    dark: 'rgba(30, 41, 59, 0.8)',
   },
   neodivider: {
     DEFAULT: '#f1f5f9',

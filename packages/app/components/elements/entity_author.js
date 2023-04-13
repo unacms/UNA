@@ -67,7 +67,7 @@ export default function ElementEntityAuthor(oProps) {
     );
 
     return (
-        <View className="mx-auto w-full max-w-5xl flex-row items-center justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark border-t  border-neoborder dark:border-neoborder-dark sm:border-x">
+        <View className="mx-auto w-full max-w-5xl flex-row items-center justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t mt-[1px] sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x">
             <Profile {...oAuthor.author_unit} displayType="unit" displaySize="lg" showInfo={sInfo} />
             {session && sMenuManage}
         </View>

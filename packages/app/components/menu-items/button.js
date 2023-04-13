@@ -41,7 +41,7 @@ export default function MenuItemButton(oProps) {
     else
         oButtonProps['title'] = oProps?.title ? oProps.title : '';
 
-    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full ios:pb-2 android:pb-2' : ' flex-row pr-2');
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full gap-2' : ' flex-row gap-2');
     return (
         <View className={sClassName}>
             <Button {...oButtonProps}>{sContent}</Button>

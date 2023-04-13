@@ -26,7 +26,7 @@ export default function MenuItemElement(oProps) {
     if(oProps.data.params != undefined && oProps.params != undefined)
         oProps.data.params = {...oProps.data.params, ...oProps.params}
 
-    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full ios:pb-2 android:pb-2' : ' flex-row pr-2');
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full ios:pb-2 android:pb-2' : ' flex-row gap-2');
     return (
         <View className={sClassName}>
             <Element key={oProps.id ? oProps.id : oProps.name} {...oProps.data} />

@@ -182,7 +182,7 @@ export default function ElementLikes(oProps) {
             );
         else
             sButton = (
-                <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
+                <Button variant="text" size="sm"  rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
                     <Text className={sClassIconExternal}>{oCounter.icon}</Text>
                     <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
                 </Button>
@@ -192,7 +192,7 @@ export default function ElementLikes(oProps) {
             <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
                 {sButton}
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    <View className="gap-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             </View>
         );

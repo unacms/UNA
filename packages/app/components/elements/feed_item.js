@@ -1,5 +1,4 @@
 import { View, Pressable } from 'app/design/view';
-import Image from '../../ui/atoms/image';
 import Html from '../../ui/atoms/html';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
@@ -20,7 +19,7 @@ export default function ElementFeedItem({data}) {
                 <Menu {...data.event.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
             </View>
         </View>
-        <View className="m-4">
+        <View className="">
             <Text>TODO: add functionality</Text>
         </View>
     </View>

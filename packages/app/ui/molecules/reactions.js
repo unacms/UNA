@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
@@ -200,7 +200,7 @@ export default function ElementReactions(oProps) {
 
     const getSkeleton = () => {
         return (
-            <View className="space-y-2">
+            <View className="gap-2">
             {[...Array(1, 2, 3)].map( i => 
                 <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
@@ -419,7 +419,7 @@ export default function ElementReactions(oProps) {
             iTotal += iCount;
 
             return (
-                <View key={iKey} className={"flex flex-none" + (!iCount ? " hidden" : "")}>{sIcon}</View>
+                <View key={iKey} className={"flex flex-none h-4 w-4 align-center " + (!iCount ? " hidden" : "")}>{sIcon}</View>
             );
         });
 
@@ -475,7 +475,7 @@ export default function ElementReactions(oProps) {
             let sClass = '';
             if(aItem.name != sSelected) 
                 sClass = 'hidden ';
-            sClass += 'space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200';
+            sClass += ' gap-4 overflow-y-auto text-gray-700 dark:text-gray-200';
 
             return (
                 <View key={aItem.name} className={sClass}>{sUsers}</View>
@@ -484,10 +484,10 @@ export default function ElementReactions(oProps) {
 
         return (
             <View className={!iTotal ? "hidden" : ""}>
-                <Button variant="text" rounded="true" onPress={handleGetPerformedByCpd}>
+                <Button variant="text" size="xs" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
-                    <View className="pl-2">
-                        <Text className="text-neogray-700 dark:text-neogray-200">{iTotal}</Text>
+                    <View className="px-2 ">
+                        <Text className="text-neogray-800 text-xs font-semibold dark:text-neogray-200">{iTotal}</Text>
                     </View>
                 </Button>
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>

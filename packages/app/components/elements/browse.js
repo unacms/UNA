@@ -84,7 +84,7 @@ export default function ElementBrowse(props) {
         if (unitMode == '')
             classes = 'flex-auto flex-col gap-[1px] sm:gap-2 w-full mx-auto';
         else
-            classes = 'flex-auto flex-col w-full mx-auto gap-1 sm:gap-2';
+            classes = 'mt-[1px] sm:m-0 flex-auto flex-col w-full mx-auto gap-[1px] sm:gap-2';
     }
 
     function prepareUrl (params) {

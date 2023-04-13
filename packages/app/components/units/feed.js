@@ -3,13 +3,13 @@ import { stripTags } from '../../lib/util';
 import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
-import { TouchableOpacity } from 'app/design/view'
+
 import { useState } from 'react';
 import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native';
+import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
 
@@ -42,27 +42,30 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard hover:bg-neocard-hover  dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1   group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
+        <View className="bg-neocard  active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neoborder dark:border-neoborder-dark hover:border-primary/20  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
             </View>
         }    
-        <View className="p-3 gap-3">
-        <Profile {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
-        <View className="w-full    flex-col gap-1">
-            <Text className=" duration-200  text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50   text-xl    tracking-tight font-bold">
+        <View className="">
+        <View className="px-3 pt-3">
+        <Profile className="p-3 gap-3" {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+
+        </View>
+        <View className="w-full p-3   flex-col gap-1">
+            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50   text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 { !showFull ? <View><View className="flex-col gap-3    relative">
-                    <Text className="text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50  text-base">
+                    <Text numberOfLines={2}  className="text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50  text-base">
                         {data.plainText}
                     </Text>
-                    <View className='flex-row gap-2  flex-wrap'>
-                    { data.showMore && <View className='   flex-auto  flex-row  right-0 '    >
+                    <View className='flex-row   flex-wrap'>
+                    { data.showMore && <View className=' my-auto  flex-auto   '    >
                             
                                 
-                            <Button title="2m read"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="outline"/>  
+                            <Button title="View more"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="outline"/>  
                             
                         </View>
                     }
@@ -83,7 +86,7 @@ function DefaultUnit(data) {
                 }
         </View>
        
-        <View className=" border-t pt-3 border-neoborder dark:border-neoborder-dark flex-row items-center gap-1 ">
+        <View className=" border-t mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center gap-1 ">
             <View className=" flex-row gap-2 flex-auto flex-wrap ">
                 <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
             </View>
@@ -99,7 +102,7 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark   hover:bg-neocard-hover dark:hover:bg-neogray-800  overflow-hidden ">    
+        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark  sm:border border-neoborder dark:border-neoborder-dark hover:border-primary/20 dark:hover:border-primary-dark/20 hover:shadow-sm active:shadow-none hover:bg-neocard-hover dark:hover:bg-neogray-800  overflow-hidden ">    
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>

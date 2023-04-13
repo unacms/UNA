@@ -52,10 +52,10 @@ const svgLogoMark = (
 export const settingsDefault = {
   feed: {
     show_selector_view: false,
-    default_view: '',
+    default_view: 'small',
   },
   entry:{
-    default_view: '',
+    default_view: 'small',
   },
   layout:{
     max_width: 'max-w-7xl',
@@ -87,12 +87,12 @@ export const settingsDefault = {
     },
     button_styles: {
       'u-btn-default-cnt':
-        ' border active:shadow-none border-black/10  dark:border-white/10  shadow bg-neogray-200 hover:bg-neogray-100 active:bg-neogray-300 dark:bg-neogray-800 dark:hover:bg-neogray-700 dark:active:bg-neogray-900 ',
+        ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5  shadow-sm hover:shadow  bg-neogray-200 hover:bg-neogray-100 active:bg-neogray-300 dark:bg-neogray-800 dark:hover:bg-neogray-700 dark:active:bg-neogray-900 ',
       'u-btn-default-text':
         ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
       'u-btn-default-trans': '  duration-200 ',
       'u-btn-primary-cnt':
-        ' border active:shadow-none border-black/10   dark:border-white/10 shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900  ',
+        ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5  shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900  ',
       'u-btn-primary-text': ' font-semibold text-neogray-100 group-hover:text-white ',
       'u-btn-primary-trans': '  duration-200 ',
       'u-btn-danger-cnt':

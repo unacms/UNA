@@ -1,11 +1,9 @@
-import React from 'react';
-import Msg from './elements/msg';
+
 import Link from './menu-items/link';
 import Button from './menu-items/button';
 import Element from './menu-items/element';
 
 import { View } from 'app/design/view'
-import { Text } from 'app/design/typography'
 
 const oComponentsMap = {
     link: Link,
@@ -63,7 +61,7 @@ export default function ElementMenu(oProps) {
             </View>
         );
 
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex ' + (bShowVertical ? 'flex-col items-center web:space-y-2' : 'flex-row flex-wrap justify-start items-center');
+    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex ' + (bShowVertical ? 'flex-col items-center gap-2' : 'flex-row flex-wrap justify-start items-center');
 
     return (
         <View className={sClassName}>{sItems}</View>
