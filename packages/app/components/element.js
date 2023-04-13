@@ -45,15 +45,5 @@ export default function Element(a) {
     else{
         let el = <ElementType  type={a.type} {...a} />
         return el;
-        /*if (setLayoutData && a.type == 'comments'){
-            if (layoutData == null){
-                setTimeout(() => {
-                    setLayoutData(el)
-                }, 100);
-            }
-        }
-        else{
-            
-        }*/
     }
 }

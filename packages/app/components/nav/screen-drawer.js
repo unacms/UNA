@@ -31,9 +31,9 @@ export function NavScreenDrawer(params) {
 
     let isCover = pageData?.data?.cover_block?.profile ? true : false;
     
-    if (!params.route.params.pageData || params?.route?.params?.pageData?.uri != _path){
-        useEffect(() => {
-            (async () => {
+    useEffect(() => {
+        (async () => {
+            if (!params.route.params.pageData || params?.route?.params?.pageData?.uri != _path){
                 if (isFocused2 && _path && _path.startsWith('/')){                
                     const d = await getData(_path);
                     //console.log("$$$$$$$$$$$$$$$$$ Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
@@ -41,19 +41,20 @@ export function NavScreenDrawer(params) {
                         setPageData (d?.props);
                     }
                 }
-            })();
-        }, [_path, isFocused2]);
-    }
+            }
+        })();
+    }, [_path, isFocused2]);
+    
     if (isDrawer){
-        setTimeout(() => {
+        /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
-        }, 100);
+        }, 100);*/
         return <></>
     }
     else{
-        setTimeout(() => {
+        /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: true })
-        }, 100);
+        }, 100);*/
     }
     if (isTabs){   
         return (<View className='flex-1'>
@@ -63,8 +64,8 @@ export function NavScreenDrawer(params) {
     }
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            {pageData && <View className='w-full'><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} /><All path={_path} {...pageData} ></All></View> }
-            {!pageData && <Stack.Screen options={{'title': "Loading..."}} />}
+            { !!pageData && <View className='w-full'><All path={_path} {...pageData} /></View> }
+            {/*!pageData && <Stack.Screen options={{'title': "Loading..."}} /><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} />*/}
         </View>
     }
 }
