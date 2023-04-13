@@ -53,6 +53,9 @@ export const settingsDefault = {
     cell_gap: 4,
     cell_style: '',
   },
+  comments:{
+    show_header: false
+  },
 
   theme: {
     light: {

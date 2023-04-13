@@ -9,11 +9,10 @@ export default function Root(props) {
   return (    
     <ThemeProvider value={Theme()} >
       <Provider>
-      <CurrentUserProvider>
+        <CurrentUserProvider>
           <Stack screenOptions={{ headerShown: false, }}></Stack>
         </CurrentUserProvider>
       </Provider>    
     </ThemeProvider>
-
   )
 }

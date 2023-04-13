@@ -33,7 +33,7 @@ export default function ElementTime(props) {
     const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
     if (diffDays < 1) {
       s = formatDistance(d, date, { addSuffix: false }).trim();
-      s = s.replace(/\s+/g, '').replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm');
+      s = s.replace(/\s+/g, '').replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm').replace('lessthanam', 'now');
     } else {
       s = formatDate(d);
     }

@@ -13,8 +13,6 @@ import Select from './form-fields/select';
 import Files from './form-fields/files';
 import Location from './form-fields/location';
 import Datetime from './form-fields/dattime';
-import {useEffect, useState, useContext } from 'react';
-import { GlobalsData } from '../context/context';
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';

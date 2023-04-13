@@ -7,8 +7,13 @@ import { NavScreen } from 'app/components/nav/screen'
 import { useTheme } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
-
+import { View } from 'app/design/view'
+import {Text } from 'app/design/typography'
 const Tab = createBottomTabNavigator();
+
+/*function NavScreen(params) {
+  return <View><Text>xcvx</Text></View>
+}*/
 
 export function NavBottomTabs(params) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -24,7 +29,7 @@ export function NavBottomTabs(params) {
     const { colors } = useTheme();
 
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
-
+    
     return (
         <Tab.Navigator
             screenOptions={({ navigation, route  }) => ({

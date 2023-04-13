@@ -6,7 +6,6 @@ import Comments from './elements/comments';
 import Login from './elements/login';
 import Redirect from './elements/redirect';
 import { Text } from 'app/design/typography';
-import { LayoutData } from 'app/context/layout';
 import { useContext } from 'react';
 
 import EntityText from './elements/entity_text';
@@ -39,8 +38,6 @@ const componentsMap = {
 };
 
 export default function Element(a) {
-
-    const { layoutData, setLayoutData } = useContext(LayoutData);
 
     const ElementType = componentsMap[a.type];
     if ('undefined' === typeof componentsMap[a.type])
