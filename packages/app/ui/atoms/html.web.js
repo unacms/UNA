@@ -1,5 +1,3 @@
-import Embed from "react-embed";
-import { fetcher } from '../../lib/fetcher';
 
 export default function ElementHtml(props) {
     let data = props.data;
