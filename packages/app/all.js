@@ -13,11 +13,13 @@ export default function (props) {
     useEffect(() => {
         if (props?.data?.user){
             console.log('############',(currentUser?.id != props.data.user?.id) ,currentUser?.id, props.data.user?.id)
-            if (currentUser?.id != props.data.user?.id)
+            if (currentUser?.id != props.data.user?.id){
+                console.log('!!!!!SET USER!!!!', props.data.user.id)
                 setCurrentUser(props.data.user);
+            }
 
         }else{
-            console.log('!!!!!',props)
+            console.log('!!!!!SET USER!!!!', 'NULL')
             setCurrentUser(null);
         }
 

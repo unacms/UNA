@@ -24,7 +24,7 @@ export function NavBottomTabs(params) {
     const { colors } = useTheme();
 
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
-
+    console.log('------------', params.route)
     return (
         <Tab.Navigator
             screenOptions={({ navigation, route  }) => ({

@@ -1,4 +1,4 @@
-import { View,ScrollView, Row, TouchableOpacity } from 'app/design/view'
+import { View,ScrollView, Row } from 'app/design/view'
 import { useState, useRef } from 'react'
 import { Button } from 'app/design/controls'
 

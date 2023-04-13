@@ -46,15 +46,15 @@ export function NavScreenDrawer(params) {
     }, [_path, isFocused2]);
     
     if (isDrawer){
-        /*setTimeout(() => {
+        setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
-        }, 100);*/
+        }, 100);
         return <></>
     }
     else{
-        /*setTimeout(() => {
+        setTimeout(() => {
             params.navigation.setOptions({ headerShown: true })
-        }, 100);*/
+        }, 100);
     }
     if (isTabs){   
         return (<View className='flex-1'>

@@ -7,10 +7,10 @@ import Scores from 'app/ui/molecules/scores';
 import Connections from 'app/ui/molecules/connections';
 
 const oComponentsMap = {
-   /* likes: Likes,
+    likes: Likes,
     reactions: Reactions,
     scores: Scores,
-    connections: Connections*/
+    connections: Connections
 };
 
 export default function MenuItemElement(oProps) {
