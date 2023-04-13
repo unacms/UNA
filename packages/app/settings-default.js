@@ -1,15 +1,6 @@
-import { View } from 'app/design/view'
+
 import Svg, {
-  Circle,
   Path,
-  Rect,
-  Line,
-  Polyline,
-  Polygon,
-  G,
-  LinearGradient,
-  Stop,
-  Defs,
 } from 'react-native-svg'
 
 const svgLogoText = (

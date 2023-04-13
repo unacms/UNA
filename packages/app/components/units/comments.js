@@ -39,11 +39,11 @@ export default function UnitComments(props) {
 
     let bSmallSize= props.mode && props.mode =='small' ? true : false;
 
-    let sCommentStyle =  " gap-y-0 ";
+    let sCommentStyle =  "  ";
 
-    let sCommentClass = " bg-neoitem dark:bg-neoitem-dark rounded-lg   px-2.5 u-vanilla-html-small";
+    let sCommentClass = " bg-neoitem border border-neoborder dark:border-neoborder-dark dark:bg-neoitem-dark rounded-lg   px-3  u-vanilla-html-small";
     if(bSmallSize){
-        sCommentStyle = " gap-y-0";
+        sCommentStyle = " ";
     }
     
     if (!data)
@@ -64,8 +64,8 @@ export default function UnitComments(props) {
     let cells = [];
     for (let i = 0; i < level; i++){
         cells.push(<View className='w-10 h-full '>
-        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-4 w-0.5  rounded-full flex-auto  bg-neoborder dark:bg-neoborder-dark"></View> }
-        {(i == level - 1) && <View className="ml-4 h-4 w-full border-neoborder  dark:border-neoborder-dark border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-neogray-100 dark:bg-neogray-800"></View> }
+        {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-neogray-100  dark:border-neogray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
     let childs = Object.keys(items);
@@ -84,22 +84,22 @@ export default function UnitComments(props) {
 
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
-                    <View  className="flex-row">
+                    <View  className="flex-row gap-x-2">
                     {cells}
-                       <View className="w-8 flex-0 h-full">
-                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
-                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-4 mt-0.5 rounded-full flex-auto  bg-neoborder dark:bg-neoborder-dark"></View> }
+                       <View className="w-10 flex-0 h-full">
+                            <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-neogray-100 dark:bg-neogray-800"></View> }
                        </View>
-                       <View className='flex-1 flex-col ml-2 mb-2  space-y-2 '>
-                            <View className={sCommentClass+ ' py-1'} >
-                                <View className="flex-row gap-1 items-center">
+                       <View className='flex-1 flex-col gap-y-1  mb-2  '>
+                            <View className={sCommentClass+ '  py-2'} >
+                                <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-neogray-500">·</Text>
+                                    <Text className="text-neogray-500 px-1">·</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 
                                 {
-                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className=' mt-1 bg-neoborder dark:bg-neoborder-dark border bg-neoborder dark:bg-neoborder-dark rounded-md p-2 mb-1'>
+                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border bg-neogray-100 dark:bg-neogray-800 rounded-md p-2 mb-1'>
                                         <View  className="flex-row items-baseline" >
                                             <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                             <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>

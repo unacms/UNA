@@ -23,7 +23,7 @@ export default function ElementEntityAuthor(oProps) {
 
     const sInfo = (
         <Menu {...oAuthor.author_desc} displayType="link" params={{
-            className: 'bx-menu flex flex-row flex-wrap justify-start items-center gap-2',
+            className: 'pl-2 py-0.5 bx-menu flex flex-row flex-wrap justify-start items-center gap-2',
             classNameItem: {
                 link: 'flex text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline gap-2',
                 text: 'flex gap-2'
@@ -67,8 +67,8 @@ export default function ElementEntityAuthor(oProps) {
     );
 
     return (
-        <View className="mx-auto w-full max-w-5xl flex-row items-center justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t mt-[1px] sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x">
-            <Profile {...oAuthor.author_unit} displayType="unit" displaySize="lg" showInfo={sInfo} />
+        <View className="mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t  sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x">
+            <View className="flex-auto "><Profile {...oAuthor.author_unit} displayType="unit" displaySize="base" showInfo={sInfo} /></View>
             {session && sMenuManage}
         </View>
     );

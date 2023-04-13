@@ -3,13 +3,12 @@ import Browse from '../elements/browse';
 import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/fetcher';
-import { View, ScrollView, Row } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text, H1 ,TextLink } from 'app/design/typography'
-import { StyleSheet, useWindowDimensions, Dimensions  } from 'react-native';
+import { useWindowDimensions, Dimensions  } from 'react-native';
 import { stripTags } from '../../lib/util';
-import { Button, Select } from 'app/design/controls'
-import { Platform, PlatformIOSStatic, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import { ScrollView as ScrollViewNative } from 'react-native-gesture-handler';
+import { Button } from 'app/design/controls'
+import { Platform, Keyboard } from 'react-native'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useTheme } from '@react-navigation/native';
 import { LayoutData } from 'app/context/layout';
@@ -240,10 +239,10 @@ export default function ElementComments(props) {
     if (form){ 
         cmtForm = <View className="w-full bottom-0 border-t  border-neoborder dark:border-neoborder-dark" style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
-                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neocard dark:bg-neocard-dark rounded-sm border-l-2 border-primary/50  py-1 px-2 mx-3 mb-2'>
+                form.data.inputs.cmt_parent_id.value != 0 && (<View className='bg-neocard dark:bg-neocard-dark rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
 
-                        <View className=' max-w-full pr-4'>
+                        <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
                                 <Text className='text-xs text-neogray-900 dark:text-neogray-50'>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-neogray-900 dark:text-neogray-50'>{ commentData.formAuthor}</Text>
@@ -253,13 +252,13 @@ export default function ElementComments(props) {
                                 
                 
                         </View>
-                        <View className="absolute right-0 t-0 ">
+                        <View className=" right-0 t-0 ">
                             <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
                         </View>
                     </Row>
                 </View>)
             }
-            <Form {...form} classContainerName="flex-row flex-wrap px-3 w-full  items-start justify-between" onFormSubmit={onFormSubmit}  />
+            <Form {...form} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between" onFormSubmit={onFormSubmit}  />
         </View> }
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
@@ -312,7 +311,7 @@ export default function ElementComments(props) {
                 {cmtsBrs}
                 {cmtsMore}
                 <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
-                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'fixed' : '') + ' mt-4 bottom-16 lg:bottom-0 z-50 w-full bg-neoitem dark:bg-neoitem-dark'} style={{width:formSize.width}}>
+                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolute' : '') + ' mt-4 bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
                         {cmtForm}
                     </View>
                 </View>

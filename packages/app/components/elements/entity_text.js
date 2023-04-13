@@ -29,9 +29,9 @@ function Small({ data }) {
 
     return (
         <View className=" bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto  ">
-           <View className=' bg-neoitem sm:bg-transparent dark:bg-neoitem-dark rounded-lg flex-col gap-2 p-2 sm:p-0 m-4'>
+           <View className=' bg-primary/10 dark:bg-primary-dark/10 sm:bg-transparent dark:bg-neoitem-dark rounded-lg flex-col px-2.5 py-2 sm:p-0 mx-4 my-2'>
                 <Text className="font-bold text-neogray-900 dark:text-neogray-50 text-base sm:text-xl ">{data.entry_title}</Text>
-                <ContentMore content={data.entry_text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-sm sm:text-base text-gray-600 dark:text-gray-400"/>
+                <ContentMore content={data.entry_text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
             </View>
         </View>
     );
