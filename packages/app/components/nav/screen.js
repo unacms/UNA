@@ -16,6 +16,7 @@ export function NavScreen(params) {
     const { colors } = useTheme();
     
     const _path = params.route.params.url;
+    console.log('^^^^^^^^^^^^^^^^^^^^^^', _path);
     const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
@@ -31,14 +32,15 @@ export function NavScreen(params) {
     }
 
     let isCover = pageData?.data?.cover_block?.profile ? true : false;
-    
+
     useEffect(() => {
         (async () => {
             if (isFocused2 && _path && _path.startsWith('/')){                
                 const d = await getData(_path);
-                //console.log("$$$$$$$$$$$$$$$$$ Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
+                console.log("$$$$$$$$$$$$$$$$$ Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
                 if (d?.props) {
                     setPageData (d?.props);
+                    console.log('zzzz--');
                 }
             }
         })();
@@ -48,7 +50,7 @@ export function NavScreen(params) {
         /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
         }, 100);*/
-        return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData.data} />
+        return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData} />
     }
     else{
         /*setTimeout(() => {
@@ -58,7 +60,7 @@ export function NavScreen(params) {
     if (isTabs){   
         return (<View className='flex-1'>
             {(isCover) && <Cover data={pageData.data.cover_block}/>}
-            <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData.data} />
+            <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
         </View>);
     }
     if (!isDrawer && !isTabs){

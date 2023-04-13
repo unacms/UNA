@@ -44,9 +44,7 @@ export default function FormFieldFiles(props) {
                     formContext.setValue(name, av.join(','))
             }, 100);
         });
-        //console.log('aaaaaaaaa????',imageSource);
         let b = imageSource.preload - inc;
-        //console.log('aaaaaaaaa---',imageSource.preload, b);
         setImageSource({images:a, preload:imageSource.preload});
     }
     

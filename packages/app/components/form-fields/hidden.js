@@ -17,7 +17,7 @@ export default function FormFieldHidden(props) {
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
-            value={field.value}
+            value={String(field.value)}
         />
     );
 }

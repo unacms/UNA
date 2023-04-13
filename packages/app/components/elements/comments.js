@@ -12,7 +12,6 @@ import { Platform, Keyboard } from 'react-native'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useTheme } from '@react-navigation/native';
 import { LayoutData } from 'app/context/layout';
-import { appSetting } from 'app/lib/util'
 
 export default function ElementComments(props) {
 
@@ -218,7 +217,7 @@ export default function ElementComments(props) {
 
     let cmtsBrs = <View className="px-4"><Browse {...browse} handleReply={handleReply}  /></View> 
     let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
-    let cmtsHeader = appSetting('comments', 'show_selector_view') && <Row className='mb-4 mx-4 items-center justify-between '>
+    let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
         <Text className='text-sm font-bold text-neogray-900 dark:text-neogray-50'>Comments ({count})</Text>
        
            
