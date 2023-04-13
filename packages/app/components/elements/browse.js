@@ -62,7 +62,8 @@ export default function ElementBrowse(props) {
             cardList: {
                 flexWrap: 'wrap',
                 flexDirection:'row',
-                flexShrink:1 
+                flexShrink:1, 
+                gap: 1, 
             },
         });
     }
@@ -84,7 +85,7 @@ export default function ElementBrowse(props) {
         if (unitMode == '')
             classes = 'flex-auto flex-col gap-[1px] sm:gap-2 w-full mx-auto';
         else
-            classes = 'mt-[1px] sm:m-0 flex-auto flex-col w-full mx-auto gap-[1px] sm:gap-2';
+            classes = 'mt-[1px] flex-auto flex-col w-full mx-auto gap-[1px] sm:gap-2';
     }
 
     function prepareUrl (params) {
