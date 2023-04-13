@@ -1,5 +1,3 @@
-import { TouchableOpacity } from 'app/design/view'
-import Link from 'app/ui/atoms/link'
 
 import React, { useState } from 'react';
 import { View, Row } from 'app/design/view'

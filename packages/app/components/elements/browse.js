@@ -5,7 +5,7 @@ import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, PlatformIOSStatic } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
-import InView from 'react-native-component-inview'
+//import InView from 'react-native-component-inview'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
 
@@ -29,16 +29,16 @@ export default function ElementBrowse(props) {
     } 
 
      /* show more button & load data */
-    const [isInView, setIsInView] = useState(false);
+    //const [isInView, setIsInView] = useState(false);
     const checkVisible = (isVisible) => {
-        if (isInView != isVisible && isVisible){
+        /*if (isInView != isVisible && isVisible){
             handleMore();
         }
         if (isVisible){
             setIsInView(isVisible)
         } else {
             setIsInView(isVisible)
-        }
+        }*/
     }
 
     const handleMore =  async () => {
@@ -117,8 +117,11 @@ export default function ElementBrowse(props) {
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>
             </View>
-        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View className='text-center ' style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text></Text><View /></InView></View> }
+        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) && <View className='text-center ' style={stylesScroll.view}>
+            
+            </View> }
         </View>
         
+        /*<InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text></Text><View /></InView>*/
     );
 }

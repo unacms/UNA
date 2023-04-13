@@ -24,7 +24,6 @@ export function NavBottomTabs(params) {
     const { colors } = useTheme();
 
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
-    console.log('------------', params.route)
     return (
         <Tab.Navigator
             screenOptions={({ navigation, route  }) => ({
@@ -48,7 +47,7 @@ export function NavBottomTabs(params) {
                 name="/pages"
                 component={NavScreen}
                 options={{tabBarButton: () => null, tabBarVisible: false, unmountOnBlur: true}}
-                initialParams={{ url: path, useUrl: true}}
+                initialParams={{ url2: path, useUrl: true}}
             />
             {
                 TabList.map((tab, index) => (
@@ -56,7 +55,7 @@ export function NavBottomTabs(params) {
                         key={`tab-${index}`}
                         name={'tab-' + tab.title}
                         component={NavScreen}
-                        initialParams={{ url: tab.url, checkDrawer: true}}
+                        initialParams={{ url2: tab.url, checkDrawer: true}}
                         options={{  
                             title: tab.title,
                             tabBarIcon: ({color}) => (

@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { View,ScrollView, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import MainMenu from 'app/components/nav/mainmenu'

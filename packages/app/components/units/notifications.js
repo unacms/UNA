@@ -4,7 +4,6 @@ import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native'
 
 import { stripTags } from '../../lib/util';
 
-import { TouchableOpacity } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls';

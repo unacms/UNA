@@ -1,4 +1,4 @@
-import { A, H1, P, Text, TextLink } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { useState } from 'react';
 import { stripTags } from '../../lib/util';
 import { View, Pressable } from 'app/design/view';

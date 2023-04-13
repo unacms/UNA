@@ -35,6 +35,7 @@ export async function fetcher (mixed) {
         try {
             a = await r.json();
         } catch (error) {
+            console.log("ERROR")
             console.log("----------- Response isn't valid JSON for " + mixed);
             if ('readable' == r.body.state)
                 console.log(await r.text());

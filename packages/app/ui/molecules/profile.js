@@ -1,4 +1,4 @@
-import { A, Text } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Image from '../atoms/image'
 import Link from '../atoms/link'

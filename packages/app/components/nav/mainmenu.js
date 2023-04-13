@@ -1,7 +1,5 @@
 import { View } from 'app/design/view'
-import { TouchableOpacity } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import { A, H1, P, Text, TextLink } from 'app/design/typography'
 import { useRouter } from 'next/router';
 import { Button } from 'app/design/controls'
 

@@ -67,7 +67,7 @@ export function NavMaterialTabs(params) {
           name={`toptab-${index}`}
           component={NavScreenMaterial}
           initialParams={{
-            url: '/' + tab.link,
+            url2: '/' + tab.link,
             ignoreTabs: true,
             title: tab.title,
             pageData: params.pageData,

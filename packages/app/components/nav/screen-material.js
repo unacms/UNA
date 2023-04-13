@@ -13,7 +13,7 @@ export function NavScreenMaterial(params) {
 
     const { colors } = useTheme();
     
-    const _path = params.route.params.url;
+    const _path = params.route.params.url2;
     const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
@@ -32,28 +32,28 @@ export function NavScreenMaterial(params) {
     
     useEffect(() => {
         (async () => {
-            if (!params.route.params.pageData || params?.route?.params?.pageData?.uri != _path){
+            if (!params.route.params.pageData || '/' + params.route.params.pageData.params[0] != _path){
                 if (isFocused2 && _path && _path.startsWith('/')){                
                     const d = await getData(_path);
-                    //console.log("$$$$$$$$$$$$$$$$$ Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
+                    //console.log("$$$$$$$$$$$$$$$$$MATER Screen load data:", params.route.params.pageData.params[0], "$$$$$",_path, "$$$$$");
                     if (d?.props) {
                         setPageData (d?.props);
                     }
                 }
             }
         })();
-    }, [_path, isFocused2]);
-
+    }, [_path]);
+//isFocused2
     if (isDrawer){
-        setTimeout(() => {
+        /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
-        }, 100);
+        }, 100);*/
         return <></>
     }
     else{
-        setTimeout(() => {
+       /* setTimeout(() => {
             params.navigation.setOptions({ headerShown: true })
-        }, 100);
+        }, 100);*/
     }
     if (isTabs){   
         return (<View className='flex-1'>
@@ -67,4 +67,5 @@ export function NavScreenMaterial(params) {
             {!!pageData && <View className=' w-full'><All path={_path} {...pageData} /></View> }
         </View>
     }
+    return <></>
 }

@@ -15,13 +15,12 @@ export function NavScreen(params) {
 
     const { colors } = useTheme();
     
-    const _path = params.route.params.url;
-    console.log('^^^^^^^^^^^^^^^^^^^^^^', params.route);
+    const _path = params.route.params.url2;
     const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
-
-    const isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
+    console.log(_path+'---render');
+    let isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
     let isTabs1 = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
     let isTabs = false;
     if (isTabs1){
@@ -37,24 +36,25 @@ export function NavScreen(params) {
         (async () => {
             if (isFocused2 && _path && _path.startsWith('/')){                
                 const d = await getData(_path);
-                console.log("$$$$$$$$$$$$$$$$$BootomTab Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
+                //console.log("$$$$$$$$$$$$$$$$$BootomTab Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
                 if (d?.props) {
                     setPageData (d?.props);
                 }
             }
         })();
-    }, [_path, isFocused2]);
-
+    }, [_path]);
+    //isFocused2
+    isDrawer = false;
     if (isDrawer){
-        setTimeout(() => {
+        /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: false })
-        }, 100);
+        }, 100);*/
         return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData} />
     }
     else{
-        setTimeout(() => {
+        /*setTimeout(() => {
             params.navigation.setOptions({ headerShown: true })
-        }, 100);
+        }, 100);*/
     }
     if (isTabs){   
         return (<View className='flex-1'>
@@ -68,4 +68,5 @@ export function NavScreen(params) {
             {/*!pageData && <Stack.Screen options={{'title': "Loading..."}} /><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} />*/}
         </View>
     }
+    return <></>
 }

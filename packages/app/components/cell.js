@@ -1,6 +1,6 @@
 import Block from './block';
 import { View, Row } from 'app/design/view'
-import { A, H1, P, Text, TextLink } from 'app/design/typography'
+
 
 export default function Cell (props) {
     let blocks = props.blocks;

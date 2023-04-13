@@ -4,7 +4,7 @@ import { useWindowDimensions, useColorScheme, SafeAreaView, View} from 'react-na
     HTMLIframe,
     iframeModel
   } from '@native-html/iframe-plugin';*/
-import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
+//import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { colors } from 'app/design/tailwind/theme'
@@ -18,14 +18,14 @@ import { removeElement, isTag } from 'domutils';
     return <View className="w-24 bg-red-500"><HTMLIframe {...iframeProps} /></View>;
   };
 */
-const renderers = {
+/*const renderers = {
     iframe: IframeRenderer
   };
   
   const customHTMLElementModels = {
     iframe: iframeModel
   };
-
+*/
 function onElement(element) {
     if (element.parent.children[0] === 'p') {
         element.parent.children[0] = {class: 'firstP'}
@@ -112,15 +112,14 @@ export default function ElementHtml(props) {
     const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
     data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
 
-    return (
-        <View className="w-full">
-            <RenderHtml
-                renderers={renderers}
+
+    /*
+     /*renderers={renderers}
                 WebView={WebView}
                 customHTMLElementModels={customHTMLElementModels}
                 defaultWebViewProps={
                     {
-                        bounces:false,         // IOS Only
+                        bounces:false,        
                         dataDetectorTypes:'link',
                         scalesPageToFit:true,
                         scrollEnabled:true,
@@ -132,10 +131,15 @@ export default function ElementHtml(props) {
                     iframe: {
                     scalesPageToFit: true,
                     webViewProps: {
-                        /* Any prop you want to pass to iframe WebViews */
+                       
                     }
                     }
                 }}
+                */
+    return (
+        <View className="w-full">
+            <RenderHtml
+               
                 contentWidth={width}
                 tagsStyles={tagsStyles}
                 classesStyles={classesStyles} 
