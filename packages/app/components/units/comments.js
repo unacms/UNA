@@ -99,7 +99,7 @@ export default function UnitComments(props) {
                                 </View>
 
                                 {
-                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border bg-neogray-100 dark:bg-neogray-800 rounded-md p-2 mb-1'>
+                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-neoborder dark:border-neoborder-dark  rounded-md p-2 my-1'>
                                         <View  className="flex-row items-baseline" >
                                             <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                             <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
