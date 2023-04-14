@@ -61,7 +61,7 @@ export default function Layout(props) {
                 <meta name="description" content={siteTitle} />
                 <meta name="og:title" content={siteTitle} />
                 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
-                <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
+                <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
                 <title>{props.data.title}</title>
             </Head>
             {(bTabsPresent) && <NavigationContainer linking={linking}>{cnt}</NavigationContainer>}
