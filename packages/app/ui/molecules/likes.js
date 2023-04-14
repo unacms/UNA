@@ -5,7 +5,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
@@ -46,8 +46,6 @@ export default function ElementLikes(oProps) {
         else
             setPageData({...pageData, ...oValue});
     };
-
-    const bUseInternalIcons = true;
 
     const oParams = oProps.params;
     const oAction = oProps.action;
@@ -130,24 +128,18 @@ export default function ElementLikes(oProps) {
     if(isPageVar('title'))
         sTitle = getPageVar('title');
 
+    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
-        if(bUseInternalIcons)
-            sAction = (
-                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
-            );
-        else 
-            sAction = (
-                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
-                    {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
-                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{sTitle}</Text>}
-                </Button>
-            );
+        sAction = (
+            <ButtonAction startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
+        );
     }
 
     //--- show counter
@@ -175,22 +167,9 @@ export default function ElementLikes(oProps) {
         if(!sUsers || sUsers.length == 0)
             sUsers = getSkeleton();
 
-        let sButton = undefined;
-        if(bUseInternalIcons)
-            sButton = (
-                <Button variant="text" rounded="true" startDecorator="ThumbsUp" title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
-            );
-        else
-            sButton = (
-                <Button variant="text" size="sm"  rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
-                    <Text className={sClassIconExternal}>{oCounter.icon}</Text>
-                    <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iCount}</Text>
-                </Button>
-            );
-        
         sCounter = (
             <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
-                {sButton}
+                <ButtonMenuCounter startDecorator="ThumbsUp" title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="gap-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>

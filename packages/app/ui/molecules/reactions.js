@@ -4,9 +4,9 @@ import { StyleSheet, Platform, FlatList } from 'react-native';
 
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
-import { Button, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Text } from 'app/design/typography';
-import { View } from 'app/design/view';
+import { View, Pressable } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
     DropdownMenuContentH, 
@@ -20,8 +20,6 @@ import Profile from 'app/ui/molecules/profile';
 import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
-    const bUseInternalIcons = true;
-    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
     const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200';
     const oIconAliases = {
         default: 'Smiley',
@@ -248,40 +246,38 @@ export default function ElementReactions(oProps) {
     if(isPageVar('title'))
         sTitle = getPageVar('title');
 
+    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
         if(Platform.OS === 'web') {
             const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
-                const aItem = oAction.menu.items[iKey];
-
-                let sIcon = undefined;
-                if(bUseInternalIcons)
-                    sIcon = <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>;
-                else
-                    sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>;
+                const aItem = oAction.menu.items[iKey];               
 
                 return (
                     <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
-                        <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>
+                        <DropdownMenuItemIcon>
+                            <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
+                        </DropdownMenuItemIcon>
                         <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
                     </DropdownMenuItemH>
                 );
             });
 
             sAction = (
-                <Button variant="custom" onPress={(event) => {event.preventDefault()}}>
+                <Pressable onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={() => {}} />
+                            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                     </DropdownMenuRoot>
-                </Button>
+                </Pressable>
             );
         }
         else {
@@ -313,23 +309,15 @@ export default function ElementReactions(oProps) {
 
             sAction = (
                 <View>
-                    <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} />
+                    <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
                     <View>
                         <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
                             <View className="p-4">
                                 <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
-                                    if(bUseInternalIcons)
-                                        return (
-                                            <Button key={item.name} variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
-                                        );
-                                    else
-                                        return (
-                                            <Button key={item.name} variant="text" rounded="true" onPress={(event) => {onSliderDoSelect(event, item)}}>
-                                                <Text className={sClassIconExternal}>{item.icon}</Text>
-                                            </Button>
-                                        );
-                                  }}
-                                />
+                                    return (
+                                        <Button key={item.name} variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                                    );                                        
+                                }} />
                             </View>
                         </SliderBottom>
                     </View>
@@ -355,19 +343,6 @@ export default function ElementReactions(oProps) {
                     iCount = oCounterGlobal[sCounterKey];
             }
 
-            let sButton = undefined;
-            if(bUseInternalIcons)
-                sButton = (
-                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
-                );
-            else
-                sButton = (
-                    <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
-                        <Text className={sClassIconExternal}>{aItem.icon}</Text>
-                        <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iCount}</Text>
-                    </Button>
-                );
-
             let sUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
                 sUsers = performedBy[aItem.name].map(aUser => {
@@ -382,7 +357,7 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    {sButton}
+                    <ButtonMenuCounter startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
                     <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
                     </Modal>
@@ -399,12 +374,6 @@ export default function ElementReactions(oProps) {
             if(aItem.name == 'default')
                 return;
 
-            let sIcon = undefined;
-            if(bUseInternalIcons)
-                sIcon = <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
-            else
-                sIcon = <Text className={sClassIconExternal}>{aItem.icon}</Text>
-
             let iCount = aItem.count;
             if(isPageVar('counter')) {
                 const oCounterGlobal = getPageVar('counter');
@@ -418,9 +387,16 @@ export default function ElementReactions(oProps) {
 
             iTotal += iCount;
 
+            if(!iCount)
+                return;
+            
+            return oIconAliases[aItem.name];
+
+/*
             return (
-                <View key={iKey} className={"flex flex-none h-4 w-4 align-center " + (!iCount ? " hidden" : "")}>{sIcon}</View>
+                <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
             );
+*/
         });
 
         const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
@@ -431,24 +407,14 @@ export default function ElementReactions(oProps) {
             if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
                 return;
 
-            let sButton = undefined;
-            if(bUseInternalIcons)
-                sButton = (
-                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
-                );
-            else
-                sButton = (
-                    <Button variant="text" rounded="true" onPress={() => {setTabVisibleByCpd(aItem.name)}}>
-                        <Text className={sClassIconExternal}>{aItem.icon}</Text>
-                    </Button>
-                );
-
             let sClass = 'flex-0 flex flex-row w-min top-px';
             if(aItem.name == sSelected)
                 sClass += ' border-b-2  border-primary dark:border-primary-dark ';
 
             return (
-                <View key={aItem.name} className={sClass}>{sButton}</View>
+                <View key={aItem.name} className={sClass}>
+                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
+                </View>
             );
         });
 
@@ -484,12 +450,7 @@ export default function ElementReactions(oProps) {
 
         return (
             <View className={!iTotal ? "hidden" : ""}>
-                <Button variant="text" size="xs" rounded="true" onPress={handleGetPerformedByCpd}>
-                    <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
-                    <View className="px-2 ">
-                        <Text className="text-gray-800 text-xs font-semibold dark:text-gray-200">{iTotal}</Text>
-                    </View>
-                </Button>
+                <ButtonMenuCounter startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
