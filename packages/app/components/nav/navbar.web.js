@@ -29,7 +29,7 @@ export default function (props) {
   }
 
   return (
-    <View className="fixed -top-[1px]  z-10 w-full mb-16">
+    <View className="fixed -top-[1px]  z-50 w-full mb-16">
       <TouchableOpacity
         className="xl:hidden"
         onPress={hideMenu}

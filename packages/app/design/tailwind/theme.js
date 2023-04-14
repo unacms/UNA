@@ -92,7 +92,7 @@ const colors = {
   },
   neoborder: {
     DEFAULT: 'rgba(209, 213, 219, 0.5)',
-    dark: 'rgba(55, 65, 81, 0.5)',
+    dark: 'rgba(55, 65, 81, 0.3)',
   },
   
   neolink: {

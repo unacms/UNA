@@ -164,8 +164,9 @@ export default function (props) {
                 
         </View>
       </View>
-    ),
-    'posts-home': (
+  
+
+    
       <View className={maxWidth + ' mx-auto w-full '}>
       <View className="flex flex-col @xl/cell:gap-2">
         <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
