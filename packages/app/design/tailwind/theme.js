@@ -55,16 +55,12 @@ const colors = {
     
   },
   screen: {
-    DEFAULT: '#f1f5f9',
-    dark: '#020617',
+    DEFAULT: '#f3f4f6',
+    dark: '#030712',
   },
   navbar: {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
-  },
-  'item-hover': {
-    DEFAULT: '#dbe1e6',
-    dark: '#252a32',
   },
   sidebar: {
     DEFAULT: '#FFFFFF',
@@ -80,11 +76,11 @@ const colors = {
   },
   neocard: {
     DEFAULT: '#FFFFFF',
-    dark: '#0f172a',
-    hover: '#f8fafc',
-    darkhover: '#1e293b',
-    active: '#f1f5f9',
-    darkactive: '#020617',
+    dark: '#111827',
+    hover: '#f9fafb',
+    darkhover: '#1f2937',
+    active: '#f3f4f6',
+    darkactive: '#030712',
   },
   neoitem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',
@@ -95,13 +91,10 @@ const colors = {
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: 'rgba(226, 232, 240, 0.8)',
-    dark: 'rgba(30, 41, 59, 0.8)',
+    DEFAULT: '#e5e7eb',
+    dark: '#1f2937',
   },
-  neodivider: {
-    DEFAULT: '#f1f5f9',
-    dark: '#1e293b',
-  },
+  
   neolink: {
     DEFAULT: '#3B82F6',
     dark: '#3B82F6',

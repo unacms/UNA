@@ -10,14 +10,14 @@ export default function () {
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
 
  	return (
-        <View className="border-t-1 bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark w-full h-16">
+        <View className=" backdrop-blur  border-t bg-navbar/80 dark:bg-navbar-dark/80 border-neoborder dark:border-neoborder-dark w-full h-16">
             <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                 {TabList.map((tab, index) => (
                         <View key={"fl" + index} className='w-1/5  flex items-center rounded-lg text-base  duration-200 hover:bg-gray-200/50  dark:hover:bg-gray-700/50 '>
                            <Link  href={tab.url} >
                            <View className='flex items-center'>
                             <Icon icon={tab.icon} width={24} height={24} />
-                                <Text className='font-semibold text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-xs'>{tab.title}</Text>
+                             <Text className='font-semibold text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-xs'>{tab.title}</Text>
                             </View>
                             </Link>
                         </View>

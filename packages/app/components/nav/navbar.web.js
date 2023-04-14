@@ -34,7 +34,7 @@ export default function (props) {
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className=" backdrop-blur pt-[1px]  h-16 px-2 sm:px-4  items-center w-full  bg-navbar/90 dark:bg-navbar-dark/90  border-b border-neoborder dark:border-neoborder-dark flex-row space-x-2 sm:space-x-4 ">
+      <View className=" backdrop-blur pt-[1px]  h-16 px-2 sm:px-4  items-center w-full  bg-navbar/80 dark:bg-navbar-dark/80  border-b border-neoborder dark:border-neoborder-dark flex-row space-x-2 sm:space-x-4 ">
       <Row className="flex-row space-x-1 flex-none items-center"> 
         { props.uri == 'home' && <TouchableOpacity className="xl:hidden " onPress={showMenu}>
           <Button variant="text" startDecorator="List" rounded align="start" />
