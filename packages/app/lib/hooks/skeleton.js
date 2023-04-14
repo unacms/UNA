@@ -65,26 +65,26 @@ export default function (props) {
         </View>
 
         <View className="flex-auto w-2/3 flex-row">
-       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 space-y-2">
+       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 gap-[1px] sm:gap-2">
         {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
-                <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-4 animate-pulse">
-                <View className="flex-row space-x-2">
+                <View className="bg-neocard dark:bg-neocard-dark sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col gap-4 animate-pulse">
+                <View className="flex-row gap-2">
                   
                   <View className="relative flex-row">
                             <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
                             <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
                             <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
                           
-                      </View>
+                  </View>
                   </View>
                   <View className="flex-col flex-auto my-auto">
                     <View className="w-full flex-row justify-between"> 
                       <View className="h-3 my-1 w-1/4 bg-gray-500/20 rounded-full"></View>
                       <View className="h-3 my-1 w-6 bg-gray-500/20 rounded-full"></View>
                     </View>
-                    <View className="h-4 my-1  w-full bg-gray-500/30 rounded-full"></View>
+                    <View className="h-5 my-1  w-full bg-gray-500/30 rounded-full"></View>
                     
-                      <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
+                    <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
                     
                   </View>
                 </View>

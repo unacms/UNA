@@ -84,7 +84,7 @@ export default function ElementBrowse(props) {
     }
     if (data.unit == 'feed'){
         if (unitMode == '')
-            classes = 'flex-auto flex-col gap-[1px] sm:gap-2 w-full mx-auto';
+            classes = 'flex-auto flex-col mt-2 sm:mt-0 gap-2 w-full mx-auto';
         else
             classes = 'mt-[1px] flex-auto flex-col w-full mx-auto gap-[1px] sm:gap-2';
     }
