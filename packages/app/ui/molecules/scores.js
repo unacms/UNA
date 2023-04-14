@@ -183,7 +183,7 @@ export default function ElementScore(oProps) {
             );
 
         sCounter = (
-            <View className={'flex flex-none' + (iScore <= 0 ? ' hidden' : '')}>
+            <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
                 {sButton}
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
