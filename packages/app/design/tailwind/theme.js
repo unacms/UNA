@@ -91,8 +91,8 @@ const colors = {
     dark: '#6B7280',
   },
   neoborder: {
-    DEFAULT: '#e5e7eb',
-    dark: '#1f2937',
+    DEFAULT: 'rgba(209, 213, 219, 0.5)',
+    dark: 'rgba(55, 65, 81, 0.5)',
   },
   
   neolink: {
