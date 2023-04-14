@@ -50,13 +50,6 @@ export function NavMaterialTabs(params) {
             width: 'auto',
             padding: 0,
             marginHorizontal: 4,
-            
-            
-            
-            
-            
-            
-            
           },
         };
       }}
