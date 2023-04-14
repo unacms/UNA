@@ -52,12 +52,12 @@ export default function (props) {
             {items.map((item, index) => (
                 <View>
                     <View className="p-2 border border-transparent flex-row space-x-2 ">
-                        <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
-                        <View className="h-5 flex-auto my-0.5  bg-neogray-500/20 rounded-full"></View>
+                        <View className="h-6 w-6  flex-none  bg-gray-500/30  rounded-full"></View>
+                        <View className="h-5 flex-auto my-0.5  bg-gray-500/20 rounded-full"></View>
                     </View>
                     <View className="p-2 border border-transparent flex-row space-x-2 ">
-                        <View className="h-6 w-6  flex-none  bg-neogray-500/30  rounded-full"></View>
-                        <View className="h-5 w-3/4 my-0.5  bg-neogray-500/20 rounded-full"></View>
+                        <View className="h-6 w-6  flex-none  bg-gray-500/30  rounded-full"></View>
+                        <View className="h-5 w-3/4 my-0.5  bg-gray-500/20 rounded-full"></View>
                     </View>
               </View>
             ))}
@@ -71,20 +71,20 @@ export default function (props) {
                 <View className="flex-row space-x-2">
                   
                   <View className="relative flex-row">
-                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
-                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
-                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
                           
                       </View>
                   </View>
                   <View className="flex-col flex-auto my-auto">
                     <View className="w-full flex-row justify-between"> 
-                      <View className="h-3 my-1 w-1/4 bg-neogray-500/20 rounded-full"></View>
-                      <View className="h-3 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-3 my-1 w-1/4 bg-gray-500/20 rounded-full"></View>
+                      <View className="h-3 my-1 w-6 bg-gray-500/20 rounded-full"></View>
                     </View>
-                    <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                    <View className="h-4 my-1  w-full bg-gray-500/30 rounded-full"></View>
                     
-                      <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
                     
                   </View>
                 </View>
@@ -98,31 +98,31 @@ export default function (props) {
                 <View className="flex-row space-x-2">
                   
                   <View className="relative flex-row">
-                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
-                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
-                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
                           
                       </View>
                   </View>
                   <View className="flex-col flex-auto my-auto">
                     <View className="w-full flex-row justify-between"> 
-                      <View className="h-4 my-1 w-1/3 bg-neogray-500/20 rounded-full"></View>
-                      <View className="h-4 my-1 w-6 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-4 my-1 w-1/3 bg-gray-500/20 rounded-full"></View>
+                      <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
                     </View>
-                    <View className="h-3 my-1  w-1/4 bg-neogray-500/30 rounded-full"></View>
+                    <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
                     
                     
                     
                   </View>
                   
                 </View>
-                <View className="h-4 my-1 w-full bg-neogray-500/30 rounded-full"></View>
-                <View className="h-4 my-1 w-3/4 bg-neogray-500/30 rounded-full"></View>
-                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
-                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
-                <View className="h-3 my-1 w-full bg-neogray-500/20 rounded-full"></View>
+                <View className="h-4 my-1 w-full bg-gray-500/30 rounded-full"></View>
+                <View className="h-4 my-1 w-3/4 bg-gray-500/30 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
     
-                <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
               
               </View>
             ))}
@@ -140,17 +140,17 @@ export default function (props) {
                 <View className="flex-row space-x-2 p-4">
                   
                   <View className="relative flex-row">
-                            <View className="h-12 w-12 aspect-square overflow-hidden bg-neogray-100 dark:bg-neogray-700 mx-auto rounded-full">
-                            <View className="w-[50%] z-20 aspect-square bg-neogray-200  dark:bg-neogray-600 border-2 border-neogray-100 dark:border-neogray-700  mx-auto rounded-full mt-[15%] "></View>
-                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neogray-200  dark:bg-neogray-600  mx-auto rounded-t-full  "></View>
+                            <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
+                            <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
                           
                       </View>
                   </View>
                   <View className="flex-col flex-auto my-auto">
                     
-                    <View className="h-4 my-1  w-full bg-neogray-500/30 rounded-full"></View>
+                    <View className="h-4 my-1  w-full bg-gray-500/30 rounded-full"></View>
                     
-                      <View className="h-3 my-1 w-3/4 bg-neogray-500/20 rounded-full"></View>
+                      <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
                     
                   </View>
                 </View>

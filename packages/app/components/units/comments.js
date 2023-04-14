@@ -64,8 +64,8 @@ export default function UnitComments(props) {
     let cells = [];
     for (let i = 0; i < level; i++){
         cells.push(<View className='w-10 h-full '>
-        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-neogray-100 dark:bg-neogray-800"></View> }
-        {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-neogray-100  dark:border-neogray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+        {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100  dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
     let childs = Object.keys(items);
@@ -88,13 +88,13 @@ export default function UnitComments(props) {
                     {cells}
                        <View className="w-10 flex-0 h-full">
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-neogray-100 dark:bg-neogray-800"></View> }
+                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
                        </View>
                        <View className='flex-1 flex-col gap-y-1  mb-2  '>
                             <View className={sCommentClass+ '  py-2'} >
                                 <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-neogray-500 px-1">·</Text>
+                                    <Text className="text-gray-500 px-1">·</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 

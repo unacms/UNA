@@ -137,7 +137,7 @@ export default function ElementScore(oProps) {
             return (
                 <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}}>
                     {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
-                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
+                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{sTitle}</Text>}
                 </Button>
             );
     });
@@ -178,7 +178,7 @@ export default function ElementScore(oProps) {
         else
             sButton = (
                 <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
-                    <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iScore}</Text>
+                    <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iScore}</Text>
                 </Button>
             );
 

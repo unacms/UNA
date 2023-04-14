@@ -145,7 +145,7 @@ export default function ElementLikes(oProps) {
             sAction = (
                 <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? handleDo : () => {}}>
                     {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
-                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{sTitle}</Text>}
+                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{sTitle}</Text>}
                 </Button>
             );
     }
@@ -184,7 +184,7 @@ export default function ElementLikes(oProps) {
             sButton = (
                 <Button variant="text" size="sm"  rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
                     <Text className={sClassIconExternal}>{oCounter.icon}</Text>
-                    <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
+                    <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iCount}</Text>
                 </Button>
             );
         

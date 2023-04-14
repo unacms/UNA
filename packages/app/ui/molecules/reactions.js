@@ -22,7 +22,7 @@ import SliderBottom from 'app/ui/molecules/slider-bottom';
 export default function ElementReactions(oProps) {
     const bUseInternalIcons = true;
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-    const sClassIconInternal = 'flex h-6 w-6 text-neogray-700 dark:text-neogray-200';
+    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200';
     const oIconAliases = {
         default: 'Smiley',
         like: 'ThumbsUp',
@@ -364,7 +364,7 @@ export default function ElementReactions(oProps) {
                 sButton = (
                     <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedByDvd(event, aItem)}}>
                         <Text className={sClassIconExternal}>{aItem.icon}</Text>
-                        <Text className="pl-1.5 pr-0.5 text-neogray-700 dark:text-neogray-200">{iCount}</Text>
+                        <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iCount}</Text>
                     </Button>
                 );
 
@@ -487,7 +487,7 @@ export default function ElementReactions(oProps) {
                 <Button variant="text" size="xs" rounded="true" onPress={handleGetPerformedByCpd}>
                     <View className="relative flex flex-row flex-nowrap">{aCounter}</View>
                     <View className="px-2 ">
-                        <Text className="text-neogray-800 text-xs font-semibold dark:text-neogray-200">{iTotal}</Text>
+                        <Text className="text-gray-800 text-xs font-semibold dark:text-gray-200">{iTotal}</Text>
                     </View>
                 </Button>
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>

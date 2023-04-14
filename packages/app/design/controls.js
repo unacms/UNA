@@ -9,11 +9,11 @@ import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-neogray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-neogray-500 dark:text-neogray-100 text-base h-11 leading-5')
-export const Switch = styled(SwitchDef, ' text-neogray-800 ')
+export const Input = styled(TextInputDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base h-11 leading-5')
+export const Switch = styled(SwitchDef, ' text-gray-800 ')
 export const Hidden = styled(TextInputDef, 'hidden')
-export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder focus:bg-white  text-neogray-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-neogray-900  dark:placeholder-neogray-400 dark:text-neogray-200 dark:border-neoborder-dark/50  ')
-export const PickerStyled = styled(PickerDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-neogray-900 rounded-lg w-full p-2.5 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-neogray-500 dark:text-neogray-100 text-base ')
+export const Dropdown = styled(DropdownDef, 'h-11 bg-form/30 border border-neoborder focus:bg-white  text-gray-800 rounded-lg   w-full px-2 py-1 dark:bg-form-dark/50 dark:focus:bg-gray-900  dark:placeholder-gray-400 dark:text-gray-200 dark:border-neoborder-dark/50  ')
+export const PickerStyled = styled(PickerDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg w-full p-2.5 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base ')
 
 
 /* modal */

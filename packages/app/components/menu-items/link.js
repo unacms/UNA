@@ -17,7 +17,7 @@ export default function MenuItemLink(oProps) {
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
 
     const DisplayLink = (oProps) => {
-        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
+        const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex' + (bShowVertical ? ' ios:pb-2 android:pb-2' : ' pr-2') + ' max-w-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
 
         return (
             <View className={sClassName}>
@@ -68,7 +68,7 @@ export default function MenuItemLink(oProps) {
             sContent = (
                 <View className={sClassContent}>
                     {sIcon}
-                    <Text className="flex text-neogray-600 dark:text-neogray-400">{oProps.title}</Text>
+                    <Text className="flex text-gray-600 dark:text-gray-400">{oProps.title}</Text>
                 </View>
             );
     }

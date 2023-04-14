@@ -5,7 +5,7 @@ import Svg, {
 
 const svgLogoText = (
   <Svg
-    className='h-10 w-14 hidden sm:block text-neogray-800  dark:text-neogray-200 mr-0 ml-0'
+    className='h-10 w-14 hidden sm:block text-gray-800  dark:text-gray-200 mr-0 ml-0'
     viewBox="0 0 224 80"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -25,7 +25,7 @@ const svgLogoText = (
   </Svg>);
 
 const svgLogoMark = (
-  <Svg className='group-hover:rotate-45  text-neogray-600 dark:text-neogray-200 group-hover:text-neogray-800 dark:group-hover:text-neogray-50   duration-300 h-10 w-10 mr-0 ml-0'
+  <Svg className='group-hover:rotate-45  text-gray-600 dark:text-gray-200 group-hover:text-gray-800 dark:group-hover:text-gray-50   duration-300 h-10 w-10 mr-0 ml-0'
   viewBox="0 0 240 240"
   fill="none"
   xmlns="http://www.w3.org/2000/svg">
@@ -81,29 +81,29 @@ export const settingsDefault = {
     },
     button_styles: {
       'u-btn-default-cnt':
-        ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5  shadow-sm hover:shadow  bg-neogray-200 hover:bg-neogray-100 active:bg-neogray-300 dark:bg-neogray-800 dark:hover:bg-neogray-700 dark:active:bg-neogray-900 ',
+        ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5  shadow-sm hover:shadow  bg-gray-200 hover:bg-gray-100 active:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 ',
       'u-btn-default-text':
-        ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
+        ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-default-trans': '  duration-200 ',
       'u-btn-primary-cnt':
         ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5  shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900  ',
-      'u-btn-primary-text': ' font-semibold text-neogray-100 group-hover:text-white ',
+      'u-btn-primary-text': ' font-semibold text-gray-100 group-hover:text-white ',
       'u-btn-primary-trans': '  duration-200 ',
       'u-btn-danger-cnt':
       ' border active:shadow-none border-black/10   dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900  ',
-      'u-btn-danger-text': '  font-semibold text-neogray-100 group-hover:text-white ',
+      'u-btn-danger-text': '  font-semibold text-gray-100 group-hover:text-white ',
       'u-btn-danger-trans': '  duration-200  ',
       'u-btn-text-cnt':
       ' border  border-transparent     hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10 ',
       'u-btn-text-text':
-      ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
+      ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-text-trans': ' duration-200 ',
       'u-btn-link-cnt': ' border border-transparent   ',
       'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500  dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
       'u-btn-link-trans': ' duration-200 ',
-      'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-neogray-100 active:bg-neogray-300  dark:hover:bg-neogray-700 dark:active:bg-neogray-900 ',
+      'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-gray-100 active:bg-gray-300  dark:hover:bg-gray-700 dark:active:bg-gray-900 ',
       'u-btn-outline-text':
-      ' font-semibold text-neogray-700 group-hover:text-neogray-900 dark:text-neogray-300 dark:group-hover:text-neogray-50',
+      ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-outline-trans': ' duration-200 ',
     },
     svg:{

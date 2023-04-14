@@ -54,11 +54,11 @@ function DefaultUnit(data) {
 
         </View>
         <View className="w-full p-3   flex-col gap-1">
-            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50   text-xl    tracking-tight font-bold">
+            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50   text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 { !showFull ? <View><View className="flex-col gap-3    relative">
-                    <Text numberOfLines={2}  className="text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50  text-base">
+                    <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50  text-base">
                         {data.plainText}
                     </Text>
                     <View className='flex-row   flex-wrap'>
@@ -102,21 +102,21 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark  sm:border border-neoborder dark:border-neoborder-dark hover:border-primary/20 dark:hover:border-primary-dark/20 hover:shadow-sm active:shadow-none hover:bg-neocard-hover dark:hover:bg-neogray-800  overflow-hidden ">    
+        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark  sm:border border-neoborder dark:border-neoborder-dark hover:border-primary/20 dark:hover:border-primary-dark/20 hover:shadow-sm active:shadow-none hover:bg-neocard-hover dark:hover:bg-gray-800  overflow-hidden ">    
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
             <View className="flex-auto my-auto ">
                 <View className='flex-row gap-2'>
-                    <Text className='text-sm flex-auto  font-semibold text-neogray-800 dark:text-neogray-200'>{data.author_data.display_name}</Text>
+                    <Text className='text-sm flex-auto  font-semibold text-gray-800 dark:text-gray-200'>{data.author_data.display_name}</Text>
                     <Time className='text-sm flex-none' ts={data.date}></Time>
                 </View>
                 <View className='flex-row '>
-                    <Text className="flex-auto text-lg font-bold text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50" numberOfLines={1}>{data.content.title}</Text>
+                    <Text className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50" numberOfLines={1}>{data.content.title}</Text>
                     
                 </View>
                 <View className='flex-row  w-full items-end content-end'>
-                    <Text className='flex-auto mr-2 text-sm text-neogray-800 dark:text-neogray-200 group-hover:text-neogray-950 dark:group-hover:text-neogray-50' numberOfLines={1}>{data.plainText}</Text>
+                    <Text className='flex-auto mr-2 text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50' numberOfLines={1}>{data.plainText}</Text>
                     <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
                         { data.cmts.count > 0 && <Text className='text-xs text-white dark:text-black font-medium'>{data.cmts.count}</Text> }
                     </View>

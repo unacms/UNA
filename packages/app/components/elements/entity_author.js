@@ -25,7 +25,7 @@ export default function ElementEntityAuthor(oProps) {
         <Menu {...oAuthor.author_desc} displayType="link" params={{
             className: 'pl-2 py-0.5 bx-menu flex flex-row flex-wrap justify-start items-center gap-2',
             classNameItem: {
-                link: 'flex text-neogray-600 dark:text-neogray-400 hover:text-neogray-900 dark:hover:text-gray-100 hover:underline gap-2',
+                link: 'flex text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline gap-2',
                 text: 'flex gap-2'
             }
         }} />
