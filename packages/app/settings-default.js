@@ -43,7 +43,7 @@ const svgLogoMark = (
 export const settingsDefault = {
   feed: {
     show_selector_view: false,
-    default_view: 'small',
+    default_view: '',
   },
   entry:{
     default_view: 'small',

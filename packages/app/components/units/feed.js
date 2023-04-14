@@ -42,7 +42,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard  active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neoborder dark:border-neoborder-dark hover:border-primary/20  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
+        <View className="bg-neocard  active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border-y sm:border border-neoborder dark:border-neoborder-dark hover:border-primary/20  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
@@ -106,15 +106,12 @@ function SmallUnit(data) {
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
-            <View className="flex-auto my-auto ">
+            <View className="flex-auto flex-col my-auto ">
                 <View className='flex-row gap-2'>
                     <Text className='text-sm flex-auto  font-semibold text-gray-800 dark:text-gray-200'>{data.author_data.display_name}</Text>
                     <Time className='text-sm flex-none' ts={data.date}></Time>
                 </View>
-                <View className='flex-row '>
-                    <Text className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50" numberOfLines={1}>{data.content.title}</Text>
-                    
-                </View>
+                <Text className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50" numberOfLines={1}>{data.content.title}</Text>
                 <View className='flex-row  w-full items-end content-end'>
                     <Text className='flex-auto mr-2 text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50' numberOfLines={1}>{data.plainText}</Text>
                     <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>
