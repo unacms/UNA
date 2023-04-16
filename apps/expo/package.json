@@ -12,7 +12,7 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
     "app": "*",
-    "expo": "~48.0.10",
+    "expo": "~48.0.11",
     "expo-document-picker": "~11.2.2",
     "expo-haptics": "~12.2.1",
     "expo-image-picker": "~14.1.1",
