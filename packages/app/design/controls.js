@@ -232,13 +232,13 @@ export function Button(props/*: ButtonProps*/) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    return <Button variant="default" {...props} />
+    return <Button variant="default" size="sm" {...props} />
 }
 
 export function ButtonMenuActionText(props) {
-    return <Button variant="text" rounded="true" {...props} />
+    return <Button variant="text" size="sm" fullWidth solid rounded {...props} />
 }
 
 export function ButtonMenuCounter(props) {
-    return <Button variant="text" rounded="true" size="xs" {...props} />
+    return <Button variant="outline" size="xs" fullWidth solid rounded {...props} />
 }
