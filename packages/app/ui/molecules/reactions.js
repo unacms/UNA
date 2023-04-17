@@ -251,7 +251,7 @@ export default function ElementReactions(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction size="sm" fullWidth startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
@@ -273,7 +273,7 @@ export default function ElementReactions(oProps) {
                 <Pressable onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                            <ButtonAction size="sm" fullWidth startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                     </DropdownMenuRoot>
@@ -315,7 +315,7 @@ export default function ElementReactions(oProps) {
                             <View className="p-4">
                                 <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                                     return (
-                                        <Button key={item.name} variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                                        <Button key={item.name} size="sm" fullWidth variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
                                     );                                        
                                 }} />
                             </View>
@@ -357,7 +357,7 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <ButtonMenuCounter startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
+                    <ButtonMenuCounter size="sm" fullWidth startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
                     <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
                     </Modal>
@@ -413,7 +413,7 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={aItem.name} className={sClass}>
-                    <Button variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
+                    <Button size="sm" fullWidth variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
                 </View>
             );
         });
@@ -450,7 +450,7 @@ export default function ElementReactions(oProps) {
 
         return (
             <View className={!iTotal ? "hidden" : ""}>
-                <ButtonMenuCounter startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonMenuCounter size="xs" fullWidth startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>

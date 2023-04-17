@@ -94,15 +94,15 @@ export default function (props) {
           
           
           {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
-                <View className="bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col space-y-2 animate-pulse">
-                <View className="flex-row space-x-2">
+                <View className="bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
+                <View className="flex-row gap-x-2 mb-2">
                   
                   <View className="relative flex-row">
                             <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
                             <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
                             <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
                           
-                      </View>
+                  </View>
                   </View>
                   <View className="flex-col flex-auto my-auto">
                     <View className="w-full flex-row justify-between"> 

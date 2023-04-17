@@ -179,7 +179,7 @@ export default function ElementLikes(oProps) {
     
     const sObject = getName();
     return (
-        <View className="inline-flex gap-1 sm:gap-0">
+        <View className="inline-flex w-full gap-1 sm:gap-0">
             {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
             {bShowCounter && <View key={sObject + '-counter'}>{sCounter}</View>}
         </View>
