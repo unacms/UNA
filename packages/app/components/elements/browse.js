@@ -2,7 +2,7 @@ import Unit from '../unit';
 import { useState, useEffect } from 'react';
 import { View, FlatList  } from 'app/design/view'
 
-import {StyleSheet, useWindowDimensions} from 'react-native';
+import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
@@ -10,16 +10,11 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
 import { ActivityIndicator } from 'react-native';
 import {  Dimensions  } from 'react-native';
-import { IOScrollView, InView } from 'react-native-intersection-observer'
-import { LogBox } from 'react-native';
+import { Theme } from 'app/design/theme';
 
 export default function ElementBrowse(props) {
     let data = props.data;
     let defParams = data.params;
-
-    useEffect(() => {
-        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    }, [])
 
     /* unit mode & change unit mode */
     const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
@@ -35,22 +30,15 @@ export default function ElementBrowse(props) {
         setbrowseParams(Object.assign({}, browseParams, params));
     } 
 
-
-    const handleEndReached = (isView) => {
-       // if (isView != isInView)
-        //    setIsInView(isView)
-        console.log('11111111111-----',isView)
-        if(isView){
-            if (browseParams  && browseParams.loadedAll == false && !props.disablescroll && data.data.length > 0) {
-                console.log('-----',)
-                handleMore();
-            }
+    const handleEndReached = () => {  
+        if (browseParams  && browseParams.loadedAll == false && !props.disablescroll && data.data.length > 0) {
+            handleMore();
         }
     };
-    console.log('11111111111-!!!!!!', )
+
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
-        console.log('11111111111', sRequest)
+
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
@@ -77,9 +65,14 @@ export default function ElementBrowse(props) {
 
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
+
+        const containerHeight = event.nativeEvent.layout.height;
+        console.log(1111111, containerHeight);
         if (getNumCols(containerWidth) != numColumns)
             setNumColumns(getNumCols(containerWidth));
     };
+
+    const { colors } = Theme();
 
     function prepareUrl (params) {
         if (data.unit != 'comments'){
@@ -94,6 +87,11 @@ export default function ElementBrowse(props) {
         {label: 'Mini', value: 'small'}
     ];
 
+    let styles ={};
+    if(Platform.OS === 'web') {
+        styles = {height: windowHeight}
+    }
+
     return (
         <View className='w-full ' onLayout={handleLayout}  >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
@@ -103,18 +101,20 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            
-            <FlatList  numColumns={numColumns}  style={{height: windowHeight - 220}}
+            <FlatList  numColumns={numColumns}  style = {styles}
                 data={data.data}
-                renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 mr-2 ml-2' : 'mb-2'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mb-2'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
-                onEndReached ={handleEndReached}
-                
+                onEndReached ={handleEndReached} 
+                ListFooterComponent={
+                    (browseParams.loadedAll ==false) ? (
+                      <ActivityIndicator size="large" color={colors.primary}  />
+                    ) : null
+                  }
             />
         </View>
-        
-    );/* <InView onChange={(isVisible) => handleEndReached(isVisible)}><Text>Loading</Text></InView> { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) &&  }*/
+    );
 
 
 }
