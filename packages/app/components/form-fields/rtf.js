@@ -3,8 +3,6 @@ import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
 import { useController, useFormContext } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native'
-import { fetcher } from '../../lib/fetcher';
-import { KeyboardAvoidingView } from 'react-native';
 import { uploadImage } from '../../lib/util';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view'

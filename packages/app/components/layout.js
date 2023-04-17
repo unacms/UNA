@@ -1,6 +1,4 @@
-import { useEffect, useContext } from 'react';
 import { View, ScrollView } from 'app/design/view'
-import { Text } from 'app/design/typography'
 import BottomBar from 'app/ui/molecules/bottombar';
 import LayoutDataContext from 'app/context/layout';
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { View } from 'app/design/view'
 import Likes from 'app/ui/molecules/likes';
 import Reactions from 'app/ui/molecules/reactions';

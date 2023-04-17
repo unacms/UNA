@@ -1,6 +1,6 @@
 import { View } from 'app/design/view'
 import { useState, useEffect } from 'react'
-import All, { getData } from 'app/all'
+import { getData } from 'app/all'
 import Page from 'app/components/page'
 import { useIsFocused } from '@react-navigation/native';
 

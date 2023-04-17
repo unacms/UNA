@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { parseISO, format, formatDistance } from 'date-fns';
+import { useState, useEffect } from 'react';
+import { formatDistance } from 'date-fns';
 
 import { Text } from 'app/design/typography';
 

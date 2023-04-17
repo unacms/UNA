@@ -1,4 +1,4 @@
-import { useWindowDimensions, useColorScheme, SafeAreaView, View} from 'react-native'
+import { useWindowDimensions, useColorScheme, View} from 'react-native'
 /*import {
     useHtmlIframeProps,
     HTMLIframe,
@@ -7,10 +7,7 @@ import { useWindowDimensions, useColorScheme, SafeAreaView, View} from 'react-na
 import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
-import { colors } from 'app/design/tailwind/theme'
 import { mergeDeep } from '../../lib/util';
-import { Text, H1 ,TextLink} from 'app/design/typography'
-import { removeElement, isTag } from 'domutils';
 
 /*const IframeRenderer = function IframeRenderer(props) {
     const iframeProps = useHtmlIframeProps(props);

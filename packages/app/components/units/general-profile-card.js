@@ -3,7 +3,7 @@ import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 
-import { Text} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 
 // g-med style browsing

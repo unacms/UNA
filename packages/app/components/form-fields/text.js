@@ -1,6 +1,5 @@
-import React from 'react';
 import Field from './_field';
-import { useController, useFormContext, ControllerProps, UseControllerProps } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 
 export default function FormFieldText(props) {

@@ -5,7 +5,6 @@ import { StyleSheet, Platform, FlatList } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
-import { Text } from 'app/design/typography';
 import { View, Pressable } from 'app/design/view';
 import { 
     DropdownMenuRoot, 

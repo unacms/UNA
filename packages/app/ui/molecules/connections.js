@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { Button } from 'app/design/controls';

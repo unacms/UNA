@@ -1,4 +1,3 @@
-import React from 'react';
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';

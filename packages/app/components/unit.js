@@ -1,8 +1,8 @@
 
 import GeneralContentList from './units/general-content-list';
-import GeneralContentCart from './units/general-content-card';
-import GeneralProfileCart from './units/general-profile-card';
-import GeneralContextCart from './units/general-context-card';
+// import GeneralContentCart from './units/general-content-card';
+// import GeneralProfileCart from './units/general-profile-card';
+// import GeneralContextCart from './units/general-context-card';
 import Comments from './units/comments';
 import Notifications from './units/notifications';
 import Feed from './units/feed';

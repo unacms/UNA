@@ -1,6 +1,5 @@
 import React from 'react';
 
-import {  Button, Alert, StyleSheet } from "react-native";
 import Captcha from './form-fields/captcha';
 import Custom from './form-fields/custom';
 import Hidden from './form-fields/hidden';
@@ -13,7 +12,6 @@ import Select from './form-fields/select';
 import Files from './form-fields/files';
 import Location from './form-fields/location';
 import Datetime from './form-fields/dattime';
-import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 

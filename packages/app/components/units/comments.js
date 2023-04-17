@@ -1,6 +1,6 @@
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
-import {useEffect, useState, useContext } from 'react';
+import { useState } from 'react';
 import { Text} from 'app/design/typography'
 
 import { View, Pressable, Row } from 'app/design/view'

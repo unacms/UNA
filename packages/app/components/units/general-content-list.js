@@ -1,12 +1,11 @@
 import Image from '../../ui/atoms/image';
 import Link from '../../ui/atoms/link';
-import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 
-import { Text, H1 ,TextLink} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import {StyleSheet, useWindowDimensions} from 'react-native';
-import {Platform, PlatformIOSStatic} from 'react-native'
+import { StyleSheet, useWindowDimensions } from 'react-native';
+import { Platform } from 'react-native'
 import { Button } from 'app/design/controls';
 import Menu from 'app/components/menu';
 

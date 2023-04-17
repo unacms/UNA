@@ -1,8 +1,8 @@
 import Unit from '../unit';
-import { useState, useContext } from 'react';
-import { View, ScrollView  } from 'app/design/view'
+import { useState } from 'react';
+import { View  } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native'
+import { Platform } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import InView from 'react-native-component-inview'

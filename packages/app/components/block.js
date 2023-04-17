@@ -1,9 +1,8 @@
 import String from './blocks-content/string';
 import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
-import React, { useState } from 'react';
 import { View } from 'app/design/view'
-import { H1,Text } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { stripTags } from '../lib/util';
 
 const componentsMap = {

@@ -6,7 +6,7 @@ import Profile from '../../ui/molecules/profile';
 
 import { useState } from 'react';
 import Html from '../../ui/atoms/html';
-import { Text, H1 } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, Image as ImageNative } from 'react-native';

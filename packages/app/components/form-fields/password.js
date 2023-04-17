@@ -1,4 +1,3 @@
-import React from 'react';
 import Field from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'

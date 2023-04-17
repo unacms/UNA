@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-//import { useSession, signIn, signOut } from "next-auth/react";
 
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';
@@ -8,8 +7,7 @@ import {
     DropdownMenuContentV, 
     DropdownMenuTrigger, 
     DropdownMenuItemV, 
-    DropdownMenuItemTitle,
-    DropdownMenuItemIcon
+    DropdownMenuItemTitle
 } from 'app/design/dropdown';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';

@@ -1,4 +1,4 @@
-import { View, Pressable } from 'app/design/view';
+import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
 import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';

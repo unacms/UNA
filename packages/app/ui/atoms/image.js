@@ -1,6 +1,6 @@
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
-import { Platform, PlatformIOSStatic } from 'react-native'
+import { Platform } from 'react-native'
 
 export const SolitoImageStyled = styled(SolitoImage)
 

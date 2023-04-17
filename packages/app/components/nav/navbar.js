@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Row } from 'app/design/view'
 
 export default function () {

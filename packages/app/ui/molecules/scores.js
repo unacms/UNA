@@ -1,9 +1,7 @@
-import React from 'react';
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
-import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'

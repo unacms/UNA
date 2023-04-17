@@ -1,7 +1,5 @@
 import { View, Row } from 'app/design/view';
-import Image from '../../ui/atoms/image';
-import Html from '../../ui/atoms/html';
-import { Text, H1, H2 } from 'app/design/typography';
+import { Text, H2 } from 'app/design/typography';
 import Time from '../../ui/atoms/time';
 
 export default function ElementEntityInfo({data}) {
