@@ -50,7 +50,7 @@ export default function (props) {
     <View className="hidden lg:flex w-1/3 max-w-xs ">
           <View className="flex-col flex-auto p-4 animate-pulse space-y-0.5 ">
             {items.map((item, index) => (
-                <View>
+                <View key={'home1' + index}>
                     <View className="p-2 border border-transparent flex-row space-x-2 ">
                         <View className="h-6 w-6  flex-none  bg-gray-500/30  rounded-full"></View>
                         <View className="h-5 flex-auto my-0.5  bg-gray-500/20 rounded-full"></View>
@@ -67,7 +67,7 @@ export default function (props) {
         <View className="flex-auto w-2/3 flex-row">
        <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 gap-[1px] sm:gap-2">
         {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
-                <View className="bg-neocard dark:bg-neocard-dark sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col gap-4 animate-pulse">
+                <View  key={'home2' + index} className="bg-neocard dark:bg-neocard-dark sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col gap-4 animate-pulse">
                 <View className="flex-row gap-2">
                   
                   <View className="relative flex-row">
@@ -94,7 +94,7 @@ export default function (props) {
           
           
           {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
-                <View className="bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
+                <View  key={'home3' + index}  className="bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
                 <View className="flex-row gap-x-2 mb-2">
                   
                   <View className="relative flex-row">
@@ -131,7 +131,7 @@ export default function (props) {
 
         <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4 space-y-2">
         {items.map((item, index) => (
-                <View className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
+                <View key={'home4' + index} className="overflow-hidden bg-neocard dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark sm:rounded-lg  flex flex-col  animate-pulse">
                 <View className="bg-primary/10 w-full aspect-video">
                   
                   
