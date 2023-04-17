@@ -226,3 +226,8 @@ html {
 .profile-menu::-webkit-scrollbar {
     display: none;
 }
+/*
+div::-webkit-scrollbar {
+    display: none;
+  }*/
+  

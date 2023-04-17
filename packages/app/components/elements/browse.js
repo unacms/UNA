@@ -1,18 +1,25 @@
 import Unit from '../unit';
-import { useState } from 'react';
-import { View  } from 'app/design/view'
+import { useState, useEffect } from 'react';
+import { View, FlatList  } from 'app/design/view'
+
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
-import InView from 'react-native-component-inview'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
+import { ActivityIndicator } from 'react-native';
+import {  Dimensions  } from 'react-native';
+import { IOScrollView, InView } from 'react-native-intersection-observer'
+import { LogBox } from 'react-native';
 
 export default function ElementBrowse(props) {
     let data = props.data;
-    const {height, width, scale, fontScale} = useWindowDimensions(); 
     let defParams = data.params;
+
+    useEffect(() => {
+        LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    }, [])
 
     /* unit mode & change unit mode */
     const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
@@ -20,74 +27,59 @@ export default function ElementBrowse(props) {
     if (defParams){
         defParams.moduleName = data.module ? data.module : '';
         defParams.loadedAll = data.data.length > 0 ? false : true;
+        defParams.loading = false ;
     }
 
-    /* browse params & change browse params */
     const [browseParams, setbrowseParams] = useState(defParams);
     const updateBrowseParams =  (params) => {
         setbrowseParams(Object.assign({}, browseParams, params));
     } 
 
-     /* show more button & load data */
-    const [isInView, setIsInView] = useState(false);
-    const checkVisible = (isVisible) => {
-        console.log('1111111111', browseParams.loadedAll);
-        if (isInView != isVisible && isVisible){
-            handleMore();
-        }
-        if (isVisible){
-            setIsInView(isVisible)
-        } else {
-            setIsInView(isVisible)
-        }
-    }
 
+    const handleEndReached = (isView) => {
+       // if (isView != isInView)
+        //    setIsInView(isView)
+        console.log('11111111111-----',isView)
+        if(isView){
+            if (browseParams  && browseParams.loadedAll == false && !props.disablescroll && data.data.length > 0) {
+                console.log('-----',)
+                handleMore();
+            }
+        }
+    };
+    console.log('11111111111-!!!!!!', )
     const handleMore =  async () => {
         const sRequest = prepareUrl() ;
+        console.log('11111111111', sRequest)
         const sResponse = await fetcher(sRequest);
-        
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
-            console.log('1111111111', sResponse.data[0].data.data.length);
             updateBrowseParams({
                 start: sResponse.data[0].data.params.start, 
                 per_page: sResponse.data[0].data.params.per_page, 
-                loadedAll: sResponse.data[0].data.data.length > 0 ? false : true
+                loadedAll: sResponse.data[0].data.data.length > 0 ? false : true,
+                loading:false
             }) 
         }
     } 
+
+    const getNumCols = (width) => {
+        if (data.unit.startsWith('general-')){
+            return width > 600 ? 3 : 1
+        }
+        return 1
+    };
+
+    const windowWidth = useWindowDimensions().width;
+    const windowHeight = Dimensions.get('window').height;
     
-    let styles = StyleSheet.create({});
-    if (Platform.OS != 'web'){
-        styles = StyleSheet.create({
-            cardList: {
-                flexWrap: 'wrap',
-                flexDirection:'row',
-                flexShrink:1, 
-                gap: 1, 
-            },
-        });
-    }
+    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
-    let stylesScroll = StyleSheet.create({
-        view: {
-          top: -50,
-        },
-    });
-
-    let classes = '';
-    if (data.unit.startsWith('general-')){
-        if (data.module == 'bx_posts')
-            classes = 'u-card-list sm:gap-2';
-        else
-            classes = ' flex-wrap flex-row w-full justify-center u-card-list4 w-full ';
-    }
-    if (data.unit == 'feed'){
-        if (unitMode == '')
-            classes = 'flex-auto flex-col mt-2 sm:mt-0 gap-2 w-full mx-auto';
-        else
-            classes = 'mt-[1px] flex-auto flex-col w-full mx-auto gap-[1px] sm:gap-2';
-    }
+    const handleLayout = (event) => {
+        const containerWidth = event.nativeEvent.layout.width;
+        if (getNumCols(containerWidth) != numColumns)
+            setNumColumns(getNumCols(containerWidth));
+    };
 
     function prepareUrl (params) {
         if (data.unit != 'comments'){
@@ -103,7 +95,7 @@ export default function ElementBrowse(props) {
     ];
 
     return (
-        <View className='w-full '>
+        <View className='w-full ' onLayout={handleLayout}  >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -111,15 +103,18 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            <View className={classes} style={styles.cardList}>
-                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
-            </View>
-        { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false && false) && <View className='text-center ' style={stylesScroll.view}><InView removeClippedSubviews={false} onChange={(isVisible) => checkVisible(isVisible)}><Text></Text><View /></InView></View> }
+            
+            <FlatList  numColumns={numColumns}  style={{height: windowHeight - 220}}
+                data={data.data}
+                renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 mr-2 ml-2' : 'mb-2'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                keyExtractor={item => item.id}
+                key={numColumns} 
+                onEndReached ={handleEndReached}
+                
+            />
         </View>
         
-    );
+    );/* <InView onChange={(isVisible) => handleEndReached(isVisible)}><Text>Loading</Text></InView> { (!props.disablescroll && data.data.length > 0 && browseParams && browseParams.loadedAll == false) &&  }*/
+
+
 }

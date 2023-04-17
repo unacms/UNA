@@ -31,9 +31,13 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
           flexGrow: 1,
           justifyContent: 'center',
           alignItems: 'center',
+         
+        }}
+        style={{
+          maxWidth:1280,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View  style={{ flexDirection: 'row', alignItems: 'center' }}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
             const label = options.title;
