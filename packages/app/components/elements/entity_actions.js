@@ -20,7 +20,7 @@ export default function ElementEntityActions(props) {
                 <View className="flex flex-row px-4 pb-4">
                     <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                 </View>
-                <View className="flex p-4 flex-row  border-t border-neoborder dark:border-neoborder-dark ">
+                <View className="flex p-2 flex-row  border-t border-neoborder dark:border-neoborder-dark ">
                     <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: true, show_counter: false}} />
                 </View>
             </View>
