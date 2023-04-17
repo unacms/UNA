@@ -61,15 +61,18 @@ function DefaultUnit(data) {
                     <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50  text-base">
                         {data.plainText}
                     </Text>
-                    <View className='flex-row   flex-wrap'>
-                    { data.showMore && <View className=' my-auto  flex-auto   '    >
+                    <View className='flex-row w-full flex-wrap'>
+                        <View className=' my-auto flex-row gap-1 flex-auto   '>
+                            <Button title="wellbeing"  startDecorator="Hash" size="xs" solid rounded variant="outline"/>
+                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
+                        </View>
+                        { data.showMore && <View className=' my-auto  flex-none   '    >
                             
                                 
-                            <Button title="View more"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="outline"/>  
+                            <Button title="View more"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
                             
                         </View>
                     }
-                        <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     </View>
                     
                 </View>
@@ -86,12 +89,15 @@ function DefaultUnit(data) {
                 }
         </View>
        
-        <View className=" border-t mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center gap-1 ">
-            <View className=" flex-row gap-2 flex-auto flex-wrap ">
+        <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">
+            <View className=" flex-row gap-2 flex-auto  ">
                 <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
             </View>
-            <View className="flex-none">
-                <Button title="" startDecorator="DotsThreeOutline" size="sm" solid rounded variant="text"/>
+            <View className="flex-auto">
+                <Button title="Comment" fullWidth startDecorator="ChatTeardropDots" size="sm" solid rounded variant="text"/>
+            </View>
+            <View className="flex-auto">
+                <Button title="Share" fullWidth startDecorator="ShareFat" size="sm" solid rounded variant="text"/>
             </View>
         </View>
     </View>
@@ -106,15 +112,13 @@ function SmallUnit(data) {
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>
-            <View className="flex-auto my-auto ">
+            <View className="flex-auto flex-col my-auto ">
                 <View className='flex-row gap-2'>
                     <Text className='text-sm flex-auto  font-semibold text-gray-800 dark:text-gray-200'>{data.author_data.display_name}</Text>
                     <Time className='text-sm flex-none' ts={data.date}></Time>
                 </View>
-                <View className='flex-row '>
-                    <Text className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50" numberOfLines={1}>{data.content.title}</Text>
-                    
-                </View>
+                <Text className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50" numberOfLines={1}>{data.content.title}</Text>
+
                 <View className='flex-row  w-full items-end content-end'>
                     <Text className='flex-auto mr-2 text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50' numberOfLines={1}>{data.plainText}</Text>
                     <View className='flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5'>

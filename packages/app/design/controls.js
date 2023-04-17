@@ -175,15 +175,28 @@ export function Button(props/*: ButtonProps*/) {
    
   }
 
+  let sButtonIconStart = undefined;
+  if(buttonIconStart != '' && !buttonIconEnd) {
+    if(Array.isArray(buttonIconStart)) {
+        sButtonIconStart = buttonIconStart.map((sIcon, iIndex) => {
+            if(!sIcon)
+                return;
+
+            return (
+                <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} icon={sIcon}></Icon>
+            );
+        });
+    }
+    else
+        sButtonIconStart = (
+            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} icon={buttonIconStart}></Icon>
+        );
+  }
+
   return (
     onPress !== undefined ? (
       <Pressable className={sClassContainer} {...rest} onPress={onPress}>
-        {buttonIconStart != '' && !buttonIconEnd && (
-          <Icon
-            className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconStart}
-          ></Icon>
-        )}
+        {sButtonIconStart}
         {buttonTitle !== undefined && (
           <Text className={sClassText + sTitleContainer}>{buttonTitle}</Text>
         )}
@@ -216,4 +229,16 @@ export function Button(props/*: ButtonProps*/) {
       </View>
     )
   );
+}
+
+export function ButtonMenuActionDefault(props) {
+    return <Button variant="default" {...props} />
+}
+
+export function ButtonMenuActionText(props) {
+    return <Button variant="text" rounded="true" {...props} />
+}
+
+export function ButtonMenuCounter(props) {
+    return <Button variant="text" rounded="true" size="xs" {...props} />
 }

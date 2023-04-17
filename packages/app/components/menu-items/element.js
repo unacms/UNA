@@ -7,10 +7,10 @@ import Scores from 'app/ui/molecules/scores';
 import Connections from 'app/ui/molecules/connections';
 
 const oComponentsMap = {
-   /* likes: Likes,
+    likes: Likes,
     reactions: Reactions,
     scores: Scores,
-    connections: Connections*/
+    connections: Connections
 };
 
 export default function MenuItemElement(oProps) {
@@ -26,7 +26,7 @@ export default function MenuItemElement(oProps) {
     if(oProps.data.params != undefined && oProps.params != undefined)
         oProps.data.params = {...oProps.data.params, ...oProps.params}
 
-    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full ios:pb-2 android:pb-2' : ' flex-row gap-2');
+    const sClassName = 'menu-item flex' + (bShowVertical ? ' flex-col w-full pb-2' : ' flex-row w-full ');
     return (
         <View className={sClassName}>
             <Element key={oProps.id ? oProps.id : oProps.name} {...oProps.data} />

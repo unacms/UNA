@@ -5,12 +5,11 @@ import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { Button, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementScore(oProps) {
-    const bUseInternalIcons = true;
     const oIconAliases = {
         'arrow-up': 'ArrowFatUp',
         'arrow-down': 'ArrowFatDown'
@@ -113,6 +112,8 @@ export default function ElementScore(oProps) {
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
     const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
+    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
     const aActions = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
 
@@ -129,17 +130,9 @@ export default function ElementScore(oProps) {
                 sTitle = oItemGlobal.title;
         }
 
-        if(bUseInternalIcons)
-            return (
-                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
-            );
-        else
-            return (
-                <Button variant={bShowActionAsButton ? 'default' : 'text'} rounded={!bShowActionAsButton} disabled={bShowActionDisabled} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}}>
-                    {!!sIcon && <Text className={sClassIconExternal}>{sIcon}</Text>}
-                    {!!sTitle && bShowActionLabel && <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{sTitle}</Text>}
-                </Button>
-            );
+        return (
+            <ButtonAction startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+        );
     });
 
     //--- show counter
@@ -170,21 +163,9 @@ export default function ElementScore(oProps) {
         if(!sUsers || sUsers.length == 0)
             sUsers = getSkeleton();
 
-        let sButton = undefined;
-        if(bUseInternalIcons)
-            sButton = (
-                <Button variant="text" rounded="true" startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
-            );
-        else
-            sButton = (
-                <Button variant="text" rounded="true" onPress={(event) => {handleGetPerformedBy(event)}}>
-                    <Text className="pl-1.5 pr-0.5 text-gray-700 dark:text-gray-200">{iScore}</Text>
-                </Button>
-            );
-
         sCounter = (
-            <View className={'flex flex-none' + (iScore <= 0 ? ' hidden' : '')}>
-                {sButton}
+            <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
+                <ButtonMenuCounter startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
