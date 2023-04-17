@@ -54,16 +54,16 @@ function DefaultUnit(data) {
 
         </View>
         <View className="w-full p-3   flex-col gap-1">
-            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50   text-xl    tracking-tight font-bold">
+            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-950 group-hover:text-gray-black dark:text-gray-50  dark:group-hover:text-white  text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 { !showFull ? <View><View className="flex-col gap-3    relative">
-                    <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50  text-base">
+                    <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
                         {data.plainText}
                     </Text>
                     <View className='flex-row w-full flex-wrap'>
                         <View className=' my-auto flex-row gap-1 flex-auto   '>
-                            <Button title="wellbeing"  startDecorator="Hash" size="xs" solid rounded variant="outline"/>
+                            <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
                             <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                         </View>
                         { data.showMore && <View className=' my-auto  flex-none   '    >
@@ -95,6 +95,9 @@ function DefaultUnit(data) {
             </View>
             <View className="flex-auto">
                 <Button title="Comment" fullWidth startDecorator="ChatTeardropDots" size="sm" solid rounded variant="text"/>
+            </View>
+            <View className="flex-auto">
+                <Button title="Repost" fullWidth startDecorator="ArrowsClockwise" size="sm" solid rounded variant="text"/>
             </View>
             <View className="flex-auto">
                 <Button title="Share" fullWidth startDecorator="ShareFat" size="sm" solid rounded variant="text"/>

@@ -129,7 +129,7 @@ export default function ElementScore(oProps) {
         }
 
         return (
-            <ButtonAction startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction size="sm" variant='text' startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
         );
     });
 
@@ -163,7 +163,7 @@ export default function ElementScore(oProps) {
 
         sCounter = (
             <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
-                <ButtonMenuCounter startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <ButtonMenuCounter size="xs" variant='outline' startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
