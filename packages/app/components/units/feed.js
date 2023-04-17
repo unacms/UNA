@@ -84,7 +84,15 @@ function DefaultUnit(data) {
                 </View>
                     :
                 <View>
-                    <Html data={data.content.text} />
+                    <View className="flex-col gap-3    relative">
+                        <Html data={data.content.text} />
+                        <View className='flex-row w-full flex-wrap'>
+                            <View className=' my-auto flex-row gap-1 flex-auto   '>
+                                <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
+                                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
+                            </View>
+                        </View>
+                    </View>
                 </View>
                 }
         </View>
