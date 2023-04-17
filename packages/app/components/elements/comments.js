@@ -35,7 +35,6 @@ export default function ElementComments(props) {
         postData: null,
         num:0
     });
-    console.log('111111111', commentData)
 
     let immutable = props.form? props.form.request.immutable : false;
   

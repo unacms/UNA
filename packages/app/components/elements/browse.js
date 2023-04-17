@@ -67,7 +67,6 @@ export default function ElementBrowse(props) {
         const containerWidth = event.nativeEvent.layout.width;
 
         const containerHeight = event.nativeEvent.layout.height;
-        console.log(1111111, containerHeight);
         if (getNumCols(containerWidth) != numColumns)
             setNumColumns(getNumCols(containerWidth));
     };

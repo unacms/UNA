@@ -142,7 +142,6 @@ export default function FormFieldFiles(props) {
     } 
 
     let button = <Button  startDecorator={ isComments ? "ImageSquare" : "plus"} title={ isComments ? "" : "Select " + props.name} onPress={selectImage} />
-    //console.log('aaaaaaaaa===', imageSource);
     return (
         <Field {...props}>
             { !isComments && <View className="mr-2 mb-2" >

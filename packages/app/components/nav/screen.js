@@ -15,7 +15,6 @@ export function NavScreen(params) {
     const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
-    console.log(_path+'---render');
     let isDrawer = params.route.params.checkDrawer && pageData && pageData.data.menu_top && pageData.data.menu_top.items && pageData.data.menu_top.items.length > 1 && _path == '/home';
     let isTabs1 = !params.route.params.ignoreTabs && pageData?.data?.menu?.items?.length > 1 && _path != '/home';           
     let isTabs = false;

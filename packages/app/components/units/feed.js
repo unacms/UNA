@@ -76,7 +76,7 @@ function DefaultUnit(data) {
                 }
                 <View className='flex-row w-full flex-wrap'>
                     <View className=' my-auto flex-row gap-1 flex-auto   '>
-                        <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
+                        {!!data.content.category && <Button title={data.content.category}  startDecorator="Flower" size="xs" solid rounded variant="outline"/> }
                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     </View>
                     { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
