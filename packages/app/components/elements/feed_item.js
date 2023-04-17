@@ -1,8 +1,8 @@
-import { View, Pressable } from 'app/design/view';
+import { View } from 'app/design/view';
 import Html from '../../ui/atoms/html';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
-import { Text, H1 } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import Menu from '../menu';
 
 export default function ElementFeedItem({data}) {

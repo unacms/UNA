@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef }  from 'react';
+import { useImperativeHandle, forwardRef }  from 'react';
 import { useRouter } from 'next/router';
 
 const ElementRedirect = (props, ref) =>  {

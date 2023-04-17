@@ -1,6 +1,4 @@
 import Block from './block';
-import { View, Row } from 'app/design/view'
-
 
 export default function Cell (props) {
     let blocks = props.blocks;

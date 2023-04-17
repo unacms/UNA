@@ -5,7 +5,6 @@ import { StyleSheet, Platform, FlatList } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
-import { Text } from 'app/design/typography';
 import { View, Pressable } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -30,9 +29,6 @@ export default function ElementReactions(oProps) {
         sadness: 'SmileySad',
         anger: 'SmileyAngry'
     };
-    
-    const sCounterType = 'compound';
-    //const sCounterType = 'divided';
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -251,7 +247,7 @@ export default function ElementReactions(oProps) {
     let sAction = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sAction = (
-            <ButtonAction size="sm" fullWidth startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
@@ -328,6 +324,7 @@ export default function ElementReactions(oProps) {
 
     //--- show counter
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
+    const sShowCounterStyle = oParams?.show_counter_style || 'compound'; //'divided';
 
     const getCounterDivided = () => {
         return Object.keys(oCounter.items).map(function(iKey) {
@@ -357,7 +354,7 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <ButtonMenuCounter size="sm" fullWidth startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
+                    <ButtonMenuCounter startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
                     <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
                     </Modal>
@@ -391,12 +388,6 @@ export default function ElementReactions(oProps) {
                 return;
             
             return oIconAliases[aItem.name];
-
-/*
-            return (
-                <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
-            );
-*/
         });
 
         const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
@@ -450,7 +441,7 @@ export default function ElementReactions(oProps) {
 
         return (
             <View className={!iTotal ? "hidden" : ""}>
-                <ButtonMenuCounter size="xs" variant='outline' fullWidth startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonMenuCounter startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
@@ -462,7 +453,7 @@ export default function ElementReactions(oProps) {
     //--- Counter
     let sCounter = undefined;
     if(bShowCounter && oCounter?.items != undefined)
-        switch(sCounterType) {
+        switch(sShowCounterStyle) {
             case 'compound':
                 sCounter = getCounterCompound()
                 break;
@@ -474,9 +465,9 @@ export default function ElementReactions(oProps) {
 
     const sObject = getName();
     return (
-        <View className="inline-flex gap-1 sm:gap-0">
-            {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className="flex-row">{sCounter}</View>}
+        <View className="flex-auto flex-row gap-1 sm:gap-0">
+            {bShowAction && <View key={sObject + '-action'} className="flex-auto">{sAction}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className="flex-auto flex-row">{sCounter}</View>}
         </View>
     );
  }

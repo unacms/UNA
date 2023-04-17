@@ -1,4 +1,3 @@
-import React from 'react';
 import Field from './_field';
 
 import {Text} from 'app/design/typography'

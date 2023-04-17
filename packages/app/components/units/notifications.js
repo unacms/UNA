@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
-import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic, Image as ImageNative } from 'react-native';
+import { useWindowDimensions} from 'react-native';
 
 import { stripTags } from '../../lib/util';
 
@@ -8,7 +7,6 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import Time from 'app/ui/atoms/time';
-import Image from 'app/ui/atoms/image';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 

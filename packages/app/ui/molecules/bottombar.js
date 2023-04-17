@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { View, Row } from 'app/design/view'
-import {StyleSheet } from 'react-native';
 
 import { LayoutData } from 'app/context/layout';
 import { KeyboardAvoidingView } from 'react-native';

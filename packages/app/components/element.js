@@ -6,7 +6,6 @@ import Comments from './elements/comments';
 import Login from './elements/login';
 import Redirect from './elements/redirect';
 import { Text } from 'app/design/typography';
-import { useContext } from 'react';
 
 import EntityText from './elements/entity_text';
 import EntityAttachments from './elements/entity_attachments';

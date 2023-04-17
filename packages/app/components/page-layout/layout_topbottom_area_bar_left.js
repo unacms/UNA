@@ -1,6 +1,5 @@
+import { View } from 'app/design/view';
 
-import { View, Row } from 'app/design/view';
-import { appSetting } from 'app/lib/util'
 export default function PageLayout(props) {
     return (<View className="flex-auto relative w-full flex-row mx-auto">
     <View className="hidden lg:flex w-1/3 max-w-xs xl:bg-transparent xl:dark:bg-transparent bg-sidebar dark:bg-sidebar-dark border-r xl:border-none border-neoborder dark:border-neoborder-dark ">

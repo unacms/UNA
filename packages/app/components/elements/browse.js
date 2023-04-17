@@ -1,9 +1,9 @@
 import Unit from '../unit';
 import { useState, useEffect } from 'react';
-
 import { View, FlatList  } from 'app/design/view'
+
 import {StyleSheet, useWindowDimensions} from 'react-native';
-import { Platform, PlatformIOSStatic } from 'react-native'
+import { Platform } from 'react-native'
 import { Text} from 'app/design/typography'
 import { fetcher } from '../../lib/fetcher';
 import Dropdown from 'app/ui/atoms/dropdown'

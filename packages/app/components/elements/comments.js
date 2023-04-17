@@ -4,7 +4,7 @@ import Form from '../elements/form';
 import useSWR from "swr";
 import { fetcher } from '../../lib/fetcher';
 import { View, Row } from 'app/design/view'
-import { Text, H1 ,TextLink } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { useWindowDimensions, Dimensions  } from 'react-native';
 import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls'

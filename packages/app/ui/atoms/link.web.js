@@ -1,6 +1,5 @@
 import { styled } from 'nativewind'
 import { Link as SolitoLink, TextLink as TextSolitoLink } from 'solito/link'
-import { Text } from 'app/design/typography'
 export const Link = styled(SolitoLink)
 
 export default function ElementLink(props) {  

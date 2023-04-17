@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Field from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'

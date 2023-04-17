@@ -1,9 +1,7 @@
-import React from 'react';
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
-import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
@@ -179,7 +177,7 @@ export default function ElementLikes(oProps) {
     
     const sObject = getName();
     return (
-        <View className="inline-flex w-full gap-1 sm:gap-0">
+        <View className="flex-auto flex-row gap-1 sm:gap-0">
             {bShowAction && <View key={sObject + '-action'}>{sAction}</View>}
             {bShowCounter && <View key={sObject + '-counter'}>{sCounter}</View>}
         </View>

@@ -1,7 +1,6 @@
-import { View, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
-import Html from '../../ui/atoms/html';
-import { Text, H1, H2 } from 'app/design/typography';
+import { Text, H2 } from 'app/design/typography';
 import Link from '../../ui/atoms/link';
 
 export default function ElementEntityAttachments(props) {

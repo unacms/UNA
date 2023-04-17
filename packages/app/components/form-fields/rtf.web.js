@@ -1,11 +1,9 @@
 import 'react-quill/dist/quill.snow.css'; // import styles
 import { useController, useFormContext } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useMemo, useRef } from 'react'
-import { fetcher } from '../../lib/fetcher';
+import { useMemo, useRef } from 'react'
 import { Platform } from 'react-native'
-import { uploadImage } from '../../lib/util'
-;
+import { uploadImage } from '../../lib/util';
 
 export default function FormFieldFtf(props) {
     const quillRef = useRef(null);

@@ -1,6 +1,5 @@
 
-import { View, Row } from 'app/design/view';
-import { appSetting } from 'app/lib/util'
+import { View } from 'app/design/view';
 export default function PageLayout(props) {
     
     return (

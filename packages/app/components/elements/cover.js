@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view';
 import Image from '../../ui/atoms/image';
-import { Text, H1, H1C } from 'app/design/typography';
+import { Text, H1C } from 'app/design/typography';
 import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util'

@@ -1,7 +1,6 @@
 import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
-import Html from '../../ui/atoms/html';
-import { Text, H1 } from 'app/design/typography';
+import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls'
 
 export default function ElementEntityCover({data}) {

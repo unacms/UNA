@@ -1,11 +1,7 @@
-import React from 'react';
 import { useState, useEffect } from 'react'
 import All, { getData } from 'app/all'
-import { Text } from 'dripsy'
 import { View } from 'app/design/view'
-import { Stack } from 'expo-router'
 import { NavDrawer } from 'app/components/nav/drawer'
-import { useCurrentUser } from 'app/context/user';
 import { useIsFocused } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Cover from 'app/components/elements/cover';

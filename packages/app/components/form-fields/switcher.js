@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import Field from './_field';
-import { Text } from 'app/design/typography'
 import { Switch } from 'app/design/controls'
 
 export default function FormFieldSwitcher(props) {

@@ -1,9 +1,7 @@
-import React from 'react';
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
-import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
@@ -131,7 +129,7 @@ export default function ElementScore(oProps) {
         }
 
         return (
-            <ButtonAction size="sm" variant='text' startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
         );
     });
 
@@ -165,7 +163,7 @@ export default function ElementScore(oProps) {
 
         sCounter = (
             <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
-                <ButtonMenuCounter size="xs" variant='outline' startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <ButtonMenuCounter startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
@@ -175,10 +173,10 @@ export default function ElementScore(oProps) {
 
     const sObject = getName();
     return (
-        <View className="flex flex-row items-center">
-            {bShowAction && <View key={sObject + '-action-up'} className="pr-1">{aActions[0]}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className={bShowAction ? 'px-1' : ''}>{sCounter}</View>}
-            {bShowAction && <View key={sObject + '-action-down'} className="pl-1">{aActions[1]}</View>}
+        <View className="flex-auto flex-row items-center gap-1 sm:gap-0">
+            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto flex-row pr-1">{aActions[0]}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row' + (bShowAction ? ' px-1' : '')}>{sCounter}</View>}
+            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto flex-row pl-1">{aActions[1]}</View>}
         </View>
     );
 }

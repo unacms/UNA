@@ -1,9 +1,8 @@
 import { PickerStyled } from 'app/design/controls'
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react'
-import {StyleSheet, useWindowDimensions} from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import { Button, Modal } from 'app/design/controls'
+import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { View,Pressable } from 'app/design/view'
 import { Platform } from 'react-native'

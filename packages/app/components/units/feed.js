@@ -6,7 +6,7 @@ import Profile from '../../ui/molecules/profile';
 
 import { useState } from 'react';
 import Html from '../../ui/atoms/html';
-import { Text, H1 } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, Image as ImageNative } from 'react-native';
@@ -84,7 +84,15 @@ function DefaultUnit(data) {
                 </View>
                     :
                 <View>
-                    <Html data={data.content.text} />
+                    <View className="flex-col gap-3    relative">
+                        <Html data={data.content.text} />
+                        <View className='flex-row w-full flex-wrap'>
+                            <View className=' my-auto flex-row gap-1 flex-auto   '>
+                                <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
+                                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
+                            </View>
+                        </View>
+                    </View>
                 </View>
                 }
         </View>
