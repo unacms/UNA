@@ -292,22 +292,22 @@ export default function ElementComments(props) {
   
 
     if(Platform.OS !== 'web') {
-       
+
         let heightS = pageHeight * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
+        if (commentData.num > 0)
         cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             {cmtsHeader}
             {cmtsBrs}
             {cmtsMore}
            </View>
+        else cmts=<></>
     }
-    else{
-
-        
+    else{ 
+        if (commentData.num> 0){
         cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
             <View style={styles.list} className=' w-full '>
                 {cmtsHeader}
-                
                 {cmtsBrs}
                 {cmtsMore}
                 <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
@@ -317,8 +317,20 @@ export default function ElementComments(props) {
                 </View>
             </View>
         </View>;
+        }
+        else{
+            cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark mx-auto w-full sm:rounded-b-lg overflow-hidden ">
+            <View style={styles.list} className=' w-full '>
+                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolute' : '') + ' bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
+                        {cmtForm}
+                    </View>
+                </View>
+            </View>
+        </View>
+        }
     }
-    /*fixed mt-12 bg-red-500*/
+
 
     return cmts;
 }
