@@ -57,24 +57,10 @@ function DefaultUnit(data) {
             <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-950 group-hover:text-gray-black dark:text-gray-50  dark:group-hover:text-white  text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
-                { !showFull ? <View><View className="flex-col gap-3    relative">
+                {!showFull ? <View><View className="flex-col gap-3    relative">
                     <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
                         {data.plainText}
                     </Text>
-                    <View className='flex-row w-full flex-wrap'>
-                        <View className=' my-auto flex-row gap-1 flex-auto   '>
-                            <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
-                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
-                        </View>
-                        { data.showMore && <View className=' my-auto  flex-none   '    >
-                            
-                                
-                            <Button title="View more"  onPress={(e) => {setShowFull(true);e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
-                            
-                        </View>
-                    }
-                    </View>
-                    
                 </View>
                 {data.sFirstImg &&
                     <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
@@ -82,19 +68,22 @@ function DefaultUnit(data) {
                     </View>
                 }    
                 </View>
-                    :
-                <View>
-                    <View className="flex-col gap-3    relative">
-                        <Html data={data.content.text} />
-                        <View className='flex-row w-full flex-wrap'>
-                            <View className=' my-auto flex-row gap-1 flex-auto   '>
-                                <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
-                                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
-                            </View>
+                :   <View>
+                        <View className="flex-col gap-3    relative">
+                            <Html data={data.content.text} />
                         </View>
                     </View>
-                </View>
                 }
+                <View className='flex-row w-full flex-wrap'>
+                    <View className=' my-auto flex-row gap-1 flex-auto   '>
+                        <Button title="Wellbeing"  startDecorator="Flower" size="xs" solid rounded variant="outline"/>
+                        <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
+                    </View>
+                    { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
+                        <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
+                    </View>
+                    }
+                </View>
         </View>
        
         <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">

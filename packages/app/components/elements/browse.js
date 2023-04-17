@@ -89,7 +89,7 @@ export default function ElementBrowse(props) {
 
     let styles ={};
     if(Platform.OS === 'web') {
-        styles = {height: windowHeight}
+        styles = {height: windowHeight - 64}
     }
 
     return (
