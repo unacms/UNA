@@ -450,7 +450,7 @@ export default function ElementReactions(oProps) {
 
         return (
             <View className={!iTotal ? "hidden" : ""}>
-                <ButtonMenuCounter size="xs" fullWidth startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonMenuCounter size="xs" variant='outline' fullWidth startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
                 <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
