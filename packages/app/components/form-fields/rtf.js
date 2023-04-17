@@ -7,7 +7,6 @@ import { fetcher } from '../../lib/fetcher';
 import { KeyboardAvoidingView } from 'react-native';
 import { uploadImage } from '../../lib/util';
 import { Theme } from 'app/design/theme';
-import { SafeAreaView, StyleSheet, StatusBar } from 'react-native';
 import { View } from 'app/design/view'
 
 export default function FormFieldFtf(props) {
@@ -19,8 +18,6 @@ export default function FormFieldFtf(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-
-    
 
 
 

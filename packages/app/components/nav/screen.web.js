@@ -1,4 +1,3 @@
-import { A, Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useState, useEffect } from 'react'
 import All, { getData } from 'app/all'

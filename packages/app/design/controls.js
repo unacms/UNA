@@ -1,4 +1,4 @@
-import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, Switch as SwitchDef, ViewProps } from 'react-native'
+import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, Switch as SwitchDef, ViewProps,  } from 'react-native'
 import { Pressable, View , Row   } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
@@ -73,7 +73,9 @@ type ButtonProps = TouchableOpacityProps & {
   classTextName?: string
   classIconName?: string
 }*/
-
+export function MenuButton(props/*: ButtonProps*/) {
+  return <Button>xcdv</Button>
+}
 /* buttons */
 export function Button(props/*: ButtonProps*/) {
   let { className, classTextName, classIconName, onPress, ...rest } = props

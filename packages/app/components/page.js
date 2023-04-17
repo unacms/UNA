@@ -2,7 +2,7 @@ import PageDataContext from 'app/context/page';
 import Cell from 'app/components/cell';
 import PageLayout from 'app/components/page-layout';
 import { View } from 'app/design/view'
-import {Platform, PlatformIOSStatic} from 'react-native'
+import { Platform, PlatformIOSStatic} from 'react-native'
 import { appSetting } from 'app/lib/util'
 
 export default function Page(props) {

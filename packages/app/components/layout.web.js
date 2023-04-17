@@ -46,7 +46,15 @@ export default function Layout(props) {
 
                   {loading ? skeleton :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
-                        {(bTabsPresent) && <View className='w-full'><View className='absolute h-12 w-full top-0 left-0 pb-px' style={{backgroundColor:colors.barsBackground}}></View><View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}><NavMaterialTabs data = {props.data.menu.items} /></View></View>}
+                        {(bTabsPresent) && 
+                        (<View className='w-full'>
+                            
+                               
+                                    <NavMaterialTabs data = {props.data.menu.items} />
+
+                            </View>
+                            )
+                        }
                         {(!bTabsPresent) && <Page data={props.data}/>}
                     </View>}
                 </View>
