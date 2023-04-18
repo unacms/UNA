@@ -50,7 +50,12 @@ const colors = {
     darkhover: '#1f2937',
     active: '#f3f4f6',
     darkactive: '#030712',
+    border: 'rgba(209, 213, 219, 0.5)',
+    borderhover: 'rgba(209, 213, 219, 1)',
+    darkborder: 'rgba(55, 65, 81, 0.3)',
+    darkborderhover: 'rgba(55, 65, 81, 1)',
   },
+
   neoitem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',
     dark: 'rgba(30, 41, 59, 0.8)',

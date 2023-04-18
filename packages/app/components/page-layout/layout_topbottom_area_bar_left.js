@@ -1,15 +1,15 @@
 import { View } from 'app/design/view';
 
 export default function PageLayout(props) {
-    return (<View className="flex-auto relative w-full flex-row mx-auto">
-    <View className="hidden lg:flex w-1/3 max-w-xs xl:bg-transparent xl:dark:bg-transparent bg-sidebar dark:bg-sidebar-dark border-r xl:border-none border-neoborder dark:border-neoborder-dark ">
+    return (<View className="flex-auto relative w-full flex-row mx-auto  ">
+    <View className=" w-0 xl:w-1/5 xl:w-max duration-200">
        {props.children[1]}
    </View>
-   <View className="flex-auto w-2/3 flex-row">
-       <View className="flex-auto w-2/3 sm:m-4 sm:mr-0 gap-1">
+   <View className="flex-auto w-4/5 flex-row sm:mx-4 xl:mx-8 duration-200">
+       <View className="flex-auto w-2/3">
            {props.children[2]}
        </View>
-       <View className="hidden sticky lg:flex sticky top-0 lg:flex flex-none w-1/3 sm:m-4">
+       <View className=" w-0  lg:w-1/3 flex-none  lg:ml-4 xl:ml-8 duration-200">
            {props.children[3]}
        </View>
    </View>

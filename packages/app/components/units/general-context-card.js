@@ -25,38 +25,4 @@ export default function Unit(props) {
         );
     }
 
-    if (props.module == 'bx_groups'){
-        return (
-            <Link href={data.url} className="min-w-min @xl/cell:flex-auto @xl/cell:w-80 @xl/cell:max-w-lg mt-[1px] @xl/cell:h-44 @xl/cell:mr-2 overflow-hidden border-gray-300/80 hover:border-gray-300  bg-white active:bg-gray-100 @xl/cell:hover:bg-gray-50 dark:active:bg-gray-700 dark:bg-gray-900 @xl/cell:dark:hover:bg-gray-800 dark:border-gray-800/50 dark:hover:border-gray-700/50 p-4  @xl/cell:hover:-translate-y-0.5 @xl/cell:hover:shadow-sm @xl/cell:border  @xl/cell:active:translate-y-1 @xl/cell:duration-300   @xl/cell:rounded-lg   gap-4 w-full">
-                <div className="flex gap-4 w-72 h-full">
-                    <div className=" flex-none @xl/cell:hidden h-min relative">
-                        <Profile {...data.author_data} displayType="unit_wo_info" />
-                    </div>bx_groups unit TODO:
-                    <div className="@xl/cell:flex flex-col flex  gap-6 flex-auto">
-                        {data.url_thumb &&
-                            <div className="hidden  @xl/cell:block -my-2 -mx-2 h-40 aspect-video flex-none"><img className="  rounded aspect-video" src={data.url_thumb} alt={data.url_thumb} /></div>
-                        } 
-                        <div className="flex flex-auto flex-col-reverse @xl/cell:flex-col gap-1 @xl/cell:gap-4">
-                            <div className="flex flex-col flex-auto @xl/cell:gap-1">
-                                <h2 className="text-base line-clamp-2 leading-tight @xl/cell:text-lg @xl/cell:leading-snug  font-bold tracking-tight text-gray-800 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400  ">{data.title}</h2>
-                                <p className="text-sm line-clamp-2  text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300  ">{data.summary_plain}</p>
-                            </div>
-                            <div className="flex flex-none gap-4">
-                                <div className="flex-none hidden @xl/cell:block relative">       
-                                    <Profile {...data.author_data} displayType="unit" showLinks="false" showInfo=<SnippetInfo {...data} /> />
-                                </div>
-                                <div className="@xl/cell:hidden flex-auto">
-                                    <Profile {...data.author_data} displayType="unit_wo_image" showLinks="false" showInfo="false" />
-                                </div>
-                                <div className="@xl/cell:hidden whitespace-nowrap mb-auto @xl/cell:mb-0 @xl/cell:mt-auto flex-none font-medium tracking-tight bg-gray-100 text-gray-600 text-xs  inline-flex items-center px-1 py-0.5 rounded-full  dark:bg-gray-700/50 dark:hover:bg-gray-600 hover:bg-gray-200 dark:text-gray-300">
-                                    <svg aria-hidden="true" className="w-4 h-4 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"></path></svg>
-                                    <Time className="px-0.5" ts={data.added}></Time>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
-                </div>
-            </Link>   
-        );
-    }
 }
