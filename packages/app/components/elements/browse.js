@@ -9,7 +9,7 @@ import { fetcher } from '../../lib/fetcher';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
 import { ActivityIndicator } from 'react-native';
-import {  Dimensions  } from 'react-native';
+import { Dimensions } from 'react-native';
 import { Theme } from 'app/design/theme';
 
 export default function ElementBrowse(props) {
@@ -92,7 +92,7 @@ export default function ElementBrowse(props) {
     }
 
     return (
-        <View className='w-full ' onLayout={handleLayout}  >
+        (data.data.length > 0) && <View className='w-full ' onLayout={handleLayout}  >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -100,7 +100,7 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            <FlatList  numColumns={numColumns}  style = {styles}
+            <FlatList numColumns={numColumns}  style = {styles}
                 data={data.data}
                 renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mt-[1px] sm:mt-2 xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
@@ -112,7 +112,7 @@ export default function ElementBrowse(props) {
                     ) : null
                   }
             />
-        </View>
+        </View> 
     );
 
 
