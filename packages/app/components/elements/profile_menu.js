@@ -7,7 +7,7 @@ export default function ElementProfileMenu(props) {
         <View className="hidden sm:visible lg:block  top-100  h-full xl:flex px-3 py-4  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
             <View className="flex-col space-y-0.5 mb-16">
             {props.data.items.map((item, index) => (
-                <Link key={`menu-${index}`} href= {'/' + item.link}>
+                <Link key={`menu-${index}`} href= {item.link.charAt(0) == '/' ? item.link : '/' + item.link}>
                     <Button variant="text" startDecorator={item.icon} fullWidth solid align='start' title = {item.title} />
                 </Link>
             ))}
