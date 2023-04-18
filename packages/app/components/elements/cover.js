@@ -4,11 +4,16 @@ import { Text, H1C } from 'app/design/typography';
 import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util'
+import Profile from 'app/ui/molecules/profile';
+
+import { useWindowDimensions } from 'react-native'
 
 export default function ElementCover(props) {
     //TODO: implements menus
     const data = props.data;
     let sType = 'lg:rounded'
+
+    let { width } = useWindowDimensions()
 
     if (props.data.profile.module == "bx_persons")
         sType = 'rounded-full';
@@ -17,18 +22,15 @@ export default function ElementCover(props) {
         <View className='bg-neocard dark:bg-neocard-dark '>
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <View className=''>
-                    <View  className='bg-cover w-full pt-[34%]  lg:rounded-b-lg overflow-hidden'>
+                    <View  className='bg-cover bg-primary dark:bg-primary-dark w-full pt-[34%]  lg:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover lg:rounded-b-2xl" src={data.cover.src} />  }
                     </View>
                   
                 </View>
                 <View className='w-full relative  '>
-                    
-                        <View className={sType + "  absolute left-0  -top-16 lg:-top-24 left-4 h-32 w-32 lg:h-48 lg:w-48 overflow-hidden   border-2 border-neocard dark:border-neocard-dark "} >
-                            <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-4 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                            <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
-                            { !!data.profile.url_avatar && <Image alt={data.fullname} className="rounded-b-2xl w-full z-50" view="cover" src={data.profile.url_avatar} />}
-                        </View>
+                        <View className={sType + " absolute left-0  -top-16 lg:-top-24 left-4 h-32 w-32 lg:h-48 lg:w-48 overflow-hidden border-2 border-neocard dark:border-neocard-dark "} >
+                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width > 600? "4xl" : "3xl"} />
+                </View>
                     
                     
                     <View className=' p-4 flex-col  lg:pl-56 lg:pb-8  justify-between lg:flex-row-reverse  '>
