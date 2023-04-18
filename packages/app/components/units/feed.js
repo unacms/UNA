@@ -62,7 +62,7 @@ function DefaultUnit(data) {
                         {data.plainText}
                     </Text>
                 </View>
-                {data.sFirstImg &&
+                {!!data.sFirstImg &&
                     <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
                         <Image src={data.sFirstImg} alt={data.title} view="cover"        />
                     </View>
@@ -147,20 +147,15 @@ export default function UnitFeed(props) {
 
         data.sFirstImg = '';
         let sImages = [];
-        try {
+        
+        const regex = /<img.*?src=['"](.*?)['"]/g;
 
-            var DomParser = require('react-native-html-parser').DOMParser
-            
-            let doc = new DomParser().parseFromString('<div>' + data.content.text + '</div>','text/html')
-
-            if (doc){
-                sImages = doc.getElementsByTagName('img');
-                if (sImages.length > 0){
-                    data.sFirstImg = sImages[0].attributes[0].value
-                }
-            }
-
-        } catch (error) {
+        let match;
+        while (match = regex.exec('<div>' + data.content.text + '</div>')) {
+            sImages.push(match[1]);
+        }
+        if (sImages.length > 0){
+            data.sFirstImg = sImages[0]
         }
 
         data.showMore = false;

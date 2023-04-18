@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Field from './_field';
 import { View, Row } from 'app/design/view'
 import Image from '../../ui/atoms/image';
@@ -11,9 +11,12 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
+import { FormContext} from 'app/context/form';
 
 export default function FormFieldFiles(props) {
     
+    const { formContextData, setFormContextData } = useContext(FormContext);
+
     const [imageSource, setImageSource] = useState({images:null, preload:0});
     const isWeb = Platform.OS == 'web'
     const formContext = useFormContext();
@@ -23,10 +26,10 @@ export default function FormFieldFiles(props) {
     let defaultValue = props.value ? props.value : '';
     
     const [value, setValue] = useState(defaultValue)
-    const { field } = useController({ name, rules, defaultValue });
-    const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
 
-    const  isComments = (props.name == 'cmt_image');
+    const { field } = useController({ name, rules, defaultValue });
+
+    const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
 
     const RestoreGhosts =  async (inc) => { 
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
@@ -44,9 +47,10 @@ export default function FormFieldFiles(props) {
                     formContext.setValue(name, av.join(','))
             }, 100);
         });
-        let b = imageSource.preload - inc;
+
         setImageSource({images:a, preload:imageSource.preload});
     }
+
     
     if (!imageSource.images){
         RestoreGhosts(0);
@@ -105,18 +109,23 @@ export default function FormFieldFiles(props) {
         }
     };
 
-    function PrevList(props) {
-        
+    if (formContextData?.action === 'open_files'){
+        selectImage();
+        setFormContextData({action:'', data:formContextData?.data});
+    }
+    
+
+    function PrevList() {
         const elements = [];
         for (let i = 1; i <= imageSource.preload; i++) {
             elements.push(
-                <View className="mr-2 mb-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={32} /></View>
+                <View key={'preload-'+i} className="mr-2 mb-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-20 w-20 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={32} /></View>
             );
         }
         return elements;
     }
 
-    function GhostsList(props) {
+    function GhostsList() {
         return (
             imageSource.images?.map((img, index) => (
                 <View key={'file-'+index} className='mr-2 mb-2 h-20 w-20' >
@@ -141,15 +150,23 @@ export default function FormFieldFiles(props) {
         RestoreGhosts(0);
     } 
 
-    let button = <Button  startDecorator={ isComments ? "ImageSquare" : "plus"} title={ isComments ? "" : "Select " + props.name} onPress={selectImage} />
+    let button = <Button  startDecorator={"plus"} title={"Select " + props.name} onPress={selectImage} />
+
+    if (!formContextData || formContextData.imageSource!= imageSource){
+        setTimeout(() => {
+            setFormContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap'>
+            <GhostsList/>
+            <PrevList/>
+        </Row>})
+        }, 1000);
+    }
+
     return (
         <Field {...props}>
-            { !isComments && <View className="mr-2 mb-2" >
+            <View className="mr-2 mb-2" >
                 {button}
             </View>
-            }
             <Row className='flex-wrap'>
-                { isComments && <View className="mr-2 " >{button}</View> }
                 <GhostsList/>
                 <PrevList/>
             </Row>

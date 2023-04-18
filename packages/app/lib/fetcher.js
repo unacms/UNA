@@ -81,7 +81,6 @@ export async function fetcherRaw (host, mixed) {
     // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
     // headers['Pragma'] = "no-cache";
     // headers['Expires'] = "0";
-    
     // perform fetch
     return fetch(host + path, {
         method: data ? 'POST' : 'GET',
