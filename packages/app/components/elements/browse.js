@@ -4,7 +4,7 @@ import { View, FlatList  } from 'app/design/view'
 
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
-import { Text} from 'app/design/typography'
+
 import { fetcher } from '../../lib/fetcher';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
@@ -102,7 +102,7 @@ export default function ElementBrowse(props) {
             /></View>}
             <FlatList  numColumns={numColumns}  style = {styles}
                 data={data.data}
-                renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mb-2'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                renderItem={({item}) => <View className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mt-[1px] sm:mt-2 xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
                 onEndReached ={handleEndReached} 

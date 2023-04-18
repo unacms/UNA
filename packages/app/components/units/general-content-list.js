@@ -177,22 +177,22 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
         return (
             <View className="u-card" style={styles.card}>
-                <View className="bg-neocard hover:bg-neocard-hover dark:hover:bg-neocard-darkhover duration-200   active:shadow-none dark:bg-neocard-dark overflow-hidden border sm:rounded-lg   border-neoborder dark:border-neoborder-dark  w-full">
+                <View className="bg-neocard p-1 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover duration-200   active:shadow-none active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark  border rounded-lg     w-full">
                     <Link href={data.url}>            
                         {data.image &&
-                            <View className="w-full bg-gray-500/20 aspect-video w-full overflow-hidden items-center" >
+                            <View className="w-full bg-gray-500/20 rounded aspect-video w-full overflow-hidden items-center" >
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
                             </View>
                         } 
-                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10  w-full sm:rounded-t-md aspect-video"></View> }
-                        <View className="px-4">
-                            <View className=" overflow-hidden w-full my-3 h-10  ">
+                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10  w-full rounded aspect-video"></View> }
+                        <View className="px-1">
+                            <View className=" overflow-hidden w-full my-2 h-10  ">
                                 <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
                                     {data.title}
                                 </Text>
                                 <Text className=" text-gray-600 dark:text-gray-400 mt-1">{data.summary_plain}</Text>   
                             </View>
-                            <View className='pb-3'>{sMeta}</View>
+                            <View className='pb-1'>{sMeta}</View>
                         </View>
                     </Link>
                 </View>

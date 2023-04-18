@@ -42,7 +42,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard  active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
+        <View className="bg-neocard mt-1 sm:mt-0 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
@@ -77,7 +77,7 @@ function DefaultUnit(data) {
                
         </View>
         <View className='flex-row w-full flex-wrap px-3 pb-4'>
-                    <View className=' my-auto flex-row gap-1 flex-auto   '>
+                    <View className=' my-auto flex-row gap-1 flex-auto justify-between  '>
                         {!!data.content.category && <Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/> }
                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     </View>
@@ -94,9 +94,7 @@ function DefaultUnit(data) {
             <View className="flex-auto">
                 <Button title="Comment" fullWidth startDecorator="ChatTeardropDots" size="sm" solid rounded variant="text"/>
             </View>
-            <View className="flex-auto">
-                <Button title="Repost" fullWidth startDecorator="ArrowsClockwise" size="sm" solid rounded variant="text"/>
-            </View>
+           
             <View className="flex-auto">
                 <Button title="Share" fullWidth startDecorator="ShareFat" size="sm" solid rounded variant="text"/>
             </View>
