@@ -131,7 +131,7 @@ export default function AtomProfile(oProps) {
   switch (sDisplayType) {
     case 'unit':
       sResult = (
-        <Link haptics="Select" href={oProps.url}>
+        
           <View className="flex-row items-center w-full gap-2">
             <View className="flex-none gap-2">
               <AtomProfile {...oProps} displayType="unit_wo_info" />
@@ -140,37 +140,32 @@ export default function AtomProfile(oProps) {
               <AtomProfile {...oProps} displayType="unit_wo_image" />
             </View>
           </View>
-        </Link>
       )
       break     
 
-    
-
     case 'unit_wo_info':
       sResult = (
-        <Link haptics="Select" href={oProps.url}>
-            <View className="relative flex-row">
-                <View className={sSize +"aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full border border-neoborder dark:border-neoborder-dark"}>
-                    {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View></View>}
-                    {!!oProps.url_avatar && <Image
-                        className={sSize+"  z-50"}
-                        width={iSizeWidth}
-                        height={iSizeHeight}
-                        src={oProps.url_avatar}
-                        alt={oProps.display_name}
-                      />
-                    }
-                </View>
-            </View>
-        </Link>
+        <Link haptics="Select" emulate={true} href={oProps.url}><View className="relative flex-row">
+              <View className={sSize +"aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full border border-neoborder dark:border-neoborder-dark"}>
+                  {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View></View>}
+                  {!!oProps.url_avatar && <Image
+                      className={sSize+"  z-50"}
+                      width={iSizeWidth}
+                      height={iSizeHeight}
+                      src={oProps.url_avatar}
+                      alt={oProps.display_name}
+                    />
+                  }
+              </View>
+          </View>
+          </Link>
       )
       break
 
     case 'unit_wo_image':
       sResult = (
-        <Link haptics="Select" href={oProps.url}>
-          <View className="flex-col my-auto">
+          <View className="flex-col my-auto"><Link emulate={true} haptics="Select" href={oProps.url}>
             {bShowLinks ? (
               <DisplayNameLink
                 title={oProps.display_name}
@@ -180,14 +175,13 @@ export default function AtomProfile(oProps) {
               <DisplayNameText title={oProps.display_name} />
             )}
             <View className="flex text-gray-600 dark:text-gray-400 text-sm">{sShowInfo}</View>
-          </View>
-        </Link>
+            </Link></View>
+     
       )
       break
 
     case 'text':
         sResult = (
-          <Link haptics="Select" href={oProps.url}>
             <View className="flex-col my-auto">
               {bShowLinks ? (
                 <DisplayNameLink
@@ -198,19 +192,17 @@ export default function AtomProfile(oProps) {
                 <DisplayNameText title={oProps.display_name} />
               )}
             </View>
-          </Link>
+
         )
         break
 
     default:
       sResult = (
-        <Link haptics="Select" href={oProps.url}>
           <View className="relative flex-row">
             <View className={sSize}>
               <Text>Undefined</Text>
             </View>
           </View>
-        </Link>
       )
   }
   return sResult

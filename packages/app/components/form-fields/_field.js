@@ -1,27 +1,15 @@
 
-import { useWindowDimensions } from 'react-native'
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 
 
 export default function FormField(props) {
-    let w ='w-full';
-    let { width } = useWindowDimensions()
-    /*if (props.name == 'cmt_text'){
-        w ='w-11/12';
-    }*/
-    if (props.name == 'cmt_submit'){
-        w ='w-1/12 ';
-    }
-    if (props.name == 'cmt_image'){
-        w ='w-11/12 ';
-    }
 
-    const sClassName = w +' form-control ' + (w == 'w-full' ? 'mb-4' : '')+ ' form-control-' + props.name ;
+    const sClassName = 'w-full form-control ' + (props.format == 'default' ? 'mb-4' : '')+ ' form-control-' + props.name ;
 
     return (
         <View className={sClassName}>
-            { !!props.caption && 
+            { (!!props.caption && props.format == 'default') &&
             <View className="label">
                 <Text className="label-text capitalize block mb-1 ml-1 text-sm font-medium text-gray-700 dark:text-gray-200">{props.caption}</Text>
             </View> }

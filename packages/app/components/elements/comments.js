@@ -265,7 +265,7 @@ export default function ElementComments(props) {
         
         if (!layoutData || layoutData[1] != commentData.num){
             setTimeout(() => {
-                let a = [cmtForm,commentData.num];
+                let a = [cmtForm, commentData.num];
                 setLayoutData(a)
             }, 1000);
         }

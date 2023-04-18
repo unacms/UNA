@@ -14,6 +14,8 @@ import Location from './form-fields/location';
 import Datetime from './form-fields/dattime';
 import { Text } from 'app/design/typography';
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
+import FormContextProvider from 'app/context/form';
+import FormComments from './forms/comments';
 
 const components = {
     captcha: Captcha,
@@ -70,15 +72,19 @@ export default function Form(props) {
         }, 100);
     }
 
+    const componentsMapForms = {
+        comment: FormComments,
+    };
 
-    const inputs = Object.keys(data.inputs).map(function (key) {
+    const ElementForm = componentsMapForms[props.name];
+
+    let inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
         
-       
         const InputType = components[String(a.type)];
         let k = data.inputs[key].name;
         if (InputType){
-            return <InputType key={k} {...a} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
+            return <InputType key={k} {...a} format = {'undefined' !== typeof ElementForm ? 'custom': 'default'} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
         }
         else{
             return <Text>Unsupporded field type: {a.type}</Text>
@@ -86,9 +92,15 @@ export default function Form(props) {
 
     });   
 
+    
+    if ('undefined' !== typeof ElementForm)
+        inputs   = <ElementForm data={data}>{inputs}</ElementForm> 
+
     return (
-        <FormProvider {...methods}> 
-            {inputs}
-        </FormProvider>
+        <FormContextProvider>
+            <FormProvider {...methods}> 
+                {inputs}
+            </FormProvider>
+        </FormContextProvider>
     );
 }
