@@ -53,14 +53,16 @@ export default function (props) {
         <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
           <Slider offset={300}>
             {props.menu_top.items.map((item, index) => (
-                  <Link href={item.link} key={`menu-${index}`}>
-                  <Button
-                    variant="text"
-                    startDecorator={item.icon}
-                    align="start"
-                    title={item.title}
-                  />
-                </Link>
+                  !item.link.includes('javascript') && (
+                    <Link href={item.link} key={`menu-${index}`}>
+                    <Button
+                      variant="text"
+                      startDecorator={item.icon}
+                      align="start"
+                      title={item.title}
+                    />
+                  </Link>
+                )
               ))}
           </Slider>
         </Row>

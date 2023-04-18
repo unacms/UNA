@@ -212,10 +212,7 @@ html {
 .form-control-cmt_text{
     width:calc(100%) !important;
 }
-.form-control-cmt_submit{
-    width:46px !important;
-    height: 46px;
-}
+
 .form-control-cmt_image{
     margin-bottom: 0px !important;
     margin-top: 0px;
