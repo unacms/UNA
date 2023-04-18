@@ -1,11 +1,8 @@
-import { Text } from 'app/design/typography'
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
-import { View, Pressable } from 'app/design/view';
-import { Icon } from 'app/ui/atoms/icon'
+import { View } from 'app/design/view';
 
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
-        
 
 export default function MenuItemButton(oProps) {
     const oIconAliases = {
@@ -16,13 +13,6 @@ export default function MenuItemButton(oProps) {
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
     const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
-
-    const handleClick = () => {
-        if(oProps.params?.onclick)
-            oProps.params.onclick(event, oProps);
-    };
-
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     let sContent = undefined;
     switch(oProps.content_type) {
@@ -38,8 +28,15 @@ export default function MenuItemButton(oProps) {
             break;
 
         default:
+            const handleClick = () => {
+                if(oProps.params?.onclick)
+                    oProps.params.onclick(event, oProps);
+            };
+
+            const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
             sContent = (
-                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} fullWidth={bShowVertical} onPress={handleClick} />
+                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} />
             );
     }
     
