@@ -1,4 +1,4 @@
-import { Text } from 'app/design/typography'
+import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view'
 import { Icon } from 'app/ui/atoms/icon'
 
@@ -14,10 +14,12 @@ export default function MenuItemSubmenu(oProps) {
         if(!(aItem.id || aItem.name) || aSubmenuExcept.includes(aItem.name))
             return;
 
-        //TODO: Add support for Elements
+        const handleClick = () => {
+            //TODO: Perform click action.
+        };
 
         return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick(aItem.link)}>
+            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick()}>
                 <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
             </DropdownMenuItemV>
         );

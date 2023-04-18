@@ -1,4 +1,3 @@
-
 import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 

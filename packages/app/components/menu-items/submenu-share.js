@@ -1,5 +1,6 @@
 import { Clipboard, Share } from 'react-native';
 
+import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { View, Pressable } from 'app/design/view'
@@ -32,9 +33,11 @@ export default function MenuItemSubmenuShare(oProps) {
         let handleClick = undefined;
         switch(aItem.name) {
             case 'item-repost':
-                handleClick = () => {
-                    console.log('Do Repost');
-                }
+                handleClick = async () => {
+                    const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(aItem.data)));
+                    if(sResponse?.data && parseInt(sResponse.data?.code) > 0)
+                        console.log(sResponse.data);
+                };
                 break;
 
             case 'item-copy':
@@ -71,7 +74,7 @@ export default function MenuItemSubmenuShare(oProps) {
         }
 
         return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick(aItem.link)}>
+            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick()}>
                 <DropdownMenuItemIcon>
                     <Icon icon={oIconAliases[aItem.name]}></Icon>
                 </DropdownMenuItemIcon>
