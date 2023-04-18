@@ -269,7 +269,7 @@ export default function ElementReactions(oProps) {
                 <Pressable onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <ButtonAction size="sm" fullWidth startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                     </DropdownMenuRoot>

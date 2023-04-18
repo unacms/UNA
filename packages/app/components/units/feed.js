@@ -88,15 +88,8 @@ function DefaultUnit(data) {
         </View>
        
         <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">
-            <View className=" flex-row gap-2 flex-auto  ">
-                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: false, show_do_vote_as_button: false}} />
-            </View>
-            <View className="flex-auto">
-                <Button title="Comment" fullWidth startDecorator="ChatTeardropDots" size="sm" solid rounded variant="text"/>
-            </View>
-           
-            <View className="flex-auto">
-                <Button title="Share" fullWidth startDecorator="ShareFat" size="sm" solid rounded variant="text"/>
+            <View className=" flex-row gap-2 flex-auto">
+                <Menu {...data.menu_actions} displayType="button" params={{show_action: true, show_action_as_button: false, show_counter: false}} />
             </View>
         </View>
     </View>

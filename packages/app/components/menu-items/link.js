@@ -1,4 +1,3 @@
-
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link';
@@ -10,7 +9,10 @@ export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
 
-    const bUseInternalIcons = true;
+    const oIconAliases = {
+        'item-comment': 'ChatTeardropDots',
+        'item-share': 'ShareFat'
+    };
 
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
@@ -34,14 +36,6 @@ export default function MenuItemLink(oProps) {
         );
     }
 
-    let sIcon = undefined;
-    if(oProps?.icon && !bTitleOnly) {
-        if(bUseInternalIcons)
-            sIcon = <Icon icon={oProps.icon} className="flex h-6 w-6 ios:pr-1 android:pr-1"></Icon>;
-        else
-            sIcon = <Text className="h-6 w-6 ios:pr-1 android:pr-1 text-base">{oProps.icon}</Text>;
-    }
-
     const sClassContent = 'flex flex-row gap-1';
 
     let sContent = undefined;
@@ -49,7 +43,7 @@ export default function MenuItemLink(oProps) {
         case 'time':
             sContent = (
                 <View className={sClassContent}>
-                    {sIcon}
+                    {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
                     <Time ts={oProps.title}></Time>
                 </View>
             );
@@ -62,12 +56,26 @@ export default function MenuItemLink(oProps) {
                 </View>
             );
             break;
+            
+        case 'submenu':
+            const sSubmenuItems = '';
+
+            sContent = (
+                <DropdownMenuRoot>
+                    <DropdownMenuTrigger>
+                        {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
+                        <Text className="flex text-gray-600 dark:text-gray-400">{oProps.title}</Text>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContentV>{sSubmenuItems}</DropdownMenuContentV>
+                </DropdownMenuRoot>
+            );
+            break;
 
         case 'text':
         default:
             sContent = (
                 <View className={sClassContent}>
-                    {sIcon}
+                    {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
                     <Text className="flex text-gray-600 dark:text-gray-400">{oProps.title}</Text>
                 </View>
             );

@@ -8,7 +8,7 @@ const oComponentsMap = {
     likes: Likes,
     reactions: Reactions,
     scores: Scores,
-    connections: Connections
+    connections: Connections,
 };
 
 export default function MenuItemElement(oProps) {
