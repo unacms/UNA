@@ -1,5 +1,6 @@
 import PageLayoutDefault from './page-layout/default';
 import PageCustomPost from './page-layout/custom_post';
+import PageCustomMessenger from './page-layout/custom_messenger';
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
 import PageLayout2 from './page-layout/layout_topbottom_area_bar_left';
 import PageLayout3 from './page-layout/layout_topbottom_area_bar_right';
@@ -16,6 +17,9 @@ export default function PageLayout(props) {
     const Component = componentsMap[props.data.layout];
     if (props.data.uri == 'view-post')
         return <PageCustomPost {...props} />;
+
+    if (props.data.uri == 'messenger')
+        return <PageCustomMessenger {...props} />;    
 
     if (!Component)
        return <PageLayoutDefault {...props} />;

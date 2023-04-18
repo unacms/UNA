@@ -18,6 +18,9 @@ import ProfileMenu from './elements/profile_menu';
 
 import FeedItem from './elements/feed_item';
 
+import MessengerInbox from './elements/messenger_inbox';
+import MessengerLot from './elements/messenger_lot';
+
 const componentsMap = {
     browse: Browse,
     form: Form,
@@ -34,6 +37,9 @@ const componentsMap = {
     profile_menu: ProfileMenu,
 
     feed_item: FeedItem,
+
+    messenger_inbox: MessengerInbox,
+    messenger_lot: MessengerLot
 };
 
 export default function Element(a) {
