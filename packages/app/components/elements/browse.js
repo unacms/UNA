@@ -31,7 +31,7 @@ export default function ElementBrowse(props) {
     } 
 
     const handleEndReached = () => {  
-        if (browseParams  && browseParams.loadedAll == false && !props.disablescroll && data.data.length > 0) {
+        if (browseParams?.loadedAll == false && !props.disablescroll && data.data.length > 0) {
             handleMore();
         }
     };
@@ -107,7 +107,7 @@ export default function ElementBrowse(props) {
                 key={numColumns} 
                 onEndReached ={handleEndReached} 
                 ListFooterComponent={
-                    (browseParams.loadedAll ==false) ? (
+                    (browseParams?.loadedAll == false) ? (
                       <ActivityIndicator size="large" color={colors.primary}  />
                     ) : null
                   }
