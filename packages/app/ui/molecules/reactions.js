@@ -310,7 +310,7 @@ export default function ElementReactions(oProps) {
                             <View className="p-4">
                                 <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                                     return (
-                                        <Button key={item.name} size="sm" fullWidth variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                                        <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
                                     );                                        
                                 }} />
                             </View>

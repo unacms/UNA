@@ -86,7 +86,7 @@ export default function MenuItemSubmenuShare(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     return (
-        <Pressable className="justify-center" onPress={(event) => {event.preventDefault()}}>
+        <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
             <DropdownMenuRoot>
                 <DropdownMenuTrigger>
                     <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
