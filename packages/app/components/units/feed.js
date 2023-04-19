@@ -77,8 +77,8 @@ function DefaultUnit(data) {
                
         </View>
         <View className='flex-row w-full flex-wrap px-3 pb-4'>
-                    <View className=' my-auto flex-row gap-1 flex-auto justify-between  '>
-                        {!!data.content.category && <Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/> }
+                    <View className='flex-row flex-auto justify-between  '>
+                        {!!data.content.category && <View className="mr-1"><Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/></View> }
                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
                     </View>
                     { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
