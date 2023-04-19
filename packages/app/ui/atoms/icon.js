@@ -1,7 +1,10 @@
 import * as IconSet from "phosphor-react-native";
 import { appSetting } from 'app/lib/util'
+import { Theme } from 'app/design/theme';
 
 export function Icon(props) {
+    const { colors } = Theme();
+
     let { icon, className, ...rest } = props
     icon = icon.replace('far ', '').replace('fa-','').replace('fa ', '')
     let a = icon.split(' ')[0];
@@ -14,6 +17,6 @@ export function Icon(props) {
     
     const IconComponent = IconSet[ic];
 
-    return !IconComponent ? <></> : <IconComponent   className={className} {...rest} />
+    return !IconComponent ? <></> : <IconComponent color={colors.default} className={className} {...rest} />
 }
 

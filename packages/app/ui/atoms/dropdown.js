@@ -1,23 +1,25 @@
 import { PickerStyled } from 'app/design/controls'
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react'
-import { useTheme } from '@react-navigation/native';
+import { Theme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { View,Pressable } from 'app/design/view'
 import { Platform } from 'react-native'
+import { Text } from 'app/design/typography'
+import { Button } from 'app/design/controls';
 //settings https://www.npmjs.com/package/@react-native-picker/picker#mode
 export default function Dropdown(props) {
 
     const [showImage, setShowImage] = useState(false)
     const [selectedVal, setSelectedVal] = useState(props.value? props.value : '');
-    const { colors } = useTheme();
+    const { colors } = Theme();
     const isShow = Platform.OS == 'ios'
 
     function handleChange(itemValue, itemIndex) {
         setSelectedVal(itemValue)
         props.onChange(itemValue);
-        if (!isShow)
+        if (isShow)
             setShowImage(false);
     }
     let selectedText = '';
@@ -43,13 +45,9 @@ export default function Dropdown(props) {
     }
     else{
         return ( <View>
-            <Pressable onPress={() => setShowImage(true)}><Input 
-                editable = {false}
-                name={props.name}
-                value={selectedText} 
-            /></Pressable>
+            <Pressable onPress={() => setShowImage(true)}><Button title={selectedText} /></Pressable>
             <Modal id={'dropdown'} onVisible={showImage} onClose={() => {setShowImage(null)}}>
-                <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground,  }}
+                <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground, color:colors.default }}
                     selectedValue={selectedVal}
                     onValueChange={(itemValue, itemIndex) =>
                     handleChange(itemValue, itemIndex)

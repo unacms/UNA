@@ -70,6 +70,7 @@ export const settingsDefault = {
       screenBackground: '#E5E7EB',
     },
     dark: {
+      default: '#D1D5DB', //fix for icons color in iOS
       primary: '#3B82F6',
       background: '#000000',
       barsBackground: '#111827',

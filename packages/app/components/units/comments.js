@@ -63,8 +63,8 @@ export default function UnitComments(props) {
     const levels = new Array(level);
     let cells = [];
     for (let i = 0; i < level; i++){
-        cells.push(<View key={i} className='w-10 h-full '>
-        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+        cells.push(<View  key={i} className='w-10 h-full '>
+        {(i !=0 && (current_last_child != data.cmt_id || i != level - 1)) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"><Text>{current_last_child}</Text></View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100  dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
@@ -94,7 +94,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass+ '  py-2'} >
                                 <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-gray-500 px-1">·</Text>
+                                    <Text className="text-gray-500 px-1">{'·' + data.cmt_id + '·'}</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 
