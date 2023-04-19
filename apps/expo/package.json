@@ -29,6 +29,7 @@
     "react-native": "0.71.6",
     "react-native-cn-quill": "^0.7.17",
     "react-native-component-inview": "^1.0.2",
+    "react-native-controlled-mentions": "^2.2.5",
     "react-native-document-picker": "^8.2.0",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-dropdown-select-list": "^2.0.4",
