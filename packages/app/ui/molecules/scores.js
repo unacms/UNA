@@ -151,8 +151,12 @@ export default function ElementScore(oProps) {
             sUsers = performedBy.map(aVote => {
                 return (
                     <View key={aVote.author_data.id + '-' + aVote.vote_date} className="flex flex-row justify-between items-center">
-                        <Profile {...aVote.author_data} />
-                        <Icon icon={oIconAliases[oCounter[aVote.vote_type].icon]} />
+                        <View className="flex-auto">
+                            <Profile {...aVote.author_data} />
+                        </View>
+                        <View className="flex-none">
+                            <Icon icon={oIconAliases[oCounter[aVote.vote_type].icon]} />
+                        </View>
                     </View>
                 );
             });

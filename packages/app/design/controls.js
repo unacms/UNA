@@ -33,8 +33,8 @@ export function Modal(props/*: ModalPropsCustom*/) {
   let presentationType = props.presentation ? props.presentation : 'overFullScreen';
 
   return (
-    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={Platform.OS != 'ios'}>
-        <View className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={true}>
+        <View className="flex-row justify-center items-center top-1/2 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
             <View className="relative w-full h-full max-w-2xl md:h-auto">
                 <View className="relative bg-neocard border border-neoborder dark:border-neoborder-dark dark:bg-neocard-dark rounded-lg shadow-2xl">
                     <View className="p-2">
@@ -95,7 +95,7 @@ export function Button(props/*: ButtonProps*/) {
   let sClassContainer = ' group relative flex-row items-center '
   let sIconContainer = ' h-6 w-6 mr-2 '
 
-  if (!buttonFull) sClassContainer += ' w-fit m-0'
+  sClassContainer += buttonFull ? ' flex-auto' : ' w-fit m-0'
 
   if (buttonDisabled) sClassContainer += ' opacity-50 '
 
@@ -234,15 +234,19 @@ export function Button(props/*: ButtonProps*/) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    return <Button variant="default" size="sm" {...props} />
+    let { title, startDecorator, onPress, ...rest } = props
+
+    return <Button variant="default" size="sm" startDecorator={startDecorator} onPress={onPress} />
 }
 
 export function ButtonMenuActionText(props) {
-    let { startDecorator, onPress, title, className, ...rest } = props
+    let { title, startDecorator, onPress, ...rest } = props
 
-    return <Button variant="text" size="sm" fullWidth rounded title={title} startDecorator={startDecorator} onPress={onPress}   />
+    return <Button variant="text" size="sm" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
 }
 
 export function ButtonMenuCounter(props) {
-    return <Button variant="outline" size="xs" fullWidth rounded {...props} />
+    let { title, startDecorator, onPress, ...rest } = props
+
+    return <Button variant="outline" size="xs" startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
 }
