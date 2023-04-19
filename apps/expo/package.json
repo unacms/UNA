@@ -4,6 +4,7 @@
     "@native-html/iframe-plugin": "^2.6.1",
     "@phosphor-icons/react": "^2.0.6",
     "@radix-ui/react-select": "^1.2.1",
+    "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-menu/menu": "^0.7.3",
     "@react-native-picker/picker": "2.4.8",

@@ -7,9 +7,6 @@ import { CurrentUserProvider } from 'app/context/user';
 
 
 export default function Root(props) {
-
-
-
   return (    
     <ThemeProvider value={Theme()} >
       <Provider>

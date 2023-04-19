@@ -67,9 +67,12 @@ export default function UnitComments(props) {
     let bNeed = (current_last_child != data.cmt_id ? true: false);
     lvls[level] = bNeed;
     for (let i = 0; i < level; i++){
-        cells.push(<View className='w-10 h-full '>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
+
+        cells.push(<View key={'sp-'+level+'-'+i} className='w-10 h-full '>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
         {(lvls[i+1]) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100   dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+
+        
     </View>)
     };
     let childs = Object.keys(items);

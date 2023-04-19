@@ -1,9 +1,9 @@
-import { Clipboard, Share } from 'react-native';
+import { Share } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import { fetcher } from 'app/lib/fetcher';
-import { Text } from 'app/design/typography'
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
-import { View, Pressable } from 'app/design/view'
+import { Pressable } from 'app/design/view'
 import { 
     DropdownMenuRoot, 
     DropdownMenuContentV, 
