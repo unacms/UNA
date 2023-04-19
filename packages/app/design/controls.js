@@ -32,8 +32,8 @@ export function Modal(props/*: ModalPropsCustom*/) {
   let presentationType = props.presentation ? props.presentation : 'overFullScreen';
 
   return (
-    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={Platform.OS != 'ios'}>
-        <View className="flex-row justify-center items-center top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={true}>
+        <View className="flex-row justify-center items-center top-1/2 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
             <View className="relative w-full h-full max-w-2xl md:h-auto">
                 <View className="relative bg-neocard border border-neoborder dark:border-neoborder-dark dark:bg-neocard-dark rounded-lg shadow-2xl">
                     <View className="p-2">
