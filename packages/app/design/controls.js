@@ -236,7 +236,9 @@ export function ButtonMenuActionDefault(props) {
 }
 
 export function ButtonMenuActionText(props) {
-    return <Button variant="text" size="sm" fullWidth rounded {...props} />
+    let { startDecorator, onPress, title, className, ...rest } = props
+
+    return <Button variant="text" size="sm" fullWidth rounded title={title} startDecorator={startDecorator} onPress={onPress}   />
 }
 
 export function ButtonMenuCounter(props) {

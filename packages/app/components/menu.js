@@ -26,7 +26,9 @@ export default function ElementMenu(oProps) {
     const sShowSelected = oProps?.showSelected || false;
 
     //--- except the following items from output
-    const aExcept = oProps?.except || [];
+    const aExcept = oProps?.except || [''];
+    const aExceptTitle = oProps?.except_title || ['BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
+
 
     //--- show menu as verstical
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
@@ -43,15 +45,15 @@ export default function ElementMenu(oProps) {
         if(sShowSelected !== false && ((aItem.display_type == undefined && sShowSelected != 'undefined') || (aItem.display_type != undefined && aItem.display_type != sShowSelected)))
             return;
 
-        if(!(aItem.id || aItem.name) || aExcept.includes(aItem.name))
+        if(!(aItem.id || aItem.name) || aExcept.includes(aItem.name) || aExceptTitle.includes(aItem.title))
             return;
 
         const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
         if(!oComponentsMap[sDisplayTypeItem])
             return;
-
+console.log(oProps);
         const ItemType = oComponentsMap[sDisplayTypeItem];
-        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : 'flex-auto'}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
+        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : (!oProps.counter ? 'flex-auto' : '')}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
     });
 
     if(bShowContent)
@@ -61,7 +63,7 @@ export default function ElementMenu(oProps) {
             </View>
         );
 
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex ' + (bShowVertical ? 'flex-col items-center gap-2' : 'w-full flex-row justify-start items-center');
+    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu ' + (bShowVertical ? 'flex-col items-center gap-2' : 'w-full flex-row justify-start items-center');
 
     return (
         <View className={sClassName}>{sItems}</View>

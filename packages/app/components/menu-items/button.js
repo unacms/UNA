@@ -41,6 +41,6 @@ export default function MenuItemButton(oProps) {
     }
     
     return (
-        <View className={'menu-item flex-auto flex' + (bShowVertical ? ' w-full' : '') + ' gap-2'}>{sContent}</View>
+        <View className={'menu-item flex-auto ' + (bShowVertical ? ' w-full' : ' flex-row items-center justify-center')}>{sContent}</View>
     );
 }

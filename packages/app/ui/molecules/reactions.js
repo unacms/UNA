@@ -464,7 +464,7 @@ export default function ElementReactions(oProps) {
 
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row gap-1 sm:gap-0">
+        <View className="flex-auto flex-row">
             {bShowAction && <View key={sObject + '-action'} className="flex-auto">{sAction}</View>}
             {bShowCounter && <View key={sObject + '-counter'} className="flex-auto flex-row">{sCounter}</View>}
         </View>

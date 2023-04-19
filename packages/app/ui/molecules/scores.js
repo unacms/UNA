@@ -173,10 +173,10 @@ export default function ElementScore(oProps) {
 
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row items-center gap-1 sm:gap-0">
-            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto flex-row pr-1">{aActions[0]}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row' + (bShowAction ? ' px-1' : '')}>{sCounter}</View>}
-            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto flex-row pl-1">{aActions[1]}</View>}
+        <View className="flex-auto flex-row items-center gap-1">
+            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto">{aActions[0]}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row'}>{sCounter}</View>}
+            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto">{aActions[1]}</View>}
         </View>
     );
 }

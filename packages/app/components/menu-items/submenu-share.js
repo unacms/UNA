@@ -16,7 +16,7 @@ import { Icon } from 'app/ui/atoms/icon'
 
 export default function MenuItemSubmenuShare(oProps) {
     const oIconAliases = {
-        'item-share': 'ShareFat',
+        'item-share': 'ShareNetwork',
         'item-copy': 'Clipboard',
         'item-repost': 'ArrowsClockwise'
     };
@@ -86,7 +86,7 @@ export default function MenuItemSubmenuShare(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     return (
-        <Pressable onPress={(event) => {event.preventDefault()}}>
+        <Pressable className="justify-center" onPress={(event) => {event.preventDefault()}}>
             <DropdownMenuRoot>
                 <DropdownMenuTrigger>
                     <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
