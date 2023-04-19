@@ -104,10 +104,13 @@ export default function ElementHtml(props) {
         tagsStyles = mergeDeep(tagsStyles, props.htmlStyles);
 
     let data = props.data;
-    var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
-    data = data.replace(pattern,'');
-    const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
-    data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
+   
+    if (data){
+        var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
+        data = data.replace(pattern,'');
+        const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
+        data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
+    }
 
     return (
         <View className="w-full">
