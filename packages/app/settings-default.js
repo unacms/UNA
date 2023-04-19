@@ -94,14 +94,14 @@ export const settingsDefault = {
       'u-btn-danger-text': '  font-semibold text-gray-100 group-hover:text-white ',
       'u-btn-danger-trans': '  duration-200  ',
       'u-btn-text-cnt':
-      ' border border-transparent hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10 duration-200 ',
+      ' border border-transparent hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10 ',
       'u-btn-text-text':
       ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-text-trans': ' duration-200 ',
       'u-btn-link-cnt': ' border border-transparent   ',
       'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500  dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
       'u-btn-link-trans': ' duration-200 ',
-      'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-gray-100 active:bg-gray-300  dark:hover:bg-gray-700 dark:active:bg-gray-900 duration-200 ',
+      'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-gray-100 active:bg-gray-300  dark:hover:bg-gray-700 dark:active:bg-gray-900  ',
       'u-btn-outline-text':
       ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-outline-trans': ' duration-200 ',
@@ -145,19 +145,19 @@ export const settingsDefault = {
         icon: 'app-explore',
       },
       {
-        title: 'Messages',
+        title: 'People',
         url: '/persons-home',
-        icon: 'app-messages',
+        icon: 'users',
       },
       {
         title: 'Notifications',
         url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
-        icon: 'app-usermenu',
+        icon: 'app-notifications',
       },
       {
         title: 'Logout',
         url: '/logout',
-        icon: 'app-notifications',
+        icon: 'app-usermenu',
       },
     ],
     bottom_tabs_non_logged: [
@@ -172,9 +172,9 @@ export const settingsDefault = {
         icon: 'app-explore',
       },
       {
-        title: 'Messages',
+        title: 'People',
         url: '/persons-home',
-        icon: 'app-messages',
+        icon: 'users',
       },
       {
         title: 'Notifications',
