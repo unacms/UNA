@@ -51,7 +51,7 @@ export default function ElementMenu(oProps) {
             return;
 
         const ItemType = oComponentsMap[sDisplayTypeItem];
-        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : ''}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
+        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : 'flex-auto'}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
     });
 
     if(bShowContent)
@@ -61,7 +61,7 @@ export default function ElementMenu(oProps) {
             </View>
         );
 
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu  ' + (bShowVertical ? ' items-center gap-2' : 'w-full flex-row flex-wrap justify-start items-center');
+    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu flex ' + (bShowVertical ? 'flex-col items-center gap-2' : 'w-full flex-row justify-start items-center');
 
     return (
         <View className={sClassName}>{sItems}</View>
