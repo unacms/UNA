@@ -27,7 +27,7 @@ export default function ElementMenu(oProps) {
 
     //--- except the following items from output
     const aExcept = oProps?.except || [''];
-    const aExceptTitle = oProps?.except_title || ['BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
+    const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
 
     //--- show menu as verstical
