@@ -57,10 +57,9 @@ export default function Block(props) {
     }
 
     return (
-        
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? 'bg-neocard dark:bg-neocard-dark border  border-neoborder dark:border-neoborder-dark p-4 sm:rounded-lg' : ''}>
-                {bIsShowTitle && <Text className=" text-lg text-gray-800 dark:text-gray-200 font-semibold my-auto pb-4">{stripTags(block.title+block.designbox_id)}</Text>}
+                {bIsShowTitle && <Text className=" text-lg text-gray-800 dark:text-gray-200 font-semibold my-auto pb-4">{stripTags(block.title)}</Text>}
                 <View><BlockType data={block.content} type={block.type}  /></View>
             </View>
         </View>

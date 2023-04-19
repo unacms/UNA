@@ -45,8 +45,9 @@ export default function ElementHtml(props) {
             whiteSpace: 'normal',
             color: '#374151',
             fontSize: 16,
-            lineHeight: 24,
-            margin: 0,
+            lineHeight: 22,
+            marginLeft: 10,
+            marginRight: 10,
         },
         a: {
             color: 'red'

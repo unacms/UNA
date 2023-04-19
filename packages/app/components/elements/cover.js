@@ -25,7 +25,6 @@ export default function ElementCover(props) {
                     <View  className='bg-cover bg-primary dark:bg-primary-dark w-full pt-[34%]  lg:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover lg:rounded-b-2xl" src={data.cover.src} />  }
                     </View>
-                  
                 </View>
                 <View className='w-full relative  '>
                         <View className={sType + " absolute left-0  -top-16 lg:-top-24 left-4 h-32 w-32 lg:h-48 lg:w-48 overflow-hidden border-2 border-neocard dark:border-neocard-dark "} >
@@ -49,8 +48,6 @@ export default function ElementCover(props) {
                                         <Text className=" tracking-tight  text-gray-800 dark:text-gray-200">256 Followers</Text>
                                     </Row>
                                     <Text className='lg:hidden'>{stripTags(data.profile.info.description)}</Text>
-                                
-                            
                         </View>
                         
                     </View>

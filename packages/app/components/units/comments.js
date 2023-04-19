@@ -99,7 +99,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass+ '  py-2'} >
                                 <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-gray-500 px-1">·{level}--{lvls.toString()}cur{data.cmt_id}last{current_last_child}need {bNeed}</Text>
+                                    <Text className="text-gray-500 px-1">·</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 

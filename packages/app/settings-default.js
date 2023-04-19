@@ -59,7 +59,7 @@ export const settingsDefault = {
 
   theme: {
     light: {
-      primary: '#2563EB',
+      primary: '#0284c7',
       barsBackground: '#FFFFFF',
       barsColor: '#4B5563',
       selectBorder: 'rgba(156, 163, 175, 0.3)',
@@ -71,7 +71,7 @@ export const settingsDefault = {
     },
     dark: {
       default: '#D1D5DB', //fix for icons color in iOS
-      primary: '#3B82F6',
+      primary: '#0ea5e9',
       background: '#000000',
       barsBackground: '#111827',
       barsColor: '#D1D5DB',
@@ -100,7 +100,7 @@ export const settingsDefault = {
       ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
       'u-btn-text-trans': ' duration-200 ',
       'u-btn-link-cnt': ' border border-transparent   ',
-      'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500  dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
+      'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500  dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
       'u-btn-link-trans': ' duration-200 ',
       'u-btn-outline-cnt': ' border active:shadow-none border-black/10  dark:border-white/10    hover:bg-gray-100 active:bg-gray-300  dark:hover:bg-gray-700 dark:active:bg-gray-900  ',
       'u-btn-outline-text':

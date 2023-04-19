@@ -109,6 +109,8 @@ export default function FormFieldFiles(props) {
         }
     };
 
+   // console.log(11111111, 5555)
+
     if (formContextData?.action === 'open_files'){
         selectImage();
         setFormContextData({action:'', data:formContextData?.data});
@@ -150,9 +152,9 @@ export default function FormFieldFiles(props) {
         RestoreGhosts(0);
     } 
 
+    
     let button = <Button  startDecorator={"plus"} title={"Select " + props.name} onPress={selectImage} />
-
-    if (!formContextData || formContextData.imageSource!= imageSource){
+    if (typeof setFormContextData === "function" &&  (!formContextData || formContextData?.imageSource!= imageSource)){
         setTimeout(() => {
             setFormContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap'>
             <GhostsList/>

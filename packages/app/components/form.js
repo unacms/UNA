@@ -94,13 +94,13 @@ export default function Form(props) {
 
     
     if ('undefined' !== typeof ElementForm)
-        inputs   = <ElementForm data={data}>{inputs}</ElementForm> 
+        inputs   = <FormContextProvider><ElementForm data={data}>{inputs}</ElementForm></FormContextProvider>
 
     return (
-        <FormContextProvider>
+        
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>
-        </FormContextProvider>
+        
     );
 }

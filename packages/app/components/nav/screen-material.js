@@ -10,6 +10,7 @@ export function NavScreenMaterial(params) {
     const { colors } = useTheme();
     
     const _path = params.route.params.url2;
+    console.log(_path);
     const [pageData, setPageData] = useState(params.route.params.pageData);
 
     const isFocused2 = useIsFocused();
@@ -28,7 +29,9 @@ export function NavScreenMaterial(params) {
     
     useEffect(() => {
         (async () => {
+            
             if (!params.route.params.pageData || '/' + params.route.params.pageData.params[0] != _path){
+                console.log('---',_path, '/' + params.route.params.pageData.params[0])
                 if (isFocused2 && _path && _path.startsWith('/')){                
                     const d = await getData(_path);
                     //console.log("$$$$$$$$$$$$$$$$$MATER Screen load data:", params.route.params.pageData.params[0], "$$$$$",_path, "$$$$$");
@@ -38,7 +41,7 @@ export function NavScreenMaterial(params) {
                 }
             }
         })();
-    }, [_path]);
+    }, [_path, isFocused2]);
 //isFocused2
     if (isDrawer){
         /*setTimeout(() => {

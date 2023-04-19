@@ -146,9 +146,10 @@ export default function AtomProfile(oProps) {
 
     case 'unit_wo_info':
       sResult = (
-        <Link haptics="Select" emulate={true} href={oProps.url}><View className=''>
-              <View className={sSize + " aspect-square rounded-full bg-gray-100 dark:bg-gray-700 items-center justify-around "}>
-                  {!oProps.url_avatar && <Icon size={iSizeWidth/2} className={sSize + " text-primary/50 "} icon="User"/>}
+        <Link haptics="Select" emulate={true} href={oProps.url}><View className="relative flex-row">
+              <View className={sSize +"aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full border border-neoborder dark:border-neoborder-dark"}>
+                  {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View></View>}
                   {!!oProps.url_avatar && <Image
                       className={sSize+"  z-50"}
                       width={iSizeWidth}

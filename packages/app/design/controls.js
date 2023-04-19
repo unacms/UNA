@@ -5,6 +5,7 @@ import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
+import { Theme } from 'app/design/theme';
 
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
@@ -174,7 +175,8 @@ export function Button(props/*: ButtonProps*/) {
 
    
   }
-
+  const { colors } = Theme()
+  let colorIcon = props.variant == 'link' ? colors.primary: '';
   let sButtonIconStart = undefined;
   if(buttonIconStart != '' && !buttonIconEnd) {
     if(Array.isArray(buttonIconStart)) {
@@ -189,7 +191,7 @@ export function Button(props/*: ButtonProps*/) {
     }
     else
         sButtonIconStart = (
-            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} icon={buttonIconStart}></Icon>
+            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconStart}></Icon>
         );
   }
 
@@ -203,7 +205,7 @@ export function Button(props/*: ButtonProps*/) {
         {buttonIconEnd != '' && buttonIconEnd && (
           <Icon
             className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconEnd}
+            icon={buttonIconEnd} color={colorIcon}
           ></Icon>
         )}
         {props.children}
@@ -213,7 +215,7 @@ export function Button(props/*: ButtonProps*/) {
         {buttonIconStart != '' && !buttonIconEnd && (
           <Icon
             className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconStart}
+            icon={buttonIconStart} color={colorIcon}
           ></Icon>
         )}
         {buttonTitle !== undefined && (
@@ -222,7 +224,7 @@ export function Button(props/*: ButtonProps*/) {
         {buttonIconEnd != '' && buttonIconEnd && (
           <Icon
             className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconEnd}
+            icon={buttonIconEnd}  color={colorIcon}
           ></Icon>
         )}
         {props.children}
