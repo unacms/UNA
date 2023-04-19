@@ -63,7 +63,7 @@ export default function UnitComments(props) {
     const levels = new Array(level);
     let cells = [];
     for (let i = 0; i < level; i++){
-        cells.push(<View className='w-10 h-full '>
+        cells.push(<View key={i} className='w-10 h-full '>
         {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100  dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
