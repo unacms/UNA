@@ -14,6 +14,6 @@ export function Icon(props) {
     
     const IconComponent = IconSet[ic];
 
-    return !IconComponent ? <></> : <IconComponent  className={className} {...rest} />
+    return !IconComponent ? <></> : <IconComponent   className={className} {...rest} />
 }
 

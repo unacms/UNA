@@ -236,9 +236,9 @@ export function ButtonMenuActionDefault(props) {
 }
 
 export function ButtonMenuActionText(props) {
-    return <Button variant="text" size="sm" fullWidth solid rounded {...props} />
+    return <Button variant="text" size="sm" fullWidth rounded {...props} />
 }
 
 export function ButtonMenuCounter(props) {
-    return <Button variant="outline" size="xs" fullWidth solid rounded {...props} />
+    return <Button variant="outline" size="xs" fullWidth rounded {...props} />
 }

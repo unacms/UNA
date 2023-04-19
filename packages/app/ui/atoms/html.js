@@ -112,6 +112,9 @@ export default function ElementHtml(props) {
         data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
     }
 
+    if (!data)
+        return <></>
+
     return (
         <View className="w-full">
             <RenderHtml

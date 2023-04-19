@@ -32,7 +32,6 @@ export default function ElementCover(props) {
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width > 600? "4xl" : "3xl"} />
                 </View>
                     
-                    
                     <View className=' p-4 flex-col  lg:pl-56 lg:pb-8  justify-between lg:flex-row-reverse  '>
                         <View className=' mb-4  w-full lg:w-auto  '>
                             <View className=' w-full justify-end align-end  flex-row  space-x-2'>

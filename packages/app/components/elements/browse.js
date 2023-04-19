@@ -100,7 +100,7 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            <FlatList numColumns={numColumns} className='' style = {styles}
+            { data.unit != 'comments' && <FlatList numColumns={numColumns} className='' style = {styles}
                 data={data.data}
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mt-[1px] sm:mt-2 xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
@@ -108,10 +108,19 @@ export default function ElementBrowse(props) {
                 onEndReached ={handleEndReached} 
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
-                      <ActivityIndicator size="large" color={colors.primary}  />
+                      <View className='m-2'><ActivityIndicator  size="large" color={colors.primary}  /></View>
                     ) : null
                   }
             />
+            }
+            { data.unit == 'comments' && <View  style={styles.cardList}>
+                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
+                <View className="u-card-4 flex-1"></View>
+            </View>
+            }
         </View> 
     );
 
