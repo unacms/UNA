@@ -15,6 +15,7 @@ export default function UnitComments(props) {
     const [showImage, setShowImage] = useState(false)
     let level = props.level ? props.level : 0
     let current_last_child = props.last_child ? props.last_child : 0
+    let lvls= props.lvls ? props.lvls : []
     let data = '';
     let items = '';
     let view = '';
@@ -62,10 +63,13 @@ export default function UnitComments(props) {
 
     const levels = new Array(level);
     let cells = [];
+
+    let bNeed = (current_last_child != data.cmt_id ? true: false);
+    lvls[level] = bNeed;
     for (let i = 0; i < level; i++){
-        cells.push(<View className='w-10 h-full '>
-        {(current_last_child != data.cmt_id || i != level - 1) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
-        {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100  dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        cells.push(<View className='w-10 h-full '>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
+        {(lvls[i+1]) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+        {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100   dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
     let childs = Object.keys(items);
@@ -74,6 +78,7 @@ export default function UnitComments(props) {
         last_child = items[childs[childs.length-1]].id;
     }
     
+
     return (
         <View className='w-full'>
             <Modal id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
@@ -94,7 +99,7 @@ export default function UnitComments(props) {
                             <View className={sCommentClass+ '  py-2'} >
                                 <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-gray-500 px-1">·</Text>
+                                    <Text className="text-gray-500 px-1">·{level}--{lvls.toString()}cur{data.cmt_id}last{current_last_child}need {bNeed}</Text>
                                     <Time className="" ts={data.cmt_time}></Time>
                                 </View>
 
@@ -126,7 +131,7 @@ export default function UnitComments(props) {
             </View>
             {(items.length != 0 && view != 'flat') && <View className='relative flex-row'>    
                 <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <UnitComments level = {level+1} last_child = {last_child} key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
+                    {Object.keys(items).map(a => <UnitComments lvls = {lvls} level = {level+1} last_child = {last_child} key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
                 </View>
             </View> 
             }
