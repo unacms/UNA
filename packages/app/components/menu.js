@@ -51,7 +51,7 @@ export default function ElementMenu(oProps) {
         const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
         if(!oComponentsMap[sDisplayTypeItem])
             return;
-console.log(oProps);
+
         const ItemType = oComponentsMap[sDisplayTypeItem];
         return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : (!oProps.counter ? 'flex-auto' : '')}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
     });

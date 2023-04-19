@@ -147,8 +147,8 @@ export default function AtomProfile(oProps) {
     case 'unit_wo_info':
       sResult = (
         <Link haptics="Select" emulate={true} href={oProps.url}><View className=''>
-              <View className={" aspect-square rounded-full bg-gray-100 dark:bg-gray-700 items-center justify-around "}>
-                  {!oProps.url_avatar && <Icon size={iSizeWidth - 4} className={sSize + " text-primary/50 "}  icon="User"/>}
+              <View className={sSize + " aspect-square rounded-full bg-gray-100 dark:bg-gray-700 items-center justify-around "}>
+                  {!oProps.url_avatar && <Icon size={iSizeWidth/2} className={sSize + " text-primary/50 "} icon="User"/>}
                   {!!oProps.url_avatar && <Image
                       className={sSize+"  z-50"}
                       width={iSizeWidth}
