@@ -16,7 +16,7 @@ export default function Layout(props) {
         oComments = true;
     }
 
-    Object.keys(data.elements).forEach(key => {
+    Object.keys(data?.elements).forEach(key => {
         Object.keys(data.elements[key]).forEach(key2 => {
             Object.keys(data.elements[key][key2].content).forEach(key3 => {
                 if(data.elements[key][key2].content[key3].type == 'browse'){

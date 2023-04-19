@@ -32,7 +32,7 @@ export default function Dropdown(props) {
 
     if (!isShow){
         return (
-            <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, height:40, backgroundColor:colors.fieldBackground, borderRadius:0 }}
+            <PickerStyled  itemStyle={{fontSize:14, height:40, backgroundColor:colors.fieldBackground, borderRadius:0 }}
                 selectedValue={selectedVal}
                 onValueChange={(itemValue, itemIndex) =>
                 handleChange(itemValue, itemIndex)
@@ -47,7 +47,7 @@ export default function Dropdown(props) {
         return ( <View>
             <Pressable onPress={() => setShowImage(true)}><Button title={selectedText} /></Pressable>
             <Modal id={'dropdown'} onVisible={showImage} onClose={() => {setShowImage(null)}}>
-                <PickerStyled style={{backgroundColor:colors.fieldBackground}} itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground, color:colors.default }}
+                <PickerStyled itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground, color:colors.default }}
                     selectedValue={selectedVal}
                     onValueChange={(itemValue, itemIndex) =>
                     handleChange(itemValue, itemIndex)

@@ -35,7 +35,7 @@ export default function FormFieldFiles(props) {
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
         let a = [];
         let av = [];
-        if (!!result.data[0]){
+        if (result && !!result.data[0]){
             Object.keys(result.data[0]).forEach(function (k) {
                 a.push(result.data[0][k]);
                 av.push(result.data[0][k].file_id)

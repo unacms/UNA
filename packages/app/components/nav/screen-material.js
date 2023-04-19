@@ -11,7 +11,7 @@ export function NavScreenMaterial(params) {
     
     const _path = params.route.params.url2;
     console.log(_path);
-    const [pageData, setPageData] = useState(params.route.params.pageData);
+    const [pageData, setPageData] = useState('/' + params.route.params.pageData.params[0] == _path ? params.route.params.pageData : null);
 
     const isFocused2 = useIsFocused();
 
@@ -34,7 +34,7 @@ export function NavScreenMaterial(params) {
                 console.log('---',_path, '/' + params.route.params.pageData.params[0])
                 if (isFocused2 && _path && _path.startsWith('/')){                
                     const d = await getData(_path);
-                    //console.log("$$$$$$$$$$$$$$$$$MATER Screen load data:", params.route.params.pageData.params[0], "$$$$$",_path, "$$$$$");
+                    console.log("$$$$$$$$$$$$$$$$$MATER Screen load data:", params.route.params.pageData.params[0], "$$$$$",_path, "$$$$$", d?.props);
                     if (d?.props) {
                         setPageData (d?.props);
                     }
