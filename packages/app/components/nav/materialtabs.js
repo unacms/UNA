@@ -54,7 +54,7 @@ export function NavMaterialTabs(params) {
         };
       }}
     >
-      {params.data.slice(0, 3).map((tab, index) => (
+      {params.data.map((tab, index) => (
         <Tab.Screen
           key={`toptab-${index}`}
           name={`toptab-${index}`}

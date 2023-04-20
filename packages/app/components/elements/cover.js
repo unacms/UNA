@@ -34,20 +34,17 @@ export default function ElementCover(props) {
     if (props.data.profile.module == "bx_persons")
         sType = 'rounded-full';
 
-    if(Platform.OS == 'web') {
+   /* if(Platform.OS == 'web') {
         document.addEventListener("scroll", (event) => {
-            if (window.scrollY > 100){
+            if (window.scrollY > 500){
                 setIsSmall(true);
             }
             else{
                 setIsSmall(false);
             }
         });
-    }
-    else{
-        console.log(555)
-    }
-
+    }*/
+    
     return (
         isSmall ? 
         <View className='bg-neocard dark:bg-neocard-dark fixed top:64 z-50 w-full border-b border-neoborder dark:border-neoborder-dark' >
@@ -100,20 +97,3 @@ export default function ElementCover(props) {
         </View>
     );
 }
-/*
-{ !!data.actions_menu && <View className=''>
-                {data.actions_menu.items.map((tab, index) => (
-                     <Link href={tab.link} >
-                     <Text>{tab.title}</Text>
-                 </Link>
-                ))}
-
-            </View> }
-            
- { !!data.meta_menu && <View className=''>
-                {data.meta_menu.items.map((tab, index) => (
-                     <Html data={tab} />
-                ))}
-
-            </View> }
-            */
