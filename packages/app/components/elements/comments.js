@@ -18,14 +18,14 @@ export default function ElementComments(props) {
     let browse = props.browse;
     let form = props.form;
     let requestUrl = props.url;
-    let count = browse.data.total_count;
+
 
     //const [postData, setPostData] = useState(null);
     const [commentData, setCommentData] = useState({
         parentId: 0, 
         startFrom: browse.data.start, 
         perView: browse.data.per_view,
-        count: browse.data.count,
+        last_count: browse.data.count,
         moduleName: browse.data.module, 
         orderWay: browse.data.order,
         view: browse.data.view,
@@ -33,7 +33,8 @@ export default function ElementComments(props) {
         formText: '',
         formAuthor: '',
         postData: null,
-        num:0
+        num: 0,
+        total_count: browse.data.total_count
     });
 
     let immutable = props.form? props.form.request.immutable : false;
@@ -59,13 +60,12 @@ export default function ElementComments(props) {
     const addCommentData =  (params) => {
         if (!params.postData)
             params.postData = null;
-            //, {num:commentData.num+1}
-        setCommentData(Object.assign({}, commentData, params, {count:commentData.count+1, num:commentData.num+1}));
+        setCommentData(Object.assign({}, commentData, params));
     } 
     
     const onFormSubmit = (formData, d) => {
         Keyboard.dismiss();
-        addCommentData({postData: formData});
+        addCommentData({postData: formData, total_count: commentData.total_count + 1, num: commentData.num + 1});
     }
 
     // handle errors and loading 
@@ -82,7 +82,6 @@ export default function ElementComments(props) {
 
     if (dynamicData && dynamicData.data.browse && dynamicData.data.browse.insert){
         browse = parseData(browse, dynamicData);
-        count = dynamicData.data.browse.data.total_count;
     }
     
     function parseData (browse, dynamicData) {
@@ -163,7 +162,7 @@ export default function ElementComments(props) {
         if(sResponse && sResponse.data != undefined){
             browse.data.data = [];
             browse = parseData(browse, sResponse);
-            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start,count: sResponse.data.browse.data.count, postData:null})
+            addCommentData({startFrom: 0, orderWay: orderWay, startFrom: sResponse.data.browse.data.start, last_count: sResponse.data.browse.data.count, postData:null})
             
            
         }
@@ -175,7 +174,10 @@ export default function ElementComments(props) {
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             browse = parseData(browse, sResponse);
-            addCommentData({startFrom: sResponse.data.browse.data.start, count: sResponse.data.browse.data.count, postData:null})
+            let iCount = sResponse.data.browse.data.count;
+            if (sResponse.data.browse.data.start == 0)
+                iCount = 0;
+            addCommentData({startFrom: sResponse.data.browse.data.start, last_count: iCount, postData:null})
         }
     }
 
@@ -183,41 +185,27 @@ export default function ElementComments(props) {
         text = stripTags(text);
         form.data.inputs.cmt_parent_id.value = id;
         form.data.reset = true;
+        if(Platform.OS == 'web')
+            document.getElementsByClassName("form-control-cmt_text")[0].getElementsByTagName("textarea")[0].focus();
+        
         addCommentData({parentId:id, formAuthor: author, formText: text});
     }
 
     const handleCancel =  async () => {
         handleReply(0, '', '')
     }
-    /*
 
-    const [keyboardStatus, setKeyboardStatus] = useState(false);
-
-    useEffect(() => {
-        const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-          setKeyboardStatus(true);
-         // setPostData(null);
-        });
-        const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-          setKeyboardStatus(false);
-         // setPostData(null);
-        });
-    
-        return () => {
-          showSubscription.remove();
-          hideSubscription.remove();
-        };
-      }, []);
-*/
     let sortItems = [
         {label: 'Newest first', value: 'desc'},
         {label: 'Oldest first', value: 'asc'}
     ];
 
+    console.log('----------', commentData)
+
     let cmtsBrs = <View className="px-4"><Browse {...browse} handleReply={handleReply}  /></View> 
-    let cmtsMore = (commentData.count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
+    let cmtsMore = (commentData.last_count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
-        <Text className='text-sm font-bold text-gray-900 dark:text-gray-50'>Comments ({count})</Text>
+        <Text className='text-sm font-bold text-gray-900 dark:text-gray-50'>Comments ({commentData.total_count})</Text>
        
            
             <View className='w-40'>
@@ -304,14 +292,14 @@ export default function ElementComments(props) {
             cmts=<></>
     }
     else{ 
-        if (commentData.count> 0){
+        if (commentData.total_count > 0){
             cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
                 <View style={styles.list} className=' w-full '>
                     {cmtsHeader}
                     {cmtsBrs}
                     {cmtsMore}
-                    <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
-                        <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolute' : '') + ' mt-4 bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
+                    <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTopx:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                        <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolutex' : '') + ' mt-4 bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
                             {cmtForm}
                         </View>
                     </View>
@@ -321,8 +309,8 @@ export default function ElementComments(props) {
         else{
             cmts = <View style={styles.browse} className="bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full sm:rounded-b-lg overflow-hidden sm:border-x sm:border-b border-neoborder dark:border-neoborder-dark">
             <View style={styles.list} className=' w-full '>
-                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTop:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
-                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolute' : '') + ' bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
+                <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTopx:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                    <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolutex' : '') + ' bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
                         {cmtForm}
                     </View>
                 </View>
