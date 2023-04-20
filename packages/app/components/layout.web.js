@@ -45,8 +45,7 @@ export default function Layout(props) {
                 <View className='w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
                   {loading ? skeleton :<View className='w-full mx-auto'>
                         {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
-                        {(bTabsPresent) && <View className='w-full'><NavMaterialTabs data = {props.data.menu.items} /></View>
-                        }
+                        {(bTabsPresent) && <View className='w-full'><NavMaterialTabs data = {props.data.menu.items} /></View>}
                         {(!bTabsPresent) && <Page data={props.data}/>}
                     </View>}
                 </View>

@@ -6,6 +6,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Cover from 'app/components/elements/cover';
 import { useTheme } from '@react-navigation/native';
+import LayoutDataContext from 'app/context/layout';
 
 export function NavScreen(params) {
 
@@ -52,16 +53,16 @@ export function NavScreen(params) {
         }, 100);*/
     }
     if (isTabs){   
-        return (<View className='flex-1'>
+        return (<LayoutDataContext><View className='flex-1 '>
             {(isCover) && <Cover data={pageData.data.cover_block}/>}
             <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
-        </View>);
+        </View></LayoutDataContext>);
     }
     if (!isDrawer && !isTabs){
-        return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
+        return <LayoutDataContext><View className='w-full' style={{  alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
             { !!pageData && <View className='w-full'><All path={_path} {...pageData} /></View> }
             {/*!pageData && <Stack.Screen options={{'title': "Loading..."}} /><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} />*/}
-        </View>
+        </View></LayoutDataContext>
     }
     return <></>
 }

@@ -100,7 +100,7 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            { data.unit != 'comments' && <FlatList numColumns={numColumns} className='' style = {styles}
+            { data.unit != 'comments' && <FlatList numColumns={numColumns} className=' bg-blue-500' style = {styles}
                 data={data.data}
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mt-[1px] sm:mt-2 xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}

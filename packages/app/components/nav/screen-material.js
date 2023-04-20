@@ -54,15 +54,14 @@ export function NavScreenMaterial(params) {
             params.navigation.setOptions({ headerShown: true })
         }, 100);*/
     }
-    if (isTabs){   
+    /*if (isTabs){   
         return (<View className='flex-1'>
             {(isCover) && <Cover data={pageData.data.cover_block}/>}
-          
         </View>);
-    }
+    }*/
     /*<Stack.Screen options={{'title': pageData?.data?.title}} />*/
     if (!isDrawer && !isTabs){
-        return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
+        return <View className='w-full' style={{alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
             {!!pageData && <View className=' w-full'><All path={_path} {...pageData} /></View> }
         </View>
     }

@@ -51,11 +51,9 @@ export default function ElementComments(props) {
 
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-        //console.log("prepare:" + requestUrl + JSON.stringify({...def, ...params}))
         return requestUrl + JSON.stringify({...def, ...params});
     }
     
-
     // add new values to state
     const addCommentData =  (params) => {
         if (!params.postData)
@@ -200,8 +198,6 @@ export default function ElementComments(props) {
         {label: 'Oldest first', value: 'asc'}
     ];
 
-    console.log('----------', commentData)
-
     let cmtsBrs = <View className="px-4"><Browse {...browse} handleReply={handleReply}  /></View> 
     let cmtsMore = (commentData.last_count == commentData.perView ) && <View className='ml-2 mb-2'><Button align="start" title={"Show more comments"} size ="sm" variant="link" onPress={() => handleMore()} /></View>
     let cmtsHeader = <Row className='mb-4 mx-4 items-center justify-between '>
@@ -298,7 +294,7 @@ export default function ElementComments(props) {
                     {cmtsHeader}
                     {cmtsBrs}
                     {cmtsMore}
-                    <View className='relative ' ref={viewRef} onLayout={handleLayout} style={{marginTopx:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
+                    <View className='relative' ref={viewRef} onLayout={handleLayout} style={{marginTopx:((formSize.windowHeight < formSize.pageY) ? formSize.height : 0)}}>
                         <View ref={viewFormRef}  className={((formSize.windowHeight < formSize.pageY) ? 'absolutex' : '') + ' mt-4 bottom-0 z-50 w-full bg-neocard dark:bg-neocard-dark'} style={{width:formSize.width}}>
                             {cmtForm}
                         </View>
