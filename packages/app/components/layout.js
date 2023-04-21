@@ -42,9 +42,10 @@ export default function Layout(props) {
                 <View className = {sClassName}>
                     {props.children}
                 </View>
+                { (oComments != null ) &&   <BottomBar/>}
             </ScrollView>
             }
-            { (oComments != null ) &&   <BottomBar/>}
+           
             </View>
 
     );
