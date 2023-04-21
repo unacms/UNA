@@ -1,10 +1,15 @@
+import { useRef } from 'react';
+
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { View } from 'app/design/view';
+import Redirect from 'app/ui/atoms/redirect';
 
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 
 export default function MenuItemButton(oProps) {
+    const redirectdRef = useRef();
+
     const oIconAliases = {
         'item-comment': 'ChatTeardropDots',
         'item-share': 'ShareFat'
@@ -28,7 +33,17 @@ export default function MenuItemButton(oProps) {
             break;
 
         default:
-            const handleClick = () => {
+            const handleClick = (event) => {
+                if(!oProps?.link && !oProps.params?.onclick)
+                    return;
+
+                event.preventDefault();
+
+                if(oProps?.link) {
+                    console.log(123);
+                    redirectdRef.current.redirect(oProps?.link);
+                }
+
                 if(oProps.params?.onclick)
                     oProps.params.onclick(event, oProps);
             };
@@ -36,7 +51,10 @@ export default function MenuItemButton(oProps) {
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
             sContent = (
-                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} />
+                <View className="flex-auto">
+                    <Redirect ref={redirectdRef} />
+                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} />
+                </View>
             );
     }
     
