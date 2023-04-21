@@ -44,7 +44,7 @@ export default function Layout(props) {
                 </View>
             </ScrollView>
             }
-            { (oComments != null ) &&   <View><BottomBar/></View>}
+            { (oComments != null ) &&   <BottomBar/>}
             </View>
 
     );
