@@ -16,7 +16,7 @@ export function NavMaterialTabs(params) {
             <Text
               style={{
                 color: focused ? colors.primary : colors.text,
-                backgroundColor:   focused ? colors.activeTabBackground : colors.tabsBackground,
+                backgroundColor:   focused ? colors.activeTabBackground : colors.barsBackground,
                 fontSize: 14,
                 fontWeight: '600',
                 paddingVertical: 8,
@@ -42,8 +42,9 @@ export function NavMaterialTabs(params) {
           },
           tabBarStyle: {
             borderRadius: 0,
-            backgroundColor: colors.card,
+
             paddingHorizontal: 4,
+            backgroundColor: colors.barsBackground, 
             
           },
           tabBarItemStyle: {

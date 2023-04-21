@@ -120,6 +120,7 @@ export const settingsDefault = {
       'app-messages':'ChatCircleText',
       'app-usermenu':'UserCircle',
       'app-notifications':'Bell',
+      'app-plus':'Plus',
       'left': 'ArrowLeft',
       'right': 'ArrowRight',
       'notifications': 'Bell',
@@ -151,8 +152,13 @@ export const settingsDefault = {
         icon: 'users',
       },
       {
-        title: 'Notifications',
+        title: 'Add',
         url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
+        icon: 'app-plus',
+      },
+      {
+        title: 'Notifications',
+        url: '/notifications-view', //'/view-persons-profile/dr-andrey-yasko-phd',
         icon: 'app-notifications',
       },
       {

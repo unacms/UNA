@@ -42,7 +42,7 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard mt-1 sm:mt-0 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border-y small:border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
+        <View className="bg-neocard mt-1 sm:mt-0 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border-y sm:border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
@@ -68,11 +68,10 @@ function DefaultUnit(data) {
                     </View>
                 }    
                 </View>
-                :   <View>
-                        <View className="flex-col gap-3    relative">
+                :  <View className="flex-col relative w-full">
                             <Html data={data.content.text} />
                         </View>
-                    </View>
+                    
                 }
                
         </View>

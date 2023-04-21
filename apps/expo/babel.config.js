@@ -6,6 +6,7 @@ module.exports = function (api) {
         { jsxRuntime: 'automatic' }
     ]],
     plugins: [
+      '@babel/plugin-proposal-export-namespace-from',
       'react-native-reanimated/plugin',
       'transform-inline-environment-variables',
       'nativewind/babel',

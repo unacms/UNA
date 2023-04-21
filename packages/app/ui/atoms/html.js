@@ -45,9 +45,12 @@ export default function ElementHtml(props) {
             whiteSpace: 'normal',
             color: '#374151',
             fontSize: 16,
-            lineHeight: 22,
-            marginLeft: 10,
-            marginRight: 10,
+            lineHeight: 23,
+            marginLeft: 0,
+            marginRight: 0,
+            marginTop: 0,
+            marginBottom: 0,
+            paddingTop:0
         },
         a: {
             color: 'red'
@@ -69,6 +72,7 @@ export default function ElementHtml(props) {
     const classesStyles = {
         firstP: {
             marginTop: 0,
+            color: 'red'
         },
         lastP:{
             marginBottom: 0, 
@@ -81,7 +85,9 @@ export default function ElementHtml(props) {
             body: {
                 color: '#d1d5db',
             },
-            
+            p:{
+                marginTop: 0,
+            },
             a: {
                 color: 'green'
             },
@@ -117,7 +123,7 @@ export default function ElementHtml(props) {
         return <></>
 
     return (
-        <View className="w-full">
+        
             <RenderHtml
                 renderers={renderers}
                 WebView={WebView}
@@ -147,6 +153,6 @@ export default function ElementHtml(props) {
                 source={{html: data}}
                 domVisitors={domVisitors}
             />
-        </View>
+      
     );
 }

@@ -6,6 +6,8 @@ const withTM = require('next-transpile-modules')([
   'zeego',
   'dripsy',
   '@dripsy/core',
+  "@shopify/flash-list",
+  "recyclerlistview",
   'moti',
   'nativewind',
   'app',

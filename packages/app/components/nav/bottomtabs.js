@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
 import { Icon } from 'app/ui/atoms/icon';
 import { NavScreen } from 'app/components/nav/screen'
-import { useTheme } from '@react-navigation/native';
+
+import { Theme } from 'app/design/theme';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 
@@ -21,8 +22,8 @@ export function NavBottomTabs(params) {
     let iconWidth = 24;
     let iconHeight = 24;
 
-    const { colors } = useTheme();
-
+    const { colors } = Theme();
+  console.log('----xx', colors)
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
     return (
         <Tab.Navigator
@@ -70,7 +71,7 @@ export function NavBottomTabs(params) {
 
 function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
-    const { colors } = useTheme();
+    const { colors } = Theme();
   
     if (navigation.isFocused() && route.name === '/pages') {
       return (

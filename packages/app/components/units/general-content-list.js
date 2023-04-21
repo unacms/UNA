@@ -37,7 +37,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         let mw = w - 2 * _margin2;
         
         styles = StyleSheet.create({
-          card: {
+          /*card: {
             width: width,
             borderRadius: 0,
             marginLeft:0,
@@ -45,11 +45,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             marginTop:8,
             
           
-          },
-         card_image: {
+          },*/
+         /*card_image: {
              width:width-2,
              borderRadius: 0,
-         },    
+         },  */  
         });
     }
 
@@ -71,9 +71,9 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     }
 
     function groupUnit(){
- 
+ // style={styles.card}
         return (
-            <View className="u-card-4" style={styles.card}>
+            <View className="u-card-4">
                 <Link href={data.url}>    
                 <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">

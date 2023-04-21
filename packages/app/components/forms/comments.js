@@ -27,10 +27,10 @@ export default function FormComments(props) {
         </View>
         
         <View className=''>
-        {props.children[6]}
+            {props.children[6]}
         </View>
     </Row>
-    { !!formContextData?.data && formContextData.data }
+    { !!formContextData?.data && <View className='mt-4 '>{formContextData.data}</View> }
     <View className='hidden'>{props.children[7]}</View>
 </View>
 }

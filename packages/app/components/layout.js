@@ -30,6 +30,7 @@ export default function Layout(props) {
     const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
     return (
+        
             <View className="h-full">
             { isBrowse && <View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
                 <View className = {sClassName}>
@@ -45,5 +46,6 @@ export default function Layout(props) {
             }
             { (oComments != null ) &&   <View><BottomBar/></View>}
             </View>
+
     );
 }

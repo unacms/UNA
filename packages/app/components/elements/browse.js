@@ -1,6 +1,6 @@
 import Unit from '../unit';
 import { useState, useEffect } from 'react';
-import { View, FlatList  } from 'app/design/view'
+import { View, FlatList, FlashList } from 'app/design/view'
 
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
@@ -92,7 +92,7 @@ export default function ElementBrowse(props) {
     }
 
     return (
-        (data.data.length > 0) && <View className='w-full' onLayout={handleLayout}  >
+        (data.data.length > 0) && <View className='w-full h-full ' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -100,9 +100,9 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            { data.unit != 'comments' && <FlatList numColumns={numColumns} className=' ' style = {styles}
+            { data.unit != 'comments' && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}><FlashList estimatedItemSize={200} numColumns={numColumns} className=' ' horizontal={false} 
                 data={data.data}
-                renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-1/3 mb-2 pr-2 pl-2' : 'mt-1 sm:mt-2 ' + (data.unit != 'feed' ? ' pr-1 pl-1 ': '') + ' xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'mt-1 sm:mt-2 ' + (data.unit != 'feed' ? ' px-4  w-full': '') + '  xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
                 onEndReached ={handleEndReached} 
@@ -111,7 +111,7 @@ export default function ElementBrowse(props) {
                       <View className='m-2'><ActivityIndicator  size="large" color={colors.primary}  /></View>
                     ) : null
                   }
-            />
+            /></View>
             }
             { data.unit == 'comments' && <View  style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@gorhom/bottom-sheet": "^4",
     "@native-html/iframe-plugin": "^2.6.1",
     "@phosphor-icons/react": "^2.0.6",
@@ -13,6 +14,7 @@
     "@react-navigation/material-top-tabs": "6.6.2",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
+    "@shopify/flash-list": "1.4.0",
     "app": "*",
     "expo": "~48.0.11",
     "expo-document-picker": "~11.2.2",
@@ -54,6 +56,7 @@
     "react-native-web": "~0.18.9",
     "react-native-webview": "^12.0.2",
     "react-quill": "^2.0.0",
+    "showtime-tab-view": "^0.1.2",
     "swr": "^2.0.3"
   },
   "devDependencies": {

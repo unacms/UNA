@@ -130,12 +130,12 @@ export default function FormFieldFiles(props) {
     function GhostsList() {
         return (
             imageSource.images?.map((img, index) => (
-                <View key={'file-'+index} className='mr-2 mb-2 h-20 w-20' >
+                <View key={'file-'+index} className='h-20 w-20 mr-2' >
                     { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
-                    { img !='' && <View className='absolute -top-2 -right-5 w-10 text-center mx-auto'>
-                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" rounded size ="xs" />
+                    { img !='' && <View className='absolute top-0 right-0 w-8 text-center mx-auto'>
+                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
                     </View> }
                 </View>
             ))
@@ -156,7 +156,7 @@ export default function FormFieldFiles(props) {
     let button = <Button  startDecorator={"plus"} title={"Select " + props.name} onPress={selectImage} />
     if (typeof setFormContextData === "function" &&  (!formContextData || formContextData?.imageSource!= imageSource)){
         setTimeout(() => {
-            setFormContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap'>
+            setFormContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap '>
             <GhostsList/>
             <PrevList/>
         </Row>})
@@ -168,7 +168,7 @@ export default function FormFieldFiles(props) {
             <View className="mr-2 mb-2" >
                 {button}
             </View>
-            <Row className='flex-wrap'>
+            <Row className='flex-wrap gap-2'>
                 <GhostsList/>
                 <PrevList/>
             </Row>

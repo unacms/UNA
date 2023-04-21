@@ -15,7 +15,7 @@ function CoverMenu(){
         <View className=' w-full lg:w-auto  mt-2 lg:mt-0'>
             <View className=' w-full justify-end align-end  flex-row  space-x-2'>
                 <Button title="Follow" variant="primary" fullWidth />
-                <Button title="Remove" variant="default" fullWidth/>
+                <Button title="Message" variant="default" fullWidth/>
             </View>
         </View>
     );
@@ -73,20 +73,20 @@ export default function ElementCover(props) {
                 </View>
                 <View className='w-full relative  '>
                         <View className={sType + " absolute left-0  -top-16 lg:-top-24 left-4 h-32 w-32 lg:h-48 lg:w-48 overflow-hidden border--2 border-neocard dark:border-neocard-dark "} >
-                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width > 600? "4xl" : "3xl"} />
+                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 1024? "4xl" : "3xl"} />
                 </View>
                     
-                    <View className='  lg:p-4 flex-col  lg:pl-56 lg:pb-8  justify-between lg:flex-row  '>
-                    <View className='flex-col lg:gap-2 w-full lg:w-auto ml-40 lg:ml-0'>
+                    <View className='  lg:p-4 flex-col-reverse  lg:pl-56 lg:pb-8  justify-between lg:flex-row  '>
+                    <View className='flex-col lg:gap-2 w-full lg:w-auto ml-4 lg:ml-0'>
                                 <H1C className="font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
                                     <Row className='flex-row space-x-1'>
                                         <Text className="font-bold tracking-tight  text-gray-800 dark:text-gray-200">@johndoe</Text>
                                         <Text className="text-gray-400 dark:text-gray-60">·</Text>
                                         <Text className=" tracking-tight  text-gray-800 dark:text-gray-200">256 Followers</Text>
                                     </Row>
-                                    <Text className='lg:hidden'>{stripTags(data.profile.info.description)}</Text>
+                                    <Text className='lg:hidden text-gray-800 dark:text-gray-200 mt-2'>{stripTags(data.profile.info.description)}</Text>
                         </View>
-                        <View className='mx-4 lg:mx-0 mb-4  lg:w-auto  '>
+                        <View className='mx-4 lg:mx-0 mb-4  w-auto  ml-40 lg:ml-0'>
                             <CoverMenu/>
                         </View>
                         
