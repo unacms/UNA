@@ -4,13 +4,13 @@ import {
   KeyboardAvoidingView,
   TextInput,
   StyleSheet,
-  Text,
+
   Platform,
   TouchableWithoutFeedback,
   Button,
   Keyboard,
 } from 'react-native';
-
+import { Text } from 'app/design/typography'
 
 export default function Layout(props) {
     let data =props.data;
@@ -38,15 +38,15 @@ export default function Layout(props) {
 
     const styles = StyleSheet.create({
         container: {
-          flex: 1,
+        
         },
         inner: {
           padding: 24,
-          flex: 1,
+         
           justifyContent: 'space-around',
         },
         header: {
-          fontSize: 36,
+          fontSize: 16,
           marginBottom: 48,
         },
         textInput: {
@@ -54,6 +54,7 @@ export default function Layout(props) {
           borderColor: '#000000',
           borderBottomWidth: 1,
           marginBottom: 36,
+          backgroundColor:'red'
         },
         btnContainer: {
           backgroundColor: 'white',
@@ -62,18 +63,39 @@ export default function Layout(props) {
       });
       
       return (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}>
+        
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.inner}>
               <Text style={styles.header}>Header</Text>
-              <TextInput placeholder="Username" style={styles.textInput} />
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <Text style={styles.header}>Header</Text>
+              <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}>
+              <TextInput  placeholder="Username" style={styles.textInput} />
+              </KeyboardAvoidingView>
               <View style={styles.btnContainer}>
                 <Button title="Submit" onPress={() => null} />
               </View>
             </View>
           </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+       
       );
 }
