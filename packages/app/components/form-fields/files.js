@@ -130,7 +130,7 @@ export default function FormFieldFiles(props) {
     function GhostsList() {
         return (
             imageSource.images?.map((img, index) => (
-                <View key={'file-'+index} className='h-20 w-20 mr-2' >
+                <View key={'file-'+index} className='h-20 w-20 mr-2 mb-2' >
                     { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
