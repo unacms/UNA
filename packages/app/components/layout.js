@@ -1,6 +1,6 @@
 import { View, ScrollView } from 'app/design/view'
 import BottomBar from 'app/ui/molecules/bottombar';
-
+import { KeyboardAvoidingView } from 'react-native';
 
 export const siteTitle = 'NEO';
 
@@ -30,7 +30,7 @@ export default function Layout(props) {
     const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
     return (
-        
+        <KeyboardAvoidingView>
             <View className="h-full">
             { isBrowse && <View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
                 <View className = {sClassName}>
@@ -46,6 +46,6 @@ export default function Layout(props) {
             }
             { (oComments != null ) &&   <View><BottomBar/></View>}
             </View>
-
+            </KeyboardAvoidingView>
     );
 }
