@@ -109,7 +109,6 @@ export default function FormFieldFiles(props) {
         }
     };
 
-   // console.log(11111111, 5555)
 
     if (formContextData?.action === 'open_files'){
         selectImage();

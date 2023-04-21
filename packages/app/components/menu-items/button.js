@@ -40,7 +40,6 @@ export default function MenuItemButton(oProps) {
                 event.preventDefault();
 
                 if(oProps?.link) {
-                    console.log(123);
                     redirectdRef.current.redirect(oProps?.link);
                 }
 

@@ -124,7 +124,9 @@ export default function UnitComments(props) {
                                     ))}
                                 </Row>
                                 </View>
-                            <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                            <View className='w-24'>
+                                <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                            </View>
                         </View>
                     </View>
                 </View>

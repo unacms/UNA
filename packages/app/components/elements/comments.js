@@ -19,8 +19,6 @@ export default function ElementComments(props) {
     let form = props.form;
     let requestUrl = props.url;
 
-
-    //const [postData, setPostData] = useState(null);
     const [commentData, setCommentData] = useState({
         parentId: 0, 
         startFrom: browse.data.start, 
@@ -62,7 +60,6 @@ export default function ElementComments(props) {
     } 
     
     const onFormSubmit = (formData, d) => {
-        Keyboard.dismiss();
         addCommentData({postData: formData, total_count: commentData.total_count + 1, num: commentData.num + 1});
     }
 
@@ -72,7 +69,9 @@ export default function ElementComments(props) {
     if(form){
         form.data.inputs.cmt_parent_id.value = commentData.parentId;
         form.data.reset = true;
+
     }
+
     if (dynamicData && dynamicData.data.form){
         form = dynamicData.data.form;
         form.data.reset = true;
@@ -185,8 +184,7 @@ export default function ElementComments(props) {
         form.data.reset = true;
         if(Platform.OS == 'web')
             document.getElementsByClassName("form-control-cmt_text")[0].getElementsByTagName("textarea")[0].focus();
-        
-        addCommentData({parentId:id, formAuthor: author, formText: text});
+        addCommentData({parentId:id, formAuthor: author, formText: text,  num: commentData.num + 1});
     }
 
     const handleCancel =  async () => {
@@ -235,7 +233,7 @@ export default function ElementComments(props) {
                                 
                 
                         </View>
-                        <View className=" right-0 t-0 ">
+                        <View className=" right-0 t-0">
                             <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />
                         </View>
                     </Row>
@@ -247,9 +245,9 @@ export default function ElementComments(props) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
     if(Platform.OS !== 'web') {
         
-        if (!layoutData || layoutData[1] != commentData.num){
+        if (!layoutData || layoutData[1] != commentData.num || layoutData[2] != form.data.inputs.cmt_parent_id.value){
             setTimeout(() => {
-                let a = [cmtForm, commentData.num];
+                let a = [cmtForm, commentData.num, form.data.inputs.cmt_parent_id.value];
                 setLayoutData(a)
             }, 1000);
         }

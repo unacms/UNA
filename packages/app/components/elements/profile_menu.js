@@ -15,12 +15,12 @@ export default function ElementProfileMenu(props) {
     }
     
     const handleLayout = (event) => {
-        console.log(123)
+
         windowHeight = Dimensions.get('window').height;
         if(Platform.OS === 'web') {
             styles = {height: windowHeight - 64}
         }
-        console.log(styles)
+
     }
 
     return (

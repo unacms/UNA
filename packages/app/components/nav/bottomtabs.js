@@ -23,7 +23,6 @@ export function NavBottomTabs(params) {
     let iconHeight = 24;
 
     const { colors } = Theme();
-  console.log('----xx', colors)
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
     return (
         <Tab.Navigator

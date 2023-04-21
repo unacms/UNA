@@ -66,7 +66,6 @@ export function NavScreen(params) {
     if (!isDrawer && !isTabs){
         return <LayoutDataContext><View className='w-full' style={{  alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
             { !!pageData && <View className='w-full'><All path={_path} {...pageData} /></View> }
-            {/*!pageData && <Stack.Screen options={{'title': "Loading..."}} /><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} />*/}
         </View></LayoutDataContext>
     }
     return <></>

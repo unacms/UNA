@@ -10,7 +10,7 @@ export function NavScreenMaterial(params) {
     const { colors } = useTheme();
     
     const _path = params.route.params.url2;
-    console.log(_path);
+
     const [pageData, setPageData] = useState('/' + params.route.params.pageData.params[0] == _path ? params.route.params.pageData : null);
 
     const isFocused2 = useIsFocused();
