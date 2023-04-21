@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { PageData } from 'app/context/page';
 import { View } from 'app/design/view';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
@@ -169,7 +169,7 @@ export default function ElementScore(oProps) {
             <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
                 <ButtonMenuCounter startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
                 <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             </View>
         );
