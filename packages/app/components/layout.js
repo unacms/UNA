@@ -1,16 +1,9 @@
-import React from 'react';
-import {
-  View,
-  KeyboardAvoidingView,
-  TextInput,
-  StyleSheet,
+import { View, ScrollView } from 'app/design/view'
+import BottomBar from 'app/ui/molecules/bottombar';
+import { KeyboardAvoidingView } from 'react-native';
 
-  Platform,
-  TouchableWithoutFeedback,
-  Button,
-  Keyboard,
-} from 'react-native';
-import { Text } from 'app/design/typography'
+export const siteTitle = 'NEO';
+
 
 export default function Layout(props) {
     let data =props.data;
@@ -36,66 +29,26 @@ export default function Layout(props) {
 
     const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
-    const styles = StyleSheet.create({
-        container: {
+    return (
         
-        },
-        inner: {
-          padding: 24,
-         
-          justifyContent: 'space-around',
-        },
-        header: {
-          fontSize: 16,
-          marginBottom: 48,
-        },
-        textInput: {
-          height: 40,
-          borderColor: '#000000',
-          borderBottomWidth: 1,
-          marginBottom: 36,
-          backgroundColor:'red'
-        },
-        btnContainer: {
-          backgroundColor: 'white',
-          marginTop: 12,
-        },
-      });
-      
-      return (
-        
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.inner}>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <Text style={styles.header}>Header</Text>
-              <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}>
-              <TextInput  placeholder="Username" style={styles.textInput} />
-              </KeyboardAvoidingView>
-              <View style={styles.btnContainer}>
-                <Button title="Submit" onPress={() => null} />
-              </View>
+            <View className="h-full">
+            { isBrowse && <View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
+                <View className = {sClassName}>
+                    {props.children}
+                </View>
             </View>
-          </TouchableWithoutFeedback>
-       
-      );
+            }
+            { !isBrowse && <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
+                <View className = {sClassName}>
+                    {props.children}
+                </View>
+            </ScrollView>
+            }
+            { (oComments != null ) &&   <View><KeyboardAvoidingView
+            keyboardVerticalOffset={147}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          ><BottomBar/></KeyboardAvoidingView></View>}
+            </View>
+
+    );
 }
