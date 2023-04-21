@@ -7,7 +7,7 @@ import { MentionInput, MentionInputMulti } from 'app/design/controls'
 import { useState, useRef, useEffect  } from 'react';
 import { fetcher } from '../../lib/fetcher';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 export default function FormFieldText(props) {
     
     let rules = {};
@@ -125,13 +125,9 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props}>
-          <KeyboardAwareScrollView
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          extraScrollHeight={100}
-          enableAutomaticScroll={(Platform.OS === 'ios')}
-        >
+         
             {input}
-          </KeyboardAwareScrollView>
+          
         </Field>
     );
 }

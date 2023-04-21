@@ -277,8 +277,14 @@ export default function ElementComments(props) {
     if(Platform.OS !== 'web') {
 
         let heightS = pageHeight * 0.9 - 30;
-        //styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
-        
+        styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
+        if (commentData.total_count > 0)
+            cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
+                {cmtsHeader}
+                {cmtsBrs}
+                {cmtsMore}
+            </View>
+        else 
             cmts=<></>
     }
     else{ 
