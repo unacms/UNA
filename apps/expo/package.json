@@ -42,6 +42,7 @@
     "react-native-gesture-handler": "~2.9.0",
     "react-native-html-parser": "^0.1.0",
     "react-native-ios-context-menu": "^1.15.3",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-multibar": "^1.1.5",
     "react-native-pager-view": "6.1.2",
     "react-native-paper": "^5.5.2",
