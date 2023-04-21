@@ -7,6 +7,7 @@ import { NavMaterialTabs } from 'app/components/nav/materialtabs'
 import Cover from 'app/components/elements/cover';
 import { useTheme } from '@react-navigation/native';
 import LayoutDataContext from 'app/context/layout';
+import { ScrollView } from 'dripsy';
 
 export function NavScreen(params) {
 
@@ -53,9 +54,11 @@ export function NavScreen(params) {
         }, 100);*/
     }
     if (isTabs){   
-        return (<LayoutDataContext><View className='flex-1 '>
-            {(isCover) && <Cover data={pageData.data.cover_block}/>}
+        return (<LayoutDataContext><View className='flex-1'>
+            {(isCover) && <Cover data={pageData.data.cover_block}>
             <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
+        </Cover>}
+           
         </View></LayoutDataContext>);
     }
     if (!isDrawer && !isTabs){
