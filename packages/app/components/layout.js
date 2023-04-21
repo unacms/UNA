@@ -1,7 +1,12 @@
 import { View, ScrollView } from 'app/design/view'
 import BottomBar from 'app/ui/molecules/bottombar';
 import { KeyboardAvoidingView } from 'react-native';
-
+import {
+    Platform,
+    StyleSheet,
+   
+    Keyboard,
+  } from 'react-native';
 export const siteTitle = 'NEO';
 
 
@@ -29,8 +34,38 @@ export default function Layout(props) {
 
     const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
 
+    const styles = StyleSheet.create({
+        container: {
+          flex: 1,
+        },
+        inner: {
+          padding: 24,
+          flex: 1,
+          justifyContent: 'space-around',
+        },
+        header: {
+          fontSize: 36,
+          marginBottom: 48,
+        },
+        textInput: {
+          height: 40,
+          borderColor: '#000000',
+          borderBottomWidth: 1,
+          marginBottom: 36,
+        },
+        btnContainer: {
+          backgroundColor: 'white',
+          marginTop: 12,
+        },
+      });
+
+      
     return (
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+        
+        >
             <View className="h-full">
             { isBrowse && <View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
                 <View className = {sClassName}>
