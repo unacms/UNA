@@ -58,6 +58,9 @@ export function NavScreen(params) {
             {(isCover) && <Cover data={pageData.data.cover_block}>
             <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
         </Cover>}
+        {(!isCover) && 
+            <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
+        }
            
         </View></LayoutDataContext>);
     }

@@ -53,38 +53,7 @@ export default function ElementCover(props) {
       contentContainerStyle={{ paddingBottom: bottom }}
     >
       {props.children}
-      <View style={{ padding: 16 }}>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-        <Text>Some body text...</Text>
-      </View>
+      
     </ScrollViewWithHeaders>
       );
 
