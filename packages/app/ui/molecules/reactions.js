@@ -15,7 +15,6 @@ import {
 } from 'app/design/dropdown';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
-import SliderBottom from 'app/ui/molecules/slider-bottom';
 
 export default function ElementReactions(oProps) {
     const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200';
@@ -26,7 +25,7 @@ export default function ElementReactions(oProps) {
         joy: 'Smiley',
         surprise: 'SmileyXEyes',
         sadness: 'SmileySad',
-        anger: 'SmileyAngry'
+        anger: Platform.OS === 'web' ? 'SmileyAngry' : 'SmileyNervous',
     };
 
     const getName = (sName) => {
@@ -305,17 +304,13 @@ export default function ElementReactions(oProps) {
             sAction = (
                 <View>
                     <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
-                    <View>
-                        <SliderBottom isVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                            <View className="p-4">
-                                <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
-                                    return (
-                                        <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
-                                    );                                        
-                                }} />
-                            </View>
-                        </SliderBottom>
-                    </View>
+                    <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
+                        <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                            return (
+                                <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                            );                                        
+                        }} />
+                    </Modal>
                 </View>
             );
         }
