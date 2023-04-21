@@ -49,15 +49,14 @@ export function NavScreen(params) {
         return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData} />
     }
     else{
-        /*setTimeout(() => {
-            params.navigation.setOptions({ headerShown: true })
-        }, 100);*/
+        setTimeout(() => {
+            //arams.navigation.setOptions({ headerShown: true })
+            params.navigation.setOptions({ headerTitle: pageData?.data? pageData?.data?.title : "Loading..."  })
+        }, 100);
     }
     if (isTabs){   
         return (<LayoutDataContext><View className='flex-1'>
-            {(isCover) && <Cover data={pageData.data.cover_block}>
-            <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
-        </Cover>}
+            {(isCover) && <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />}
         {(!isCover) && 
             <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
         }
