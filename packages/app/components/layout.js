@@ -38,11 +38,13 @@ export default function Layout(props) {
                 </View>
             </View>
             }
-            { !isBrowse && <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
+            { !isBrowse && <ScrollView className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 bg-red-500">
+                
                 <View className = {sClassName}>
                     {props.children}
                 </View>
                 { (oComments != null ) &&   <BottomBar/>}
+
             </ScrollView>
             }
            
