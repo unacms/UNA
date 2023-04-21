@@ -44,10 +44,10 @@ export default function Layout(props) {
                 </View>
             </ScrollView>
             }
-            { (oComments != null ) &&   <View><KeyboardAvoidingView
-            keyboardVerticalOffset={147}
+            { (oComments != null ) &&   <KeyboardAvoidingView
+            keyboardVerticalOffset={92}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          ><BottomBar/></KeyboardAvoidingView></View>}
+          ><BottomBar/></KeyboardAvoidingView>}
             </View>
 
     );

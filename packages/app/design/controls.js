@@ -15,7 +15,7 @@ export const Input = styled(TextInputDef, ' bg-neoinput  border border-neoborder
 export const InputMulti = styled(TextInputDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base leading-5')
 
 export const MentionInput = styled(MentionInputDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base h-11 leading-5')
-export const MentionInputMulti = styled(MentionInputDef, ' bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base leading-5')
+export const MentionInputMulti = styled(MentionInputDef, ' h-11 bg-neoinput  border border-neoborder dark:border-neoborder-dark focus:bg-neocard focus:outline-none  focus:border-primary dark:focus:border-primary-dark  text-gray-900 rounded-lg   w-full p-2 dark:bg-neoinput-dark dark:focus:bg-neocard-dark placeholder-gray-500 dark:text-gray-100 text-base leading-5')
 
 
 export const Switch = styled(SwitchDef, ' text-gray-800 ')
