@@ -126,9 +126,10 @@ export default function FormFieldText(props) {
     return (
         <Field {...props}>
           <KeyboardAwareScrollView
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          extraScrollHeight={100}
-          enableAutomaticScroll={(Platform.OS === 'ios')}
+            style={{ flex: 1, backgroundColor:'red'}}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            extraScrollHeight={10} 
         >
             {input}
           </KeyboardAwareScrollView>
