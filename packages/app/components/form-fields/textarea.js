@@ -6,7 +6,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { MentionInput, MentionInputMulti } from 'app/design/controls'
 import { useState, useRef, useEffect  } from 'react';
 import { fetcher } from '../../lib/fetcher';
-
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 export default function FormFieldText(props) {
     
     let rules = {};
@@ -116,7 +116,21 @@ export default function FormFieldText(props) {
      //   input =  <></>;
     }    
 
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+      },
+    });
+
     return (
-        <Field {...props}>{input}</Field>
+        <Field {...props}>
+          <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+          keyboardVerticalOffset={Platform.select({ ios: 0, android: 500 })}
+        >
+            {input}
+          </KeyboardAvoidingView>
+        </Field>
     );
 }
