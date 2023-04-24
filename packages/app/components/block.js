@@ -11,22 +11,25 @@ const componentsMap = {
     string: String,
 };
 
-export function BlockByName({data, name}) {
+export function BlockByName({data, name, hideTitle, hideBg}) {
     
     let b = null;
-
-    Object.keys(data?.elements).forEach(key => {
-        Object.keys(data.elements[key]).forEach(key2 => {
-            if (data.elements[key][key2].content){
-                Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                    if(data.elements[key][key2].source == name.toString())
-                        b = data.elements[key][key2];
-                });
-            }
+    if (name){
+        Object.keys(data?.elements).forEach(key => {
+            Object.keys(data.elements[key]).forEach(key2 => {
+                if (data.elements[key][key2].content){
+                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                        if(data.elements[key][key2].source == name.toString())
+                            b = data.elements[key][key2];
+                    });
+                }
+            });
         });
-    });
-
-    return <Block key={b.id} uri={data.uri} block={b} />;
+    }
+    if (b)
+        return <Block key={b.id} uri={data.uri} block={b} hideTitle={hideTitle} hideBg={hideBg} />;
+    
+    return <Text>Not found: {name}</Text>
 }
 
 export default function Block(props) {
@@ -66,6 +69,13 @@ export default function Block(props) {
 
     if (block.source.includes('-browse_') || block.source.includes('bx_timeline-get_block_view')){
         bIsShowBg = false;
+        bIsShowTitle = false;
+    }
+
+    if (props.hideBg == true){
+        bIsShowBg = false;
+    }
+    if (props.hideTitle == true){
         bIsShowTitle = false;
     }
 

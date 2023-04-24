@@ -5,7 +5,7 @@ import {BlockByName} from 'app/components/block';
 
 export default function PageLayout(props) {
     return (<View className="w-full sm:p-5 max-w-5xl mx-auto ">
-        <BlockByName data={props.data} name="bx_messenger-get_block_inbox"/>
-        <BlockByName data={props.data} name="bx_messenger-get_block_lot"/>
+        <BlockByName data={props.data} name={props.blocks.inbox} />
+        <BlockByName data={props.data} name={props.blocks.lot} />
     </View>)
 }

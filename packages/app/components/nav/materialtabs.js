@@ -7,6 +7,7 @@ export function NavMaterialTabs(params) {
   const Tab = createMaterialTopTabNavigator();
   const { colors } = Theme();
 
+  
   return (
     <Tab.Navigator
       screenOptions={({ route, focused, navigation }) => {

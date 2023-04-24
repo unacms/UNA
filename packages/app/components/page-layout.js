@@ -2,6 +2,8 @@ import PageLayoutDefault from './page-layout/default';
 
 import PageCustomPost from './page-layout/custom_post';
 import PageCustomMessenger from './page-layout/custom_messenger';
+import PageCustomBrowse from './page-layout/custom_browse';
+import PageCustomPerson from './page-layout/custom_person';
 
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
 import PageLayout2 from './page-layout/layout_topbottom_area_bar_left';
@@ -16,7 +18,9 @@ const componentsMap = {
     'default': PageLayoutDefault,
 
     'custom_post': PageCustomPost,
+    'custom_browse': PageCustomBrowse,
     'custom_messenger': PageCustomMessenger,
+    'custom_persons': PageCustomPerson,
 
     'layout_top_area_bar_right': PageLayout1,
     'layout_topbottom_area_bar_left': PageLayout2,
@@ -29,19 +33,21 @@ export default function PageLayout(props) {
 
     let layoutCustomKey = appSetting('layouts', props.data.uri.toString())
     let layoutKey = '';
+    let layoutBlocks = '';
     if (!layoutCustomKey){
         if (isWeb)
             layoutKey = props.data.layout;
     }
     else{
         layoutKey = layoutCustomKey.layout;
+        layoutBlocks = layoutCustomKey.blocks
     }
 
     const Component = componentsMap[layoutKey];
-
+    console.log('**************** page layout **************', layoutKey);
     // return data for custom pages
     if(layoutCustomKey)
-        return Wrapper(<Component {...props} />);
+        return Wrapper(<Component {...props} blocks={layoutBlocks}/>);
 
     let cells = null;
     if (!layoutCustomKey){

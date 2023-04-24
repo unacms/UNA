@@ -9,11 +9,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text } from 'app/design/typography';
 import { NavScreen } from 'app/components/nav/screen';
 import { Theme } from 'app/design/theme';
-import { appSetting } from 'app/lib/util'
+import { appSetting, getURI } from 'app/lib/util'
+
+
 function CustomTabBar({ state, descriptors, navigation, position }) {
   const { colors } = Theme();
   const [tabWidths, setTabWidths] = useState({});
-  const maxWidth = appSetting('layout', 'max_width');
+
+
 
   return (
     <View 
@@ -116,7 +119,7 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
 
 export function NavMaterialTabs(params) {
   const { colors } = Theme();
-
+  let layoutSettings = appSetting('layouts', params.uri.toString())
   const Tab = createMaterialTopTabNavigator();
   return (
     <Tab.Navigator
@@ -129,7 +132,10 @@ export function NavMaterialTabs(params) {
         tabBarInactiveTintColor: colors.text,
       }}
     >
-      {params.data.map((tab, index) => (
+      {params.data.map((tab, index) => { 
+
+        if (!layoutSettings?.menu || (layoutSettings.menu && layoutSettings.menu.includes(getURI(tab.link))))
+        return(
         <Tab.Screen
           key={`tab-${index}`}
           name={tab.link}
@@ -140,7 +146,7 @@ export function NavMaterialTabs(params) {
             title: tab.title,
           }}
         />
-      ))}
+      )})}
     </Tab.Navigator>
   );
 }

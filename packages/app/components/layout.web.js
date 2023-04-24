@@ -27,9 +27,10 @@ export default function Layout(props) {
     };
     
     let bTabsPresent = false;
+
     if (props?.data?.menu?.items?.length > 0 && props?.uri != 'home'){
         props.data.menu.items.forEach(function (k) { 
-            if (k.link == props.uri)
+            if (k.link.includes(props.uri))
                 bTabsPresent = true;
         });
     }
@@ -37,7 +38,6 @@ export default function Layout(props) {
     if (props?.data?.cover_block?.profile){
         bCoverPresent = true;
     }
-
     let cnt =
         (<View className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
             {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
@@ -45,7 +45,7 @@ export default function Layout(props) {
                 <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
                   {loading ? skeleton :<View className='w-full mx-auto'>
                        {(bCoverPresent) && <Cover data={props.data.cover_block}/>}
-                       {(bTabsPresent) && <View className='w-full'><NavMaterialTabs data = {props.data.menu.items} /></View>}
+                       {(bTabsPresent) && <View className='w-full'><NavMaterialTabs uri={props?.uri} data = {props.data.menu.items} /></View>}
                        {(!bTabsPresent) && props.children}
                     </View>}
                 </View>

@@ -122,3 +122,9 @@ export function genRnd(length) {
     return result;
 }
 
+export function getURI(url) {
+    let u = url.split('/');
+    u = u.filter(Boolean);
+    return u[0]
+}
+

@@ -59,13 +59,65 @@ export const settingsDefault = {
 
   layouts: {
     'view-post': {
-      blocks: ['bx_posts:entity_author','entity_text_block','entity_all_actions','entity_comments'],
-      layout: 'custom_post'
+      layout: 'custom_post',
+      blocks: {
+        author:'bx_posts:entity_author',
+        text: 'bx_posts:entity_text_block',
+        actions: 'bx_posts:entity_all_actions',
+        comments: 'bx_posts:entity_comments'
+      },
     },
     'messenger':{
-      blocks: [1,2,3],
-      layout: 'custom_messenger'
+      layout: 'custom_messenger',
+      blocks: {
+        inbox:'bx_messenger:get_block_inbox',
+        lot: 'bx_messenger:get_block_lot',
+      },
+    },
+    'posts-home':{
+      layout: 'custom_browse',
+      blocks: {
+        browse:'bx_posts:browse_public',
+      },
+      menu: ['posts-home', 'posts-popular']
+    },
+    'posts-popular':{
+      layout: 'custom_browse',
+      blocks: {
+        browse:'bx_posts:browse_popular',
+      },
+      menu: ['posts-home', 'posts-popular']
+    },
+    'persons-home':{
+      layout: 'custom_browse',
+      blocks: {
+        browse:'bx_persons:browse_recent_profiles',
+      },
+      menu: ['persons-home', 'persons-active']
+    },
+    'persons-active':{
+      layout: 'custom_browse',
+      blocks: {
+        browse:'bx_persons:browse_active_profiles',
+      },
+      menu: ['persons-home', 'persons-active']
+    },
+    'view-persons-profile':{
+      layout: 'custom_persons',
+      blocks: {
+        col1:'bx_timeline:get_block_view_home',
+
+      },
+      menu: ['view-persons-profile', 'persons-profile-info']
+    },
+    'persons-profile-info':{
+      layout: 'custom_persons',
+      blocks: {
+        col1:'bx_persons:entity_info_full',
+      },
+      menu: ['view-persons-profile', 'persons-profile-info']
     }
+    
 
   },
   theme: {
