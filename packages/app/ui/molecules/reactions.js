@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
 import { fetcher } from 'app/lib/fetcher';
-import { PageData } from 'app/context/page';
+import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
 import { 
@@ -36,34 +36,34 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const { pageData, setPageData } = useContext(PageData);
+    const { actionsData, setActionsData } = useContext(ActionsData);
 
-    const isPageVar = (sName) => {
-        const sPageKey = getName();
+    const isContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData && pageData[sPageKey] != undefined && pageData[sPageKey][sName] != undefined;
+        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
     };
 
-    const getPageVar = (sName) => {
-        const sPageKey = getName();
+    const getContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData[sPageKey][sName];
+        return actionsData[sContextKey][sName];
     };
 
-    const getPageVars = () => {
-        const sPageKey = getName();
+    const getContextVars = () => {
+        const sContextKey = getName();
 
-        return pageData && pageData[sPageKey] ? pageData[sPageKey] : null;
+        return actionsData && actionsData[sContextKey] ? actionsData[sContextKey] : null;
     };
 
-    const setPageVars = (mValue) => {
-        const sPageKey = getName();
-        const oValue = {[sPageKey]: mValue};
+    const setContextVars = (mValue) => {
+        const sContextKey = getName();
+        const oValue = {[sContextKey]: mValue};
 
-        if(!pageData)
-            setPageData(oValue);
+        if(!actionsData)
+            setActionsData(oValue);
         else
-            setPageData({...pageData, ...oValue});
+            setActionsData({...actionsData, ...oValue});
     };
 
     const oParams = oProps.params;
@@ -104,7 +104,7 @@ export default function ElementReactions(oProps) {
          */
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
-            setPageVars(oData);
+            setContextVars(oData);
         });
 
     };
@@ -113,8 +113,8 @@ export default function ElementReactions(oProps) {
         event.preventDefault();
 
         let sReaction = oProps.action.reaction;
-        if(isPageVar('reaction'))
-            sReaction = getPageVar('reaction');
+        if(isContextVar('reaction'))
+            sReaction = getContextVar('reaction');
 
         /*
          * Disabled for now because user's language differ for initial and dynamic calls.
@@ -123,7 +123,7 @@ export default function ElementReactions(oProps) {
          */
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
-            setPageVars(oData);
+            setContextVars(oData);
         });
     };
 
@@ -173,21 +173,21 @@ export default function ElementReactions(oProps) {
             break;
         }
 
-        let oPageVars = {};
-        if(isPageVar('counter')) {
-            oPageVars = getPageVars();
-            iCounterValue = oPageVars.counter[sCounterKey] + iValueAdd;
+        let oContextVars = {};
+        if(isContextVar('counter')) {
+            oContextVars = getContextVars();
+            iCounterValue = oContextVars.counter[sCounterKey] + iValueAdd;
         }
 
-        oPageVars['is_voted'] = true;
-        oPageVars['reaction'] = sReaction;
-        oPageVars['title'] = sTitleNew;
-        oPageVars['icon'] = sIconNew;
-        if(!oPageVars['counter'])
-            oPageVars['counter'] = {};
-        oPageVars['counter'][sCounterKey] = iCounterValue;
+        oContextVars['is_voted'] = true;
+        oContextVars['reaction'] = sReaction;
+        oContextVars['title'] = sTitleNew;
+        oContextVars['icon'] = sIconNew;
+        if(!oContextVars['counter'])
+            oContextVars['counter'] = {};
+        oContextVars['counter'][sCounterKey] = iCounterValue;
 
-        setPageVars(oPageVars);
+        setContextVars(oContextVars);
     }
 
     const getSkeleton = () => {
@@ -221,24 +221,24 @@ export default function ElementReactions(oProps) {
     const bShowActionUndo = oAction?.is_undo === true;
 
     let bShowActionVoted = oAction?.is_voted === true || false;
-    if(isPageVar('is_voted'))
-        bShowActionVoted = getPageVar('is_voted') === true;
+    if(isContextVar('is_voted'))
+        bShowActionVoted = getContextVar('is_voted') === true;
 
     let bShowActionDisabled = oAction?.is_disabled === true || false;
-    if(isPageVar('is_disabled'))
-        bShowActionDisabled = getPageVar('is_disabled') === true;
+    if(isContextVar('is_disabled'))
+        bShowActionDisabled = getContextVar('is_disabled') === true;
 
     let sReaction = oAction?.reaction || '';
-    if(isPageVar('reaction'))
-        sReaction = getPageVar('reaction');
+    if(isContextVar('reaction'))
+        sReaction = getContextVar('reaction');
 
     let sIcon = oAction?.icon || '';
-    if(isPageVar('icon'))
-        sIcon = getPageVar('icon');
+    if(isContextVar('icon'))
+        sIcon = getContextVar('icon');
 
     let sTitle = oAction?.title || '';
-    if(isPageVar('title'))
-        sTitle = getPageVar('title');
+    if(isContextVar('title'))
+        sTitle = getContextVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
@@ -327,8 +327,8 @@ export default function ElementReactions(oProps) {
                 return;
 
             let iCount = aItem.count;
-            if(isPageVar('counter')) {
-                const oCounterGlobal = getPageVar('counter');
+            if(isContextVar('counter')) {
+                const oCounterGlobal = getContextVar('counter');
                 const sCounterKey = 'count_' + aItem.name;
                 if(oCounterGlobal[sCounterKey] != undefined)
                     iCount = oCounterGlobal[sCounterKey];
@@ -366,8 +366,8 @@ export default function ElementReactions(oProps) {
                 return;
 
             let iCount = aItem.count;
-            if(isPageVar('counter')) {
-                const oCounterGlobal = getPageVar('counter');
+            if(isContextVar('counter')) {
+                const oCounterGlobal = getContextVar('counter');
                 const sCounterKey = 'count_' + aItem.name;
                 if(oCounterGlobal[sCounterKey] != undefined)
                     iCount = oCounterGlobal[sCounterKey];

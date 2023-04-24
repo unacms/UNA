@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
-import { PageData } from 'app/context/page';
+import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view';
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
@@ -23,30 +23,30 @@ export default function ElementScore(oProps) {
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
-    const { pageData, setPageData } = useContext(PageData);
+    const { actionsData, setActionsData } = useContext(ActionsData);
 
-    const isPageVar = (sName) => {
-        const sPageKey = getName();
+    const isContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData && pageData[sPageKey] != undefined && pageData[sPageKey][sName] != undefined;
+        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
     };
 
-    const getPageVar = (sName) => {
-        const sPageKey = getName();
+    const getContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData[sPageKey][sName];
+        return actionsData[sContextKey][sName];
     };
 
-    const setPageVars = (mValue) => {
-        const sPageKey = getName();
+    const setContextVars = (mValue) => {
+        const sContextKey = getName();
 
         let oValue = {};
-        oValue[sPageKey] = mValue;
+        oValue[sContextKey] = mValue;
 
-        if(!pageData)
-            setPageData(oValue);
+        if(!actionsData)
+            setActionsData(oValue);
         else
-            setPageData({...pageData, ...oValue});
+            setActionsData({...actionsData, ...oValue});
     };
 
     const oParams = oProps.params;
@@ -68,7 +68,7 @@ export default function ElementScore(oProps) {
         event.preventDefault();
 
         performAction('do', {a: sAction}, (oData) => {
-            setPageVars(oData);
+            setContextVars(oData);
         });
     };
 
@@ -115,13 +115,13 @@ export default function ElementScore(oProps) {
     const aActions = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
 
-        const bShowActionVoted = oItem?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
-        const bShowActionDisabled = oItem?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
+        const bShowActionVoted = oItem?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
+        const bShowActionDisabled = oItem?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
 
         let sIcon = oItem?.icon || '';
         let sTitle = oItem?.title || '';
-        if(isPageVar(sAction)) {
-            const oItemGlobal = getPageVar(sAction);
+        if(isContextVar(sAction)) {
+            const oItemGlobal = getContextVar(sAction);
             if(oItemGlobal?.icon)
                 sIcon = oItemGlobal.icon;
             if(oItemGlobal?.title)
@@ -140,8 +140,8 @@ export default function ElementScore(oProps) {
     let sCounter = undefined;
     if(bShowCounter && oCounter?.score != undefined) {
         let iScore = oCounter.score;
-        if(isPageVar('counter')) {
-            const oCounterGlobal = getPageVar('counter');
+        if(isContextVar('counter')) {
+            const oCounterGlobal = getContextVar('counter');
             if(oCounterGlobal?.score)
                 iScore = oCounterGlobal.score;
         }

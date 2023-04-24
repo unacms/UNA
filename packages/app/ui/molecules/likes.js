@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 
 import { fetcher } from 'app/lib/fetcher';
-import { PageData } from 'app/context/page';
+import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
@@ -19,30 +19,30 @@ export default function ElementLikes(oProps) {
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
-    const { pageData, setPageData } = useContext(PageData);
+    const { actionsData, setActionsData } = useContext(ActionsData);
 
-    const isPageVar = (sName) => {
-        const sPageKey = getName();
+    const isContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData && pageData[sPageKey] != undefined && pageData[sPageKey][sName] != undefined;
+        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
     };
 
-    const getPageVar = (sName) => {
-        const sPageKey = getName();
+    const getContextVar = (sName) => {
+        const sContextKey = getName();
 
-        return pageData[sPageKey][sName];
+        return actionsData[sContextKey][sName];
     };
 
-    const setPageVars = (mValue) => {
-        const sPageKey = getName();
+    const setContextVars = (mValue) => {
+        const sContextKey = getName();
 
         let oValue = {};
-        oValue[sPageKey] = mValue;
+        oValue[sContextKey] = mValue;
 
-        if(!pageData)
-            setPageData(oValue);
+        if(!actionsData)
+            setActionsData(oValue);
         else
-            setPageData({...pageData, ...oValue});
+            setActionsData({...actionsData, ...oValue});
     };
 
     const oParams = oProps.params;
@@ -64,7 +64,7 @@ export default function ElementLikes(oProps) {
         event.preventDefault();
 
         performAction('do', {value: 1}, (oData) => {
-            setPageVars(oData);
+            setContextVars(oData);
         });
     };
 
@@ -72,7 +72,7 @@ export default function ElementLikes(oProps) {
         event.preventDefault();
 
         performAction('do', {value: 1}, (oData) => {
-            setPageVars(oData);
+            setContextVars(oData);
         });
     };
 
@@ -115,16 +115,16 @@ export default function ElementLikes(oProps) {
     const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isPageVar('is_voted') && getPageVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isPageVar('is_disabled') && getPageVar('is_disabled') === true);
+    const bShowActionVoted = oAction?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
+    const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
 
     let sIcon = oAction?.icon || '';
-    if(isPageVar('icon'))
-        sIcon = getPageVar('icon');
+    if(isContextVar('icon'))
+        sIcon = getContextVar('icon');
 
     let sTitle = oAction?.title || '';
-    if(isPageVar('title'))
-        sTitle = getPageVar('title');
+    if(isContextVar('title'))
+        sTitle = getContextVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
@@ -147,8 +147,8 @@ export default function ElementLikes(oProps) {
     let sCounter = undefined;
     if(bShowCounter && oCounter?.count != undefined) {
         let iCount = oCounter.count;
-        if(isPageVar('counter')) {
-            const oCounterGlobal = getPageVar('counter');
+        if(isContextVar('counter')) {
+            const oCounterGlobal = getContextVar('counter');
             if(oCounterGlobal?.count)
                 iCount = oCounterGlobal.count;
         }
