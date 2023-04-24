@@ -57,6 +57,17 @@ export const settingsDefault = {
     show_header: false
   },
 
+  layouts: {
+    'view-post': {
+      blocks: ['bx_posts:entity_author','entity_text_block','entity_all_actions','entity_comments'],
+      layout: 'custom_post'
+    },
+    'messenger':{
+      blocks: [1,2,3],
+      layout: 'custom_messenger'
+    }
+
+  },
   theme: {
     light: {
       primary: '#0284c7',

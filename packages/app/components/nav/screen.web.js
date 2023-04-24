@@ -1,9 +1,8 @@
 import { View } from 'app/design/view'
 import { useState, useEffect } from 'react'
-import { getData } from 'app/all'
-import Page from 'app/components/page'
+import { Root, getData } from 'app/root'
 import { useIsFocused } from '@react-navigation/native';
-
+import PageLayout from 'app/components/page-layout';
 export function NavScreen(params) {
 
     const isFocused2 = useIsFocused();
@@ -15,7 +14,6 @@ export function NavScreen(params) {
         (async () => {
             if (isFocused2 && _path && _path.startsWith('/')){
                 const d = await getData(_path);
-
                 if (d?.props) {
                     setPageData (d?.props)
                 }
@@ -24,5 +22,7 @@ export function NavScreen(params) {
     }, [_path, isFocused2]);
 
     let data = pageData?.data;
-    return <View className="bg-screen dark:bg-screen-dark"><Page data={data}/></View>
+    return <View className="bg-screen dark:bg-screen-dark">
+        { !!pageData?.data  && <PageLayout path={_path} data={pageData?.data} uri={pageData?.data.uri}/> }
+    </View>
 }

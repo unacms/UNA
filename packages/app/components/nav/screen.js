@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import All, { getData } from 'app/all'
+import {Root, getData } from 'app/root'
 import { View } from 'app/design/view'
 import { NavDrawer } from 'app/components/nav/drawer'
 import { useIsFocused } from '@react-navigation/native';
@@ -40,12 +40,10 @@ export function NavScreen(params) {
             }
         })();
     }, [_path]);
-    //isFocused2
-    isDrawer = false;
+
+    return <Root url={_path} {...pageData} />
+    /*isDrawer = false;
     if (isDrawer){
-        /*setTimeout(() => {
-            params.navigation.setOptions({ headerShown: false })
-        }, 100);*/
         return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData} />
     }
     else{
@@ -65,8 +63,8 @@ export function NavScreen(params) {
     }
     if (!isDrawer && !isTabs){
         return <LayoutDataContext><View className='w-full' style={{  alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            { !!pageData && <View className='w-full'><All path={_path} {...pageData} /></View> }
+            { !!pageData && <View className='w-full'><Root path={_path} {...pageData} /></View> }
         </View></LayoutDataContext>
     }
-    return <></>
+    return <></>*/
 }

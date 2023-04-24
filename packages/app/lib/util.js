@@ -101,7 +101,6 @@ export const uploadImage = async (uri, fetchUrl, calback) => {
         });
 
         const result = await fetcher([fetchUrl, null, formData]);
-        console.log(result?.data?.link)
         if (result?.data?.link){
             calback(result?.data?.link);
         }
@@ -122,3 +121,4 @@ export function genRnd(length) {
     }
     return result;
 }
+

@@ -1,5 +1,5 @@
 import React from 'react'
-import All, { getData } from 'app/all'
+import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 
 const setCookie = require('set-cookie-parser');
@@ -7,8 +7,7 @@ const setCookie = require('set-cookie-parser');
 export default function Path (props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
-    
-    return <All path={path} {...props}>props.children</All>
+    return <Root path={path} {...props}>props.children</Root>
 }
 
 export async function getServerSideProps(context) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import All, { getData } from 'app/all'
+import { Root, getData } from 'app/root'
 import { View } from 'app/design/view'
 import { useIsFocused } from '@react-navigation/native';
 import Cover from 'app/components/elements/cover';
@@ -62,7 +62,7 @@ export function NavScreenMaterial(params) {
     /*<Stack.Screen options={{'title': pageData?.data?.title}} />*/
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            {!!pageData && <View className=' w-full'><All path={_path} {...pageData} /></View> }
+            {!!pageData && <View className=' w-full'><Root path={_path} {...pageData} /></View> }
         </View>
     }
     return <></>

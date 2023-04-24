@@ -11,6 +11,23 @@ const componentsMap = {
     string: String,
 };
 
+export function BlockByName({data, name}) {
+    
+    let b = null;
+
+    Object.keys(data?.elements).forEach(key => {
+        Object.keys(data.elements[key]).forEach(key2 => {
+            if (data.elements[key][key2].content){
+                Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                    if(data.elements[key][key2].source == name.toString())
+                        b = data.elements[key][key2];
+                });
+            }
+        });
+    });
+
+    return <Block key={b.id} uri={data.uri} block={b} />;
+}
 
 export default function Block(props) {
     let block = props.block;
@@ -22,10 +39,6 @@ export default function Block(props) {
 
     if (type == 'string' && !aAllowTypes.includes(block.type))
         return null;
-
-    if (block.menu && block.menu.items > 0){
-        return <NavBottomTabs></NavBottomTabs>
-    }
 
     block.designbox_id = Number(block.designbox_id);
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import All, { getData } from 'app/all'
+import { Root, getData } from 'app/root'
 import { View } from 'app/design/view'
 import { useIsFocused } from '@react-navigation/native';
 import { NavMaterialTabs } from 'app/components/nav/materialtabs'
@@ -60,7 +60,7 @@ export function NavScreenDrawer(params) {
     }
     if (!isDrawer && !isTabs){
         return <View className='w-full' style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            { !!pageData && <View className='w-full'><All path={_path} {...pageData} /></View> }
+            { !!pageData && <View className='w-full'><Root path={_path} {...pageData} /></View> }
             {/*!pageData && <Stack.Screen options={{'title': "Loading..."}} /><Stack.Screen options={{'title': (pageData?.data? pageData?.data?.title : "Loading...")}} />*/}
         </View>
     }
