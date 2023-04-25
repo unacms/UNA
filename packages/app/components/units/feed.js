@@ -30,12 +30,7 @@ function DefaultUnit(data) {
     
     if (Platform.OS != 'web'){
             styles = StyleSheet.create({
-                card: {
-                    borderRadius: 0,
-                    marginLeft:0,
-                    marginRight:0,
-                    marginBottom:8,
-                }, 
+                
                 card_image: {
                      borderRadius: 0,
                 }         
@@ -52,7 +47,7 @@ function DefaultUnit(data) {
             border-bordercolorcard dark:border-bordercolorcard-dark 
             sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
             active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
-            style={styles.card}>
+            >
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />

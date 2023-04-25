@@ -102,7 +102,7 @@ export default function ElementBrowse(props) {
             /></View>}
             { data.unit != 'comments' && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}><FlashList estimatedItemSize={200} numColumns={numColumns} className=' ' horizontal={false} 
                 data={data.data}
-                renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'mt-1 sm:mt-2 ' + (data.unit != 'feed' ? ' px-4  w-full': '') + '  xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'r mt-1 sm:mt-2 ' + (data.unit != 'feed' ? ' px-4  w-full': '') + '  xl:mt-4'}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
                 onEndReached ={handleEndReached} 
