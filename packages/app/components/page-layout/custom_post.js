@@ -79,6 +79,21 @@ import {
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
+          <Text>Some body text...</Text>
         </View>
       </ScrollViewWithHeaders></View>
       );
