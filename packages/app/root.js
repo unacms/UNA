@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
-
+import { View } from 'app/design/view'
 import PageError from 'app/components/page-layout/error';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
-
+import { Text } from 'app/design/typography'
 
 export function Root (props) {
 
@@ -22,10 +22,11 @@ export function Root (props) {
         }
 
     }, [props?.data?.user]);
-
+    /* TODO FIX 404 */
     return (
-        <Layout path={props.path} data={props.data} uri={props.data.uri}>
-            {200 == parseInt(props.status) ? <PageLayout path={props.path} data={props.data} uri={props.data.uri}/> : <PageError uri={props.path} {...props} />}
+        <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
+            <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
+            {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
         </Layout>
     );
 }

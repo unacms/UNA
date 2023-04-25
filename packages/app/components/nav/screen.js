@@ -8,6 +8,7 @@ import Cover from 'app/components/elements/cover';
 import { useTheme } from '@react-navigation/native';
 import LayoutDataContext from 'app/context/layout';
 import { ScrollView } from 'dripsy';
+import PageLayout from 'app/components/page-layout';
 
 export function NavScreen(params) {
 
@@ -41,30 +42,11 @@ export function NavScreen(params) {
         })();
     }, [_path]);
 
-    return <Root url={_path} {...pageData} />
-    /*isDrawer = false;
-    if (isDrawer){
-        return <NavDrawer menu = {pageData.data.menu_top} pageData = {pageData} />
-    }
-    else{
-        setTimeout(() => {
-            //arams.navigation.setOptions({ headerShown: true })
-            params.navigation.setOptions({ headerTitle: pageData?.data? pageData?.data?.title : "Loading..."  })
-        }, 100);
-    }
-    if (isTabs){   
-        return (<LayoutDataContext><View className='flex-1'>
-            {(isCover) && <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />}
-        {(!isCover) && 
-            <NavMaterialTabs data = {pageData.data.menu.items} pageData = {pageData} />
-        }
-           
-        </View></LayoutDataContext>);
-    }
-    if (!isDrawer && !isTabs){
-        return <LayoutDataContext><View className='w-full' style={{  alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            { !!pageData && <View className='w-full'><Root path={_path} {...pageData} /></View> }
-        </View></LayoutDataContext>
-    }
-    return <></>*/
+    if (isTabs)
+        return <NavMaterialTabs uri={pageData?.data.uri} data = {pageData.data.menu} pageData = {pageData} />
+
+    if (!!pageData?.data) 
+        return <Root path={_path} data={pageData?.data} uri={pageData?.data.uri}/>
+    
+    return <></>
 }

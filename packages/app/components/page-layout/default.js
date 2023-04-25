@@ -1,5 +1,5 @@
-import { View } from 'app/design/view';
+import { View, ScrollView } from 'app/design/view';
 
 export default function PageLayout(props) {
-    return (<View className="w-full sm:mt-4">{props.children}</View>)
+    return (<ScrollView className="w-full sm:mt-4">{props.children}</ScrollView>)
 }

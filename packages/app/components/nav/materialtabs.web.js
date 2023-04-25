@@ -119,7 +119,8 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
 
 export function NavMaterialTabs(params) {
   const { colors } = Theme();
-  let layoutSettings = appSetting('layouts', params.uri.toString())
+  let menuSettings = appSetting('menu_items', params.data.object)
+
   const Tab = createMaterialTopTabNavigator();
   return (
     <Tab.Navigator
@@ -132,9 +133,9 @@ export function NavMaterialTabs(params) {
         tabBarInactiveTintColor: colors.text,
       }}
     >
-      {params.data.map((tab, index) => { 
+      {params.data.items.map((tab, index) => { 
 
-        if (!layoutSettings?.menu || (layoutSettings.menu && layoutSettings.menu.includes(getURI(tab.link))))
+        if (!menuSettings || (menuSettings?.includes(getURI(tab.link))))
         return(
         <Tab.Screen
           key={`tab-${index}`}

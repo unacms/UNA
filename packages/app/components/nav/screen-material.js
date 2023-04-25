@@ -42,28 +42,10 @@ export function NavScreenMaterial(params) {
             }
         })();
     }, [_path, isFocused2]);
-//isFocused2
-    if (isDrawer){
-        /*setTimeout(() => {
-            params.navigation.setOptions({ headerShown: false })
-        }, 100);*/
-        return <></>
-    }
-    else{
-       /* setTimeout(() => {
-            params.navigation.setOptions({ headerShown: true })
-        }, 100);*/
-    }
-    /*if (isTabs){   
-        return (<View className='flex-1'>
-            {(isCover) && <Cover data={pageData.data.cover_block}/>}
-        </View>);
-    }*/
-    /*<Stack.Screen options={{'title': pageData?.data?.title}} />*/
-    if (!isDrawer && !isTabs){
-        return <View className='w-full' style={{alignItems: 'center', justifyContent: 'center', borderTopWidth:1, borderTopColor:colors.blockBorder }}>
-            {!!pageData && <View className=' w-full'><Root path={_path} {...pageData} /></View> }
-        </View>
-    }
+
+    if (!!pageData?.data) 
+        return <Root path={_path} data={pageData?.data} uri={pageData?.data.uri}/>
+
     return <></>
+    
 }

@@ -8,7 +8,6 @@ export default function ElementCommentForm(props) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
     return (
-
         <View className=''>
           {!!layoutData && layoutData[0]}
         </View>

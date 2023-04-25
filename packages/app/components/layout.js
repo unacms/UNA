@@ -1,13 +1,13 @@
 import { View, ScrollView } from 'app/design/view'
 import BottomBar from 'app/ui/molecules/bottombar';
 import { KeyboardAvoidingView } from 'react-native';
-
+import { Text } from 'app/design/typography'
 export const siteTitle = 'NEO';
 
 
 export default function Layout(props) {
     let data =props.data;
-    let isBrowse = false;
+   /* let isBrowse = false;
     let oComments=false;
 
     
@@ -25,14 +25,15 @@ export default function Layout(props) {
             });
         });
     });
+*/
 
-
-    const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
-
+   // const sClassName = 'relative overflow-hidden ' + (oComments ? ' ' : '');
+    console.log('----------------', props.children)
+    return (<View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50 w-full h-full flex-1">{props.children}</View>);
     return (
         
             <View className="h-full">
-            { isBrowse && <View  className="bg-screen dark:bg-screen-dark text-gray-900 dark:text-gray-50">
+            { isBrowse && <View >
                 <View className = {sClassName}>
                     {props.children}
                 </View>

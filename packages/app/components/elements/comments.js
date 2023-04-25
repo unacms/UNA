@@ -277,7 +277,7 @@ export default function ElementComments(props) {
         let heightS = pageHeight * 0.9 - 30;
         styles.browse = {height: heightS, backgroundColor:'transparent', borderTopWidth:0};
         if (commentData.total_count > 0)
-            cmts = <View  className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
+            cmts = <View  className="  bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
                 {cmtsHeader}
                 {cmtsBrs}
                 {cmtsMore}
@@ -287,7 +287,7 @@ export default function ElementComments(props) {
     }
     else{ 
         if (commentData.total_count > 0){
-            cmts = <View style={styles.browse} className=" bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
+            cmts = <View style={styles.browse} className="  bg-neocard dark:bg-neocard-dark max-w-5xl mx-auto w-full pt-4 sm:rounded-b-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark">
                 <View style={styles.list} className=' w-full '>
                     {cmtsHeader}
                     {cmtsBrs}

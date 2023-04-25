@@ -4,6 +4,7 @@ import PageCustomPost from './page-layout/custom_post';
 import PageCustomMessenger from './page-layout/custom_messenger';
 import PageCustomBrowse from './page-layout/custom_browse';
 import PageCustomPerson from './page-layout/custom_person';
+import PageCustomHome from './page-layout/custom_home';
 
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
 import PageLayout2 from './page-layout/layout_topbottom_area_bar_left';
@@ -13,7 +14,7 @@ import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
-
+import { Text } from 'app/design/typography'
 const componentsMap = {
     'default': PageLayoutDefault,
 
@@ -21,6 +22,7 @@ const componentsMap = {
     'custom_browse': PageCustomBrowse,
     'custom_messenger': PageCustomMessenger,
     'custom_persons': PageCustomPerson,
+    'custom_home': PageCustomHome,
 
     'layout_top_area_bar_right': PageLayout1,
     'layout_topbottom_area_bar_left': PageLayout2,
@@ -44,7 +46,7 @@ export default function PageLayout(props) {
     }
 
     const Component = componentsMap[layoutKey];
-    console.log('**************** page layout **************', layoutKey);
+    //console.log('**************** page layout **************', layoutKey);
     // return data for custom pages
     if(layoutCustomKey)
         return Wrapper(<Component {...props} blocks={layoutBlocks}/>);
@@ -67,9 +69,6 @@ export default function PageLayout(props) {
     
     // return data web layouts
     return Wrapper(<Component {...props} >{cells}</Component>);
-
-
-    <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}></View>
 }
 
 function Wrapper(p){
@@ -80,5 +79,5 @@ function Wrapper(p){
         return <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>{p}</View>
     }
 
-    return p
+    return <View className='flex-1 mx-auto w-full'>{p}</View>
 }
