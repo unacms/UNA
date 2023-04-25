@@ -81,11 +81,11 @@ const colors = {
   },
 
   backgroundcard: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    hover: 'rgba(255,255,255,1)',
     active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,1)',
-    darkhover: 'rgba(17,24,39,0.8)',
+    dark: 'rgba(17,24,39,0.8)',
+    darkhover: 'rgba(17,24,39,1)',
     darkactive: 'rgba(17,24,39,0.5)',
   },
   bordercolorcard: {
@@ -98,12 +98,32 @@ const colors = {
   },
 
   backgroundnavbar: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    dark: 'rgba(17,24,39,1)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(31,41,55,0.8)',
   },
   bordercolornavbar: {
-    DEFAULT: 'rgba(209,213,219,1)',
+    DEFAULT: 'rgba(209,213,219,0.8)',
     dark: 'rgba(31,41,55,1)',
+  },
+
+  backgrounditem: {
+    DEFAULT: 'rgba(209,213,219,0.5)',
+    dark: 'rgba(55,65,81,0.5)',
+  },
+  bordercoloritem: {
+    DEFAULT: 'rgba(209,213,219,1)',
+    dark: 'rgba(55,65,81,1)',
+  },
+
+  backgroundbutton: {
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    hover: 'rgba(209,213,219,0.5)',
+    dark: 'rgba(55,65,81,0.5)',
+    darkhover: 'rgba(55,65,81,0.8)',
+  },
+  bordercolorbutton: {
+    DEFAULT: 'rgba(209,213,219,1)',
+    dark: 'rgba(55,65,81,1)',
   },
 
 

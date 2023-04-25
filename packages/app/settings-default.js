@@ -147,7 +147,7 @@ import Svg, {Path} from 'react-native-svg'
             },
             button_styles: {
                 'u-btn-default-cnt':
-                ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5shadow-sm hover:shadowbg-gray-200 hover:bg-gray-100 active:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 dark:active:bg-gray-900 ',
+                ' border border-bordercolorbutton dark:border-bordercolorbutton-dark hover:bg-backgroundbutton-hover dark:hover:bg-backgroundbutton-darkhover active:shadow-none bg-backgroundbutton dark:bg-backgroundbutton-dark hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark shadow-sm hover:shadow  ',
                 'u-btn-default-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-default-trans': 'duration-200 ',
@@ -160,14 +160,14 @@ import Svg, {Path} from 'react-native-svg'
                 'u-btn-danger-text': 'font-semibold text-gray-100 group-hover:text-white ',
                 'u-btn-danger-trans': 'duration-200',
                 'u-btn-text-cnt':
-                ' border border-transparent hover:bg-black/5 active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10 ',
+                ' border border-transparent hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark  ',
                 'u-btn-text-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-text-trans': ' duration-200 ',
                 'u-btn-link-cnt': ' border border-transparent ',
                 'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
                 'u-btn-link-trans': ' duration-200 ',
-                'u-btn-outline-cnt': ' border active:shadow-none border-black/10dark:border-white/10hover:bg-gray-100 active:bg-gray-300dark:hover:bg-gray-700 dark:active:bg-gray-900',
+                'u-btn-outline-cnt': ' border active:shadow-none border-bordercolorbutton dark:border-bordercolorbutton-dark hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark',
                 'u-btn-outline-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-outline-trans': ' duration-200 ',

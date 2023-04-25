@@ -175,16 +175,17 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
         return (
             <View className="u-card" style={styles.card}>
+                
                 <View className="
-                 p-1 group duration-200 overflow-hidden sm:rounded-lg shadow-sm sm:hover:shadow-sm 
-                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-
-                border-y sm:border 
-                active:translate-y-0.5
-                border-bordercolorcard dark:border-bordercolorcard-dark 
-                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover w-full 
-                active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                 w-full
+                  p-1 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-lg
+                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                 border  
+                 active:translate-y-0.5
+                 border-bordercolorcard dark:border-bordercolorcard-dark 
+                 sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                 
                 
                 ">
@@ -206,6 +207,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                         </View>
                     </Link>
                 </View>
+                
             </View>  
         )
     }
