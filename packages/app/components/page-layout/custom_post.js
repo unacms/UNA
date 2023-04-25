@@ -5,7 +5,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import BottomBar from 'app/ui/molecules/bottombar';
 import { useState } from 'react';
 import { Text, H1C } from 'app/design/typography';
-
+import { useNavigation } from '@react-navigation/native';
 import {
     Header,
     LargeHeader,
@@ -14,14 +14,18 @@ import {
   } from '@codeherence/react-native-header';
   import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-  const HeaderComponent = ({ showNavBar }) => (
+  
+  const HeaderComponent = ({ showNavBar }) =>  {
+    
+    console.log(11);
+    return (
     <Header 
-        headerStyle={{paddingTop:0, marginTop:0,  backgroundColor:'#ffff00'}}
+        headerStyle={{paddingTop:0, marginTop:0, backgroundColor:'#ffff00'}}
         showNavBar={showNavBar}
         headerCenter={ <View><Text style={{ fontSize: 16, fontWeight: 'bold' }}>react-native-header{JSON.stringify(showNavBar)}</Text></View>}
      
     />
-  );
+  )};
   
   const LargeHeaderComponent = ({ scrollY }) => (
     <LargeHeader headerStyle={{paddingTop:0, marginTop:0}}>
@@ -40,6 +44,10 @@ import {
   export default function ElementCover(props) {
 
     const { bottom } = useSafeAreaInsets();
+    const navigation = useNavigation();
+    setTimeout(() => {
+        navigation.setOptions({ headerShown: false })
+    }, 100);
 
     return (
         <View className='bg-red-500 w-full flex-1 '>
