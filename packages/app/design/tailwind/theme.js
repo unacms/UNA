@@ -128,8 +128,8 @@ const colors = {
 
 
   bordercolor: {
-    DEFAULT: 'rgba(209,213,219,1)',
-    dark: 'rgba(55,65,81,1)',
+    DEFAULT: 'rgba(243,244,246,1)',
+    dark: 'rgba(31,41,55,1)',
   },
 
 
