@@ -45,13 +45,13 @@ function DefaultUnit(data) {
     return (
         <View className="
             sm:mx-4 p-1 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
-            bg-backgroundCard dark:bg-backgroundCard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-            hover:bg-backgroundCard-hover dark:hover:bg-backgroundCard-darkhover
+            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             border-y sm:border 
             active:translate-y-0.5
-            border-borderColorCard dark:border-borderColorCard-dark 
-            sm:hover:border-borderColorCard-hover sm:dark:hover:border-borderColorCard-darkhover 
-            active:border-borderColorCard-active dark:active:border-borderColorCard-darkactive"    
+            border-bordercolorcard dark:border-bordercolorcard-dark 
+            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+            active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
             style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
@@ -112,13 +112,13 @@ function SmallUnit(data) {
     return (
         <View className="
         flex-row p-2 sm:p-3 sm:mx-4  group duration-200 overflow-hidden sm:rounded-lg shadow-sm sm:hover:shadow-lg  
-            bg-backgroundCard dark:bg-backgroundCard-dark 
-            hover:bg-backgroundCard-hover dark:hover:bg-backgroundCard-darkhover
-            active:bg-backgroundCard-active dark:active:bg-backgroundCard-darkactive
+            bg-backgroundcard dark:bg-backgroundcard-dark 
+            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+            active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive
             border-y sm:border 
             active:translate-y-0.5
-            border-borderColorCard dark:border-borderColorCard-dark 
-            sm:hover:border-borderColorCard-hover sm:dark:hover:border-borderColorCard-darkhover
+            border-bordercolorcard dark:border-bordercolorcard-dark 
+            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover
         
         
         ">    

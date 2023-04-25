@@ -22,7 +22,7 @@ export function NavScreen(params) {
     }, [_path, isFocused2]);
 
     let data = pageData?.data;
-    return <View className="bg-backgroundBody dark:bg-backgroundBody-dark">
+    return <View className="bg-backgroundbody dark:bg-backgroundbody-dark">
         { !!pageData?.data  && <PageLayout path={_path} data={pageData?.data} uri={pageData?.data.uri}/> }
     </View>
 }

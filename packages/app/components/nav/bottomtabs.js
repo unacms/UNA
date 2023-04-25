@@ -19,6 +19,7 @@ export function NavBottomTabs(params) {
     if (!path || path.startsWith('expo-development-client/'))
       path = '/home';
 
+      console.log('!!!!!!',path);
     let iconWidth = 24;
     let iconHeight = 24;
 
@@ -46,14 +47,14 @@ export function NavBottomTabs(params) {
             <Tab.Screen
                 name="/pages"
                 component={NavScreen}
-                options={
-                  { 
-                    title: 'text', 
-                    tabBarIcon: ({color}) => (
-                      <Icon icon='plus' width={iconWidth} height={iconHeight} color={color} />  
-                    ),
-                    tabBarVisible:  true, 
-                    unmountOnBlur: false}}
+                options={{ 
+                  title: 'alla', 
+                  tabBarVisible: true, 
+                  unmountOnBlur: true,
+                  tabBarIcon: ({color}) => (
+                    <Icon icon='plus' width={iconWidth} height={iconHeight} color={color} />  
+                )
+                }}
                 initialParams={{ url2: path, useUrl: true}}
             />
             {

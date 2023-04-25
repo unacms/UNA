@@ -55,40 +55,40 @@ const colors = {
   
   },
 
-  backgroundBody: {
+  backgroundbody: {
     DEFAULT: 'rgba(229,231,235,1)',
     dark: 'rgba(3,7,18,1)',
   },
 
-  backgroundBackdrop: {
+  backgroundbackdrop: {
     DEFAULT: 'rgba(255 255 255 / 0.5)',
     dark: 'rgba(55 55 55 / 0.5)',
   },
 
-  backgroundLevel1: {
+  backgroundlevel1: {
     DEFAULT: 'rgba(255,255,255,1)',
     dark: 'rgba(17,24,39,1)',
   },
 
-  backgroundLevel2: {
+  backgroundlevel2: {
     DEFAULT: 'rgba(243,244,246,1)',
     dark: 'rgba(31,41,55,1)',
   },
 
-  backgroundLevel3: {
+  backgroundlevel3: {
     DEFAULT: 'rgba(229,231,235,1)',
     dark: 'rgba(55,65,81,1)',
   },
 
-  backgroundCard: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.8)',
+  backgroundcard: {
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    hover: 'rgba(255,255,255,1)',
     active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,1)',
-    darkhover: 'rgba(17,24,39,0.8)',
+    dark: 'rgba(17,24,39,0.8)',
+    darkhover: 'rgba(17,24,39,1)',
     darkactive: 'rgba(17,24,39,0.5)',
   },
-  borderColorCard: {
+  bordercolorcard: {
     DEFAULT: 'rgba(209,213,219,0.7)',
     hover: 'rgba(209,213,219,1)',
     active: 'rgba(209,213,219, 0.7)',
@@ -97,19 +97,39 @@ const colors = {
     darkactive: 'rgba(31,41,55,0.1)',
   },
 
-  backgroundNavbar: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    dark: 'rgba(17,24,39,1)',
+  backgroundnavbar: {
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(31,41,55,0.8)',
   },
-  borderColorNavbar: {
-    DEFAULT: 'rgba(209,213,219,0.1)',
-    dark: 'rgba(31,41,55,0.1)',
+  bordercolornavbar: {
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    dark: 'rgba(31,41,55,1)',
   },
 
-
-  borderColor: {
+  backgrounditem: {
+    DEFAULT: 'rgba(209,213,219,0.5)',
+    dark: 'rgba(55,65,81,0.5)',
+  },
+  bordercoloritem: {
     DEFAULT: 'rgba(209,213,219,1)',
     dark: 'rgba(55,65,81,1)',
+  },
+
+  backgroundbutton: {
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    hover: 'rgba(209,213,219,0.5)',
+    dark: 'rgba(55,65,81,0.5)',
+    darkhover: 'rgba(55,65,81,0.8)',
+  },
+  bordercolorbutton: {
+    DEFAULT: 'rgba(209,213,219,1)',
+    dark: 'rgba(55,65,81,1)',
+  },
+
+
+  bordercolor: {
+    DEFAULT: 'rgba(243,244,246,1)',
+    dark: 'rgba(31,41,55,1)',
   },
 
 

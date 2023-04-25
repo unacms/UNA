@@ -25,7 +25,7 @@ export default function ElementProfileMenu(props) {
 
     return (
         
-        <View  style={styles} className="hidden sm:visible lg:block  top-100  xl:flex px-3 py-4  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
+        <View  style={styles} className="hidden sm:visible lg:block  top-100  xl:flex p-4  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
             <View className="flex-col space-y-0.5 mb-16" >
             {props.data.items.map((item, index) => (
                 <Link key={`menu-${index}`} href= {item.link.charAt(0) == '/' ? item.link : '/' + item.link}>

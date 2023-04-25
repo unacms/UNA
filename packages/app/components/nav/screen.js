@@ -30,6 +30,7 @@ export function NavScreen(params) {
 
     let isCover = pageData?.data?.cover_block?.profile ? true : false;
 
+    
     useEffect(() => {
         (async () => {
             if (isFocused2 && _path && _path.startsWith('/')){                

@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography'
 import Menu from '../menu';
 
 export default function ElementFeedItem({data}) {
-    return (<View className="relative sm:my-0 bg-backgroundCard dark:bg-backgroundCard-dark sm:border-x border-borderColorCard dark:border-borderColorCard-dark w-full mx-auto max-w-5xl">             
+    return (<View className="relative sm:my-0 bg-backgroundcard dark:bg-backgroundcard-dark sm:border-x border-bordercolorcard dark:border-bordercolorcard-dark w-full mx-auto max-w-5xl">             
         <View className="m-4">
             <Profile {...data.event.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.event.date}></Time>)}  />
             <Html data={data.event.content.text} />
