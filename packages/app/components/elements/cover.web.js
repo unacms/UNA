@@ -73,8 +73,8 @@ export default function ElementCover(props) {
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                     </View>
                 
-                <View className='w-full lg:flex-row px-4 relative gap-2 items-center  border-b  border-borderColor dark:border-borderColor-dark'>
-                    <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundCard dark:bg-backgroundCard-dark "} >
+                <View className='w-full lg:flex-row px-4 relative gap-2 items-center  border-b  border-bordercolor dark:border-bordercolor-dark'>
+                    <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
                     </View>
                     
