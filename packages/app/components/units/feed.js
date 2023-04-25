@@ -43,7 +43,16 @@ function DefaultUnit(data) {
     }
 
     return (
-        <View className="bg-neocard mt-1 sm:mt-0 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border-y sm:border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark overflow-hidden  sm:rounded-lg"    style={styles.card}>
+        <View className="
+            sm:mx-4 p-1 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+            bg-backgroundCard dark:bg-backgroundCard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+            hover:bg-backgroundCard-hover dark:hover:bg-backgroundCard-darkhover
+            border-y sm:border 
+            active:translate-y-0.5
+            border-borderColorCard dark:border-borderColorCard-dark 
+            sm:hover:border-borderColorCard-hover sm:dark:hover:border-borderColorCard-darkhover 
+            active:border-borderColorCard-active dark:active:border-borderColorCard-darkactive"    
+            style={styles.card}>
         {data.mainImage &&
             <View className="w-full  aspect-[3/1] " style={styles.card_image}>
                     <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
@@ -101,7 +110,18 @@ function DefaultUnit(data) {
 function SmallUnit(data) {
     
     return (
-        <View className="sm:rounded-lg flex-row group w-full mx-auto p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark  sm:border border-neoborder dark:border-neoborder-dark hover:border-primary/20 dark:hover:border-primary-dark/20 hover:shadow-sm active:shadow-none hover:bg-neocard-hover dark:hover:bg-gray-800  overflow-hidden ">    
+        <View className="
+        flex-row p-2 sm:p-3 sm:mx-4  group duration-200 overflow-hidden sm:rounded-lg shadow-sm sm:hover:shadow-lg  
+            bg-backgroundCard dark:bg-backgroundCard-dark 
+            hover:bg-backgroundCard-hover dark:hover:bg-backgroundCard-darkhover
+            active:bg-backgroundCard-active dark:active:bg-backgroundCard-darkactive
+            border-y sm:border 
+            active:translate-y-0.5
+            border-borderColorCard dark:border-borderColorCard-dark 
+            sm:hover:border-borderColorCard-hover sm:dark:hover:border-borderColorCard-darkhover
+        
+        
+        ">    
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
             </View>

@@ -75,7 +75,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         return (
             <View className="u-card-4">
                 <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
+                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-whiteborder hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
       <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
       { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
       </View>
@@ -175,7 +175,19 @@ const {height, width, scale, fontScale} = useWindowDimensions();
 
         return (
             <View className="u-card" style={styles.card}>
-                <View className="bg-neocard p-1 hover:bg-neocard-hover dark:hover:bg-neocard-darkhover duration-200   active:shadow-none active:bg-neocard-active dark:active:bg-neocard-darkactive p-1 hover:shadow-sm border border-neocard-border dark:border-neocard-darkborder hover:border-neocard-borderhover dark:hover:border-neocard-darkborderhover  group duration-200  dark:bg-neocard-dark  border rounded-lg     w-full">
+                <View className="
+                 p-1 group duration-200 overflow-hidden sm:rounded-lg shadow-sm sm:hover:shadow-sm 
+                bg-backgroundCard dark:bg-backgroundCard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                hover:bg-backgroundCard-hover dark:hover:bg-backgroundCard-darkhover
+
+                border-y sm:border 
+                active:translate-y-0.5
+                border-borderColorCard dark:border-borderColorCard-dark 
+                sm:hover:border-borderColorCard-hover sm:dark:hover:border-borderColorCard-darkhover w-full 
+                active:border-borderColorCard-active dark:active:border-borderColorCard-darkactive
+                
+                
+                ">
                     <Link href={data.url}>            
                         {data.image &&
                             <View className="w-full bg-gray-500/20 rounded aspect-video w-full overflow-hidden items-center" >
@@ -183,7 +195,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10  w-full rounded aspect-video"></View> }
-                        <View className="px-1">
+                        <View className="px-1.5 py-0.5">
                             <View className=" overflow-hidden w-full my-2 h-10  ">
                                 <Text className='text-gray-800    dark:text-gray-200 text-base leading-5  tracking-tight font-semibold'>
                                     {data.title}

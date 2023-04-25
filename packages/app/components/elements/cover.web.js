@@ -68,34 +68,38 @@ export default function ElementCover(props) {
     </View>
         : <View className='bg-neocard dark:bg-neocard-dark ' >
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                <View className=''>
-                    <View  className='bg-cover bg-primary dark:bg-primary-dark w-full pt-[34%]  lg:rounded-b-lg overflow-hidden'>
-                        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover lg:rounded-b-2xl" src={data.cover.src} />  }
+                
+                    <View  className='bg-cover bg-primary dark:bg-primary-dark w-full pt-[34%]  xl:rounded-b-lg overflow-hidden'>
+                        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                     </View>
-                </View>
-                <View className='w-full relative  '>
-                        <View className={sType + " absolute left-0  -top-16 lg:-top-24 left-4 h-32 w-32 lg:h-48 lg:w-48 overflow-hidden border--2 border-neocard dark:border-neocard-dark "} >
-                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 1024? "4xl" : "3xl"} />
-                </View>
+                
+                <View className='w-full lg:flex-row px-4 relative gap-2 items-center  border-b  border-borderColor dark:border-borderColor-dark'>
+                    <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundCard dark:bg-backgroundCard-dark "} >
+                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
+                    </View>
                     
-                    <View className='  lg:p-4 flex-col-reverse  lg:pl-56 lg:pb-8  justify-between lg:flex-row  '>
-                    <View className='flex-col lg:gap-2 w-full lg:w-auto ml-4 lg:ml-0'>
-                                <H1C className="font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
-                                    <Row className='flex-row space-x-1'>
-                                        <Text className="font-bold tracking-tight  text-gray-800 dark:text-gray-200">@johndoe</Text>
+                    <View className=' flex-col w-full  md:flex-row justify-between gap-4 flex-auto '>
+                        <View className='flex-col gap-2 items-center md:items-start  lg:ml-0'>
+                                <Text className=" tracking-tight truncate text-2xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
+                                    <View className='flex-row  gap-1 text-center'>
+                                        <Text className="font-bold tracking-tight  text-gray-800 dark:text-gray-200">@johndoethefirst</Text>
                                         <Text className="text-gray-400 dark:text-gray-60">·</Text>
-                                        <Text className=" tracking-tight  text-gray-800 dark:text-gray-200">256 Followers</Text>
-                                    </Row>
-                                    <Text className='lg:hidden text-gray-800 dark:text-gray-200 mt-2'>{stripTags(data.profile.info.description)}</Text>
+                                        <Text className=" tracking-tight whitespace-nowrap text-gray-800 dark:text-gray-200">256 Followers</Text>
+                                        <Text className="text-gray-400 dark:text-gray-60">·</Text>
+                                        <Text className=" tracking-tight whitespace-nowrap  text-gray-800 dark:text-gray-200">23 Friends</Text>
+                                    </View>
+                                    
                         </View>
-                        <View className='mx-4 lg:mx-0 mb-4  w-auto  ml-40 lg:ml-0'>
+                        <View className='items-start w-auto flex-row '>
                             <CoverMenu/>
                         </View>
                         
                         
                     </View>
+                    <Text className='lg:hidden pb-4 pt-2 text-base text-gray-800 dark:text-gray-200  text-center'>{stripTags(data.profile.info.description)}</Text>
                 </View>
             </View>
+            
         </View>
     );
 }

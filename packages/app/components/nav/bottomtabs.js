@@ -46,7 +46,14 @@ export function NavBottomTabs(params) {
             <Tab.Screen
                 name="/pages"
                 component={NavScreen}
-                options={{tabBarButton: () => null, tabBarVisible: false, unmountOnBlur: true}}
+                options={
+                  { 
+                    title: 'text', 
+                    tabBarIcon: ({color}) => (
+                      <Icon icon='plus' width={iconWidth} height={iconHeight} color={color} />  
+                    ),
+                    tabBarVisible:  true, 
+                    unmountOnBlur: false}}
                 initialParams={{ url2: path, useUrl: true}}
             />
             {
