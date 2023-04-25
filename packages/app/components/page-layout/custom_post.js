@@ -20,7 +20,7 @@ import {
     console.log(11);
     return (
     <Header 
-        headerStyle={{paddingTop:0, marginTop:0, backgroundColor:'#ffff00'}}
+        headerStyle={{paddingTop:0, marginTop:0}}
         showNavBar={showNavBar}
         headerCenter={ <View><Text style={{ fontSize: 16, fontWeight: 'bold' }}>react-native-header{JSON.stringify(showNavBar)}</Text></View>}
      
@@ -28,7 +28,7 @@ import {
   )};
   
   const LargeHeaderComponent = ({ scrollY }) => (
-    <LargeHeader headerStyle={{paddingTop:0, marginTop:0}}>
+    <LargeHeader headerStyle={{paddingTop:0, marginTop:0, marginLeft:0}}>
         <View className='bg-green-500 w-full'>
       <ScalingView scrollY={scrollY} >
         <Text style={{ fontSize: 14 }}>Welcome!</Text>
@@ -41,6 +41,10 @@ import {
     </LargeHeader>
   );
    
+  function sas(props) {
+    console.log(9899);
+  }
+
   export default function ElementCover(props) {
 
     const { bottom } = useSafeAreaInsets();
@@ -50,13 +54,14 @@ import {
     }, 100);
 
     return (
-        <View className='bg-red-500 w-full flex-1 '>
+        <View className='w-full flex-1 '>
         <ScrollViewWithHeaders 
         HeaderComponent={HeaderComponent}
         LargeHeaderComponent={LargeHeaderComponent}
         contentContainerStyle={{ padding:0, margin:0, paddingBottom: bottom,  backgroundColor:'#ff00ff' }}
+        onLargeHeaderLayout = {sas}
       >
-        <View style={{ padding: 16 }}>
+        <View >
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
@@ -85,6 +90,7 @@ import {
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
+          
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
           <Text>Some body text...</Text>
