@@ -35,7 +35,7 @@ export default function (props) {
       ></TouchableOpacity>
       <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full  shadow-sm border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
       <Row className="flex-row space-x-1 flex-none items-center"> 
-        { props.uri == 'home' && <TouchableOpacity className="xl:hidden " onPress={showMenu}>
+        { /*props.uri == 'home'*/ true && <TouchableOpacity className="xl:hidden " onPress={showMenu}>
           <Button variant="text" startDecorator="List" rounded align="start" />
         </TouchableOpacity>
         }

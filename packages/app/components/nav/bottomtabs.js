@@ -1,32 +1,66 @@
 import { useRouter } from 'expo-router';
 import { Pressable } from 'app/design/view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useRoute } from '@react-navigation/native';
+import { useRoute,useNavigationState  } from '@react-navigation/native';
 import { Icon } from 'app/ui/atoms/icon';
 import { NavScreen } from 'app/components/nav/screen'
 
 import { Theme } from 'app/design/theme';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
+import { useState, useEffect } from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 export function NavBottomTabs(params) {
+
+   
+
     let { currentUser, setCurrentUser } = useCurrentUser();
     const router = useRoute();
     let path = router?.path;
 
+    const [count, setCount] = useState('');
+
     if (!path || path.startsWith('expo-development-client/'))
       path = '/home';
 
-      console.log('!!!!!!',path);
+      //console.log('!!!!!!',path, router);
     let iconWidth = 24;
     let iconHeight = 24;
+   
+   /* const navigation = useNavigation();
+    useEffect(() => {
+      console.log('++++',path, router);
+      navigation.navigate('pages');
+   }, [path]);*/
+   const navigation = useNavigation();
 
+
+   /*setTimeout(() => {
+    if (path.includes('view-post')){
+      navigation.navigate('pages');
+    }
+    }, 1000);*/
+    /*console.log('-------------', path, '------', count);
+    if (path  != count){
+      console.log('++++++++++', path, '++++++++', count);
+      setCount(path);
+    }
+    */
+    /*const activeTabName = useNavigationState((state) =>
+    state
+  );
+
+  useEffect(() => {
+    console.log('Active Tab:', activeTabName);
+  }, [activeTabName]);
+*/
     const { colors } = Theme();
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
     return (
-        <Tab.Navigator
+        <Tab.Navigator 
             screenOptions={({ navigation, route  }) => ({
                 tabBarStyle: {
                     backgroundColor: colors.barsBackground, 
@@ -42,20 +76,16 @@ export function NavBottomTabs(params) {
                 headerLeft: () => getHeaderAction(navigation, route)
             })}
         
-            initialRouteName={params.initial ? 'tab-Home' : '' }
+            initialRouteName={path=='/home'? 'tab-Home': 'pages' }
         >
             <Tab.Screen
-                name="/pages"
+                name="pages"
                 component={NavScreen}
                 options={{ 
-                  title: 'alla', 
-                  tabBarVisible: true, 
                   unmountOnBlur: true,
-                  tabBarIcon: ({color}) => (
-                    <Icon icon='plus' width={iconWidth} height={iconHeight} color={color} />  
-                )
+                  /*tabBarButton: () => null,*/
                 }}
-                initialParams={{ url2: path, useUrl: true}}
+                initialParams={{ url2: path,  useUrl: true}}
             />
             {
                 TabList.map((tab, index) => (
@@ -80,7 +110,7 @@ function getHeaderAction(navigation, route) {
     const routerExpo = useRouter();
     const { colors } = Theme();
   
-    if (navigation.isFocused() && route.name === '/pages') {
+    if (navigation.isFocused() && route.name === 'pages') {
       return (
         <Pressable
         className="pl-4"

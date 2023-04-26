@@ -38,10 +38,17 @@ export function NavScreen(params) {
                 //console.log("$$$$$$$$$$$$$$$$$BootomTab Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
                 if (d?.props) {
                     setPageData (d?.props);
+                    params.navigation.setOptions({ headerTitle: pageData?.data? pageData?.data?.title : "Loading..."  })
+                    if (params.route.params.useUrl)
+                        params.navigation.navigate('pages');
                 }
             }
         })();
     }, [_path]);
+
+    setTimeout(() => {
+        params.navigation.setOptions({ headerTitle: pageData?.data? pageData?.data?.title : "Loading..."  })
+    }, 100);
 
     if (isTabs)
         return <NavMaterialTabs uri={pageData?.data.uri} data = {pageData.data.menu} pageData = {pageData} />
