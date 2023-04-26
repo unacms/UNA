@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 import Cover from 'app/components/elements/cover';
 import { useTheme } from '@react-navigation/native';
 
+
 export function NavScreenMaterial(params) {
 
     const { colors } = useTheme();
@@ -42,6 +43,8 @@ export function NavScreenMaterial(params) {
             }
         })();
     }, [_path, isFocused2]);
+
+
 
     if (!!pageData?.data) 
         return <Root path={_path} data={pageData?.data} uri={pageData?.data.uri}/>
