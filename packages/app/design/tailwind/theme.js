@@ -81,29 +81,30 @@ const colors = {
   },
 
   backgroundcard: {
-    DEFAULT: 'rgba(255,255,255,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.9)',
     hover: 'rgba(255,255,255,1)',
     active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,0.8)',
+    dark: 'rgba(17,24,39,0.9)',
     darkhover: 'rgba(17,24,39,1)',
     darkactive: 'rgba(17,24,39,0.5)',
   },
   bordercolorcard: {
-    DEFAULT: 'rgba(209,213,219,0.7)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    
     hover: 'rgba(209,213,219,1)',
-    active: 'rgba(209,213,219, 0.7)',
-    dark: 'rgba(31,41,55,0.1)',
-    darkhover: 'rgba(31,41,55,0.5)',
-    darkactive: 'rgba(31,41,55,0.1)',
+    active: 'rgba(229,231,235,1)',
+    dark: 'rgba(3,7,18,1)',
+    darkhover: 'rgba(31,41,55,1)', 
+    darkactive: 'rgba(3,7,18,1)',
   },
 
   backgroundnavbar: {
-    DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(31,41,55,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.9)',
+    dark: 'rgba(17,24,39,0.9)',
   },
   bordercolornavbar: {
-    DEFAULT: 'rgba(209,213,219,0.8)',
-    dark: 'rgba(31,41,55,1)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    dark: 'rgba(3,7,18,1)',
   },
 
   backgrounditem: {

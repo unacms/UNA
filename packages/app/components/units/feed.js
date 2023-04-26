@@ -106,7 +106,7 @@ function SmallUnit(data) {
     
     return (
         <View className="
-        flex-row p-2 sm:p-3 sm:mx-4  group duration-200 overflow-hidden sm:rounded-lg shadow-sm sm:hover:shadow-lg  
+        flex-row p-2 sm:p-3 sm:mx-4  group duration-200 overflow-hidden sm:rounded-lg sm:hover:shadow-sm  
             bg-backgroundcard dark:bg-backgroundcard-dark 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive
