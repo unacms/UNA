@@ -92,6 +92,9 @@ export default function ElementBrowse(props) {
     if(Platform.OS === 'web') {
         styles = {height: windowHeight - 64}
     }
+    else{
+        //styles = {height: windowHeight - 64}
+    }
 
     return (
         (data.data.length > 0) && <View className='w-full h-full ' >
