@@ -98,7 +98,7 @@ export default function (props) {
         </Row>
         </Row>
       </View>
-      <AnimatePresence>
+      <AnimatePresence exitBeforeEnter>
         {menuPopup && (
           <View>
             <MotiView
@@ -109,28 +109,33 @@ export default function (props) {
                 opacity: 1,
               }}
               exit={{
+                height: 0,
                 opacity: 0,
+                translateX: -1000,
               }}
               transition={{
                 duration: 0,
               }}
             >
               <TouchableOpacity
-                className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen"
+                className="bg-white/80 dark:bg-black/80 bg-red-500 w-full absolute top-0 h-screen"
                 onPress={showMenu}
               ></TouchableOpacity>
             </MotiView>
             <MotiView
               style={{ width: 288 }}
               from={{
+                
                 translateX: -300,
                 overshootClamping: false,
               }}
               animate={{
                 translateX: 0,
+
                 overshootClamping: false,
               }}
               exit={{
+                height: 0,
                 translateX: -300,
                 overshootClamping: false,
               }}
