@@ -1,12 +1,27 @@
 import { View } from 'app/design/view';
 import {BlockByName} from 'app/components/block';
 import { Platform } from 'react-native'
+import { useState, useEffect } from 'react';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
+    const [isDesktop, setIsDesktop] = useState(false);
 
-    if (isWeb){
-    return (<View className="flex-auto relative w-full flex-row mx-auto  ">
+    useEffect(() => {
+        if (isWeb){
+            const handleResize = () => {
+                setIsDesktop(window.innerWidth > 1024);
+            };
+            
+            window.addEventListener('resize', handleResize);
+            handleResize();
+            
+            return () => window.removeEventListener('resize', handleResize);
+        }
+    }, []);
+
+    if (isDesktop){
+        return (<View className="flex-auto relative w-full flex-row mx-auto  ">
                 <View className=" w-0 xl:w-1/5 xl:w-max duration-200 ">
                 <BlockByName data={props.data} name={props.blocks.menu} hideTitle={true} hideBg={true} />
             </View>
