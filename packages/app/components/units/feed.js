@@ -39,7 +39,7 @@ function DefaultUnit(data) {
 
     return (
         <View className="
-            sm:mx-4 p-1 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+            sm:mx-4 p-1 mt-1 sm:mt-2 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             border-y sm:border 
@@ -106,11 +106,11 @@ function SmallUnit(data) {
     
     return (
         <View className="
-        flex-row p-2 sm:p-3 sm:mx-4  group duration-200 overflow-hidden sm:rounded-lg sm:hover:shadow-sm  
+        flex-row p-2 sm:p-3 sm:mx-4 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg sm:hover:shadow-sm  
             bg-backgroundcard dark:bg-backgroundcard-dark 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive
-            border-y sm:border 
+            border-b sm:border 
             active:translate-y-0.5
             border-bordercolorcard dark:border-bordercolorcard-dark 
             sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover

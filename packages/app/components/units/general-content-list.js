@@ -178,7 +178,8 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                 
                 <View className="
                  w-full
-                  p-1 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+                  p-1 mt-2
+                  group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
                  bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
                  hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                  border  

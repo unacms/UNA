@@ -22,22 +22,26 @@ export default function PageLayout(props) {
 
     if (isDesktop){
         return (<View className="flex-auto relative w-full flex-row mx-auto  ">
-                <View className=" w-0 xl:w-1/5 xl:w-max duration-200 ">
-                <BlockByName data={props.data} name={props.blocks.menu} />
+
+                <View className=" w-0 xl:w-1/5   lg:w-max duration-200 border-r xl:mr-4 xl:bg-transparent bg-backgroundcell dark:bg-backgroundcell-dark border-bordercolorcell dark:border-bordercolorcell-dark">
+                <BlockByName data={props.data} name={props.blocks.menu}  />
+
             </View>
             <View className="flex-auto w-4/5 flex-row  duration-200">
                 <View className="flex-auto  w-2/3">
                 <BlockByName data={props.data} name={props.blocks.feed} />
                 </View>
-                <View className="w-0 lg:w-1/3 flex-none duration-200">
+
+                <View className="w-0 xl:w-1/3  flex-none duration-200">
                 <BlockByName data={props.data} name={props.blocks.posts} />
                 </View>
             </View>
             </View>)
     }
 
-    return (<View className="w-full sm:mt-4">
-            <BlockByName data={props.data} name={props.blocks.feed}  />
+
+    return (<View className="w-full ">
+            <BlockByName data={props.data} name={props.blocks.feed} />
         </View>)
 
 }
