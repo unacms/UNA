@@ -2,12 +2,11 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text } from 'app/design/typography';
 import { NavScreenMaterial } from 'app/components/nav/screen-material';
 import { Theme } from 'app/design/theme';
-import { appSetting, getURI } from 'app/lib/util'
+import { processMenu } from 'app/lib/util'
 
 export function NavMaterialTabs(params) {
   const Tab = createMaterialTopTabNavigator();
   const { colors } = Theme();
-  let menuSettings = appSetting('menu_items', params.data.object)
 
   return (
     <Tab.Navigator
@@ -57,8 +56,7 @@ export function NavMaterialTabs(params) {
         };
       }}
     >
-      {params.data.items.map((tab, index) => {
-         if (!menuSettings || (menuSettings?.includes(getURI(tab.link))))
+      {processMenu(params.data.object, params.data.items).map((tab, index) => {
          return(
         <Tab.Screen
           key={`toptab-${index}`}

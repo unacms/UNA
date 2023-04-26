@@ -8,6 +8,7 @@ import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
+import { processMenu } from 'app/lib/util'
 
 import { Slider } from 'app/ui/molecules/slider';
 
@@ -52,7 +53,7 @@ export default function (props) {
       <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between ">
         <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
           <Slider offset={300}>
-            {props.menu_top.items.map((item, index) => (
+            {processMenu('main_menu', props.menu_top.items).map((item, index) => (
                   !item.link.includes('javascript') && (
                     <Link href={item.link} key={`menu-${index}`}>
                     <Button
