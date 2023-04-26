@@ -55,6 +55,8 @@ import Svg, {Path} from 'react-native-svg'
         },
     
         menu_items: {
+            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
+            'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home'],
             'bx_posts_submenu': ['posts-home', 'posts-popular'],
             'bx_persons_submenu': ['persons-home', 'persons-active'],
             'bx_persons_view_submenu':['view-persons-profile', 'persons-profile-info']
