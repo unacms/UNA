@@ -90,11 +90,13 @@ export default function ElementBrowse(props) {
 
     let styles ={};
     if(Platform.OS === 'web') {
-        styles = {height: windowHeight - 64}
+        styles = {height: windowHeight - 64, cardList: {} }
     }
     else{
         //styles = {height: windowHeight - 64}
     }
+
+
 
     return (
         (data.data.length > 0) && <View className='w-full h-full ' >
