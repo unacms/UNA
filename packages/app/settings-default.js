@@ -40,7 +40,7 @@ import Svg, {Path} from 'react-native-svg'
     export const settingsDefault = {
         feed: {
             show_selector_view: false,
-            default_view: 'small',
+            default_view: '',
         },
         entry: {
             default_view: '',
@@ -55,8 +55,6 @@ import Svg, {Path} from 'react-native-svg'
         },
     
         menu_items: {
-            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
-            'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home'],
             'bx_posts_submenu': ['posts-home', 'posts-popular'],
             'bx_persons_submenu': ['persons-home', 'persons-active'],
             'bx_persons_view_submenu':['view-persons-profile', 'persons-profile-info']
@@ -162,7 +160,7 @@ import Svg, {Path} from 'react-native-svg'
                 'u-btn-danger-text': 'font-semibold text-gray-100 group-hover:text-white ',
                 'u-btn-danger-trans': 'duration-200',
                 'u-btn-text-cnt':
-                ' border border-transparent hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark  ',
+                ' border border-transparent hover:bg-backgroundbutton-hover active:opacity-50 dark:hover:bg-backgroundbutton-darkhover  ',
                 'u-btn-text-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-text-trans': ' duration-200 ',
