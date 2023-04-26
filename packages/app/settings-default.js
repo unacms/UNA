@@ -66,61 +66,61 @@ import Svg, {Path} from 'react-native-svg'
             'view-post': {
                 layout: 'custom_post',
                 blocks: {
-                    author:'bx_posts:entity_author',
-                    text: 'bx_posts:entity_text_block',
-                    actions: 'bx_posts:entity_all_actions',
-                    comments: 'bx_posts:entity_comments'
+                    author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false},
+                    text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false},
+                    actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false},
+                    comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
                 },
             },
             'messenger':{
                 layout: 'custom_messenger',
                 blocks: {
-                    inbox:'bx_messenger:get_block_inbox',
-                    lot: 'bx_messenger:get_block_lot',
+                    inbox: {name: 'bx_messenger:get_block_inbox'},
+                    lot: {name: 'bx_messenger:get_block_lot'},
                 },
             },
             'home':{
                 layout: 'custom_home',
                 blocks: {
-                    menu:'system:profile_menu',
-                    feed: 'bx_timeline:get_block_view_home',
-                    posts: 'bx_posts:browse_public',
+                    menu: {name: 'system:profile_menu', showTitle: false, showBg: false},
+                    feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
+                    posts: {name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
             },
             'posts-home':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:'bx_posts:browse_public',
+                    browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
             },
             'posts-popular':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:'bx_posts:browse_popular',
+                    browse:{name: 'bx_posts:browse_popular', showTitle: false, showBg: false},
                 },
             },
             'persons-home':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:'bx_persons:browse_recent_profiles',
+                    browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
             'persons-active':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:'bx_persons:browse_active_profiles',
+                    browse:{name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
                 }
             },
             'view-persons-profile':{
                 layout: 'custom_persons',
                 blocks: {
-                    col1:'bx_timeline:get_block_view_home',
+                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
                 }
             },
             'persons-profile-info':{
                 layout: 'custom_persons',
                 blocks: {
-                    col1:'bx_persons:entity_info_full',
+                    col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
                 }
             }
         },

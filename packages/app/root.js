@@ -6,6 +6,7 @@ import PageError from 'app/components/page-layout/error';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
 import { Text } from 'app/design/typography'
+import { appSetting, getURI } from 'app/lib/util';
 
 export function Root (props) {
 
@@ -38,9 +39,15 @@ export async function getData(path, token, origin, headers, callback) {
 	    path = 'home';
 
     path = path.startsWith('/') ? path.substr(1) : path;    
-   
-
+    
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+
+	const uri = getURI(path);
+    let settings = appSetting('layouts', uri)
+    if (settings){
+        path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
+    }
+
     // TODO: pass GET&POST params
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
    // console.log("************** load data:", path, "**************", data);

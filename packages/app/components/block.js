@@ -11,15 +11,17 @@ const componentsMap = {
     string: String,
 };
 
-export function BlockByName({data, name, hideTitle, hideBg}) {
-    
+export function BlockByName({data, name}) {
+
+    const blockName = name.name;
+
     let b = null;
     if (name){
         Object.keys(data?.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {
                 if (data.elements[key][key2].content){
                     Object.keys(data.elements[key][key2].content).forEach(key3 => {
-                        if(data.elements[key][key2].source == name.toString())
+                        if(data.elements[key][key2].source == blockName.toString())
                             b = data.elements[key][key2];
                     });
                 }
@@ -27,7 +29,7 @@ export function BlockByName({data, name, hideTitle, hideBg}) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} hideTitle={hideTitle} hideBg={hideBg} />;
+        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
     
     return <Text>Not found: {name}</Text>
 }
@@ -57,26 +59,11 @@ export default function Block(props) {
         bIsShowBg = false;
     }
 
-    if (props.uri == 'view-post'){
-        bIsShowBg = false;
-        bIsShowTitle = false;
+    if (typeof props.showBg !== 'undefined'){
+        bIsShowBg = props.showBg;
     }
-
-    if (props.uri == 'home' && (block.source == 'system-profile_stats' || block.source == 'system-profile_menu')){
-        bIsShowBg = false;
-        bIsShowTitle = false;
-    }
-
-    if (block.source.includes('-browse_') || block.source.includes('bx_timeline-get_block_view')){
-        bIsShowBg = false;
-        bIsShowTitle = false;
-    }
-
-    if (props.hideBg == true){
-        bIsShowBg = false;
-    }
-    if (props.hideTitle == true){
-        bIsShowTitle = false;
+    if (typeof props.showTitle !== 'undefined'){
+        bIsShowTitle = props.showTitle;
     }
 
     return (
