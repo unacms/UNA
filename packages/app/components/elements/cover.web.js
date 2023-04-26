@@ -39,10 +39,10 @@ export default function ElementCover(props) {
     if(Platform.OS == 'web') {
         document.addEventListener("scroll", (event) => {
             if (window.scrollY > 300 && !isSmall){
-               // setIsSmall(true);
+                setIsSmall(true);
             }
             if (window.scrollY < 10 && isSmall){
-             //   setIsSmall(false);
+                setIsSmall(false);
             }
         });
     }

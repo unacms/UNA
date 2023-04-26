@@ -1,5 +1,4 @@
-import { View, Row } from 'app/design/view';
-import Image from '../../ui/atoms/image';
+import { View, Row, Pressable } from 'app/design/view';
 import { Text, H1C } from 'app/design/typography';
 import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
@@ -9,53 +8,62 @@ import { useRef, useState } from 'react';
 import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 
-import {
-    Header,
-    LargeHeader,
-    ScalingView,
-    ScrollViewWithHeaders,
-  } from '@codeherence/react-native-header';
-  
-  import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-  const HeaderComponent = ({ showNavBar }) => (
-    <Header
-      showNavBar={showNavBar}
-      headerCenter={<Text style={{ fontSize: 16, fontWeight: 'bold' }}>react-native-header</Text>}
-     
-    />
+function CoverMenu(){
+    return (
+        <View className=' w-full lg:w-auto  mt-2 lg:mt-0'>
+            <View className=' w-full justify-end align-end  flex-row  space-x-2'>
+                <Button title="Follow" variant="primary" fullWidth />
+                <Button title="Message" variant="default" fullWidth/>
+            </View>
+        </View>
+    );
+}
+
+export function CoverSmall(props) {
+ 
+  const data = props.data;
+  return (
+    <Row className='items-center  justify-center w-64 '>
+      
+      <Profile {...data.profile} displayType="unit_wo_info" displaySize="sm" />
+      <H1C className="font-bold ml-4 tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+    </Row>
   );
-  
-  
-  
-  const LargeHeaderComponent = ({ scrollY }) => (
-    <LargeHeader>
-      <ScalingView scrollY={scrollY}>
-        <Text style={{ fontSize: 14 }}>Welcome!</Text>
-        <Text style={{ fontSize: 32, fontWeight: 'bold' }}>react-native-header</Text>
-        <Text style={{ fontSize: 12, fontWeight: 'normal', color: '#8E8E93' }}>
-          This project displays some header examples using the package.
-        </Text>
-      </ScalingView>
-    </LargeHeader>
-  );
-  
-  
+}
 
 export default function ElementCover(props) {
 
-    const { bottom } = useSafeAreaInsets();
+    const [isSmall, setIsSmall] = useState(false);
 
-    return (
-      <ScrollViewWithHeaders
-      HeaderComponent={HeaderComponent}
-      LargeHeaderComponent={LargeHeaderComponent}
-      contentContainerStyle={{ paddingBottom: bottom }}
-    >
-      {props.children}
-      
-    </ScrollViewWithHeaders>
-      );
+    //TODO: implements menus
+    const data = props.data;
+    let sType = 'lg:rounded'
+
+    let { width } = useWindowDimensions()
+
+    if (props.data.profile.module == "bx_persons")
+        sType = 'rounded-full';
+
 
     
+    return (
+      <View className='bg-orange-500 fixed top:64 z-50 w-full border-b border-neoborder dark:border-neoborder-dark' >
+      <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+          <View className='w-full relative  '>
+              <View className=' p-2 flex-col  justify-between lg:flex-row'>
+                  <Row className='items-center'>
+                      <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
+                      <View className='flex-col gap-2 w-full lg:w-auto ml-4'>
+                          <H1C className="font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+                      </View>
+                  </Row>
+                  <View className=' w-full lg:w-auto  mt-2 lg:mt-0'>
+                      <CoverMenu/>
+                  </View>
+              </View>
+          </View>
+      </View>
+  </View>
+    );
 }

@@ -50,8 +50,8 @@ export function NavScreen(params) {
         params.navigation.setOptions({ headerTitle: pageData?.data? pageData?.data?.title : "Loading..."  })
     }, 100);
 
-    if (isTabs)
-        return <NavMaterialTabs uri={pageData?.data.uri} data = {pageData.data.menu} pageData = {pageData} />
+  //  if (isTabs)
+   //     return <NavMaterialTabs uri={pageData?.data.uri} data = {pageData.data.menu} pageData = {pageData} />
 
     if (!!pageData?.data) 
         return <Root path={_path} data={pageData?.data} uri={pageData?.data.uri}/>

@@ -46,7 +46,7 @@ export default function PageLayout(props) {
     }
 
     const Component = componentsMap[layoutKey];
-    //console.log('**************** page layout **************', layoutKey);
+    console.log('**************** page layout **************', layoutKey);
     // return data for custom pages
     if(layoutCustomKey)
         return Wrapper(<Component {...props} blocks={layoutBlocks}/>);
