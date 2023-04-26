@@ -1,66 +1,62 @@
-import React, { useCallback, useState } from "react";
-import { StatusBar, Text, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
-import { Route, TabView } from "showtime-tab-view";
 
 import {BlockByName} from 'app/components/block';
-
-const StatusBarHeight = StatusBar.currentHeight ?? 0;
-
+import { View, FlatList, FlashList } from 'app/design/view'
+import Cover, {CoverSmall} from 'app/components/elements/cover';
+import React, { useRef, useState, useEffect} from 'react';
+import { Text } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 export default function PageLayout(props) {
+  const DATA = [
+    {
+      title: "First Item",
+    },
+   
+  ];
 
-  const TabScene = ({ route, data }) => {
-    return (
-      <BlockByName data={props.data} name={props.blocks.col1} />
-    );
-  };
+  const initialScrollPosition = useRef(0);
+  const [count, setCount] = useState(false)
+  const navigation = useNavigation();
+  useEffect(() => {
+    if (count)
+    navigation.setOptions({ headerTitle: () => <CoverSmall data={props.data.cover_block} />, headerShown: true,  })
+    else
+    navigation.setOptions({ headerTitle: () => <Text></Text>, headerShown: true,  })
+}, [count]);
+
+  const handleScroll = (event) => {
+    /*const currentScrollPosition = event.nativeEvent.contentOffset.y;
   
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [routes] = useState([
-    { key: "like", title: "Like", index: 0 },
-    { key: "owner", title: "Owner", index: 1 },
-    { key: "created", title: "Created", index: 2 },
-  ]);
-  const [index, setIndex] = useState(0);
-  const animationHeaderPosition = useSharedValue(0);
-  const animationHeaderHeight = useSharedValue(0);
-
-  const renderScene = useCallback(({ route }) => {
-    switch (route.key) {
-      case "like":
-        return <TabScene route={route} index={0} data={props.data} />;
-      case "owner":
-        return <TabScene route={route} index={1} data={props.data}/>;
-      case "created":
-        return <TabScene route={route} index={2} data={props.data}/>;
-      default:
-        return null;
+    // If the initial scroll position has not been set yet, set it
+    if (initialScrollPosition.current === 0) {
+      initialScrollPosition.current = currentScrollPosition;
+    }*/
+    
+    if (event.nativeEvent.contentOffset.y > 100 && count != true){
+      setCount(true)
     }
-  }, []);
+    if (event.nativeEvent.contentOffset.y < 100 && count != false){
+      setCount(false)
+    }
+  
+   
 
-  const onStartRefresh = async () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      console.log("onStartRefresh");
-      setIsRefreshing(false);
-    }, 300);
+    console.log('Initial scroll position:', event.nativeEvent.contentOffset.y);
   };
-  const renderHeader = () => (
-    <View style={{ height: 300, backgroundColor: "#000" }}></View>
-  );
-  return (
-    <TabView
-      onStartRefresh={onStartRefresh}
-      isRefreshing={isRefreshing}
-      navigationState={{ index, routes }}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      lazy
-      renderScrollHeader={renderHeader}
-      minHeaderHeight={44 + StatusBarHeight}
-      animationHeaderPosition={animationHeaderPosition}
-      animationHeaderHeight={animationHeaderHeight}
-    />
-  );
+
+  function CM(props){
+    return <View className='w-full'>{props.children}<View className='w-full bg-blue-500 h-12'><Text>Menu</Text></View></View>
+  }
+  
+    return (<View className='w-full h-full ' >
+          {count ?<View className='mt-'><CM></CM></View>: <></>}
+         <FlatList estimatedItemSize={200} numColumns={1} className='h-full ' horizontal={false} 
+                data={DATA}
+                renderItem={({ item }) => <View key={'item'} className=' h-128 w-full  '><BlockByName data={props.data} name={props.blocks.col1} /></View>}
+               
+                ListHeaderComponent = {!count ?<CM><Cover data={props.data.cover_block}/></CM>: <CM><CoverSmall data={props.data.cover_block}/></CM>}
+                onScroll={handleScroll}
+
+                
+            />
+    </View>)
 }
