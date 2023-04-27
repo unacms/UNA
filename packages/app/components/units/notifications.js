@@ -9,6 +9,7 @@ import { Button } from 'app/design/controls';
 import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
+import { Pressable } from 'dripsy';
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
@@ -31,11 +32,18 @@ export default function UnitFeed({data}) {
     }
 
     return (
-        <View className="sm:mb-2">
+        <View className=" ">
             <Redirect ref={redirectdRef} />
-            <Button variant="custom" size="base" fullWidth="true" onPress={() => handleClick(url)}>
-                <View className="sm:rounded-lg flex-row w-full -m-2 p-4 active:translate-y-0.5 active:bg-neocard-active dark:active:bg-neocard-darkactive duration-200 bg-neocard dark:bg-neocard-dark border-b hover:bg-neocard-hover dark:hover:bg-gray-800 border-neoborder dark:border-neoborder-dark overflow-hidden ">    
-                    <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+            <Pressable onPress={() => handleClick(url)}>
+                <View className=" p-3 flex-row  
+                 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                 sm:mt-0 sm:mx-4 sm:mb-2
+                active:translate-y-0.5 border-t sm:border
+                border-bordercolorcard dark:border-bordercolorcard-dark
+                ">    
+                    <View className="w-12 h-12 mr-2 rounded-full flex-none ">
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>
                     <View className="flex-auto my-auto ">
@@ -48,7 +56,7 @@ export default function UnitFeed({data}) {
                         </View>         
                     </View>
                 </View>
-            </Button>
+            </Pressable>
         </View>
     );
 }

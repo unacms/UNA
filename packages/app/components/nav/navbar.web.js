@@ -58,9 +58,9 @@ export default function (props) {
         const sContent = (
             <View>
                 {oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
-                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-center">
+                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-end">
                     <Link href="/notifications-view">
-                        <Button variant="text" rounded startDecorator="CaretDoubleDown" onPress={() => {setNtfsOpen(false)}} />
+                        <Button variant="text" title="View All" rounded endDecorator="ArrowRight" onPress={() => {setNtfsOpen(false)}} />
                     </Link>
                 </View>}
             </View>
@@ -116,7 +116,7 @@ export default function (props) {
                 <Button variant="text" rounded startDecorator="notifications" onPress={() => {}} />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className="DropdownMenuContent">{ntfsContent}</DropdownMenu.Content>
+                <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur mx-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-lg ">{ntfsContent}</DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           <Link href="/messenger">
