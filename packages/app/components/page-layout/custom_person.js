@@ -124,7 +124,6 @@ export const HeaderBar = ({ scrollValue }) => {
     },
     headerText: {
       color: colors.white,
-      fontFamily: 'AvertaStd-Semibold',
       fontSize: 20,
       paddingLeft: 20,
     },
@@ -182,7 +181,6 @@ export default function PageLayout(props) {
     contentText: {
       alignSelf: 'flex-start',
       color: colors.black,
-      fontFamily: 'AvertaStd-Semibold',
       fontSize: 24,
       letterSpacing: -0.2,
       lineHeight: 28,
@@ -209,14 +207,12 @@ export default function PageLayout(props) {
       flex: 1,
     },
     text: {
-      fontFamily: 'AvertaStd-Regular',
     },
   });
   const styles = StyleSheet.create({
     titleStyle: {
       backgroundColor: colors.semitransparentBlack,
       color: colors.white,
-      fontFamily: 'AvertaStd-Semibold',
       fontSize: 40,
       padding: 10,
     },
@@ -229,7 +225,6 @@ export default function PageLayout(props) {
     },
     tabText: {
       color: colors.white,
-      fontFamily: 'AvertaStd-Semibold',
       fontSize: 16,
       lineHeight: 20,
       paddingHorizontal: 12,
@@ -237,7 +232,6 @@ export default function PageLayout(props) {
     },
     tabTextActiveStyle: {
       color: colors.black,
-      fontFamily: 'AvertaStd-Semibold',
       fontSize: 16,
       lineHeight: 20,
       paddingHorizontal: 12,
