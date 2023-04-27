@@ -13,12 +13,12 @@ export const P = styled(NativeText, 'text-base text-black my-4')
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = styled(NativeText, 'text-lg lg:text-3xl font-extrabold my-4')
+export const H1 = styled(NativeText, 'text-xl lg:text-3xl font-bold my-4')
 H1.defaultProps = {
   accessibilityRole: 'header',
 }
 
-export const H1C = styled(NativeText, 'text-lg lg:text-3xl font-extrabold')
+export const H1C = styled(NativeText, 'text-xl lg:text-3xl font-bold')
 H1.defaultProps = {
   accessibilityRole: 'header',
 }

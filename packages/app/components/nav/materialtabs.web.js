@@ -32,8 +32,10 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
-          justifyContent: 'center',
+          justifyContent: '',
           alignItems: 'center',
+          marginHorizontal: 16,
+          marginVertical: 0,
          
         }}
         style={{
@@ -70,8 +72,8 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
                 onPress={onPress}
                 style={{
                   paddingHorizontal: 16,
-                  paddingVertical: 14.5,
-                  height:48
+                  paddingVertical: 16,
+                  height:50
                 }}
               >
                 <View

@@ -22,8 +22,8 @@ const colors = {
   },
 
   accent: {
-    DEFAULT: '#0284c7',
-    dark: '#0ea5e9',
+    DEFAULT: 'rgba(249,115,22,1)',
+    dark: 'rgba(249,115,22,1)',
     50: 'rgba(255,247,237,1)',
     100: 'rgba(255,237,213,1)',
     200: 'rgba(254,215,170,1)',
