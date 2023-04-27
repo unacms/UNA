@@ -65,8 +65,6 @@ export default function ElementBrowse(props) {
     
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
-    
-
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
 
@@ -90,48 +88,26 @@ export default function ElementBrowse(props) {
         {label: 'Mini', value: 'small'}
     ];
 
-    let styles = { height: windowHeight - 64, cardList: {} };
-
+    let styles ={};
+    if(Platform.OS === 'web') {
+        styles = {height: windowHeight - 64}
+    }
+    else{
+        //styles = {height: windowHeight - 64}
+    }
 
     return (
-        (data.data.length > 0) && <View className='w-full h-full '  style={{ flex: 1 }}>
-            {data.unit == 'feed' && 
-                appSetting('feed', 'show_selector_view') && <View className='h-12 items-end z-50'>
-                <Dropdown 
+        (data.data.length > 0) && <View className='w-full h-full ' >
+            { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
                 onChange={setUnitMode}
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            { data.unit != 'comments' && <View  onLayout={handleLayout}  style = {styles}>
-                <FlashList 
-                estimatedItemSize={200} 
-                numColumns={numColumns}  
-                horizontal={false} 
+            { data.unit != 'comments' && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}><FlashList estimatedItemSize={200} numColumns={numColumns} className=' ' horizontal={false} 
                 data={data.data}
-                renderItem={({item}) => (
-                    <View
-                    key={"item" + item.id}
-                    className={
-                    numColumns > 1
-                        ? "w-full mb-2 pr-2 pl-2"
-                        : "  " +
-                        (data.unit != "feed" ? " px-4  w-full" : " xx ") +
-                        " xx "
-                    }
-                >
-                    <Unit
-                    unit={data.unit ? data.unit : ""}
-                    mode={unitMode}
-                    module={data.module ? data.module : ""}
-                    object_id={data.object_id ? data.object_id : ""}
-                    view={data.view ? data.view : ""}
-                    {...props}
-                    data={item}
-                    />
-                    </View>
-                )}
+                renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? ' px-4  w-full': ' xx ') + ' xx '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
                 onEndReached ={handleEndReached} 

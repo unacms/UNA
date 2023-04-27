@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { StatusBar, StyleSheet, Text, View, useWindowDimensions, Image, TouchableOpacity } from 'react-native';
+import { StatusBar, StyleSheet, Text, useWindowDimensions, Image, TouchableOpacity } from 'react-native';
 import { TabbedHeaderPager } from 'react-native-sticky-parallax-header';
 import { useNavigation } from '@react-navigation/native';
 
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {BlockByName} from 'app/components/block';
-
+import { Icon } from 'app/ui/atoms/icon'; 
+import { View, Pressable } from 'app/design/view'
+import Cover, {CoverSmall} from 'app/components/elements/cover';
 const yodaScreenTestIDs = Object.freeze({
   headerBarBackButton: 'YodaHeaderBarBackButtonTestID',
   headerBarText: 'YodaHeaderBarTextTestID',
@@ -107,21 +109,18 @@ export const HeaderBar = ({ scrollValue }) => {
   const styles = StyleSheet.create({
     headerContainer: {
       width: '100%',
-      paddingHorizontal: 24,
+      paddingHorizontal: 12,
       paddingVertical: 12,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: colors.black,
+      backgroundColor: 'blue',
     },
     headerWrapper: {
       flexDirection: 'row',
       alignItems: 'center',
     },
-    headerImage: {
-      width: 20,
-      height: 20,
-    },
+   
     headerText: {
       color: colors.white,
       fontSize: 20,
@@ -139,17 +138,21 @@ export const HeaderBar = ({ scrollValue }) => {
   });
 
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={styles.headerContainer}>
+    <SafeAreaView edges={[ 'left', 'right']} style={styles.headerContainer}>
       <View style={styles.headerWrapper}>
-        <TouchableOpacity onPress={goBack} testID={yodaScreenTestIDs.headerBarBackButton}>
-          <Image
-            style={styles.headerImage}
-            resizeMode="contain"
-            source={{
-              uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/VisualEditor_-_Icon_-_Close_-_white.svg/1200px-VisualEditor_-_Icon_-_Close_-_white.svg.png',
-            }}
-          />
-        </TouchableOpacity>
+      <Pressable
+        className=""
+          onPress={goBack}
+          style={({ pressed }) => [
+            {
+              opacity: pressed ? 0.5 : 1,
+              backgroundColor:'red'
+            },
+          ]}
+        >
+          <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
+        </Pressable>
+        
         <Animated.View style={animatedStyle}>
           <Text style={styles.headerText} testID={yodaScreenTestIDs.headerBarText}>
             Baby Yoda1
@@ -181,6 +184,7 @@ export default function PageLayout(props) {
     contentText: {
       alignSelf: 'flex-start',
       color: colors.black,
+      fontFamily: 'AvertaStd-Semibold',
       fontSize: 24,
       letterSpacing: -0.2,
       lineHeight: 28,
@@ -207,12 +211,14 @@ export default function PageLayout(props) {
       flex: 1,
     },
     text: {
+      fontFamily: 'AvertaStd-Regular',
     },
   });
   const styles = StyleSheet.create({
     titleStyle: {
       backgroundColor: colors.semitransparentBlack,
       color: colors.white,
+      fontFamily: 'AvertaStd-Semibold',
       fontSize: 40,
       padding: 10,
     },
@@ -225,6 +231,7 @@ export default function PageLayout(props) {
     },
     tabText: {
       color: colors.white,
+      fontFamily: 'AvertaStd-Semibold',
       fontSize: 16,
       lineHeight: 20,
       paddingHorizontal: 12,
@@ -232,6 +239,7 @@ export default function PageLayout(props) {
     },
     tabTextActiveStyle: {
       color: colors.black,
+      fontFamily: 'AvertaStd-Semibold',
       fontSize: 16,
       lineHeight: 20,
       paddingHorizontal: 12,
@@ -244,7 +252,7 @@ export default function PageLayout(props) {
       paddingHorizontal: 10,
     },
     contentContainer: {
-      backgroundColor: colors.white,
+      backgroundColor: 'green',
       padding: 10,
     },
     contentText: {
@@ -259,9 +267,8 @@ export default function PageLayout(props) {
         backgroundImage={{
           uri: 'https://miro.medium.com/max/1200/1*mk1-6aYaf_Bes1E3Imhc0A.jpeg',
         }}
-        title="Baby Yoda"
+        title="Baby Yoda888"
         titleStyle={styles.titleStyle}
-        titleTestID={'YodaHeaderTitleTestID'}
         foregroundImage={{
           uri: 'https://cdn.iconscout.com/icon/free/png-256/starwars-6-569425.png',
         }}
@@ -275,14 +282,11 @@ export default function PageLayout(props) {
         onScroll={onScroll}
         tabs={TABS}
         renderHeaderBar={() => <HeaderBar scrollValue={scrollValue} />}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={true}>
         {TABS.map((tab, i) => (
-          <View key={i} style={[styles.contentContainer, {  }]}>
-            <BlockByName data={props.data} name={props.blocks.col1} />
-          </View>
+          <BlockByName data={props.data} name={props.blocks.col1} />
         ))}
       </TabbedHeaderPager>
-      
     </>
   );
 };
