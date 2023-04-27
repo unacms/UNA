@@ -1,16 +1,22 @@
-import { TouchableOpacity } from 'app/design/view'
-import { useWindowDimensions } from 'react-native'
-import Link from 'app/ui/atoms/link'
 import { useState } from 'react'
+import { useWindowDimensions } from 'react-native'
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import { MotiView, AnimatePresence } from 'moti'
+
+import { fetcher } from 'app/lib/fetcher';
+import { TouchableOpacity } from 'app/design/view'
+import Link from 'app/ui/atoms/link'
+import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
-import { MotiView, AnimatePresence } from 'moti'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { processMenu } from 'app/lib/util'
-
 import { Slider } from 'app/ui/molecules/slider';
+
+import Notifications from 'app/components/units/notifications';
+import 'app/styles/dropdown.css';
 
 export default function (props) {
   const { currentUser, setCurrentUser } = useCurrentUser();
@@ -27,6 +33,41 @@ export default function (props) {
   const hideMenu = (params) => {
     setMenuPopup(false)
   }
+
+    const [ntfsOpen, setNtfsOpen] = useState(false);
+    const [ntfsContent, setNtfsContent] = useState('');
+    const handleClickNotifications = async () => {
+        const iPerPage = 5;
+        const aParams = {
+            params: {
+                type: 'obj_own_and_con',
+                start: 0,
+                per_page: iPerPage,
+                modules: ''
+            }
+        };
+
+        const sResponse = await fetcher('/api.php?r=bx_notifications/get_data/Module&params=' + JSON.stringify(aParams));
+        if(!sResponse?.data) 
+            return;
+
+        const oBlock = sResponse.data.shift();
+        if(oBlock.data?.unit != 'notifications' || !oBlock.data?.data) 
+            return;
+
+        const sContent = (
+            <View>
+                {oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
+                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-center">
+                    <Link href="/notifications-view">
+                        <Button variant="text" rounded startDecorator="CaretDoubleDown" onPress={() => {setNtfsOpen(false)}} />
+                    </Link>
+                </View>}
+            </View>
+        );
+
+        setNtfsContent(sContent);            
+    }
 
   return (
     <View className="fixed -top-[1px]  z-50 w-full mb-16">
@@ -70,9 +111,14 @@ export default function (props) {
         <Row>
         {!!currentUser &&
         <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
-          <Link href="/notifications-view">
-            <Button variant="text" rounded startDecorator="notifications" />
-          </Link>
+            <DropdownMenu.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
+              <DropdownMenu.Trigger>
+                <Button variant="text" rounded startDecorator="notifications" onPress={() => {}} />
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className="DropdownMenuContent">{ntfsContent}</DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           <Link href="/messenger">
             <Button variant="text" rounded startDecorator="messages" />
           </Link>
