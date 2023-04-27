@@ -34,8 +34,24 @@ export default function (props) {
     setMenuPopup(false)
   }
 
+    const sNtfsSkeleton = (
+        <View className="gap-2">
+        {[...Array(1, 2, 3)].map( i => 
+            <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                <View className="animate-pulse flex-row items-center gap-3">
+                    <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+                    <View className="flex-1 space-y-1">
+                        <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
+                        <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+                    </View>
+                </View>
+            </View>
+        )}
+        </View>
+    );
+
     const [ntfsOpen, setNtfsOpen] = useState(false);
-    const [ntfsContent, setNtfsContent] = useState('');
+    const [ntfsContent, setNtfsContent] = useState(sNtfsSkeleton);
     const handleClickNotifications = async () => {
         const iPerPage = 5;
         const aParams = {
@@ -57,8 +73,9 @@ export default function (props) {
 
         const sContent = (
             <View>
+                <View className="mx-4 mb-2"><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>Notifications</Text></View>
                 {oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
-                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-end">
+                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-end mx-4 mb-2">
                     <Link href="/notifications-view">
                         <Button variant="text" title="View All" rounded endDecorator="ArrowRight" onPress={() => {setNtfsOpen(false)}} />
                     </Link>
