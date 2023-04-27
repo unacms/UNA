@@ -10,6 +10,7 @@ import { Text } from 'app/design/typography';
 import { NavScreen } from 'app/components/nav/screen';
 import { Theme } from 'app/design/theme';
 import {  processMenu } from 'app/lib/util'
+import { Button } from 'app/design/controls';
 
 
 function CustomTabBar({ state, descriptors, navigation, position }) {
@@ -24,14 +25,44 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
         flexDirection: 'row',
         justifyContent: 'center',
         backgroundColor: colors.barsBackground,
-        width: '100%',
+        width: 'auto',
       }}
-    ><View style={{
+    >
+      <View style={{
       flexDirection: 'row',
+      flexWrap: 'wrap',
       justifyContent: 'center',
-      backgroundColor: colors.barsBackground,
-      width:1280,
-    }}><View style={{backgroundColor:'red'}}><Text>Begin</Text></View>
+      maxWidth:1280,
+      width:'100%',
+    
+      paddingHorizontal: 16,
+    }}>
+    <View style={{
+      flexDirection: 'row',
+      width: '100%', 
+      justifyContent: 'center',
+
+      }}>
+
+      <View style={{
+      
+        
+        justifyContent: 'center',
+
+        }}>
+        <Text
+        
+        style={{
+          color: colors.text,
+          fontSize: 24,
+          fontWeight: 'bold',
+          paddingBottom: 3,
+          
+          }}>
+          People
+        </Text>
+        </View>
+        
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -120,7 +151,23 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
           })}
         </View>
       </ScrollView>
-      <View style={{backgroundColor:'blue'}}><Text>End</Text></View></View>
+      
+      <View style={{
+      
+      paddingLeft: 8,
+      justifyContent: 'center',
+      marginVertical: 'auto' ,
+
+      }}>
+          <Button size="sm"  startDecorator="DotsThreeOutline"  variant="default" fullWidth />
+      </View>
+      
+      
+      </View>
+  
+      
+      
+      </View>
     </View>
   );
 }
