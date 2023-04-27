@@ -11,7 +11,9 @@ const componentsMap = {
     string: String,
 };
 
-export function BlockByName({data, name}) {
+export function BlockByName({data, name, onScroll2, f}) {
+
+    
 
     const blockName = name.name;
 
@@ -29,7 +31,7 @@ export function BlockByName({data, name}) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
+        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} f={f}  />;
     
     return <Text>Not found: {name}</Text>
 }
@@ -65,12 +67,12 @@ export default function Block(props) {
     if (typeof props.showTitle !== 'undefined'){
         bIsShowTitle = props.showTitle;
     }
-
+    console.log('+++', props.f);
     return (
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? 'bg-neocard dark:bg-neocard-dark border  border-neoborder dark:border-neoborder-dark p-4 sm:rounded-lg' : ''}>
                 {bIsShowTitle && <Text className=" text-lg text-gray-800 dark:text-gray-200 font-semibold my-auto pb-4">{stripTags(block.title)}</Text>}
-                <View><BlockType data={block.content} type={block.type}  /></View>
+                <View><BlockType data={block.content} type={block.type} f={props.f}  /></View>
             </View>
         </View>
     );
