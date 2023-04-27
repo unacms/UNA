@@ -33,6 +33,7 @@
     "**/expo-router/**"
   ],
   "dependencies": {
+    "@headlessui/react": "^1.7.14",
     "dotenv-cli": "^7.0.0"
   }
 }

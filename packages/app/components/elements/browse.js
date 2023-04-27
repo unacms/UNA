@@ -65,6 +65,8 @@ export default function ElementBrowse(props) {
     
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
+    
+
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
 
