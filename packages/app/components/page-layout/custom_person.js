@@ -171,7 +171,17 @@ export default function PageLayout(props) {
   function onScroll(e) {
     'worklet';
     scrollValue.value = e.contentOffset.y;
+    
+    const offsetY = e.contentOffset.y;
+    const contentHeight = e.contentSize.height;
+    const scrollViewHeight = e.layoutMeasurement.height;
+    console.log('zzzz', offsetY + scrollViewHeight,contentHeight)
+    if (offsetY + scrollViewHeight >= contentHeight-1) {
+      console.log('Reached the end of the scroll');
+    }
   }
+
+
 
   
   const screenStyles = StyleSheet.create({

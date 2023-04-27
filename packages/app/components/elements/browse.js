@@ -2,8 +2,8 @@
 
 import Unit from '../unit';
 import { useState, useEffect } from 'react';
-import { View, FlatList, FlashList } from 'app/design/view'
-
+import { View, FlatList, FlashList,Pressable } from 'app/design/view'
+import { Icon } from 'app/ui/atoms/icon'; 
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
@@ -110,13 +110,18 @@ export default function ElementBrowse(props) {
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? ' px-4  w-full': ' xx ') + ' xx '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
-                onEndReached ={handleEndReached} 
+                //onEndReached ={handleEndReached} 
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
                       <View className='m-2'><ActivityIndicator  size="large" color={colors.primary}  /></View>
                     ) : null
                   }
-            /></View>
+            /><Pressable
+       
+            onPress={handleEndReached}
+          >
+            <Icon icon="left" width={24} height={24}   />
+          </Pressable></View>
             }
             { data.unit == 'comments' && <View  style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
@@ -126,6 +131,8 @@ export default function ElementBrowse(props) {
                 <View className="u-card-4 flex-1"></View>
             </View>
             }
+            
+        
         </View> 
     );
 
