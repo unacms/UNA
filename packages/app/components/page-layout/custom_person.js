@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import {BlockByName} from 'app/components/block';
 
 const yodaScreenTestIDs = Object.freeze({
   headerBarBackButton: 'YodaHeaderBarBackButtonTestID',
@@ -277,14 +277,12 @@ export default function PageLayout(props) {
         renderHeaderBar={() => <HeaderBar scrollValue={scrollValue} />}
         showsVerticalScrollIndicator={false}>
         {TABS.map((tab, i) => (
-          <View key={i} style={[styles.contentContainer, { height: windowHeight }]}>
-            <Text style={[screenStyles.text, styles.contentText]} testID={tab.contentTestID}>
-              {tab.description}
-            </Text>
+          <View key={i} style={[styles.contentContainer, {  }]}>
+            <BlockByName data={props.data} name={props.blocks.col1} />
           </View>
         ))}
       </TabbedHeaderPager>
-      <StatusBar barStyle="light-content" backgroundColor="black" translucent />
+      
     </>
   );
 };
