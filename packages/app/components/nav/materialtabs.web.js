@@ -26,7 +26,12 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
         backgroundColor: colors.barsBackground,
         width: '100%',
       }}
-    >
+    ><View style={{
+      flexDirection: 'row',
+      justifyContent: 'center',
+      backgroundColor: colors.barsBackground,
+      width:1280,
+    }}><View style={{backgroundColor:'red'}}><Text>Begin</Text></View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -115,6 +120,7 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
           })}
         </View>
       </ScrollView>
+      <View style={{backgroundColor:'blue'}}><Text>End</Text></View></View>
     </View>
   );
 }
