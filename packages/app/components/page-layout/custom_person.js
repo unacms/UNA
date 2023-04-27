@@ -4,14 +4,34 @@ import { useSharedValue } from "react-native-reanimated";
 import { Route, TabView } from "showtime-tab-view";
 import Cover, {CoverSmall} from 'app/components/elements/cover';
 import {BlockByName} from 'app/components/block';
+import { TabFlashList } from "app/components/elements/tab-flash-list";
 
 const StatusBarHeight = StatusBar.currentHeight ?? 0;
 
 export default function PageLayout(props) {
 
-  const TabScene = ({ route, data }) => {
+  const TabScene = ({ route }) => {
     return (
-      <BlockByName data={props.data} name={props.blocks.col1} />
+      <TabFlashList
+        index={route.index}
+        data={new Array(20).fill(0)}
+        estimatedItemSize={60}
+        renderItem={({ index }) => {
+          return (
+            <View
+              style={{
+                height: 60,
+                backgroundColor: "#fff",
+                marginBottom: 8,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>{`${route.title}-Item-${index}`}</Text>
+            </View>
+          );
+        }}
+      />
     );
   };
   
