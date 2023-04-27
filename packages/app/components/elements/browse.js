@@ -120,6 +120,7 @@ export default function ElementBrowse(props) {
                 keyExtractor={item => item.id}
                 key={numColumns} 
                 onEndReached ={handleEndReached} 
+ 
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
                       <View className='m-2'><ActivityIndicator  size="large" color={colors.primary}  /></View>

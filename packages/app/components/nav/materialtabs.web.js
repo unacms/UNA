@@ -9,7 +9,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text } from 'app/design/typography';
 import { NavScreen } from 'app/components/nav/screen';
 import { Theme } from 'app/design/theme';
-import {  processMenu } from 'app/lib/util'
+import { processMenu } from 'app/lib/util'
 import { Button } from 'app/design/controls';
 
 
@@ -26,6 +26,7 @@ function CustomTabBar({ state, descriptors, navigation, position }) {
         justifyContent: 'center',
         backgroundColor: colors.barsBackground,
         width: 'auto',
+        position:'absolute'
       }}
     >
       <View style={{
