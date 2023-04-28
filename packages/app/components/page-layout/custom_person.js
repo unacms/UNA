@@ -25,7 +25,7 @@ export default function PageLayout(props) {
     const [index, setIndex] = useState(0);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
-    
+
 
     const [routes] = useState([
         { key: "like", title: "Like", index: 0 },
@@ -124,7 +124,7 @@ export default function PageLayout(props) {
 
     const renderTabBar = (props) => (
         <Row className="py-4" style={{backgroundColor: colors.barsBackground}}>
-            {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="primary" title={a.title} roundedonPress={() => setIndex(a.index)} />: <Button variant="primary" title={a.title} roundedonPress={() => setIndex(a.index)} />))}
+            {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="text" title={a.title} roundedonPress={() => setIndex(a.index)} />: <Button variant="text" title={a.title} roundedonPress={() => setIndex(a.index)} />))}
         </Row>
     );
 
@@ -148,7 +148,7 @@ export default function PageLayout(props) {
                 </Animated.View>
                 <Animated.View style={[{width:'100%', position:'absolute', bottom:0, }, animatedStyleB]}>
                     <CoverSmall data={props.data.cover_block}/>
-                    </Animated.View>
+                </Animated.View>
             </View>
         );
     }, [scroll]);
