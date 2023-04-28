@@ -81,12 +81,12 @@ const colors = {
   },
 
   backgroundcard: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    hover: 'rgba(255,255,255,1)',
+    DEFAULT: 'rgba(255,255,255,1)',
+    hover: 'rgba(255,255,255,0.8)',
     active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,0.9)',
-    darkhover: 'rgba(17,24,39,1)',
-    darkactive: 'rgba(17,24,39,0.5)',
+    dark: 'rgba(31,41,55,1)',
+    darkhover: 'rgba(31,41,55,0.8)',
+    darkactive: 'rgba(31,41,55,0.5)',
   },
   bordercolorcard: {
     DEFAULT: 'rgba(229,231,235,1)',
@@ -109,16 +109,16 @@ const colors = {
 
   backgroundmodal: {
     DEFAULT: 'rgba(243,244,246,0.8)',
-    dark: 'rgba(31,41,55,0.8)',
+    dark: 'rgba(55,65,81,0.5)',
   },
   bordercolormodal: {
     DEFAULT: 'rgba(209,213,219,0.8)',
-    dark: 'rgba(55,65,81,0.5)',
+    dark: 'rgba(55,65,81,1)',
   },
 
   backgroundnavbar: {
     DEFAULT: 'rgba(255,255,255,0.9)',
-    dark: 'rgba(17,24,39,0.9)',
+    dark: 'rgba(31,41,55,0.9)',
   },
   bordercolornavbar: {
     DEFAULT: 'rgba(229,231,235,1)',
@@ -137,8 +137,8 @@ const colors = {
   backgroundbutton: {
     DEFAULT: 'rgba(107,114,128,0.2)',
     hover: 'rgba(107,114,128,0.1)',
-    dark: 'rgba(107,114,128,0.2)',
-    darkhover: 'rgba(107,114,128,0.1)',
+    dark: 'rgba(107,114,128,0.5)',
+    darkhover: 'rgba(107,114,128,0.2)',
     
   },
   bordercolorbutton: {
@@ -149,7 +149,8 @@ const colors = {
 
   bordercolor: {
     DEFAULT: 'rgba(209,213,219,1)',
-    dark: 'rgba(31,41,55,1)',
+    dark: 'rgba(55,65,81,1)',
+    
   },
 
 

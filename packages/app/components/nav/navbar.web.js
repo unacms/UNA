@@ -35,14 +35,25 @@ export default function (props) {
   }
 
     const sNtfsSkeleton = (
-        <View className="gap-2">
+        <View className=" px-1.5 pb-1.5 ">
+           <View className=" items-center  flex-row mb-1 ">
+
+<Text className='text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5'>Notifications</Text>
+
+  <Link href="/notifications-view">
+  <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all"  />
+  </Link>
+</View>
         {[...Array(1, 2, 3)].map( i => 
-            <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
-                <View className="animate-pulse flex-row items-center gap-3">
-                    <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-                    <View className="flex-1 space-y-1">
-                        <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
-                        <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+            <View key={i} className="flex-col p-2 my-[1px] w-[500px] bg-backgroundcard dark:bg-backgroundcard-dark rounded">
+                <View className="animate-pulse flex-row items-center gap-2">
+                    <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
+                    <View className="flex-1 gap-1.5">
+                        <View className="flex-row justify-between">
+                            <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>    
+                            <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+                        </View>
+                        <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
                     </View>
                 </View>
             </View>
@@ -72,8 +83,15 @@ export default function (props) {
             return;
 
         const sContent = (
-            <View>
-                <View className="mx-4 mb-2"><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>Notifications</Text></View>
+            <View className=" px-1.5 pb-1.5 ">
+                <View className=" items-center  flex-row mb-1 ">
+
+                <Text className='text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5'>Notifications</Text>
+
+                  <Link href="/notifications-view">
+                  <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all"  />
+                  </Link>
+              </View>
                 {oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
                 {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-end mx-4 mb-2">
                     <Link href="/notifications-view">
