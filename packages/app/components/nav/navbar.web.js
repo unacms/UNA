@@ -144,7 +144,7 @@ export default function (props) {
         <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
             <DropdownMenu.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
               <DropdownMenu.Trigger>
-                <Button variant="text" rounded startDecorator="notifications" id="m1" aria-label="Notifications" onPress={() => {}} />
+                <Button variant="text" rounded startDecorator="notifications" id="m1" aria-label="Notifications"  />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenu.Content>
