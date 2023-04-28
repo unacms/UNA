@@ -82,10 +82,10 @@ const colors = {
 
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.8)',
-    active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(31,41,55,1)',
-    darkhover: 'rgba(31,41,55,0.8)',
+    hover: 'rgba(239,246,255,1)',
+    active: 'rgba(239,246,255,0.5)',
+    dark: 'rgba(31,41,55,0.8)',
+    darkhover: 'rgba(31,41,55,1)',
     darkactive: 'rgba(31,41,55,0.5)',
   },
   bordercolorcard: {
@@ -109,7 +109,7 @@ const colors = {
 
   backgroundmodal: {
     DEFAULT: 'rgba(243,244,246,0.8)',
-    dark: 'rgba(55,65,81,0.5)',
+    dark: 'rgba(55,65,81,0.8)',
   },
   bordercolormodal: {
     DEFAULT: 'rgba(209,213,219,0.8)',

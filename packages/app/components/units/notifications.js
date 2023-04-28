@@ -36,7 +36,7 @@ export default function UnitFeed({data}) {
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
                 <View className=" p-2 flex-row  
-                 group duration-200 overflow-hidden rounded shadow-sm 
+                 group duration-200 overflow-hidden rounded-md shadow-sm 
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                   my-[1px]

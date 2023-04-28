@@ -38,14 +38,14 @@ export default function (props) {
         <View className=" px-1.5 pb-1.5 ">
            <View className=" items-center  flex-row mb-1 ">
 
-<Text className='text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5'>Notifications</Text>
+<Text className='text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5'>Notifications</Text>
 
   <Link href="/notifications-view">
   <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all"  />
   </Link>
 </View>
         {[...Array(1, 2, 3)].map( i => 
-            <View key={i} className="flex-col p-2 my-[1px] w-[500px] bg-backgroundcard dark:bg-backgroundcard-dark rounded">
+            <View key={i} className="flex-col p-2 my-[1px] w-[500px] bg-backgroundcard dark:bg-backgroundcard-dark rounded-md">
                 <View className="animate-pulse flex-row items-center gap-2">
                     <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
                     <View className="flex-1 gap-1.5">
@@ -151,7 +151,7 @@ export default function (props) {
                 <Button variant="text" rounded startDecorator="notifications" onPress={() => {}} />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
-                <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur mx-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-lg ">{ntfsContent}</DropdownMenu.Content>
+                <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           <Link href="/messenger">
