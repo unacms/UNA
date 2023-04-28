@@ -3,21 +3,36 @@
 /* @type {import('tailwindcss').Config['theme']} */
 
 const colors = {
+  neutral: {
+    DEFAULT: 'rgba(75,85,99,1)',
+    dark: 'rgba(156,163,175,1)',
+    50: 'rgba(249,250,251,1)',
+    100: 'rgba(243,244,246,1)',
+    200: 'rgba(229,231,235,1)',
+    300: 'rgba(209,213,219,1)',
+    400: 'rgba(156,163,175,1)',
+    500: 'rgba(107,114,128,1)',
+    600: 'rgba(75,85,99,1)',
+    700: 'rgba(55,65,81,1)',
+    800: 'rgba(31,41,55,1)',
+    900: 'rgba(17,24,39,1)',
+    950: 'rgba(3,7,18,1)',
   
+  },
   primary: {
-    DEFAULT: 'rgba(37,99,235,1)',
-    dark: 'rgba(96,165,250,1)',
-    50: 'rgba(239,246,255,1)',
-    100: 'rgba(219,234,254,1)',
-    200: 'rgba(191,219,254,1)',
-    300: 'rgba(147,197,253,1)',
-    400: 'rgba(96,165,250,1)',
-    500: 'rgba(59,130,246,1)',
-    600: 'rgba(37,99,235,1)',
-    700: 'rgba(29,78,216,1)',
-    800: 'rgba(30,64,175,1)',
-    900: 'rgba(30,58,138,1)',
-    950: 'rgba(23,37,84,1)',
+    DEFAULT: 'rgba(8,145,178,1)',
+    dark: 'rgba(6,182,212,1)',
+    50: 'rgba(236,254,255,1)',
+    100: 'rgba(207,250,254,1)',
+    200: 'rgba(165,243,252,1)',
+    300: 'rgba(103,232,249,1)',
+    400: 'rgba(34,211,238,1)',
+    500: 'rgba(6,182,212,1)',
+    600: 'rgba(8,145,178,1)',
+    700: 'rgba(14,116,144,1)',
+    800: 'rgba(21,94,117,1)',
+    900: 'rgba(22,78,99,1)',
+    950: 'rgba(8,51,68,1)',
   
   },
 
@@ -38,26 +53,11 @@ const colors = {
   
   },
 
-  neutral: {
-    DEFAULT: 'rgba(75,85,99,1)',
-    dark: 'rgba(156,163,175,1)',
-    50: 'rgba(249,250,251,1)',
-    100: 'rgba(243,244,246,1)',
-    200: 'rgba(229,231,235,1)',
-    300: 'rgba(209,213,219,1)',
-    400: 'rgba(156,163,175,1)',
-    500: 'rgba(107,114,128,1)',
-    600: 'rgba(75,85,99,1)',
-    700: 'rgba(55,65,81,1)',
-    800: 'rgba(31,41,55,1)',
-    900: 'rgba(17,24,39,1)',
-    950: 'rgba(3,7,18,1)',
-  
-  },
+
 
   backgroundbody: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(3,7,18,1)',
+    DEFAULT: 'rgba(243,244,246,1)',
+    dark: 'rgba(17,24,39,1)',
   },
 
   backgroundbackdrop: {
@@ -65,20 +65,7 @@ const colors = {
     dark: 'rgba(55 55 55 / 0.5)',
   },
 
-  backgroundlevel1: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    dark: 'rgba(17,24,39,1)',
-  },
 
-  backgroundlevel2: {
-    DEFAULT: 'rgba(243,244,246,1)',
-    dark: 'rgba(31,41,55,1)',
-  },
-
-  backgroundlevel3: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(55,65,81,1)',
-  },
 
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,1)',
@@ -89,13 +76,13 @@ const colors = {
     darkactive: 'rgba(31,41,55,0.5)',
   },
   bordercolorcard: {
-    DEFAULT: 'rgba(229,231,235,1)',
+    DEFAULT: 'rgba(209,213,219,0.5)',
     
     hover: 'rgba(209,213,219,1)',
-    active: 'rgba(229,231,235,1)',
-    dark: 'rgba(3,7,18,1)',
-    darkhover: 'rgba(31,41,55,1)', 
-    darkactive: 'rgba(3,7,18,1)',
+    active: 'rgba(209,213,219,0.1)',
+    dark: 'rgba(3,7,18,0.5)',
+    darkhover: 'rgba(3,7,18,1)', 
+    darkactive: 'rgba(3,7,18,0.1)',
   },
 
   backgroundcell: {
@@ -121,7 +108,7 @@ const colors = {
     dark: 'rgba(31,41,55,0.9)',
   },
   bordercolornavbar: {
-    DEFAULT: 'rgba(229,231,235,1)',
+    DEFAULT: 'rgba(209,213,219,0.8)',
     dark: 'rgba(3,7,18,1)',
   },
 
