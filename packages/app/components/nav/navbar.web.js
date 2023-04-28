@@ -37,11 +37,13 @@ export default function (props) {
       setMenuPopup(false)
     }
 
+    const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title');
+    const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all');
     const sNtfsSkeleton = (
         <View className="px-1.5 pb-1.5">
            <View className="flex-row items-center mb-1">
-                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">Notifications</Text>
-                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all" onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
+                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
+                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
             </View>
         {[...Array(1, 2, 3)].map( i => 
             <View key={i} className="flex-col p-2 my-[1px] bg-backgroundcard dark:bg-backgroundcard-dark rounded-md">
@@ -85,8 +87,8 @@ export default function (props) {
         const sContent = (
             <View className="px-1.5 pb-1.5">
                 <View className="flex-row items-center mb-1">
-                    <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">Notifications</Text>
-                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all" onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
+                    <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
+                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
                 </View>
                 {bInfinite ? <Browse type={oBlock.type} {...oBlock} /> : oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
             </View>

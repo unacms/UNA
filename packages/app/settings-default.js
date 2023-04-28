@@ -39,7 +39,8 @@ import Svg, {Path} from 'react-native-svg'
     
     export const settingsDefault = {
         lang_keys: {
-            demo: 'demo',
+            ntfs_popup_title: 'Notifications',
+            ntfs_popup_view_all: 'View all',
         },
         feed: {
             show_selector_view: false,
