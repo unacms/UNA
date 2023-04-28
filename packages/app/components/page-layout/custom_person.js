@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { StatusBar,  } from "react-native";
 import { Text, H1C } from 'app/design/typography';
-import { useSharedValue } from "react-native-reanimated";
+import { useSharedValue,withTiming  } from "react-native-reanimated";
 import { Route, TabView } from "showtime-tab-view";
 import Cover, {CoverSmall} from 'app/components/elements/cover';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {BlockByName} from 'app/components/block';
 
 import { View,Row, ScrollView, FlatList,Pressable } from 'app/design/view';
@@ -17,30 +17,35 @@ import { SceneComponent } from "showtime-tab-view";
 
 import Animated from "react-native-reanimated";
 import { useNavigation } from '@react-navigation/native';
+
+import {
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+
 const StatusBarHeight = StatusBar.currentHeight ?? 0;
 
 
 
 export default function PageLayout(props) {
 
-  const [isSmall, setIsSmall] = useState(0);
+  const scroll = useSharedValue(1);
   const handleEndReached = () => {  
     console.log('End reached')
   };
+
+
+
 const navigation = useNavigation();
+setTimeout(() => {
+  navigation.setOptions({headerShown: false  })
+}, 300);
 
 const handleLayout = (event) => {
-  
-  console.log(5555555555, event.nativeEvent.contentOffset.y, isSmall)
-  if (event.nativeEvent.contentOffset.y > 130){
-    console.log('------------')
-   // navigation.setOptions({ headerTitle: () => <CoverSmall data={props.data.cover_block} />, headerShown: true,  })
-    setIsSmall(1)
+  if (event.nativeEvent.contentOffset.y > 200){
+    scroll.value = 0
   }
-  if (event.nativeEvent.contentOffset.y < 130){
-    console.log('++++++++++')
-   /// navigation.setOptions({ headerTitle: () => <Text></Text>, headerShown: true,  })
-    setIsSmall(0)
+  else{
+    scroll.value = 1
   }
  };
 
@@ -80,8 +85,6 @@ return (
 }
 
  const TabFlashList = React.forwardRef(TabFlashListComponent) ;
-
-
 
 const TabScene = ({ route }) => {
   return (
@@ -146,24 +149,51 @@ const TabScene = ({ route }) => {
   };
 
   const renderTabBar = (props) => (
-    <Row className="bg-red-500">
+    <Row className="">
       {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="primary" title={a.title} rounded  onPress={() => setIndex(a.index)} />: <Button variant="primary" title={a.title} rounded  onPress={() => setIndex(a.index)} />))}
     </Row>
   );
 
+ 
 
-  useEffect(() => {
-    if (isSmall)
-    navigation.setOptions({ headerTitle: () => <CoverSmall data={props.data.cover_block} />, headerShown: true,  })
-    else
-    navigation.setOptions({ headerTitle: () => <Text></Text>, headerShown: true,  })
-}, [isSmall]);
+const renderHeader = useCallback(() => {
+  const animatedStyleA = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(scroll.value, { duration: 1000 }),
+    };
+  });
 
-  const renderHeader = () => { return(
-    <View style={{height:130}} ><Cover data={props.data.cover_block}/></View>
-  )}
+  const animatedStyleB = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(1-scroll.value, { duration: 1000 }),
+    };
+  });
+
+  return (
+    <View className='w-full h-80'>
+      <Animated.View style={[{width:'100%',position:'absolute', }, animatedStyleA]}>
+      <Cover data={props.data.cover_block}/>
+      </Animated.View>
+      <Animated.View style={[{width:'100%', position:'absolute', bottom:0, }, animatedStyleB]}>
+      <CoverSmall data={props.data.cover_block}/>
+      </Animated.View>
+      
+    </View>
+  );
+    
+   }, [
+
+    scroll
+  ]);
   return (
     <>
+    <SafeAreaView edges={[ 'left', 'right']} style={{
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      height:'100%'
+    }}>
     <TabView
    
       /*onStartRefresh={onStartRefresh}
@@ -173,10 +203,13 @@ const TabScene = ({ route }) => {
       onIndexChange={setIndex}
       lazy
       renderScrollHeader={renderHeader}
-      minHeaderHeight={0}
+      minHeaderHeight={100}
       animationHeaderPosition={animationHeaderPosition}
       animationHeaderHeight={animationHeaderHeight}
       renderTabBar={renderTabBar}
-    /></>
+    /></SafeAreaView></>
   );
+
+
+  
 }

@@ -18,14 +18,6 @@ export default function ElementBrowse(props) {
     let data = props.data;
     let defParams = data.params;
 
-    let isInsideScrollView = false;
-
-    if (props.f){
-        isInsideScrollView = true;
-        props.f.callback = function () {
-            handleEndReached()
-        }
-    }
 
     /* unit mode & change unit mode */
     const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
@@ -101,10 +93,8 @@ export default function ElementBrowse(props) {
     if(Platform.OS === 'web') {
         styles = {height: windowHeight - 64}
     }
-    else{
-        //styles = {height: windowHeight - 64}
-    }
 
+    console.log(88888, data.data);
     return (
         (data.data.length > 0) && <View className='w-full h-full ' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
@@ -114,7 +104,8 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            { (data.unit != 'comments' && !isInsideScrollView) && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}><FlashList estimatedItemSize={200} numColumns={numColumns} className=' ' horizontal={false} 
+            { (data.unit != 'comments') && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}>
+                <FlashList estimatedItemSize={200} numColumns={numColumns} horizontal={false} 
                 data={data.data}
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
@@ -123,12 +114,12 @@ export default function ElementBrowse(props) {
  
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
-                      <View className='m-2'><ActivityIndicator  size="large" color={colors.primary}  /></View>
+                      <View className='m-2'><ActivityIndicator  accessibilityRole="progressbar" accessibilityLabel="Loading" size="large" color={colors.primary}  /></View>
                     ) : null
                   }
             /></View>
             }
-            { (data.unit == 'comments' || isInsideScrollView) && <View  style={styles.cardList}>
+            { (data.unit == 'comments') && <View  style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
                 <View className="u-card-4 flex-1"></View>
                 <View className="u-card-4 flex-1"></View>

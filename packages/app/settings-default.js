@@ -38,6 +38,9 @@ import Svg, {Path} from 'react-native-svg'
     );
     
     export const settingsDefault = {
+        lang_keys: {
+            demo: 'demo',
+        },
         feed: {
             show_selector_view: false,
             default_view: '',

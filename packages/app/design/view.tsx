@@ -17,7 +17,7 @@ export const SafeAreaView = styled(ReactNativeSafeAreaView)
 export const TouchableOpacity = styled(ReactNativeTouchableOpacity)
 export const Pressable = styled(ReactNativePressable)
 export const FlatList = styled(ReactNativeFlatList)
-export const FlashList = styled(ReactNativeFlashList)
+export const FlashList = ReactNativeFlashList
 export const Row = styled(View, "flex-row")
 export const Link = styled(SolitoLink)
 
