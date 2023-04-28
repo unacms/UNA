@@ -14,7 +14,7 @@ import { FlashList } from "@shopify/flash-list";
 
 import { useHeaderTabContext } from "showtime-tab-view";
 import { SceneComponent } from "showtime-tab-view";
-
+import { Theme } from 'app/design/theme';
 import Animated from "react-native-reanimated";
 import { useNavigation } from '@react-navigation/native';
 
@@ -148,8 +148,10 @@ const TabScene = ({ route }) => {
     }, 300);
   };
 
+  const { colors } = Theme();
+
   const renderTabBar = (props) => (
-    <Row className="">
+    <Row className="py-4" style={{backgroundColor: colors.barsBackground}}>
       {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="primary" title={a.title} rounded  onPress={() => setIndex(a.index)} />: <Button variant="primary" title={a.title} rounded  onPress={() => setIndex(a.index)} />))}
     </Row>
   );
@@ -159,13 +161,13 @@ const TabScene = ({ route }) => {
 const renderHeader = useCallback(() => {
   const animatedStyleA = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(scroll.value, { duration: 1000 }),
+      opacity: withTiming(scroll.value, { duration: 500 }),
     };
   });
 
   const animatedStyleB = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(1-scroll.value, { duration: 1000 }),
+      opacity: withTiming(1-scroll.value, { duration: 500 }),
     };
   });
 

@@ -29,11 +29,14 @@ export function CoverSmall(props) {
   const { colors } = Theme();
   return (
 
-    <Row className=' justify-left w-full h-24 pt-12' style={{backgroundColor: colors.barsBackground}} >
-      <Pressable  className="mr-4 ml-4" onPress={routerExpo.back} >
+    <Row className=' justify-left items-center w-full h-24 pt-8' style={{backgroundColor: colors.barsBackground}} >
+        <View  className=' absolute h-80 w-full '>
+            { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
+        </View>
+      <Pressable  className="mr-2 ml-2  bg-white w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
         <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
        </Pressable>
-      <Profile {...data.profile} displayType="unit_wo_info" displaySize="sm" />
+      <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
       <H1C className="font-bold ml-4 tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
     </Row>
   );
@@ -54,8 +57,8 @@ export default function ElementCover(props) {
          <View  className=' absolute h-80 w-full '>
             { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
         </View>
-        <Row className=' justify-left w-full h-24 pt-12' style={{backgroundColor: colors.barsBackground}} >
-      <Pressable  className="mr-4 ml-4" onPress={routerExpo.back} >
+        <Row className=' justify-left w-full h-24 pt-12 ' >
+      <Pressable  className="mr-4 ml-4 bg-white w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
         <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
        </Pressable>
     </Row>
