@@ -5,7 +5,7 @@ import Cover from 'app/components/elements/cover';
 export default function PageLayout(props) {
 
     return (<View className="w-full ">
-         
+          <BlockByName data={props.data} name={props.blocks.col0} />
          <BlockByName data={props.data} name={props.blocks.col1} />
     </View>)
 }
