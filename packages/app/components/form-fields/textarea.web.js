@@ -15,6 +15,7 @@ export default function FormFieldText(props) {
     const { field } = useController({ name, rules, defaultValue });
     const [height, setHeight] = useState(null);
     const editorRef = useRef(null);
+    const accessibility = props.caption.length > 0 ? props.caption : 'text';
 
     let input = <InputMulti
         multiline
@@ -24,6 +25,7 @@ export default function FormFieldText(props) {
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
+        accessibilityLabel={accessibility}
     />
     if (props.autoheight)
         input = <Input
@@ -36,6 +38,7 @@ export default function FormFieldText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
+            accessibilityLabel={accessibility}
         />
 
     if (props.html == 2){

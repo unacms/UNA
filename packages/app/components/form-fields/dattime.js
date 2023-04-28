@@ -18,6 +18,7 @@ export default function FormFieldDattime(props) {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                accessibilityLabel={props.caption}
         />
         </Field>
     );
