@@ -13,12 +13,9 @@ const componentsMap = {
 
 export function BlockByName({data, name, onScroll2, f}) {
 
-    
-
-    const blockName = name.name;
-
     let b = null;
     if (name){
+        const blockName = name?.name;
         Object.keys(data?.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {
                 if (data.elements[key][key2].content){
@@ -34,6 +31,10 @@ export function BlockByName({data, name, onScroll2, f}) {
         return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} f={f}  />;
     
     return <Text>Not found: {name}</Text>
+}
+
+export function BlockByName2({b, name}) {
+    return <Block key={b.id} uri={''} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
 }
 
 export default function Block(props) {

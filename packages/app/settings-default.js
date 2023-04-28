@@ -120,7 +120,8 @@ import Svg, {Path} from 'react-native-svg'
             'view-persons-profile':{
                 layout: 'custom_persons',
                 blocks: {
-                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
+                    col0:{name: 'bx_persons:entity_info', showTitle: false, showBg: false},
+                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false}
                 }
             },
             'persons-profile-info':{
