@@ -3,7 +3,7 @@ import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
   return (
-    <Html>
+    <Html lang="en">
       <Head />
       <body className="relative bg-backgroundbody dark:bg-backgroundbody-dark text-neutral-900 dark:text-neutral-50">
         <Main />
