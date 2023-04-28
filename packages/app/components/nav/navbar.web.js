@@ -66,12 +66,11 @@ export default function (props) {
     const [ntfsContent, setNtfsContent] = useState(sNtfsSkeleton);
     const handleClickNotifications = async () => {
         const bInfinite = true;
-        const iPerPage = 5;
         const aParams = {
             params: {
                 type: 'obj_own_and_con',
                 start: 0,
-                per_page: iPerPage,
+                per_page: 12,
                 modules: ''
             }
         };

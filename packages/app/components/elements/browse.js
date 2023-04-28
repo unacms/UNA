@@ -77,11 +77,23 @@ export default function ElementBrowse(props) {
     const { colors } = Theme();
 
     function prepareUrl (params) {
-        if (data.unit != 'comments'){
-            let params = Object.assign({}, browseParams)
-            params.start = parseInt(browseParams.start) + parseInt(browseParams.per_page);
-            return data.request_url + JSON.stringify({'params': params});
+        let sUrl = undefined;
+
+        switch(data.unit) {
+            case 'comments':
+                break;
+
+            case 'notifications':
+                sUrl = data.request_url + JSON.stringify({'params': browseParams});
+                break;
+                
+            default:
+                let params = Object.assign({}, browseParams)
+                params.start = parseInt(browseParams.start) + parseInt(browseParams.per_page);
+                sUrl = data.request_url + JSON.stringify({'params': params});
         }
+
+        return sUrl;
     }    
 
     let modeItems = [
