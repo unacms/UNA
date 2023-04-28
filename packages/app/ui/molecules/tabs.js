@@ -21,10 +21,8 @@ const StatusBarHeight = StatusBar.currentHeight ?? 0;
 
 export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader, initRoutes}) {
 
-    console.log(initRoutes);
-    console.log(initRoutes);
-    const [routes, setRoutes] = useState(initRoutes);
-
+    let [routes, setRoutes] = useState(initRoutes);
+    let [inc, setInc] = useState(0);
 
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
@@ -43,13 +41,10 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
 
-
-
     const handleEndReached = async () => {
         console.log('End reached')
         let c = routes.filter((item) => item.index == index);
         if (c && c[0].endpoint && !c[0].endpoint.finished){
-            console.log("------------"+handleEndReached);
             let params = Object.assign({}, c[0].endpoint.params)
             params.start = parseInt(params.start) + parseInt(params.per_page);
             let sRequest = c[0].endpoint.request_url + JSON.stringify({'params': params});
@@ -63,7 +58,9 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
                 tmp[0].endpoint.finished = true
             
             setRoutes(tmp)
-
+            //let a=inc++
+            //console.log("!!!!!!!!!!!!!!-"+inc);
+            //setInc(a);
            // console.log("------------",tmp[0].data.length, sRequest);
         }
     };
@@ -112,15 +109,15 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
         return (
             <TabFlashList
                 index={route.index}
-                onEndReached = {handleEndReached} 
+               // onEndReached = {handleEndReached} 
                 data={route.data}
                 estimatedItemSize={60}
-               // keyExtractor={item => item.id}
+                keyExtractor={item => item.id}
                 renderItem={({ item, index }) => {
                   
-                    console.log('item.id=', item.id, route?.endpoint?.unit);
+                    console.log('-----item.id=', route.index+'-'+item.id);
                     if (item?.type =='block'){
-                           return <View key={route.index+'-'+item.id}><BlockByName2 b={item.data} name={item.block} /></View>
+                        return <View key={route.index+'-'+item.id}><BlockByName2 b={item.data} name={item.block} /></View>
                     } 
                     else{
                         return <View key={route.index+'-'+item.id}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')}  /></View>
@@ -131,8 +128,8 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
         );
     };
 
-    const renderScene = useCallback(({ route }) => {
-        // console.log('--------------------',route.data.length)
+    let renderScene = useCallback(({ route }) => {
+        // console.log('useCallback--------------------',route.data.length)
          return <TabScene route={route} index={route.index} />;
      }, []);
 
@@ -174,7 +171,8 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
             </View>
         );
     }, [scroll]);
-
+    
+    console.log('TabView--------------------',routes[0].data.length)
     return (
     <>
         <SafeAreaView edges={[ 'left', 'right']} style={{

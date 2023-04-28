@@ -12,8 +12,6 @@ export default function PageLayout(props) {
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     let tabs=[];
-
-
     
     function getContent(data, block){
         let b = null;
@@ -32,11 +30,11 @@ export default function PageLayout(props) {
 
         if (b?.content[0]?.type == 'browse')
             return {data: b.content[0].data, type:'browse'};
-          //  console.log(b);
         else
             return {data: b, type:'block', block: block};
     }
-    let inc = 0
+    let inc = 0;
+    
     processMenu(props.data.menu.object, props.data.menu.items).forEach(function (item) { 
         let i = { key: item.link, title: item.title, index: inc };
         inc++;
@@ -54,9 +52,7 @@ export default function PageLayout(props) {
                     d.finished = false
                     d.unit = b.data.unit;
                     endpoint = d
-                    b.data.data.forEach(key2 => {
-                        content.push(key2);
-                    })
+                    content = [...content , ...b.data.data]
                 }
                 else{
                     b.id= 'block-'+b.data.id;
