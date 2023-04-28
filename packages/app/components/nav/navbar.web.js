@@ -89,15 +89,11 @@ export default function (props) {
                 <Text className='text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5'>Notifications</Text>
 
                   <Link href="/notifications-view">
-                  <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all"  />
+                  <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title="View all"  onPress={() => {setNtfsOpen(false)}}  />
                   </Link>
               </View>
                 {oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
-                {oBlock.data.data.length > iPerPage && <View className="flex flex-row justify-end mx-4 mb-2">
-                    <Link href="/notifications-view">
-                        <Button variant="text" title="View All" rounded endDecorator="ArrowRight" onPress={() => {setNtfsOpen(false)}} />
-                    </Link>
-                </View>}
+                
             </View>
         );
 
@@ -117,7 +113,7 @@ export default function (props) {
         </TouchableOpacity>
         }
         <TouchableOpacity className="" onPress={hideMenu}>
-          <Link href="/home">
+          <Link href="/home" aria-label="Logo">
             <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto gap-2">
               {appSetting('theme', 'svg', 'logo-mark')}
               {appSetting('theme', 'svg', 'logo-text')}
@@ -148,20 +144,20 @@ export default function (props) {
         <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
             <DropdownMenu.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
               <DropdownMenu.Trigger>
-                <Button variant="text" rounded startDecorator="notifications" onPress={() => {}} />
+                <Button variant="text" rounded startDecorator="notifications" id="m1" aria-label="Notifications" onPress={() => {}} />
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenu.Content>
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
-          <Link href="/messenger">
-            <Button variant="text" rounded startDecorator="messages" />
+          <Link href="/messenger" aria-label="Messages">
+            <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" />
           </Link>
-          <Link href="/create-post">
-            <Button variant="text" rounded startDecorator="plus" />
+          <Link href="/create-post" aria-label="Create">
+            <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" />
           </Link>
-          <Link href="/logout">
-            <Button variant="text" rounded startDecorator="account" />
+          <Link href="/logout" aria-label="Account">
+            <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" />
           </Link>
         </Row>
         }
