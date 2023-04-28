@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'; 
 
+
 function CoverMenu(){
     return (
         <View className=' w-full lg:w-auto  mt-2 lg:mt-0'>
@@ -29,12 +30,17 @@ export function CoverSmall(props) {
   const { colors } = Theme();
   return (
 
-    <Row className=' justify-left w-full h-24 pt-12' style={{backgroundColor: colors.barsBackground}} >
-      <Pressable  className="mr-4 ml-4" onPress={routerExpo.back} >
+    <Row className=' justify-left items-center w-full h-24 pt-8' style={{backgroundColor: colors.barsBackground}} >
+        <View  className=' absolute h-80 w-full  '>
+            { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
+        </View>
+        <View  className='  absolute h-80 w-full bg-white/50 dark:bg-black/50 '>
+        </View>
+      <Pressable  className="mr-2 ml-2  bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
         <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
        </Pressable>
-      <Profile {...data.profile} displayType="unit_wo_info" displaySize="sm" />
-      <H1C className="font-bold ml-4 tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+      <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
+      <H1C className="font-bold ml-2 tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
     </Row>
   );
 }
@@ -51,23 +57,31 @@ export default function ElementCover(props) {
 
     return (
       <View className='w-full' >
-         <View  className=' absolute h-80 w-full '>
+         <View  className=' absolute h-48 w-full '>
             { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
         </View>
-        <Row className=' justify-left w-full h-24 pt-12' style={{backgroundColor: colors.barsBackground}} >
-      <Pressable  className="mr-4 ml-4" onPress={routerExpo.back} >
-        <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
-       </Pressable>
-    </Row>
-        <View className=' m-4 p-4  mt-16' style={{backgroundColor:'rgba(255,255,255,0.8)'}}>
-            <Row className='items-center'>
-                <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
-                <View className='flex-col w-full '>
-                    <H1C className="font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+        <Row className=' justify-left w-full h-24 pt-12  ' >
+            <Pressable  className="mr-4 ml-4 bg-backgroundcell dark:bg-backgroundcell-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+              <Icon icon="left" width={24} height={24}  color={colors.barsColor} />
+            </Pressable>
+        </Row>
+        <View className='px-2 mt-24  bg-backgroundcell dark:bg-backgroundcell-dark' >
+            <View className='flex-row '>
+                <View className=' absolute -translate-y-12 bg-backgroundcell dark:bg-backgroundcell-dark rounded-full p-1 '>
+                <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
                 </View>
-            </Row>
-            <View className=' w-full'>
-                <CoverMenu/>
+                <View className='ml-auto '>
+                <CoverMenu />                
+                </View>
+                
+                
+            </View>
+            
+            <View className=' w-full px-2 mt-4 '>
+                    <H1C className="font-bold tracking-tight text-2xl  text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+                    
+                    <Text className=' text-base text-gray-800 dark:text-gray-200 text-wrap '>{stripTags(data.profile.info.description)}</Text>
+
             </View>
       </View>
   </View>
