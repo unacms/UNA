@@ -82,7 +82,7 @@ const colors = {
 
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(239,246,255,1)',
+    hover: 'rgba(249,250,251,1)',
     active: 'rgba(239,246,255,0.5)',
     dark: 'rgba(31,41,55,0.8)',
     darkhover: 'rgba(31,41,55,1)',
