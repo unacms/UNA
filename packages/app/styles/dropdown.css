@@ -6,7 +6,8 @@
 
 .DropdownMenuContent,
 .DropdownMenuSubContent {
-  min-width: 20rem;
+  min-width: 15rem;
+  max-width: 20rem;
   background-color: white;
   border-radius: 6px;
   padding: 5px;
