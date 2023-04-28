@@ -5,6 +5,7 @@ import Svg, {Path} from 'react-native-svg'
             className='h-10 w-14 hidden sm:block text-gray-800dark:text-gray-200 mr-0 ml-0'
             viewBox="0 0 224 80"
             fill="none"
+            aria-label="Logo"
             xmlns="http://www.w3.org/2000/svg"
         >
             <Path
@@ -26,6 +27,7 @@ import Svg, {Path} from 'react-native-svg'
         <Svg className='group-hover:rotate-45 text-neutral-600 dark:text-neutral-200 group-hover:text-neutral-800 dark:group-hover:text-neutral-50 duration-200 h-10 w-10 mr-0 ml-0'
             viewBox="0 0 240 240"
             fill="none"
+            aria-label="Logo"
             xmlns="http://www.w3.org/2000/svg">
             <Path d="M117.672 24.3335C119.234 22.7714 121.766 22.7714 123.329 24.3335L160.098 61.103C161.66 62.6651 161.66 65.1978 160.098 66.7599L123.329 103.529C121.766 105.092 119.234 105.092 117.672 103.529L80.9021 66.7599C79.34 65.1978 79.34 62.6651 80.9021 61.1031L117.672 24.3335Z" className=' text-primary dark:text-primary-dark' fill="currentColor"/>
             <Path d="M174.24 80.902C175.802 79.3399 178.335 79.3399 179.897 80.902L216.667 117.672C218.229 119.234 218.229 121.766 216.667 123.328L179.897 160.098C178.335 161.66 175.802 161.66 174.24 160.098L137.471 123.328C135.909 121.766 135.909 119.234 137.471 117.672L174.24 80.902Z"className=' text-primary dark:text-primary-dark' fill="currentColor"/>

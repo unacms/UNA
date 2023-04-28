@@ -66,12 +66,11 @@ export default function (props) {
     const [ntfsContent, setNtfsContent] = useState(sNtfsSkeleton);
     const handleClickNotifications = async () => {
         const bInfinite = true;
-        const iPerPage = 5;
         const aParams = {
             params: {
                 type: 'obj_own_and_con',
                 start: 0,
-                per_page: iPerPage,
+                per_page: 12,
                 modules: ''
             }
         };
@@ -142,8 +141,8 @@ export default function (props) {
                   {!!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
                       <DropdownMenu.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
-                          <DropdownMenu.Trigger>
-                              <Button variant="text" rounded startDecorator="notifications" id="m1" aria-label="Notifications" />
+                          <DropdownMenu.Trigger className="rounded-full" aria-label={sTxtNtfsTitle}>
+                              <Button variant="text" rounded startDecorator="notifications" id="m1" />
                           </DropdownMenu.Trigger>
                           <DropdownMenu.Portal>
                               <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenu.Content>

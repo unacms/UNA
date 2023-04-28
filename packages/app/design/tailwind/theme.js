@@ -125,8 +125,8 @@ const colors = {
   },
 
   backgrounditem: {
-    DEFAULT: 'rgba(209,213,219,0.5)',
-    dark: 'rgba(55,65,81,0.5)',
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    dark: 'rgba(55,65,81,0.8)',
   },
   bordercoloritem: {
     DEFAULT: 'rgba(209,213,219,1)',
