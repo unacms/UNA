@@ -158,7 +158,7 @@ import Svg, {Path} from 'react-native-svg'
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-default-trans': 'duration-200 ',
                 'u-btn-primary-cnt':
-                ' border active:shadow-none border-black/5 hover:border-black/10 dark:hover:border-white/10 dark:border-white/5shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
+                ' border active:shadow-none border-bordercolorbutton  dark:border-bordercolorbutton-dark shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
                 'u-btn-primary-text': ' font-semibold text-gray-100 group-hover:text-white ',
                 'u-btn-primary-trans': 'duration-200 ',
                 'u-btn-danger-cnt':
@@ -171,7 +171,7 @@ import Svg, {Path} from 'react-native-svg'
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-text-trans': ' duration-200 ',
                 'u-btn-link-cnt': ' border border-transparent ',
-                'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
+                'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
                 'u-btn-link-trans': ' duration-200 ',
                 'u-btn-outline-cnt': ' border active:shadow-none border-bordercolorbutton dark:border-bordercolorbutton-dark hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark',
                 'u-btn-outline-text':
