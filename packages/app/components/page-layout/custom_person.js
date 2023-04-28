@@ -124,7 +124,7 @@ export default function PageLayout(props) {
 
     const renderTabBar = (props) => (
         <Row className="py-4" style={{backgroundColor: colors.barsBackground}}>
-            {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="text" title={a.title} roundedonPress={() => setIndex(a.index)} />: <Button variant="text" title={a.title} roundedonPress={() => setIndex(a.index)} />))}
+            {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="text" title={a.title}  onPress={() => setIndex(a.index)} />: <Button variant="text" title={a.title} onPress={() => setIndex(a.index)} />))}
         </Row>
     );
 
