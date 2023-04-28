@@ -7,6 +7,7 @@ export default function FormFieldSwitcher(props) {
     const [isEnabled, setIsEnabled] = useState(props.value == 1 ? true : false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     // TODO: improve value
+    console.log(props);
     return (
         <Field {...props}>
             <Switch
@@ -15,6 +16,7 @@ export default function FormFieldSwitcher(props) {
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
                 value={isEnabled}
+                accessibilityLabel={props.caption}
             />
         </Field>
     );
