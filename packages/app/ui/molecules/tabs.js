@@ -42,7 +42,7 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
     const animationHeaderHeight = useSharedValue(0);
 
     const handleEndReached = async () => {
-        console.log('End reached')
+       
         let c = routes.filter((item) => item.index == index);
         if (c && c[0].endpoint && !c[0].endpoint.finished){
             let params = Object.assign({}, c[0].endpoint.params)
@@ -50,18 +50,16 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
             let sRequest = c[0].endpoint.request_url + JSON.stringify({'params': params});
 
             const sResponse = await fetcher(sRequest);
-            let tmp = routes;
-            
-            tmp[0].data = tmp[0].data.concat(sResponse.data[0].data.data);
-            tmp[0].endpoint.params.start = params.start;
-            if (sResponse.data[0].data.data.length == 0)
-                tmp[0].endpoint.finished = true
-            
-            setRoutes(tmp)
-            //let a=inc++
-            //console.log("!!!!!!!!!!!!!!-"+inc);
-            //setInc(a);
-           // console.log("------------",tmp[0].data.length, sRequest);
+
+            let finished = false;
+            if (sResponse.data[0].data.data.length == 0){
+                finished = true 
+            }
+            if (sResponse.data[0].data.data.length > 0 || c[0].endpoint.finished != finished){
+               
+                addMoreData(sResponse.data[0].data.data, params.start, finished)
+               
+            }
         }
     };
 
@@ -97,6 +95,7 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
                 contentContainerStyle={{ paddingTop: scrollViewPaddingTop }}
                 ref={ref}
                 onScroll={handleLayout}
+                
                 onEndReachedThreshold={0.5}
                 onEndReached ={handleEndReached} 
             />
@@ -114,8 +113,6 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
                 estimatedItemSize={60}
                 keyExtractor={item => item.id}
                 renderItem={({ item, index }) => {
-                  
-                    console.log('-----item.id=', route.index+'-'+item.id);
                     if (item?.type =='block'){
                         return <View key={route.index+'-'+item.id}><BlockByName2 b={item.data} name={item.block} /></View>
                     } 
@@ -128,8 +125,36 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
         );
     };
 
+    /* const TabScene = ({ route }) => {
+        return (
+          
+          <TabFlashList
+            index={route.index}
+           // onEndReached ={handleEndReached} 
+            data={route.data}
+            estimatedItemSize={60}
+            keyExtractor={item => item.id}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  style={{
+                    height: 60,
+                    backgroundColor: "#fff",
+                    marginBottom: 8,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>{item.id}---{JSON.stringify(item)}</Text>
+                </View>
+              );
+            }}
+          />
+        );
+      };*/
+
+   
     let renderScene = useCallback(({ route }) => {
-        // console.log('useCallback--------------------',route.data.length)
          return <TabScene route={route} index={route.index} />;
      }, []);
 
@@ -171,8 +196,25 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
             </View>
         );
     }, [scroll]);
-    
-    console.log('TabView--------------------',routes[0].data.length)
+
+    const addMoreData = (newItems, start, finished) => {
+        console.log(newItems.length, start, finished)
+        setRoutes((prevRoutes) => {
+          const updatedRoutes = prevRoutes.map((route) => {
+            if (route.index === index) {
+                route.endpoint.params.start = start;
+                route.endpoint.finished = finished;
+              return {
+                ...route,
+                data: route.data.concat(newItems),
+              };
+            }
+            return route;
+          });
+          return updatedRoutes;
+        });
+      };
+//<Button onPress={handleB} title="aaa"></Button>
     return (
     <>
         <SafeAreaView edges={[ 'left', 'right']} style={{

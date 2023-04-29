@@ -106,7 +106,6 @@ export default function ElementBrowse(props) {
         styles = {height: windowHeight - 64}
     }
 
-    console.log(88888, data.data);
     return (
         (data.data.length > 0) && <View className='w-full h-full ' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
