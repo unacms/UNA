@@ -1,174 +1,160 @@
-import React, { useCallback, useState } from "react";
-import { StatusBar,} from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
+import { StatusBar } from "react-native";
 import { Text, H1C } from 'app/design/typography';
-import { useSharedValue,withTiming} from "react-native-reanimated";
+import { useSharedValue, withTiming } from "react-native-reanimated";
 import { Route, TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
-import Cover, {CoverSmall} from 'app/components/elements/cover';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {BlockByName} from 'app/components/block';
-import { View, Row, ScrollView, FlatList,Pressable } from 'app/design/view';
-import { Button } from 'app/design/controls'
+import { BlockByName } from 'app/components/block';
+import { View, Row, FlatList, Pressable } from 'app/design/view';
+import { Button } from 'app/design/controls';
 import { FlashList } from "@shopify/flash-list";
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import {BlockByName2} from 'app/components/block';
+import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
-import { appSetting } from 'app/lib/util'
+import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { processMenu, getURI } from 'app/lib/util'
 
 const StatusBarHeight = StatusBar.currentHeight ?? 0;
 
-export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader, initRoutes}) {
+export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
-    let [routes, setRoutes] = useState(initRoutes);
-    let [inc, setInc] = useState(0);
-
+    
+    const initedTabs = processMenu(menu.object, menu.items).map((item, index) => {
+        const i = { key: item.link, title: item.title, index };
+        if (getURI(item.link) === data.uri) {
+            contentAndEndpoint = processUrl(data, blocks);
+            i.data = contentAndEndpoint.content;
+            i.inited = true;
+            i.link = item.link;
+            i.endpoint = contentAndEndpoint.endpoint;
+        } else {
+            i.link = item.link;
+            i.inited = false;
+            i.data = [];
+        }
+      
+        return i;
+    });
+    //return <Text>{JSON.stringify(initedTabs)}</Text>
+    const [routes, setRoutes] = useState(initedTabs);
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
-    //const [ isRefreshing, setIsRefreshing ] = useState(false);
     const { colors } = Theme();
     const startAnimationFrom = 200;
 
-    
-    if ('undefined' === typeof minHeaderHeight)
-        minHeaderHeight = 100
-
-    if ('undefined' === typeof isHideDefaultHeader)
-        isHideDefaultHeader = false    
-    
     const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
 
-    const handleEndReached = async () => {
-       
-        let c = routes.filter((item) => item.index == index);
-        if (c && c[0].endpoint && !c[0].endpoint.finished){
-            let params = Object.assign({}, c[0].endpoint.params)
-            params.start = parseInt(params.start) + parseInt(params.per_page);
-            let sRequest = c[0].endpoint.request_url + JSON.stringify({'params': params});
+    const handleEndReached = useCallback(async () => {
+        const currentRoute = routes.find((item) => item.index === index);
+
+        if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
+            const params = { ...currentRoute.endpoint.params, start: parseInt(currentRoute.endpoint.params.start) + parseInt(currentRoute.endpoint.params.per_page) };
+            const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
             const sResponse = await fetcher(sRequest);
-
-            let finished = false;
-            if (sResponse.data[0].data.data.length == 0){
-                finished = true 
-            }
-            if (sResponse.data[0].data.data.length > 0 || c[0].endpoint.finished != finished){
-               
-                addMoreData(sResponse.data[0].data.data, params.start, finished)
-               
+            const newData = sResponse.data[0].data.data;
+            const finished = newData.length === 0;
+            let endpoint = currentRoute.endpoint
+            endpoint.finished = finished;
+            endpoint.params = params;
+            if (newData.length > 0 || currentRoute.endpoint.finished !== finished) {
+                addMoreData(newData, endpoint);
             }
         }
-    };
+    }, [routes, index]);
 
-    if(isHideDefaultHeader){
-        setTimeout(() => {
-            navigation.setOptions({headerShown: false})
-        }, 300);
-    }
+  if (isHideDefaultHeader) {
+    setTimeout(() => {
+        navigation.setOptions({ headerShown: false });
+    }, 300);
+  }
 
     const handleLayout = (event) => {
-        scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0: 1;
+        scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0 : 1;
     };
 
-    function TabFlashListScrollViewComponent(props, ref) {
-        return (
-            <SceneComponent
-                {...props}
-                useExternalScrollView
-                forwardedRef={ref}
-                ContainerView={Animated.ScrollView}
-            />
-        );
-    }
+    const TabFlashListScrollView = React.forwardRef((props, ref) => (
+        <SceneComponent
+        {...props}
+        useExternalScrollView
+        forwardedRef={ref}
+        ContainerView={Animated.ScrollView}
+        />
+    ));
 
-    TabFlashListScrollView = React.forwardRef(TabFlashListScrollViewComponent);
-
-    function TabFlashListComponent(props, ref) {
+    const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
-        return (
+            return (
             <FlashList
                 {...props}
                 renderScrollComponent={TabFlashListScrollView}
                 contentContainerStyle={{ paddingTop: scrollViewPaddingTop }}
                 ref={ref}
                 onScroll={handleLayout}
-                
                 onEndReachedThreshold={0.5}
-                onEndReached ={handleEndReached} 
+                onEndReached={handleEndReached}
             />
-        );
-    }
+            );
+    });
 
-    const TabFlashList = React.forwardRef(TabFlashListComponent) ;
+    useEffect(() => {
+        async function fetchAndUpdateData() {
+            const currentRoute = routes.find((item) => item.index === index);
+            if (!currentRoute.inited){
+                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
+                const uri = getURI(currentRoute.link);
+                let settings = appSetting('layouts', uri)
+                contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
+                addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint)
+
+            }
+        }
+        fetchAndUpdateData();
+    }, [index]);
+
 
     const TabScene = ({ route }) => {
+        console.log(route.index, index, route.inited)
+        if (!route.inited){
+/*
+           
+            const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + route.link);
+            contentAndEndpoint = processUrl(sResponse.data, settings.blocks);
+            route.data = contentAndEndpoint.content;
+            route.inited = true;
+            route.endpoint = contentAndEndpoint.endpoint;*/
+        }
+        if (route.inited)
         return (
-            <TabFlashList
-                index={route.index}
-               // onEndReached = {handleEndReached} 
-                data={route.data}
-                estimatedItemSize={60}
-                keyExtractor={item => item.id}
-                renderItem={({ item, index }) => {
-                    if (item?.type =='block'){
-                        return <View key={route.index+'-'+item.id}><BlockByName2 b={item.data} name={item.block} /></View>
-                    } 
-                    else{
-                        return <View key={route.index+'-'+item.id}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')}  /></View>
-                    }
-                }}
-                
-            />
-        );
-    };
-
-    /* const TabScene = ({ route }) => {
-        return (
-          
-          <TabFlashList
+        <TabFlashList
             index={route.index}
-           // onEndReached ={handleEndReached} 
             data={route.data}
             estimatedItemSize={60}
             keyExtractor={item => item.id}
             renderItem={({ item, index }) => {
-              return (
-                <View
-                  style={{
-                    height: 60,
-                    backgroundColor: "#fff",
-                    marginBottom: 8,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>{item.id}---{JSON.stringify(item)}</Text>
-                </View>
-              );
+            if (item?.type === 'block') {
+                return <View key={`${route.index}-${item.id}`}><BlockByName2 b={item.data} name={item.block} /></View>
+            } else {
+                return <View key={`${route.index}-${item.id}`}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
+            }
             }}
-          />
-        );
-      };*/
+        />
+    )};
 
-   
-    let renderScene = useCallback(({ route }) => {
-         return <TabScene route={route} index={route.index} />;
-     }, []);
-
-    /*const onStartRefresh = async () => {
-        setIsRefreshing(true);
-        setTimeout(() => {
-            console.log("onStartRefresh");
-            setIsRefreshing(false);
-        }, 300);
-    };*/
+    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
 
     const renderTabBar = (props) => (
-        <Row className="py-4" style={{backgroundColor: colors.barsBackground}}>
-            {props.navigationState.routes.map(a => (props.navigationState.index == a.index ? <Button disabled variant="text" title={a.title}  onPress={() => setIndex(a.index)} />: <Button variant="text" title={a.title} onPress={() => setIndex(a.index)} />))}
+        <Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
+            {props.navigationState.routes.map(a => (
+                props.navigationState.index === a.index
+                ? <Button disabled variant="text" title={a.title} onPress={() => setIndex(a.index)} />
+                : <Button variant="text" title={a.title} onPress={() => setIndex(a.index)} />
+            ))}
         </Row>
     );
 
@@ -177,56 +163,90 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
             return {
                 opacity: withTiming(scroll.value, { duration: 500 }),
             };
-        });
+    });
 
-        const animatedStyleB = useAnimatedStyle(() => {
-            return {
-                opacity: withTiming(1 - scroll.value, { duration: 500 }),
-            };
-        });
 
-        return (
-            <View className='w-full h-80'>
-                <Animated.View style={[{width:'100%',position:'absolute', }, animatedStyleA]}>
-                    {header}
-                </Animated.View>
-                <Animated.View style={[{width:'100%', position:'absolute', bottom:0, }, animatedStyleB]}>
-                    {smallHeader}
-                </Animated.View>
-            </View>
-        );
+    const animatedStyleB = useAnimatedStyle(() => {
+        return {
+            opacity: withTiming(1 - scroll.value, { duration: 500 }),
+        };
+    });
+    if (!header)
+        return <></>
+
+    return (
+        <View className='w-full h-80'>
+            <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
+            {header}
+            </Animated.View>
+            <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
+            {smallHeader}
+            </Animated.View>
+        </View>
+    );
     }, [scroll]);
 
-    const addMoreData = (newItems, start, finished) => {
-        console.log(newItems.length, start, finished)
+    const addMoreData = (newItems, endpoint) => {
         setRoutes((prevRoutes) => {
-          const updatedRoutes = prevRoutes.map((route) => {
-            if (route.index === index) {
-                route.endpoint.params.start = start;
-                route.endpoint.finished = finished;
-              return {
-                ...route,
-                data: route.data.concat(newItems),
-              };
-            }
-            return route;
-          });
-          return updatedRoutes;
+            const updatedRoutes = prevRoutes.map((route) => {
+                if (route.index === index) {
+                    route.endpoint = endpoint;
+                    route.inited =true
+                    return {
+                        ...route,
+                        data: route.data.concat(newItems),
+                    };
+                }
+                return route;
+            });
+            return updatedRoutes;
         });
-      };
-//<Button onPress={handleB} title="aaa"></Button>
+    };
+
+    function getContent(data, block) {
+        const blockName = block.name;
+        const b = Object.values(data?.elements)
+          .flatMap(Object.values)
+          .find(element => element.content && element.source === blockName);
+      
+        return b?.content[0]?.type === 'browse'
+          ? { data: b.content[0].data, type: 'browse' }
+          : { data: b, type: 'block', block: block };
+    }
+
+    function processUrl(data, blocks) {
+        const contentAndEndpoint = Object.values(blocks).reduce(
+            (acc, block) => {
+                const b = getContent(data, block);
+                if (b.type === 'browse') {
+                    acc.endpoint = {
+                        ...acc.endpoint,
+                        params: b.data.params,
+                        request_url: b.data.request_url,
+                        finished: false,
+                        unit: b.data.unit,
+                    };
+                    acc.content = [...acc.content, ...b.data.data];
+                } else {
+                    acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
+                }
+    
+                return acc;
+            },
+            { content: [], endpoint: null }
+        );
+        return contentAndEndpoint;
+    }
+
     return (
-    <>
-        <SafeAreaView edges={[ 'left', 'right']} style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            height:'100%'
-        }}>
+        <SafeAreaView edges={['left', 'right']} style={{
+                width: '100%',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                height: '100%'
+            }}>
             <TabView
-                /*onStartRefresh={onStartRefresh}
-                isRefreshing={isRefreshing}*/
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
@@ -238,6 +258,5 @@ export function Tabs({header, smallHeader, minHeaderHeight, isHideDefaultHeader,
                 renderTabBar={renderTabBar}
             />
         </SafeAreaView>
-    </>
     );
 }
