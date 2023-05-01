@@ -161,7 +161,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (props.navigationState.routes.length > 1)
             return (
-                <View className="pb-2" style={{ backgroundColor: colors.barsBackground }}>
+                <View className="" style={{ backgroundColor: colors.barsBackground }}>
                     <Row  >
                         {props.navigationState.routes.map((a) => (
                             <Pressable className="flex-1 items-center justify-center py-4 "

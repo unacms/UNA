@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
 
+import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
@@ -349,7 +350,7 @@ export default function ElementReactions(oProps) {
             return (
                 <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
                     <ButtonMenuCounter startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
-                    <Modal onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
+                    <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
                         {sUsers}
                     </Modal>
                 </View>
@@ -436,7 +437,7 @@ export default function ElementReactions(oProps) {
         return (
             <View className={!iTotal ? "hidden" : ""}>
                 <ButtonMenuCounter startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
-                <Modal title='Reactions' onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
