@@ -58,7 +58,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const handleEndReached = useCallback(async () => {
 
         const currentRoute = routes.find((item) => item.index === index);
-
+        //todo delay
         if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
             const params = { ...currentRoute.endpoint.params, start: parseInt(currentRoute.endpoint.params.start) + parseInt(currentRoute.endpoint.params.per_page) };
             const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
@@ -149,12 +149,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     index={route.index}
                     data={route.data}
                     estimatedItemSize={60}
+                    numColumns={numColumns}
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
                         if (item?.type === 'block') {
-                            return <View key={`${route.index}-${item.id}`}><BlockByName2 b={item.data} name={item.block} /></View>
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
                         } else {
-                            return <View key={`${route.index}-${item.id}`}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
                         }
                     }}
                     ListFooterComponent={
@@ -237,7 +238,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         });
 
         if (!header)
-            return <></>
+            return <><View className="w-full h-12"></View><View className="fixed w-full z-50" >{tabBarObj}</View></>
 
         return (
             <>
@@ -322,12 +323,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
 
     const windowHeight = useWindowDimensions().height;
-
+    const offset = header ? 165 : 65;
 // {headerObj}
     return (
        <View style={{height: windowHeight - 64}} className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}
-            <View style={{height: windowHeight - 165}} className={ appSetting('layout', 'max_width') + ' mx-auto w-full  '}>
+            <View style={{height: windowHeight - offset}} className={ appSetting('layout', 'max_width') + ' mx-auto w-full  '}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>
