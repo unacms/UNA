@@ -1,23 +1,19 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { StatusBar } from "react-native";
 import { Text, H1C } from 'app/design/typography';
-import { useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming, useAnimatedStyle } from "react-native-reanimated";
 import { Route, TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlockByName } from 'app/components/block';
 import { View, Row, FlatList, Pressable } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { FlashList } from "@shopify/flash-list";
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
-import { appSetting } from 'app/lib/util';
+import { appSetting, processMenu, getURI } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { processMenu, getURI } from 'app/lib/util'
+import Loading from 'app/ui/atoms/loading'
 
-const StatusBarHeight = StatusBar.currentHeight ?? 0;
 
 export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
@@ -59,10 +55,12 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
             const sResponse = await fetcher(sRequest);
             const newData = sResponse.data[0].data.data;
             const finished = newData.length === 0;
+            let isFinished = (currentRoute.endpoint.finished !== finished)
             let endpoint = currentRoute.endpoint
             endpoint.finished = finished;
             endpoint.params = params;
-            if (newData.length > 0 || currentRoute.endpoint.finished !== finished) {
+
+            if (newData.length > 0 || isFinished) {
                 addMoreData(newData, endpoint);
             }
         }
@@ -89,7 +87,7 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
 
     const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
-            return (
+        return (
             <FlashList
                 {...props}
                 renderScrollComponent={TabFlashListScrollView}
@@ -98,6 +96,7 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
                 onScroll={handleLayout}
                 onEndReachedThreshold={0.5}
                 onEndReached={handleEndReached}
+                
             />
             );
     });
@@ -107,8 +106,7 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
             const currentRoute = routes.find((item) => item.index === index);
             if (!currentRoute.inited){
                 const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
-                const uri = getURI(currentRoute.link);
-                let settings = appSetting('layouts', uri)
+                let settings = appSetting('layouts', getURI(currentRoute.link))
                 contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
                 addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint)
 
@@ -119,44 +117,45 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
 
 
     const TabScene = ({ route }) => {
-        console.log(route.index, index, route.inited)
+        console.log(route.index, index, route.inited, route?.endpoint?.finished, route.data.length)
         if (!route.inited){
-/*
-           
-            const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + route.link);
-            contentAndEndpoint = processUrl(sResponse.data, settings.blocks);
-            route.data = contentAndEndpoint.content;
-            route.inited = true;
-            route.endpoint = contentAndEndpoint.endpoint;*/
+            return <View className='m-2 pt-80'><Loading/></View>
         }
         if (route.inited)
-        return (
-        <TabFlashList
-            index={route.index}
-            data={route.data}
-            estimatedItemSize={60}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index }) => {
-            if (item?.type === 'block') {
-                return <View key={`${route.index}-${item.id}`}><BlockByName2 b={item.data} name={item.block} /></View>
-            } else {
-                return <View key={`${route.index}-${item.id}`}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
-            }
-            }}
-        />
+            return (
+                <TabFlashList
+                    index={route.index}
+                    data={route.data}
+                    estimatedItemSize={60}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item, index }) => {
+                        if (item?.type === 'block') {
+                            return <View key={`${route.index}-${item.id}`}><BlockByName2 b={item.data} name={item.block} /></View>
+                        } else {
+                            return <View key={`${route.index}-${item.id}`}><Unit unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
+                        }
+                    }}
+                    ListFooterComponent={
+                        (route?.endpoint?.finished === false) ? (
+                            <View className='m-2'><Loading/></View>
+                        ) : null
+                    }
+                />
     )};
 
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
 
-    const renderTabBar = (props) => (
-        <Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
-            {props.navigationState.routes.map(a => (
-                props.navigationState.index === a.index
-                ? <Button disabled variant="text" title={a.title} onPress={() => setIndex(a.index)} />
-                : <Button variant="text" title={a.title} onPress={() => setIndex(a.index)} />
-            ))}
-        </Row>
-    );
+    const renderTabBar = (props) => {
+        if (props.navigationState.routes.length > 1)
+            return (
+                <Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
+                    {props.navigationState.routes.map(a => (
+                        props.navigationState.index === a.index
+                        ? <View key={`tab-${a.index}`}><Button disabled variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
+                        : <View key={`tab-${a.index}`}><Button variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
+                    ))}
+                </Row>
+    )};
 
     const renderHeader = useCallback(() => {
         const animatedStyleA = useAnimatedStyle(() => {
@@ -177,16 +176,17 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
     return (
         <View className='w-full h-80'>
             <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
-            {header}
+                {header}
             </Animated.View>
             <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
-            {smallHeader}
+                {smallHeader}
             </Animated.View>
         </View>
     );
     }, [scroll]);
 
     const addMoreData = (newItems, endpoint) => {
+        console.log('9999', newItems.length, endpoint)
         setRoutes((prevRoutes) => {
             const updatedRoutes = prevRoutes.map((route) => {
                 if (route.index === index) {
