@@ -164,26 +164,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (props.navigationState.routes.length > 1)
             return (
-                <Row className="" style={{ backgroundColor: colors.barsBackground }}>
-                    {props.navigationState.routes.map((a) => (
-                        <Pressable className="flex-1 items-center justify-center py-4 "
-                            key={`tab-${a.index}`}
-                            onPress={() => {
-                                setIndex(a.index)
-                            }}
-                        >
-                            <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
-                        </Pressable>
-                    ))}
-                    <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
-                </Row>
-                /*<Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
-                    {props.navigationState.routes.map(a => (
-                        props.navigationState.index === a.index
-                        ? <View key={`tab-${a.index}`}><Button disabled variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
-                        : <View key={`tab-${a.index}`}><Button variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
-                    ))}
-                </Row>*/
+                <View className="pb-2" style={{ backgroundColor: colors.barsBackground }}>
+                    <Row  >
+                        {props.navigationState.routes.map((a) => (
+                            <Pressable className="flex-1 items-center justify-center py-4 "
+                                key={`tab-${a.index}`}
+                                onPress={() => {
+                                    setIndex(a.index)
+                                }}
+                            >
+                                <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                            </Pressable>
+                        ))}
+                        <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
+                    </Row>
+                </View>
+
     )};
 
     const renderHeader = useCallback(() => {
@@ -216,7 +212,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [scroll]);
 
     const addMoreData = (newItems, endpoint) => {
-        console.log('9999', newItems.length, endpoint)
         setRoutes((prevRoutes) => {
             const updatedRoutes = prevRoutes.map((route) => {
                 if (route.index === index) {

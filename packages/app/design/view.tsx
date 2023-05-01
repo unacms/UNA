@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { Link as SolitoLink } from 'solito/link'
 import { FlashList as  ReactNativeFlashList } from "@shopify/flash-list";
-
+import { Canvas as CanvasDef} from "@shopify/react-native-skia";
 import { styled } from 'nativewind'
 
 export const View = styled(ReactNativeView)
@@ -20,4 +20,4 @@ export const FlatList = styled(ReactNativeFlatList)
 export const FlashList = ReactNativeFlashList
 export const Row = styled(View, "flex-row")
 export const Link = styled(SolitoLink)
-
+export const Canvas = styled(CanvasDef)
