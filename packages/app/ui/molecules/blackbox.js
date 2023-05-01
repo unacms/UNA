@@ -1,10 +1,9 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Text, H1C } from 'app/design/typography';
+import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { Route, TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
+import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Row, FlatList, Pressable,TouchableOpacity  } from 'app/design/view';
-import { Button } from 'app/design/controls';
+import { View, Row, Pressable  } from 'app/design/view';
 import { FlashList } from "@shopify/flash-list";
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';

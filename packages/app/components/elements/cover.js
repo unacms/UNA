@@ -10,8 +10,6 @@ import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'; 
 import { Canvas, Fill,Image as Image2, BackdropBlur, ColorMatrix, useImage } from "@shopify/react-native-skia";
 
-
-
 function CoverMenu(){
     return (
     <View className='w-full mt-2 '>
@@ -38,7 +36,7 @@ export function CoverSmall(props) {
 
 
 return (
-    <Row className=' justify-left items-center w-full h-24 pt-8' style={{backgroundColor: colors.barsBackground}} >
+    <Row className=' justify-left items-center w-full h-24' style={{backgroundColor: colors.barsBackground}} >
         <View className='absolute h-80 w-full'>
         { !!data.cover && (
             <Canvas style={{ width: windowWidth, height: 256}}>
