@@ -30,7 +30,7 @@ export function BlockByName({data, name, onScroll2, f}) {
     if (b)
         return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} f={f}  />;
     
-    return <Text>Not found: {name}</Text>
+    return <Text className="text-black dark:text-white">Not found: {JSON.stringify(name)}</Text>
 }
 
 export function BlockByName2({b, name}) {
