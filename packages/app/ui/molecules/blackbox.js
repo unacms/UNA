@@ -146,14 +146,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
 
     const renderTabBar = (props) => {
-        console.log(99999, props);
       
         const tabWidth = props.layout.width/props.navigationState.routes.length;
-
-        
         indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
-      
         const indicatorStyle = useAnimatedStyle(() => {
             return {
                 transform: [{ translateX: indicatorOffset.value }],
@@ -164,25 +160,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             indicator: {
                 width: tabWidth
             },
-          });
+        });
 
         if (props.navigationState.routes.length > 1)
             return (
-                <Row className="pb-4" style={{ backgroundColor: colors.barsBackground }}>
-                {props.navigationState.routes.map((a) => (
-                  <Pressable className="flex-1 items-center justify-center"
-                    key={`tab-${a.index}`}
-                    
-                    onPress={() => {
-                        setIndex(a.index)
-                        //updateIndicator(a.index);
-                    }}
-                  >
-                    <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
-                  </Pressable>
-                ))}
-                <Animated.View className="absolute bottom-0 left-0 h-1 px-10" style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2,height: 3, backgroundColor: colors.primary}}></View></Animated.View>
-                    
+                <Row className="" style={{ backgroundColor: colors.barsBackground }}>
+                    {props.navigationState.routes.map((a) => (
+                        <Pressable className="flex-1 items-center justify-center py-4 "
+                            key={`tab-${a.index}`}
+                            onPress={() => {
+                                setIndex(a.index)
+                            }}
+                        >
+                            <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                        </Pressable>
+                    ))}
+                    <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
                 </Row>
                 /*<Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
                     {props.navigationState.routes.map(a => (
