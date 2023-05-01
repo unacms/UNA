@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 
+import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
@@ -168,8 +169,8 @@ export default function ElementLikes(oProps) {
         sCounter = (
             <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
                 <ButtonMenuCounter startDecorator="ThumbsUp" title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
-                <Modal onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="gap-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                    <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             </View>
         );
