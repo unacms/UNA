@@ -13,6 +13,7 @@ import { appSetting } from 'app/lib/util'
 import { ActivityIndicator } from 'react-native';
 import { Dimensions } from 'react-native';
 import { Theme } from 'app/design/theme';
+import Loading from 'app/ui/atoms/loading'
 
 export default function ElementBrowse(props) {
     let data = props.data;
@@ -106,7 +107,6 @@ export default function ElementBrowse(props) {
         styles = {height: windowHeight - 64}
     }
 
-    console.log(55555, data.data.length);
     return (
         (data.data.length > 0) && <View className='w-full h-full ' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
@@ -126,7 +126,7 @@ export default function ElementBrowse(props) {
  
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
-                      <View className='m-2'><ActivityIndicator  accessibilityRole="progressbar" accessibilityLabel="Loading" size="large" color={colors.primary}  /></View>
+                      <View className='m-2'><Loading/></View>
                     ) : null
                   }
             /></View>
