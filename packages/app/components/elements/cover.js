@@ -36,7 +36,7 @@ export function CoverSmall(props) {
 
 
 return (
-    <Row className=' justify-left items-center w-full h-24' style={{backgroundColor: colors.barsBackground}} >
+    <Row className=' justify-left items-center pt-10  w-full h-24' style={{backgroundColor: colors.barsBackground}} >
         <View className='absolute h-80 w-full'>
         { !!data.cover && (
             <Canvas style={{ width: windowWidth, height: 256}}>
@@ -57,7 +57,7 @@ return (
             </Canvas>
             )}
         </View>
-        <Pressable className="mr-2 ml-2bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+        <Pressable className="mr-2 ml-2 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
             <Icon icon="left" width={24} height={24} color={colors.barsColor} />
         </Pressable>
         <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />

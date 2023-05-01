@@ -9,7 +9,7 @@ export default function PageLayout(props) {
     return (<BlackBox 
         header={header} 
         smallHeader={smallHeader} 
-        minHeaderHeight={100} 
+        minHeaderHeight={104} 
         isHideDefaultHeader={true} 
         menu={props.data.menu} 
         data={props.data} 
