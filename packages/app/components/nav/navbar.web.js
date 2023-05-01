@@ -89,7 +89,7 @@ export default function (props) {
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
                 </View>
-                {bInfinite ? <Browse type={oBlock.type} {...oBlock} /> : oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
+                {bInfinite ? <Browse type={oBlock.type} params={{height: 660}} {...oBlock} /> : oBlock.data.data.map(a => <Notifications key={a.id} data={a} />)}
             </View>
         );
 

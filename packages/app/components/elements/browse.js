@@ -17,7 +17,8 @@ import Loading from 'app/ui/atoms/loading'
 export default function ElementBrowse(props) {
     let data = props.data;
     let defParams = data.params;
-
+    if(props?.params)
+        defParams = {...defParams, ...props.params};
 
     /* unit mode & change unit mode */
     const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
@@ -101,9 +102,9 @@ export default function ElementBrowse(props) {
         {label: 'Mini', value: 'small'}
     ];
 
-    let styles ={};
+    let styles = {};
     if(Platform.OS === 'web') {
-        styles = {height: windowHeight - 64}
+        styles = {height: (defParams?.height ? defParams.height : windowHeight - 64)}
     }
 
     return (

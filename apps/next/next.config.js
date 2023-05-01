@@ -13,6 +13,9 @@ const withTM = require('next-transpile-modules')([
   'app',
 ])
 
+const merge = require('deepmerge');
+const nextConfigCustom = require('./next.config.custom.js');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
@@ -31,5 +34,5 @@ const nextConfig = {
     disableStaticImages: true
   }
 }
-
-module.exports = withPlugins([withTM, withExpo, withImages], nextConfig)
+console.log(merge(nextConfig, nextConfigCustom));
+module.exports = withPlugins([withTM, withExpo, withImages], merge(nextConfig, nextConfigCustom))
