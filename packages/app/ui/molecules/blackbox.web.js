@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Row, Pressable  } from 'app/design/view';
 import { FlashList } from "@shopify/flash-list";
@@ -14,12 +13,13 @@ import { appSetting, processMenu, getURI } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 
+
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
     const initedTabs = processMenu(menu.object, menu.items).map((item, index) => {
         const i = { key: item.link, title: item.title, index };
         if (getURI(item.link) === data.uri) {
-            contentAndEndpoint = processUrl(data, blocks);
+            let contentAndEndpoint = processUrl(data, blocks);
             i.data = contentAndEndpoint.content;
             i.inited = true;
             i.link = item.link;
@@ -262,24 +262,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }
 
     return (
-        <SafeAreaView edges={['left', 'right']} style={{
-                width: '100%',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: '100%'
-            }}>
-            <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                lazy
-                renderScrollHeader={renderHeader}
-                minHeaderHeight={minHeaderHeight}
-                animationHeaderPosition={animationHeaderPosition}
-                animationHeaderHeight={animationHeaderHeight}
-                renderTabBar={renderTabBar}
-            />
-        </SafeAreaView>
+       <>
+        <renderHeader></renderHeader>
+       </>
     );
 }
