@@ -10,7 +10,6 @@ import { Platform } from 'react-native'
 import { fetcher } from '../../lib/fetcher';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
-import { ActivityIndicator } from 'react-native';
 import { Dimensions } from 'react-native';
 import { Theme } from 'app/design/theme';
 import Loading from 'app/ui/atoms/loading'

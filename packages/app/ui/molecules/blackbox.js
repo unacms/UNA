@@ -1,13 +1,14 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Text, H1C } from 'app/design/typography';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { Route, TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Row, FlatList, Pressable } from 'app/design/view';
+import { View, Row, FlatList, Pressable,TouchableOpacity  } from 'app/design/view';
 import { Button } from 'app/design/controls';
 import { FlashList } from "@shopify/flash-list";
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { appSetting, processMenu, getURI } from 'app/lib/util';
@@ -15,9 +16,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 
 
-export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
+export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
-    
     const initedTabs = processMenu(menu.object, menu.items).map((item, index) => {
         const i = { key: item.link, title: item.title, index };
         if (getURI(item.link) === data.uri) {
@@ -34,7 +34,7 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
       
         return i;
     });
-    //return <Text>{JSON.stringify(initedTabs)}</Text>
+
     const [routes, setRoutes] = useState(initedTabs);
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
@@ -44,6 +44,7 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
     const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
+    const indicatorOffset = useSharedValue(0);
 
     const handleEndReached = useCallback(async () => {
         const currentRoute = routes.find((item) => item.index === index);
@@ -117,7 +118,6 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
 
 
     const TabScene = ({ route }) => {
-        console.log(route.index, index, route.inited, route?.endpoint?.finished, route.data.length)
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
@@ -146,15 +146,51 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
 
     const renderTabBar = (props) => {
+        console.log(99999, props);
+      
+        const tabWidth = props.layout.width/props.navigationState.routes.length;
+
+        
+        indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
+
+      
+        const indicatorStyle = useAnimatedStyle(() => {
+            return {
+                transform: [{ translateX: indicatorOffset.value }],
+            };
+        });
+
+        const styles = StyleSheet.create({
+            indicator: {
+                width: tabWidth
+            },
+          });
+
         if (props.navigationState.routes.length > 1)
             return (
-                <Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
+                <Row className="pb-4" style={{ backgroundColor: colors.barsBackground }}>
+                {props.navigationState.routes.map((a) => (
+                  <Pressable className="flex-1 items-center justify-center"
+                    key={`tab-${a.index}`}
+                    
+                    onPress={() => {
+                        setIndex(a.index)
+                        //updateIndicator(a.index);
+                    }}
+                  >
+                    <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                  </Pressable>
+                ))}
+                <Animated.View className="absolute bottom-0 left-0 h-1 px-10" style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2,height: 3, backgroundColor: colors.primary}}></View></Animated.View>
+                    
+                </Row>
+                /*<Row className="py-4" style={{ backgroundColor: colors.barsBackground }}>
                     {props.navigationState.routes.map(a => (
                         props.navigationState.index === a.index
                         ? <View key={`tab-${a.index}`}><Button disabled variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
                         : <View key={`tab-${a.index}`}><Button variant="text" title={a.title} onPress={() => setIndex(a.index)} /></View>
                     ))}
-                </Row>
+                </Row>*/
     )};
 
     const renderHeader = useCallback(() => {
@@ -162,27 +198,28 @@ export function Tabs({ header, smallHeader, minHeaderHeight = 100, isHideDefault
             return {
                 opacity: withTiming(scroll.value, { duration: 500 }),
             };
-    });
+        });
 
 
-    const animatedStyleB = useAnimatedStyle(() => {
-        return {
-            opacity: withTiming(1 - scroll.value, { duration: 500 }),
-        };
-    });
-    if (!header)
-        return <></>
+        const animatedStyleB = useAnimatedStyle(() => {
+            return {
+                opacity: withTiming(1 - scroll.value, { duration: 500 }),
+            };
+        });
 
-    return (
-        <View className='w-full h-80'>
-            <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
-                {header}
-            </Animated.View>
-            <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
-                {smallHeader}
-            </Animated.View>
-        </View>
-    );
+        if (!header)
+            return <></>
+
+        return (
+            <View className='w-full h-80'>
+                <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
+                    {header}
+                </Animated.View>
+                <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
+                    {smallHeader}
+                </Animated.View>
+            </View>
+        );
     }, [scroll]);
 
     const addMoreData = (newItems, endpoint) => {
