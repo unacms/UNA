@@ -25,33 +25,6 @@ export default function Layout(props) {
           /* configuration for matching screens with paths */
         },
     };
-    
-    let bTabsPresent = false;
-
-    if (props?.data?.menu?.items?.length > 0 && props?.uri != 'home'){
-        props.data.menu.items.forEach(function (k) { 
-            if (k.link.includes(props.uri))
-                bTabsPresent = true;
-        });
-    }
-    let bCoverPresent = false;
-    if (props?.data?.cover_block?.profile){
-        bCoverPresent = true;
-    }
-    let cnt =
-        (<View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
-            {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
-            <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
-                  {loading ? skeleton :<View className='w-full mx-auto'>
-                      
-                       {(bTabsPresent) && <View className='w-full'><NavMaterialTabs uri={props?.uri} data = {props.data.menu} /></View>}
-                       {(!bTabsPresent) && props.children}
-                    </View>}
-                </View>
-            </View>
-            <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
-        </View>);
 
     return (
         <>
@@ -63,8 +36,20 @@ export default function Layout(props) {
                 <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
                 <title>{props.data.title}</title>
             </Head>
-            {(bTabsPresent) && <NavigationContainer linking={linking}>{cnt}</NavigationContainer>}
-            {(!bTabsPresent) && cnt}
+            <NavigationContainer linking={linking}>
+            <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
+                {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
+                <View className=" w-full mx-auto flex-row -top-[1px] " > 
+                    <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
+                    {loading ? skeleton :<View className='w-full mx-auto'>
+                        {props.children}
+                        </View>}
+                    </View>
+                </View>
+                <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
+            </View>
+            </NavigationContainer>
+  
         </>
     );
 }

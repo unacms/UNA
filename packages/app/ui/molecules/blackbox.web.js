@@ -1,7 +1,6 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Row, Pressable  } from 'app/design/view';
 import { FlashList } from "@shopify/flash-list";
 import { Theme } from 'app/design/theme';
@@ -12,6 +11,7 @@ import Unit from 'app/components/unit';
 import { appSetting, processMenu, getURI } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
+import { ScrollView } from "dripsy";
 
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
@@ -33,7 +33,18 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return i;
     });
 
+    const windowWidth = useWindowDimensions().width;
+
+    const getNumCols = (width) => {
+        if (Object.keys(blocks).length == 1){
+            return width > 600 ? 3 : 1
+        }
+        return 1
+    };
+
     const [routes, setRoutes] = useState(initedTabs);
+    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
+    const [offsetTop, setOffsetTop] = useState(550);
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
     const { colors } = Theme();
@@ -45,6 +56,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const indicatorOffset = useSharedValue(0);
 
     const handleEndReached = useCallback(async () => {
+
         const currentRoute = routes.find((item) => item.index === index);
 
         if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
@@ -65,40 +77,21 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
     }, [routes, index]);
 
-  if (isHideDefaultHeader) {
-    setTimeout(() => {
-        navigation.setOptions({ headerShown: false });
-    }, 300);
-  }
-
     const handleLayout = (event) => {
-        scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0 : 1;
+        console.log(event.nativeEvent.layoutMeasurement.height)
+        if (event.nativeEvent.contentOffset.y > 200)
+            scroll.value = 0;
+            if (event.nativeEvent.contentOffset.y <10)
+                scroll.value = 1;
+
+        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+        const isEndReached = contentOffset.y + layoutMeasurement.height >= contentSize.height;
+    
+        if (isEndReached) {
+            handleEndReached();
+        }
+       // scroll.value = event.nativeEvent.contentOffset.y > 200 ? 0 : 1;
     };
-
-    const TabFlashListScrollView = React.forwardRef((props, ref) => (
-        <SceneComponent
-        {...props}
-        useExternalScrollView
-        forwardedRef={ref}
-        ContainerView={Animated.ScrollView}
-        />
-    ));
-
-    const TabFlashList = React.forwardRef((props, ref) => {
-        const { scrollViewPaddingTop } = useHeaderTabContext();
-        return (
-            <FlashList
-                {...props}
-                renderScrollComponent={TabFlashListScrollView}
-                contentContainerStyle={{ paddingTop: scrollViewPaddingTop }}
-                ref={ref}
-                onScroll={handleLayout}
-                onEndReachedThreshold={0.5}
-                onEndReached={handleEndReached}
-                
-            />
-            );
-    });
 
     useEffect(() => {
         async function fetchAndUpdateData() {
@@ -106,7 +99,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             if (!currentRoute.inited){
                 const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
                 let settings = appSetting('layouts', getURI(currentRoute.link))
-                contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
+                let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
                 addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint)
 
             }
@@ -114,6 +107,37 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         fetchAndUpdateData();
     }, [index]);
 
+    const scrollY = useSharedValue(0);
+
+
+    const CustomScrollComponent = React.forwardRef((props, ref) => {
+       
+      
+        return (
+          <Animated.ScrollView
+            {...props}
+            ref={ref}
+            scrollEventThrottle={16}
+
+          />
+        );
+      });
+
+    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, []);  
+
+    const TabFlashList = React.forwardRef((props, ref) => {
+
+        return (
+            <FlashList
+                {...props}
+                renderScrollComponent={CustomScrollComponent}
+                ref={ref}
+                onScroll={handleLayout}
+                onEndReachedThreshold={0.5}
+                onEndReached={handleEndReached}
+            />
+        );
+    });
 
     const TabScene = ({ route }) => {
         if (!route.inited){
@@ -141,12 +165,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 />
     )};
 
-    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
-
     const renderTabBar = (props) => {
       
-        const tabWidth = props.layout.width/props.navigationState.routes.length;
-        indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
+        const tabWidth = 200;
+        indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
             return {
@@ -156,41 +178,61 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         const styles = StyleSheet.create({
             indicator: {
-                width: tabWidth
+                width: tabWidth,
+                height:4,
+                bottom:0,
+                position:'absolute',
+                justifyContent: 'center',
+                alignItems: 'center',
+                display:'flex'
             },
         });
 
-        if (props.navigationState.routes.length > 1)
+        if (routes.length > 1)
             return (
-                <View className="pb-2" style={{ backgroundColor: colors.barsBackground }}>
-                    <Row  >
-                        {props.navigationState.routes.map((a) => (
-                            <Pressable className="flex-1 items-center justify-center py-4 "
+                <View className="w-full" style={{ backgroundColor: colors.barsBackground}} >
+                <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
+                    <Row className="items-start" >
+                        {routes.map((a) => (
+                            <Pressable style={{width:tabWidth}} className=" py-4 items-center"
                                 key={`tab-${a.index}`}
                                 onPress={() => {
                                     setIndex(a.index)
                                 }}
                             >
-                                <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                                <Text className="font-bold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
                             </Pressable>
                         ))}
-                        <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
+                        <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
                     </Row>
+                </View>
                 </View>
 
     )};
 
-    const renderHeader = useCallback(() => {
+    const renderHeader =  useCallback(() => {
+
+        const d = 200;
         const animatedStyleA = useAnimatedStyle(() => {
             return {
-                opacity: withTiming(scroll.value, { duration: 500 }),
+                opacity: withTiming(scroll.value, { duration: d }),
+                height: withTiming(369 * scroll.value, { duration: d }),
             };
         });
 
 
         const animatedStyleB = useAnimatedStyle(() => {
             return {
-                opacity: withTiming(1 - scroll.value, { duration: 500 }),
+                opacity: withTiming(1 - scroll.value, { duration: d }),
+                height: withTiming(65 * (1 - scroll.value), { duration: d }),
+            };
+        });
+
+        const tabBarObj = renderTabBar();
+
+        const parentAnimatedStyle = useAnimatedStyle(() => {
+            return {
+                height: withTiming(scroll.value == 1 ? 369 : 65, { duration: d }),
             };
         });
 
@@ -198,16 +240,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return <></>
 
         return (
-            <View className='w-full h-80'>
-                <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
-                    {header}
-                </Animated.View>
-                <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
-                    {smallHeader}
-                </Animated.View>
-            </View>
+            <>
+                <Animated.View className="w-full" style={parentAnimatedStyle}></Animated.View>
+                <View className="fixed w-full z-50" >
+                    <Animated.View className="w-full" style={parentAnimatedStyle}>
+                        <Animated.View style={[{ width: '100%', position: 'absolute',  }, animatedStyleA]}>
+                            {header}
+                        </Animated.View>
+                        <Animated.View style={[{ width: '100%', position: 'absolute', }, animatedStyleB]}>
+                            {smallHeader}
+                        </Animated.View>
+                    </Animated.View>
+                    {tabBarObj}
+                </View>
+            </>
         );
-    }, [scroll]);
+    }, [scroll, index]);
 
     const addMoreData = (newItems, endpoint) => {
         setRoutes((prevRoutes) => {
@@ -261,9 +309,27 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return contentAndEndpoint;
     }
 
+    const currentRoute = routes.find((item) => item.index === index);
+
+
+    const headerObj = renderHeader();
+
+    const handleLayoutTop = (event) => {
+        const containerWidth = event.nativeEvent.layout.width;
+        const containerHeight = event.nativeEvent.layout.height;
+        if (getNumCols(containerWidth) != numColumns)
+            setNumColumns(getNumCols(containerWidth));
+    };
+
+    const windowHeight = useWindowDimensions().height;
+
+// {headerObj}
     return (
-       <><Text>5555</Text>
-        <renderHeader></renderHeader>
-       </>
+       <View style={{height: windowHeight - 64}} className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+            {headerObj}
+            <View style={{height: windowHeight - 165}} className={ appSetting('layout', 'max_width') + ' mx-auto w-full  '}>
+                <RenderScene route={currentRoute}/>
+            </View>
+       </View>
     );
 }

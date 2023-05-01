@@ -10,46 +10,19 @@ import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { Transition } from '@headlessui/react'
 
-  
-
-
 function CoverMenu(){
     return (
-        
-            <View className=' mx-auto flex-row  gap-2'>
-                <Button title="Follow" variant="primary" fullWidth />
-                <Button title="Message" variant="default" fullWidth/>
-            </View>
-        
+        <View className=' mx-auto flex-row  gap-2'>
+            <Button title="Follow" variant="primary" fullWidth />
+            <Button title="Message" variant="default" fullWidth/>
+        </View>
     );
 }
 
-export default function ElementCover(props) {
 
-    const [isSmall, setIsSmall] = useState(false);
-
-    //TODO: implements menus
+export function CoverSmall(props) {
     const data = props.data;
-    let sType = 'lg:rounded'
-
-    let { width } = useWindowDimensions()
-
-    if (props.data.profile.module == "bx_persons")
-        sType = 'rounded-full';
-
-    if(Platform.OS == 'web') {
-        document.addEventListener("scroll", (event) => {
-            if (window.scrollY > 540 && !isSmall){
-                setIsSmall(true);
-            }
-            if (window.scrollY < 10 && isSmall){
-                setIsSmall(false);
-            }
-        });
-    }
-    
     return (
-        isSmall ? 
         <View className='  bg-neocard dark:bg-neocard-dark fixed top:64 z-50 w-full border-b border-neoborder dark:border-neoborder-dark' >
         <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
             
@@ -69,13 +42,39 @@ export default function ElementCover(props) {
                         <CoverMenu/>
                     </View>
                 </View>
-            
+            </View>
         </View>
-    </View>
-        : <View className='bg-neocard dark:bg-neocard-dark ' >
+    )
+}
+
+export default function ElementCover(props) {
+
+    
+    //TODO: implements menus
+    const data = props.data;
+    let sType = 'lg:rounded'
+
+    let { width } = useWindowDimensions()
+
+    if (props.data.profile.module == "bx_persons")
+        sType = 'rounded-full';
+
+   /* if(Platform.OS == 'web') {
+        document.addEventListener("scroll", (event) => {
+            if (window.scrollY > 540 && !isSmall){
+                setIsSmall(true);
+            }
+            if (window.scrollY < 10 && isSmall){
+                setIsSmall(false);
+            }
+        });
+    }*/
+    
+    return (
+      <View className='bg-neocard dark:bg-neocard-dark ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
                 
-                <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[34%]  xl:rounded-b-lg overflow-hidden'>
+                <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[20%]  xl:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                 </View>
                 
@@ -87,7 +86,7 @@ export default function ElementCover(props) {
                     <View className=' flex-col w-full  lg:flex-row justify-between gap-4 flex-auto '>
                         <View className='flex-col gap-2 items-center lg:items-start  lg:ml-0'>
                                     <Row>
-                                    <Text className=" tracking-tight truncate text-4xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
+                                    <Text className=" tracking-tight truncate text-xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
 
                                     <Button  size="base" rounded startDecorator="SealCheck"  variant="link" fullWidth />
 
@@ -101,7 +100,7 @@ export default function ElementCover(props) {
                                         <Button title="245 followers" size="sm" rounded startDecorator="Users"  variant="text" fullWidth />
                                         
                                     </View>
-                                    <Text className='lg:hidden   text-base text-gray-800 dark:text-gray-200  text-center'>{stripTags(data.profile.info.description)}</Text>
+                                    <Text numberOfLines={2} className='lg:hidden   text-base text-gray-800 dark:text-gray-200  text-center'>{stripTags(data.profile.info.description)}</Text>
 
                                     
                         </View>

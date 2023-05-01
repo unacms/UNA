@@ -117,11 +117,12 @@ export default function ElementBrowse(props) {
                 data={modeItems}
             /></View>}
             { (data.unit != 'comments') && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}>
-                <FlashList estimatedItemSize={200} numColumns={numColumns} horizontal={false} 
+                <FlashList numColumns={numColumns} horizontal={false} 
                 data={data.data}
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
+               
                 onEndReached ={handleEndReached} 
  
                 ListFooterComponent={

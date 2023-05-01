@@ -261,7 +261,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }
 
     return (
-        <SafeAreaView edges={[ 'left', 'right']} style={{
+        <SafeAreaView edges={['top','left', 'right']} style={{
                 width: '100%',
                 flexDirection: 'row',
                 justifyContent: 'space-between',

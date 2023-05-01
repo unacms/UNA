@@ -96,7 +96,7 @@ import Svg, {Path} from 'react-native-svg'
             'posts-home':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
+                    browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, perLine:3},
                 },
             },
             'posts-popular':{

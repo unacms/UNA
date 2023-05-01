@@ -2,6 +2,7 @@ import { View } from 'app/design/view';
 import {BlockByName} from 'app/components/block';
 import { Platform } from 'react-native'
 import { useState, useEffect } from 'react';
+import { appSetting } from 'app/lib/util'
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
@@ -21,7 +22,8 @@ export default function PageLayout(props) {
     }, []);
 
     if (isDesktop){
-        return (<View className="flex-auto relative w-full flex-row mx-auto  ">
+        return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+            <View className="flex-auto relative w-full flex-row mx-auto  ">
 
                 <View className=" w-0 xl:w-1/5   lg:w-max duration-200 border-r  xl:bg-transparent bg-backgroundcell dark:bg-backgroundcell-dark border-bordercolorcell dark:border-bordercolorcell-dark">
                 <BlockByName data={props.data} name={props.blocks.menu}  />
@@ -35,6 +37,7 @@ export default function PageLayout(props) {
                 <View className="w-0 xl:w-1/3  flex-none duration-200">
                 <BlockByName data={props.data} name={props.blocks.posts} />
                 </View>
+            </View>
             </View>
             </View>)
     }

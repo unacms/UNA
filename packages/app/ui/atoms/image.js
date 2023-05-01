@@ -7,10 +7,13 @@ export const SolitoImageStyled = styled(SolitoImage)
 
 export default function ElementImage(props) {
     
-    let {width, height, ...rest} = props; // remove width & height
+    let {width, height, alt, ...rest} = props; // remove width & height
 
     if (!rest.src)
         return null;
+
+    if (!alt)
+        alt = "";    
 
     if (rest.view == "cover"){
         rest.fill = 'fill'
@@ -23,8 +26,8 @@ export default function ElementImage(props) {
         }
     }
     
-
+    //
     return (
-        <SolitoImageStyled {...rest}>{props.children}</SolitoImageStyled>
+        <SolitoImageStyled {...rest} alt={alt}>{props.children}</SolitoImageStyled>
     );
 }
