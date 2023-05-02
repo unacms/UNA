@@ -137,7 +137,7 @@ import Svg, {Path} from 'react-native-svg'
         theme: {
             light: {
                 primary: '#0284c7',
-                barsBackground: '#FFFFFF',
+                barsBackground: 'rgba(255,255,255,0.9)',
                 barsColor: '#4B5563',
                 selectBorder: 'rgba(156, 163, 175, 0.3)',
                 fieldBackground: 'rgba(249, 240, 251, 1)',
@@ -150,7 +150,7 @@ import Svg, {Path} from 'react-native-svg'
                 default: '#D1D5DB', //fix for icons color in iOS
                 primary: '#0ea5e9',
                 background: '#000000',
-                barsBackground: '#111827',
+                barsBackground: 'rgba(31,41,55,0.9)',
                 barsColor: '#D1D5DB',
                 selectBorder: 'rgba(55, 65, 81, 0.3)',
                 fieldBackground: '#030712',
@@ -213,31 +213,37 @@ import Svg, {Path} from 'react-native-svg'
         menu: {
             bottom_tabs_logged: [
                 {
+                    key:'/tab0',
                     title: 'Home',
                     url: '/home',
                     icon: 'app-home',
                 },
                 {
+                    key:'/tab1',
                     title: 'Explore',
                     url: '/posts-home',
                     icon: 'app-explore',
                 },
                 {
+                    key:'/tab2',
                     title: 'People',
                     url: '/persons-home',
                     icon: 'users',
                 },
                 {
+                    key:'/tab3',
                     title: 'Add',
                     url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
                     icon: 'app-plus',
                 },
                 {
+                    key:'/tab4',
                     title: 'Notifications',
                     url: '/notifications-view', //'/view-persons-profile/dr-andrey-yasko-phd',
                     icon: 'app-notifications',
                 },
                 {
+                    key:'/tab5',
                     title: 'Logout',
                     url: '/logout',
                     icon: 'app-usermenu',
@@ -245,26 +251,37 @@ import Svg, {Path} from 'react-native-svg'
             ],
             bottom_tabs_non_logged: [
                 {
+                    key:'/tab0',
                     title: 'Home',
                     url: '/home',
                     icon: 'app-home',
                 },
                 {
+                    key:'/tab1',
                     title: 'Explore',
                     url: '/posts-home',
                     icon: 'app-explore',
                 },
                 {
+                    key:'/tab2',
                     title: 'People',
                     url: '/persons-home',
                     icon: 'users',
                 },
                 {
+                    key:'/tab3',
+                    title: 'Add',
+                    url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
+                    icon: 'app-plus',
+                },
+                {
+                    key:'/tab4',
                     title: 'Notifications',
                     url: '/notifications-view',
                     icon: 'app-notifications',
                 },
                 {
+                    key:'/tab5',
                     title: 'Login',
                     url: '/login',
                     icon: 'app-usermenu',

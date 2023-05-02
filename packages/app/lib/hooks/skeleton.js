@@ -94,7 +94,7 @@ export default function (props) {
               
               
               {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
-                    <View  key={'home3' + index}  className="bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
+                    <View  key={'home3' + index}  className="bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
                     <View className="flex-row gap-x-2 mb-2">
                       
                       <View className="relative flex-row">

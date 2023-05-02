@@ -1,8 +1,6 @@
-import { NavBottomTabs } from 'app/components/nav/bottomtabs'
-import { CurrentUserProvider } from 'app/context/user';
-export default function Root (props) {
-  return (
-      <NavBottomTabs initial = 'home'/>
-  );
-}
+import { Redirect } from "expo-router";
 
+const Index = () => {
+  return <Redirect href="/tab0" />;
+};
+export default Index;

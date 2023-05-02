@@ -122,7 +122,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = 200;
+        const tabWidth = 160;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -134,7 +134,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         const styles = StyleSheet.create({
             indicator: {
                 width: tabWidth,
-                height:4,
+                height:3,
                 bottom:0,
                 position:'absolute',
                 justifyContent: 'center',
@@ -145,20 +145,20 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (routes.length > 1)
             return (
-                <View className="w-full" style={{ backgroundColor: colors.barsBackground}} >
+                <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                        <Row className="items-start" >
+                        <Row className="items-center mx-auto" >
                             {routes.map((a) => (
-                                <Pressable style={{width:tabWidth}} className=" py-4 items-center"
+                                <Pressable style={{width:tabWidth}} className=" py-3 items-center"
                                     key={`tab-${a.index}`}
                                     onPress={() => {
                                         setIndex(a.index)
                                     }}
                                 >
-                                    <Text className="font-bold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                                    <Text className="font-semibold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
                                 </Pressable>
                             ))}
-                            <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
+                            <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 3, backgroundColor: colors.primary, maxWidth:160}}></View></Animated.View>
                         </Row>
                     </View>
                 </View>
