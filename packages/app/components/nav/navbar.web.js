@@ -130,6 +130,7 @@ export default function (props) {
                             variant="text"
                             startDecorator={item.icon}
                             align="start"
+                            rounded
                             title={item.title}
                           />
                         </Link>
