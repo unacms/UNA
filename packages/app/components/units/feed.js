@@ -39,7 +39,7 @@ function DefaultUnit(data) {
 
     return (
         <View className="
-            sm:mx-4 p-1 mt-1 sm:mt-3 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+            p-1 mt-1 sm:mx-2 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             border-y sm:border 

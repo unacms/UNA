@@ -169,7 +169,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         let sMeta = '';
 
         if(data?.meta)
-            sMeta = <Menu {...data.meta} displayType="link" itemsStart={true} />
+            sMeta = <Menu {...data.meta} displayType="link" />
         else
             sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
@@ -177,9 +177,9 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             <View className="u-card" style={styles.card}>
                 
                 <View className="
-                 w-full
-                  p-1 mt-2 xl:mt-3
-                  group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+                flex-auto
+                 p-1 mt-1 sm:mx-2 sm:mt-2                   
+                 group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
                  bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
                  hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                  border  
@@ -192,7 +192,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                 ">
                     <Link href={data.url}>            
                         {data.image &&
-                            <View className="w-full bg-gray-500/20 rounded aspect-video w-full overflow-hidden items-center" >
+                            <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center" >
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
                             </View>
                         } 
