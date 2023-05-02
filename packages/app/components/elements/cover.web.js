@@ -23,7 +23,7 @@ function CoverMenu(){
 export function CoverSmall(props) {
     const data = props.data;
     return (
-        <View className='  bg-neocard dark:bg-neocard-dark fixed top:64 z-50 w-full border-b border-neoborder dark:border-neoborder-dark' >
+        <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark fixed top:64 z-50 w-full border-b border-bordercolortabbar dark:border-bordercolortabbar-dark' >
         <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
             
                 <View className=' px-4 py-2   flex-row gap-2'>
@@ -31,7 +31,7 @@ export function CoverSmall(props) {
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
                         <View className='flex-row items-center ml-3'>
                         
-                            <Text className="text-2xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
+                            <Text className="text-lg xl:text-xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
 
                             <Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth />
 
@@ -71,14 +71,14 @@ export default function ElementCover(props) {
     }*/
     
     return (
-      <View className='bg-neocard dark:bg-neocard-dark ' >
+      <View className=' backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark bg-backgroundtabbar dark:bg-backgroundtabbar-dark ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
                 
                 <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[20%]  xl:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                 </View>
                 
-                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center  border-b  border-bordercolor dark:border-bordercolor-dark'>
+                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center  '>
                     <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
                     </View>
@@ -86,13 +86,13 @@ export default function ElementCover(props) {
                     <View className=' flex-col w-full  lg:flex-row justify-between gap-4 flex-auto '>
                         <View className='flex-col gap-2 items-center lg:items-start  lg:ml-0'>
                                     <Row>
-                                    <Text className=" tracking-tight truncate text-xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
+                                    <Text className=" tracking-tight truncate text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
 
-                                    <Button  size="base" rounded startDecorator="SealCheck"  variant="link" fullWidth />
+                                    <Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth />
 
                                     </Row>
                                     
-                                    <View className='flex-row  gap-1 -mx-2 text-center'>
+                                    <View className='flex-row  gap-1 -mx-2 text-center flex-wrap'>
 
                                         <Button title="Administrator" size="sm" rounded startDecorator="UserCircle"  variant="text" fullWidth />
                                         <Button title="Joined Dec 2021" size="sm" rounded startDecorator="Clock"  variant="text" fullWidth />

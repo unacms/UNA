@@ -124,6 +124,15 @@ const colors = {
     dark: 'rgba(3,7,18,1)',
   },
 
+  backgroundtabbar: {
+    DEFAULT: 'rgba(255,255,255,0.9)',
+    dark: 'rgba(31,41,55,0.9)',
+  },
+  bordercolortabbar: {
+    DEFAULT: 'rgba(243,244,246,1)',
+    dark: 'rgba(17,24,39,1)',
+  },
+
   backgrounditem: {
     DEFAULT: 'rgba(209,213,219,0.8)',
     dark: 'rgba(55,65,81,0.8)',
@@ -147,8 +156,8 @@ const colors = {
 
 
   bordercolor: {
-    DEFAULT: 'rgba(209,213,219,1)',
-    dark: 'rgba(55,65,81,1)',
+    DEFAULT: 'rgba(209,213,219,0.5)',
+    dark: 'rgba(55,65,81,0.5)',
     
   },
 
