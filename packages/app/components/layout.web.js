@@ -3,12 +3,7 @@ import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
 import { NavigationContainer } from '@react-navigation/native';
-import { NavMaterialTabs } from 'app/components/nav/materialtabs'
-import Cover from 'app/components/elements/cover';
 import useSkeleton from '../lib/hooks/skeleton';
-import { appSetting } from 'app/lib/util'
-import { Theme } from 'app/design/theme';
-
 
 
 export const siteTitle = 'NEO';

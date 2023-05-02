@@ -68,7 +68,8 @@ import Svg, {Path} from 'react-native-svg'
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home'],
             'bx_posts_submenu': ['posts-home', 'posts-popular'],
             'bx_persons_submenu': ['persons-home', 'persons-active'],
-            'bx_persons_view_submenu':['view-persons-profile', 'persons-profile-info']
+            'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info'],
+            'bx_groups_submenu': ['groups-home']
         },
 
         layouts: {
@@ -99,7 +100,7 @@ import Svg, {Path} from 'react-native-svg'
             'posts-home':{
                 layout: 'custom_browse',
                 blocks: {
-                    browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, perLine:3},
+                    browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
             },
             'posts-popular':{
@@ -108,12 +109,19 @@ import Svg, {Path} from 'react-native-svg'
                     browse:{name: 'bx_posts:browse_popular', showTitle: false, showBg: false},
                 },
             },
+            'groups-home':{
+                layout: 'custom_browse',
+                blocks: {
+                    browse:{name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false},
+                }
+            },
             'persons-home':{
                 layout: 'custom_browse',
                 blocks: {
                     browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
+            
             'persons-active':{
                 layout: 'custom_browse',
                 blocks: {
@@ -123,14 +131,20 @@ import Svg, {Path} from 'react-native-svg'
             'view-persons-profile':{
                 layout: 'custom_persons',
                 blocks: {
-                    col0:{name: 'bx_persons:entity_info', showTitle: false, showBg: false},
-                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false}
+                   
+                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'persons-profile-info':{
                 layout: 'custom_persons',
                 blocks: {
                     col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
+                }
+            },
+            'notifications-view':{
+                layout: 'custom_browse',
+                blocks: {
+                    browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
                 }
             }
         },

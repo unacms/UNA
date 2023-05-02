@@ -20,10 +20,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const windowWidth = useWindowDimensions().width;
 
     const getNumCols = (width) => {
-        if (Object.keys(blocks).length == 1){
-            return width > 600 ? 3 : 1
+
+        const blockKeys = Object.keys(blocks);
+
+        for (const key of blockKeys) {
+            if (blocks[key].perLine > 0) {
+                return blocks[key].perLine;
+            }
         }
-        return 1
+
+        return blockKeys.length === 1 && width > 600 ? 3 : 1;
     };
 
     const iMaxHeaderHeight = 369;
@@ -46,37 +52,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [routes, index]);
 
     const handleLayout = (event) => {
-
         if (event.nativeEvent.contentOffset.y > 50)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y <10)
             scroll.value = 1;
-
-      /* const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-        const isEndReached = contentOffset.y + layoutMeasurement.height >= contentSize.height;
-    
-        if (isLoading.current) 
-            return;
-        isLoading.current = true;
-
-        if (isEndReached) {
-            handleEndReached();
-        }*/
     };
 
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
-
-   /* const CustomScrollComponent = React.forwardRef((props, ref) => {
-        return (
-            <Animated.ScrollView
-                {...props}
-                ref={ref}
-                scrollEventThrottle={16}
-            />
-        );
-    });*/
 
     const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, []);  
 
@@ -87,7 +71,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 {...props}
                 ref={ref}
                 onScroll={handleLayout}
-                contentContainerStyle={{ paddingTop: iMenuHeight + iMaxHeaderHeight }}
+                contentContainerStyle={{ paddingTop: header ? iMenuHeight + iMaxHeaderHeight : 0 }}
                 onEndReached={handleEndReached}
             />
         );
@@ -147,18 +131,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                        <Row className="items-center mx-auto" >
-                            {routes.map((a) => (
-                                <Pressable style={{width:tabWidth}} className=" py-3 items-center"
-                                    key={`tab-${a.index}`}
-                                    onPress={() => {
-                                        setIndex(a.index)
-                                    }}
-                                >
-                                    <Text className="font-semibold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
-                                </Pressable>
-                            ))}
-                            <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 3, backgroundColor: colors.primary, maxWidth:160}}></View></Animated.View>
+                    <Row className="items-center">
+                        {numColumns > 1 ? <Text>{data?.title} - change here</Text> : <></>}
+                            <Row className="items-center mx-auto" >
+                            
+                                {routes.map((a) => (
+                                    <Pressable style={{width:tabWidth}} className=" py-3 items-center"
+                                        key={`tab-${a.index}`}
+                                        onPress={() => {
+                                            setIndex(a.index)
+                                        }}
+                                    >
+                                        <Text className="font-semibold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                                    </Pressable>
+                                ))}
+                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 3, backgroundColor: colors.primary, maxWidth:160}}></View></Animated.View>
+                            </Row>
                         </Row>
                     </View>
                 </View>
@@ -192,11 +180,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
     
     const handleWheelEnd = () => {
-        viewRef.current.setNativeProps({
-            style: {
-                zIndex: 50,
-            },
-        });
+        if (viewRef.current) {
+            viewRef.current.setNativeProps({
+                style: {
+                    zIndex: 50,
+                },
+            });
+        }
       };
 
     const renderHeader =  useCallback(() => {
@@ -231,7 +221,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (!header)
             return <><View className="w-full h-12"></View><View className="fixed w-full " >{tabBarObj}</View></>
-//<Animated.View className="w-full" style={parentAnimatedStyle}></Animated.View>
         return (
             <>
                 
@@ -266,7 +255,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     return (
        <View style={{height: windowHeight - iMenuHeight}} className="w-full h-full" scrollEnabled={true}   onWheel={handleWheel}  onLayout={handleLayoutTop}>
             {headerObj}
-            <View style={{height: windowHeight - iMenuHeight }} className={ appSetting('layout', 'max_width') + ' mx-auto w-full  '}>
+            <View style={{height: windowHeight - iMenuHeight }} className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>

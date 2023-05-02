@@ -2,12 +2,12 @@ import Html from '../../ui/atoms/html';
 
 export default function BlockContentString(props) {
 
-    const aAllowTypes = ['html', 'raw', 'lang'];
-
-    if (!props.data?.length || !aAllowTypes.includes(props.type))
+   // const aAllowTypes = ['html', 'raw', 'lang'];
+  //  console.log(props.data);
+    /*if (!props.data?.length || !aAllowTypes.includes(props.type))
         return null;
-    return (
-        <Html data={props.data} />
-    );
+    return (*/
+    return  <Html data={props.data} />
+    //);
 // <section className="grid gap-4" dangerouslySetInnerHTML={{__html:props.data}} />
 }

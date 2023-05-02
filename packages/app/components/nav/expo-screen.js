@@ -6,41 +6,38 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 
 export function Screen(params) {
-
-    let { currentUser, setCurrentUser } = useCurrentUser();
-
+    const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
-
-    setTimeout(() => {
-        navigation.setOptions({ headerTitle:  "Loading..."  })
-    }, 300);
-
     const pathname = usePathname();
     const route = useRoute();
-    let _path = route?.path;
-
-    if (!_path){
-        const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
-        const item = TabList.find((item) => item.key === pathname);
-        _path = item ? item.url : null;
-    }
-
     const [pageData, setPageData] = useState(null);
-
+  
     useEffect(() => {
-        (async () => {
-            if (_path && _path.startsWith('/')){                
-                const d = await getData(_path);
-                //console.log("$$$$$$$$$$$$$$$$$BootomTab Screen load data:", params.route, "$$$$$",_path, "$$$$$",d);
-                if (d?.props) {
-                    setPageData (d?.props);
+        navigation.setOptions({ headerTitle: 'Loading...' });
+  
+        const fetchPageData = async () => {
+            const tabList = currentUser
+            ? appSetting('menu', 'bottom_tabs_logged')
+            : appSetting('menu', 'bottom_tabs_non_logged');
+    
+            const item = tabList.find((item) => item.key === pathname);
+            let path = item ? item.url : null;
+            path = path === '/tab0' ? '/home' : path;
+    
+            if (path && path.startsWith('/')) {
+                const data = await getData(path);
+                //console.log("$$$$$$$$$$$$$$$$$BootomTab Screen load data:", _path, "$$$$$",_path, "$$$$$",d);
+                if (data?.props) {
+                    setPageData(data.props);
+                    navigation.setOptions({ headerTitle: data.props.data.title });
                 }
             }
-        })();
-    }, [_path]);
-
-    if (!!pageData?.data){
-        navigation.setOptions({ headerTitle: pageData?.data?.title })
-        return <Root path={_path} data={pageData?.data} uri={pageData?.data.uri}/>  
-    }  
+      };
+  
+      fetchPageData();
+    }, [currentUser, pathname, navigation]);
+  
+    return pageData?.data ? (
+        <Root path={pathname} data={pageData.data} uri={pageData.data.uri} />
+    ) : null;
 }
