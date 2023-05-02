@@ -70,33 +70,46 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             return defaultUnit();
     }
 
-    function groupUnit(){
- // style={styles.card}
+    function groupUnit() {
+        let sMetaInfo = '';
+        let sMetaActions = '';
+        if(data?.meta) {
+            sMetaInfo = (
+                <Menu {...data.meta} showSelected="link" />
+            );
+
+            sMetaActions = (
+                <Menu {...data.meta} showSelected="element" />
+            );
+        }
+        else {
+            sMetaInfo = (
+                <>
+                    <Text  className='text-sm text-gray-600 dark:text-gray-400'>25 members</Text>
+                    <Text  className='text-sm text-gray-400 dark:text-gray-600'>·</Text>
+                    <Text  className='text-sm text-gray-600 dark:text-gray-400'>Active 24 min ago </Text>
+                </>
+            );
+
+            sMetaActions = (
+                <Button title="Join Group" variant="primary" fullWidth />
+            );
+        }
+
         return (
             <View className="u-card-4">
-                <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-whiteborder hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
-      <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
-      { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
-      </View>
-      <View className=" px-4 ">
-        <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
-          {data.group_name}
-        </Text>
-        <View className='flex-row space-x-1'>
-          <Text  className='text-sm text-gray-600 dark:text-gray-400'>25 members</Text>
-          <Text  className='text-sm text-gray-400 dark:text-gray-600'>·</Text>
-          
-          <Text  className='text-sm text-gray-600 dark:text-gray-400'>Active 24 min ago </Text>
-        </View>     
-      </View>
-      <View className="text-center px-4 space-y-2">
-        
-        <Button title="Join Group" variant="primary" fullWidth />
-        
-      </View>
-      </View>
-      </Link>
+                <Link href={data.url}>
+                    <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-whiteborder hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
+                        <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
+                        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} /> }
+                        </View>
+                        <View className=" px-4 ">
+                            <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">{data.group_name}</Text>
+                            <View className='flex-row space-x-1'>{sMetaInfo}</View>
+                        </View>
+                        <View className="text-center px-4 space-y-2">{sMetaActions}</View>
+                    </View>
+                </Link>
             </View>  
         )  
     }
