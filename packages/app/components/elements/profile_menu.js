@@ -25,8 +25,8 @@ export default function ElementProfileMenu(props) {
 
     return (
         
-        <View  style={styles} className="hidden  lg:block  top-100   px-4 py-2 lg:py-3  max-h-screen overflow-y-scroll profile-menu flex-col space-y-2">
-            <View className="flex-col space-y-0.5 mb-16" >
+        <View  style={styles} className="   p-4  max-h-screen overflow-y-scroll profile-menu flex-col gap-2">
+            <View className="flex-col gap-0.5 mb-16" >
             {processMenu('profile_menu', props.data.items).map((item, index) => (
                 <Link key={`menu-${index}`} href= {item.link.charAt(0) == '/' ? item.link : '/' + item.link}>
                     <Button variant="text" startDecorator={item.icon} fullWidth solid align='start' title = {item.title} />
