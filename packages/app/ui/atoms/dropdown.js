@@ -1,4 +1,4 @@
-import { PickerStyled } from 'app/design/controls'
+import { PickerStyled,PickerStyledIos } from 'app/design/controls'
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react'
 import { Theme } from 'app/design/theme';
@@ -45,9 +45,9 @@ export default function Dropdown(props) {
     }
     else{
         return ( <View>
-            <Pressable onPress={() => setShowImage(true)}><Button title={selectedText} /></Pressable>
-            <Modal id={'dropdown'} onVisible={showImage} onClose={() => {setShowImage(null)}}>
-                <PickerStyled itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground, color:colors.default }}
+            <Button title={selectedText} onPress={() => setShowImage(true)} />
+            <Modal id={'dropdown'} onVisible={showImage} outerClickClose={false} onClose={() => setShowImage(false)}>
+                <PickerStyledIos itemStyle={{fontSize:14, backgroundColor:colors.fieldBackground, color:colors.default }}
                     selectedValue={selectedVal}
                     onValueChange={(itemValue, itemIndex) =>
                     handleChange(itemValue, itemIndex)
@@ -55,7 +55,7 @@ export default function Dropdown(props) {
                     {props.data.map((item, index) => (
                         <Picker.Item key={'item-' + item[props.valueField]} label={item[props.labelField]} value={item[props.valueField]} />
                     ))}
-                </PickerStyled>
+                </PickerStyledIos>
             </Modal>
         </View>
         );
