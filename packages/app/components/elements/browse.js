@@ -122,9 +122,9 @@ export default function ElementBrowse(props) {
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
-               
-                onEndReached ={handleEndReached} 
- 
+                stickyHeaderIndices={[0]}
+                onEndReached = {handleEndReached} 
+                estimatedItemSize={200}
                 ListFooterComponent={
                     (browseParams?.loadedAll == false) ? (
                       <View className='m-2'><Loading/></View>
