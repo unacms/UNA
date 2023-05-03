@@ -200,7 +200,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         let sMeta = '';
 
         if(data?.meta)
-            sMeta = <Menu {...data.meta} displayType="link" />
+            sMeta = <Menu {...data.meta} displayType="link" itemsStart={true} />
         else
             sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
