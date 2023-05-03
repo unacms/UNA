@@ -89,14 +89,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings.add?.map((button) => (
-                <View className="ml-2" key={`add-${button.title}`} ><Button title={button.title} startDecorator={button.icon} size="sm"/></View>
+                <View className="ml-2 hidden lg:block" key={`add-${button.title}`} ><Button title={button.title} startDecorator={button.icon} size="sm"/></View>
             ));
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     <Row className="items-center gap-0 mx-4">
-                        {menuSettings?.icon ? <View className=""><Icon size={32} icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text  className="text-xl mx-2 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.icon ? <View className="hidden lg:block"><Icon size={32} icon={menuSettings?.icon} /></View> : <></>}
+                        {menuSettings?.name ? <Text  className="hidden lg:block text-xl mx-2 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
                             <Row className="items-center mx-auto" >
                             
                                 {routes.map((a) => (
