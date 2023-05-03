@@ -129,7 +129,7 @@ export default function UnitComments(props) {
                                         </Row>
                                     </View>
                                     <View className='flex-row items-center'>
-                                        <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                                        <Button  align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_action_as_button: false, show_counter: false}} itemsStart={true} />
                                     </View>
                                 </View>
