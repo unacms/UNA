@@ -45,7 +45,7 @@ export default function AppLayout() {
             name={`tab${index}`}
             initialParams={{ url2: tab.url}}
             options={{
-              
+              tabBarBadge: index == 4 ? 3 : null,
               title: tab.title,
               headerShown: false,
               tabBarIcon: ({color}) => (

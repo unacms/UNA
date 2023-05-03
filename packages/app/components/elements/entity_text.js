@@ -9,7 +9,7 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 export default function ElementEntityText({data}) {
 
     const view = appSetting('entry', 'default_view');
-    
+    console.log('xxxxxxxxxxxxxxxx', data);
     switch (view) {
         case 'small':
           return <Small data={data} />;
@@ -38,12 +38,13 @@ function Small({ data }) {
 }
 
 function Default({ data }) {
+
     return (
-        <View className="relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto max-w-5xl">
+        <View className="relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} priority className=" mt-4 u-cover" view="cover"   /></View>}              
             <View className="mx-4 mb-4">
-                <H1 className="font-bold tracking-tight  text-gray-900 dark:text-gray-50 ">{data.title}</H1>
-                <Html data={data.text} />
+                <H1 className="font-bold tracking-tight  text-gray-900 dark:text-gray-50 ">{data.entry_title}</H1>
+                <Html data={data.entry_text} />
             </View>
         </View>
     );
