@@ -152,16 +152,16 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (
-                <View className="text-center px-4 mt-4">
+                <View className="text-center h-auto px-4 mb-2">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
             );
 
         return (
-            <View className="u-card" style={styles.card}>
+            <View className="u-card self-stretch" style={styles.card}>
                 
                 <View className="
-                flex-auto
+                flex-auto h-full
                  p-1 mt-1 sm:mx-2 sm:mt-2                   
                  group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
                  bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
