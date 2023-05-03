@@ -32,13 +32,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return blockKeys.length === 1 && width > 600 ? 3 : 1;
     };
 
-    const iMaxHeaderHeight = 369;
-    const iMinHeaderHeight = 65;
     const iMenuHeight = 64;
 
     const [routes, setRoutes] = useState(initedTabs);
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const scroll = useSharedValue(1);
+    const headerHeight = useSharedValue(100);
+    const headerMaxHeight = useSharedValue(100);
+    const headerMinHeight = useSharedValue(100);
     const { colors } = Theme();
 
     const [index, setIndex] = useState(routes[0].index);
@@ -51,8 +52,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         isLoading.current = false;
     }, [routes, index]);
 
-    const handleLayout = (event) => {
-        if (event.nativeEvent.contentOffset.y > 50)
+    const handleScroll = (event) => {
+        if (event.nativeEvent.contentOffset.y > headerMaxHeight.value - headerMinHeight.value)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y <10)
             scroll.value = 1;
@@ -61,48 +62,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
-
-    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, []);  
-
-    const TabFlashList = React.forwardRef((props, ref) => {
-
-        return (
-            <FlashList
-                {...props}
-                ref={ref}
-                onScroll={handleLayout}
-                contentContainerStyle={{ paddingTop: header ? iMenuHeight + iMaxHeaderHeight : 0 }}
-                onEndReached={handleEndReached}
-            />
-        );
-    });
-
-    const TabScene = ({ route }) => {
-        if (!route.inited){
-            return <View className='m-2 pt-80'><Loading/></View>
-        }
-        if (route.inited)
-            return (
-                <TabFlashList
-                    index={route.index}
-                    data={route.data}
-                    estimatedItemSize={60}
-                    numColumns={numColumns}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item, index }) => {
-                        if (item?.type === 'block') {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
-                        } else {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
-                        }
-                    }}
-                    ListFooterComponent={
-                        (route?.endpoint?.finished === false) ? (
-                            <View className='m-2'><Loading/></View>
-                        ) : null
-                    }
-                />
-    )};
 
     const renderTabBar = (props) => {
       
@@ -130,9 +89,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings.add?.map((button) => (
-                <View className="ml-2"><Button title={button.title} startDecorator={button.icon} size="sm"/></View>
+                <View className="ml-2" key={`add-${button.title}`} ><Button title={button.title} startDecorator={button.icon} size="sm"/></View>
             ));
-            console.log(menuSettings);
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
@@ -198,15 +156,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
       };
 
     const renderHeader =  useCallback(() => {
-
         const d = 200;
+        const menuHeight = 48;
         const animatedStyleA = useAnimatedStyle(() => {
             const opacityValue = withTiming(scroll.value, { duration: d });
             
             return {
                 opacity: opacityValue,
                 display: opacityValue === 0 ? 'none' : 'flex',
-                height: withTiming(iMaxHeaderHeight * scroll.value, { duration: d }),
+                height: withTiming(headerMaxHeight.value * scroll.value, { duration: d }),
             };
         });
 
@@ -215,40 +173,116 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return {
                 opacity: opacityValue,
                 display: opacityValue === 0 ? 'none' : 'flex',
-                height: withTiming(iMinHeaderHeight * (1 - scroll.value), { duration: d }),
+                height: withTiming(headerMinHeight.value * (1 - scroll.value), { duration: d }),
             };
         });
 
+        const contentContainerStyle = useAnimatedStyle(() => {
+            const baseHeight = scroll.value === 1 ? headerMaxHeight.value : headerMinHeight.value;
+            const height = Math.max(baseHeight - 300 + menuHeight, 0);
+            return {
+                height,
+            };
+        });
+        
+          
         const tabBarObj = renderTabBar();
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
-                height: withTiming(scroll.value == 1 ? iMaxHeaderHeight : iMinHeaderHeight, { duration: d }),
+                height: withTiming(scroll.value == 1 ? headerMaxHeight.value : headerMinHeight.value, { duration: d }),
             };
         });
 
-        if (!header)
-            return <><View className="w-full h-12"></View><View className="fixed w-full " >{tabBarObj}</View></>
+        if (!header){
+            if (tabBarObj)
+                return <><View className="w-full h-12"></View><View className="fixed w-full " >{tabBarObj}</View></>
+        }
+
+
+        const handleHeaderMaxLayout = useCallback((event) => {
+            console.log('Max---------', event.nativeEvent.layout.height);
+            headerMaxHeight.value = event.nativeEvent.layout.height;
+            headerHeight.value = headerMaxHeight.value ;
+           
+        });
+
+        const handleHeaderMinLayout = useCallback((event) => {
+            console.log('Min---------', event.nativeEvent.layout.height);
+            headerMinHeight.value = event.nativeEvent.layout.height;
+        });
+        
         return (
             <>
-                <View className="fixed w-full z-50"  ref={viewRef} style={{zIndex: 50}}>
+                <View className="fixed w-full z-50 "  ref={viewRef} style={{zIndex: 50}} >
                     <Animated.View className="w-full" style={parentAnimatedStyle}>
                         <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'  }, animatedStyleA]}>
-                            {header}
+                            <View onLayout={handleHeaderMaxLayout}>
+                                {header}
+                            </View>
                         </Animated.View>
                         <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'}, animatedStyleB]}>
-                            {smallHeader}
+                            <View className="jjjj" onLayout={handleHeaderMinLayout}>
+                                {smallHeader}
+                            </View>
                         </Animated.View>
                     </Animated.View>
-                    {tabBarObj}
+                    <View >
+                        {tabBarObj}
+                    </View>
                 </View>
+                <Animated.View style={[{ width: '100%'}, contentContainerStyle]}></Animated.View>
+                
             </>
         );
     }, [scroll, index]);
 
-    const currentRoute = routes.find((item) => item.index === index);
+    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, []);  
+
+    const TabFlashList = React.forwardRef((props, ref) => {
+        return (
+            <FlashList
+                {...props}
+                ref={ref}
+                onScroll={handleScroll}
+                contentContainerStyle={{ paddingTop: header ? 300 : 0 }}
+                onEndReached={handleEndReached}
+            />
+        );
+    });
 
     const headerObj = renderHeader();
+
+    const TabScene = ({ route }) => {
+        if (!route.inited){
+            return <View className='m-2 pt-80'><Loading/></View>
+        }
+        if (route.inited)
+            return (
+                <TabFlashList
+                    index={route.index}
+                    data={route.data}
+                    estimatedItemSize={60}
+                    numColumns={numColumns}
+                    keyExtractor={item => item.id}
+                    renderItem={({ item, index }) => {
+                        if (item?.type === 'block') {
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
+                        } else {
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
+                        }
+                    }}
+                    ListFooterComponent={
+                        (route?.endpoint?.finished === false) ? (
+                            <View className='m-2'><Loading/></View>
+                        ) : null
+                    }
+                />
+    )};
+
+    const currentRoute = routes.find((item) => item.index === index);
+
+    
 
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;

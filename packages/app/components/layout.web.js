@@ -20,13 +20,18 @@ export default function Layout(props) {
           /* configuration for matching screens with paths */
         },
     };
+    console.log('-55555', props.data.title);
+
+    setTimeout(() => {
+        document.title = props.data.title;
+    }, 100);
 
     return (
         <>
             <Head>
                 <link rel="icon" href="/favicon.ico" />
                 <meta name="description" content={siteTitle} />
-                <meta name="og:title" content={siteTitle} />
+                <meta name="og:title" content={props.data.title} />
                 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
                 <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
                 <title>{props.data.title}</title>
