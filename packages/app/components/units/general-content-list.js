@@ -79,7 +79,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             );
 
             sMetaActions = (
-                <Menu {...data.meta} showSelected="element" />
+                <Menu {...data.meta} showSelected="element" params={{showVertical: true}} />
             );
         }
         else {
