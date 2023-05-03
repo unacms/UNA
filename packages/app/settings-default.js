@@ -84,7 +84,7 @@ import Svg, {Path} from 'react-native-svg'
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
-            'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info'],
+            'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info', 'persons-profile-friends'],
             'bx_groups_submenu': {
                 name:'Groups',
                 icon:'UsersThree',
@@ -162,13 +162,19 @@ import Svg, {Path} from 'react-native-svg'
             'view-persons-profile':{
                 layout: 'custom_profile',
                 blocks: {
-                   
-                    col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false, perLine:1}
+                    col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
+                }
+            },
+            'persons-profile-friends':{
+                layout: 'custom_profile',
+                blocks: {
+                    col1:{name: 'system:connections_table', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'persons-profile-info':{
                 layout: 'custom_profile',
                 blocks: {
+                    col0:{name: 'bx_persons:entity_text_block', showTitle: false, showBg: false},
                     col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
                 }
             },
@@ -181,7 +187,8 @@ import Svg, {Path} from 'react-native-svg'
             'view-group-profile':{
                 layout: 'custom_profile',
                 blocks: {
-                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1}
+                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
+                    col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'group-fans':{

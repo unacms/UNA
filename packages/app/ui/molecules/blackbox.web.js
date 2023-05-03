@@ -75,7 +75,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = 160;
+        const tabWidth = windowWidth > 800 ? 160 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -282,10 +282,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
                         }
                     }}
-                    ListFooterComponent={
-                        (route?.endpoint?.finished === false) ? (
-                            <View className='m-2'><Loading/></View>
-                        ) : null
+                    ListFooterComponent = {
+                        <View className='m-8'>
+                        {(route?.endpoint?.finished === false) ? (
+                            <Loading/>
+                        ) : null}
+                        </View>
                     }
                 />
     )};
