@@ -136,9 +136,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    <Row className="items-center mx-4">
-                        {menuSettings?.icon ? <View className="mr-4"><Icon size={24} icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text>{menuSettings?.name} - change here</Text> : <></>}
+                    <Row className="items-center gap-0 mx-4">
+                        {menuSettings?.icon ? <View className=""><Icon size={32} icon={menuSettings?.icon} /></View> : <></>}
+                        {menuSettings?.name ? <Text  className="text-xl mx-2 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
                             <Row className="items-center mx-auto" >
                             
                                 {routes.map((a) => (
