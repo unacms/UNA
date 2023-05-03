@@ -28,14 +28,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 return blocks[key].perLine;
             }
         }
+       // if (blockKeys.length === 1)
+        //    return 1;
 
-        return blockKeys.length === 1 && width > 600 ? 3 : 1;
+        if (width > 1024)
+            return 3
+        if (width > 768)
+            return 2   
+        return 1;
     };
 
     const iMenuHeight = 64;
 
     const [routes, setRoutes] = useState(initedTabs);
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
+
+    console.log(numColumns, '22222222222222222')
     const scroll = useSharedValue(1);
     const headerHeight = useSharedValue(100);
     const headerMaxHeight = useSharedValue(100);
@@ -120,10 +128,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
 
     const viewRef = useRef(null);
-    const isWheeling = useRef(false);
-    const wheelTimeout = useRef(null);
+   // const isWheeling = useRef(false);
+   // const wheelTimeout = useRef(null);
 
-    const handleWheel = (event) => {
+    /*const handleWheel = (event) => {
         if (scroll.value == 0)
             return;
         if (isWheeling.current) {
@@ -154,7 +162,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             });
         }
       };
-
+*/
     const renderHeader =  useCallback(() => {
         const d = 200;
         const menuHeight = 48;
@@ -235,13 +243,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         );
     }, [scroll, index]);
 
-    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, []);  
+    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, [numColumns]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
+        
         return (
             <FlashList
                 {...props}
                 ref={ref}
+                numColumns={numColumns}
                 onScroll={handleScroll}
                 contentContainerStyle={{ paddingTop: header ? 300 : 0 }}
                 onEndReached={handleEndReached}
@@ -261,7 +271,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     index={route.index}
                     data={route.data}
                     estimatedItemSize={60}
-                    numColumns={numColumns}
+                  
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
                         if (item?.type === 'block') {
@@ -280,8 +290,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const currentRoute = routes.find((item) => item.index === index);
 
-    
-
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         const containerHeight = event.nativeEvent.layout.height;
@@ -290,9 +298,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
 
     const windowHeight = useWindowDimensions().height;
-    //{headerObj}
+    //onWheel={handleWheel} 
     return (
-       <View style={{height: windowHeight - iMenuHeight}} className="w-full h-full" scrollEnabled={true}   onWheel={handleWheel}  onLayout={handleLayoutTop}>
+       <View style={{height: windowHeight - iMenuHeight}} className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}
             <View style={{height: windowHeight - iMenuHeight }} className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <RenderScene route={currentRoute}/>

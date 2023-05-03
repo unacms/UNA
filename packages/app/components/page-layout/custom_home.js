@@ -22,7 +22,7 @@ export default function PageLayout(props) {
     }, []);
 
     if (isDesktop){
-        return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+        return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full h-48'} >
             <View className="flex-auto relative w-full flex-row mx-auto  ">
 
             <View className="hidden md:block  w-1/4 xl:w-1/5    duration-200 ">
