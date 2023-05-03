@@ -174,10 +174,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [scroll]);
 
     let edges = ['left', 'right'];
-    /*if (minHeaderHeight == 0){
-        edges = ['left', 'right'];
-    }*/
-
     return (
         <SafeAreaView edges={edges} style={{
                 width: '100%',
