@@ -128,11 +128,15 @@ export function getURI(url) {
     return u[0]
 }
 
-export function processMenu(name, items) {
+export function menuItemsByName(name, items) {
     const menuSettings = appSetting('menu_items', name)
-    if (menuSettings)
-        return items.filter((item) => menuSettings.includes(getURI(item.link)));
-
+    if (menuSettings){
+        if (menuSettings.items){
+            return items.filter((item) => menuSettings.items.includes(getURI(item.link)));
+        }
+        else
+            return items.filter((item) => menuSettings.includes(getURI(item.link)));
+    }
     return items;
 }
 

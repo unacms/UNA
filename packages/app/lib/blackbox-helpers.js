@@ -1,8 +1,10 @@
-import { appSetting, processMenu, getURI } from 'app/lib/util';
+import { appSetting, menuItemsByName, getURI } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 
 export function fillTabs(menu, data, blocks){
-    return processMenu(menu.object, menu.items).map((item, index) => {
+    const m = menuItemsByName(menu.object, menu.items);
+
+    return menuItemsByName(menu.object, menu.items).map((item, index) => {
         const i = { key: item.link, title: item.title, index };
         if (getURI(item.link) === data.uri) {
             let contentAndEndpoint = processUrl(data, blocks);

@@ -2,8 +2,8 @@ import PageLayoutDefault from './page-layout/default';
 
 import PageCustomPost from './page-layout/custom_post';
 import PageCustomMessenger from './page-layout/custom_messenger';
-import PageCustomBrowse from './page-layout/custom_browse';
-import PageCustomPerson from './page-layout/custom_person';
+import PageCustomBlackBox from './page-layout/custom_blackbox';
+import PageCustomProfile from './page-layout/custom_profile';
 import PageCustomHome from './page-layout/custom_home';
 
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
@@ -19,9 +19,9 @@ const componentsMap = {
     'default': PageLayoutDefault,
 
     'custom_post': PageCustomPost,
-    'custom_browse': PageCustomBrowse,
+    'custom_blackbox': PageCustomBlackBox,
     'custom_messenger': PageCustomMessenger,
-    'custom_persons': PageCustomPerson,
+    'custom_profile': PageCustomProfile,
     'custom_home': PageCustomHome,
 
     'layout_top_area_bar_right': PageLayout1,

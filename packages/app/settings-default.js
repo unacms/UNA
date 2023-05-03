@@ -64,12 +64,37 @@ import Svg, {Path} from 'react-native-svg'
         },
     
         menu_items: {
-            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home'],
-            'bx_posts_submenu': ['posts-home', 'posts-popular'],
-            'bx_persons_submenu': ['persons-home', 'persons-active'],
+            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
+            'bx_posts_submenu': {
+                name:'Posts',
+                icon:'File',
+                items: ['posts-home', 'posts-popular'],
+                add:[
+                    {icon: 'search', name:"Search"},
+                    {icon: 'DotsThreeOutlineVertical', name:"More"}
+                ]
+            },
+            'bx_persons_submenu': {
+                name:'Peoples',
+                icon:'Users',
+                items: ['persons-home', 'persons-active'],
+                add:[
+                    {icon: 'search', name:"Search"},
+                    {icon: 'DotsThreeOutlineVertical', name:"More"}
+                ]
+            },
             'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info'],
-            'bx_groups_submenu': ['groups-home']
+            'bx_groups_submenu': {
+                name:'Groups',
+                icon:'UsersThree',
+                items: ['groups-home', 'groups-joined'],
+                add:[
+                    {icon: 'search', name:"Search"},
+                    {icon: 'DotsThreeOutlineVertical', name:"More"}
+                ]
+            },
+            'bx_groups_view_submenu': ['view-group-profile', 'group-fans']
         },
 
         layouts: {
@@ -98,55 +123,73 @@ import Svg, {Path} from 'react-native-svg'
                 },
             },
             'posts-home':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
             },
             'posts-popular':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_posts:browse_popular', showTitle: false, showBg: false},
                 },
             },
             'groups-home':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
+            'groups-joined':{
+                layout: 'custom_blackbox',
+                blocks: {
+                    browse:{name: 'bx_groups:browse_joined_entries', showTitle: false, showBg: false},
+                }
+            },
             'persons-home':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
             
             'persons-active':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
                 }
             },
             'view-persons-profile':{
-                layout: 'custom_persons',
+                layout: 'custom_profile',
                 blocks: {
                    
                     col1:{name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'persons-profile-info':{
-                layout: 'custom_persons',
+                layout: 'custom_profile',
                 blocks: {
                     col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
                 }
             },
             'notifications-view':{
-                layout: 'custom_browse',
+                layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
                 }
-            }
+            },
+            'view-group-profile':{
+                layout: 'custom_profile',
+                blocks: {
+                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1}
+                }
+            },
+            'group-fans':{
+                layout: 'custom_profile',
+                blocks: {
+                    col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:1}
+                }
+            },
         },
         theme: {
             light: {
