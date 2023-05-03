@@ -1,3 +1,4 @@
+import ActionsDataContext from 'app/context/actions';
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
 import { useState } from 'react';
@@ -8,7 +9,7 @@ import Html from '../../ui/atoms/html';
 import { Button, Modal } from 'app/design/controls'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Image from '../../ui/atoms/image';
-
+import Menu from 'app/components/menu';
 
 export default function UnitComments(props) {
 
@@ -95,39 +96,44 @@ export default function UnitComments(props) {
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                             {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
                        </View>
-                       <View className='flex-1 flex-col gap-y-1  mb-2  '>
-                            <View className={sCommentClass+ '  py-2'} >
-                                <View className="flex-row flex-1 items-center mb-0.5">
-                                    <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-gray-500 px-1">·</Text>
-                                    <Time className="" ts={data.cmt_time}></Time>
-                                </View>
-
-                                {
-                                    (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-neoborder dark:border-neoborder-dark  rounded-md p-2 my-1'>
-                                        <View  className="flex-row items-baseline" >
-                                            <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
-                                            <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
+                       <ActionsDataContext>
+                            <View className='flex-1 flex-col gap-y-1 mb-2'>
+                                    <View className={sCommentClass+ '  py-2'} >
+                                        <View className="flex-row flex-1 items-center mb-0.5">
+                                            <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                                            <Text className="text-gray-500 px-1">·</Text>
+                                            <Time className="" ts={data.cmt_time}></Time>
                                         </View>
-                                        <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
+
+                                        {
+                                            (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-neoborder dark:border-neoborder-dark  rounded-md p-2 my-1'>
+                                                <View  className="flex-row items-baseline" >
+                                                    <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
+                                                    <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
+                                                </View>
+                                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
+                                            </View>
+                                        }
+                                        <View>
+                                            <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
+                                        </View>
+                                        <View className="mt-0.5">
+                                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true, classNameItem: 'flex-none flex flex-row pr-2'}} itemsStart={true} />
+                                        </View>
+                                        <Row className='flex-wrap gap-x-1 '>
+                                            {files.map(a => (
+                                                <Pressable key={'file-'+a.file_id} className='w-24 h-24 mb-2 ' onPress={() => handleShowImage(a.file)} >
+                                                    <Image src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
+                                                </Pressable>
+                                            ))}
+                                        </Row>
                                     </View>
-                                }
-                                <View >
-                               
-                                <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
+                                    <View className='flex-row items-center'>
+                                        <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
+                                        <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_action_as_button: false, show_counter: false}} itemsStart={true} />
+                                    </View>
                                 </View>
-                                <Row className='flex-wrap gap-x-1 '>
-                                    {files.map(a => (
-                                        <Pressable key={'file-'+a.file_id} className='w-24 h-24 mb-2 ' onPress={() => handleShowImage(a.file)} >
-                                            <Image src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
-                                        </Pressable>
-                                    ))}
-                                </Row>
-                                </View>
-                            <View className='w-24'>
-                                <Button  align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)}  />
-                            </View>
-                        </View>
+                        </ActionsDataContext>
                     </View>
                 </View>
             </View>
