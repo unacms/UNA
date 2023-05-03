@@ -43,7 +43,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const [routes, setRoutes] = useState(initedTabs);
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
-    console.log(numColumns, '22222222222222222')
     const scroll = useSharedValue(1);
     const headerHeight = useSharedValue(100);
     const headerMaxHeight = useSharedValue(100);
@@ -61,9 +60,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [routes, index]);
 
     const handleScroll = (event) => {
-        if (event.nativeEvent.contentOffset.y > headerMaxHeight.value - headerMinHeight.value)
+        console.log(event.nativeEvent.contentOffset.y)
+        if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
             scroll.value = 0;
-        if (event.nativeEvent.contentOffset.y <10)
+        if (event.nativeEvent.contentOffset.y < 200)
             scroll.value = 1;
     };
 

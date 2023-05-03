@@ -27,6 +27,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
+    const headerMaxHeight = useSharedValue(100);
 
     const isLoading = useRef(false);
 
@@ -158,20 +159,32 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             };
         });
 
+        const parentAnimatedStyle = useAnimatedStyle(() => {
+            return {
+                height: headerMaxHeight.value,
+            };
+        });
+
+        const handleHeaderMaxLayout = useCallback((event) => {
+            headerMaxHeight.value = event.nativeEvent.layout.height;
+        });
+
         if (!header)
             return <></>
-
+        console.log('aqaa', headerMaxHeight.value)
         return (
-            <View className='w-full h-80'>
+            <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
                 <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
+                <View onLayout={handleHeaderMaxLayout}>
                     {header}
+                </View>
                 </Animated.View>
                 <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
                     {smallHeader}
                 </Animated.View>
-            </View>
+            </Animated.View>
         );
-    }, [scroll]);
+    }, [scroll, headerMaxHeight]);
 
     let edges = ['left', 'right'];
     return (
