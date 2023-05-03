@@ -31,10 +31,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
        // if (blockKeys.length === 1)
         //    return 1;
 
-        if (width > 1024)
-            return 3
-        if (width > 768)
-            return 2   
+        if (width > 1200)
+            return 4
+        if (width > 900)
+            return 3  
+        if (width > 600)
+            return 2
         return 1;
     };
 
