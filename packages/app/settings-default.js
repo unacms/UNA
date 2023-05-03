@@ -76,7 +76,7 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_persons_submenu': {
-                name:'Peoples',
+                name:'People',
                 icon:'Users',
                 items: ['persons-home', 'persons-active'],
                 add:[
