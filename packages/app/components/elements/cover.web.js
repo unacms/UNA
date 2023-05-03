@@ -21,7 +21,7 @@ function CoverMenu(){
 export function CoverSmall(props) {
     const data = props.data;
     return (
-        <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark fixed top:64 z-50 w-full border-b border-bordercolortabbar dark:border-bordercolortabbar-dark' >
+        <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark w-full border-b border-bordercolortabbar dark:border-bordercolortabbar-dark' >
         <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
             
                 <View className=' px-4 py-2   flex-row gap-2'>
