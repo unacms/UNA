@@ -7,23 +7,37 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute,useNavigationState  } from '@react-navigation/native';
 import { Icon } from 'app/ui/atoms/icon';
 import { NavScreen } from 'app/components/nav/screen'
-
-import { Theme } from 'app/design/theme';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { Theme } from 'app/design/theme';
 
 export default function AppLayout() {
 
   let { currentUser, setCurrentUser } = useCurrentUser();
   //let currentUser =1;
-  
+  const { colors } = Theme();
   const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
   let iconWidth = 24;
   let iconHeight = 24;
   return (
-    <Tabs>
+    <Tabs
+    screenOptions={({ navigation, route  }) => ({
+      tabBarStyle: {
+          backgroundColor: colors.barsBackground, 
+      },
+      headerStyle: {
+          backgroundColor: colors.barsBackground,
+      },
+      tabBarItemStyle: {
+          marginBottom: 5, 
+          marginTop: 5,
+      },
+      tabBarInactiveTintColor: colors.barsColor,
+      
+  })}
+    >
       {
         TabList.map((tab, index) => (
             <Tabs.Screen

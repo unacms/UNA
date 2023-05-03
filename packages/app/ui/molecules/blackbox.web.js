@@ -201,14 +201,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
 
         const handleHeaderMaxLayout = useCallback((event) => {
-            console.log('Max---------', event.nativeEvent.layout.height);
             headerMaxHeight.value = event.nativeEvent.layout.height;
             headerHeight.value = headerMaxHeight.value ;
            
         });
 
         const handleHeaderMinLayout = useCallback((event) => {
-            console.log('Min---------', event.nativeEvent.layout.height);
             headerMinHeight.value = event.nativeEvent.layout.height;
         });
         
@@ -222,7 +220,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             </View>
                         </Animated.View>
                         <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'}, animatedStyleB]}>
-                            <View className="jjjj" onLayout={handleHeaderMinLayout}>
+                            <View  onLayout={handleHeaderMinLayout}>
                                 {smallHeader}
                             </View>
                         </Animated.View>

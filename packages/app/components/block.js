@@ -44,7 +44,6 @@ export default function Block(props) {
     const BlockType = componentsMap[type];
 
     const aAllowTypes = ['html', 'raw', 'lang'];
-    console.log(type);
     if (type == 'string' && !aAllowTypes.includes(block.type))
     //    return null;
 

@@ -8,7 +8,7 @@ import { useColorScheme } from 'react-native';
 export default function Root(props) {
 
   const scheme = useColorScheme();
-
+  
   return (    
     <ThemeProvider value={Theme(scheme)} >
       <Provider>

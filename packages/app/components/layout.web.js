@@ -20,7 +20,6 @@ export default function Layout(props) {
           /* configuration for matching screens with paths */
         },
     };
-    console.log('-55555', props.data.title);
 
     setTimeout(() => {
         document.title = props.data.title;
