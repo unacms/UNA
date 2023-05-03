@@ -5,8 +5,6 @@ import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile';
-import { useRef, useState } from 'react';
-import { Platform } from 'react-native'
 import { useWindowDimensions } from 'react-native'
 import { Transition } from '@headlessui/react'
 
