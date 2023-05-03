@@ -277,9 +277,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
                         if (item?.type === 'block') {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
                         } else {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
+                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
                         }
                     }}
                     ListFooterComponent={
