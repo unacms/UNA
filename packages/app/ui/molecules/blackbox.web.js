@@ -106,7 +106,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View className="ml-2 hidden lg:block" key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
+                <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark bg-backgroundtabbar dark:bg-backgroundtabbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     <Row className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="hidden lg:block"><Icon size={32} icon={menuSettings?.icon} /></View> : <></>}
