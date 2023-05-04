@@ -2,11 +2,13 @@ import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
 import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
-import { appSetting } from 'app/lib/util'
-
+import { appSetting  } from 'app/lib/util'
+import Svg, {Path} from 'react-native-svg'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 
 export default function ElementEntityText({data}) {
+
+    
 
     const view = appSetting('entry', 'default_view');
     switch (view) {
