@@ -60,6 +60,7 @@ export default function ElementComments(props) {
     } 
     
     const onFormSubmit = (formData, d) => {
+        Keyboard.dismiss();
         addCommentData({postData: formData, total_count: commentData.total_count + 1, num: commentData.num + 1});
     }
 
@@ -69,7 +70,6 @@ export default function ElementComments(props) {
     if(form){
         form.data.inputs.cmt_parent_id.value = commentData.parentId;
         form.data.reset = true;
-
     }
 
     if (dynamicData && dynamicData.data.form){
@@ -82,6 +82,11 @@ export default function ElementComments(props) {
     }
     
     function parseData (browse, dynamicData) {
+        
+        if (dynamicData.data.browse.new){
+            console.log('----------',dynamicData.data.browse.new, dynamicData.data.browse.insert)
+            props.handleScrollToElement();
+        }
         dynamicData.data.browse.data.data.map(function(c, kc){
             let o = c[Object.keys(c)[0]];
             // add in root
@@ -94,6 +99,7 @@ export default function ElementComments(props) {
                 });
 
                 if (!bPresent){
+                    
                     if (dynamicData.data.browse.insert == 'before'){
                         browse.data.data = browse.data.data.concat([c]);
                     }
@@ -271,7 +277,6 @@ export default function ElementComments(props) {
         
     };
   
-
     if(Platform.OS !== 'web') {
 
         let heightS = pageHeight * 0.9 - 30;

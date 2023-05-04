@@ -17,13 +17,13 @@ export default function ElementLink(props) {
 
     if (props.emulate == true)
         return (
-            <Pressable {...rest} onPress={() => handlePress(event, href)}>
+            <Pressable {...rest} onPress={() => handlePress(event, href)} >
                 {props.children}
             </Pressable>
         );
 
     return (
-        <Link href={href} {...props}>
+        <Link href={href} {...props}   > 
             {props.children}
         </Link>
     );

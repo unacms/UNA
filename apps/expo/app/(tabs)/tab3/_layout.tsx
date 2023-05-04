@@ -1,6 +1,6 @@
-import { Stack } from "expo-router";
+import StackCustom from "app/ui/atoms/stack";
 
 const Layout = () => {
-  return <Stack />;
+    return <StackCustom/>;
 };
 export default Layout;

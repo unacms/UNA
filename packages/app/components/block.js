@@ -11,7 +11,7 @@ const componentsMap = {
     string: String,
 };
 
-export function BlockByName({data, name, onScroll2, f}) {
+export function BlockByName({data, name}) {
 
     let b = null;
     if (name){
@@ -28,9 +28,29 @@ export function BlockByName({data, name, onScroll2, f}) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} f={f}  />;
+        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg}   />;
     
     return <Text className="text-black dark:text-white">Not found: {JSON.stringify(name)}</Text>
+}
+
+
+export function DataByName(data, name) {
+
+    let b = null;
+    if (name){
+        const blockName = name?.name;
+        Object.keys(data?.elements).forEach(key => {
+            Object.keys(data.elements[key]).forEach(key2 => {
+                if (data.elements[key][key2].content){
+                    Object.keys(data.elements[key][key2].content).forEach(key3 => {
+                        if(data.elements[key][key2].source == blockName.toString())
+                            b = data.elements[key][key2];
+                    });
+                }
+            });
+        });
+    }
+    return b;
 }
 
 export function BlockByName2({b, name}) {

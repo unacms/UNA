@@ -11,11 +11,11 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
-import { FormContext} from 'app/context/form';
+import { FormExContext} from 'app/context/form';
 
 export default function FormFieldFiles(props) {
     
-    const { formContextData, setFormContextData } = useContext(FormContext);
+    const { formExContextData, setFormExContextData } = useContext(FormExContext);
 
     const [imageSource, setImageSource] = useState({images:null, preload:0});
     const isWeb = Platform.OS == 'web'
@@ -110,9 +110,12 @@ export default function FormFieldFiles(props) {
     };
 
 
-    if (formContextData?.action === 'open_files'){
+    if (formExContextData?.action === 'open_files'){
         selectImage();
-        setFormContextData({action:'', data:formContextData?.data});
+        setTimeout(() => {
+            setFormExContextData({action:'', data:formExContextData?.data});
+        }, 100);
+        
     }
     
 
@@ -153,9 +156,9 @@ export default function FormFieldFiles(props) {
 
     
     let button = <Button  startDecorator={"plus"} title={"Select " + props.name} onPress={selectImage} />
-    if (typeof setFormContextData === "function" &&  (!formContextData || formContextData?.imageSource!= imageSource)){
+    if (typeof setFormExContextData === "function" &&  (!formExContextData || formExContextData?.imageSource!= imageSource)){
         setTimeout(() => {
-            setFormContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap '>
+            setFormExContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap '>
             <GhostsList/>
             <PrevList/>
         </Row>})

@@ -76,8 +76,8 @@ import Svg, {Path} from 'react-native-svg'
                 icon:'File',
                 items: ['posts-home', 'posts-popular'],
                 add:[
-                    {icon: 'search', name:"Search"},
                     {icon: 'plus', name: "Add", link: '/create-post'},
+                    {icon: 'search', name:"Search"},
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
@@ -96,8 +96,8 @@ import Svg, {Path} from 'react-native-svg'
                 icon:'UsersThree',
                 items: ['groups-home', 'groups-joined'],
                 add:[
-                    {icon: 'search', name: "Search"},
                     {icon: 'plus', name: "Add", link: '/create-group-profile'},
+                    {icon: 'search', name: "Search"},
                     {icon: 'DotsThreeOutlineVertical', name: "More"}
                 ]
             },

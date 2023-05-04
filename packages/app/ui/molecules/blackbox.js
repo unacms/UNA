@@ -134,7 +134,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm"/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
-                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+                    <View  key={`add-${button.icon}`} >{btn}</View>
             )});
 
             navigation.setOptions({ headerRight:  () => (addButtons) });

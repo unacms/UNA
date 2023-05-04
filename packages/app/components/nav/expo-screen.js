@@ -7,6 +7,11 @@ import { appSetting } from 'app/lib/util'
 import { useIsFocused } from '@react-navigation/native';
 import { Text } from 'app/design/typography'
 import Svg, {Path} from 'react-native-svg'
+import { View, Row, Pressable } from 'app/design/view'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon } from 'app/ui/atoms/icon'; 
+import { useRouter } from 'expo-router';
+import { Theme } from 'app/design/theme';
 
 function SvgLogoMarkNative() {
     return (
@@ -34,6 +39,9 @@ export function Screen(params) {
     const pathname = usePathname();
     const route = useRoute();
     const [pageData, setPageData] = useState(null);
+
+    const routerExpo = useRouter();
+    const { colors } = Theme();
   
     let _path = route?.path;
     if (!_path || _path.includes('/tab')){
@@ -50,7 +58,16 @@ export function Screen(params) {
 
 
     function Header(text){
-        return backButtonPresented ? <><Text className='text-base'>{text}</Text></> : <><SvgLogoMarkNative/><Text className='text-base'>{text}</Text></>;
+        let edges = ['top', 'left', 'right'];
+      
+        return (
+            
+            <Row className='w-full h-16 items-center bg-backgroundtabbar dark:bg-backgroundtabbar-dark'>
+                { backButtonPresented ? <Pressable className="mr-4 bg-backgroundcell dark:bg-backgroundcell-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+                <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>}
+                { _path =='/home' ? <SvgLogoMarkNative/> : <Text className='font-bold  text-white dark:text-gray-50 text-xl'>{text}</Text>}
+            </Row>
+        )
     }
 
     const isFocused2 = useIsFocused();
@@ -66,16 +83,21 @@ export function Screen(params) {
                 if (data?.props) {
                     setPageData(data.props);
                     
-                    if (backButtonPresented){
+                    /*if (backButtonPresented){
                         navigation.setOptions({ 
                             headerTitle:(props) => <><Text className='text-base'>{data.props.data.title}</Text></>
                         });
                     }
                     else{
                         navigation.setOptions({ 
-                            headerTitle:(props) => Header(data.props.data.title)
+                            header:(props) => Header(data.props.data.title)
                         });
-                    }
+                    }*/
+                    navigation.setOptions({ 
+                        headerBackVisible: false, 
+
+                        headerTitle:(props) => Header(data.props.data.title)
+                    });
                    
                 }
             }
