@@ -131,7 +131,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} size="sm"/>;
+                let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm"/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
@@ -140,10 +140,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             navigation.setOptions({ headerRight:  () => (addButtons) });
 
             return (
-                <View className="" style={{ backgroundColor: colors.barsBackground }}>
+                <View className="bg-backgroundtabbar dark:bg-backgroundtabbar-dark">
                     <Row  >
                         {props.navigationState.routes.map((a) => (
-                            <Pressable className="flex-1 items-center justify-center py-4 "
+                            <Pressable className="flex-1 items-center justify-center py-3.5 "
                                 key={`tab-${a.index}`}
                                 onPress={() => {
                                     setIndex(a.index)

@@ -76,16 +76,16 @@ export default function ElementCover(props) {
         sType = 'rounded-full';
 
     return (
-    <View className='w-full' >
+    <View className='w-full ' >
         <View className=' absolute h-48 w-full '>
             { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />}
         </View>
         <Row className=' justify-left w-full h-24 pt-12' >
-            <Pressable className="mr-4 ml-4 bg-backgroundcell dark:bg-backgroundcell-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+            <Pressable className="mr-4 ml-4 bg-backgroundcell dark:bg-backgroundcell-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
                 <Icon icon="left" width={24} height={24} color={colors.barsColor} />
             </Pressable>
         </Row>
-        <View className='px-2 mt-24 bg-backgroundcell dark:bg-backgroundcell-dark' >
+        <View className='px-2 mt-24 bg-backgroundcell dark:bg-backgroundcell-dark pb-2' >
             <View className='flex-row '>
                 <View className=' absolute -translate-y-12 bg-backgroundcell dark:bg-backgroundcell-dark rounded-full p-1 '>
                     <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
