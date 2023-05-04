@@ -2,12 +2,23 @@ import * as Haptics from 'expo-haptics';
 import { settings } from 'app/settings';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
+import { useColorScheme } from 'react-native';
 
 export function appSetting(section, name, path) {
     if (path)
         return settings[section] ? settings[section][name][path] : '';
     return settings[section] ? settings[section][name] : '';
 }
+
+export function SvgLogoNative() {
+    const scheme = useColorScheme();
+    if (scheme === 'dark'){
+        return appSetting('theme', 'svg', 'logo-native')
+    }
+    else{
+        return appSetting('theme', 'svg', 'logo-native-dark')
+    }
+};
   
 export function mergeDeep(target, ...sources) {
     if (!sources.length) return target;

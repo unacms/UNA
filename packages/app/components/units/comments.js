@@ -96,8 +96,8 @@ export default function UnitComments(props) {
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                             {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
                        </View>
-                       <ActionsDataContext>
                             <View className='flex-1 flex-col gap-y-1 mb-2'>
+                            <ActionsDataContext>
                                     <View className={sCommentClass+ '  py-2'} >
                                         <View className="flex-row flex-1 items-center mb-0.5">
                                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
@@ -132,8 +132,8 @@ export default function UnitComments(props) {
                                         <Button  align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_action_as_button: false, show_counter: false}} itemsStart={true} />
                                     </View>
+                                    </ActionsDataContext>
                                 </View>
-                        </ActionsDataContext>
                     </View>
                 </View>
             </View>
