@@ -9,12 +9,11 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 export default function ElementEntityText({data}) {
 
     const view = appSetting('entry', 'default_view');
-    console.log('xxxxxxxxxxxxxxxx', data);
     switch (view) {
         case 'small':
-          return <Small data={data} />;
+            return <Small data={data} />;
         default:
-          return <Default data={data} />;
+            return <Default data={data} />;
       }
 }
 

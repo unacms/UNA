@@ -8,7 +8,7 @@ import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
-
+import { appSetting } from 'app/lib/util'
 /*const IframeRenderer = function IframeRenderer(props) {
     const iframeProps = useHtmlIframeProps(props);
     // Do customize the props here; wrap with your own container...
@@ -116,7 +116,21 @@ export default function ElementHtml(props) {
         var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
         data = data.replace(pattern,'');
         const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
-        data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');    
+        //data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');  
+        data = data.replace(regex, function (match, capture) {
+            // Customize the className based on the captured value
+            let widthIfr = width-32
+            let heightIfr = widthIfr * 9/16 + 80;
+            if (capture.includes('twitter.com') ) {
+                heightIfr = widthIfr * 1.6;
+            }
+            if (capture.includes('youtube.com') ) {
+                heightIfr = widthIfr * 9/16 + 40;
+            }
+            return (
+                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture +'"></iframe>'
+              );
+            });  
     }
 
     if (!data)

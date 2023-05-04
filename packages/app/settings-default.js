@@ -40,6 +40,9 @@ import Svg, {Path} from 'react-native-svg'
     );
     
     export const settingsDefault = {
+        urls: {
+            embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
+        },
         lang_keys: {
             vote_performed_by_popup_title: 'Likes',
             rvote_performed_by_popup_title: 'Reactions',
