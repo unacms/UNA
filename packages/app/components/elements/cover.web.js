@@ -21,11 +21,11 @@ function CoverMenu(){
 export function CoverSmall(props) {
     const data = props.data;
     return (
-        <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark w-full border-b border-bordercolortabbar dark:border-bordercolortabbar-dark' >
-        <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
+        <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark  w-full ' >
+        <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
             
-                <View className=' px-4 py-2   flex-row gap-2'>
-                    <Row className=' items-center flex-auto'>
+                <View className=' mx-4 py-2 border-b border-bordercolor dark:border-bordercolor-dark   flex-row gap-2'>
+                    <Row className=' items-center  flex-auto'>
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
                         <View className='flex-row items-center ml-3'>
                         
@@ -69,14 +69,14 @@ export default function ElementCover(props) {
     }*/
     
     return (
-      <View className=' backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark bg-backgroundtabbar dark:bg-backgroundtabbar-dark ' >
+      <View className=' backdrop-blur  bg-backgroundtabbar dark:bg-backgroundtabbar-dark ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
                 
                 <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[20%]  xl:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                 </View>
                 
-                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center  '>
+                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center border-b border-bordercolor dark:border-bordercolor-dark '>
                     <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
                     </View>

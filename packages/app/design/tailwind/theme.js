@@ -125,8 +125,8 @@ const colors = {
   },
 
   backgroundtabbar: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    dark: 'rgba(31,41,55,0.9)',
+    DEFAULT: 'rgba(243,244,246,0.9)',
+    dark: 'rgba(17,24,39,0.9)',
   },
   bordercolortabbar: {
     DEFAULT: 'rgba(229,231,235,1)',
