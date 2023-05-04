@@ -12,7 +12,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from 'app/ui/atoms/icon'; 
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
-import { useColorScheme } from 'react-native';
 
 export function Screen(params) {
     const { currentUser } = useCurrentUser();
@@ -40,7 +39,6 @@ export function Screen(params) {
 
     function Header(text){      
         return (
-            
             <Row className='w-full h-16 items-center '>
                 { backButtonPresented ? <Pressable className="mr-4 bg-backgroundcell dark:bg-backgroundcell-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
                 <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>}

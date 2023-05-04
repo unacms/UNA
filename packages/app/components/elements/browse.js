@@ -108,7 +108,7 @@ export default function ElementBrowse(props) {
     }
 
     return (
-        (data.data.length > 0) && <View className='w-full h-full ' >
+        (data.data.length > 0) && <View className={'w-full ' + (data.unit == 'comments' ? '' : 'h-full')} >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -133,10 +133,6 @@ export default function ElementBrowse(props) {
             }
             { (data.unit == 'comments') && <View  style={styles.cardList}>
                 {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
-                <View className="u-card-4 flex-1"></View>
             </View>
             }
             
