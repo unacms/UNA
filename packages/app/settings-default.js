@@ -49,6 +49,8 @@ import Svg, {Path} from 'react-native-svg'
             score_performed_by_popup_title: 'Upvotes',
             ntfs_popup_title: 'Notifications',
             ntfs_popup_view_all: 'View all',
+            search_popup_title: 'Search',
+            search_popup_view_extended: 'Extended',
         },
         feed: {
             show_selector_view: false,

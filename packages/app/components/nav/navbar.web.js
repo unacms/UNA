@@ -16,6 +16,7 @@ import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider';
 
 import Redirect from 'app/ui/atoms/redirect';
+import Search from 'app/ui/molecules/search';
 import Browse from 'app/components/elements/browse';
 import Notifications from 'app/components/units/notifications';
 import 'app/styles/dropdown.css';
@@ -161,7 +162,7 @@ export default function (props) {
                   </Row>
                   }
 
-                  <Button variant="text" rounded startDecorator="search" onPress={() => {handleClick('/search')}} />
+                  <Search />
               </Row>
           </Row>
         </View>
