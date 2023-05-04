@@ -64,7 +64,7 @@ import Svg, {Path} from 'react-native-svg'
         },
     
         menu_items: {
-            'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home'],
+            'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
             'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
             'bx_posts_submenu': {
                 name:'Posts',
@@ -72,6 +72,7 @@ import Svg, {Path} from 'react-native-svg'
                 items: ['posts-home', 'posts-popular'],
                 add:[
                     {icon: 'search', name:"Search"},
+                    {icon: 'plus', name: "Add", link: '/create-post'},
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
@@ -90,23 +91,25 @@ import Svg, {Path} from 'react-native-svg'
                 icon:'UsersThree',
                 items: ['groups-home', 'groups-joined'],
                 add:[
+                    {icon: 'search', name: "Search"},
+                    {icon: 'plus', name: "Add", link: '/create-group-profile'},
+                    {icon: 'DotsThreeOutlineVertical', name: "More"}
+                ]
+            },
+            'bx_groups_view_submenu': ['view-group-profile', 'group-fans'],
+            'bx_channels_submenu': {
+                name:'Channels',
+                icon:'Hash',
+                items: ['channels-home', 'channels-top'],
+                add:[
                     {icon: 'search', name:"Search"},
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
-            'bx_groups_view_submenu': ['view-group-profile', 'group-fans']
+            'bx_channels_view_submenu': ['view-channel-profile'],
         },
 
         layouts: {
-            'view-post': {
-                layout: 'custom_post',
-                blocks: {
-                    author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false},
-                    text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false},
-                    actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false},
-                    comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
-                },
-            },
             'messenger':{
                 layout: 'custom_messenger',
                 blocks: {
@@ -122,6 +125,7 @@ import Svg, {Path} from 'react-native-svg'
                     posts: {name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
             },
+            //############ POSTS PAGES ############
             'posts-home':{
                 layout: 'custom_blackbox',
                 blocks: {
@@ -134,6 +138,16 @@ import Svg, {Path} from 'react-native-svg'
                     browse:{name: 'bx_posts:browse_popular', showTitle: false, showBg: false},
                 },
             },
+            'view-post': {
+                layout: 'custom_post',
+                blocks: {
+                    author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false},
+                    text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false},
+                    actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false},
+                    comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
+                },
+            },
+            //############ GROUPS PAGES ############
             'groups-home':{
                 layout: 'custom_blackbox',
                 blocks: {
@@ -146,13 +160,45 @@ import Svg, {Path} from 'react-native-svg'
                     browse:{name: 'bx_groups:browse_joined_entries', showTitle: false, showBg: false},
                 }
             },
+            'view-group-profile':{
+                layout: 'custom_profile',
+                blocks: {
+                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
+                    col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
+                }
+            },
+            'group-fans':{
+                layout: 'custom_profile',
+                blocks: {
+                    col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:1}
+                }
+            },
+            //############ CHANNELS PAGES ############
+            'channels-home':{
+                layout: 'custom_blackbox',
+                blocks: {
+                    browse:{name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false},
+                }
+            },
+            'channels-top':{
+                layout: 'custom_blackbox',
+                blocks: {
+                    browse:{name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false},
+                }
+            },
+            'view-channel-profile':{
+                layout: 'custom_profile',
+                blocks: {
+                    col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1}
+                }
+            },
+            //############ PERSONS PAGES ############
             'persons-home':{
                 layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
-            
             'persons-active':{
                 layout: 'custom_blackbox',
                 blocks: {
@@ -182,19 +228,6 @@ import Svg, {Path} from 'react-native-svg'
                 layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
-                }
-            },
-            'view-group-profile':{
-                layout: 'custom_profile',
-                blocks: {
-                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
-                    col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
-                }
-            },
-            'group-fans':{
-                layout: 'custom_profile',
-                blocks: {
-                    col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:1}
                 }
             },
         },
@@ -271,7 +304,8 @@ import Svg, {Path} from 'react-native-svg'
                 'comments': 'ChatsCircle',
                 'file-alt': 'NoteBlank',
                 'contact': 'PaperPlaneRight',
-                'reply': 'ArrowBenDownRight'
+                'reply': 'ArrowBenDownRight',
+                'hashtag': 'Hash'
             },
         },
         menu: {

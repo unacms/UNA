@@ -56,15 +56,12 @@ const {height, width, scale, fontScale} = useWindowDimensions();
     switch (props.module) {
         case 'bx_groups':
             return groupUnit();
-            break;
 
         case 'bx_persons':
             return personUnit();
-        break;
 
         case 'bx_channels':
             return channelUnit();
-        break;
 
         default:
             return defaultUnit();
@@ -118,34 +115,50 @@ const {height, width, scale, fontScale} = useWindowDimensions();
         )
     }
 
-    function channelUnit(){
+    function channelUnit() {
+        let sMeta = <></>;
+        if(data?.meta)
+            sMeta = (
+                <View className="text-center px-4 mt-4">
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
+                </View>
+            );
+
         return (
-            <View className="u-card-4" style={styles.card}>
-                <Link href={data.url}>    
-                <View className="flex-col space-y-4 w-full mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden sm:rounded-lg">  
-      <View className="w-full aspect-video  bg-secondary-500/10  mx-auto  ">
-        { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover" style={styles.card_image} src={data.cover.src} />  }
-      </View>
-      <View className=" px-4 ">
-        <Text className="text-lg font-bold text-gray-800 dark:text-gray-100">
-          {data.channel_name}
-        </Text>
-        <View className='flex-row space-x-1'>
-          <Text  className='text-sm text-gray-600 dark:text-gray-400'>25 members</Text>
-          <Text  className='text-sm text-gray-400 dark:text-gray-600'>·</Text>
-          
-          <Text  className='text-sm text-gray-600 dark:text-gray-400'>Active 24 min ago </Text>
-        </View>     
-      </View>
-      <View className="text-center px-4 space-y-2">
-        
-        <Button title="Join Group" variant="primary" fullWidth />
-        
-      </View>
-      </View>
-      </Link>
-            </View> 
-        )  
+            <View className="u-card" style={styles.card}>
+                
+                <View className="
+                    flex-auto
+                    p-1 mt-1 sm:mx-2 sm:mt-2                   
+                    group duration-200 overflow-hidden sm:rounded-lg  sm:hover:shadow-sm
+                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                    border  
+                    active:translate-y-0.5
+                    border-bordercolorcard dark:border-bordercolorcard-dark 
+                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                ">
+                    <Link href={data.url}> 
+                    <View>  
+                    <View className='mb-2'>  
+                    {data.cover &&
+                            <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
+                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
+                            </View>
+                        } 
+                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
+                        <View className=" aspect-video w-full items-center justify-center">
+                           
+                        </View>
+                        </View>
+                        <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.channel_name}</Text>
+                        {sMeta}
+                    </View>
+                </Link>
+            </View>
+            </View>
+        )
     }
 
     function personUnit(){

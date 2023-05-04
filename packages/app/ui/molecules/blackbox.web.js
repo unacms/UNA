@@ -12,6 +12,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
+import Link from 'app/ui/atoms/link'
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
@@ -98,9 +99,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
-            const addButtons = menuSettings.add?.map((button) => (
-                <View className="ml-2 hidden lg:block" key={`add-${button.title}`} ><Button title={button.title} startDecorator={button.icon} size="sm"/></View>
-            ));
+            const addButtons = menuSettings.add?.map((button) => {
+                let btn = <Button title={button.title} startDecorator={button.icon} size="sm"/>;
+                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                return (
+                    <View className="ml-2 hidden lg:block" key={`add-${button.icon}`} >{btn}</View>
+            )});
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark" style={{ backgroundColor: colors.barsBackground}} >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
@@ -167,7 +171,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 */
     const renderHeader =  useCallback(() => {
         const d = 200;
-        const menuHeight = 48;
+        let menuHeight = 48;
+
+        const tabBarObj = renderTabBar();
+        if (!tabBarObj)
+            menuHeight = 0; 
+
         const animatedStyleA = useAnimatedStyle(() => {
             const opacityValue = withTiming(scroll.value, { duration: d });
             
@@ -196,7 +205,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         });
         
           
-        const tabBarObj = renderTabBar();
+        
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
@@ -283,7 +292,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         }
                     }}
                     ListFooterComponent = {
-                        <View className='m-8'>
+                        <View className='m-4'>
                         {(route?.endpoint?.finished === false) ? (
                             <Loading/>
                         ) : null}

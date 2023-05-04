@@ -27,5 +27,6 @@ export async function getServerSideProps(context) {
     );
     if (200 !== parseInt(data.props.status))
         context.res.statusCode = parseInt(data.props.status)
+        
     return data;
 }

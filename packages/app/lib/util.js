@@ -128,7 +128,7 @@ export function getURI(url) {
     return u[0]
 }
 
-export function menuItemsByName(name, items) {
+export function menuItemsByName(name, items, url = '') {
     const menuSettings = appSetting('menu_items', name)
     if (menuSettings){
         if (menuSettings.items){
@@ -137,6 +137,8 @@ export function menuItemsByName(name, items) {
         else
             return items.filter((item) => menuSettings.includes(getURI(item.link)));
     }
+    if (!items)
+        items =[{link: url, title: ''}];
     return items;
 }
 
