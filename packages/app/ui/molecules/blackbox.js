@@ -10,6 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
+import { Button } from 'app/design/controls';
+import Link from 'app/ui/atoms/link'
 import { appSetting } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
@@ -125,7 +127,18 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             },
         });
 
-        if (props.navigationState.routes.length > 1)
+        if (props.navigationState.routes.length > 1){
+
+            const menuSettings = appSetting('menu_items', menu.object);
+            const addButtons = menuSettings.add?.map((button) => {
+                let btn = <Button title={button.title} startDecorator={button.icon} size="sm"/>;
+                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                return (
+                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+            )});
+
+            navigation.setOptions({ headerRight:  () => (addButtons) });
+
             return (
                 <View className="" style={{ backgroundColor: colors.barsBackground }}>
                     <Row  >
@@ -142,8 +155,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
                     </Row>
                 </View>
+        
 
-    )};
+            )
+        }
+    };
 
     const renderHeader = useCallback(() => {
         const animatedStyleA = useAnimatedStyle(() => {
@@ -171,7 +187,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (!header)
             return <></>
-        console.log('aqaa', headerMaxHeight.value)
         return (
             <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
                 <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
