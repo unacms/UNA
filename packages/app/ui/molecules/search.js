@@ -8,6 +8,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, Input } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
+import SearchResults from 'app/components/units/search-results';
 
 export default function ElementSearch(oProps) {
     const redirectdRef = useRef();
@@ -17,7 +18,7 @@ export default function ElementSearch(oProps) {
 
     const getSkeleton = () => {
         return (
-            <View className="w-full">
+            <View className="w-full mt-1">
             {[...Array(1, 2, 3)].map( i => 
                 <View key={i} className="flex-col my-2 p-2 bg-gray-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
@@ -34,39 +35,51 @@ export default function ElementSearch(oProps) {
     };
 
     const handleSearch = async (sValue) => {
-        if(!sValue)
+        if(!sValue || sValue.length < 3)
             return;
 
         setPopupContent(getSkeleton());
 
-        return true;
-
+        /**
+         * TODO: Move searchable sections (modules) in config or leave empty to search in all sections.
+         */
         const aParams = {
-            params: {
-                type: 'obj_own_and_con',
-                start: 0,
-                per_page: 12,
-                modules: ''
-            }
+            keyword: sValue,
+            section: 'bx_posts',
+            start: 0,
+            per_page: 12,
         };
 
-        const sResponse = await fetcher('/api.php?r=bx_notifications/get_data/Module&params=' + JSON.stringify(aParams));
-        if(!sResponse?.data) 
+        const sResponse = await fetcher('/api.php?r=system/get_data_search/TemplServices&params=' + JSON.stringify(aParams));
+        if(!sResponse?.data) {
+            setPopupContent('');
             return;
+        }
 
         const oBlock = sResponse.data.shift();
-        if(oBlock.data?.unit != 'notifications' || !oBlock.data?.data) 
+        if(oBlock.data?.unit != 'search-results' || !oBlock.data?.data) {
+            setPopupContent('');
             return;
+        }
 
         const sContent = (
-            <Text>Search results!</Text>
+            <View className="w-full mt-1">
+                {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()} />)}
+            </View>
         );
 
         setPopupContent(sContent);            
     }
 
     const handleClick = (sUrl) => {
+        handleClose();
+
         redirectdRef.current.redirect(sUrl);
+    }
+
+    const handleClose = () => {
+        setPopupOpen(false);
+        setPopupContent('');
     }
 
     const sTxtTitle = appSetting('lang_keys', 'search_popup_title');
@@ -83,10 +96,10 @@ export default function ElementSearch(oProps) {
                     <View className="px-1.5 pb-1.5">
                         <View className="flex-row items-center mb-1">
                             <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                            <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => {setPopupOpen(false); handleClick('/search');}} />
+                            <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search')} />
                         </View>
-                        <View className="flex-row mb-1">
-                            <Input name="search" onChangeText={(value) => handleSearch(value)} onBlur={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
+                        <View className="flex-row">
+                            <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
                         </View>
                         {!!popupContent && popupContent}
                     </View>
