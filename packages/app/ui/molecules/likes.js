@@ -9,7 +9,18 @@ import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-    
+
+    const oParams = oProps.params;
+    const oAction = oProps.action;
+    const oCounter = oProps.counter;
+
+    //--- default display type: action, counter, both.
+    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
+    const bShowFull = bShowAction && bShowCounter;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -18,20 +29,28 @@ export default function ElementLikes(oProps) {
         return [].concat(aName).join('-');
     };
 
+    const [ actionsDataStt, setActionsDataStt ] = useState({});
+    const { actionsDataCtt, setActionsDataCtt } = useContext(ActionsData);
+
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
-    const { actionsData, setActionsData } = useContext(ActionsData);
 
     const isContextVar = (sName) => {
         const sContextKey = getName();
 
-        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
+        if(bShowFull)
+            return actionsDataStt && actionsDataStt[sContextKey] != undefined && actionsDataStt[sContextKey][sName] != undefined;
+        else
+            return actionsDataCtt && actionsDataCtt[sContextKey] != undefined && actionsDataCtt[sContextKey][sName] != undefined;
     };
 
     const getContextVar = (sName) => {
         const sContextKey = getName();
 
-        return actionsData[sContextKey][sName];
+        if(bShowFull)
+            return actionsDataStt[sContextKey][sName];
+        else
+            return actionsDataCtt[sContextKey][sName];
     };
 
     const setContextVars = (mValue) => {
@@ -40,15 +59,19 @@ export default function ElementLikes(oProps) {
         let oValue = {};
         oValue[sContextKey] = mValue;
 
-        if(!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({...actionsData, ...oValue});
+        if(bShowFull) {
+            if(!actionsDataStt)
+                setActionsDataStt(oValue);
+            else
+                setActionsDataStt({...actionsDataStt, ...oValue});
+        }
+        else {
+            if(!actionsDataCtt)
+                setActionsDataCtt(oValue);
+            else
+                setActionsDataCtt({...actionsDataCtt, ...oValue});
+        }
     };
-
-    const oParams = oProps.params;
-    const oAction = oProps.action;
-    const oCounter = oProps.counter;
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
@@ -107,11 +130,8 @@ export default function ElementLikes(oProps) {
         );
     };
 
-    //--- default display type: action, counter, both.
-    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
-    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
     const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
@@ -141,8 +161,6 @@ export default function ElementLikes(oProps) {
         );
     }
 
-    //--- show counter
-    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
 
     //--- Counter
     let sCounter = undefined;
@@ -178,8 +196,8 @@ export default function ElementLikes(oProps) {
     
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row">
-            {bShowAction && <View key={sObject + '-action'} className="flex-auto">{sAction}</View>}
+        <View className="flex-auto flex-row items-center">
+            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sAction}</View>}
             {bShowCounter && <View key={sObject + '-counter'}>{sCounter}</View>}
         </View>
     );

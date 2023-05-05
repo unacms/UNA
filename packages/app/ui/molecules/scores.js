@@ -14,6 +14,17 @@ export default function ElementScore(oProps) {
         'arrow-down': 'ArrowFatDown'
     };
 
+    const oParams = oProps.params;
+    const oAction = oProps.action;
+    const oCounter = oProps.counter;
+
+    //--- default display type: action, counter, both.
+    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
+    const bShowFull = bShowAction && bShowCounter;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -22,20 +33,28 @@ export default function ElementScore(oProps) {
         return [].concat(aName).join('-');
     };
 
+    const [ actionsDataStt, setActionsDataStt ] = useState({});
+    const { actionsDataCtt, setActionsDataCtt } = useContext(ActionsData);
+
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
-    const { actionsData, setActionsData } = useContext(ActionsData);
 
     const isContextVar = (sName) => {
         const sContextKey = getName();
 
-        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
+        if(bShowFull)
+            return actionsDataStt && actionsDataStt[sContextKey] != undefined && actionsDataStt[sContextKey][sName] != undefined;
+        else
+            return actionsDataCtt && actionsDataCtt[sContextKey] != undefined && actionsDataCtt[sContextKey][sName] != undefined;
     };
 
     const getContextVar = (sName) => {
         const sContextKey = getName();
 
-        return actionsData[sContextKey][sName];
+        if(bShowFull)
+            return actionsDataStt[sContextKey][sName];
+        else
+            return actionsDataCtt[sContextKey][sName];
     };
 
     const setContextVars = (mValue) => {
@@ -44,15 +63,19 @@ export default function ElementScore(oProps) {
         let oValue = {};
         oValue[sContextKey] = mValue;
 
-        if(!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({...actionsData, ...oValue});
+        if(bShowFull) {
+            if(!actionsDataStt)
+                setActionsDataStt(oValue);
+            else
+                setActionsDataStt({...actionsDataStt, ...oValue});
+        }
+        else {
+            if(!actionsDataCtt)
+                setActionsDataCtt(oValue);
+            else
+                setActionsDataCtt({...actionsDataCtt, ...oValue});
+        }
     };
-
-    const oParams = oProps.params;
-    const oAction = oProps.action;
-    const oCounter = oProps.counter;
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
@@ -103,11 +126,8 @@ export default function ElementScore(oProps) {
         );
     };
 
-    //--- default display type: action, counter, both.
-    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
 
     //--- show action
-    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
     const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
@@ -134,8 +154,6 @@ export default function ElementScore(oProps) {
         );
     });
 
-    //--- show counter
-    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
 
     //--- Counter
     let sCounter = undefined;
@@ -178,10 +196,10 @@ export default function ElementScore(oProps) {
 
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row items-center gap-1">
-            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto">{aActions[0]}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row'}>{sCounter}</View>}
-            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto">{aActions[1]}</View>}
+        <View className="flex-auto flex-row items-center">
+            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto mr-0.5">{aActions[0]}</View>}
+            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row' + (bShowFull ? ' mx-0.5' : '')}>{sCounter}</View>}
+            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto ml-0.5">{aActions[1]}</View>}
         </View>
     );
 }

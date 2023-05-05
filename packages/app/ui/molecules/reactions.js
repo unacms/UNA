@@ -29,6 +29,17 @@ export default function ElementReactions(oProps) {
         anger: Platform.OS === 'web' ? 'SmileyAngry' : 'SmileyNervous',
     };
 
+    const oParams = oProps.params;
+    const oAction = oProps.action;
+    const oCounter = oProps.counter;
+
+    //--- default display type: action, counter, both.
+    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
+    const bShowFull = bShowAction && bShowCounter;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -37,39 +48,8 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const { actionsData, setActionsData } = useContext(ActionsData);
-
-    const isContextVar = (sName) => {
-        const sContextKey = getName();
-
-        return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
-    };
-
-    const getContextVar = (sName) => {
-        const sContextKey = getName();
-
-        return actionsData[sContextKey][sName];
-    };
-
-    const getContextVars = () => {
-        const sContextKey = getName();
-
-        return actionsData && actionsData[sContextKey] ? actionsData[sContextKey] : null;
-    };
-
-    const setContextVars = (mValue) => {
-        const sContextKey = getName();
-        const oValue = {[sContextKey]: mValue};
-
-        if(!actionsData)
-            setActionsData(oValue);
-        else
-            setActionsData({...actionsData, ...oValue});
-    };
-
-    const oParams = oProps.params;
-    const oAction = oProps.action;
-    const oCounter = oProps.counter;
+    const [ actionsDataStt, setActionsDataStt ] = useState({});
+    const { actionsDataCtt, setActionsDataCtt } = useContext(ActionsData);
 
     let oCounterState = {};
     for (const i in oAction.menu.items) {
@@ -83,6 +63,50 @@ export default function ElementReactions(oProps) {
 
     const [ popupVisibleByDvd, setPopupVisibleByDvd ] = useState(oCounterState);
 
+    const isContextVar = (sName) => {
+        const sContextKey = getName();
+
+        if(bShowFull)
+            return actionsDataStt && actionsDataStt[sContextKey] != undefined && actionsDataStt[sContextKey][sName] != undefined;
+        else
+            return actionsDataCtt && actionsDataCtt[sContextKey] != undefined && actionsDataCtt[sContextKey][sName] != undefined;
+    };
+
+    const getContextVar = (sName) => {
+        const sContextKey = getName();
+
+        if(bShowFull)
+            return actionsDataStt[sContextKey][sName];
+        else
+            return actionsDataCtt[sContextKey][sName];
+    };
+
+    const getContextVars = () => {
+        const sContextKey = getName();
+
+        if(bShowFull)
+            return actionsDataStt && actionsDataStt[sContextKey] ? actionsDataStt[sContextKey] : null;
+        else
+            return actionsDataCtt && actionsDataCtt[sContextKey] ? actionsDataCtt[sContextKey] : null;
+    };
+
+    const setContextVars = (mValue) => {
+        const sContextKey = getName();
+        const oValue = {[sContextKey]: mValue};
+
+        if(bShowFull) {
+            if(!actionsDataStt)
+                setActionsDataStt(oValue);
+            else
+                setActionsDataStt({...actionsDataStt, ...oValue});
+        }
+        else {
+            if(!actionsDataCtt)
+                setActionsDataCtt(oValue);
+            else
+                setActionsDataCtt({...actionsDataCtt, ...oValue});
+        }
+    };
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
@@ -209,13 +233,10 @@ export default function ElementReactions(oProps) {
         );
     };
 
-    //--- default display type: action, counter, both.
-    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
-
+    
     //--- show action
     const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
     
-    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
     const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
 
@@ -318,7 +339,6 @@ export default function ElementReactions(oProps) {
     }
 
     //--- show counter
-    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
     const sShowCounterStyle = oParams?.show_counter_style || 'compound'; //'divided';
 
     const getCounterDivided = () => {
@@ -460,8 +480,8 @@ export default function ElementReactions(oProps) {
 
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row">
-            {bShowAction && <View key={sObject + '-action'} className="flex-auto">{sAction}</View>}
+        <View className="flex-auto flex-row items-center">
+            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sAction}</View>}
             {bShowCounter && <View key={sObject + '-counter'} className="flex-auto flex-row">{sCounter}</View>}
         </View>
     );
