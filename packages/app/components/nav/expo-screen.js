@@ -39,10 +39,10 @@ export function Screen(params) {
 
     function Header(text){      
         return (
-            <Row className='w-full h-16 items-center '>
-                { backButtonPresented ? <Pressable className="mr-4 bg-backgroundcell dark:bg-backgroundcell-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+            <Row className='w-auto w-full  py-2  '>
+                { backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={routerExpo.back} >
                 <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>}
-                { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  text-white dark:text-gray-50 text-xl'>{text}</Text>}
+                { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  text-neutral-800 dark:text-neutral-200 text-xl'>{text}</Text>}
             </Row>
         )
     }

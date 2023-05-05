@@ -10,10 +10,13 @@ import { Transition } from '@headlessui/react'
 
 function CoverMenu(){
     return (
-        <View className=' mx-auto flex-row  gap-2'>
-            <Button title="Follow" variant="primary" fullWidth />
-            <Button title="Message" variant="default" fullWidth/>
+<View className='w-full  '>
+        <View className=' w-full justify-start align-end flex-row gap-2'>
+            <Button  size='sm' startDecorator="ChatTeardropDots" variant="default" fullWidth/>
+            <Button title="Follow" size='sm' startDecorator="UserPlus" variant="primary" fullWidth />
+            
         </View>
+    </View>
     );
 }
 
@@ -24,9 +27,9 @@ export function CoverSmall(props) {
         <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark  w-full ' >
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
             
-                <View className=' mx-4 py-2 border-b border-bordercolor dark:border-bordercolor-dark   flex-row gap-2'>
+                <View className=' mx-4 py-2    flex-row gap-2'>
                     <Row className=' items-center  flex-auto'>
-                        <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
+                        <Profile {...data.profile} displayType="unit_wo_info" displaySize="base" />
                         <View className='flex-row items-center ml-3'>
                         
                             <Text className="text-lg xl:text-xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
@@ -69,14 +72,14 @@ export default function ElementCover(props) {
     }*/
     
     return (
-      <View className=' backdrop-blur  bg-backgroundtabbar dark:bg-backgroundtabbar-dark ' >
+      <View className=' backdrop-blur  bg-backgroundnavbar dark:bg-backgroundnavbar-dark ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
                 
                 <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[20%]  xl:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                 </View>
                 
-                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center border-b border-bordercolor dark:border-bordercolor-dark '>
+                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center  border-bordercolor dark:border-bordercolor-dark '>
                     <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
                     </View>

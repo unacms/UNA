@@ -140,19 +140,19 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             navigation.setOptions({ headerRight:  () => (addButtons) });
 
             return (
-                <View className="bg-backgroundtabbar dark:bg-backgroundtabbar-dark">
+                <View className="">
                     <Row  >
                         {props.navigationState.routes.map((a) => (
-                            <Pressable className="flex-1 items-center justify-center py-3.5 "
+                            <Pressable className="flex-1 bg-backgroundnavbar dark:bg-backgroundnavbar-dark items-center justify-center py-2.5 border-b border-bordercolortabbar dark:border-bordercolortabbar-dark"
                                 key={`tab-${a.index}`}
                                 onPress={() => {
                                     setIndex(a.index)
                                 }}
                             >
-                                <Text className="font-bold text-base" style={{color: (props.navigationState.index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                                <Text className="font-semibold text-base" style={{color: (props.navigationState.index === a.index ? colors.activeTabText : colors.tabText)}}>{a.title}</Text>
                             </Pressable>
                         ))}
-                        <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 3, backgroundColor: colors.primary, maxWidth:150}}></View></Animated.View>
+                        <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>
                     </Row>
                 </View>
         

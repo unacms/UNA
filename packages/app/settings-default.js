@@ -275,6 +275,8 @@ import Svg, {Path} from 'react-native-svg'
                 blockBorder: '#E5E7EB',
                 tabsBackground: '#F3F4F6',
                 activeTabBackground: '#DBEAFE',
+                tabText: 'rgba(75,85,99,1)',
+                activeTabText: 'rgba(3,7,18,1)',
                 screenBackground: '#E5E7EB',
             },
             dark: {
@@ -286,6 +288,8 @@ import Svg, {Path} from 'react-native-svg'
                 selectBorder: 'rgba(55, 65, 81, 0.3)',
                 fieldBackground: '#030712',
                 blockBorder: '#030712',
+                tabText: 'rgba(156,163,175,1)',
+                activeTabText: 'rgba(249,250,251,1)',
                 screenBackground: '#030407',
             },
             button_styles: {

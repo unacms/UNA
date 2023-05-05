@@ -30,11 +30,11 @@ export default function PageLayout(props) {
 
             </View>
             <View className="flex-auto  w-3/4 xl:w-4/5 flex-row duration-200">
-                <View className="flex-auto sm:p-2 w-2/3">
+                <View className="flex-auto w-2/3">
                 <BlockByName data={props.data} name={props.blocks.feed} />
                 </View>
 
-                <View className="hidden sm:p-2 xl:block w-1/3   flex-none duration-200">
+                <View className="hidden xl:block w-1/3   flex-none duration-200">
                 <BlockByName data={props.data} name={props.blocks.posts} />
                 </View>
             </View>

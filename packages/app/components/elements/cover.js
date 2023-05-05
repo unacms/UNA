@@ -8,14 +8,15 @@ import Image from '../../ui/atoms/image';
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'; 
-import { Canvas, Fill,Image as Image2, BackdropBlur, ColorMatrix, useImage } from "@shopify/react-native-skia";
+import { Canvas, Fill,Image as Image2, BackdropBlur, useImage } from "@shopify/react-native-skia";
 
 function CoverMenu(){
     return (
-    <View className='w-full mt-2 '>
-        <View className=' w-full justify-start align-end flex-row space-x-2'>
-            <Button title="Follow" variant="primary" fullWidth />
-            <Button title="Message" variant="default" fullWidth/>
+    <View className='w-full mt-3 '>
+        <View className=' w-full justify-start align-end flex-row gap-2'>
+        <Button  size='sm' startDecorator="ChatTeardropDots" variant="default" fullWidth/>
+            <Button title="Follow" size='sm' startDecorator="UserPlus" variant="primary" fullWidth />
+            
         </View>
     </View>
     );
@@ -49,7 +50,7 @@ return (
                     fit="cover"
                 />
                 <BackdropBlur
-                    blur={4}
+                    blur={10}
                     clip={{ x: 0, y: 0, width: windowWidth, height: 256 }}
                 >
                     <Fill color="rgba(0, 0, 0, 0.1)" />
@@ -57,11 +58,12 @@ return (
             </Canvas>
             )}
         </View>
+        
         <Pressable className="mr-2 ml-2 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
-            <Icon icon="left" width={24} height={24} color={colors.barsColor} />
+            <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
         </Pressable>
-        <Profile {...data.profile} displayType="unit_wo_info" displaySize="lg" />
-        <H1C className="font-bold ml-2 tracking-tight text-white dark:text-gray-50">{data.profile.display_name}</H1C>
+        <Profile {...data.profile} displayType="unit_wo_info" displaySize="base" />
+        <H1C className="font-bold text-base ml-2 tracking-tight text-white dark:text-gray-50">{data.profile.display_name}</H1C>
     </Row>
     );
 }
@@ -81,13 +83,13 @@ export default function ElementCover(props) {
             { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />}
         </View>
         <Row className=' justify-left w-full h-24 pt-12' >
-            <Pressable className="mr-4 ml-4 bg-backgroundcell dark:bg-backgroundcell-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
+            <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >
                 <Icon icon="left" width={24} height={24} color={colors.barsColor} />
             </Pressable>
         </Row>
-        <View className='px-2 mt-24 bg-backgroundcell dark:bg-backgroundcell-dark pb-2' >
+        <View className='px-2 mt-24 bg-backgroundnavbar dark:bg-backgroundnavbar-dark pb-2' >
             <View className='flex-row '>
-                <View className=' absolute -translate-y-12 bg-backgroundcell dark:bg-backgroundcell-dark rounded-full p-1 '>
+                <View className=' absolute -translate-y-12 bg-backgroundnavbar dark:bg-backgroundnavbar-dark rounded-full p-1 '>
                     <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
                 </View>
                 <View className='ml-auto '>
@@ -95,7 +97,7 @@ export default function ElementCover(props) {
                 </View>
             </View>
             <View className='w-full px-2 mt-4'>
-                <H1C className="font-bold tracking-tight text-2xl text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+                <H1C className="font-bold tracking-tight text-xl text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
                 <Text numberOfLines={1} className='text-base text-gray-800 dark:text-gray-200 text-wrap '>{stripTags(data.profile.info.description)}</Text>
             </View>
         </View>
