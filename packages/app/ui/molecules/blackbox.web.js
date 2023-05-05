@@ -76,7 +76,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
+        const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -134,41 +134,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
 
     const viewRef = useRef(null);
-   // const isWheeling = useRef(false);
-   // const wheelTimeout = useRef(null);
 
-    /*const handleWheel = (event) => {
-        if (scroll.value == 0)
-            return;
-        if (isWheeling.current) {
-            clearTimeout(wheelTimeout.current);
-        } else {
-            isWheeling.current = true;
-            if (viewRef.current) {
-                viewRef.current.setNativeProps({
-                    style: {
-                        zIndex: 0,
-                     },
-                });
-            }
-        }
-    
-        wheelTimeout.current = setTimeout(() => {
-            isWheeling.current = false;
-            handleWheelEnd();
-        }, 150); 
-    };
-    
-    const handleWheelEnd = () => {
-        if (viewRef.current) {
-            viewRef.current.setNativeProps({
-                style: {
-                    zIndex: 50,
-                },
-            });
-        }
-      };
-*/
     const renderHeader =  useCallback(() => {
         const d = 200;
         let menuHeight = 48;
@@ -203,9 +169,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 height,
             };
         });
-        
-          
-        
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {

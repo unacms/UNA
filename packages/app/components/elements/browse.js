@@ -1,7 +1,7 @@
 
 
 import Unit from '../unit';
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { View, FlatList, FlashList } from 'app/design/view'
 
 import { useWindowDimensions} from 'react-native';
@@ -107,6 +107,16 @@ export default function ElementBrowse(props) {
         styles = {height: (defParams?.height ? defParams.height : windowHeight - 64)}
     }
 
+    const viewRef = useRef(null);
+
+    const handleLayoutCmt = (event, id) => {
+        viewRef.current.measure((x, y, width, height, pageX, pageY) => {
+          
+            props.handleCmt(pageY, id, viewRef)
+          });
+    };
+
+
     return (
         (data.data.length > 0) && <View className={'w-full ' + (data.unit == 'comments' ? '' : 'h-full')} >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
@@ -132,7 +142,7 @@ export default function ElementBrowse(props) {
             /></View>
             }
             { (data.unit == 'comments') && <View  style={styles.cardList}>
-                {data.data.map(a => <Unit key={a.id ? a.id : Object.keys(a)[0]} unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} />)}
+                {data.data.map(a => <View ref={viewRef} onLayout={(event) => handleLayoutCmt(event, Object.keys(a)[0])}  key={a.id ? a.id : Object.keys(a)[0]} ><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} /></View>)}
             </View>
             }
             

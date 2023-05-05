@@ -158,6 +158,10 @@ import Svg, {Path} from 'react-native-svg'
                     feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
                     posts: {name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
+                header:[
+                    {icon: 'plus', name: "Add", link: '/create-post'},
+                    {icon: 'search', name:"Search"},
+                ]
             },
             //############ POSTS PAGES ############
             'posts-home':{
@@ -165,6 +169,7 @@ import Svg, {Path} from 'react-native-svg'
                 blocks: {
                     browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
+                icon:'File',
             },
             'posts-popular':{
                 layout: 'custom_blackbox',
@@ -186,7 +191,8 @@ import Svg, {Path} from 'react-native-svg'
                 layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false},
-                }
+                },
+                icon:'UsersThree'
             },
             'groups-joined':{
                 layout: 'custom_blackbox',
@@ -231,7 +237,8 @@ import Svg, {Path} from 'react-native-svg'
                 layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
-                }
+                },
+                icon:'Users'
             },
             'persons-active':{
                 layout: 'custom_blackbox',
@@ -262,7 +269,11 @@ import Svg, {Path} from 'react-native-svg'
                 layout: 'custom_blackbox',
                 blocks: {
                     browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
-                }
+                },
+                header:[
+                    {icon: 'search', name:"Search"},
+                ],
+                icon:'Bell'
             },
         },
         theme: {
@@ -359,9 +370,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab1',
-                    title: 'Explore',
+                    title: 'Posts',
                     url: '/posts-home',
-                    icon: 'app-explore',
+                    icon: 'NoteBlank',
                 },
                 {
                     key:'/tab2',
@@ -371,9 +382,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab3',
-                    title: 'Add',
-                    url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
-                    icon: 'app-plus',
+                    title: 'Groups',
+                    url: '/groups-home', //'/view-persons-profile/dr-andrey-yasko-phd',
+                    icon: 'UsersThree',
                 },
                 {
                     key:'/tab4',
@@ -397,9 +408,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab1',
-                    title: 'Explore',
+                    title: 'Posts',
                     url: '/posts-home',
-                    icon: 'app-explore',
+                    icon: 'NoteBlank',
                 },
                 {
                     key:'/tab2',
@@ -409,9 +420,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab3',
-                    title: 'Add',
-                    url: '/create-post', //'/view-persons-profile/dr-andrey-yasko-phd',
-                    icon: 'app-plus',
+                    title: 'Groups',
+                    url: '/groups-home', //'/view-persons-profile/dr-andrey-yasko-phd',
+                    icon: 'UsersThree',
                 },
                 {
                     key:'/tab4',

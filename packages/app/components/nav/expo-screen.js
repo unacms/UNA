@@ -3,15 +3,11 @@ import { useState, useEffect } from 'react'
 import { useNavigation, usePathname } from "expo-router";
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, SvgLogoNative } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { useIsFocused } from '@react-navigation/native';
-import { Text } from 'app/design/typography'
-import Svg, {Path} from 'react-native-svg'
-import { View, Row, Pressable } from 'app/design/view'
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Icon } from 'app/ui/atoms/icon'; 
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
+import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 
 export function Screen(params) {
     const { currentUser } = useCurrentUser();
@@ -36,20 +32,9 @@ export function Screen(params) {
         return state.routes.length > 1;
     });
 
-
-    function Header(text){      
-        return (
-            <Row className='w-auto w-full  py-2  '>
-                { backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={routerExpo.back} >
-                <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>}
-                { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  text-neutral-800 dark:text-neutral-200 text-xl'>{text}</Text>}
-            </Row>
-        )
-    }
-
     const isFocused2 = useIsFocused();
     useEffect(() => {
-        navigation.setOptions({ headerTitle:() => Header('Loading')});
+       // navigation.setOptions({ headerTitle:() => Header('Loading')});
      //   navigation.setOptions({ headerRight:  () => (addButtons) });
 
         const fetchPageData = async () => {
@@ -70,12 +55,9 @@ export function Screen(params) {
                             header:(props) => Header(data.props.data.title)
                         });
                     }*/
-                    navigation.setOptions({ 
-                        headerBackVisible: false, 
-
-                        headerTitle:(props) => Header(data.props.data.title)
-                    });
-                   
+                    let settings = appSetting('layouts', data.props.data.uri)
+                    updateRightHeader(settings?.header, navigation);
+                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, settings?.icon);
                 }
             }
       };

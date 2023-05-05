@@ -1,7 +1,7 @@
 import ActionsDataContext from 'app/context/actions';
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Text} from 'app/design/typography'
 
 import { View, Pressable, Row } from 'app/design/view'
@@ -61,6 +61,12 @@ export default function UnitComments(props) {
     const handleShowImage = (img) => {
         setShowImage(img);
     } 
+
+    const cmtRef = useRef();
+
+    const handleLayoutCmt = (event, id) => {
+        props.handleCmt(event.nativeEvent, id, cmtRef)
+    };
 
     const levels = new Array(level);
     let cells = [];
@@ -139,7 +145,7 @@ export default function UnitComments(props) {
             </View>
             {(items.length != 0 && view != 'flat') && <View className='relative flex-row'>    
                 <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <UnitComments lvls = {lvls} level = {level+1} last_child = {last_child} key={items[a].id} module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} />)}
+                    {Object.keys(items).map(a => <View onLayout={(event) => handleLayoutCmt(event, items[a].id)}  key={items[a].id} ><UnitComments lvls = {lvls} level = {level+1} last_child = {last_child}  module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} /></View>)}
                 </View>
             </View> 
             }
