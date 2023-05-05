@@ -19,7 +19,7 @@ export default function PageLayout(props) {
     const navigation = useNavigation();
 
     setTimeout(() => {
-      updateCenterHeader(null, <View className='w-80 '><BlockByName data={props.data} name={props.blocks.author}/></View>, true, navigation, routerExpo, colors, null);
+      updateCenterHeader(null, <View style={{width:360}} className=' items-center  '><BlockByName data={props.data} name={props.blocks.author}/></View>, true, navigation, routerExpo, colors, null);
     }, 100);
     
 

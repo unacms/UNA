@@ -5,6 +5,7 @@ import Link from 'app/ui/atoms/link'
 import { View, Row, Pressable } from 'app/design/view'; 
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
+import { useWindowDimensions} from 'react-native';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -42,7 +43,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
     <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
     if (type == 'string'){
         header = (
-            <Row className='w-auto w-full  py-2  items-center '>
+            <Row className='w-auto w-full   items-center '>
                 {backButton}
                 { icon ? <Icon icon={icon} width={24} height={24} color={colors.barsColor} /> : <></>}
                 { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>{header}</Text>}
@@ -50,7 +51,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
         )
     }
     else{
-        header = ( <Row className='w-auto w-full  py-2  items-center '>
+        header = ( <Row  className=' flex-1   items-center '>
                 {backButton}
                 {header}
         </Row> );
