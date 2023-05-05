@@ -107,8 +107,8 @@ const colors = {
   },
 
   backgroundmodal: {
-    DEFAULT: 'rgba(243,244,246,0.8)',
-    dark: 'rgba(55,65,81,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(31,41,55,0.8)',
   },
   bordercolormodal: {
     DEFAULT: 'rgba(209,213,219,0.8)',

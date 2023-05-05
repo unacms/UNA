@@ -46,16 +46,16 @@ export function Modal(props/*: ModalPropsCustom*/) {
 
   return (
     <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={true}>
-      <Wrapper className="flex justify-end w-full h-full pb-4 bg-gray-300/50 dark:bg-gray-700/50" {...(!!props.onClose && { onPress: props.onClose })}>
+      <Wrapper className="flex justify-end w-full h-full pb-4 bg-gray-100/80 dark:bg-gray-900/80" {...(!!props.onClose && { onPress: props.onClose })}>
           <View className="flex-row justify-center items-center left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
               <View className="relative w-full h-full max-w-2xl md:h-auto">
-                  <View className="relative bg-neocard border border-neoborder dark:border-neoborder-dark dark:bg-neocard-dark rounded-lg shadow-2xl">
+                  <View className="relative bg-backgroundmodal border border-bordercolormodal dark:border-bordercolormodal-dark dark:bg-backgroundmodal-dark rounded-lg shadow-2xl">
                       <View className="p-2">
                           <Row className={'items-center ' + (!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
                             { !!props.title && <View><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>{props.title}</Text></View>}
                             { !!props.onClose && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={props.onClose}/></View>}
                           </Row>
-                          <View className="space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
+                          <View className="space-y-8 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
                       </View>
                   </View>
               </View>
