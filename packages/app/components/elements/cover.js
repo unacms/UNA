@@ -97,7 +97,7 @@ export default function ElementCover(props) {
                 </View>
             </View>
             <View className='w-full px-2 mt-4'>
-                <H1C className="font-bold tracking-tight text-2xl text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
+                <H1C className="font-bold tracking-tight text-xl text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
                 <Text numberOfLines={1} className='text-base text-gray-800 dark:text-gray-200 text-wrap '>{stripTags(data.profile.info.description)}</Text>
             </View>
         </View>

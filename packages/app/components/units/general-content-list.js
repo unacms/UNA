@@ -222,8 +222,8 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                 
                 <View className="
                 flex-auto
-                 p-1 mt-1 sm:mx-2 sm:mt-2                   
-                 group duration-200 overflow-hidden sm:rounded-lg  
+                 p-1 mt-1 mx-2 sm:mt-2                   
+                 group duration-200 overflow-hidden rounded-lg  
                  bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
                  hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                  border  
