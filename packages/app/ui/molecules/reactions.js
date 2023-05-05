@@ -1,11 +1,11 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Platform, FlatList } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
-import { View, Pressable } from 'app/design/view';
+import { View, Pressable, FlashList } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
     DropdownMenuContentH, 
@@ -48,8 +48,8 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const [ actionsDataStt, setActionsDataStt ] = useState({});
-    const { actionsDataCtt, setActionsDataCtt } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useContext(ActionsData);
+    const [ actionsDataState, actisetActionsDataState ] = useState({});
 
     let oCounterState = {};
     for (const i in oAction.menu.items) {
@@ -67,27 +67,27 @@ export default function ElementReactions(oProps) {
         const sContextKey = getName();
 
         if(bShowFull)
-            return actionsDataStt && actionsDataStt[sContextKey] != undefined && actionsDataStt[sContextKey][sName] != undefined;
+            return actionsDataState && actionsDataState[sContextKey] != undefined && actionsDataState[sContextKey][sName] != undefined;
         else
-            return actionsDataCtt && actionsDataCtt[sContextKey] != undefined && actionsDataCtt[sContextKey][sName] != undefined;
+            return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
     };
 
     const getContextVar = (sName) => {
         const sContextKey = getName();
 
         if(bShowFull)
-            return actionsDataStt[sContextKey][sName];
+            return actionsDataState[sContextKey][sName];
         else
-            return actionsDataCtt[sContextKey][sName];
+            return actionsData[sContextKey][sName];
     };
 
     const getContextVars = () => {
         const sContextKey = getName();
 
         if(bShowFull)
-            return actionsDataStt && actionsDataStt[sContextKey] ? actionsDataStt[sContextKey] : null;
+            return actionsDataState && actionsDataState[sContextKey] ? actionsDataState[sContextKey] : null;
         else
-            return actionsDataCtt && actionsDataCtt[sContextKey] ? actionsDataCtt[sContextKey] : null;
+            return actionsData && actionsData[sContextKey] ? actionsData[sContextKey] : null;
     };
 
     const setContextVars = (mValue) => {
@@ -95,16 +95,16 @@ export default function ElementReactions(oProps) {
         const oValue = {[sContextKey]: mValue};
 
         if(bShowFull) {
-            if(!actionsDataStt)
-                setActionsDataStt(oValue);
+            if(!actionsDataState)
+                actisetActionsDataState(oValue);
             else
-                setActionsDataStt({...actionsDataStt, ...oValue});
+                actisetActionsDataState({...actionsDataState, ...oValue});
         }
         else {
-            if(!actionsDataCtt)
-                setActionsDataCtt(oValue);
+            if(!actionsData)
+                setActionsData(oValue);
             else
-                setActionsDataCtt({...actionsDataCtt, ...oValue});
+                setActionsData({...actionsData, ...oValue});
         }
     };
 
@@ -327,7 +327,7 @@ export default function ElementReactions(oProps) {
                 <View>
                     <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
                     <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                        <FlatList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                        <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                             return (
                                 <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
                             );                                        

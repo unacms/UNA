@@ -29,8 +29,8 @@ export default function ElementLikes(oProps) {
         return [].concat(aName).join('-');
     };
 
-    const [ actionsDataStt, setActionsDataStt ] = useState({});
-    const { actionsDataCtt, setActionsDataCtt } = useContext(ActionsData);
+    const { actionsData, setActionsData } = useContext(ActionsData);
+    const [ actionsDataState, asetActionsDataState ] = useState({});
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
@@ -39,18 +39,18 @@ export default function ElementLikes(oProps) {
         const sContextKey = getName();
 
         if(bShowFull)
-            return actionsDataStt && actionsDataStt[sContextKey] != undefined && actionsDataStt[sContextKey][sName] != undefined;
+            return actionsDataState && actionsDataState[sContextKey] != undefined && actionsDataState[sContextKey][sName] != undefined;
         else
-            return actionsDataCtt && actionsDataCtt[sContextKey] != undefined && actionsDataCtt[sContextKey][sName] != undefined;
+            return actionsData && actionsData[sContextKey] != undefined && actionsData[sContextKey][sName] != undefined;
     };
 
     const getContextVar = (sName) => {
         const sContextKey = getName();
 
         if(bShowFull)
-            return actionsDataStt[sContextKey][sName];
+            return actionsDataState[sContextKey][sName];
         else
-            return actionsDataCtt[sContextKey][sName];
+            return actionsData[sContextKey][sName];
     };
 
     const setContextVars = (mValue) => {
@@ -60,16 +60,16 @@ export default function ElementLikes(oProps) {
         oValue[sContextKey] = mValue;
 
         if(bShowFull) {
-            if(!actionsDataStt)
-                setActionsDataStt(oValue);
+            if(!actionsDataState)
+                asetActionsDataState(oValue);
             else
-                setActionsDataStt({...actionsDataStt, ...oValue});
+                asetActionsDataState({...actionsDataState, ...oValue});
         }
         else {
-            if(!actionsDataCtt)
-                setActionsDataCtt(oValue);
+            if(!actionsData)
+                setActionsData(oValue);
             else
-                setActionsDataCtt({...actionsDataCtt, ...oValue});
+                setActionsData({...actionsData, ...oValue});
         }
     };
 
