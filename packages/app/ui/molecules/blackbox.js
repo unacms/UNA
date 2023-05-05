@@ -10,11 +10,10 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
-import { Button } from 'app/design/controls';
-import Link from 'app/ui/atoms/link'
 import { appSetting } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
+import { updateRightHeader } from 'app/lib/native-handlers';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
@@ -130,14 +129,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (props.navigationState.routes.length > 1){
 
             const menuSettings = appSetting('menu_items', menu.object);
-            const addButtons = menuSettings.add?.map((button) => {
-                let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm"/>;
-                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
-                return (
-                    <View  key={`add-${button.icon}`} >{btn}</View>
-            )});
-
-            navigation.setOptions({ headerRight:  () => (addButtons) });
+            updateRightHeader(menuSettings.add, navigation);
 
             return (
                 <View className="">

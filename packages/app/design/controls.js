@@ -191,6 +191,7 @@ export function Button(props/*: ButtonProps*/) {
   }
   const { colors } = Theme()
   let colorIcon = props.variant == 'link' ? colors.primary: '';
+  colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)': '';
   let sButtonIconStart = undefined;
   if(buttonIconStart != '' && !buttonIconEnd) {
     if(Array.isArray(buttonIconStart)) {

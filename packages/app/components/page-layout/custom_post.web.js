@@ -9,22 +9,20 @@ export default function PageLayout(props) {
     const commentsData = DataByName(props.data, props.blocks.comments);
 
     const scrollViewRef = useRef();
+    let a = [];
+    let scrollToId = null;
+    const handleScrollToElement = (id) => {
+       
+    };
 
-    const handleScrollToElement = () => {
-        console.log('scroll');
-        // Replace 500 with the calculated Y-offset of the target element.
-        const yOffset = 500;
-        scrollViewRef.current.scrollTo({
-          x: 0,
-          y: yOffset,
-          animated: true,
-        });
+      const handleCmt = (event, id) => {
+       
       };
 
-    return (<ScrollView className="w-full sm:p-5 max-w-5xl mx-auto" ref={scrollViewRef} >
+    return (<ScrollView className="w-full sm:p-5 max-w-5xl mx-auto h -48" ref={scrollViewRef} >
         <BlockByName data={props.data} name={props.blocks.author}/>
         <BlockByName data={props.data} name={props.blocks.text}/>
         <BlockByName data={props.data} name={props.blocks.actions}/>
-        <Comments {...commentsData.content[0]} handleScrollToElement={handleScrollToElement}></Comments>
+        <Comments {...commentsData.content[0]} handleScrollToElement={handleScrollToElement} handleCmt={handleCmt}></Comments>
     </ScrollView>)
 }

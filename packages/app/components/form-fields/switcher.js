@@ -7,7 +7,6 @@ export default function FormFieldSwitcher(props) {
     const [isEnabled, setIsEnabled] = useState(props.value == 1 ? true : false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     // TODO: improve value
-    console.log(props);
     return (
         <Field {...props}>
             <Switch
