@@ -76,7 +76,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = windowWidth > 800 ? 160 : (windowWidth - 64)/routes.length ;
+        const tabWidth = windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -88,7 +88,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         const styles = StyleSheet.create({
             indicator: {
                 width: tabWidth,
-                height:3,
+                height:2.5,
                 bottom:0,
                 position:'absolute',
                 justifyContent: 'center',
@@ -106,12 +106,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View className="ml-2 hidden lg:block" key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur border-b  border-bordercolortabbar dark:border-bordercolortabbar-dark bg-backgroundtabbar dark:bg-backgroundtabbar-dark"  >
+                <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    <Row className="items-center gap-0 mx-4">
-                        {menuSettings?.icon ? <View className="hidden lg:block"><Icon size={32} icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text  className="hidden lg:block text-xl mx-2 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
-                            <Row className="items-center mx-auto" >
+                        <Row className="items-center gap-0 mx-4">
+                        {menuSettings?.icon ? <View className="text-3xl lg:text-4xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
+                        {menuSettings?.name ? <Text  className="hidden lg:block text-xl  mr-4 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
+                            <Row className="  mr-auto" >
                             
                                 {routes.map((a) => (
                                     <Pressable style={{width:tabWidth}} className=" py-3 items-center"
@@ -120,10 +120,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                             setIndex(a.index)
                                         }}
                                     >
-                                        <Text className="font-semibold text-base" style={{color: (index === a.index ? colors.primary : colors.default)}}>{a.title}</Text>
+                                        <Text className="font-semibold text-base pb-0.5" style={{color: (index === a.index ? colors.activeTabText : colors.tabText)}}>{a.title}</Text>
                                     </Pressable>
                                 ))}
-                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 3, backgroundColor: colors.primary, maxWidth:160}}></View></Animated.View>
+                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>
                             </Row>
                             {addButtons}
                         </Row>
