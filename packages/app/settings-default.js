@@ -120,6 +120,7 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info', 'persons-profile-friends'],
+                
             'bx_groups_submenu': {
                 name:'Groups',
                 icon:'UsersThree',

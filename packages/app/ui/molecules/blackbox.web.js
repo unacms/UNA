@@ -76,7 +76,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
+        const tabWidth = 100; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -114,16 +114,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <Row className="  mr-auto" >
                             
                                 {routes.map((a) => (
-                                    <Pressable style={{width:tabWidth}} className=" py-3 items-center"
+                                    <Pressable style={{width:tabWidth}} className=" py-1.5 items-center"
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index)
                                         }}
                                     >
-                                        <Text className="font-semibold text-base pb-0.5" style={{color: (index === a.index ? colors.activeTabText : colors.tabText)}}>{a.title}</Text>
+                                        <Button id="tab" variant="text" rounded size='sm' title={a.title}   />
                                     </Pressable>
                                 ))}
-                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>
+                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
                             </Row>
                             {addButtons}
                         </Row>

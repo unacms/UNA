@@ -79,40 +79,37 @@ export default function ElementCover(props) {
                         { !!data.cover && <Image alt={data.group_name} view="cover" className="u-cover " src={data.cover.src} />  }
                 </View>
                 
-                <View className='w-auto lg:flex-row mx-4 py-1 relative gap-4 items-center  border-bordercolor dark:border-bordercolor-dark '>
-                    <View className={sType + " p-1 -mt-16 sm:-mt-24 flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
-                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 640? "4xl" : "3xl"} />
+                <View className='w-auto flex-col-reverse lg:flex-row px-4 py-3 relative gap-4   border-bordercolor dark:border-bordercolor-dark '>
+                    <View className={sType + " p-1 -top-16 lg:-top-24 left-3 -translate-y-1  absolute  mr-auto flex-none bg-backgroundcard dark:bg-backgroundcard-dark "} >
+                        <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 1024? "4xl" : "3xl"} />
                     </View>
                     
-                    <View className=' flex-col w-full  lg:flex-row justify-between gap-4 flex-auto '>
-                        <View className='flex-col gap-2 items-center lg:items-start  lg:ml-0'>
-                                    <Row>
-                                    <Text className=" tracking-tight truncate text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
+                    <View className='flex-col   gap-3 items-start  lg:ml-52'>
+                                    <Row className='flex-row mt-1 lg:mt-0  items-center'>
+                                    <Text className="ml-1 tracking-tight truncate text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
 
                                     <Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth />
 
                                     </Row>
                                     
-                                    <View className='flex-row  gap-1 -mx-2 text-center flex-wrap'>
-
+                                    <View className='flex-row  gap-1  text-center flex-wrap'>
+                                        <Button title="245 followers" size="sm" rounded startDecorator="Users"  variant="outline" fullWidth />
                                         <Button title="Administrator" size="sm" rounded startDecorator="UserCircle"  variant="text" fullWidth />
                                         <Button title="Joined Dec 2021" size="sm" rounded startDecorator="Clock"  variant="text" fullWidth />
-
-                                        <Button title="245 followers" size="sm" rounded startDecorator="Users"  variant="text" fullWidth />
-                                        
-                                    </View>
-                                    <Text numberOfLines={2} className='lg:hidden   text-base text-gray-800 dark:text-gray-200  text-center'>{stripTags(data.profile.info.description)}</Text>
+                                   </View>
+                                    <Text numberOfLines={2} className=' lg:hidden text-base text-gray-800 dark:text-gray-200 '>{stripTags(data.profile.info.description)}</Text>
 
                                     
-                        </View>
-                        
-                        
-                        
                     </View>
-                    <View className='items-start w-auto flex-row pb-4 '>
+                        
+                        
+                        
+                   
+                    <View className='items-start  ml-auto w-auto flex-row '>
                             <CoverMenu/>
                     </View>
                 </View>
+                
             </View>
             
         </View>

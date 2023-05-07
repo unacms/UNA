@@ -48,18 +48,19 @@ function DefaultUnit(data) {
             sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
             active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
             >
-        {data.mainImage &&
-            <View className="w-full  aspect-[3/1] " style={styles.card_image}>
-                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
-            </View>
-        }    
-        <View className="">
+ 
+       
         <View className="px-3 pt-3">
         <Profile className="p-3 gap-3" {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
 
         </View>
+        {data.mainImage &&
+            <View className="w-full mt-4 aspect-[3/1] " style={styles.card_image}>
+                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded"    />
+            </View>
+        }   
         <View className="w-full p-3   flex-col gap-1">
-            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-950 group-hover:text-gray-black dark:text-gray-50  dark:group-hover:text-white  text-xl    tracking-tight font-bold">
+            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50  hover:text-accent-dark  text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 {!showFull ? <View><View className="flex-col gap-3    relative">
@@ -97,7 +98,7 @@ function DefaultUnit(data) {
                 </View>
             </View>
         </ActionsDataContext>
-    </View>
+    
         
     </View>);
 }
