@@ -16,22 +16,11 @@ export default function UnitComments(props) {
     let level = props.level ? props.level : 0
     let current_last_child = props.last_child ? props.last_child : 0
     let lvls= props.lvls ? props.lvls : []
-    let data = '';
-    let items = '';
-    let view = '';
-    let files = [];
-    if (props.data.data){
-        data = props.data.data;
-        items = props.data.items;
-        files = props.data.files;
-        view = props.view
-    }
-    else{
-        data = props.data[Object.keys(props.data)[0]].data;
-        items = props.data[Object.keys(props.data)[0]].items;
-        files = props.data[Object.keys(props.data)[0]].files;
-        view = props.view
-    }
+    let data = props.data;
+    let items = props.items;
+    let view = props.view;
+    let files = props.files;
+    
     // request form for reply
 
     const handleReply = async (id, author, text) => {
@@ -61,28 +50,23 @@ export default function UnitComments(props) {
         setShowImage(img);
     } 
 
-    const cmtRef = useRef();
+
 
     const handleLayoutCmt = (event, id) => {
         props.handleCmt(event.nativeEvent, id, cmtRef)
     };
 
-    const levels = new Array(level);
+
     let cells = [];
 
-    let bNeed = (current_last_child != data.cmt_id ? true: false);
-    lvls[level] = bNeed;
+
     for (let i = 0; i < level; i++){
-        cells.push(<View key={'sp-'+level+'-'+i} className='w-10 h-full '>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
-        {(lvls[i+1]) && <View className="ml-[19px] w-0.5   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+        cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
+        {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-gray-100 dark:bg-gray-800">{lvls[i+1]}</View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100   dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
     };
-    let childs = Object.keys(items);
-    let last_child = 0;
-    if (childs.length > 0){
-        last_child = items[childs[childs.length-1]].id;
-    }
+    
     
 
     return (
@@ -95,14 +79,14 @@ export default function UnitComments(props) {
 
             <View className={ 'cmt-' + data.cmt_id }>
                 <View className={sCommentStyle}>
-                    <View  className="flex-row gap-x-2">
-                    {cells}
-                       <View className="w-10 flex-0 h-full">
+                    <View  className="flex-row gap-x-2  items-stretch">
+                        {cells}
+                       <View className="w-10 flex-0 ">
                             <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]   flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+                            {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]  h-full flex-auto  bg-gray-100 dark:bg-gray-800"><Text>&nbsp;</Text></View> }
                        </View>
                         <View className='flex-1 flex-col gap-y-1 mb-2'>
-                            <View className={sCommentClass+ '  py-2'} >
+                            <View className={sCommentClass + ' py-2'} >
                                 <View className="flex-row flex-1 items-center mb-0.5">
                                     <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                     <Text className="text-gray-500 px-1">·</Text>
@@ -127,21 +111,18 @@ export default function UnitComments(props) {
                                         </Pressable>
                                     ))}
                                 </Row>
+                                
                             </View>
                             <View className='flex-row items-center'>
-                                <Button  align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
-                                <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_action_as_button: false, show_counter: true, classNameItem: 'flex-none flex flex-row pr-2'}} itemsStart={true} />
-                            </View>
+                                    <Button  align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
+                                    <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_action_as_button: false, show_counter: true, classNameItem: 'flex-none flex flex-row pr-2'}} itemsStart={true} />
+                                </View>
+                            
                         </View>
                     </View>
                 </View>
             </View>
-            {(items.length != 0 && view != 'flat') && <View className='relative flex-row'>    
-                <View className = 'flex-auto '>
-                    {Object.keys(items).map(a => <View onLayout={(event) => handleLayoutCmt(event, items[a].id)}  key={items[a].id} ><UnitComments lvls = {lvls} level = {level+1} last_child = {last_child}  module={props.module ? props.module : ''} object_id={props.object_id ? props.object_id : ''} view={data.view ? data.view : ''} unit='comments' mode='small'  handleReply={props.handleReply} data={items[a]} /></View>)}
-                </View>
-            </View> 
-            }
+           
         </View>       
     );
 }
