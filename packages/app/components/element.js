@@ -2,7 +2,6 @@
 import Browse from './elements/browse';
 import Form from './elements/form';
 import Msg from './elements/msg';
-import Comments from './elements/comments';
 import Login from './elements/login';
 import Redirect from './elements/redirect';
 import { Text } from 'app/design/typography';
@@ -25,7 +24,6 @@ const componentsMap = {
     browse: Browse,
     form: Form,
     msg: Msg,
-    comments: Comments,
     login: Login,
     redirect: Redirect,
     entity_text: EntityText,
