@@ -239,11 +239,11 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                             <><View className="relative w-full bg-gray-500/20 rounded aspect-video overflow-hidden justify-end">
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
                                 
-                                    <View className="backdrop-blur-sm bg-neutral-50/80 dark:bg-neutral-950/80  p-2 overflow-hidden w-full  flex-col gap-1 ">
-                                        <Text numberOfLines={2} className='text-neitrl-950 dark:text-neutral-50     text-base   tracking-tight font-semibold'>
+                                    <View className="backdrop-blur-sm bg-neutral-50/80 dark:bg-neutral-950/80  p-2 overflow-hidden w-full  flex-col ">
+                                        <Text numberOfLines={2} className='text-neutral-950 dark:text-neutral-50 leading-6  text-xl sm:text-lg  pb-1   tracking-tight font-semibold'>
                                             {data.title}
                                         </Text>
-                                        <Text numberOfLines={1} className="text-neutral-700 dark:text-neutral-300  ">{data.summary_plain}</Text>
+                                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 text-lg sm:text-sm  ">{data.summary_plain}</Text>
                                     </View>
 
                                 
@@ -252,17 +252,17 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                         
                         {!data.image &&<>
                         
-                        <View className="  p-2 w-full overflow-scroll rounded aspect-video gap-2">
-                                <Text numberOfLines={2}  className='text-neutral-950     dark:text-gray-50 text-base   tracking-tight font-semibold'>
+                        <View className="  p-2 w-full overflow-scroll rounded aspect-video ">
+                                <Text numberOfLines={2}  className='text-neutral-950 pb-1  leading-6  dark:text-gray-50 text-xl sm:text-lg  tracking-tight font-semibold'>
                                     {data.title}
                                 </Text>
-                                <Text numberOfLines={5}  className=" text-neutral-700  dark:text-gray-300 text-sm ">{data.summary_plain}</Text>
+                                <Text numberOfLines={5}  className=" text-neutral-700  dark:text-gray-400 text-base sm:text-sm ">{data.summary_plain}</Text>
                         </View>
                         
                         </>}
 
 
-                        <View className='px-1 pt-2 pb-1'>{sMeta}</View>
+                        <View className='px-1 pt-2 pb-1 w-full'>{sMeta}</View>
                     </Link>
                 </View>
                 
