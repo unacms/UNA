@@ -129,7 +129,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (props.navigationState.routes.length > 1){
 
             const menuSettings = appSetting('menu_items', menu.object);
-            updateRightHeader(menuSettings.add, navigation);
+            setTimeout(() => {
+                updateRightHeader(menuSettings.add, navigation);
+            }, 300);
 
             return (
                 <View className="">
