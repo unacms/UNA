@@ -81,9 +81,6 @@ export default function ElementBrowse(props) {
         let sUrl = undefined;
 
         switch(data.unit) {
-            case 'comments':
-                break;
-
             case 'notifications':
                 sUrl = data.request_url + JSON.stringify({'params': browseParams});
                 break;
@@ -118,7 +115,7 @@ export default function ElementBrowse(props) {
 
 
     return (
-        (data.data.length > 0) && <View className={'w-full ' + (data.unit == 'comments' ? '' : 'h-full')} >
+        (data.data.length > 0) && <View className='w-full h-full' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -126,7 +123,7 @@ export default function ElementBrowse(props) {
                 value={unitMode}
                 data={modeItems}
             /></View>}
-            { (data.unit != 'comments') && <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}>
+            { <View className='w-full h-full ' onLayout={handleLayout}  style = {styles}>
                 <FlashList numColumns={numColumns} horizontal={false} 
                 data={data.data}
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
@@ -141,11 +138,6 @@ export default function ElementBrowse(props) {
                   }
             /></View>
             }
-            { (data.unit == 'comments') && <View  style={styles.cardList}>
-                {data.data.map(a => <View ref={viewRef} onLayout={(event) => handleLayoutCmt(event, Object.keys(a)[0])}  key={a.id ? a.id : Object.keys(a)[0]} ><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={a} /></View>)}
-            </View>
-            }
-            
         </View> 
     );
 
