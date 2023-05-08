@@ -39,9 +39,9 @@ function Small({ data }) {
 }
 
 function Default({ data }) {
-
+//relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto
     return (
-        <View className="relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto">
+        <View className="">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} priority className=" mt-4 u-cover" view="cover"   /></View>}              
             <View className="mx-4 mb-4">
                 <H1 className="font-bold tracking-tight  text-gray-900 dark:text-gray-50 ">{data.entry_title}</H1>

@@ -68,7 +68,7 @@ export default function ElementEntityAuthor(oProps) {
 
     return (
         <View 
-            className={ isWeb ? "mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t  sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x" : " w-full items-center flex-row justify-between  "}>
+            className={ false ? "mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t  sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x" : " w-full items-center flex-row justify-between  "}>
             <View className="flex-auto "><Profile {...oAuthor.author_unit} displayType="unit" displaySize="base" showInfo={sInfo} /></View>
             {session && sMenuManage}
         </View>

@@ -76,9 +76,5 @@ export function parseData (browse, dynamicData) {
     return browse;
 }
 
-export function prepareUrl (requestUrl, commentData, params) {
-    let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
-    return requestUrl + JSON.stringify({...def, ...params});
-}
 
 

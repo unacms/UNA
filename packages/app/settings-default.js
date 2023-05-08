@@ -99,7 +99,7 @@ import Svg, {Path} from 'react-native-svg'
     
         menu_items: {
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
-            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author'],
+            'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author', 'posts-home'],
             'bx_posts_submenu': {
                 name:'Posts',
                 icon:'File',
