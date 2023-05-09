@@ -58,12 +58,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const isLoading = useRef(false);
 
     const handleEndReached = useCallback(async () => {
+        if (isLoading.current) 
+            return;
+        
+            isLoading.current = true;
+
         parseData(routes, index, setRoutes);
         isLoading.current = false;
     }, [routes, index]);
 
     const handleScroll = (event) => {
-        console.log(event.nativeEvent.contentOffset.y)
         if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y < 200)
