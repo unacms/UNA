@@ -176,13 +176,16 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 
     const calcViewHeight =  () => { 
         let hOffset = 94
-        if (Platform.OS != 'web')
+        let padd = 70
+        if (Platform.OS != 'web'){
             hOffset = 155;
+            padd = 0;
+        }
         else{
             if (Dimensions.get('window').width < 1024)
             hOffset = 126
         }
-        return Dimensions.get('window').height - hOffset;
+        return [Dimensions.get('window').height - hOffset, padd];
     }
     
     const [viewHeight, setViewHeight] = useState(calcViewHeight);
@@ -202,12 +205,12 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 
     DataForList(commentData.listData.data.data, 0, 0, []);
 
-    setTimeout(() => {
+    useEffect(() => {
         if (commentData.lastInserted > 0){
             let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
             flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
         }
-    }, 300);
+    }, [commentData.lastInserted]);
 
     let sortItems = [
         {label: 'Newest first', value: 'desc'},
@@ -232,7 +235,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     if (!h)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     return (
-        <View  style={{ height: viewHeight }} >
+        <View  style={{ height: viewHeight[0], paddingBottom: viewHeight[1] }} >
             <FlashList
                 ref={flashListRef}
                 data={dataOut}
@@ -313,6 +316,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
     const handleCancel =  async () => {
         form.data.inputs.cmt_parent_id.value = 0;
         form.data.reset = true;
+        formData.parent_id = 0;
         addCommentData({formText:'', formAuthor:'', parentId:0})
     }    
         
@@ -335,7 +339,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
-                                <Text className='text-xs text-gray-900 dark:text-gray-50'>Reply to: {form.data.inputs.cmt_parent_id.value}</Text>
+                                <Text className='text-xs text-gray-900 dark:text-gray-50'>Reply to:</Text>
                                 <Text className='font-semibold text-xs text-gray-900 dark:text-gray-50'>{ commentData.formAuthor}</Text>
                             </Row>
                             <Text className='text-sm overflow-hidden text-gray-900 dark:text-gray-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
