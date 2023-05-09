@@ -10,11 +10,11 @@ import Profile from 'app/ui/molecules/profile';
 
 export default function ElementScore(oProps) {
     const oIconAliases = {
-        'arrow-up': 'ArrowFatUp',
-        'arrow-down': 'ArrowFatDown'
+        'up': 'ArrowFatUp',
+        'down': 'ArrowFatDown'
     };
 
-    const oParams = oProps.params;
+    const oParams = {...appSetting('social_actions', 'score'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -128,8 +128,8 @@ export default function ElementScore(oProps) {
 
 
     //--- show action
-    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
-    const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
+    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
@@ -139,18 +139,15 @@ export default function ElementScore(oProps) {
         const bShowActionVoted = oItem?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
         const bShowActionDisabled = oItem?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
 
-        let sIcon = oItem?.icon || '';
         let sTitle = oItem?.title || '';
         if(isContextVar(sAction)) {
             const oItemGlobal = getContextVar(sAction);
-            if(oItemGlobal?.icon)
-                sIcon = oItemGlobal.icon;
             if(oItemGlobal?.title)
                 sTitle = oItemGlobal.title;
         }
 
         return (
-            <ButtonAction startDecorator={oIconAliases[sIcon]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
         );
     });
 
@@ -174,7 +171,7 @@ export default function ElementScore(oProps) {
                             <Profile {...aVote.author_data} />
                         </View>
                         <View className="flex-none">
-                            <Icon icon={oIconAliases[oCounter[aVote.vote_type].icon]} />
+                            <Icon icon={oIconAliases[aVote.vote_type]} />
                         </View>
                     </View>
                 );

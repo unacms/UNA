@@ -13,7 +13,7 @@ export default function ElementEntityActions(props) {
                         <Menu {...props.data} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: false, show_counter: true}} itemsStart={true} />
                     </View>
                     <View className="flex p-2 flex-row  border-t border-neoborder dark:border-neoborder-dark ">
-                        <Menu {...props.data} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: true, show_counter: false, show_do_vote_as_button: false}} />
+                        <Menu {...props.data} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: true, show_counter: false, show_action_as_button: false}} />
                     </View>
                 </View>
             </View>

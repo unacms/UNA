@@ -104,7 +104,32 @@ import Svg, {Path} from 'react-native-svg'
             ]
         },
         social_actions:{
+            like: {
+                show_action: true,
+                show_action_as_button: true,
+                show_action_label: true,
+                show_counter: true
+            },
             reaction:{
+                show_action: true,
+                show_action_as_button: true,
+                show_action_label: true,
+                show_counter: true,
+                show_counter_style: 'compound',
+                items: [
+                    {id: 1, name: 'like'},
+                    {id: 2, name: 'love'},
+                    {id: 3, name: 'joy'},
+                    {id: 4, name: 'surprise'},
+                    {id: 5, name: 'sadness'},
+                    {id: 6, name: 'anger'}
+                ]
+            },
+            score: {
+                show_action: true,
+                show_action_as_button: true,
+                show_action_label: true,
+                show_counter: true,
 
             }
         },

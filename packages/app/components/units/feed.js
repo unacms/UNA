@@ -61,7 +61,7 @@ function DefaultUnit(data) {
             </View>
         }   
         <View className="w-full p-3   flex-col gap-1">
-            <Text numberOfLines={2} ellipsizeMode='head' className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50  hover:text-accent-dark  text-xl    tracking-tight font-bold">
+            <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50  hover:text-accent-dark  text-xl    tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 {!showFull ? <View><View className="flex-col gap-3    relative">
