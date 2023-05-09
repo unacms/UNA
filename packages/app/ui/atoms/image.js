@@ -28,6 +28,6 @@ export default function ElementImage(props) {
     
     //
     return (
-        <SolitoImageStyled {...rest} alt={alt}>{props.children}</SolitoImageStyled>
+        <SolitoImageStyled priority={true} {...rest} alt={alt}>{props.children}</SolitoImageStyled>
     );
 }
