@@ -90,7 +90,7 @@ export default function UnitComments(props) {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-neoborder dark:border-neoborder-dark  rounded-md p-2 my-1'>
                                 <View  className="flex-row items-baseline" >
                                     <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
-                                    <View className=" "><Profile {...data.author_data} unit='unit_wo_info' displaySize='base'  displayType="text" className="" /></View>
+                                    <View className=" "><Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" /></View>
                                 </View>
                                 <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
                             </View>

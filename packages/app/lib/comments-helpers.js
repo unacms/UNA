@@ -176,10 +176,10 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 
     const calcViewHeight =  () => { 
         let hOffset = 94
-        let padd = 70
+        let padd = 60
         if (Platform.OS != 'web'){
-            hOffset = 155;
-            padd = 0;
+            hOffset = 100;
+            padd = 60;
         }
         else{
             if (Dimensions.get('window').width < 1024)
@@ -253,7 +253,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 keyExtractor={item => item.id}
                 estimatedItemSize={200}
                 onEndReached = {handleMore} 
-                onEndReachedThreshold={2}
+                onEndReachedThreshold={1}
                 ListFooterComponent={
                     (commentData.last_count == commentData.perView) ? (
                         <View className='m-2'><Loading/></View>
