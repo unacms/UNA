@@ -111,6 +111,9 @@ export default function ElementBrowse(props) {
     if(Platform.OS === 'web') {
         styles = {height: (defParams?.height ? defParams.height : windowHeight - 64)}
     }
+    else{
+        styles = {height: (defParams?.height ? defParams.height : windowHeight)}
+    }
 
     const viewRef = useRef(null);
 
