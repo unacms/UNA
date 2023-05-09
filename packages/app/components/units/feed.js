@@ -57,11 +57,11 @@ function DefaultUnit(data) {
         </View>
         {data.mainImage &&
             <View className="w-full mt-4 aspect-[3/1] " style={styles.card_image}>
-                    <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="min(1024, 100vw)"    />
+                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="min(500, 100vw)"    />
             </View>
         }   
         <View className="w-full p-3   flex-col gap-1">
-            <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50  hover:text-accent-dark  text-xl    tracking-tight font-bold">
+            <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                 {data.content.title}
             </Text>
                 {!showFull ? <View><View className="flex-col gap-3    relative">
