@@ -13,7 +13,6 @@ export default function Unit(props) {
     
     function getImageSizes(){
         const perLineSettings = appSetting('browse', 'per_line');
-        //console.log('!!!',perLineSettings);
         let str ="";
         for (let i = perLineSettings.length-1; i >= 0; i--) {
 
@@ -24,7 +23,7 @@ export default function Unit(props) {
                 str += "(max-width:" + perLineSettings[i].width + "px) "+(100/perLineSettings[i+1].count)+"vw, ";
             }
         }
-        str += (100/perLineSettings[0].count)+"vw";
+        str += 'min(' + (1280/perLineSettings[0].count) + ', ' + (100/perLineSettings[0].count) + "vw)";
         return str
     }
     

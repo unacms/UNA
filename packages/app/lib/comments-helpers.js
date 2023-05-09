@@ -253,6 +253,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 keyExtractor={item => item.id}
                 estimatedItemSize={200}
                 onEndReached = {handleMore} 
+                onEndReachedThreshold={2}
                 ListFooterComponent={
                     (commentData.last_count == commentData.perView) ? (
                         <View className='m-2'><Loading/></View>

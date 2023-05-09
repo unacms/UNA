@@ -70,7 +70,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 contentContainerStyle={{ paddingTop: scrollViewPaddingTop }}
                 ref={ref}
                 onScroll={handleLayout}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={2}
                 onEndReached={handleEndReached}
             />
         );

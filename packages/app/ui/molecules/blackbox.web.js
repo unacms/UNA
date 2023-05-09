@@ -231,6 +231,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 ref={ref}
                 numColumns={numColumns}
                 onScroll={handleScroll}
+                onEndReachedThreshold={2}
                 contentContainerStyle={{ paddingTop: header ? 300 : 0 }}
                 onEndReached={handleEndReached}
             />
