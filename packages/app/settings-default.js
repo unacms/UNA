@@ -96,6 +96,19 @@ import Svg, {Path} from 'react-native-svg'
         comments:{
             show_header: false
         },
+        browse:{
+            per_line: [
+                {width: 1200, count: 4},
+                {width: 900, count: 3},
+                {width: 600, count: 2},
+            ]
+        },
+        social_actions:{
+            reaction:{
+
+            }
+        },
+        
     
         menu_items: {
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
