@@ -2,8 +2,7 @@
 
 import Unit from '../unit';
 import { useState, useRef } from 'react';
-import { View, FlatList, FlashList } from 'app/design/view'
-
+import { View, FlashList } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
@@ -34,10 +33,19 @@ export default function ElementBrowse(props) {
         setbrowseParams(Object.assign({}, browseParams, params));
     } 
 
-    const handleEndReached = () => {  
+    const isLoading = useRef(false);
+
+    const handleEndReached = () => { 
+        if (isLoading.current) 
+            return;
+
+        isLoading.current = true;    
+
         if (browseParams?.loadedAll == false && !props.disablescroll && data.data.length > 0) {
             handleMore();
         }
+        
+        isLoading.current = false;
     };
 
     const handleMore =  async () => {
@@ -129,6 +137,7 @@ export default function ElementBrowse(props) {
                 renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                 keyExtractor={item => item.id}
                 key={numColumns} 
+                onEndReachedThreshold={0.5}
                 onEndReached = {handleEndReached} 
                 estimatedItemSize={200}
                 ListFooterComponent={
