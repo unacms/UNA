@@ -222,28 +222,32 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                 
                 <View className="
                 flex-auto
-                 p-1 mx-2 mt-2                   
+                 mx-2 mt-2                   
                  group duration-200 overflow-hidden rounded-lg  
-                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                  border  
-                 active:translate-y-0.5
+                 
                  border-bordercolorcard dark:border-bordercolorcard-dark 
                  sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                  active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                 
+                   
+                 active:translate-y-0.5
                 
                 
                 ">
                     <Link href={data.url}>            
                         {data.image &&
-                            <><View className="relative w-full bg-gray-500/20 rounded aspect-video overflow-hidden justify-end">
+                            <><View className="relative w-full  rounded-lg aspect-video overflow-hidden p-1 justify-between">
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
-                                
-                                    <View className="backdrop-blur-sm bg-neutral-50/80 dark:bg-neutral-950/80  p-2 overflow-hidden w-full  flex-col ">
-                                        <Text numberOfLines={2} className='text-neutral-950 dark:text-neutral-50 leading-6  text-xl sm:text-lg  pb-1   tracking-tight font-semibold'>
+                                <View className="backdrop-blur-sm mr-auto p-0.5  flex-none bg-white/80 dark:bg-neutral-950/50    shadow-sm  rounded-full ">
+                                    {sMeta}
+                                </View>
+
+                                    <View className="backdrop-blur bg-white/80 dark:bg-neutral-950/80  px-1 py-1 rounded-md overflow-hidden gap-0.5  flex-col ">
+                                        <Text numberOfLines={2} className='text-neutral-950 dark:text-neutral-50 leading-[22px] sm:leading-[18px]  text-base sm:text-sm  font-semibold'>
                                             {data.title}
                                         </Text>
-                                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 text-lg sm:text-sm  ">{data.summary_plain}</Text>
+                                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 leading-[18px] sm:leading-[14px] text-sm sm:text-xs  ">{data.summary_plain}</Text>
                                     </View>
 
                                 
@@ -252,17 +256,28 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                         
                         {!data.image &&<>
                         
-                        <View className="  p-2 w-full overflow-scroll rounded aspect-video ">
-                                <Text numberOfLines={2}  className='text-neutral-950 pb-1  leading-6  dark:text-gray-50 text-xl sm:text-lg  tracking-tight font-semibold'>
-                                    {data.title}
-                                </Text>
-                                <Text numberOfLines={5}  className=" text-neutral-700  dark:text-gray-400 text-base sm:text-sm ">{data.summary_plain}</Text>
+                        <View className="  p-1 w-full overflow-hidden rounded aspect-video  justify-between
+                                 
+                 group duration-200 overflow-hidden rounded-lg  
+                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                 
+                 ">
+                                <View className=" mr-auto p-0.5 ">
+                                    {sMeta}
+                                </View>
+                                <View className="  p-1 overflow-hidden gap-0.5  flex-col ">
+                                        <Text numberOfLines={3} className='text-neutral-950 dark:text-neutral-50  leading-[22px] sm:leading-[18px]  text-base sm:text-sm  font-semibold'>
+                                            {data.title}
+                                        </Text>
+                                        <Text numberOfLines={5} className="text-neutral-700 dark:text-neutral-300 leading-[18px] sm:leading-[14px] text-sm sm:text-xs   ">{data.summary_plain}</Text>
+                                    </View>
                         </View>
                         
                         </>}
 
 
-                        <View className='px-1 pt-2 pb-1 w-full'>{sMeta}</View>
+                   
                     </Link>
                 </View>
                 
