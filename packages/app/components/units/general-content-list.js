@@ -1,57 +1,34 @@
 import Image from '../../ui/atoms/image';
 import Link from '../../ui/atoms/link';
 import Profile from '../../ui/molecules/profile';
-
+import { appSetting } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import { StyleSheet, useWindowDimensions } from 'react-native';
-import { Platform } from 'react-native'
-import { Button } from 'app/design/controls';
 import Menu from 'app/components/menu';
 
-// g-med style browsing
+
 export default function Unit(props) {
     let data = props.data;
    
-const {height, width, scale, fontScale} = useWindowDimensions();
     
-    let styles = StyleSheet.create({});
-    
-    if (Platform.OS != 'web'){
-    
-        var _margin = 8;
-        var _margin2 = 8;
-        var _col2w = 1000;  
-        var _col1w = 600;    
+    function getImageSizes(){
+        const perLineSettings = appSetting('browse', 'per_line');
+        //console.log('!!!',perLineSettings);
+        let str ="";
+        for (let i = perLineSettings.length-1; i >= 0; i--) {
 
-        let w = width/3 - _margin * 2 ;
-        if (width < _col2w)
-            w = width - _margin * 2 - 2;  
-        let wi = w/3;
-        let wt = w - wi - 2*_margin2-2;
-
-        if (width <_col1w || width>_col2w){
-            wi = w;
-            wt = w;
+            if (i == perLineSettings.length-1)
+                str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
+            else{
+   
+                str += "(max-width:" + perLineSettings[i].width + "px) "+(100/perLineSettings[i+1].count)+"vw, ";
+            }
         }
-        let mw = w - 2 * _margin2;
-        
-        styles = StyleSheet.create({
-          /*card: {
-            width: width,
-            borderRadius: 0,
-            marginLeft:0,
-            marginRight:0,
-            marginTop:8,
-            
-          
-          },*/
-         /*card_image: {
-             width:width-2,
-             borderRadius: 0,
-         },  */  
-        });
+        str += (100/perLineSettings[0].count)+"vw";
+        return str
     }
+    
+    const imageSizes = getImageSizes();
 
     switch (props.module) {
         case 'bx_groups':
@@ -77,7 +54,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             );
 
         return (
-            <View className="u-card" style={styles.card}>
+            <View className="u-card" >
                 
                 <View className="
                 flex-auto
@@ -98,7 +75,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                     <View className='mb-2'>  
                     {data.cover &&
                             <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
-                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
+                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
@@ -125,7 +102,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             );
 
         return (
-            <View className="u-card" style={styles.card}>
+            <View className="u-card" >
                 
                 <View className="
                     flex-auto
@@ -144,7 +121,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                     <View className='mb-2'>  
                     {data.cover &&
                             <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
-                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
+                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
@@ -171,7 +148,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             );
 
         return (
-            <View className="u-card self-stretch" style={styles.card}>
+            <View className="u-card self-stretch" >
                 
                 <View className="
                 flex-auto h-full
@@ -192,7 +169,7 @@ const {height, width, scale, fontScale} = useWindowDimensions();
                     <View className='mb-2'>  
                     {data.cover &&
                             <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
-                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
+                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
@@ -218,27 +195,21 @@ const {height, width, scale, fontScale} = useWindowDimensions();
             sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
         return (
-            <View className="u-card" style={styles.card}>
+            <View className="u-card" >
                 
                 <View className="
-                flex-auto
-                 mx-2 mt-2                   
-                 group duration-200 overflow-hidden rounded-lg  
-                 border  
-                 
-                 border-bordercolorcard dark:border-bordercolorcard-dark 
-                 sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
-                 
-                   
-                 active:translate-y-0.5
-                
-                
-                ">
+                    flex-auto
+                    mx-2 mt-2                   
+                    group duration-200 overflow-hidden rounded-lg  
+                    border  
+                    border-bordercolorcard dark:border-bordercolorcard-dark 
+                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                    active:translate-y-0.5 ">
                     <Link href={data.url}>            
                         {data.image &&
                             <><View className="relative w-full  rounded-lg aspect-video overflow-hidden p-1 justify-between">
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" style={styles.card_image} />
+                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
                                 <View className="backdrop-blur-sm mr-auto p-0.5  flex-none bg-white/80 dark:bg-neutral-950/50    shadow-sm  rounded-full ">
                                     {sMeta}
                                 </View>

@@ -7,7 +7,7 @@ import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
-import { appSetting} from 'app/lib/util';
+import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
@@ -29,15 +29,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 return blocks[key].perLine;
             }
         }
-       // if (blockKeys.length === 1)
-        //    return 1;
 
-        if (width > 1200)
-            return 4
-        if (width > 900)
-            return 3  
-        if (width > 600)
-            return 2
+        const perLineSettings = appSetting('browse', 'per_line');
+
+        for (let i = 0; i < perLineSettings.length; i++) {
+            if (width > perLineSettings[i].width) {
+                return perLineSettings[i].count;
+            }
+        }
+
         return 1;
     };
 

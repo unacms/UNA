@@ -50,7 +50,7 @@ export default function PageLayout(props) {
 
     return (
         <View className='flex-1 w-full h-full'>
-            <View className="w-full h-full flex-1">
+            <View className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark">
                 <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
             </View>
             <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
