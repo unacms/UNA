@@ -16,7 +16,7 @@ export default function ElementFeedItem({data}) {
         </View>
         <View className="px-4 pt-2 border-t border-neoborder dark:border-neoborder-dark flex-row items-center">
             <View className=" flex-row gap-2 flex-auto flex-wrap ">
-                <Menu {...data.event.menu_actions} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: true, show_counter: false, show_do_vote_as_button: false}} />
+                <Menu {...data.event.menu_actions} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: true, show_counter: false, show_action_as_button: false}} />
             </View>
         </View>
         <View className="">

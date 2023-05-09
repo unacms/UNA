@@ -29,7 +29,7 @@ export default function ElementReactions(oProps) {
         anger: Platform.OS === 'web' ? 'SmileyAngry' : 'SmileyNervous',
     };
 
-    const oParams = oProps.params;
+    const oParams = {...appSetting('social_actions', 'reaction'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -52,8 +52,8 @@ export default function ElementReactions(oProps) {
     const [ actionsDataState, actisetActionsDataState ] = useState({});
 
     let oCounterState = {};
-    for (const i in oAction.menu.items) {
-        oCounterState[oAction.menu.items[i].name] = false;
+    for (const i in oParams.items) {
+        oCounterState[oParams.items[i].name] = false;
     }
 
     const [ performedBy, setPerformedBy ] = useState();
@@ -122,12 +122,6 @@ export default function ElementReactions(oProps) {
     const handleDo = (event, oProps) => {
         event.preventDefault();
 
-        /*
-         * Disabled for now because user's language differ for initial and dynamic calls.
-         * 
-         * updateLayout(oProps.name, 1);
-         */
-
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setContextVars(oData);
         });
@@ -140,12 +134,6 @@ export default function ElementReactions(oProps) {
         let sReaction = oProps.action.reaction;
         if(isContextVar('reaction'))
             sReaction = getContextVar('reaction');
-
-        /*
-         * Disabled for now because user's language differ for initial and dynamic calls.
-         * 
-         * updateLayout(sReaction, -1);
-         */
 
         performAction('do', {value: 1, reaction: sReaction}, (oData) => {
             setContextVars(oData);
@@ -182,39 +170,6 @@ export default function ElementReactions(oProps) {
         });
     };
 
-    const updateLayout = (sReaction, iValueAdd) => {
-        const sCounterKey = 'count_' + sReaction;
-
-        let sTitleNew = '';
-        let sIconNew = '';
-        let iCounterValue = 0;
-        for (const i in oCounter.items) {
-            if(sReaction != oCounter.items[i].name) 
-                continue;
-
-            sTitleNew = oCounter.items[i].title;
-            sIconNew = oCounter.items[i].icon;
-            iCounterValue = oCounter.items[i].count + iValueAdd;
-            break;
-        }
-
-        let oContextVars = {};
-        if(isContextVar('counter')) {
-            oContextVars = getContextVars();
-            iCounterValue = oContextVars.counter[sCounterKey] + iValueAdd;
-        }
-
-        oContextVars['is_voted'] = true;
-        oContextVars['reaction'] = sReaction;
-        oContextVars['title'] = sTitleNew;
-        oContextVars['icon'] = sIconNew;
-        if(!oContextVars['counter'])
-            oContextVars['counter'] = {};
-        oContextVars['counter'][sCounterKey] = iCounterValue;
-
-        setContextVars(oContextVars);
-    }
-
     const getSkeleton = () => {
         return (
             <View className="gap-2">
@@ -237,8 +192,8 @@ export default function ElementReactions(oProps) {
     //--- show action
     const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
     
-    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
-    const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
+    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
 
@@ -254,10 +209,6 @@ export default function ElementReactions(oProps) {
     if(isContextVar('reaction'))
         sReaction = getContextVar('reaction');
 
-    let sIcon = oAction?.icon || '';
-    if(isContextVar('icon'))
-        sIcon = getContextVar('icon');
-
     let sTitle = oAction?.title || '';
     if(isContextVar('title'))
         sTitle = getContextVar('title');
@@ -272,8 +223,8 @@ export default function ElementReactions(oProps) {
     }
     else {
         if(Platform.OS === 'web') {
-            const sItems = Object.keys(oAction.menu.items).map(function(iKey) {
-                const aItem = oAction.menu.items[iKey];               
+            const sItems = Object.keys(oParams.items).map(function(iKey) {
+                const aItem = oParams.items[iKey];               
 
                 return (
                     <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
@@ -327,7 +278,7 @@ export default function ElementReactions(oProps) {
                 <View>
                     <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
                     <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                        <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oAction.menu.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                        <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oParams.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                             return (
                                 <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
                             );                                        

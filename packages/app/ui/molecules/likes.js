@@ -10,7 +10,7 @@ import Profile from 'app/ui/molecules/profile';
 export default function ElementLikes(oProps) {
     const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
 
-    const oParams = oProps.params;
+    const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -132,16 +132,12 @@ export default function ElementLikes(oProps) {
 
 
     //--- show action
-    const bShowActionAsButton = oParams?.show_do_vote_as_button == undefined || oParams.show_do_vote_as_button === true;
-    const bShowActionLabel = oParams?.show_do_vote_label == undefined || oParams.show_do_vote_label === true;
+    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
     const bShowActionVoted = oAction?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
     const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
-
-    let sIcon = oAction?.icon || '';
-    if(isContextVar('icon'))
-        sIcon = getContextVar('icon');
 
     let sTitle = oAction?.title || '';
     if(isContextVar('title'))
