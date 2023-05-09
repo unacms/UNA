@@ -1,5 +1,4 @@
 import { View, ScrollView } from 'app/design/view'
-import BottomBar from 'app/ui/molecules/bottombar';
 import { KeyboardAvoidingView } from 'react-native';
 import { Text } from 'app/design/typography'
 export const siteTitle = 'NEO';
