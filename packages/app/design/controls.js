@@ -97,10 +97,16 @@ export function ButtonsGroup(props/*: ButtonProps*/) {
 
   const iChildren = props.children.length;
   const aChildren = props.children.map((oChild, iIndex) => {
-    let { variant, ...restChild } = oChild.props;
+    let { variant, size, fullWidth, ...restChild } = oChild.props;
+
+    let oItem = undefined;
+    if(oChild.type === Button)
+      oItem = <Button key={iIndex} variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} />
+    else
+      oItem = oChild;
 
     return (
-      <Button key={iIndex} variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} className={iIndex < iChildren - 1 ? ' border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''} />
+      <View className={iIndex < iChildren - 1 ? 'border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''}>{oItem}</View>
     );
   });
 
@@ -273,20 +279,20 @@ export function Button(props/*: ButtonProps*/) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+    let { variant, title, startDecorator, onPress, ...rest } = props
 
-    return <Button variant="default" size="sm" startDecorator={startDecorator} onPress={onPress} />
+    return <Button variant={variant ? variant : 'default'} size="sm" startDecorator={startDecorator} onPress={onPress} />
 }
 
 export function ButtonMenuActionText(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+    let { variant, title, startDecorator, onPress, ...rest } = props
 
-    return <Button variant="text" size="sm" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
+    return <Button variant={variant ? variant : 'text'} size="sm" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
 }
 
 export function ButtonMenuCounter(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+    let { variant, title, startDecorator, onPress, ...rest } = props
 
-    return <Button variant="outline" size="xs" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
+    return <Button variant={variant ? variant : 'outline'} size="xs" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
 }
 

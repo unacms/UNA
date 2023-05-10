@@ -75,6 +75,7 @@ import Svg, {Path} from 'react-native-svg'
         lang_keys: {
             vote_performed_by_popup_title: 'Likes',
             rvote_performed_by_popup_title: 'Reactions',
+            score_counter_label: 'Vote',
             score_performed_by_popup_title: 'Upvotes',
             ntfs_popup_title: 'Notifications',
             ntfs_popup_view_all: 'View all',
