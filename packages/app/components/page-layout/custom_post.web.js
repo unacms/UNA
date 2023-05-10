@@ -68,14 +68,16 @@ export default function PageLayout(props) {
     }; 
 
     const calculateSize = () => {
-        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-            let  FormH = height
-            if (Dimensions.get('window').width < 1024)
-                FormH = FormH 
-            viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                setSizes({formHeight: FormH, formWidth: width-2})             
+        if (viewFormRef.current){
+            viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+                let  FormH = height
+                if (Dimensions.get('window').width < 1024)
+                    FormH = FormH 
+                viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
+                    setSizes({formHeight: FormH, formWidth: width-2})             
+                });
             });
-        });
+        }
     }
 
     const commentsData = DataByName(props.data, props.blocks.comments);
