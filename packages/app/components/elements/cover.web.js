@@ -6,7 +6,7 @@ import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile';
 import { useWindowDimensions } from 'react-native'
-import { Transition } from '@headlessui/react'
+
 
 function CoverMenu(){
     return (

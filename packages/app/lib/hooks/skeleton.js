@@ -65,9 +65,9 @@ export default function (props) {
         </View>
 
         <View className="flex-auto  w-3/4 xl:w-4/5 flex-row">
-              <View className="flex-auto w-2/3 sm:px-4 sm:py-2 gap-[1px] sm:gap-2">
+              <View className="flex-auto w-2/3 sm:px-4 sm:py-2  sm:gap-2">
             {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
-                    <View  key={'home2' + index} className="bg-neocard dark:bg-neocard-dark sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col gap-4 animate-pulse">
+                    <View  key={'home2' + index} className="bg-neocard dark:bg-neocard-dark mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
                     <View className="flex-row gap-2">
                       
                       <View className="relative flex-row">
@@ -94,7 +94,7 @@ export default function (props) {
               
               
               {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
-                    <View  key={'home3' + index}  className="bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
+                    <View  key={'home3' + index}  className="bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
                     <View className="flex-row gap-x-2 mb-2">
                       
                       <View className="relative flex-row">
@@ -129,7 +129,7 @@ export default function (props) {
               </View>
             
 
-            <View className="hidden  lg:flex flex-col  top-0 flex-none w-1/3 ">
+            <View className="hidden  xl:flex flex-col  top-0 flex-none w-1/3 ">
             {items.map((item, index) => (
                     <View key={'home4' + index} className="p-0.5 mt-2 sm:mx-2                   
                      overflow-hidden sm:rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  animate-pulse">
@@ -161,70 +161,7 @@ export default function (props) {
   
 
     
-      <View className={maxWidth + ' mx-auto w-full '}>
-      <View className="flex flex-col @xl/cell:gap-2">
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-          <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">
-            <View className=" flex-none  flex gap-3">
-              <View className="rounded-full bg-gray-600/20 h-12 w-12 flex-none"></View>
-              <View className="hidden @xl/cell:flex flex-auto flex-col gap-2 my-auto">
-                <View className="h-4 w-1/3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 w-1/4 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-
-            <View className="flex-auto flex flex-col gap-y-2.5 ">
-              <View className="@xl/cell:hidden h-4 w-1/2 bg-gray-600/20 rounded-full"></View>
-              <View className="h-5 w-2/3 bg-gray-600/30 rounded-full"></View>
-              <View className="space-y-1.5 ">
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px]">
-          <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">
-            <View className=" flex-none  flex gap-3">
-              <View className="rounded-full bg-gray-600/20 h-12 w-12 flex-none"></View>
-              <View className="hidden @xl/cell:flex flex-auto flex-col gap-2 my-auto">
-                <View className="h-4 w-1/3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 w-1/4 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-
-            <View className="flex-auto flex flex-col gap-y-2.5 ">
-              <View className="@xl/cell:hidden h-4 w-1/2 bg-gray-600/20 rounded-full"></View>
-              <View className="h-5 w-2/3 bg-gray-600/30 rounded-full"></View>
-              <View className="space-y-1.5 ">
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4 @xl/cell:h-48 @xl/cell:mx-4 mt-[1px]">
-          <View className="animate-pulse h-full flex @xl/cell:flex-col-reverse gap-4">
-            <View className=" flex-none  flex gap-3">
-              <View className="rounded-full bg-gray-600/20 h-12 w-12 flex-none"></View>
-              <View className="hidden @xl/cell:flex flex-auto flex-col gap-2 my-auto">
-                <View className="h-4 w-1/3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 w-1/4 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-
-            <View className="flex-auto flex flex-col gap-y-2.5 ">
-              <View className="@xl/cell:hidden h-4 w-1/2 bg-gray-600/20 rounded-full"></View>
-              <View className="h-5 w-2/3 bg-gray-600/30 rounded-full"></View>
-              <View className="space-y-1.5 ">
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-                <View className="h-3 bg-gray-600/20 rounded-full"></View>
-              </View>
-            </View>
-          </View>
-        </View>
       </View>
-      </View></View>
     ),
     'view-post': (
          <View className="flex w-full justify-center sm:p-4 flex-row gap-4">
