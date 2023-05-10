@@ -115,15 +115,6 @@ export default function ElementBrowse(props) {
         styles = {height: (defParams?.height ? defParams.height : windowHeight)}
     }
 
-    const viewRef = useRef(null);
-
-    const handleLayoutCmt = (event, id) => {
-        viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-          
-            props.handleCmt(pageY, id, viewRef)
-          });
-    };
-
     return (
         (data.data.length > 0) && <View className='w-full h-full' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
