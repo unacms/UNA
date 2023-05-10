@@ -174,34 +174,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }
 
-    const calcViewHeight =  () => { 
-        let hOffset = 94
-        let padd = 60
-        if (Platform.OS != 'web'){
-            hOffset = 100;
-            padd = 60;
-        }
-        else{
-            if (Dimensions.get('window').width < 1024)
-            hOffset = 126
-        }
-        return [Dimensions.get('window').height - hOffset, padd];
-    }
-    
-    const [viewHeight, setViewHeight] = useState(calcViewHeight);
-
-    const handleWindowSizeChange = () => {
-        setViewHeight(calcViewHeight);
-    };
-
-    useEffect(() => {
-        Dimensions.addEventListener('change', handleWindowSizeChange);
-      
-        return () => {
-          Dimensions.removeEventListener('change', handleWindowSizeChange);
-        };
-      }, []);
-
 
     DataForList(commentData.listData.data.data, 0, 0, []);
 
@@ -235,7 +207,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     if (!h)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     return (
-        <View  style={{ height: viewHeight[0], paddingBottom: viewHeight[1] }} >
+       
             <FlashList
                 ref={flashListRef}
                 data={dataOut}
@@ -261,7 +233,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                   }
             >
             </FlashList>
-        </View>
+  
     )
 }
 
@@ -334,7 +306,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
     const { colors } = useTheme();    
 
     return ( 
-        <View className={"w-full bg-neocard dark:bg-neocard-dark bottom-0 border-t  border-neoborder dark:border-neoborder-dark " + ( Platform.OS == 'web' ? 'absolute' : '')} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
+        <View className={"w-full bg-neocard dark:bg-neocard-dark bottom-0 border-t  border-neoborder dark:border-neoborder-dark"} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
                 form.data.inputs.cmt_parent_id.value >0 && (<View className='bg-neocard dark:bg-neocard-dark rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>

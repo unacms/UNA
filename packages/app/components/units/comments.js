@@ -84,7 +84,7 @@ export default function UnitComments(props) {
                         <Row className='flex-wrap gap-x-1 '>
                             {files.map(a => (
                                 <Pressable key={'file-'+a.file_id} className='w-24 h-24 mb-2 ' onPress={() => handleShowImage(a.file)} >
-                                    <Image src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
+                                    <Image sizes="96px" src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
                                 </Pressable>
                             ))}
                         </Row>

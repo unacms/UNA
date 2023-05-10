@@ -1,6 +1,4 @@
 import { View, ScrollView } from 'app/design/view'
-import { KeyboardAvoidingView } from 'react-native';
-import { Text } from 'app/design/typography'
 export const siteTitle = 'NEO';
 
 
