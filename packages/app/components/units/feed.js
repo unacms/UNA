@@ -40,10 +40,10 @@ function DefaultUnit(data) {
     return (
         <View className='max-w-5xl w-full mx-auto '>
         <View className=" 
-            p-1 mt-1 sm:mx-2 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg  
+            p-1 mt-1 sm:mx-4 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg  
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-            border-y sm:border 
+            shadow-sm hover:shadow-md active:shadow-none 
             active:translate-y-0.5
             border-bordercolorcard dark:border-bordercolorcard-dark 
             sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
@@ -57,7 +57,7 @@ function DefaultUnit(data) {
         </View>
         {data.mainImage &&
             <View className="w-full mt-4 aspect-[3/1] " style={styles.card_image}>
-                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="min(500, 100vw)"    />
+                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes=" (max-width:768px) 100vw, 500px"   />
             </View>
         }   
         <View className="w-full p-3   flex-col gap-1">
@@ -99,8 +99,7 @@ function DefaultUnit(data) {
                 </View>
             </View>
         </ActionsDataContext>
-    
-        
+
     </View></View>);
 }
 
@@ -112,7 +111,7 @@ function SmallUnit(data) {
             bg-backgroundcard dark:bg-backgroundcard-dark 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive
-            border-b sm:border 
+            mt-[1px] 
             active:translate-y-0.5
             border-bordercolorcard dark:border-bordercolorcard-dark 
             sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover

@@ -1,8 +1,10 @@
 import { appSetting } from 'app/lib/util'
+import { useColorScheme } from 'react-native';   
 
 export default function ElementHtml(props) {
     let data = props.data;
     let sClass = "u-vanilla-html " + props.className;
+    const scheme = useColorScheme();
 
     const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
     if (data){
@@ -14,7 +16,7 @@ export default function ElementHtml(props) {
             }
           
             return (
-              '<iframe scrolling="no" width=100% height=auto class="' + className + '" src="' + appSetting("urls", "embeds") + capture +'"></iframe>'
+              '<iframe scrolling="no" width=100% height=auto class="' + className + '" src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '"></iframe>'
             );
           });
     }

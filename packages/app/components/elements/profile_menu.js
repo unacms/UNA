@@ -25,7 +25,7 @@ export default function ElementProfileMenu(props) {
 
     return (
         
-        <View  style={styles} className="   p-4  max-h-screen overflow-y-scroll profile-menu flex-col gap-2">
+        <View  style={styles} className="   px-4 py-2  max-h-screen overflow-y-scroll profile-menu flex-col gap-2">
             <View className="flex-col gap-0.5 mb-16" >
             {menuItemsByName('profile_menu', props.data.items).map((item, index) => (
                 <Link key={`menu-${index}`} href= {item.link.charAt(0) == '/' ? item.link : '/' + item.link}>

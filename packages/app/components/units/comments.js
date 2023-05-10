@@ -1,8 +1,8 @@
 import Profile from '../../ui/molecules/profile';
 import Time from '../../ui/atoms/time';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Text} from 'app/design/typography'
-
+import { useWindowDimensions} from 'react-native';
 import { View, Pressable, Row } from 'app/design/view'
 import Html from '../../ui/atoms/html';
 import { Button, Modal } from 'app/design/controls'
@@ -14,7 +14,6 @@ export default function UnitComments(props) {
 
     const [showImage, setShowImage] = useState(false)
     let level = props.level ? props.level : 0
-    let current_last_child = props.last_child ? props.last_child : 0
     let lvls= props.lvls ? props.lvls : []
     let data = props.data;
     let items = props.items;
@@ -27,35 +26,18 @@ export default function UnitComments(props) {
         props.handleReply(id, author, text);
     };
 
-    let bSmallSize= props.mode && props.mode =='small' ? true : false;
-
+    const windowHeight = useWindowDimensions().height;
 
     let sCommentClass = " bg-neoitem border border-neoborder dark:border-neoborder-dark dark:bg-neoitem-dark rounded-lg   px-3  u-vanilla-html-small";
 
-    
     if (!data)
         return (<View></View>);
                 
-    const oCommentTextStyle = {
-        body: {
-            fontSize: 16,
-            lineHeight:22
-        }
-    };   
-    
     const handleShowImage = (img) => {
         setShowImage(img);
     } 
 
-
-
-    const handleLayoutCmt = (event, id) => {
-        props.handleCmt(event.nativeEvent, id, cmtRef)
-    };
-
-
     let cells = [];
-
 
     for (let i = 0; i < level; i++){
         cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
@@ -64,15 +46,16 @@ export default function UnitComments(props) {
     </View>)
     };
     
-    /*
-    <Modal id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
-                <View className="w-full h-96">
-                    <Image className="w-full" src={showImage} alt='' view="cover" />
-                </View>
-            </Modal>*/
+   
+    
 
     return (
-        <View className='w-full '>
+        <View className='w-full'>
+            <Modal id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
+                <View className="w-full" style={{height: windowHeight}}>
+                    <Image className="w-full" src={showImage} alt='' view="cover" />
+                </View>
+            </Modal>
             <View  className="flex-row gap-x-2 ">
                 {cells}
                 <View className="w-10 flex-0 ">
@@ -92,11 +75,11 @@ export default function UnitComments(props) {
                                     <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                     <View className=" "><Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" /></View>
                                 </View>
-                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
+                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
                             </View>
                         }
                         <View>
-                            <Html data={data.cmt_text} htmlStyles={oCommentTextStyle}  />
+                            <Html data={data.cmt_text} />
                         </View>
                         <Row className='flex-wrap gap-x-1 '>
                             {files.map(a => (
