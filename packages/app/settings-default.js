@@ -368,6 +368,12 @@ import Svg, {Path} from 'react-native-svg'
                 'u-btn-outline-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-outline-trans': ' duration-200 ',
+                'u-btn-group-item-cnt': ' hover:bg-backgroundbutton-hover active:opacity-50 dark:hover:bg-backgroundbutton-darkhover  ',
+                'u-btn-group-item-text': ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
+            },
+            buttons_group_styles: {
+                'u-btn-default-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
+                'u-btn-outline-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark overflow-hidden ',
             },
             svg:{
                 'logo-text': svgLogoText,
