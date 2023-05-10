@@ -9,6 +9,7 @@ import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
 import { appSetting } from 'app/lib/util'
+
 /*const IframeRenderer = function IframeRenderer(props) {
     const iframeProps = useHtmlIframeProps(props);
     // Do customize the props here; wrap with your own container...
@@ -111,7 +112,8 @@ export default function ElementHtml(props) {
         tagsStyles = mergeDeep(tagsStyles, props.htmlStyles);
 
     let data = props.data;
-   
+
+
     if (data){
         var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
         data = data.replace(pattern,'');
@@ -128,7 +130,7 @@ export default function ElementHtml(props) {
                 heightIfr = widthIfr * 9/16 + 40;
             }
             return (
-                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture +'"></iframe>'
+                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture + '&theme=' + theme + '"></iframe>'
               );
             });  
     }
