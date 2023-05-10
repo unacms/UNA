@@ -57,7 +57,7 @@ function DefaultUnit(data) {
         </View>
         {data.mainImage &&
             <View className="w-full mt-4 aspect-[3/1] " style={styles.card_image}>
-                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes=" (max-width:768px) 100vw, 500px"   />
+                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="(max-width:768px) 100vw, 500px"   />
             </View>
         }   
         <View className="w-full p-3   flex-col gap-1">

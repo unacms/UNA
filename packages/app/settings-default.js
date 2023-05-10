@@ -406,6 +406,37 @@ import Svg, {Path} from 'react-native-svg'
             },
         },
         menu: {
+            /*
+            PROFILE
+Explore (featured posts / events / groups / discussions + hot feed)
+Notifs
+Messages
+Bookmarks
+Connections
+Groups
++events
+Posts
++discussions
++people
+About
+Terms
+Contact*/
+            left: [
+                { title: 'Profile', link: '/persons-profile/dr-andrey-yasko-phd', icon: 'user' },
+                { title: 'Explore', link: '/explore', icon: 'Compass' },
+                { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
+                { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
+                { title: 'Bookmarks', link: '/bookmarks', icon: 'Bookmarks' },
+                { title: 'Connections', link: '/connections', icon: 'Link' },
+                { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+                { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
+                { title: 'Posts', link: '/posts-home', icon: 'NoteBlank' },
+                { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
+                { title: 'People', link: '/persons-home', icon: 'Users' },
+                { title: 'About', link: '/about', icon: 'Info' },
+                { title: 'Terms', link: '/terms', icon: 'Question' },
+                { title: 'Contact', link: '/contact', icon: 'AddressBook' },
+            ],
             bottom_tabs_logged: [
                 {
                     key:'/tab0',
