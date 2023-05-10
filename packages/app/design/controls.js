@@ -66,6 +66,50 @@ export function Modal(props/*: ModalPropsCustom*/) {
 }
 
 /* buttons */
+export function MenuButton(props/*: ButtonProps*/) {
+  return <Button>xcdv</Button>
+}
+
+/* buttons group */
+/*
+type ButtonsGroupProps = TouchableOpacityProps & {
+  fullWidth?: boolean
+  size?: 'text-sm' | 'xs' | 'sm' | 'base' | 'lg' | 'xl'
+  variant?:
+    | 'default'
+    | 'outline'
+  rounded?: boolean
+}*/
+export function ButtonsGroup(props/*: ButtonProps*/) {
+  let { className, ...rest } = props;
+  let groupType = props.variant ? props.variant : 'default';
+  let groupSize = props.size ? props.size : 'base';
+  let groupFull = props.fullWidth ? true : false;
+  let groupRounded = props.rounded ? true : false;
+
+  let sClassContainer = ' group relative flex-row items-center ';
+  sClassContainer += groupFull ? ' flex-auto' : ' w-fit m-0';
+
+  let ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
+  sClassContainer +=ThemeCssClasses['u-btn-' + groupType + '-cnt'];
+  sClassContainer += groupRounded ? 'rounded-full ' : 'rounded-lg ';
+  sClassContainer += className;
+
+  const iChildren = props.children.length;
+  const aChildren = props.children.map((oChild, iIndex) => {
+    let { variant, ...restChild } = oChild.props;
+
+    return (
+      <Button key={iIndex} variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} className={iIndex < iChildren - 1 ? ' border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''} />
+    );
+  });
+
+  return (
+    <View className={sClassContainer} {...rest}>{aChildren}</View>
+  );
+}
+
+/* buttons */
 /*
 type ButtonProps = TouchableOpacityProps & {
   align?: 'center' | 'start' | 'end'
@@ -88,10 +132,6 @@ type ButtonProps = TouchableOpacityProps & {
   classTextName?: string
   classIconName?: string
 }*/
-export function MenuButton(props/*: ButtonProps*/) {
-  return <Button>xcdv</Button>
-}
-/* buttons */
 export function Button(props/*: ButtonProps*/) {
   let { className, classTextName, classIconName, onPress, ...rest } = props
   let buttonType = props.variant ? props.variant : 'default'
@@ -122,72 +162,56 @@ export function Button(props/*: ButtonProps*/) {
       (buttonSolid ? '' : ThemeCssClasses['u-btn-' + buttonType + '-trans']) +
       ThemeCssClasses['u-btn-' + buttonType + '-cnt']
       sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
-  } else {
+  }
+
+  if (buttonType == 'custom' || buttonType == 'group-item') {
     sClassContainer += className
     sClassText += classTextName
   }
 
   sClassContainer += ' justify-' + buttonAlign + ' '
 
-  switch (buttonSize) {
-   
+  const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-lg' : '';
 
+  switch (buttonSize) {
       case 'xs':
-        sClassContainer += buttonRounded
-          ? 'rounded-full p-1 '
-          : 'rounded-lg px-1 py-1 '
+        sClassContainer += buttonRounded ? 'rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
         sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? 'mx-[1px] ' : '');
         sClassText += ' text-xs '
         sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' // Conditionally add 'mx-2' class
         break
 
-    
       case 'sm':
-        sClassContainer += buttonRounded
-          ? 'rounded-full p-1.5 '
-          : 'rounded-lg px-2 py-1.5 '
+        sClassContainer += buttonRounded ? 'rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
         sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-0.5 ' : '');
         sClassText += ' text-sm '
         sTitleContainer += buttonTitle !== '' ? 'mx-1.5 ' : '' // Conditionally add 'mx-2' class
 
         break
 
-        case 'base':
-          sClassContainer += buttonRounded
-            ? 'rounded-full p-2 '
-            : 'rounded-lg px-2 py-2 '
-            sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
-            sClassText += ' text-base '
-        
-          sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
+      case 'base':
+        sClassContainer += buttonRounded ? 'rounded-full p-2 ' : sClassDefaultRounding + ' px-2 py-2 ';
+        sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+        sClassText += ' text-base '
+        sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
 
-          break
+        break
 
-          case 'lg':
-            sClassContainer += buttonRounded
-              ? 'rounded-full p-3 '
-              : 'rounded-lg px-4 py-3 '
-              sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
-              sClassText += ' text-lg '
-          
-            sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
-  
-            break
+      case 'lg':
+        sClassContainer += buttonRounded ? 'rounded-full p-3 ' : sClassDefaultRounding + ' px-4 py-3 ';
+        sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+        sClassText += ' text-lg '
+        sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
 
-            case 'xl':
-              sClassContainer += buttonRounded
-                ? 'rounded-full p-4 '
-                : 'rounded-lg px-6 py-4 '
-                sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
-                sClassText += ' text-xl '
-            
-              sTitleContainer += buttonTitle !== '' ? 'mx-3 ' : '' // Conditionally add 'mx-2' class
-    
-              break
+        break
 
- 
+      case 'xl':
+        sClassContainer += buttonRounded ? 'rounded-full p-4 ' : sClassDefaultRounding + ' px-6 py-4 ';
+        sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+        sClassText += ' text-xl '
+        sTitleContainer += buttonTitle !== '' ? 'mx-3 ' : '' // Conditionally add 'mx-2' class
 
-   
+        break   
   }
   const { colors } = Theme()
   let colorIcon = props.variant == 'link' ? colors.primary: '';
@@ -265,3 +289,4 @@ export function ButtonMenuCounter(props) {
 
     return <Button variant="outline" size="xs" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
 }
+
