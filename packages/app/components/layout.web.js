@@ -40,7 +40,7 @@ export default function Layout(props) {
                 {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
-                    {loading ? skeleton :<View className='w-full mx-auto h-full'>
+                    {loading ? skeleton :<View className='w-full mx-auto'>
                         {props.children}
                         </View>}
                     </View>

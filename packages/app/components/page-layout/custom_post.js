@@ -17,7 +17,7 @@ export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
-    const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, offset:0});
+    const [sizes, setSizes] = useState({formHeight:0});
     const [isKeyboardVisible, setKeyboardVisible] = useState(0);
 
     const viewFormRef = useRef();
@@ -44,31 +44,14 @@ export default function PageLayout(props) {
 
     setTimeout(() => {
         updateCenterHeader(null, <View style={{width:360}} className=' items-center  '><BlockByName data={props.data} name={props.blocks.author}/></View>, true, navigation, routerExpo, colors, null);
-      }, 100);
+    }, 100);
 
-      const handleLayout = () => {
-        
-        let heightForm = 100
-        let cntHeight = sizes.cntHeight;
-        if (viewFormRef.current && cntHeight > 0){
-            viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                heightForm = height;
-                setSizes({cntHeight:cntHeight, listHeight:cntHeight - heightForm + 64 , formHeight: heightForm, offset:sizes.offset})             
-            });
-        }
-
-        if (viewCntRef.current && cntHeight == 0){
-            viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                cntHeight = height; 
-                viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    heightForm = height;
-                    setSizes({cntHeight:cntHeight, listHeight:cntHeight - heightForm , formHeight: heightForm, offset: 0})             
-                }); 
-              
-            });
-        }
+    const handleLayout = () => {
+        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+            setSizes({formHeight: height})             
+        });
     }; 
-    
+
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {;
             setKeyboardVisible(e.endCoordinates.height);
@@ -83,15 +66,16 @@ export default function PageLayout(props) {
           keyboardDidHideListener.remove();
         };
       }, []);
-
+   
+      console.log('------', sizes.formHeight)
     return (
         <View className='flex-1 w-full h-full'>
-            <View ref={viewCntRef} className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark">
-                <View style ={{height:sizes.listHeight, marginTop: -isKeyboardVisible }} className='overflow-hidden'>
+            <View ref={viewCntRef} className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark" style ={{marginBottom: sizes.formHeight}}>
+                <View  className='overflow-hidden h-full w-full ' >
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
                 </View>
             </View>
-            <View ref={viewFormRef} onLayout={handleLayout} className=''> 
+            <View ref={viewFormRef} onLayout={handleLayout} className='absolute bottom-0'> 
                 <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                     <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                 </KeyboardAvoidingView>

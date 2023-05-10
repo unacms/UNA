@@ -133,7 +133,7 @@ export default function FormFieldFiles(props) {
         return (
             imageSource.images?.map((img, index) => (
                 <View key={'file-'+index} className='h-24 w-24 mr-1 mt-2' >
-                    { img?.file_type?.includes('image/') && <Image view='cover' className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                    { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
                     { img !='' && <View className='absolute top-0.5 right-0.5 w-8 text-center mx-auto'>

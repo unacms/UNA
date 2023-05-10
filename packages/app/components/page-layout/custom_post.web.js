@@ -13,7 +13,7 @@ export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
-    const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, offset:0});
+    const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});
     
     const viewFormRef = useRef();
     const viewCntRef = useRef();
@@ -26,11 +26,11 @@ export default function PageLayout(props) {
     const handleForm =  async (data) => {
         setAddData(data)
     }
-    const handleWindowSizeChange = () => {
+     /*  const handleWindowSizeChange = () => {
         setSizes({cntHeight: Dimensions.get('window').height - sizes.offset, listHeight: Dimensions.get('window').height - sizes.offset - sizes.formHeight - 2, formHeight: sizes.formHeight, offset:sizes.offset})
     };
 
-    Dimensions.addEventListener('change', handleWindowSizeChange);
+ Dimensions.addEventListener('change', handleWindowSizeChange);
     
     const handleLayout = () => {
         let heightForm = 100
@@ -53,7 +53,31 @@ export default function PageLayout(props) {
             });
         }
     };
+    */
+
     
+
+    const handleWindowSizeChange = () => {
+        calculateSize();
+    };
+
+    Dimensions.addEventListener('change', handleWindowSizeChange);
+
+    const handleLayout = () => {
+        calculateSize();
+    }; 
+
+    const calculateSize = () => {
+        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+            let  FormH = height
+            if (Dimensions.get('window').width < 1024)
+                FormH = FormH 
+            viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
+                setSizes({formHeight: FormH, formWidth: width-2})             
+            });
+        });
+    }
+
     const commentsData = DataByName(props.data, props.blocks.comments);
 
     let aItems = [
@@ -64,13 +88,13 @@ export default function PageLayout(props) {
 
     return ( 
         <View className="lg:py-4 h-full ">
-            <View ref={viewCntRef} className=" justify-between h-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
-                <View style ={{height:sizes.listHeight}} className='overflow-hidden '>
+            <View ref={viewCntRef} className=" justify-between w-full h-full flex-1  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
+                <View style ={{marginBottom: sizes.formHeight}} className='overflow-hidden h-full w-full '>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
                 </View>
-                <View ref={viewFormRef} onLayout={handleLayout} className=''> 
+                <View ref={viewFormRef} onLayout={handleLayout} className='fixed bottom-16 lg:bottom-0 w-full' style ={{width: sizes.formWidth}}> 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                        <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />    
+                        <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                     </KeyboardAvoidingView>
                 </View>
             </View>

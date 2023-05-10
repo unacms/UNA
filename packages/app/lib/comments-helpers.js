@@ -174,34 +174,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }
 
-    /*const calcViewHeight =  () => { 
-        let hOffset = 94
-        let padd = 60
-        if (Platform.OS != 'web'){
-            hOffset = 100;
-            padd = 60;
-        }
-        else{
-            if (Dimensions.get('window').width < 1024)
-            hOffset = 126
-        }
-        return [Dimensions.get('window').height - hOffset, padd];
-    }
-    
-    const [viewHeight, setViewHeight] = useState(calcViewHeight);
-
-    const handleWindowSizeChange = () => {
-        setViewHeight(calcViewHeight);
-    };
-
-    useEffect(() => {
-        Dimensions.addEventListener('change', handleWindowSizeChange);
-      
-        return () => {
-          Dimensions.removeEventListener('change', handleWindowSizeChange);
-        };
-      }, []);
-*/
 
     DataForList(commentData.listData.data.data, 0, 0, []);
 
