@@ -113,7 +113,6 @@ export default function ElementHtml(props) {
 
     let data = props.data;
 
-
     if (data){
         var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
         data = data.replace(pattern,'');

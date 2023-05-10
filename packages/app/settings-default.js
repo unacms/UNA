@@ -83,7 +83,7 @@ import Svg, {Path} from 'react-native-svg'
         },
         feed: {
             show_selector_view: false,
-            default_view: 'small',
+            default_view: '',
         },
         entry: {
             default_view: '',

@@ -80,7 +80,7 @@ export default function ElementCover(props) {
     return (
     <View className='w-full ' >
         <View className=' absolute h-48 w-full '>
-            { !!data.cover && <Image alt={data.group_name} view="cover" sizes="min(1280, 100vw)" className="u-cover " src={data.cover.src} />}
+            { !!data.cover && <Image alt={data.group_name} view="cover"  sizes="(max-width:1280px) 100vw, 1280px"  className="u-cover " src={data.cover.src} />}
         </View>
         <Row className=' justify-left w-full h-24 pt-12' >
             <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={routerExpo.back} >

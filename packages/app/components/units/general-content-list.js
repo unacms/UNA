@@ -21,10 +21,10 @@ export default function Unit(props) {
                 str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
             else{
    
-                str += "(max-width:" + perLineSettings[i].width + "px) "+(100/perLineSettings[i+1].count)+"vw, ";
+                str += "(max-width:" + perLineSettings[i].width + "px) "+Math.round(100/perLineSettings[i+1].count)+"vw, ";
             }
         }
-        str += 'min(' + (1280/perLineSettings[0].count) + ', ' + (100/perLineSettings[0].count) + "vw)";
+        str += '' + (1280/perLineSettings[0].count) + 'px';
         return str
     }
     

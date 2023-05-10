@@ -124,7 +124,6 @@ export default function ElementBrowse(props) {
           });
     };
 
-
     return (
         (data.data.length > 0) && <View className='w-full h-full' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
