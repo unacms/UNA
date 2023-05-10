@@ -37,7 +37,7 @@ export default function PageLayout(props) {
     
     let aItems = [
         {id:'block_text', data: <BlockByName data={props.data} name={props.blocks.text}/>},
-        {id:'block_actions', data: <View className='border-b border-neoborder dark:border-neoborder-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>}
+        {id:'block_actions', data: <View className='border-b border-bordercolorcard dark:border-bordercolorcard-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>}
     ];
 
     const routerExpo = useRouter();
