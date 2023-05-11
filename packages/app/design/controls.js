@@ -169,8 +169,7 @@ export function Button(props/*: ButtonProps*/) {
       ThemeCssClasses['u-btn-' + buttonType + '-cnt']
       sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
   }
-
-  if (buttonType == 'custom' || buttonType == 'group-item') {
+  else {
     sClassContainer += className
     sClassText += classTextName
   }
