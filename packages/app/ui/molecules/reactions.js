@@ -4,7 +4,7 @@ import { StyleSheet, Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroup, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable, FlashList } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -450,7 +450,7 @@ export default function ElementReactions(oProps) {
 
         return (
             <View>
-                <ButtonsGroup size={sDisplaySize}>{aButtonsGroup}</ButtonsGroup>
+                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sActionPopup}
                 {aCounter[1]}
             </View>

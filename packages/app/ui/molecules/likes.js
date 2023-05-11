@@ -4,12 +4,10 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroup, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
-    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-
     const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
@@ -21,9 +19,7 @@ export default function ElementLikes(oProps) {
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
-    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true
-
-    
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -210,7 +206,7 @@ export default function ElementLikes(oProps) {
 
         return (
             <View>
-                <ButtonsGroup size={sDisplaySize}>{aButtonsGroup}</ButtonsGroup>
+                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );
