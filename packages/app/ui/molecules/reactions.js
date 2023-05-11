@@ -4,7 +4,7 @@ import { StyleSheet, Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, ButtonsGroup, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroup, Modal } from 'app/design/controls';
 import { View, Pressable, FlashList } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -35,7 +35,7 @@ export default function ElementReactions(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams?.display_size : 'base');
+    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
@@ -215,9 +215,8 @@ export default function ElementReactions(oProps) {
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
-    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : Button;
-    const ButtonCounter = !bShowCombined ? ButtonMenuCounter : Button;
-
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
+    
     let sActionButton = undefined;
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionVoted) {
@@ -295,7 +294,10 @@ export default function ElementReactions(oProps) {
     }
 
     //--- show counter
-    const sShowCounterStyle = oParams?.show_counter_style || 'compound'; //'divided';
+    const sShowCounterStyle = oParams?.show_counter_style || 'compound';
+    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
     const getCounterDivided = () => {
         let aButtons = [];
@@ -415,7 +417,7 @@ export default function ElementReactions(oProps) {
         });
 
         return [[
-                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
@@ -459,7 +461,7 @@ export default function ElementReactions(oProps) {
             <View className="flex-auto flex-row items-center">
                 {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                {bShowCounter && !!aCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row">{aCounter[0]}</View>}
+                {bShowCounter && !!aCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-1">{aCounter[0]}</View>}
                 {bShowCounter && !!aCounter && <View key={sObject + '-counter-popup'}>{aCounter[1]}</View>}
             </View>
         );

@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, ButtonsGroup, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroup, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
@@ -20,7 +20,7 @@ export default function ElementScore(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
-    const sDisplaySize = oProps.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams?.display_size : 'base');
+    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
@@ -133,8 +133,7 @@ export default function ElementScore(oProps) {
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
-    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : Button;
-    const ButtonCounter = !bShowCombined ? ButtonMenuCounter : Button;
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     const aActionButtons = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
@@ -156,6 +155,10 @@ export default function ElementScore(oProps) {
 
 
     //--- Counter
+    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.score != undefined) {
