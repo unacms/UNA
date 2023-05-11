@@ -4,7 +4,7 @@ import { StyleSheet, Platform } from 'react-native';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
+import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable, FlashList } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -35,10 +35,12 @@ export default function ElementReactions(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -213,12 +215,13 @@ export default function ElementReactions(oProps) {
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-
-    let sAction = undefined;
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
+    
+    let sActionButton = undefined;
+    let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionVoted) {
-        sAction = (
-            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+        sActionButton = (
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
@@ -236,11 +239,11 @@ export default function ElementReactions(oProps) {
                 );
             });
 
-            sAction = (
+            sActionButton = (
                 <Pressable onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                     </DropdownMenuRoot>
@@ -274,27 +277,33 @@ export default function ElementReactions(oProps) {
                 onSliderDoClose();
             };
 
-            sAction = (
-                <View>
-                    <ButtonAction startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
-                    <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                        <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oParams.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
-                            return (
-                                <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
-                            );                                        
-                        }} />
-                    </Modal>
-                </View>
+            sActionButton = (
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
+            );
+
+            sActionPopup = (
+                <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
+                    <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oParams.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
+                        return (
+                            <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                        );                                        
+                    }} />
+                </Modal>
             );
         }
     }
 
     //--- show counter
-    const sShowCounterStyle = oParams?.show_counter_style || 'compound'; //'divided';
+    const sShowCounterStyle = oParams?.show_counter_style || 'compound';
+    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
     const getCounterDivided = () => {
-        return Object.keys(oCounter.items).map(function(iKey) {
-            const aItem = oCounter.items[iKey];
+        let aButtons = [];
+        let aPopups = [];
+
+        oCounter.items.forEach((aItem, iKey) => {
             if(aItem.name == 'default')
                 return;
 
@@ -305,6 +314,9 @@ export default function ElementReactions(oProps) {
                 if(oCounterGlobal[sCounterKey] != undefined)
                     iCount = oCounterGlobal[sCounterKey];
             }
+
+            if(!iCount)
+                return;
 
             let sUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
@@ -318,15 +330,11 @@ export default function ElementReactions(oProps) {
             if(!sUsers || sUsers.length == 0)
                 sUsers = getSkeleton();
 
-            return (
-                <View key={iKey} className={'inline-flex flex-none' + (!iCount ? ' hidden' : '')}>
-                    <ButtonMenuCounter startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />
-                    <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>
-                        {sUsers}
-                    </Modal>
-                </View>
-            );
+            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
+            aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{sUsers}</Modal>)
         });
+
+        return [aButtons, aPopups];
     };
 
     const getCounterCompound = () => {
@@ -355,6 +363,9 @@ export default function ElementReactions(oProps) {
             
             return oIconAliases[aItem.name];
         });
+
+        if(!iTotal)
+            return false;
 
         const aPerformedByMenu = Object.keys(oCounter.items).map(function(iKey) {
             const aItem = oCounter.items[iKey];
@@ -405,35 +416,53 @@ export default function ElementReactions(oProps) {
             );
         });
 
-        return (
-            <View className={!iTotal ? "hidden" : ""}>
-                <ButtonMenuCounter startDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+        return [[
+                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+            ], [
                 <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
-            </View>
-        );
+            ]
+        ];
     };
 
     //--- Counter
-    let sCounter = undefined;
+    let aCounter = [];
     if(bShowCounter && oCounter?.items != undefined)
         switch(sShowCounterStyle) {
             case 'compound':
-                sCounter = getCounterCompound()
+                aCounter = getCounterCompound()
                 break;
 
             case 'divided':
-                sCounter = getCounterDivided();
+                aCounter = getCounterDivided();
                 break;
         }
 
     const sObject = getName();
-    return (
-        <View className="flex-auto flex-row items-center">
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sAction}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className="flex-auto flex-row">{sCounter}</View>}
-        </View>
-    );
+    if(bShowCombined) {
+        let aButtonsGroup = [sActionButton];
+        if(!!aCounter[0])
+            aCounter[0].forEach(aItem => {
+                aButtonsGroup.push(aItem);
+            });
+
+        return (
+            <View>
+                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                {sActionPopup}
+                {aCounter[1]}
+            </View>
+        );
+    }
+    else
+        return (
+            <View className="flex-auto flex-row items-center">
+                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+                {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
+                {bShowCounter && !!aCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-1">{aCounter[0]}</View>}
+                {bShowCounter && !!aCounter && <View key={sObject + '-counter-popup'}>{aCounter[1]}</View>}
+            </View>
+        );
  }

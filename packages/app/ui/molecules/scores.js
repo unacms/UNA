@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view';
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
@@ -20,10 +20,12 @@ export default function ElementScore(oProps) {
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -131,9 +133,9 @@ export default function ElementScore(oProps) {
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
-    const aActions = Object.keys(oAction).map(function(sAction) {
+    const aActionButtons = Object.keys(oAction).map(function(sAction) {
         const oItem = oAction[sAction];
 
         const bShowActionVoted = oItem?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
@@ -147,13 +149,18 @@ export default function ElementScore(oProps) {
         }
 
         return (
-            <ButtonAction startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction key={'action-' + sAction} size={sDisplaySize} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
         );
     });
 
 
     //--- Counter
-    let sCounter = undefined;
+    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+
+    let sCounterButton = undefined;
+    let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.score != undefined) {
         let iScore = oCounter.score;
         if(isContextVar('counter')) {
@@ -162,41 +169,61 @@ export default function ElementScore(oProps) {
                 iScore = oCounterGlobal.score;
         }
 
-        let sUsers = undefined;
-        if(performedBy) {
-            sUsers = performedBy.map(aVote => {
-                return (
-                    <View key={aVote.author_data.id + '-' + aVote.vote_date} className="flex flex-row justify-between items-center">
-                        <View className="flex-auto">
-                            <Profile {...aVote.author_data} />
+        if(iScore != 0) {
+            let sUsers = undefined;
+            if(performedBy) {
+                sUsers = performedBy.map(aVote => {
+                    return (
+                        <View key={aVote.author_data.id + '-' + aVote.vote_date} className="flex flex-row justify-between items-center">
+                            <View className="flex-auto">
+                                <Profile {...aVote.author_data} />
+                            </View>
+                            <View className="flex-none">
+                                <Icon icon={oIconAliases[aVote.vote_type]} />
+                            </View>
                         </View>
-                        <View className="flex-none">
-                            <Icon icon={oIconAliases[aVote.vote_type]} />
-                        </View>
-                    </View>
-                );
-            });
-        }
+                    );
+                });
+            }
 
-        if(!sUsers || sUsers.length == 0)
-            sUsers = getSkeleton();
+            if(!sUsers || sUsers.length == 0)
+                sUsers = getSkeleton();
 
-        sCounter = (
-            <View className={'flex flex-none' + (iScore == 0 ? ' hidden' : '')}>
-                <ButtonMenuCounter startDecorator="ArrowFatUp" title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+            sCounterButton = (
+                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
+            );
+
+            sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'score_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
-            </View>
-        );
+            );
+        }
     }
 
     const sObject = getName();
-    return (
-        <View className="flex-auto flex-row items-center">
-            {bShowAction && <View key={sObject + '-action-up'} className="flex-auto mr-0.5">{aActions[0]}</View>}
-            {bShowCounter && <View key={sObject + '-counter'} className={'flex-auto flex-row' + (bShowFull ? ' mx-0.5' : '')}>{sCounter}</View>}
-            {bShowAction && <View key={sObject + '-action-down'} className="flex-auto ml-0.5">{aActions[1]}</View>}
-        </View>
-    );
+    if(bShowCombined) {
+        let aButtonsGroup = [aActionButtons[0]];
+        if(!!sCounterButton)
+            aButtonsGroup.push(sCounterButton);
+        else
+            aButtonsGroup.push(<ButtonAction key="counter-holder" title={appSetting('lang_keys', 'score_counter_label')} disabled />);
+        aButtonsGroup.push(aActionButtons[1]);
+
+        return (
+            <View>
+                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                {sCounterPopup}
+            </View>
+        );
+    }
+    else
+        return (
+            <View className="flex-auto flex-row items-center">
+                {bShowAction && !!aActionButtons[0] && <View key={sObject + '-action-up'} className="flex-auto mr-0.5">{aActionButtons[0]}</View>}
+                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'} className={'flex-auto flex-row' + (bShowFull ? ' mx-0.5' : '')}>{sCounterButton}</View>}
+                {bShowAction && !!aActionButtons[1] && <View key={sObject + '-action-down'} className="flex-auto ml-0.5">{aActionButtons[1]}</View>}
+                {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
+            </View>
+        );
 }

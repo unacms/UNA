@@ -4,22 +4,22 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounter, Modal } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
-    const sClassIconExternal = 'w-6 h-6 group-active:-rotate-45 group-active:-translate-y-2 group-active:scale-150 duration-200 fill-current text-base';
-
     const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
     //--- default display type: action, counter, both.
-    const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
+    const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
+    const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -143,23 +143,28 @@ export default function ElementLikes(oProps) {
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
-    let sAction = undefined;
+    let sActionButton = undefined;
     if(bShowActionUndo && bShowActionVoted) {
-        sAction = (
-            <ButtonAction startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+        sActionButton = (
+            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
-        sAction = (
-            <ButtonAction startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
+        sActionButton = (
+            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? handleDo : () => {}} disabled={bShowActionDisabled} />
         );
     }
 
 
     //--- Counter
-    let sCounter = undefined;
+    const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
+
+    let sCounterButton = undefined;
+    let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.count != undefined) {
         let iCount = oCounter.count;
         if(isContextVar('counter')) {
@@ -168,33 +173,50 @@ export default function ElementLikes(oProps) {
                 iCount = oCounterGlobal.count;
         }
 
-        let sUsers = undefined;
-        if(performedBy) {
-            sUsers = performedBy.map(aUser => {
-                return (
-                    <View key={aUser.id}><Profile {...aUser} /></View>
-                );
-            });
-        }
+        if(iCount > 0) {
+            let sUsers = undefined;
+            if(performedBy) {
+                sUsers = performedBy.map(aUser => {
+                    return (
+                        <View key={aUser.id}><Profile {...aUser} /></View>
+                    );
+                });
+            }
 
-        if(!sUsers || sUsers.length == 0)
-            sUsers = getSkeleton();
+            if(!sUsers || sUsers.length == 0)
+                sUsers = getSkeleton();
 
-        sCounter = (
-            <View className={'flex flex-none' + (iCount <= 0 ? ' hidden' : '')}>
-                <ButtonMenuCounter startDecorator="ThumbsUp" title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
+            sCounterButton = (
+                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
+            );
+
+            sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
+            );
+        }
+    }
+
+    const sObject = getName();
+    if(bShowCombined) {
+        let aButtonsGroup = [sActionButton];
+        if(!!sCounterButton)
+            aButtonsGroup.push(sCounterButton);
+
+        return (
+            <View>
+                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                {sCounterPopup}
             </View>
         );
     }
-    
-    const sObject = getName();
-    return (
-        <View className="flex-auto flex-row items-center">
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sAction}</View>}
-            {bShowCounter && <View key={sObject + '-counter'}>{sCounter}</View>}
-        </View>
-    );
+    else
+        return (
+            <View className="flex-auto flex-row items-center">
+                {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+                {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
+            </View>
+        );
  }

@@ -97,10 +97,16 @@ export function ButtonsGroup(props/*: ButtonProps*/) {
 
   const iChildren = props.children.length;
   const aChildren = props.children.map((oChild, iIndex) => {
-    let { variant, ...restChild } = oChild.props;
+    let { variant, size, fullWidth, ...restChild } = oChild.props;
+
+    let oItem = undefined;
+    if(oChild.type === Button)
+      oItem = <Button variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} />
+    else
+      oItem = oChild;
 
     return (
-      <Button key={iIndex} variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} className={iIndex < iChildren - 1 ? ' border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''} />
+      <View key={iIndex} className={iIndex < iChildren - 1 ? 'border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''}>{oItem}</View>
     );
   });
 
@@ -163,8 +169,7 @@ export function Button(props/*: ButtonProps*/) {
       ThemeCssClasses['u-btn-' + buttonType + '-cnt']
       sClassText += ThemeCssClasses['u-btn-' + buttonType + '-text']
   }
-
-  if (buttonType == 'custom' || buttonType == 'group-item') {
+  else {
     sClassContainer += className
     sClassText += classTextName
   }
@@ -219,19 +224,37 @@ export function Button(props/*: ButtonProps*/) {
   let sButtonIconStart = undefined;
   if(buttonIconStart != '' && !buttonIconEnd) {
     if(Array.isArray(buttonIconStart)) {
-        sButtonIconStart = buttonIconStart.map((sIcon, iIndex) => {
-            if(!sIcon)
-                return;
+      sButtonIconStart = buttonIconStart.map((sIcon, iIndex) => {
+        if(!sIcon)
+          return;
 
-            return (
-                <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={sIcon}></Icon>
-            );
-        });
+        return (
+          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={sIcon}></Icon>
+        );
+      });
     }
     else
-        sButtonIconStart = (
-            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconStart}></Icon>
+      sButtonIconStart = (
+          <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconStart}></Icon>
+      );
+  }
+
+  let sButtonIconEnd = undefined;
+  if(buttonIconEnd != '' && buttonIconEnd) {
+    if(Array.isArray(buttonIconEnd)) {
+      sButtonIconEnd = buttonIconEnd.map((sIcon, iIndex) => {
+        if(!sIcon)
+          return;
+
+        return (
+          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={sIcon}></Icon>
         );
+      });
+    }
+    else
+      sButtonIconEnd = (
+        <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconEnd} ></Icon>
+      );
   }
 
   return (
@@ -241,52 +264,54 @@ export function Button(props/*: ButtonProps*/) {
         {buttonTitle !== undefined && (
           <Text className={sClassText + sTitleContainer}>{buttonTitle}</Text>
         )}
-        {buttonIconEnd != '' && buttonIconEnd && (
-          <Icon
-            className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconEnd} color={colorIcon}
-          ></Icon>
-        )}
+        {sButtonIconEnd}
         {props.children}
       </Pressable>
     ) : (
       <View className={sClassContainer} {...rest}>
-        {buttonIconStart != '' && !buttonIconEnd && (
-          <Icon
-            className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconStart} color={colorIcon}
-          ></Icon>
-        )}
+        {sButtonIconStart}
         {buttonTitle !== undefined && (
           <Text className={sClassText + sTitleContainer}>{buttonTitle}</Text>
         )}
-        {buttonIconEnd != '' && buttonIconEnd && (
-          <Icon
-            className={classIconName ? classIconName : sClassText + sIconContainer}
-            icon={buttonIconEnd}  color={colorIcon}
-          ></Icon>
-        )}
+        {sButtonIconEnd}
         {props.children}
       </View>
     )
   );
 }
 
-export function ButtonMenuActionDefault(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+export function ButtonsGroupMenu(props) {
+  let { variant, size, rounded, ...rest } = props
 
-    return <Button variant="default" size="sm" startDecorator={startDecorator} onPress={onPress} />
+  return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
+}
+
+export function ButtonMenuGroupItem(props) {
+  let { size, title, startDecorator, endDecorator, onPress, ...rest } = props
+
+  return <Button variant='group-item' size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} />
+}
+
+export function ButtonMenuActionDefault(props) {
+    let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
+
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
 }
 
 export function ButtonMenuActionText(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-    return <Button variant="text" size="sm" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
+    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} fullWidth rounded />
 }
 
-export function ButtonMenuCounter(props) {
-    let { title, startDecorator, onPress, ...rest } = props
+export function ButtonMenuCounterDefault(props) {
+    let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-    return <Button variant="outline" size="xs" title={title} startDecorator={startDecorator} onPress={onPress} fullWidth rounded />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
 }
 
+export function ButtonMenuCounterText(props) {
+  let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
+
+  return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} fullWidth rounded />
+}

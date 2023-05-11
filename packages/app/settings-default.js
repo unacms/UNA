@@ -75,6 +75,7 @@ import Svg, {Path} from 'react-native-svg'
         lang_keys: {
             vote_performed_by_popup_title: 'Likes',
             rvote_performed_by_popup_title: 'Reactions',
+            score_counter_label: 'Vote',
             score_performed_by_popup_title: 'Upvotes',
             ntfs_popup_title: 'Notifications',
             ntfs_popup_view_all: 'View all',
@@ -108,7 +109,8 @@ import Svg, {Path} from 'react-native-svg'
                 show_action: true,
                 show_action_as_button: true,
                 show_action_label: true,
-                show_counter: true
+                show_counter: true,
+                show_counter_as_button: false
             },
             reaction:{
                 show_action: true,
@@ -116,6 +118,7 @@ import Svg, {Path} from 'react-native-svg'
                 show_action_label: true,
                 show_counter: true,
                 show_counter_style: 'compound',
+                show_counter_as_button: false,
                 items: [
                     {id: 1, name: 'like'},
                     {id: 2, name: 'love'},
@@ -130,7 +133,7 @@ import Svg, {Path} from 'react-native-svg'
                 show_action_as_button: true,
                 show_action_label: true,
                 show_counter: true,
-
+                show_counter_as_button: false
             }
         },
         

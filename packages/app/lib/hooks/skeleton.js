@@ -67,7 +67,7 @@ export default function (props) {
         <View className="flex-auto  w-3/4 xl:w-4/5 flex-row">
               <View className="flex-auto w-2/3 sm:px-4 sm:py-2  sm:gap-2">
             {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
-                    <View  key={'home2' + index} className="bg-neocard dark:bg-neocard-dark mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
+                    <View  key={'home2' + index} className="bg-backgroundcard dark:bg-backgroundcard-dark mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
                     <View className="flex-row gap-2">
                       
                       <View className="relative flex-row">
@@ -94,7 +94,7 @@ export default function (props) {
               
               
               {appSetting('feed', 'default_view') != 'small' &&  items.map((item, index) => (
-                    <View  key={'home3' + index}  className="bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
+                    <View  key={'home3' + index}  className="bg-backgroundcard dark:bg-backgroundcard-dark  sm:rounded-lg p-4 flex flex-col  animate-pulse mt-2 sm:m-0">
                     <View className="flex-row gap-x-2 mb-2">
                       
                       <View className="relative flex-row">
