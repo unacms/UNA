@@ -80,22 +80,24 @@ function DefaultUnit(data) {
                     
                 }
                
-        </View>
 
-        <View className='flex-row w-full flex-wrap px-3 pb-4'>
-            <View className='flex-row flex-auto justify-between  '>
-                {!!data.content.category && <View className="mr-1"><Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/></View> }
-            </View>
-            { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
-                <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
-            </View>
-            }
-        </View>
-        <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">
+        <View className="  pt-2   flex-row  w-full">
+            
             <View className=" flex-row gap-2 flex-auto">
                 <Menu {...data.menu_actions} displayType="button" params={{show_action: true, show_counter: true, show_combined: true}} />
             </View>
+            <View className='flex-none flex-row gap-2 '>
+                {!!data.content.category && <View className=""><Button title={data.content.category}   size="sm" solid rounded variant="outline"/></View> }
+                { data.showMore && !showFull && 
+                <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="sm" solid rounded  variant="outline" />  
+            
+            }
+            </View>
+            
         </View>
+        </View>
+        
+        
 
     </View></View>);
 }
