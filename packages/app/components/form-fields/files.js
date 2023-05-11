@@ -11,12 +11,10 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
-import { FormExContext} from 'app/context/form';
 import crypto from 'crypto';
 import Loading from 'app/ui/atoms/loading'
 
 export default function FormFieldFiles(props) {
-    const { formExContextData, setFormExContextData } = useContext(FormExContext);
     const [imageSource, setImageSource] = useState({ images: null});
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
@@ -126,13 +124,6 @@ export default function FormFieldFiles(props) {
               }
         }
     }, [props.ext_deny, props.ext_allow, imageSource, url]);
-    
-    useEffect(() => {
-        if (formExContextData?.action === 'open_files'){
-            selectImage();
-            setFormExContextData({ action:'', data:formExContextData?.data });
-        }
-    }, [formExContextData, selectImage, setFormExContextData]);
     
     const handleInsertImageFinish = useCallback(async (result, extraVar) => {
         RestoreGhosts({hash: extraVar.hash, id:result?.data?.id});
