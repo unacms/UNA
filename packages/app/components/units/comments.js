@@ -90,9 +90,9 @@ export default function UnitComments(props) {
                         </Row>
                         
                     </View>
-                    <View className='flex-row items-center'>
-                            <Button  align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
-                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true, classNameItem: 'flex-none flex flex-row pr-2'}} />
+                    <View className='flex-row items-center gap-2'>
+                            <Button align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
+                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
                     </View>
                 </View>
             </View>
