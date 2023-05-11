@@ -71,10 +71,15 @@ export default function PageLayout(props) {
         if (viewFormRef.current){
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let  FormH = height
-                if (Dimensions.get('window').width < 1024)
+                let offset = 100;
+                if (Dimensions.get('window').width < 1024){
                     FormH = FormH 
+                    offset = 120;
+                }
+                let otherH = Dimensions.get('window').height;
+                otherH = otherH - FormH - offset
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    setSizes({formHeight: FormH, formWidth: width-2})             
+                    setSizes({formHeight: FormH, formWidth: width-2, otherHeight:otherH})             
                 });
             });
         }
@@ -89,12 +94,12 @@ export default function PageLayout(props) {
     ];
 
     return ( 
-        <View className="lg:py-4 h-full ">
-            <View ref={viewCntRef} className=" justify-between w-full h-full flex-1  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
-                <View style ={{marginBottom: sizes.formHeight}} className='overflow-hidden h-full w-full '>
+        <View className="lg:py-4 h-full">
+            <View ref={viewCntRef} className=" justify-betweenw-full h-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
+                <View style ={{marginBottomx: sizes.formHeight, height:sizes.otherHeight}} className='overflow-hidden  w-full'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
                 </View>
-                <View ref={viewFormRef} onLayout={handleLayout} className='fixed bottom-16 lg:bottom-0 w-full' style ={{width: sizes.formWidth}}> 
+                <View ref={viewFormRef} onLayout={handleLayout} className='  w-full' > 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                     </KeyboardAvoidingView>

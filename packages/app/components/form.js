@@ -1,36 +1,9 @@
 import React from 'react';
-
-import Captcha from './form-fields/captcha';
-import Custom from './form-fields/custom';
-import Hidden from './form-fields/hidden';
-import Password from './form-fields/password';
-import Submit from './form-fields/submit';
-import Switcher from './form-fields/switcher';
-import TextField from './form-fields/text';
-import Textarea from './form-fields/textarea';
-import Select from './form-fields/select';
-import Files from './form-fields/files';
-import Location from './form-fields/location';
-import Datetime from './form-fields/dattime';
 import { Text } from 'app/design/typography';
 import { useForm, FormProvider, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import FormExContextProvider from 'app/context/form';
-import FormComments from './forms/comments';
 
-const components = {
-    captcha: Captcha,
-    custom: Custom,
-    hidden: Hidden,
-    password: Password,
-    submit: Submit,
-    switcher: Switcher,
-    text: TextField,
-    textarea: Textarea,
-    select: Select,
-    files: Files,
-    location: Location,
-    datetime: Datetime
-}
+import { getFormFieldType, getFormField, getFormFieldList, getFormType } from 'app/lib/form-helpers'
 
 export default function Form(props) {
 
@@ -71,36 +44,16 @@ export default function Form(props) {
             methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);   
         }, 100);
     }
+    let _handleSubmit = methods.handleSubmit(onSubmit, onError)
+    let inputs = getFormFieldList(props.name, data.inputs, _handleSubmit, true) 
+    const ElementForm = getFormType(props.name)
 
-    const componentsMapForms = {
-        comment: FormComments,
-    };
-
-    const ElementForm = componentsMapForms[props.name];
-
-    let inputs = Object.keys(data.inputs).map(function (key) {
-        const a = data.inputs[key];
-        
-        const InputType = components[String(a.type)];
-        let k = data.inputs[key].name;
-        if (InputType){
-            return <InputType key={k} {...a} format = {'undefined' !== typeof ElementForm ? 'custom': 'default'} handleSubmit = {methods.handleSubmit(onSubmit, onError)} />;
-        }
-        else{
-            return <Text>Unsupporded field type: {a.type}</Text>
-        }
-
-    });   
-
-    
     if ('undefined' !== typeof ElementForm)
-        inputs   = <FormExContextProvider><ElementForm data={data}>{inputs}</ElementForm></FormExContextProvider>
-
+        inputs = <ElementForm data={data} handleSubmit={_handleSubmit} ></ElementForm>
     return (
-        
-            <FormProvider {...methods}> 
-                {inputs}
-            </FormProvider>
+        <FormProvider {...methods}> 
+            {inputs}
+        </FormProvider>
         
     );
 }

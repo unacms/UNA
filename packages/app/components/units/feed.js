@@ -13,6 +13,7 @@ import {StyleSheet, useWindowDimensions} from 'react-native';
 import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
+import { ContentMore } from 'app/ui/molecules/contentmore';
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)

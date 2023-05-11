@@ -70,7 +70,7 @@ function urltoFile(url, filename, mimeType){
     );
 }
 
-export const uploadImage = async (uri, fetchUrl, calback) => {
+export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     const isWeb = Platform.OS == 'web'
     const formData = new FormData();
     if (isWeb){
@@ -80,11 +80,12 @@ export const uploadImage = async (uri, fetchUrl, calback) => {
         .then(async function(file){
             formData.append("file", file);
             const result = await fetcher([fetchUrl, null, formData]);
+            console.log('&&&&&&&&&&', result)
             if (result?.data?.link){
                 calback(result?.data?.link);
             }
             else{
-                calback()
+                calback(result, extraVar)
             }
                 
         });
@@ -105,7 +106,7 @@ export const uploadImage = async (uri, fetchUrl, calback) => {
             calback(result?.data?.link);
         }
         else{
-            calback()
+            calback(result, extraVar)
         }
     }
 };

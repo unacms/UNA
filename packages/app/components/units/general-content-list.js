@@ -199,34 +199,33 @@ export default function Unit(props) {
                 
                 <View className="
                     shadow-sm hover:shadow-md active:shadow-none 
-                    mt-2 mx-2 overflow-scroll                 
+                    mt-2 mx-2             
                     group duration-200  rounded-lg  
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                        
-                   
+                   justify-between 
                     active:translate-y-0.5 ">
-                    <Link href={data.url}>            
-                        {data.image &&
-                            <View className="   ">
+                    <Link href={data.url}>  
+                    <View className='justify-between h-full sm:aspect-square'>    
+                        {data.image && (
+                
                                 
 
-                                <View className="relative  m-0.5 rounded-md aspect-video overflow-hidden  ">
-                                    <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
-                                </View>
-                                <View className="p-2.5 sm:h-24 flex-col gap-2  ">
-                                <Button title="Category"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="Hash" size="xs" solid rounded variant="outline"/>  
+                                <><View><View className="relative  m-0.5 rounded-md aspect-video overflow-hidden  ">
+                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+                            </View><View className="p-2.5 flex-col gap-2  ">
 
                                     <Text numberOfLines={2} className='text-neutral-950 dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                         {data.title}
                                     </Text>
+                                    <Text numberOfLines={1} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                                    </View>
 
-
-                               </View>
-                               <View className=" p-2.5  ">{sMeta}</View>
+                                </View><View className=" p-2.5  ">{sMeta}</View></>
            
-                               
-                            </View>
+                               )
+                          
                         } 
                         
                         {!data.image &&<>
@@ -236,15 +235,15 @@ export default function Unit(props) {
 
 
                                 
-                                    <View className="p-2.5 sm:h-24 my-0.5 flex-col gap-2  ">
-                                        <Button title="Category"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="Hash" size="xs" solid rounded variant="outline"/>  
-
+                                    <View className="p-2.5 my-0.5 flex-col gap-2  ">
+                                       
                                         <Text numberOfLines={2} className='mt-auto text-neutral-950  dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                             {data.title}
                                         </Text>
                                     </View>
                                     
                                         <Text numberOfLines={10} className="px-2.5  sm:aspect-video text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                                        
 
                                     
                                     
@@ -260,7 +259,7 @@ export default function Unit(props) {
                         </>}
 
 
-                   
+                        </View>      
                     </Link>
                 
                 

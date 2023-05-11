@@ -22,6 +22,7 @@ export default function FormFieldText(props) {
         editable
         numberOfLines={4}
         name={props.name}
+        placeholder = {props.placeholder}
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
@@ -32,6 +33,7 @@ export default function FormFieldText(props) {
             multiline
             editable
             style={{height: height}}
+            placeholder = {props.placeholder}
             numberOfLines={props.numLines ? props.numLines : 4}
             onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 42 ? 42 : e.nativeEvent.contentSize.height)}
             name={props.name}

@@ -39,17 +39,17 @@ type ModalPropsCustom = ModalProps & {
 */
 export function Modal(props/*: ModalPropsCustom*/) {
 
-  let animationType = props.animation ? props.animation : 'fade';
-  let presentationType = props.presentation ? props.presentation : 'overFullScreen';
-
+  const animationType = props.animation ? props.animation : 'fade';
+  const presentationType = props.presentation ? props.presentation : 'overFullScreen';
+  const transparent = props.transparent ? props.transparent : true;
   const Wrapper = !!props.onClose && props?.outerClickClose !== false ? Pressable : View;
 
   return (
-    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={true}>
+    <ModalDef visible={props.onVisible} presentationStyle={presentationType} animationType={animationType} transparent={transparent}>
       <Wrapper className="flex justify-end w-full h-full pb-4 bg-gray-100/80 dark:bg-gray-900/80" {...(!!props.onClose && { onPress: props.onClose })}>
           <View className="flex-row justify-center items-center left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
               <View className="relative w-full h-full max-w-2xl md:h-auto">
-                  <View className="relative bg-backgroundmodal border border-bordercolormodal dark:border-bordercolormodal-dark dark:bg-backgroundmodal-dark rounded-lg shadow-2xl">
+                  <View className="relative bg-backgroundmodal dark:bg-backgroundmodal-dark border border-bordercolormodal dark:border-bordercolormodal-dark  rounded-lg shadow-2xl">
                       <View className="p-2">
                           <Row className={'items-center ' + (!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
                             { !!props.title && <View><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>{props.title}</Text></View>}

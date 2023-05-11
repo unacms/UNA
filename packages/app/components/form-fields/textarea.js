@@ -16,12 +16,14 @@ export default function FormFieldText(props) {
     const [height, setHeight] = useState(null);
     const editorRef = useRef(null);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
-
+    console.log(props);
+    
     let input = <InputMulti
         multiline
         editable
         numberOfLines={4}
         name={props.name}
+        placeholder = {props.placeholder}
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
@@ -35,6 +37,7 @@ export default function FormFieldText(props) {
             numberOfLines={props.numLines ? props.numLines : 4}
             onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 42 ? 42 : e.nativeEvent.contentSize.height)}
             name={props.name}
+            placeholder = {props.placeholder}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}

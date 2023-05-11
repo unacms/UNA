@@ -5,13 +5,16 @@ import { Text } from 'app/design/typography'
 
 export default function FormField(props) {
 
-    const sClassName = 'w-full form-control ' + (props.format == 'default' ? 'mb-4' : '')+ ' form-control-' + props.name ;
+    let caption = props.caption;
+    if (props.format == 'notitle')
+        caption = '';
 
+    const sClassName = 'w-full form-control ' + (props.format != 'custom' ? 'mb-4' : '')+ ' form-control-' + props.name ;
     return (
         <View className={sClassName}>
-            { (!!props.caption && props.format == 'default') &&
+            { (!!props.caption && props.format != 'custom') &&
             <View className="label">
-                <Text className="label-text capitalize block mb-1 ml-1 text-sm font-medium text-gray-700 dark:text-gray-200">{props.caption}</Text>
+                <Text className="label-text capitalize block mb-1 ml-1 text-sm font-medium text-gray-700 dark:text-gray-200">{caption}</Text>
             </View> }
             {props.children}
             { !!props.error &&

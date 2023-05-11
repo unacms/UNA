@@ -11,6 +11,8 @@ import { appSetting, getURI } from 'app/lib/util';
 export function Root (props) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
+    
+    // todo fix with Alex console.log('$$$$$$$$$$--root', currentUser?.id);
 
     useEffect(() => {
         if (props?.data?.user){

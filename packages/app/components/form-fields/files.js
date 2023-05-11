@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo, useCallback, useEffect  } from 'react';
 import Field from './_field';
 import { View, Row } from 'app/design/view'
 import Image from '../../ui/atoms/image';
@@ -12,26 +12,23 @@ import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
 import { FormExContext} from 'app/context/form';
+import crypto from 'crypto';
+import Loading from 'app/ui/atoms/loading'
 
 export default function FormFieldFiles(props) {
-    
     const { formExContextData, setFormExContextData } = useContext(FormExContext);
-
-    const [imageSource, setImageSource] = useState({images:null, preload:0});
-    const isWeb = Platform.OS == 'web'
+    const [imageSource, setImageSource] = useState({ images: null});
+    const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
 
-    let rules = {};
     let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    
-    const [value, setValue] = useState(defaultValue)
 
-    const { field } = useController({ name, rules, defaultValue });
+    const url = useMemo(() => {
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+    }, [props]);
 
-    const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
-
-    const RestoreGhosts =  async (inc) => { 
+  
+    const RestoreGhosts = useCallback(async (data) => { 
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
         let a = [];
         let av = [];
@@ -42,30 +39,40 @@ export default function FormFieldFiles(props) {
             });
         }
         a.forEach(function (k) {
-            setTimeout(() => {
-                if (k.file_id)
-                    formContext.setValue(name, av.join(','))
-            }, 100);
+            if (k.file_id)
+                formContext.setValue(name, av.join(','))
         });
+        let filteredArr =[]
+        if (imageSource?.images)
+            filteredArr = imageSource?.images?.filter(item => item.preload === true);
 
-        setImageSource({images:a, preload:imageSource.preload});
-    }
+        setImageSource({images: [...a, ...filteredArr]});
+        
+    }, 
+    [url, formContext, name, imageSource]);
 
-    
-    if (!imageSource.images){
-        RestoreGhosts(0);
-    }
+    useEffect(() => {
+        if (props.previewPlaceHolder ){
+            props.previewPlaceHolder(name, GhostsList(imageSource.images));
+        }
+    }, 
+    [imageSource]);
 
-    if(formContext.formState.isSubmitted){
-        setTimeout(() => {
+    useEffect(() => {
+        if (!imageSource.images) {
             RestoreGhosts(0);
-        }, 500);
-    }
-
-    const selectImage = async () => {
+        }
+        if (formContext.formState.isSubmitted) {
+            RestoreGhosts(0);
+        }
+    }, 
+    [RestoreGhosts, formContext.formState.isSubmitted, imageSource.images]);
+    
+    const selectImage = useCallback(async () => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp'? true : false;
 
         if (bIsMedia){
+           
             let mediaTypes = ImagePicker.MediaTypeOptions.All;
             if (props.ext_allow == 'jpg,jpeg,jpe,gif,png,svg,webp' || props.ext_allow == 'jpg,jpeg,jpe,gif,png,webp')
                 mediaTypes = ImagePicker.MediaTypeOptions.Images;
@@ -79,16 +86,20 @@ export default function FormFieldFiles(props) {
             });
 
             if (!result.canceled) {
-                let b = imageSource.preload;
+                let k = imageSource.images;
                 result.assets.forEach(function (i) {
-                    b = b + 1;
+                    let hash = crypto.createHash('sha256').update(i.uri).digest('hex');
                     uploadImage(
                         i.uri, 
                         url + '&a=upload', 
-                        handleInsertImageFinish
+                        handleInsertImageFinish,
+                        {hash: hash}
                     );
+                    let fileType = i.uri.split(';')[0].split(':')[1];
+                    k = [...k , {file_url: i.uri, file_type:fileType, preload:true, hash: hash}]
                 });
-                setImageSource({images:imageSource.images, preload:b});
+                
+                setImageSource({images:k});
             }
         }
         else{
@@ -97,85 +108,83 @@ export default function FormFieldFiles(props) {
                     type: '*/*', // This allows all file types
                 });
                 if (result.type === 'success') {
+                    let k = imageSource.images;
+                    let hash = crypto.createHash('sha256').update(result.uri).digest('hex');
                     uploadImage(
                         result.uri, 
                         url + '&a=upload', 
-                        handleInsertImageFinish
+                        handleInsertImageFinish,
+                        {hash: hash}
+
                     );
+                    let fileType = result.uri.split(';')[0].split(':')[1];
+                    k = [...k , {file_url: result.uri, file_type:fileType, preload:true, hash: hash}];
+                    setImageSource({images:k});
                 }
               } catch (err) {
                 console.error('Error picking document:', err);
               }
         }
-    };
-
-
-    if (formExContextData?.action === 'open_files'){
-        selectImage();
-        setTimeout(() => {
-            setFormExContextData({action:'', data:formExContextData?.data});
-        }, 100);
-        
-    }
+    }, [props.ext_deny, props.ext_allow, imageSource, url]);
     
-
-    function PrevList() {
-        const elements = [];
-        for (let i = 1; i <= imageSource.preload; i++) {
-            elements.push(
-                <View key={'preload-'+i} className="mr-2 mt-2 bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-24 w-24 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={32} /></View>
-            );
+    useEffect(() => {
+        if (formExContextData?.action === 'open_files'){
+            selectImage();
+            setFormExContextData({ action:'', data:formExContextData?.data });
         }
-        return elements;
-    }
-
-    function GhostsList() {
-        return (
-            imageSource.images?.map((img, index) => (
-                <View key={'file-'+index} className='h-24 w-24 mr-1 mt-2' >
+    }, [formExContextData, selectImage, setFormExContextData]);
+    
+    const handleInsertImageFinish = useCallback(async (result, extraVar) => {
+        RestoreGhosts({hash: extraVar.hash, id:result?.data?.id});
+    }, 
+    [RestoreGhosts]);
+    
+    const handleDelete = useCallback(async (id) => {
+        const result = await fetcher(url + "&a=delete&id=" + id);
+        RestoreGhosts(0);
+    }, 
+    [url, RestoreGhosts]); 
+    
+    function GhostsList(imagesList) {
+        if (!imagesList || imagesList.length == 0)
+            return ;
+        
+            return (
+            imagesList?.map((img, index) => (
+                <View key={'file-'+index} className='h-24 w-24 justify-center items-center' >
                     { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
-                    { img =='' && <View className="bg-neocard dark:bg-neocard-dark border border-neoborder dark:border-neoborder-dark sm:rounded-lg animate-pulse rounded-lg h-16 w-16 items-center justify-center"><Icon icon="CloudArrowUp" className="w-8 h-8" size={64} /></View>}
+                    { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                     { img !='' && <View className='absolute top-0.5 right-0.5 w-8 text-center mx-auto'>
-                        <Button  onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
+                        <Button onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
                     </View> }
                 </View>
             ))
         )
-
-        return <></>;
-    }
-    const handleInsertImageFinish = async (url) => {
-        RestoreGhosts(-1);
     }
   
-    const handleDelete = async (id) => {
-        const result = await fetcher(url + "&a=delete&id=" + id);
-        RestoreGhosts(0);
-    } 
-
+    const iconMap = {
+        photo: "ImageSquare",
+        cmt_image: "ImageSquare",
+        pictures: "ImageSquare",
+        video: "Video",
+        videos: "Video",
+        files: "FilePlus",
+        sounds: "FileAudio"
+    };
     
-    let button = <Button  startDecorator={"plus"} title={"Select " + props.name} onPress={selectImage} />
-    if (typeof setFormExContextData === "function" &&  (!formExContextData || formExContextData?.imageSource!= imageSource)){
-        setTimeout(() => {
-            setFormExContextData({action:'show_files', imageSource:imageSource, data: <Row className='flex-wrap '>
-            <GhostsList/>
-            <PrevList/>
-        </Row>})
-        }, 1000);
-    }
+    let sIcon = iconMap[props.name] || "Plus";
+    let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
+
+    let button = <Button startDecorator={sIcon} title={sTitle} variant="text" onPress={selectImage} />
 
     return (
         <Field {...props}>
             <View className="mr-2 mb-2" >
                 {button}
             </View>
-            <Row className='flex-wrap gap-2'>
-                <GhostsList/>
-                <PrevList/>
-            </Row>
+            {!props.previewPlaceHolder && <Row className='flex-wrap gap-2'>{GhostsList(imageSource.images)}</Row>}
         </Field>
-       
     );
 }
 

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { stripTags } from '../../lib/util';
 import { View, Pressable } from 'app/design/view';
 import Html from '../../ui/atoms/html';
+import { Button } from 'app/design/controls';
 
 export function ContentMore({content, numberOfLines, textStyle, openSmall, textClassName}) {
     
@@ -13,9 +14,10 @@ export function ContentMore({content, numberOfLines, textStyle, openSmall, textC
     const [showFull, setShowFull] = useState(openSmall)
 
     return (
-        <Pressable onPress={handleShowMore}>
+        <Pressable onPress={(e) => {handleShowMore(); e.preventDefault() }} >
             <View className={showFull ? 'hidden' : ''}>
-                <Text  className={textClassName} htmlStyles={textStyle} numberOfLines={3} >{stripTags(content)}</Text>
+                <Text  className={textClassName} htmlStyles={textStyle} numberOfLines={numberOfLines} >
+                    {stripTags(content)}</Text>
             </View>
             <View className={!showFull ? 'hidden' : ''}>
                 <Html data={content} htmlStyles={textStyle}  />

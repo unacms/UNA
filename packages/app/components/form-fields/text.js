@@ -15,6 +15,7 @@ export default function FormFieldText(props) {
         <Field {...props}>
             <Input 
                 name={props.name}
+                placeholder = {props.placeholder}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={String(field.value)}

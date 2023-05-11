@@ -98,9 +98,9 @@ import Svg, {Path} from 'react-native-svg'
         },
         browse:{
             per_line: [
-                {width: 1200, count: 4},
-                {width: 900, count: 3},
-                {width: 600, count: 2},
+                {width: 1280, count: 4},
+                {width: 1024, count: 3},
+                {width: 640, count: 2},
             ]
         },
         social_actions:{
@@ -288,6 +288,7 @@ import Svg, {Path} from 'react-native-svg'
             'view-persons-profile':{
                 layout: 'custom_profile',
                 blocks: {
+                    col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
                     col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
                 }
             },
@@ -406,23 +407,8 @@ import Svg, {Path} from 'react-native-svg'
             },
         },
         menu: {
-            /*
-            PROFILE
-Explore (featured posts / events / groups / discussions + hot feed)
-Notifs
-Messages
-Bookmarks
-Connections
-Groups
-+events
-Posts
-+discussions
-+people
-About
-Terms
-Contact*/
             left: [
-                { title: 'Profile', link: '/persons-profile/dr-andrey-yasko-phd', icon: 'user' },
+                { title: 'Profile', link: '/view-persons-profile/dr-andrey-yasko-phd', icon: 'user' },
                 { title: 'Explore', link: '/explore', icon: 'Compass' },
                 { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
                 { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
