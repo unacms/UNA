@@ -1,4 +1,3 @@
-import ActionsDataContext from 'app/context/actions';
 import { View } from 'app/design/view';
 import Menu from '../menu';
 
@@ -6,17 +5,12 @@ export default function ElementEntityActions(props) {
     //relative  sm:my-0 bg-neocard dark:bg-neocard-dark  border-neoborder dark:border-neoborder-dark sm:border-x w-full mx-auto max-w-5xl
 
     return (
-        <ActionsDataContext>
-            <View className="">
-                <View className="flex flex-col w-full">
-                    <View className="flex flex-row px-4 pb-4">
-                        <Menu {...props.data} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: false, show_counter: true}} />
-                    </View>
-                    <View className="flex p-2 flex-row  border-t border-neoborder dark:border-neoborder-dark ">
-                        <Menu {...props.data} displayType="element" showMatched="true" params={{classNameItem: 'flex-none flex flex-row pr-2', show_action: true, show_counter: false, show_action_as_button: false}} />
-                    </View>
+        <View className="">
+            <View className="flex flex-col w-full">
+                <View className="flex p-2 flex-row  border-t border-neoborder dark:border-neoborder-dark ">
+                    <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
                 </View>
             </View>
-        </ActionsDataContext>
+        </View>
     );
 }

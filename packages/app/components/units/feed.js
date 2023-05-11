@@ -5,7 +5,6 @@ import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 
 import { useState } from 'react';
-import ActionsDataContext from 'app/context/actions';
 import Html from '../../ui/atoms/html';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -82,23 +81,21 @@ function DefaultUnit(data) {
                 }
                
         </View>
-        <ActionsDataContext>
-            <View className='flex-row w-full flex-wrap px-3 pb-4'>
-                <View className='flex-row flex-auto justify-between  '>
-                    {!!data.content.category && <View className="mr-1"><Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/></View> }
-                    <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: false, show_counter: true}} />
-                </View>
-                { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
-                    <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
-                </View>
-                }
+
+        <View className='flex-row w-full flex-wrap px-3 pb-4'>
+            <View className='flex-row flex-auto justify-between  '>
+                {!!data.content.category && <View className="mr-1"><Button title={data.content.category}  startDecorator="Folders" size="xs" solid rounded variant="outline"/></View> }
             </View>
-            <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">
-                <View className=" flex-row gap-2 flex-auto">
-                    <Menu {...data.menu_actions} displayType="button" params={{show_action: true, show_action_as_button: false, show_counter: false}} />
-                </View>
+            { data.showMore && !showFull && <View className=' my-auto  flex-none   '    >
+                <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded variant="link"/>  
             </View>
-        </ActionsDataContext>
+            }
+        </View>
+        <View className=" border-t  mx-3 py-2 border-neoborder dark:border-neoborder-dark flex-row items-center justify-between gap-1 ">
+            <View className=" flex-row gap-2 flex-auto">
+                <Menu {...data.menu_actions} displayType="button" params={{show_action: true, show_counter: true, show_combined: true}} />
+            </View>
+        </View>
 
     </View></View>);
 }
