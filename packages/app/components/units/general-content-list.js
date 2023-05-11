@@ -190,7 +190,7 @@ export default function Unit(props) {
         let sMeta = '';
 
         if(data?.meta)
-            sMeta = <Menu {...data.meta} displayType="link" itemsStart={true} />
+            sMeta = <Menu {...data.meta} displayType="link" />
         else
             sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 

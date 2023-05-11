@@ -29,9 +29,28 @@ export default function ElementMenu(oProps) {
     const aExcept = oProps?.except || [''];
     const aExceptTitle = oProps?.except_title || ['BxTemplView', 'BxTemplFavorite', 'BxTemplFeature', 'BxTemplReport', 'BxTimelineModule'];
 
+    let sClassName = oProps?.params && oProps.params?.className || 'bx-menu ';
 
     //--- show menu as verstical
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
+
+    sClassName += bShowVertical ? 'flex-col items-center gap-2' : 'flex-row items-center w-full gap-2';
+
+    //--- horizontal menu items alignment
+    const sAlignItems = oProps?.alignItems ? oProps?.alignItems : (oProps?.params && oProps.params?.align_items ? oProps.params.align_items : 'left');
+    switch(sAlignItems) {
+        case 'left':
+            sClassName += ' justify-start';
+            break;
+
+        case 'center':
+            sClassName += ' justify-center';
+            break;
+
+        case 'right':
+            sClassName += ' justify-end';
+            break;
+    }
 
     //--- show menu's content only
     const bShowContent = oProps?.params && oProps.params?.showContent === 'true';   
@@ -53,17 +72,11 @@ export default function ElementMenu(oProps) {
             return;
 
         const ItemType = oComponentsMap[sDisplayTypeItem];
-        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : (!oProps.itemsStart ? 'flex-auto' : '')}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
+        return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center' : (sAlignItems == 'stretch' ? 'flex-auto' : '')}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
     });
 
     if(bShowContent)
-        return (
-            <View>
-                {sItems}
-            </View>
-        );
-
-    const sClassName = oProps?.params && oProps.params?.className || 'bx-menu ' + (bShowVertical ? 'flex-col items-center gap-2' : 'w-full flex-row justify-start items-center');
+        return sItems;
 
     return (
         <View className={sClassName}>{sItems}</View>
