@@ -18,7 +18,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
-    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200';
+    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-90';
     const oIconAliases = {
         default: 'Smiley',
         like: 'ThumbsUp',
@@ -240,7 +240,7 @@ export default function ElementReactions(oProps) {
             });
 
             sActionButton = (
-                <Pressable onPress={(event) => {event.preventDefault()}}>
+                <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
                             <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
@@ -272,9 +272,9 @@ export default function ElementReactions(oProps) {
             };
 
             const onSliderDoSelect = (event, item) => {
-                handleDo(event, item);
-
                 onSliderDoClose();
+
+                handleDo(event, item);
             };
 
             sActionButton = (
@@ -282,7 +282,7 @@ export default function ElementReactions(oProps) {
             );
 
             sActionPopup = (
-                <Modal animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
+                <Modal key="action-popup" animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
                     <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oParams.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
                         return (
                             <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
@@ -419,7 +419,7 @@ export default function ElementReactions(oProps) {
         return [[
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
-                <Modal title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
                     <View className="p-4">{aPerformedByUsers}</View>
                 </Modal>
