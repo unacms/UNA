@@ -1,6 +1,6 @@
-import { useState, useContext, useMemo, useCallback, useEffect  } from 'react';
+import { useState, useMemo, useCallback, useEffect  } from 'react';
 import Field from './_field';
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import Image from '../../ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
 import { Button } from 'app/design/controls';
@@ -13,19 +13,18 @@ import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
 import { stringMd5 } from 'react-native-quick-md5';
 import Loading from 'app/ui/atoms/loading'
+import { Text } from 'app/design/typography'
 
 export default function FormFieldFiles(props) {
     const [imageSource, setImageSource] = useState({ images: null});
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
-
+    const bMultiple = props.multiple;
     let name = props.name;
 
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props]);
-
-    console.log('****************', props)
   
     const RestoreGhosts = useCallback(async (data) => { 
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
@@ -81,7 +80,7 @@ export default function FormFieldFiles(props) {
             let result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: mediaTypes,
                 quality: 1,
-                allowsMultipleSelection: true,
+                allowsMultipleSelection: bMultiple,
             });
 
             if (!result.canceled) {
@@ -138,7 +137,8 @@ export default function FormFieldFiles(props) {
     [url, RestoreGhosts]); 
     
     function GhostsList(imagesList) {
-        if (!imagesList || imagesList.length == 0)
+
+        if (!imagesList || imagesList.length == 0 || !bMultiple)
             return ;
         
             return (
@@ -169,12 +169,41 @@ export default function FormFieldFiles(props) {
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
 
-    let button = <Button startDecorator={sIcon} title={sTitle} variant="text" onPress={selectImage} />
+    function getImg(img, sizes){
 
+    }
+
+    function getButton(imagesList) {
+        let button = <Button startDecorator={sIcon} title={sTitle} variant="text" onPress={selectImage} />
+        
+        if (!bMultiple){
+            let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
+
+            button = (
+                <Pressable onPress={selectImage} >
+                    <View className='w-full h-48 bg-red-500 rounded-lg items-center justify-center'>
+                        {img == null ? 
+                        <Text>For styling (Andrew)</Text> : 
+                        <> { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
+                           { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                           { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
+                           <View className='absolute top-1 right-0 w-8 text-center mx-auto'>
+                                <Button onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
+                           </View>
+                    </>}
+                    </View>
+                </Pressable>
+            );
+        }
+
+        return button;
+    }
+
+    
     return (
         <Field {...props}>
             <View className="mr-2 mb-2" >
-                {button}
+                {getButton(imageSource.images)}
             </View>
             {!props.previewPlaceHolder && <Row className='flex-wrap gap-2'>{GhostsList(imageSource.images)}</Row>}
         </Field>

@@ -42,7 +42,7 @@ export default function FormFeed(props) {
     </Modal>
     <View className='mx-auto mt-2'>
         <Button  onPress={() => setShowImage(true)} >
-            <Text>Click to post</Text>
+            <Text>Click to post (For styling (Andrew))</Text>
         </Button>
     </View>
 </View>
