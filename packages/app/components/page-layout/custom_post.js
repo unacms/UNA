@@ -67,7 +67,6 @@ export default function PageLayout(props) {
         };
       }, []);
    
-      console.log('------', sizes.formHeight)
     return (
         <View className='flex-1 w-full h-full'>
             <View ref={viewCntRef} className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark" style ={{marginBottom: sizes.formHeight}}>

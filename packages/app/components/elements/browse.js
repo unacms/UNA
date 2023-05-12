@@ -115,6 +115,8 @@ export default function ElementBrowse(props) {
         styles = {height: (defParams?.height ? defParams.height : windowHeight)}
     }
 
+    const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+
     return (
         (data.data.length > 0) && <View className='w-full h-full' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
@@ -126,7 +128,7 @@ export default function ElementBrowse(props) {
             /></View>}
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
                 <FlashList numColumns={numColumns} 
-                    data={data.data}
+                    data={dataItems}
                     renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     keyExtractor={item => item.id}
                     key={numColumns} 

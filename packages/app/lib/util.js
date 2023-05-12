@@ -82,7 +82,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
             const result = await fetcher([fetchUrl, null, formData]);
             console.log('&&&&&&&&&&', result)
             if (result?.data?.link){
-                calback(result?.data?.link);
+                calback(result?.data?.link, extraVar);
             }
             else{
                 calback(result, extraVar)
@@ -103,7 +103,7 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
 
         const result = await fetcher([fetchUrl, null, formData]);
         if (result?.data?.link){
-            calback(result?.data?.link);
+            calback(result?.data?.link, extraVar);
         }
         else{
             calback(result, extraVar)

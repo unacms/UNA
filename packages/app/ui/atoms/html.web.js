@@ -16,7 +16,7 @@ export default function ElementHtml(props) {
             }
           
             return (
-              '<iframe scrolling="no" width=100% height=auto class="' + className + '" src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '"></iframe>'
+              '<iframe scrolling="no"  height=auto class="w-full max-w-xl mx-auto ' + className + '" src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '"></iframe>'
             );
           });
     }

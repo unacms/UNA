@@ -13,11 +13,16 @@
     "@shopify/flash-list": "1.4.0",
     "@shopify/react-native-skia": "^0.1.185",
     "@tiptap/extension-color": "^2.0.3",
+    "@tiptap/extension-document": "^2.0.3",
+    "@tiptap/extension-image": "^2.0.3",
+    "@tiptap/extension-link": "^2.0.3",
     "@tiptap/extension-list-item": "^2.0.3",
+    "@tiptap/extension-mention": "^2.0.3",
     "@tiptap/extension-text-style": "^2.0.3",
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/suggestion": "^2.0.3",
     "app": "*",
     "expo": "~48.0.11",
     "expo-document-picker": "~11.2.2",
@@ -59,7 +64,8 @@
     "react-native-webview": "^12.0.2",
     "react-quill": "^2.0.0",
     "showtime-tab-view": "^0.1.2",
-    "swr": "^2.0.3"
+    "swr": "^2.0.3",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

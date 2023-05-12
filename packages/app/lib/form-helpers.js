@@ -31,7 +31,7 @@ export function getFormType(name){
 }
 
 export function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
-console.log('aaa', name);
+
     const ElementForm = getFormType(name);
 
     if ('undefined' !== typeof ElementForm && isInitial) {
@@ -46,7 +46,7 @@ console.log('aaa', name);
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps){
    
     if (!inputData)
-        return ;
+        return <></>;
 
     const components = {
         captcha: Captcha,

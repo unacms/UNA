@@ -323,6 +323,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                     </Row>
                 </View>)
             }
+            
             <Form {...form} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between" onFormSubmit={onFormSubmit}  />
         </View> 
     )

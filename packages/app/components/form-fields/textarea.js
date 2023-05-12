@@ -16,7 +16,6 @@ export default function FormFieldText(props) {
     const [height, setHeight] = useState(null);
     const editorRef = useRef(null);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
-    console.log(props);
     
     let input = <InputMulti
         multiline
