@@ -1,14 +1,18 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+
+import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 
-export default function ElementLikes(oProps) {
-    const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
+export default function ElementComments(oProps) {
+    const redirectdRef = useRef();
+
+    const oParams = {...appSetting('social_actions', 'comment'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -77,7 +81,7 @@ export default function ElementLikes(oProps) {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
 
         aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
+        const sRequest = '/api.php?r=system/' + sAction + '/TemplCmtsServices&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
         if(typeof onLoad === 'function')
@@ -87,17 +91,10 @@ export default function ElementLikes(oProps) {
     const handleDo = (event) => {
         event.preventDefault();
 
-        performAction('do', {value: 1}, (oData) => {
-            setContextVars(oData);
-        });
-    };
+        if(!oAction?.link)
+            return;
 
-    const handleUndo = (event) => {
-        event.preventDefault();
-
-        performAction('do', {value: 1}, (oData) => {
-            setContextVars(oData);
-        });
+        redirectdRef.current.redirect(oAction.link);
     };
 
     const handleGetPerformedBy = (event) => {
@@ -130,32 +127,31 @@ export default function ElementLikes(oProps) {
         );
     };
 
-
-    //--- show action
-    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
-    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
-
-    const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
-
     let sTitle = oAction?.title || '';
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
+    let iCount = 0;
+    if(oCounter?.count != undefined) {
+        iCount = oCounter.count;
+        if(isContextVar('counter')) {
+            const oCounterGlobal = getContextVar('counter');
+            if(oCounterGlobal?.count)
+                iCount = oCounterGlobal.count;
+        }
+    }
+    
+
+    //--- Action
+    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
+    const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
+
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
-    let sActionButton = undefined;
-    if(bShowActionUndo && bShowActionVoted) {
-        sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
-        );
-    }
-    else {
-        sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
-        );
-    }
+    const sActionButton = (
+        <ButtonAction key="action" size={sDisplaySize} startDecorator="ChatTeardropDots" title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
+    );
 
 
     //--- Counter
@@ -163,39 +159,33 @@ export default function ElementLikes(oProps) {
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
+    /**
+     * Counter is force disabled for now.
+     */
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && oCounter?.count != undefined) {
-        let iCount = oCounter.count;
-        if(isContextVar('counter')) {
-            const oCounterGlobal = getContextVar('counter');
-            if(oCounterGlobal?.count)
-                iCount = oCounterGlobal.count;
+    if(false && bShowCounter && iCount > 0) {
+        let sUsers = undefined;
+        if(performedBy) {
+            sUsers = performedBy.map(aUser => {
+                return (
+                    <View key={aUser.id}><Profile {...aUser} /></View>
+                );
+            });
         }
 
-        if(iCount > 0) {
-            let sUsers = undefined;
-            if(performedBy) {
-                sUsers = performedBy.map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
+        if(!sUsers || sUsers.length == 0)
+            sUsers = getSkeleton();
 
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
+        sCounterButton = (
+            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
+        );
 
-            sCounterButton = (
-                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
-            );
-
-            sCounterPopup = (
-                <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
-                </Modal>
-            );
-        }
+        sCounterPopup = (
+            <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+            </Modal>
+        );
     }
 
     const sObject = getName();
@@ -206,6 +196,7 @@ export default function ElementLikes(oProps) {
 
         return (
             <View>
+                <Redirect ref={redirectdRef} />
                 <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
@@ -214,6 +205,7 @@ export default function ElementLikes(oProps) {
     else
         return (
             <View className="flex-auto flex-row items-center">
+                <Redirect ref={redirectdRef} />
                 {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}

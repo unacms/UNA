@@ -95,20 +95,24 @@ export function ButtonsGroup(props/*: ButtonProps*/) {
   sClassContainer += groupRounded ? 'rounded-full ' : 'rounded-lg ';
   sClassContainer += className;
 
-  const iChildren = props.children.length;
-  const aChildren = props.children.map((oChild, iIndex) => {
-    let { variant, size, fullWidth, ...restChild } = oChild.props;
+  let aChildren = undefined;
+  if(props?.children) {
+    const iChildren = props.children.length;
 
-    let oItem = undefined;
-    if(oChild.type === Button)
-      oItem = <Button variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} />
-    else
-      oItem = oChild;
+    aChildren = props.children.map((oChild, iIndex) => {
+      let { variant, size, fullWidth, ...restChild } = oChild.props;
 
-    return (
-      <View key={iIndex} className={iIndex < iChildren - 1 ? 'border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''}>{oItem}</View>
-    );
-  });
+      let oItem = undefined;
+      if(oChild.type === Button)
+        oItem = <Button variant="group-item" size={groupSize} fullWidth={groupFull} {...restChild} />
+      else
+        oItem = oChild;
+
+      return (
+        <View key={iIndex} className={iIndex < iChildren - 1 ? 'border-r border-bordercolorbutton dark:border-bordercolorbutton-dark' : ''}>{oItem}</View>
+      );
+    });
+  }
 
   return (
     <View className={sClassContainer} {...rest}>{aChildren}</View>
