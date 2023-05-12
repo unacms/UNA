@@ -289,13 +289,13 @@ export function ButtonsGroupMenu(props) {
 export function ButtonMenuGroupItem(props) {
   let { size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-  return <Button variant='group-item' size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} />
+  return <Button variant='group-item' size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} />
 }
 
 export function ButtonMenuActionDefault(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
 }
 
 export function ButtonMenuActionText(props) {
