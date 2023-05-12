@@ -283,7 +283,7 @@ export function Button(props/*: ButtonProps*/) {
 export function ButtonsGroupMenu(props) {
   let { variant, size, rounded, ...rest } = props
 
-  return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
+  return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
