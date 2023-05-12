@@ -348,32 +348,38 @@ import Svg, {Path} from 'react-native-svg'
             },
             button_styles: {
                 'u-btn-default-cnt':
-                ' border border-bordercolorbutton dark:border-bordercolorbutton-dark hover:bg-backgroundbutton-hover dark:hover:bg-backgroundbutton-darkhover active:shadow-none bg-backgroundbutton dark:bg-backgroundbutton-dark hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark shadow-sm hover:shadow  ',
+                ' bg-neutral-500/20 hover:bg-neutral-500/10  border border-neutral-500/20 active:shadow-none  active:opacity-50 shadow-sm  hover:shadow  ',
                 'u-btn-default-text':
-                ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
+                ' font-semibold text-neutral-700 group-hover:text-neutral-950 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-default-trans': 'duration-200 ',
+
                 'u-btn-primary-cnt':
-                ' border active:shadow-none border-bordercolorbutton  dark:border-bordercolorbutton-dark shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
+                ' border active:shadow-none border-transparent  shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
                 'u-btn-primary-text': ' font-semibold text-gray-100 group-hover:text-white ',
                 'u-btn-primary-trans': 'duration-200 ',
+
                 'u-btn-danger-cnt':
                 ' border active:shadow-none border-black/10 dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900',
                 'u-btn-danger-text': 'font-semibold text-gray-100 group-hover:text-white ',
                 'u-btn-danger-trans': 'duration-200',
+
                 'u-btn-text-cnt':
-                ' border border-transparent hover:bg-backgroundbutton-hover active:opacity-50 dark:hover:bg-backgroundbutton-darkhover  ',
+                ' border border-transparent hover:bg-neutral-500/10 active:opacity-50  ',
                 'u-btn-text-text':
                 ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
                 'u-btn-text-trans': ' duration-200 ',
+
                 'u-btn-link-cnt': ' border border-transparent ',
                 'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
                 'u-btn-link-trans': ' duration-200 ',
-                'u-btn-outline-cnt': ' border active:shadow-none border-bordercolorbutton dark:border-bordercolorbutton-dark hover:bg-backgroundbutton active:opacity-50 dark:hover:bg-backgroundbutton-dark',
+
+                'u-btn-outline-cnt': ' border border-neutral-500/20  active:shadow-none   active:opacity-50  hover:bg-neutral-500/10 hover:shadow-sm  ',
                 'u-btn-outline-text':
-                ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
+                ' font-semibold text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
                 'u-btn-outline-trans': ' duration-200 ',
-                'u-btn-group-item-cnt': ' hover:bg-backgroundbutton-hover active:opacity-50 dark:hover:bg-backgroundbutton-darkhover  ',
-                'u-btn-group-item-text': ' font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
+
+                'u-btn-group-item-cnt': ' hover:bg-neutral-500/10 active:opacity-50 hover:shadow-lg ',
+                'u-btn-group-item-text': ' font-semibold text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             },
             buttons_group_styles: {
                 'u-btn-default-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',

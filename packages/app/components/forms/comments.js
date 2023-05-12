@@ -15,9 +15,10 @@ export default function FormComments(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-    
-    return <View className='w-full'>
-    <Row className='w-full '>
+
+    return <View className='w-full  my-0.5'>
+    <Row className='w-full  '>
+
         <View className=''>
             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
         </View>
@@ -32,6 +33,6 @@ export default function FormComments(props) {
         <View className=''> {getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom')}          
         </View>
     </Row>
-    {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-2'>{prevList}{prevList.length}</Row> }
+    {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}{prevList.length}</Row> }
 </View>
 }
