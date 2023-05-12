@@ -40,8 +40,8 @@ function DefaultUnit(data) {
     return (
         <View className='max-w-5xl w-full mx-auto '>
         <View className=" 
-            p-1 mt-1 sm:mx-4 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg  
-            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+            p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
+            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
             hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
             shadow-sm hover:shadow-md active:shadow-none 
             active:translate-y-0.5
@@ -51,16 +51,21 @@ function DefaultUnit(data) {
             >
  
        
-        <View className="px-3 pt-3">
-        <Profile className="p-3 gap-3" {...data.author_data} displayType="unit" displaySize="lg" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+        <View className="px-3 pt-3 gap-2 flex-row">
+        <View className="flex-auto">        
+            <Profile {...data.author_data} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+        </View>
+        
+        {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
 
         </View>
         {data.mainImage &&
-            <View className="w-full mt-4 aspect-[3/1] " style={styles.card_image}>
+            <View className="w-full mt-3 aspect-[3/1] " style={styles.card_image}>
                 <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="(max-width:768px) 100vw, 500px"   />
             </View>
         }   
         <View className="w-full p-3   flex-col gap-1">
+            
             <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                 {data.content.title}
             </Text>
@@ -78,21 +83,19 @@ function DefaultUnit(data) {
                 :  <View className="flex-col relative w-full">
                             <Html data={data.content.text} />
                         </View>
+                        
                     
                 }
+               
                
 
         <View className="  pt-2   flex-row  w-full">
             
             <View className=" flex-row gap-2 flex-auto">
-                <Menu {...data.menu_actions} displayType="button" params={{show_action: true, show_counter: true, show_combined: true}} />
+                <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
             </View>
-            <View className='flex-none flex-row gap-2 '>
-                {!!data.content.category && <View className=""><Button title={data.content.category}   size="sm" solid rounded variant="outline"/></View> }
-                { data.showMore && !showFull && 
-                <Button title="View more"  onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="sm" solid rounded  variant="outline" />  
-            
-            }
+            <View className='my-auto flex-none'>
+                { data.showMore && !showFull && <Button  title='More...' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="default" />}
             </View>
             
         </View>

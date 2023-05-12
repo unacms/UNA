@@ -187,20 +187,16 @@ export default function Unit(props) {
     }
 
     function defaultUnit(){
-        let sMeta = '';
+        let sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
-        if(data?.meta)
-            sMeta = <Menu {...data.meta} displayType="link" />
-        else
-            sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
-
+        
         return (
             
                 
                 <View className="
                     shadow-sm hover:shadow-md active:shadow-none 
-                    mt-2 mx-2             
-                    group duration-200  rounded-lg  
+                    mt-4 mx-4             
+                    group duration-200  rounded-lg overflow-hidden  
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                        
@@ -212,17 +208,20 @@ export default function Unit(props) {
                 
                                 
 
-                                <><View><View className="relative  m-0.5 rounded-md aspect-video overflow-hidden  ">
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
-                            </View><View className="p-2.5 flex-col gap-2  ">
-
-                                    <Text numberOfLines={2} className='text-neutral-950 dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                                <><View className='flex-col gap-2'>
+                                    <View className="relative m-1  aspect-[3/1] rounded overflow-hidden  ">
+                                            <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+                                    </View> 
+                                    
+                                    
+                                    <Text numberOfLines={3} className='px-3 text-neutral-950 dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                         {data.title}
                                     </Text>
-                                    <Text numberOfLines={1} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                                    </View>
+                                    <Text numberOfLines={3} className="px-3 text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                                    
 
-                                </View><View className=" p-2.5  ">{sMeta}</View></>
+                                    </View>
+                                <View className=" p-3  ">{sMeta}</View></>
            
                                )
                           
@@ -230,19 +229,20 @@ export default function Unit(props) {
                         
                         {!data.image &&<>
                         
-                        <View className="  ">
+                        <View className="p-3  ">
                                 
 
 
                                 
-                                    <View className="p-2.5 my-0.5 flex-col gap-2  ">
+                                    <View className=" flex-col gap-2  ">
                                        
-                                        <Text numberOfLines={2} className='mt-auto text-neutral-950  dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                                        <Text numberOfLines={3} className='mt-auto text-neutral-950  dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                             {data.title}
                                         </Text>
+                                        <Text numberOfLines={12} className=" sm:aspect-video text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+
                                     </View>
                                     
-                                        <Text numberOfLines={10} className="px-2.5  sm:aspect-video text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
                                         
 
                                     
@@ -251,7 +251,7 @@ export default function Unit(props) {
 
 
                                 </View>
-                                <View className=" p-2.5    ">{sMeta}</View>
+                                <View className=" p-3    ">{sMeta}</View>
                                
 
                         

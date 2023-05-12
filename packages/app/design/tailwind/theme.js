@@ -69,11 +69,11 @@ const colors = {
 
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.6)',
-    active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,0.8)',
-    darkhover: 'rgba(17,24,39,1)',
-    darkactive: 'rgba(17,24,39,5)'
+    hover: 'rgba(255,255,255,0.8)',
+    active: 'rgba(255,255,255,0.6)',
+    dark: 'rgba(17,24,39,1)',
+    darkhover: 'rgba(17,24,39,0.8)',
+    darkactive: 'rgba(17,24,39,0.6)'
   },
   bordercolorcard: {
     DEFAULT: 'rgba(229,231,235,0.8)',

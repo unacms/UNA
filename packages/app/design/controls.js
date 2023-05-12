@@ -283,25 +283,25 @@ export function Button(props/*: ButtonProps*/) {
 export function ButtonsGroupMenu(props) {
   let { variant, size, rounded, ...rest } = props
 
-  return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
+  return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
   let { size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-  return <Button variant='group-item' size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} />
+  return <Button variant='group-item' size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} />
 }
 
 export function ButtonMenuActionDefault(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded />
 }
 
 export function ButtonMenuActionText(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} fullWidth rounded />
+    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} fullWidth rounded />
 }
 
 export function ButtonMenuCounterDefault(props) {
