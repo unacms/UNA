@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable  } from 'app/design/view';
-import { FlashList } from "@shopify/flash-list";
+import { FlashList } from 'app/design/view'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { BlockByName2 } from 'app/components/block';

@@ -32,7 +32,7 @@ export default function Dropdown(props) {
 
     if (!isShow){
         return (
-            <PickerStyled  itemStyle={{fontSize:16, height:40, backgroundColor:colors.fieldBackground, borderRadius:0 }}
+            <PickerStyled className={Platform.OS == 'web' ? ' h-11' : ''} style={{ borderRadius:10, color:colors.default  }}
                 selectedValue={selectedVal}
                 onValueChange={(itemValue, itemIndex) =>
                 handleChange(itemValue, itemIndex)

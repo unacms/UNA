@@ -1,46 +1,48 @@
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Button, Modal,  } from 'app/design/controls'
 import { Text} from 'app/design/typography'
-import {  useState } from 'react';
-import React from 'react';
+import { useState } from 'react';
+import { getFormFieldByData } from 'app/lib/form-helpers'
 
 export default function FormFeed(props) {
 
-    function controlByKey(array, value) {
-        return array.find(obj => obj['key'] === value);
-    }
-
-    const { formExContextData, setFormExContextData } = useContext(FormExContext);
     const [showImage, setShowImage] = useState(false);
 
-    let photo = React.cloneElement(controlByKey(props.children, 'photo'), {newProp: 'newValue'});
-    //console.log(props);
+    const [imageSource, setImageSource] = useState([]);
+
+    function setPlaceHolder(name, previews) {
+        if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
+            setImageSource(prevImageSource => ({
+                ...prevImageSource,
+                [name]: previews,
+            }));
+        }
+    }
+    
+    let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full '>
-    <Modal  onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
-            <View className=' flex-grow mr-2 '>
-                {controlByKey(props.children, 'type')}
-                {controlByKey(props.children, 'owner_id')}
-                {controlByKey(props.children, 'text')}
-                {controlByKey(props.children, 'attachments')}
-                {controlByKey(props.children, 'link')}
-                <Row className='mt-2'>
-                    <View className='w-12'>{photo}</View>
-                    <View className='w-12'>{controlByKey(props.children, 'video')}</View>
-                    <View className='w-12'>{controlByKey(props.children, 'file')}</View>
-                </Row>
-                
-                {controlByKey(props.children, 'object_privacy_view')}
-                {controlByKey(props.children, 'object_cf')}
-                <View className='mt-2'>
-                    {controlByKey(props.children, 'tlb_do_submit')}
-                </View>
-                
-            </View>
+    <Modal onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
+        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit,  'default')}
+        {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
+        {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}
+        {getFormFieldByData(props.data.inputs['type'], props.handleSubmit,  'default')}
+        <View className='w-full '>
+            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}
+            <Row>
+                <View className='w-12'>{getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+                <View className='w-12'>{getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+                <View className='w-12'>{getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+            </Row>
+            { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
+            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit,  'notitle')}
+            {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit,  'default')}
+
+        </View>   
     </Modal>
     <View className='mx-auto mt-2'>
         <Button  onPress={() => setShowImage(true)} >
-            <Text>Click to post</Text>
+            <Text>Click to post (For styling (Andrew))</Text>
         </Button>
     </View>
 </View>

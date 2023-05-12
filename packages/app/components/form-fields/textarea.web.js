@@ -44,7 +44,7 @@ export default function FormFieldText(props) {
         />
 
     if (props.html == 2){
-     //   input =  <FormFieldFtf  {...props} />;
+        input =  <FormFieldFtf  {...props} />;
     }    
 
     return (

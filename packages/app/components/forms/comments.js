@@ -15,9 +15,10 @@ export default function FormComments(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-    console.log('$$$$$$$$$$', prevList);
+
     return <View className='w-full  my-0.5'>
     <Row className='w-full  '>
+
         <View className=''>
             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
         </View>

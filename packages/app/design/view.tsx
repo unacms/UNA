@@ -7,7 +7,7 @@ import {
     Pressable as ReactNativePressable
 } from 'react-native'
 import { Link as SolitoLink } from 'solito/link'
-import { FlashList as  ReactNativeFlashList } from "@shopify/flash-list";
+import { MasonryFlashList as  ReactNativeFlashList } from "@shopify/flash-list";
 import { styled } from 'nativewind'
 
 export const View = styled(ReactNativeView)
