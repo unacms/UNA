@@ -203,7 +203,7 @@ export default function Unit(props) {
                    justify-between 
                     active:translate-y-0.5 ">
                     <Link href={data.url}>  
-                    <View className='justify-between h-full sm:aspect-square'>    
+                    <View className='justify-between h-full '>    
                         {data.image && (
                 
                                 
@@ -239,7 +239,7 @@ export default function Unit(props) {
                                         <Text numberOfLines={3} className='mt-auto text-neutral-950  dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                             {data.title}
                                         </Text>
-                                        <Text numberOfLines={12} className=" sm:aspect-video text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                                        <Text numberOfLines={12} className=" text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
 
                                     </View>
                                     

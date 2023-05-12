@@ -5,7 +5,7 @@ import { getFormFieldByData } from 'app/lib/form-helpers'
 export default function FormPost(props) {
     const [imageSource, setImageSource] = useState([]);
 
-   function setPlaceHolder(name, previews) {
+    function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource(prevImageSource => ({
                 ...prevImageSource,
@@ -14,9 +14,11 @@ export default function FormPost(props) {
         }
     }
 
+    console.log(props);
+
     let prevList = Object.values(imageSource).flat();
 
-    return <View className='w-full '>
+    return <View className='w-full max-w-5xl'>
         {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle')}
         {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...'})}
         {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}
@@ -30,6 +32,8 @@ export default function FormPost(props) {
         {getFormFieldByData(props.data.inputs['cat'], props.handleSubmit, 'notitle')}
         {getFormFieldByData(props.data.inputs['allow_view_to'], props.handleSubmit,  'notitle')}
         {getFormFieldByData(props.data.inputs['do_publish'], props.handleSubmit,  'default')}
+        {getFormFieldByData(props.data.inputs['do_submit'], props.handleSubmit,  'default')}
+        
 
     </View>
 }
