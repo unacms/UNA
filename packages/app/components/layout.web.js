@@ -36,7 +36,7 @@ export default function Layout(props) {
                 <title>{props.data.title}</title>
             </Head>
             <NavigationContainer linking={linking}>
-            <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
+            <View className=" text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
                 {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} uri = {props.uri} />} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
