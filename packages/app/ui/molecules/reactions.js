@@ -18,7 +18,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
-    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200';
+    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-90';
     const oIconAliases = {
         default: 'Smiley',
         like: 'ThumbsUp',
@@ -272,9 +272,9 @@ export default function ElementReactions(oProps) {
             };
 
             const onSliderDoSelect = (event, item) => {
-                handleDo(event, item);
-
                 onSliderDoClose();
+
+                handleDo(event, item);
             };
 
             sActionButton = (
