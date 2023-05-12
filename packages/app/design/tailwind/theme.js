@@ -145,8 +145,8 @@ const colors = {
   },
 
   backgroundbutton: {
-    DEFAULT: 'rgba(107,114,128,0.2)',
-    hover: 'rgba(107,114,128,0.1)',
+    DEFAULT: 'rgba(209,213,219,0.6)',
+    hover: 'rgba(209,213,219,0.2)',
     dark: 'rgba(107,114,128,0.5)',
     darkhover: 'rgba(107,114,128,0.2)',
     

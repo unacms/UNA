@@ -28,7 +28,7 @@ export default function UnitComments(props) {
 
     const windowHeight = useWindowDimensions().height;
 
-    let sCommentClass = " bg-neoitem border border-neoborder dark:border-neoborder-dark dark:bg-neoitem-dark rounded-lg   px-3  u-vanilla-html-small";
+    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10  rounded-lg   px-2.5  u-vanilla-html-small ";
 
     if (!data)
         return (<View></View>);
@@ -75,7 +75,7 @@ export default function UnitComments(props) {
                                     <View><Text className='text-sm text-gray-800 dark:text-gray-200'>In Reply to </Text></View>
                                     <View className=" "><Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" /></View>
                                 </View>
-                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
+                                <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-gray-400"/>
                             </View>
                         }
                         <View>
@@ -83,18 +83,20 @@ export default function UnitComments(props) {
                         </View>
                         <Row className='flex-wrap gap-x-1 '>
                             {files.map(a => (
-                                <Pressable key={'file-'+a.file_id} className='w-24 h-24 mb-2 ' onPress={() => handleShowImage(a.file)} >
+                                <Pressable key={'file-'+a.file_id} className='w-24 h-24 mt-1 ' onPress={() => handleShowImage(a.file)} >
                                     <Image sizes="96px" src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
                                 </Pressable>
                             ))}
                         </Row>
                         
                     </View>
-                    <View className='flex-row items-center'>
+                    <View className=' mb-1 flex-row w-full justify-between items-center'>
                         <View className='mr-2'>
-                            <Button align="start" title="Reply" size ="sm" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
+                            <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                         </View>
+                        <View className=''>
                         <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+                        </View>
                     </View>
                 </View>
             </View>

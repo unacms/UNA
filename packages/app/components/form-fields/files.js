@@ -146,7 +146,7 @@ export default function FormFieldFiles(props) {
                     { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
-                    { img !='' && <View className='absolute top-0.5 right-0.5 w-8 text-center mx-auto'>
+                    { img !='' && <View className='absolute top-1 right-0 w-8 text-center mx-auto'>
                         <Button onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
                     </View> }
                 </View>
