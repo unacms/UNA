@@ -23,7 +23,7 @@ export const Hidden = styled(TextInputDef, 'hidden')
 export const Dropdown = styled(DropdownDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5  ')
 
 const PickerStyles = ' appearance-none bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 '
-export const PickerStyled = styled(PickerDef, PickerStyles + ' h-11 ')
+export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 
 

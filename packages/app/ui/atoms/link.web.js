@@ -11,8 +11,10 @@ export default function ElementLink(props) {
     const router = useRouter();
 
     const handlePress = (event, href) => {
-        router.push(href); 
-        event.preventDefault();
+        if (href){
+            router.push(href); 
+            event.preventDefault();
+        }
     }
 
     if (props.emulate == true)

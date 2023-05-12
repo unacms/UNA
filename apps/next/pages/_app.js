@@ -14,14 +14,10 @@ fixReanimatedIssue()
 
 import { Provider } from 'app/provider'
 import { CurrentUserProvider } from 'app/context/user';
-import Head from 'next/head'
-import { useColorScheme } from 'react-native';
 
 import '../../../packages/app/styles/global.css'
 
 function MyApp({ Component, pageProps }) {
-
-  const scheme = useColorScheme();
 
   return (
     <>

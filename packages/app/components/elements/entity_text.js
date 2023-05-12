@@ -39,7 +39,6 @@ function Small({ data }) {
 }
 
 function Default({ data }) {
-//relative sm:my-0 bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto
     return (
         <View className="">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" mt-4 u-cover" view="cover"   /></View>}              

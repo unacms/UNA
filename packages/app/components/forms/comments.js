@@ -15,7 +15,7 @@ export default function FormComments(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-    console.log('$$$$$$$$$$', prevList);
+    
     return <View className='w-full'>
     <Row className='w-full '>
         <View className=''>

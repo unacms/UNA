@@ -14,9 +14,8 @@ export default function FormPost(props) {
         }
     }
 
-
     let prevList = Object.values(imageSource).flat();
-    console.log('$$$$$$$$$$', prevList);
+
     return <View className='w-full '>
         {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle')}
         {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...'})}

@@ -11,7 +11,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useController, useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
-import crypto from 'crypto';
+import { stringMd5 } from 'react-native-quick-md5';
 import Loading from 'app/ui/atoms/loading'
 
 export default function FormFieldFiles(props) {
@@ -25,6 +25,7 @@ export default function FormFieldFiles(props) {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (props.multiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props]);
 
+    console.log('****************', props)
   
     const RestoreGhosts = useCallback(async (data) => { 
         const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
@@ -86,7 +87,7 @@ export default function FormFieldFiles(props) {
             if (!result.canceled) {
                 let k = imageSource.images;
                 result.assets.forEach(function (i) {
-                    let hash = crypto.createHash('sha256').update(i.uri).digest('hex');
+                    let hash = stringMd5(i.uri);
                     uploadImage(
                         i.uri, 
                         url + '&a=upload', 
@@ -142,7 +143,7 @@ export default function FormFieldFiles(props) {
         
             return (
             imagesList?.map((img, index) => (
-                <View key={'file-'+index} className='h-24 w-24 justify-center items-center' >
+                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center' >
                     { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                     { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
@@ -158,9 +159,10 @@ export default function FormFieldFiles(props) {
         photo: "ImageSquare",
         cmt_image: "ImageSquare",
         pictures: "ImageSquare",
-        video: "Video",
-        videos: "Video",
+        video: "MonitorPlay",
+        videos: "MonitorPlay",
         files: "FilePlus",
+        file: "FilePlus",
         sounds: "FileAudio"
     };
     
