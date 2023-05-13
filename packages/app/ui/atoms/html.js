@@ -1,9 +1,4 @@
 import { useWindowDimensions, useColorScheme, View} from 'react-native'
-/*import {
-    useHtmlIframeProps,
-    HTMLIframe,
-    iframeModel
-  } from '@native-html/iframe-plugin';*/
 import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'

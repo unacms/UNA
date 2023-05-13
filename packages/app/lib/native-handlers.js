@@ -5,7 +5,6 @@ import Link from 'app/ui/atoms/link'
 import { View, Row, Pressable } from 'app/design/view'; 
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
-import { useWindowDimensions} from 'react-native';
 
 export function appSetting(section, name, path) {
     if (path)

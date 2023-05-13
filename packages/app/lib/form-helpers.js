@@ -15,10 +15,7 @@ import FormComments from 'app/components/forms/comments';
 import FormFeed from 'app/components/forms/feed';
 import FormPost from 'app/components/forms/post';
 
-import { View, Row } from 'app/design/view'
-import Image from 'app/ui/atoms/image';
-import { Button } from 'app/design/controls';
-import { Icon } from 'app/ui/atoms/icon';
+
 
 export function getFormType(name){
     const componentsMapForms = {

@@ -5,18 +5,14 @@ import Msg from './elements/msg';
 import Login from './elements/login';
 import Redirect from './elements/redirect';
 import { Text } from 'app/design/typography';
-
 import EntityText from './elements/entity_text';
 import EntityAttachments from './elements/entity_attachments';
 import EntityAuthor from './elements/entity_author';
 import EntityActions from './elements/entity_actions';
 import EntityInfo from './elements/entity_info';
 import EntityCover from './elements/entity_cover';
-
 import ProfileMenu from './elements/profile_menu';
-
-import FeedItem from './elements/feed_item';
-
+import FeedItem from './elements/feed_item'; 
 import MessengerInbox from './elements/messenger_inbox';
 import MessengerLot from './elements/messenger_lot';
 

@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
-import { View } from 'app/design/view'
-import PageError from 'app/components/page-layout/error';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
-import { Text } from 'app/design/typography'
 import { appSetting, getURI } from 'app/lib/util';
 
 export function Root (props) {

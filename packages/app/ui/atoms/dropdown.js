@@ -3,10 +3,8 @@ import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react'
 import { Theme } from 'app/design/theme';
 import { Modal } from 'app/design/controls'
-import { Input } from 'app/design/controls'
 import { View,Pressable } from 'app/design/view'
 import { Platform } from 'react-native'
-import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls';
 //settings https://www.npmjs.com/package/@react-native-picker/picker#mode
 export default function Dropdown(props) {

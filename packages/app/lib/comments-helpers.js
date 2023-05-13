@@ -1,5 +1,4 @@
 import { View, ScrollView, FlashList, Row } from 'app/design/view';
-import {BlockByName, DataByName} from 'app/components/block';
 import { Text } from 'app/design/typography'
 
 import { useState, useContext, useRef, useEffect } from 'react';
@@ -9,11 +8,9 @@ import useSWR from "swr";
 import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
-import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
-import { Platform, Keyboard } from 'react-native'
+import {  Keyboard } from 'react-native'
 import Dropdown from 'app/ui/atoms/dropdown'
-import { Dimensions } from 'react-native';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){

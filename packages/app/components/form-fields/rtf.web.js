@@ -1,8 +1,5 @@
-import { View, Row, Pressable } from 'app/design/view'
+import { View } from 'app/design/view'
 
-import { Color } from '@tiptap/extension-color'
-import ListItem from '@tiptap/extension-list-item'
-import TextStyle from '@tiptap/extension-text-style'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';

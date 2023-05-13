@@ -2,7 +2,6 @@ import { View } from 'app/design/view';
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import {  Dimensions, Platform  } from 'react-native';
-import { menuItemsByName } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 
 //2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder dark:border-neoborder-dark

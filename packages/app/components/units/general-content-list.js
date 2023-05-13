@@ -5,7 +5,6 @@ import { appSetting } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Menu from 'app/components/menu';
-import { Button } from 'app/design/controls';
 
 
 export default function Unit(props) {
