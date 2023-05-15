@@ -195,7 +195,7 @@ export default function ElementScore(oProps) {
 
             sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'score_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="px-2 pb-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    <View className="p-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             );
         }
