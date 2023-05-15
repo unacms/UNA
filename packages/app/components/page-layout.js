@@ -5,6 +5,7 @@ import PageCustomMessenger from './page-layout/custom_messenger';
 import PageCustomBlackBox from './page-layout/custom_blackbox';
 import PageCustomProfile from './page-layout/custom_profile';
 import PageCustomHome from './page-layout/custom_home';
+import PageCustomNotif from './page-layout/custom_notif';
 
 import PageLayout1 from './page-layout/layout_top_area_bar_right';
 import PageLayout2 from './page-layout/layout_topbottom_area_bar_left';
@@ -23,6 +24,7 @@ const componentsMap = {
     'custom_messenger': PageCustomMessenger,
     'custom_profile': PageCustomProfile,
     'custom_home': PageCustomHome,
+    'custom_notif': PageCustomNotif,
 
     'layout_top_area_bar_right': PageLayout1,
     'layout_topbottom_area_bar_left': PageLayout2,
