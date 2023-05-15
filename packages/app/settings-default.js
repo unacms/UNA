@@ -377,7 +377,7 @@ import Svg, {Path} from 'react-native-svg'
                 'u-btn-text-trans': ' duration-200 ',
 
                 'u-btn-link-cnt': ' border border-transparent ',
-                'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary dark:text-primary-dark ',
+                'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
                 'u-btn-link-trans': ' duration-200 ',
 
                 'u-btn-outline-cnt': ' border border-neutral-500/20  active:shadow-none   active:opacity-50  hover:bg-neutral-500/10 hover:shadow-sm  ',
