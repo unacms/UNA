@@ -40,10 +40,28 @@ export default function FormFeed(props) {
 
         </View>   
     </Modal>
-    <View className='mx-auto mt-2'>
-        <Button  onPress={() => setShowImage(true)} >
-            <Text>Click to post (For styling (Andrew))</Text>
+    <View className='max-w-5xl w-full items-center pt-2 sm:pt-4  sm:px-4 mx-auto'>
+    <View className='max-w-5xl w-full flex-row space-x-2 w- 
+          p-4   group duration-200 overflow-hidden sm:rounded-lg  
+          bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+          hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+          shadow-sm hover:shadow-md active:shadow-none 
+          active:translate-y-0.5
+          border-bordercolorcard dark:border-bordercolorcard-dark 
+          sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
+         
+    
+    
+    '>  
+        <Button size='base' variant='outline' startDecorator='User' rounded  />
+            
+        <View className='flex-auto'>    
+        <Button size='base' variant='outline' startDecorator='Pencil' fullWidth rounded title='Create a new Post' align="start" onPress={() => setShowImage(true)} >
+            
         </Button>
+        </View>
+    </View>
     </View>
 </View>
 }

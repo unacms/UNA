@@ -91,11 +91,11 @@ function DefaultUnit(data) {
 
         <View className="  pt-3   flex-row  w-full">
             
-            <View className=" flex-row gap-2 flex-auto">
+            <View className=" flex-row space-x-2 flex-auto">
                 <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
             </View>
             <View className='my-auto flex-none'>
-                { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="default" />}
+                { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" />}
             </View>
             
         </View>

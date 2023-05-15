@@ -181,9 +181,9 @@ export default function FormFieldFiles(props) {
 
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className='w-full h-48 bg-red-500 rounded-lg items-center justify-center'>
+                    <View className='w-full h-48 bg-backgroundinput dark:bg-backgroundinput-dark border border-bordercolorinput dark:border-bordercolorinput-dark rounded-lg items-center justify-center'>
                         {img == null ? 
-                        <Text>For styling (Andrew)</Text> : 
+                        <Text className='text-neutral-500/50 text-lg font-semibold'>Add a cover image</Text> : 
                         <> { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                            { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                            { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
