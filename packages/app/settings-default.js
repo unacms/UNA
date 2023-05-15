@@ -150,6 +150,7 @@ import Svg, {Path} from 'react-native-svg'
     
         menu_items: {
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
+            'add_menu': ['create-post', 'create-event-profile', 'create-group-profile'],
             'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author', 'posts-home'],
             'bx_posts_submenu': {
                 name:'Posts',
