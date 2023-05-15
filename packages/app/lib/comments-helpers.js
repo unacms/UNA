@@ -189,13 +189,13 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     }, [commentData.lastInserted]);
 
     let header = (
-        <Row className='flex-start items-center m-4'>
-            <Text className='text-sm font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
+        <Row className='flex-row jusity-between items-center m-4'>
+            <Text className='flex-auto text-base font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
             <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} startDecorator="ArrowsVertical" size="xs" />
+                            <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentV>
                             <DropdownMenuItemV key="newest" onSelect={() => handleOrder('desc')}>
