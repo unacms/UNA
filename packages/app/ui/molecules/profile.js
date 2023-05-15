@@ -147,7 +147,7 @@ export default function AtomProfile(oProps) {
     case 'unit_wo_info':
       sResult = (
         <Link haptics="Select" emulate={true} href={oProps.url}><View className="relative flex-row">
-              <View className={sSize +"aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full "}>
+              <View className={sSize +" aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full "}>
                   {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
                   <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View></View>}
                   {!!oProps.url_avatar && <Image

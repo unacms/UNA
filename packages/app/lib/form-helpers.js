@@ -11,35 +11,6 @@ import Files from 'app/components/form-fields/files';
 import Location from 'app/components/form-fields/location';
 import Datetime from 'app/components/form-fields/dattime';
 
-import FormComments from 'app/components/forms/comments';
-import FormFeed from 'app/components/forms/feed';
-import FormPost from 'app/components/forms/post';
-
-
-
-export function getFormType(name){
-    const componentsMapForms = {
-        comment: FormComments,
-        feed: FormFeed,
-        bx_posts: FormPost,
-    };
-
-    return componentsMapForms[name];
-}
-
-export function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
-
-    const ElementForm = getFormType(name);
-
-    if ('undefined' !== typeof ElementForm && isInitial) {
-        return ;
-    }
-
-    return  Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', isInitial)
-    });  
-}
-
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps){
    
     if (!inputData)

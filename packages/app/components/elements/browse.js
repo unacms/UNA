@@ -55,6 +55,7 @@ export default function ElementBrowse(props) {
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
+
             updateBrowseParams({
                 start: sResponse.data[0].data.params.start, 
                 per_page: sResponse.data[0].data.params.per_page, 
@@ -108,13 +109,20 @@ export default function ElementBrowse(props) {
         {label: 'Mini', value: 'small'}
     ];
 
-    let styles = {};
+    let hOffset = 0;
     if(Platform.OS === 'web') {
-        styles = {height: (defParams?.height ? defParams.height : windowHeight - 64)}
+        if (Dimensions.get('window').width < 1024){
+            hOffset = 126;
+        }
+        else{
+            hOffset = 64;
+        }
     }
     else{
-        styles = {height: (defParams?.height ? defParams.height : windowHeight - 106)}
+        hOffset = 106;
     }
+
+    let styles = {height: (defParams?.height ? defParams.height : windowHeight - hOffset)}
 
     const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
 

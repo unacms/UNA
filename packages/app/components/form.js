@@ -1,6 +1,33 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import {getFormFieldList, getFormType } from 'app/lib/form-helpers'
+import {getFormFieldByData} from 'app/lib/form-helpers'
+
+import FormComments from 'app/components/forms/comments';
+import FormFeed from 'app/components/forms/feed';
+import FormPost from 'app/components/forms/post';
+
+function getFormType(name){
+    const componentsMapForms = {
+        comment: FormComments,
+        feed: FormFeed,
+        bx_posts: FormPost,
+    };
+
+    return componentsMapForms[name];
+}
+
+function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
+
+    const ElementForm = getFormType(name);
+
+    if ('undefined' !== typeof ElementForm && isInitial) {
+        return ;
+    }
+
+    return  Object.keys(inputs).map(function (key) {
+        return getFormFieldByData(inputs[key], handleSubmit, 'default', isInitial)
+    });  
+}
 
 export default function Form(props) {
 

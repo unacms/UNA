@@ -25,37 +25,7 @@ export default function PageLayout(props) {
     
     const handleForm =  async (data) => {
         setAddData(data)
-    }
-     /*  const handleWindowSizeChange = () => {
-        setSizes({cntHeight: Dimensions.get('window').height - sizes.offset, listHeight: Dimensions.get('window').height - sizes.offset - sizes.formHeight - 2, formHeight: sizes.formHeight, offset:sizes.offset})
-    };
-
- Dimensions.addEventListener('change', handleWindowSizeChange);
-    
-    const handleLayout = () => {
-        let heightForm = 100
-        let cntHeight = sizes.cntHeight;
-        if (cntHeight > 0){
-            viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                heightForm = height;
-                setSizes({cntHeight:cntHeight, listHeight:cntHeight - heightForm - 2 , formHeight: heightForm, offset:sizes.offset})             
-            });
-        }
-
-        if (cntHeight == 0){
-            viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                cntHeight = height; 
-                viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    heightForm = height;
-                    setSizes({cntHeight:cntHeight, listHeight:cntHeight - heightForm - 2, formHeight: heightForm, offset: Dimensions.get('window').height - cntHeight})             
-                }); 
-              
-            });
-        }
-    };
-    */
-
-    
+    }   
 
     const handleWindowSizeChange = () => {
         calculateSize();
@@ -74,7 +44,7 @@ export default function PageLayout(props) {
                 let offset = 100;
                 if (Dimensions.get('window').width < 1024){
                     FormH = FormH 
-                    offset = 120;
+                    offset = 128;
                 }
                 let otherH = Dimensions.get('window').height;
                 otherH = otherH - FormH - offset
@@ -95,7 +65,7 @@ export default function PageLayout(props) {
 
     return ( 
         <View className="lg:py-4 h-full">
-            <View ref={viewCntRef} className=" justify-betweenw-full h-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
+            <View ref={viewCntRef} className=" justify-betweenw-full h-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
                 <View style ={{marginBottomx: sizes.formHeight, height:sizes.otherHeight}} className='overflow-hidden  w-full'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
