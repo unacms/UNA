@@ -13,6 +13,7 @@ import { Dimensions } from 'react-native';
 import { Theme } from 'app/design/theme';
 import Loading from 'app/ui/atoms/loading'
 
+
 export default function ElementBrowse(props) {
     let data = props.data;
     let defParams = data.params;
@@ -112,7 +113,7 @@ export default function ElementBrowse(props) {
         styles = {height: (defParams?.height ? defParams.height : windowHeight - 64)}
     }
     else{
-        styles = {height: (defParams?.height ? defParams.height : windowHeight)}
+        styles = {height: (defParams?.height ? defParams.height : windowHeight - 106)}
     }
 
     const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
