@@ -41,7 +41,7 @@ export default function FormFeed(props) {
         </View>   
     </Modal>
     <View className='max-w-5xl w-full items-center pt-2 sm:pt-4  sm:px-4 mx-auto'>
-    <View className='max-w-5xl w-full flex-row space-x-2 w- 
+    <View className='max-w-5xl w-full w- 
           p-4   group duration-200 overflow-hidden sm:rounded-lg  
           bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
           hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
@@ -54,10 +54,9 @@ export default function FormFeed(props) {
     
     
     '>  
-        <Button size='base' variant='outline' startDecorator='User' rounded  />
             
         <View className='flex-auto'>    
-        <Button size='base' variant='outline' startDecorator='Pencil' fullWidth rounded title='Create a new Post' align="start" onPress={() => setShowImage(true)} >
+        <Button size='base' variant='default' startDecorator='Pencil' fullWidth rounded title='Create a new Post...' align="start" onPress={() => setShowImage(true)} >
             
         </Button>
         </View>
