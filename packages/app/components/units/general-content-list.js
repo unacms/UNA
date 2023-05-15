@@ -205,7 +205,7 @@ export default function Unit(props) {
                                 
 
                                 <><View className='flex-col gap-2'>
-                                    <View className="relative m-1  aspect-[3/1] rounded overflow-hidden  ">
+                                    <View className="relative m-1  aspect-[3/1] rounded overflow-hidden w-full ">
                                             <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
                                     </View> 
                                     
