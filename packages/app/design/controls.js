@@ -51,11 +51,11 @@ export function Modal(props/*: ModalPropsCustom*/) {
               <View className="relative w-full h-full max-w-2xl md:h-auto">
                   <View className="relative bg-backgroundmodal dark:bg-backgroundmodal-dark border border-bordercolormodal dark:border-bordercolormodal-dark  rounded-lg shadow-2xl">
                       <View className="p-2">
-                          <Row className={'items-center ' + (!!props.title ? 'justify-between' : 'justify-end') + ' mb-2'}>
+                          <Row className={'items-center ' + (!!props.title ? 'justify-between' : 'justify-end') + '  ml-2 mb-2'}>
                             { !!props.title && <View><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>{props.title}</Text></View>}
                             { !!props.onClose && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={props.onClose}/></View>}
                           </Row>
-                          <View className="space-y-8 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
+                          <View className="space-y-0 overflow-y-auto text-gray-700 dark:text-gray-200">{props.children}</View>
                       </View>
                   </View>
               </View>
