@@ -83,9 +83,7 @@ export default function (props) {
                           <View className="h-3 my-1 w-6 bg-gray-500/20 rounded-full"></View>
                         </View>
                         <View className="h-5 my-1  w-full bg-gray-500/30 rounded-full"></View>
-                        
-                        <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
-                        
+                        <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>  
                       </View>
                     </View>
                   
@@ -110,9 +108,6 @@ export default function (props) {
                           <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
                         </View>
                         <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
-                        
-                        
-                        
                       </View>
                       
                     </View>
@@ -135,27 +130,19 @@ export default function (props) {
                      overflow-hidden sm:rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  animate-pulse">
                     <View className="bg-primary/10 rounded w-full aspect-video"></View>
                     <View className="flex-col  p-2.5 ">
-                      
-                      
-                      
-                        
                         <View className="h-6 my-1  w-1/4 bg-gray-500/20 rounded-full"></View>
                         <View className="h-5 my-1 w-full bg-gray-500/20 rounded-full"></View>
                         <View className="h-5 mb-6 w-3/4 bg-gray-500/20 rounded-full"></View>
                         <View className="flex-row gap-2"> 
-                              <View className="h-6 w-6 rounded-full w-1/4 bg-gray-500/20 rounded-full"> </View>
-                              <View className="h-4 w-1/2 my-auto bg-gray-500/20 rounded-full"> </View>
+                              <View className="h-6 w-6 rounded-full w-1/4 bg-gray-500/20 rounded-full"></View>
+                              <View className="h-4 w-1/2 my-auto bg-gray-500/20 rounded-full"></View>
                         </View>
                         </View>
                         
                     </View>
                     
-                ))}
-                      
-
-                    
+                ))}  
             </View>
-                
         </View>
       </View>
   
