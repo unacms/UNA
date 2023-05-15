@@ -137,7 +137,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 <View className="">
                     <Row  >
                         {props.navigationState.routes.map((a) => (
-                            <Pressable className="flex-1 bg-backgroundnavbar dark:bg-backgroundnavbar-dark items-center justify-center py-2.5 border-b border-bordercolortabbar dark:border-bordercolortabbar-dark"
+                            <Pressable className="flex-1 bg-backgroundnavbar dark:bg-backgroundnavbar-dark items-center justify-center py-2.5 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
                                 key={`tab-${a.index}`}
                                 onPress={() => {
                                     setIndex(a.index)

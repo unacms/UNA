@@ -3,5 +3,5 @@ export const siteTitle = 'NEO';
 
 
 export default function Layout(props) {
-    return (<View  className=" text-gray-900 dark:text-gray-50 w-full h-full flex-1">{props.children}</View>);
+    return (<View  className=" bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 w-full h-full flex-1">{props.children}</View>);
 }
