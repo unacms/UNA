@@ -37,6 +37,7 @@ export default function ElementBrowse(props) {
     const isLoading = useRef(false);
 
     const handleEndReached = () => { 
+        console.log(9999, data.data.length, isLoading.current);
         if (isLoading.current) 
             return;
 
@@ -140,7 +141,7 @@ export default function ElementBrowse(props) {
                     renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     keyExtractor={item => item.id}
                     key={numColumns} 
-                    onEndReachedThreshold={2}
+                    onEndReachedThreshold={0.5}
                     onEndReached = {handleEndReached} 
                     estimatedItemSize={400}
                     ListFooterComponent={

@@ -67,10 +67,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             <FlashList
                 {...props}
                 renderScrollComponent={TabFlashListScrollView}
-                contentContainerStyle={{ paddingTop: scrollViewPaddingTop }}
+                contentContainerStyle={{ paddingTop: scrollViewPaddingTop, paddingBottom:20 }}
                 ref={ref}
                 onScroll={handleLayout}
-                onEndReachedThreshold={2}
+                onEndReachedThreshold={0.5}
                 onEndReached={handleEndReached}
             />
         );

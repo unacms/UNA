@@ -1,4 +1,4 @@
-import { View, ScrollView, FlashList, Row } from 'app/design/view';
+import { View, ScrollView, FlashListHor as FlashList, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 
 import { useState, useContext, useRef, useEffect } from 'react';
@@ -222,7 +222,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 keyExtractor={item => item.id}
                 estimatedItemSize={200}
                 onEndReached = {handleMore} 
-                onEndReachedThreshold={1}
+                onEndReachedThreshold={0.5}
                 ListFooterComponent={
                     (commentData.last_count == commentData.perView) ? (
                         <View className='m-2'><Loading/></View>
