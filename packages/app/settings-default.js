@@ -73,6 +73,9 @@ import Svg, {Path} from 'react-native-svg'
             embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         },
         lang_keys: {
+            comment_list_title: 'Comments',
+            comment_sorting_asc: 'Oldest first',
+            comment_sorting_desc: 'Newest first',
             vote_performed_by_popup_title: 'Likes',
             rvote_performed_by_popup_title: 'Reactions',
             score_counter_label: 'Vote',
