@@ -244,11 +244,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
-        if (route.inited)
+        if (route.inited){
+            const dataItems = route.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
             return (
                 <TabFlashList
                     index={route.index}
-                    data={route.data}
+                    data={dataItems}
                     estimatedItemSize={60}
                   
                     keyExtractor={item => item.id}
@@ -267,6 +268,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         </View>
                     }
                 />
+        }
     )};
 
     const currentRoute = routes.find((item) => item.index === index);
