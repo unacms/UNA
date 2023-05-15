@@ -316,7 +316,7 @@ import Svg, {Path} from 'react-native-svg'
                 }
             },
             'notifications-view':{
-                layout: 'custom_blackbox',
+                layout: 'custom_notifications',
                 blocks: {
                     browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
                 },
