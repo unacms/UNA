@@ -80,7 +80,6 @@ export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
         .then(async function(file){
             formData.append("file", file);
             const result = await fetcher([fetchUrl, null, formData]);
-            console.log('&&&&&&&&&&', result)
             if (result?.data?.link){
                 calback(result?.data?.link, extraVar);
             }

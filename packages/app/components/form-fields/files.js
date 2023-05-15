@@ -61,7 +61,9 @@ export default function FormFieldFiles(props) {
             RestoreGhosts(0);
         }
         if (formContext.formState.isSubmitted) {
-            RestoreGhosts(0);
+            setTimeout(() => {
+                RestoreGhosts(0);
+            }, 100);
         }
     }, 
     [RestoreGhosts, formContext.formState.isSubmitted, imageSource.images]);
@@ -93,7 +95,8 @@ export default function FormFieldFiles(props) {
                         handleInsertImageFinish,
                         {hash: hash}
                     );
-                    let fileType = i.uri.split(';')[0].split(':')[1];
+
+                    let fileType = i.type? i.type + '/': i.uri.split(';')[0].split(':')[1];
                     k = [...k , {file_url: i.uri, file_type:fileType, preload:true, hash: hash}]
                 });
                 
@@ -115,7 +118,8 @@ export default function FormFieldFiles(props) {
                         {hash: hash}
 
                     );
-                    let fileType = result.uri.split(';')[0].split(':')[1];
+                  
+                    let fileType = i.type? i.type + '/': result.uri.split(';')[0].split(':')[1];
                     k = [...k , {file_url: result.uri, file_type:fileType, preload:true, hash: hash}];
                     setImageSource({images:k});
                 }
