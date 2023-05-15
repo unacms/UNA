@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { Link as SolitoLink } from 'solito/link'
 import { MasonryFlashList as  ReactNativeFlashList } from "@shopify/flash-list";
+import { FlashList as  ReactNativeFlashListOriginal } from "@shopify/flash-list";
 import { styled } from 'nativewind'
 
 export const View = styled(ReactNativeView)
@@ -17,5 +18,6 @@ export const TouchableOpacity = styled(ReactNativeTouchableOpacity)
 export const Pressable = styled(ReactNativePressable)
 export const FlatList = styled(ReactNativeFlatList)
 export const FlashList = ReactNativeFlashList
+export const FlashListHor = ReactNativeFlashListOriginal
 export const Row = styled(View, "flex-row")
 export const Link = styled(SolitoLink)
