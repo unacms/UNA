@@ -55,7 +55,6 @@ export default function ElementBrowse(props) {
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             data.data = data.data.concat(sResponse.data[0].data.data);
-
             updateBrowseParams({
                 start: sResponse.data[0].data.params.start, 
                 per_page: sResponse.data[0].data.params.per_page, 
