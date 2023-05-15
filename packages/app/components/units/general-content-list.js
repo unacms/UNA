@@ -170,7 +170,7 @@ export default function Unit(props) {
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
                         <View className=" aspect-video w-full items-center justify-center">
-                            <Profile url_avatar={data.image} displayType="unit_wo_info" displaySize="3xl" />
+                            <Profile url_avatar={data.image.src} displayType="unit_wo_info" displaySize="3xl" />
                         </View>
                         </View>
                         <Text className="px-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 mb-1">{data.fullname}</Text>
