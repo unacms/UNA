@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
-import { View, Pressable, FlashList } from 'app/design/view';
+import { View, Pressable, FlashListHor } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
     DropdownMenuContentH, 
@@ -251,19 +251,9 @@ export default function ElementReactions(oProps) {
             );
         }
         else {
-            const stylesSlider = StyleSheet.create({
-                listContainer: {
-                    width: '100%',
-                    borderTopRightRadius: 10,
-                    borderTopLeftRadius: 10,
-                    paddingHorizontal: 20,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                },
-            });
+            const onSliderDoShow = (event) => {
+                event.preventDefault();
 
-            const onSliderDoShow = () => {
                 setSliderDoVisible(true);
             };
 
@@ -272,22 +262,26 @@ export default function ElementReactions(oProps) {
             };
 
             const onSliderDoSelect = (event, item) => {
+                event.preventDefault();
+
                 onSliderDoClose();
 
                 handleDo(event, item);
             };
 
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? onSliderDoShow : () => {}} disabled={bShowActionDisabled} />
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {onSliderDoShow(event)} : () => {}} disabled={bShowActionDisabled} />
             );
 
             sActionPopup = (
                 <Modal key="action-popup" animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                    <FlashList horizontal showsHorizontalScrollIndicator={Platform.OS === 'web' ? true : false} data={oParams.items} contentContainerStyle={stylesSlider.listContainer} renderItem={({ item, index }) => {
-                        return (
-                            <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
-                        );                                        
-                    }} />
+                    <View className="h-9 w-full">
+                        <FlashListHor horizontal estimatedItemSize={200} data={oParams.items} renderItem={({ item, index }) => {
+                            return (
+                                <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
+                            );                                        
+                        }} />
+                    </View>
                 </Modal>
             );
         }
