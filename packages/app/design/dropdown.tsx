@@ -6,7 +6,7 @@ export const DropdownMenuTrigger = DropdownMenu.Trigger
 export const DropdownMenuContentV = DropdownMenu.create(
   styled(
     DropdownMenu.Content,
-    'z-10 w-44 overflow-hidden backdrop-blur bg-neocard/50 dark:bg-neocard-dark/50   divide-y divide-neoborder dark:divide-neoborder-dark/50 text-sm  border dark:border-neoborder-dark/50 border-neoborder rounded-lg shadow-2xl'
+    'z-10 w-44 overflow-hidden backdrop-blur bg-backgroundmodal dark:bg-backgroundmodal-dark   divide-y divide-bordercolor dark:divide-bordercolor-dark text-sm  border dark:border-bordercolor-dark border-bordercolor rounded-lg shadow-2xl'
   ),
   'Content'
 )
@@ -14,7 +14,7 @@ export const DropdownMenuContentV = DropdownMenu.create(
 export const DropdownMenuItemV = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'flex flex-row-reverse justify-end items-center px-4 py-2 gap-2 hover:bg-neoitem dark:hover:bg-neoitem-dark font-medium text-gray-700 dark:text-gray-200 dark:hover:text-white hover:cursor-pointer'
+    'flex flex-row-reverse justify-end items-center px-3 py-2.5 gap-3 hover:bg-neoitem dark:hover:bg-neoitem-dark font-medium text-gray-700 dark:text-gray-200 dark:hover:text-white hover:cursor-pointer'
   ),
   'Item'
 )
@@ -22,7 +22,7 @@ export const DropdownMenuItemV = DropdownMenu.create(
 export const DropdownMenuContentH = DropdownMenu.create(
   styled(
     DropdownMenu.Content,
-    'flex-row z-10 p-2 bg-white dark:bg-gray-700 text-sm text-gray-700 dark:text-gray-200 rounded-lg shadow'
+    'flex-row z-10 p-2 bg-backgroundmodal dark:bg-backgroundmodal-dark text-sm text-neutral-800 dark:text-gray-200 rounded-full shadow'
   ),
   'Content'
 )
@@ -30,7 +30,7 @@ export const DropdownMenuContentH = DropdownMenu.create(
 export const DropdownMenuItemH = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'block px-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white rounded-lg hover:cursor-pointer'
+    'block px-4 p-2 hover:bg-backgrounditem dark:hover:bg-backgrounditem-dark dark:hover:text-white rounded-full hover:cursor-pointer'
   ),
   'Item'
 )
@@ -43,5 +43,11 @@ export const DropdownMenuItemTitle = DropdownMenu.create(
   'ItemTitle'
 )
 
+export const DropdownMenuItemIcon = DropdownMenu.create(
+  styled(
+    DropdownMenu.ItemIcon,
+     ' text-base text-gray-700 dark:text-gray-200 '
+  ),
+  'ItemIcon'
+)
 
-export const DropdownMenuItemIcon = DropdownMenu.ItemIcon

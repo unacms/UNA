@@ -76,7 +76,7 @@ const colors = {
     darkactive: 'rgba(17,24,39,0.6)'
   },
   bordercolorcard: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
+    DEFAULT: 'rgba(229,231,235,1)',
     hover: 'rgba(229,231,235,1)',
     active: 'rgba(229,231,235,0.5)',
     dark: 'rgba(17,24,39,1)',

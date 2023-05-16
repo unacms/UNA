@@ -18,7 +18,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
-    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-90';
+    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-150 duration-300 active:-translate-y-4';
     const oIconAliases = {
         default: 'Smiley',
         like: 'ThumbsUp',
@@ -369,9 +369,9 @@ export default function ElementReactions(oProps) {
             if(performedBy == undefined || performedBy[aItem.name] == undefined || performedBy[aItem.name].length == 0)
                 return;
 
-            let sClass = 'flex-0 flex flex-row w-min top-px';
+            let sClass = 'flex-0 flex mx-1  flex-row w-min top-px';
             if(aItem.name == sSelected)
-                sClass += ' border-b-2  border-primary dark:border-primary-dark ';
+                sClass += ' border-b-2 border-primary dark:border-primary-dark ';
 
             return (
                 <View key={aItem.name} className={sClass}>
@@ -403,7 +403,7 @@ export default function ElementReactions(oProps) {
             let sClass = '';
             if(aItem.name != sSelected) 
                 sClass = 'hidden ';
-            sClass += ' gap-4 overflow-y-auto text-gray-700 dark:text-gray-200';
+            sClass += ' gap-2 overflow-y-auto text-gray-700 dark:text-gray-200';
 
             return (
                 <View key={aItem.name} className={sClass}>{sUsers}</View>
@@ -414,8 +414,8 @@ export default function ElementReactions(oProps) {
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row justify-around border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
-                    <View className="p-4">{aPerformedByUsers}</View>
+                    <View className="relative flex-row  border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
+                    <View className="p-2">{aPerformedByUsers}</View>
                 </Modal>
             ]
         ];

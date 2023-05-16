@@ -14,6 +14,15 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider';
+import { 
+  DropdownMenuRoot, 
+  DropdownMenuContentV, 
+  DropdownMenuTrigger, 
+  DropdownMenuItemV, 
+  DropdownMenuItemTitle,
+  DropdownMenuItemIcon
+} from 'app/design/dropdown';
+import { Icon } from 'app/ui/atoms/icon'
 
 import Redirect from 'app/ui/atoms/redirect';
 import Search from 'app/ui/molecules/search';
@@ -151,7 +160,23 @@ export default function (props) {
                           </DropdownMenu.Portal>
                       </DropdownMenu.Root>
                       <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" onPress={() => {handleClick('/messenger')}} />
-                      <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {handleClick('/create-post')}} />
+                      <DropdownMenuRoot>
+                        <DropdownMenuTrigger>
+                          <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContentV>
+                          {menuItemsByName('add_menu', props.menu_add.items).map((item, index) => (
+                            !item.link.includes('javascript') && (
+                              <DropdownMenuItemV key={`menu-${index}`} onSelect={() => handleClick(item.link)}>
+                                <DropdownMenuItemIcon>
+                                    <Icon icon={item.icon}></Icon>
+                                </DropdownMenuItemIcon>
+                                <DropdownMenuItemTitle>{item.title}</DropdownMenuItemTitle>
+                              </DropdownMenuItemV>
+                            )
+                          ))}
+                        </DropdownMenuContentV>
+                      </DropdownMenuRoot>
                       <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" onPress={() => {handleClick('/logout')}} />
                   </Row>
                   }

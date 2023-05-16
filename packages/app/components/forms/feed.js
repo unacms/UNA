@@ -41,7 +41,7 @@ export default function FormFeed(props) {
         </View>   
     </Modal>
     <View className='max-w-5xl w-full items-center pt-2 sm:pt-4  sm:px-4 mx-auto'>
-    <View className='max-w-5xl w-full w- 
+    <View className='max-w-5xl w-full  
           p-4   group duration-200 overflow-hidden sm:rounded-lg  
           bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
           hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover

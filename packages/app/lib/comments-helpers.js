@@ -1,4 +1,5 @@
-import { View, ScrollView, FlashListHor as FlashList, Row } from 'app/design/view';
+import { appSetting } from 'app/lib/util';
+import { Pressable, View, ScrollView, FlashListHor as FlashList, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 
 import { useState, useContext, useRef, useEffect } from 'react';
@@ -10,7 +11,13 @@ import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
 import { useTheme } from '@react-navigation/native';
 import {  Keyboard } from 'react-native'
-import Dropdown from 'app/ui/atoms/dropdown'
+import { 
+    DropdownMenuRoot, 
+    DropdownMenuContentV, 
+    DropdownMenuTrigger, 
+    DropdownMenuItemV, 
+    DropdownMenuItemTitle
+} from 'app/design/dropdown';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -181,22 +188,25 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }, [commentData.lastInserted]);
 
-    let sortItems = [
-        {label: 'Newest first', value: 'desc'},
-        {label: 'Oldest first', value: 'asc'}
-    ];
-
     let header = (
-        <Row className='m-4 items-center justify-between '>
-        <Text className='text-sm font-bold text-gray-900 dark:text-gray-50'>Comments ({commentData.total_count})</Text>
-            <View className='w-40'>
-                <Dropdown
-                    labelField="label"
-                    valueField="value"
-                    onChange={handleOrder}
-                    value={commentData.orderWay}
-                    data={sortItems}
-                />
+        <Row className='flex-row jusity-between items-center m-4'>
+            <Text className='flex-auto text-base font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
+            <View className="ml-4">
+                <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
+                    <DropdownMenuRoot>
+                        <DropdownMenuTrigger>
+                            <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContentV>
+                            <DropdownMenuItemV key="newest" onSelect={() => handleOrder('desc')}>
+                                <DropdownMenuItemTitle>{appSetting('lang_keys', 'comment_sorting_desc')}</DropdownMenuItemTitle>
+                            </DropdownMenuItemV>
+                            <DropdownMenuItemV key="oldest" onSelect={() => handleOrder('asc')}>
+                                <DropdownMenuItemTitle>{appSetting('lang_keys', 'comment_sorting_asc')}</DropdownMenuItemTitle>
+                            </DropdownMenuItemV>
+                        </DropdownMenuContentV>
+                    </DropdownMenuRoot>
+                </Pressable>
             </View>
         </Row>);
 
