@@ -153,7 +153,7 @@ export default function UnitFeed(props) {
         let url = '/' + data.url;
 
         data.mainImage = null;
-        if (data.content.images)    
+        if (data?.content?.images)    
             data.mainImage = data.content.images.length > 0 ? data.content.images[0] : null;
 
         data.comments = null;

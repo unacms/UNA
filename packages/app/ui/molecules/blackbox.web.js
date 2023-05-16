@@ -9,7 +9,7 @@ import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
-import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
+import { fillTabs, getRightCol, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -17,6 +17,8 @@ import Link from 'app/ui/atoms/link'
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
     const initedTabs = fillTabs(menu, data, blocks);
+
+    const rightCol = getRightCol(data, blocks);
 
     const windowWidth = useWindowDimensions().width;
 
@@ -77,12 +79,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     useEffect(() => {
         const handleScroll = () => {
-          console.log('window was scrolled!'+window.scrollY);
-          if (window.scrollY > headerMinHeight.value)
-          scroll.value = 0;
-      if (window.scrollY < 200)
-          scroll.value = 1;
-          // Perform some action here when the window is scrolled
+            if (window.scrollY > headerMinHeight.value)
+                scroll.value = 0;
+            if (window.scrollY < 200)
+                scroll.value = 1;
         };
     
         // Add the event listener when the component mounts
@@ -246,16 +246,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabFlashList = React.forwardRef((props, ref) => {
         
         return (
-            <View style={{ paddingTop: header ? 300 : 0 }} className="mb-4"><UniList
+           <UniList
                 {...props}
                 useWindowScroll
                 ref={ref}
                 numColumns={numColumns}
-                onScroll={handleScroll}
-                onEndReachedThreshold={0.5}
-            
+                onScroll={handleScroll}            
                 onEndReached={handleEndReached}
-            /></View>
+            />
         );
     });
 
@@ -267,29 +265,33 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
         if (route.inited){
             const dataItems = route.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
-            
+            console.log(rightCol);
+            let isRightCol = rightCol.content.length > 0
             return (
-                <TabFlashList
-                    index={route.index}
-                    data={dataItems}
-                    estimatedItemSize={60}
-                  
-                    keyExtractor={item => item.id}
-                    renderItem={({ item, index }) => {
-                        if (item?.type === 'block') {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}><BlockByName2 b={item.data} name={item.block} /></View>
-                        } else {
-                            return <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}><Unit module={data.module ? data.module : ''} unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
-                        }
-                    }}
-                    ListFooterComponent = {
-                        <View className='m-4'>
-                        {(route?.endpoint?.finished === false) ? (
-                            <Loading/>
-                        ) : null}
-                        </View>
-                    }
-                />
+                <Row style={{ paddingTop: header ? 300 : 0 }} className="mb-4"> 
+                    <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
+                        <TabFlashList
+                            index={route.index}
+                            data={dataItems}
+
+                            renderItem={({ item, index }) => <ItemRenderer route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                            ListFooterComponent = {
+                                <View className='m-4'>
+                                {(route?.endpoint?.finished === false) ? (
+                                    <Loading/>
+                                ) : null}
+                                </View>
+                            }
+                        />
+                    </View>
+                    {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
+                        <UniList
+                            noScroll
+                            renderItem={({ item, index }) => <ItemRenderer route={route} numColumns={1} item={item} unit={rightCol?.endpoint?.unit} module={rightCol?.endpoint?.module ? rightCol?.endpoint?.module : ''}/>}
+                            data={rightCol.content}
+                        />
+                    </View>}
+                </Row>
         
     )}};
 

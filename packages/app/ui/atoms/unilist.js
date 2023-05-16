@@ -8,7 +8,7 @@ import { styled } from 'nativewind'
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
 
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, ...rest } = props
+    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, ...rest } = props
 
     if (isWeb){
 
@@ -24,7 +24,7 @@ export default function UniList(props) {
             </View>;
         }
         if (props.useWindowScroll){
-            if (props.numColumns >1){
+            if (numColumns >1){
                 const lala = styled(ReactNativeView, '  w-1/' + props.numColumns)
                 const lala2 = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
@@ -68,6 +68,7 @@ export default function UniList(props) {
             <FlashList 
                 keyExtractor={item => item.id}
                 ref = {refer}   
+                numColumns={numColumns}
                 onEndReachedThreshold={0.5}
                 estimatedItemSize={400}
                 data={dataItems}
@@ -84,6 +85,7 @@ export default function UniList(props) {
                 ref = {refer}   
                 keyExtractor={item => item.id}
                 onEndReachedThreshold={0.5}
+                numColumns={numColumns}
                 estimatedItemSize={400}
                 {...props}
             />

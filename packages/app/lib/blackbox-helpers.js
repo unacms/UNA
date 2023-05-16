@@ -1,5 +1,8 @@
 import { appSetting, menuItemsByName, getURI } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { View } from 'app/design/view';
+import { BlockByName2 } from 'app/components/block';
+import Unit from 'app/components/unit';
 
 export function fillTabs(menu, data, blocks){
     const m = menuItemsByName(menu.object, menu.items, data.url);
@@ -82,8 +85,9 @@ export function getContent(data, block) {
 }
 
 export function processUrl(data, blocks) {
-    const contentAndEndpoint = Object.values(blocks).reduce(
+    const contentAndEndpoint = Object.values(blocks).filter(block => !block.rightCol).reduce(
         (acc, block) => {
+
             const b = getContent(data, block);
             if (b.type === 'browse') {
                 acc.endpoint = {
@@ -95,7 +99,8 @@ export function processUrl(data, blocks) {
                 };
                 acc.content = [...acc.content, ...b.data.data];
             } else {
-                acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
+                if (b?.data?.id)
+                    acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
             }
 
             return acc;
@@ -104,3 +109,46 @@ export function processUrl(data, blocks) {
     );
     return contentAndEndpoint;
 }
+
+export function getRightCol(data, blocks) {
+    const contentAndEndpoint = Object.values(blocks).filter(block => block.rightCol).reduce(
+        (acc, block) => {
+
+            const b = getContent(data, block);
+            if (b.type === 'browse') {
+                acc.endpoint = {
+                    ...acc.endpoint,
+                    params: b.data.params,
+                    request_url: b.data.request_url,
+                    finished: false,
+                    unit: b.data.unit,
+                    module:b.data.module,
+                };
+                acc.content = [...acc.content, ...b.data.data];
+            } else {
+                if (b?.data?.id)
+                    acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
+            }
+
+            return acc;
+        },
+        { content: [], endpoint: null }
+    );
+    return contentAndEndpoint;
+}
+
+export function ItemRenderer({ route, numColumns, item, unit, module }) {
+    if (item?.type === 'block') {
+      return (
+        <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+            <BlockByName2 b={item.data} name={item.block} />
+        </View>
+      );
+    } else {
+      return (
+        <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+            <Unit module={module} unit={unit} data={item} mode={appSetting('feed', 'default_view')} />
+        </View>
+      );
+    }
+  }

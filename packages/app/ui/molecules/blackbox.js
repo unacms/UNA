@@ -11,7 +11,7 @@ import { StyleSheet } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { appSetting } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData } from 'app/lib/blackbox-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { updateRightHeader } from 'app/lib/native-handlers';
 
@@ -92,13 +92,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     data={route.data}
                     estimatedItemSize={60}
                     keyExtractor={item => item.id}
-                    renderItem={({ item, index }) => {
-                        if (item?.type === 'block') {
-                            return <View key={`${route.index}-${item.id}`}><BlockByName2 b={item.data} name={item.block} /></View>
-                        } else {
-                            return <View key={`${route.index}-${item.id}`}><Unit module={data.module ? data.module : ''}  unit={route?.endpoint?.unit} data={item} mode={appSetting('feed', 'default_view')} /></View>
-                        }
-                    }}
+                    renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route?.endpoint?.finished === false) ? (
                             <View className='m-2'><Loading/></View>

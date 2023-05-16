@@ -186,7 +186,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         
         if (commentData.lastInserted > 0){
             let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
-            console.log(99999999, '----------------', itemIndex, flashListRef.current);
+            //TODO
             flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
         }
     }, [commentData.lastInserted]);
@@ -237,9 +237,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 )}}
                 
                 keyExtractor={item => item.id}
-                estimatedItemSize={200}
+
                 onEndReached = {handleMore} 
-                onEndReachedThreshold={0.5}
                 ListFooterComponent={
                     (commentData.last_count == commentData.perView) ? (
                         <View className='m-2'><Loading/></View>
