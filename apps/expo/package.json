@@ -63,6 +63,7 @@
     "react-native-web": "~0.18.9",
     "react-native-webview": "^12.0.2",
     "react-quill": "^2.0.0",
+    "react-virtuoso": "^4.3.6",
     "showtime-tab-view": "^0.1.2",
     "swr": "^2.0.3",
     "tippy.js": "^6.3.7"
