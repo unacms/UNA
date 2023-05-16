@@ -53,38 +53,38 @@ export default function Unit(props) {
             );
 
         return (
-            <View className="u-card" >
+            
                 
-                <View className="
-                shadow-sm hover:shadow-md active:shadow-none 
-                mt-4 mx-4             
-                group duration-200  rounded-lg overflow-hidden  
+            <View className="
+                shadow-sm hover:shadow-lg active:shadow-none 
+                m-4            
+                group duration-200  rounded-lg 
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                   
+                   border-2 border-transparent 
                justify-between 
-                active:translate-y-0.5
+                active:translate-y-0.5 
                 
                 ">
                     <Link href={data.url}> 
                     <View>  
-                    <View className='mb-2'>  
+                    <View className=''>  
                     {data.cover &&
-                            <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
+                            <View className="w-full bg-gray-500/20 rounded-md aspect-video overflow-hidden items-center absolute" >
                                 <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
-                        <View className=" aspect-video w-full items-center justify-center">
+                        <View className=" aspect-video mb-4 w-full items-center justify-center">
                            
                         </View>
                         </View>
-                        <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.group_name}</Text>
+                        <Text numberOfLines={2}  className=" px-4 text-base font-bold text-gray-800 sm:h-12 dark:text-gray-100">{data.group_name}</Text>
                         {sMeta}
                     </View>
                 </Link>
             </View>
-            </View>
+            
         )
     }
 
@@ -138,7 +138,7 @@ export default function Unit(props) {
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (
-                <View className="text-center h-auto px-4 mb-2">
+                <View className="text-center flex-col  h-auto p-4">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
             );
@@ -158,20 +158,22 @@ export default function Unit(props) {
                 
                 ">
                     <Link href={data.url}> 
-                    <View>  
-                    <View className='mb-2'>  
-                    {data.cover &&
-                            <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
-                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
+                    <View className='flex-col '>  
+                        
+                        {data.cover &&
+                                <View className="w-full bg-neutral-500/20 rounded-lg aspect-video overflow-hidden items-center absolute" >
+                                    <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
+                                </View>
+                            } 
+                            {!data.image &&<View className="bg-primary-100 dark:bg-primary-900 absolute w-full rounded aspect-video"></View> }
+                            <View className=" aspect-video w-full items-center justify-center">
+                            <View className=" rounded-full mx-auto border-2 border-backgroundcard dark:border-backgroundcard-dark  bg-red-500 items-center justify-center">
+                                <Profile class url_avatar={data.image.src} displayType="unit_wo_info" displaySize="3xl" />
                             </View>
-                        } 
-                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
-                        <View className=" aspect-video w-full items-center justify-center">
-                            <Profile url_avatar={data.image.src} displayType="unit_wo_info" displaySize="3xl" />
-                        </View>
-                        </View>
-                        <Text className="px-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 mb-1">{data.fullname}</Text>
-                        {sMeta}
+                            </View>
+                            
+                        <Text className="px-4 pt-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.fullname}</Text>
+                        <View >{sMeta}</View>
                     </View>
                 </Link>
             </View>
@@ -187,12 +189,12 @@ export default function Unit(props) {
             
                 
                 <View className="
-                    shadow-sm hover:shadow-md active:shadow-none 
+                    shadow-sm hover:shadow-lg active:shadow-none 
                     mt-4 mx-4             
-                    group duration-200  rounded-lg overflow-hidden  
+                    group duration-200  rounded-lg 
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                       
+                       border-4 border-transparent 
                    justify-between 
                     active:translate-y-0.5 ">
                     <Link href={data.url}>  
@@ -201,8 +203,8 @@ export default function Unit(props) {
                 
                                 
 
-                                <><View className='flex-col gap-2'>
-                                    <View className="relative m-1  aspect-[3/1] rounded overflow-hidden w-full ">
+                                <><View className='flex-col '>
+                                    <View className="relative rounded mb-3 aspect-video  overflow-hidden w-full ">
                                             <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
                                     </View> 
                                     
@@ -214,7 +216,7 @@ export default function Unit(props) {
                                     
 
                                     </View>
-                                <View className=" p-3  ">{sMeta}</View></>
+                                <View className=" px-3 py-2.5  ">{sMeta}</View></>
            
                                )
                           

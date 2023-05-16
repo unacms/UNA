@@ -59,48 +59,51 @@ function DefaultUnit(data) {
         {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
 
         </View>
+        <View className="flex-col ">
         {data.mainImage &&
-            <View className="w-full mt-3 aspect-[3/1] " style={styles.card_image}>
-                <Image {...data.mainImage} alt={data.title} view="cover" className="u-cover  rounded" sizes="(max-width:768px) 100vw, 500px"   />
+            <View className="w-full   mb-auto mt-3 aspect-video " style={styles.card_image}>
+                <Image {...data.mainImage} alt={data.title} view="cover" className=" u-cover rounded" sizes="(max-width:768px) 100vw, 500px"   />
             </View>
         }   
-        <View className="w-full p-3   flex-col gap-1">
-            
-            <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
-                {data.content.title}
-            </Text>
-                {!showFull ? <View><View className="flex-col gap-3    relative">
-                    <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
-                        {data.plainText}
-                    </Text>
-                </View>
-                {!!data.sFirstImg &&
-                    <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
-                        <Image src={data.sFirstImg} alt={data.title} view="cover"        />
-                    </View>
-                }    
-                </View>
-                :  <View className="flex-col relative w-full">
-                            <Html data={data.content.text} />
-                        </View>
-                        
+                <View className="flex-auto p-3   flex-col gap-2">
                     
-                }
-               
-               
+                    <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
+                        {data.content.title}
+                    </Text>
+                        {!showFull ? 
+                        <View>
+                            <View className="flex-col gap-3    relative">
+                            <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
+                                {data.plainText}
+                            </Text>
+                            </View>
+                        {!!data.sFirstImg &&
+                            <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
+                                <Image src={data.sFirstImg} alt={data.title} view="cover"        />
+                            </View>
+                        }    
+                        </View>
+                        :  <View className="flex-col relative w-full">
+                                    <Html data={data.content.text} />
+                             </View>
+                                
+                            
+                        }
+                    
+                    
 
-        <View className="  pt-3   flex-row  w-full">
-            
-            <View className=" flex-row space-x-2 flex-auto">
-                <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
-            </View>
-            <View className='my-auto flex-none'>
-                { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" />}
-            </View>
-            
+                <View className=" flex-auto  pt-2   flex-row  w-full">
+                    
+                    <View className="mt-auto flex-row space-x-2 flex-auto">
+                        <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
+                    </View>
+                    <View className='mt-auto flex-none'>
+                        { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" />}
+                    </View>
+                    
+                </View>
+                </View>
         </View>
-        </View>
-        
         
 
     </View></View>);

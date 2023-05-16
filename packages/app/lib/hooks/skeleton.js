@@ -27,7 +27,7 @@ export default function (props) {
       <View className={maxWidth + ' mx-auto w-full '}>
         <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
           <View className="animate-pulse flex gap-3">
-            <View className="rounded-full bg-gray-600/20 h-12 w-12"></View>
+            
             <View className="flex-1 space-y-2 py-1">
               <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
               <View className="h-3 w-1/3 bg-gray-600/20 rounded"></View>
