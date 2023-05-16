@@ -1,5 +1,4 @@
-import { View } from 'app/design/view'
-
+import { View} from 'app/design/view'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
@@ -8,68 +7,96 @@ import { Button, ButtonsGroup } from 'app/design/controls';
 import { uploadImage } from '../../lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
-
+import { useState } from 'react'
 import Document from '@tiptap/extension-document'
 import Image from '@tiptap/extension-image'
 import Text from '@tiptap/extension-text'
 import Link from '@tiptap/extension-link'
 import Iframe from 'app/lib/editor-helpers'
-import suggestion from 'app/lib/editor-helpers2'
+import {Suggestion} from 'app/lib/editor-helpers2'
 import Mention from '@tiptap/extension-mention'
 import { mergeAttributes, Node } from '@tiptap/core'
+import { Modal } from 'app/design/controls'
+import { Input } from 'app/design/controls'
+import { Text as TextTag } from 'app/design/typography'
 
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();
+    const [showModal, setShowModal] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+    const [modalType, setModalType] = useState('')
     
-    if (!editor) {
-        return null
+    if (!editor) return null;
+
+    function handleChange(e) {
+        setInputValue(e);
     }
 
     const handleAddEmbeds = () => {
-        const url = window.prompt('URL')
-       
-        if (url) {
-            let className = "w-full max-w-xl aspect-video mx-auto ";
-            if (url.includes('twitter.com') ) {
-                className = "w-full max-w-xl aspect-square mx-auto ";
-            }
-            const rvUrl = appSetting("urls", "embeds") + url + '&theme=' + scheme;
-            editor.chain().focus().setIframe({ src: rvUrl, origin: url, class: className }).run()
-        }
+        setInputValue('');
+        setShowModal(true);
+        setModalType('embed')
     };
+
+    
+    const handleCancel = () => {
+        setInputValue('');
+        setShowModal(false);
+        setModalType('')
+    };
+
+    const handleModal = () => {
+
+        if (modalType == 'link'){
+            if (inputValue === '') {
+                editor.chain().focus().extendMarkRange('link').unsetLink().run()
+                return
+            }
+            editor.chain().focus().extendMarkRange('link').setLink({ href: inputValue }).run();
+            setShowModal(false);
+            setModalType('');
+            setInputValue('');
+        }
+        if (modalType == 'embed'){
+            if (inputValue != '') {
+                let className = "w-full max-w-xl aspect-video mx-auto ";
+                if (inputValue.includes('twitter.com') ) {
+                        className = "w-full max-w-xl aspect-square mx-auto ";
+                }
+                const rvUrl = appSetting("urls", "embeds") + inputValue + '&theme=' + scheme;
+                editor.chain().focus().setIframe({ src: rvUrl, origin: inputValue, class: className }).run()
+                setShowModal(false);
+                setModalType('');
+                setInputValue('');
+            }
+        }
+    }
 
     const handleAddLink = () => {
-        const previousUrl = editor.getAttributes('link').href
-        const url = window.prompt('URL', previousUrl)
-
-        if (url === null)
-            return
-
-        if (url === '') {
-            editor.chain().focus().extendMarkRange('link').unsetLink().run()
-            return
-        }
-
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+        const previousUrl = editor.getAttributes('link').href;
+        setInputValue(previousUrl);
+        setShowModal(true);
+        setModalType('link')
+       
     };
 
-    const handleAddImage =  async () => {
+    const handleAddImage =    async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-            allowsMultipleSelection: false,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsMultipleSelection: false,
         });
 
-      if (!result.canceled) {
-          result.assets.forEach(function (i) {
-              uploadImage(
-                  i.uri, 
-                  '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
-                  handleInsertImageFinish,
-                  {editor: editor, test:'text'}
-              );
-          });
-      }
+        if (!result.canceled) {
+            result.assets.forEach(function (i) {
+                uploadImage(
+                    i.uri, 
+                    '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+                    handleInsertImageFinish,
+                    {editor: editor, test:'text'}
+                );
+            });
+        }
     };
 
     const handleInsertImageFinish = async (url, extraVar) => {
@@ -87,47 +114,44 @@ const MenuBar = ({ editor }) => {
     aButtonsGroup.push(<Button disabled={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()}/>);
     aButtonsGroup.push(<Button disabled={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()}/>);
     aButtonsGroup.push(<Button disabled={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()}/>);
-    aButtonsGroup.push(<Button  key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
+    aButtonsGroup.push(<Button    key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
     aButtonsGroup.push(<Button key="ArrowUUpRight" startDecorator="ArrowUUpRight" onPress={() => editor.chain().focus().redo().run()}/>);
     aButtonsGroup.push(<Button key="Image" startDecorator="Image" onPress={() => handleAddImage()}/>);
     aButtonsGroup.push(<Button key="Link" startDecorator="Link" onPress={() => handleAddLink()}/>);
     aButtonsGroup.push(<Button key="Code" startDecorator="Code" onPress={() => handleAddEmbeds()}/>);
     return (
-       
-      <>
-       <ButtonsGroup >{aButtonsGroup}</ButtonsGroup>
-      </>
+        <>
+            <Modal id={'file-preview'}  onVisible={showModal} >
+                    <View className="w-full">
+                    
+                        <TextTag className='text-lg font-bold'>Insert {modalType}</TextTag>
+                        <View className='mt-4 w-full'>
+                        <Input onChangeText={handleChange} value={inputValue}  />
+                        </View>
+                        <View className='mt-4 mx-auto flex-row gap-4'>
+                            <Button variant="primary" title="Ok" onPress={handleModal}/>
+                            <Button variant="default" title="Cancel" onPress={handleCancel}/>
+                        </View>
+                    </View>
+            </Modal>
+            <ButtonsGroup >{aButtonsGroup}</ButtonsGroup>
+        </>
     )
-  }
+}
 
-  var MentionAt = Mention.extend({
+var MentionEx = Mention.extend({
     renderHTML({ node, HTMLAttributes }) {
-      return [
-        'a',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
-        this.options.renderLabel({
-          options: this.options,
-          node,
-        }),
-      ]
-    }
-  })
-
-  var MentionHash = Mention.extend({
-    renderHTML({ node, HTMLAttributes }) {
-      return [
-        'a',
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
-        this.options.renderLabel({
-          options: this.options,
-          node,
-        }),
-      ]
-    }
-  })
-  
-
-  
+        return [
+            'a',
+            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
+            this.options.renderLabel({
+                options: this.options,
+                node,
+            }),
+        ]
+    },
+})
+    
 export default function FormFieldFtf(props) {
 
     let rules = {};
@@ -136,59 +160,71 @@ export default function FormFieldFtf(props) {
     const formContext = useFormContext();
 
     const handleChange = (content) => {
-      setTimeout(() => {
-          formContext.setValue(name, content)
-      }, 100);
-  };
-    
+        setTimeout(() => {
+            formContext.setValue(name, content)
+        }, 100);
+    };
+        
     const { field } = useController({ name, rules, defaultValue });
 
-      const editor = useEditor({
+    const editor = useEditor({
         extensions: [
-          Document,
-          Text,
-          Image,
-          Iframe,
-          Link.configure({
-            openOnClick: false,
-          }),
+            Document,
+            Text,
+            Image,
+            Iframe,
+            Link.configure({
+                openOnClick: false,
+            }),
 
-          MentionAt.configure({
-            HTMLAttributes: {
-              class: 'bx-mention-link',
-            },
-            suggestion: suggestion('@'),
-            renderLabel({ options, node }) {
-              return options.suggestion.char + ' ' + node.attrs.id.label
-            },
+            MentionEx.configure({
+                HTMLAttributes: {
+                    class: 'bx-mention-link',
+                },
+                suggestion: Suggestion('@'),
+                renderLabel({ options, node }) {
+                    return options.suggestion.char + ' ' + node.attrs.id.label
+                },
+                
+            }),
+            MentionEx.configure({
+                HTMLAttributes: {
+                    class: 'bx-mention-link',
+                },
+                suggestion: Suggestion('#'),
+                renderLabel({ options, node }) {
+                    return options.suggestion.char + ' ' + node.attrs.id.label
+                },
+                
+            }),
             
-          }),
-          
-          
-          StarterKit.configure({
-            bulletList: {
-              keepMarks: true,
-              keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
-            },
-            orderedList: {
-              keepMarks: true,
-              keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
-            },
-          }),
+            
+            StarterKit.configure({
+                bulletList: {
+                    keepMarks: true,
+                    keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+                },
+                orderedList: {
+                    keepMarks: true,
+                    keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+                },
+            }),
         ],
         content: field.value,
         onUpdate({ editor }) {
-          handleChange(editor.getHTML());
+            handleChange(editor.getHTML());
         },
-      })
-    
-      return (
-        <View className='bg-neutral-500/10  border border-neutral-500/10  focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full   dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
-          <MenuBar editor={editor} />
-          <EditorContent 
-            editor={editor} 
-            className='p-4' 
-          />
+    })
+        
+    return (
+        <View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
+        <EditorContent 
+                editor={editor} 
+                className='p-4' 
+            />
+            <View className='m-2'>
+                <MenuBar editor={editor} />
+            </View>
         </View>
-      )
+    )
 }

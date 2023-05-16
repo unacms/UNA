@@ -1,68 +1,65 @@
-import React, {
-    forwardRef, useEffect, useImperativeHandle,
-    useState,
-  } from 'react'
-  
-  export default forwardRef((props, ref) => {
+import {forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+    
+export default forwardRef((props, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0)
-  
+    
     const selectItem = index => {
-      const item = props.items[index]
-  
-      if (item) {
+        const item = props.items[index]
+    
+        if (item) {
         props.command({ id: item })
-      }
+        }
     }
-  
+    
     const upHandler = () => {
-      setSelectedIndex((selectedIndex + props.items.length - 1) % props.items.length)
+        setSelectedIndex((selectedIndex + props.items.length - 1) % props.items.length)
     }
-  
+    
     const downHandler = () => {
-      setSelectedIndex((selectedIndex + 1) % props.items.length)
+        setSelectedIndex((selectedIndex + 1) % props.items.length)
     }
-  
+    
     const enterHandler = () => {
-      selectItem(selectedIndex)
+        selectItem(selectedIndex)
     }
-  
+    
     useEffect(() => setSelectedIndex(0), [props.items])
-  
+    
     useImperativeHandle(ref, () => ({
-      onKeyDown: ({ event }) => {
+        onKeyDown: ({ event }) => {
         if (event.key === 'ArrowUp') {
-          upHandler()
-          return true
+            upHandler()
+            return true
         }
-  
+    
         if (event.key === 'ArrowDown') {
-          downHandler()
-          return true
+            downHandler()
+            return true
         }
-  
+    
         if (event.key === 'Enter') {
-          enterHandler()
-          return true
+            enterHandler()
+            return true
         }
-  
+    
         return false
-      },
+        },
     }))
-  
+    
     return (
-      <div className="items">
+        <div className="items">
         {props.items.length
-          ? props.items.map((item, index) => (
+            ? props.items.map((item, index) => (
             <button
-              className={`item ${index === selectedIndex ? 'is-selected' : ''}`}
-              key={index}
-              onClick={() => selectItem(index)}
+                className={`item ${index === selectedIndex ? 'is-selected' : ''}`}
+                key={index}
+                onClick={() => selectItem(index)}
             >
-              {item.label}
+                {item.label}
             </button>
-          ))
-          : <div className="item">No result</div>
+            ))
+            : <div className="item">No result</div>
         }
-      </div>
+        </div>
     )
-  })
+})

@@ -204,11 +204,12 @@ export default function Unit(props) {
                 
                                 
 
-                                <><View className='flex-col gap-2'>
-                                    <View className="relative m-1  aspect-[3/1] rounded overflow-hidden w-full ">
-                                            <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
-                                    </View> 
-                                    
+                                <><View className='flex-col w-full '>
+                                        <View className='m-1'>
+                                        <View className="relative  aspect-[3/1] rounded overflow-hidden  w-full">
+                                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+                                        </View> 
+                                    </View>
                                     
                                     <Text numberOfLines={3} className='px-3 text-neutral-950 dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                         {data.title}
