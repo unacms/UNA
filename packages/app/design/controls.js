@@ -205,6 +205,7 @@ export function Button(props/*: ButtonProps*/) {
         sClassContainer += buttonRounded ? 'rounded-full p-2 ' : sClassDefaultRounding + ' px-2 py-2 ';
         sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
         sClassText += ' text-base '
+        iIconSize = 24;
         sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
 
         break
