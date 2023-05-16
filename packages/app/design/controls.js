@@ -155,6 +155,7 @@ export function Button(props/*: ButtonProps*/) {
   let buttonRounded = props.rounded ? true : false
   let buttonSolid = props.solid ? true : false
   let sTitleContainer = '';
+  let iIconSize = 24
 
   let sClassContainer = ' group relative flex-row items-center '
   let sIconContainer = ' h-6 w-6 mr-2 '
@@ -187,6 +188,7 @@ export function Button(props/*: ButtonProps*/) {
         sClassContainer += buttonRounded ? 'rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
         sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? 'mx-[1px] ' : '');
         sClassText += ' text-xs '
+        iIconSize = 16;
         sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' // Conditionally add 'mx-2' class
         break
 
@@ -194,6 +196,7 @@ export function Button(props/*: ButtonProps*/) {
         sClassContainer += buttonRounded ? 'rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
         sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-0.5 ' : '');
         sClassText += ' text-sm '
+        iIconSize = 20;
         sTitleContainer += buttonTitle !== '' ? 'mx-1.5 ' : '' // Conditionally add 'mx-2' class
 
         break
@@ -210,6 +213,7 @@ export function Button(props/*: ButtonProps*/) {
         sClassContainer += buttonRounded ? 'rounded-full p-3 ' : sClassDefaultRounding + ' px-4 py-3 ';
         sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
         sClassText += ' text-lg '
+        iIconSize = 28;
         sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
 
         break
@@ -218,6 +222,7 @@ export function Button(props/*: ButtonProps*/) {
         sClassContainer += buttonRounded ? 'rounded-full p-4 ' : sClassDefaultRounding + ' px-6 py-4 ';
         sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
         sClassText += ' text-xl '
+        iIconSize = 32;
         sTitleContainer += buttonTitle !== '' ? 'mx-3 ' : '' // Conditionally add 'mx-2' class
 
         break   
@@ -233,13 +238,13 @@ export function Button(props/*: ButtonProps*/) {
           return;
 
         return (
-          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={sIcon}></Icon>
+          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
         );
       });
     }
     else
       sButtonIconStart = (
-          <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconStart}></Icon>
+          <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconStart}></Icon>
       );
   }
 
@@ -251,13 +256,13 @@ export function Button(props/*: ButtonProps*/) {
           return;
 
         return (
-          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={sIcon}></Icon>
+          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
         );
       });
     }
     else
       sButtonIconEnd = (
-        <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} icon={buttonIconEnd} ></Icon>
+        <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconEnd} ></Icon>
       );
   }
 
