@@ -11,7 +11,8 @@ const componentsMap = {
     string: String,
 };
 
-export function BlockByName({data, name}) {
+export function BlockByName(props) {
+    let { data, name, ...rest } = props
 
     let b = null;
     if (name){
@@ -28,7 +29,7 @@ export function BlockByName({data, name}) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg}   />;
+        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} {...rest}  />;
     
     return <Text className="text-black dark:text-white">Not found: {JSON.stringify(name)}</Text>
 }
@@ -91,7 +92,7 @@ export default function Block(props) {
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? ' px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg' : ''}>
                 {bIsShowTitle && <Text className=" text-xl pb-4 text-gray-800 dark:text-gray-200 font-bold my-auto">{stripTags(block.title)}</Text>}
-                <View><BlockType data={block.content} type={block.type} /></View>
+                <View><BlockType data={block.content} type={block.type} {...props}/></View>
             </View>
         </View>
     );

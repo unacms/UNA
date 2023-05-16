@@ -1,5 +1,6 @@
 import { appSetting } from 'app/lib/util';
-import { Pressable, View, ScrollView, FlashListHor as FlashList, Row } from 'app/design/view';
+import { Pressable, View, Row } from 'app/design/view';
+import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 
 import { useState, useContext, useRef, useEffect } from 'react';
@@ -182,8 +183,10 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     DataForList(commentData.listData.data.data, 0, 0, []);
 
     useEffect(() => {
+        
         if (commentData.lastInserted > 0){
             let itemIndex = dataOut.findIndex(obj => obj.id == commentData.lastInserted);
+            console.log(99999999, '----------------', itemIndex, flashListRef.current);
             flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
         }
     }, [commentData.lastInserted]);
@@ -213,11 +216,15 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     let h = dataOut.find(item => item.id === 'block_header') 
     if (!h)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
+
+
     return (
        
-            <FlashList
-                ref={flashListRef}
+            <UniList
+                useWindowScroll
                 data={dataOut}
+                refer = {flashListRef}
+                //onScrollToIndex={handleScrollToIndex}
                 renderItem={({item, index }) => {
 
                     if (item.id.toString().includes('block')){
@@ -238,8 +245,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                         <View className='m-2'><Loading/></View>
                     ) : null
                   }
-            >
-            </FlashList>
+            />
   
     )
 }

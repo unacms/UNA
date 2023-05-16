@@ -65,13 +65,13 @@ export default function PageLayout(props) {
     ];
 
     return ( 
-        <View className="lg:py-4 h-full">
-            <View ref={viewCntRef} className=" justify-betweenw-full h-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
-                <Row><View style ={{marginBottomx: sizes.formHeight, height:sizes.otherHeight}} className='overflow-hidden  w-full'>
+        <View className="lg:py-4">
+            <View ref={viewCntRef} className=" justify-betweenw-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
+                <Row><View style ={{marginBottom: sizes.formHeight, heightx:sizes.otherHeight}} className='  w-full'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
                 </Row>
-                <View ref={viewFormRef} onLayout={handleLayout} className='  w-full' > 
+                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className=' fixed bottom-16 lg:bottom-0  w-full' > 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
                     </KeyboardAvoidingView>

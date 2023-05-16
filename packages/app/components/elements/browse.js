@@ -2,10 +2,11 @@
 
 import Unit from '../unit';
 import { useState, useRef } from 'react';
-import { View, FlashList } from 'app/design/view'
+import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
+import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { appSetting } from 'app/lib/util'
@@ -124,6 +125,9 @@ export default function ElementBrowse(props) {
 
     let styles = {height: (defParams?.height ? defParams.height : windowHeight - hOffset)}
 
+    if (Platform.OS === 'web')
+        styles={};
+
     const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
 
     return (
@@ -136,14 +140,12 @@ export default function ElementBrowse(props) {
                 data={modeItems}
             /></View>}
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-                <FlashList numColumns={numColumns} 
+                <UniList numColumns={numColumns} 
+                    useWindowScroll
                     data={dataItems}
-                    renderItem={({item}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
-                    keyExtractor={item => item.id}
-                    key={numColumns} 
-                    onEndReachedThreshold={0.5}
+                    noScroll={props.noScroll}
+                    renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     onEndReached = {handleEndReached} 
-                    estimatedItemSize={400}
                     ListFooterComponent={
                         (browseParams?.loadedAll == false) ? (
                         <View className='m-2'><Loading/></View>

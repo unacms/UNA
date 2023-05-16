@@ -1,4 +1,4 @@
-import { View, ScrollView, FlashList, Row } from 'app/design/view';
+import { View } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
 import { Text } from 'app/design/typography'
 

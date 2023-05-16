@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable  } from 'app/design/view';
-import { FlashList } from 'app/design/view'
+import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
@@ -68,11 +68,31 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [routes, index]);
 
     const handleScroll = (event) => {
+        console.log(9999);
         if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y < 200)
             scroll.value = 1;
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+          console.log('window was scrolled!'+window.scrollY);
+          if (window.scrollY > headerMinHeight.value)
+          scroll.value = 0;
+      if (window.scrollY < 200)
+          scroll.value = 1;
+          // Perform some action here when the window is scrolled
+        };
+    
+        // Add the event listener when the component mounts
+        window.addEventListener('scroll', handleScroll);
+    
+        // Clean up the event listener when the component unmounts
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+      }, []); 
 
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
@@ -182,7 +202,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (!header){
             if (tabBarObj)
-                return <><View className="w-full h-12"></View><View className="fixed w-full " >{tabBarObj}</View></>
+                return <><View className="w-full h-12"></View><View className="fixed w-full  z-50" >{tabBarObj}</View></>
         }
 
 
@@ -226,15 +246,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabFlashList = React.forwardRef((props, ref) => {
         
         return (
-            <FlashList
+            <View style={{ paddingTop: header ? 300 : 0 }} className="mb-4"><UniList
                 {...props}
+                useWindowScroll
                 ref={ref}
                 numColumns={numColumns}
                 onScroll={handleScroll}
                 onEndReachedThreshold={0.5}
-                contentContainerStyle={{ paddingTop: header ? 300 : 0 }}
+            
                 onEndReached={handleEndReached}
-            />
+            /></View>
         );
     });
 
@@ -284,9 +305,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const windowHeight = useWindowDimensions().height;
     //onWheel={handleWheel} 
     return (
-       <View style={{height: windowHeight - iMenuHeight}} className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+       <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}
-            <View style={{height: windowHeight - iMenuHeight }} className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+            <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>
