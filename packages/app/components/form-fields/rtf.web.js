@@ -134,7 +134,7 @@ const MenuBar = ({ editor }) => {
                         </View>
                     </View>
             </Modal>
-            <ButtonsGroup >{aButtonsGroup}</ButtonsGroup>
+            <ButtonsGroup  variant="outline">{aButtonsGroup}</ButtonsGroup>
         </>
     )
 }
