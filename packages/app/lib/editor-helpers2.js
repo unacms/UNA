@@ -1,7 +1,7 @@
 import { ReactRenderer } from '@tiptap/react'
 import tippy from 'tippy.js'
 import { fetcher } from 'app/lib/fetcher';
-import {MentionList} from 'app/lib/editor-helpers3'
+import MentionList from 'app/lib/editor-helpers3'
 import { PluginKey } from '@tiptap/pm/state'
 
 export function Suggestion(startfrom) {
