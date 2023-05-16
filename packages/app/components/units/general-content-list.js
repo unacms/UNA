@@ -56,17 +56,14 @@ export default function Unit(props) {
             <View className="u-card" >
                 
                 <View className="
-                flex-auto
-                 p-1 mt-1 sm:mx-2 sm:mt-2                   
-                 group duration-200 overflow-hidden sm:rounded-lg  
-                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                 border  
-                 active:translate-y-0.5
-                 border-bordercolorcard dark:border-bordercolorcard-dark 
-                 sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
-                
+                shadow-sm hover:shadow-md active:shadow-none 
+                mt-4 mx-4             
+                group duration-200  rounded-lg overflow-hidden  
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                   
+               justify-between 
+                active:translate-y-0.5
                 
                 ">
                     <Link href={data.url}> 
