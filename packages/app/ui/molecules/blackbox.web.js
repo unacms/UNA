@@ -104,10 +104,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} size="sm"/>;
+                let btn = <Button title={button.title} startDecorator={button.icon} variant="text" size="sm"/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
-                    <View className="ml-2 hidden lg:block" key={`add-${button.icon}`} >{btn}</View>
+                    <View className="ml-2 hidden sm:block" key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
