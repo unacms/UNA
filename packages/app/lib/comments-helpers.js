@@ -236,7 +236,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                     </View>
                 )}}
                 
-                keyExtractor={item => item.id}
 
                 onEndReached = {handleMore} 
                 ListFooterComponent={

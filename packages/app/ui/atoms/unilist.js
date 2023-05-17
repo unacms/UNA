@@ -8,7 +8,7 @@ import { styled } from 'nativewind'
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
 
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, ...rest } = props
+    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
 
     if (isWeb){
 
@@ -45,6 +45,7 @@ export default function UniList(props) {
                 )
             }
             else{
+
                 return (
                     <Virtuoso useWindowScroll
                         data={data}
@@ -86,6 +87,7 @@ export default function UniList(props) {
                 keyExtractor={item => item.id}
                 onEndReachedThreshold={0.5}
                 numColumns={numColumns}
+
                 estimatedItemSize={400}
                 {...props}
             />

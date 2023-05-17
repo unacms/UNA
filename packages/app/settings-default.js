@@ -210,6 +210,7 @@ import Svg, {Path} from 'react-native-svg'
                     menu: {name: 'system:profile_menu', showTitle: false, showBg: false},
                     feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
                     posts: {name: 'bx_posts:browse_public', showTitle: false, showBg: false},
+                    posts2: {name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false},
                 },
                 header:[
                     {icon: 'plus', name: "Add", link: '/create-post'},
@@ -235,6 +236,8 @@ import Svg, {Path} from 'react-native-svg'
                 blocks: {
                     author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false},
                     text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false},
+                    attachments: {name: 'bx_posts:entity_attachments', showTitle: false, showBg: false},
+                    
                     actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false},
                     comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
                 },

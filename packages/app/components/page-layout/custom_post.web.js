@@ -61,7 +61,8 @@ export default function PageLayout(props) {
     let aItems = [
         {id:'block_author', data: <View className='pt-4 px-4'><BlockByName data={props.data} name={props.blocks.author}/></View>},
         {id:'block_text', data: <BlockByName data={props.data} name={props.blocks.text}/>},
-        {id:'block_actions', data: <View className='border-b border-neoborder dark:border-neoborder-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>}
+        {id:'block_actions', data: <View className='border-b border-neoborder dark:border-neoborder-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>},
+        {id:'block_attachments', data: <BlockByName data={props.data} name={props.blocks.attachments}/>}
     ];
 
     return ( 

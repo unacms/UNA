@@ -37,8 +37,12 @@ export default function FormFieldFiles(props) {
             });
         }
         a.forEach(function (k) {
-            if (k.file_id)
+            if (k.file_id){
+                if (name == 'covers'){
+                    formContext.setValue('thumb', av.join(','))
+                }
                 formContext.setValue(name, av.join(','))
+            }
         });
         let filteredArr =[]
         if (imageSource?.images)

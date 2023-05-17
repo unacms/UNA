@@ -69,8 +69,11 @@ export default function Form(props) {
         }, 100);
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
-    let inputs = getFormFieldList(props.name, data.inputs, _handleSubmit, true) 
-    const ElementForm = getFormType(props.name)
+    let name = props.data.params.display.includes('_delete') ? '' : props.name
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true) 
+
+    
+    const ElementForm = getFormType(name)
 
     if ('undefined' !== typeof ElementForm)
         inputs = <ElementForm data={data} handleSubmit={_handleSubmit} ></ElementForm>
