@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Image from '../atoms/image'
 import Link from '../atoms/link'
-import { Icon } from 'app/ui/atoms/icon'
+
 
 
 /**
