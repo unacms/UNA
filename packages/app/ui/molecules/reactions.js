@@ -1,12 +1,11 @@
 import { useState, useContext } from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import {Reaction, ReactionProvider} from 'react-native-reactions';
 
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
-import { Text } from 'app/design/typography';
 import { View, Pressable } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
