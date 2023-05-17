@@ -1,10 +1,12 @@
 import { useState, useContext } from 'react';
 import { StyleSheet, Platform } from 'react-native';
-import UniList from 'app/ui/atoms/unilist'
+import {Reaction, ReactionProvider} from 'react-native-reactions';
+
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+import { Text } from 'app/design/typography';
 import { View, Pressable } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -18,16 +20,8 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
+    const bWeb = Platform.OS === 'web';
     const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-150 duration-300 active:-translate-y-4';
-    const oIconAliases = {
-        default: 'Smiley',
-        like: 'ThumbsUp',
-        love: 'Heart',
-        joy: 'Smiley',
-        surprise: 'SmileyXEyes',
-        sadness: 'SmileySad',
-        anger: Platform.OS === 'web' ? 'SmileyAngry' : 'SmileyNervous',
-    };
 
     const oParams = {...appSetting('social_actions', 'reaction'), ...oProps.params};
     const oAction = oProps.action;
@@ -38,7 +32,7 @@ export default function ElementReactions(oProps) {
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
-    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && oCounter && oCounter?.items;
+    const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
@@ -48,6 +42,32 @@ export default function ElementReactions(oProps) {
             aName.push(sName);
 
         return [].concat(aName).join('-');
+    };
+
+    const getIconAlias = (sName) => {
+        const sKey = bWeb ? 'web' : 'native';
+        const oAliases = {
+            web: {
+                default: 'Smiley',
+                like: 'ThumbsUp',
+                love: 'Heart',
+                joy: 'Smiley',
+                surprise: 'SmileyXEyes',
+                sadness: 'SmileySad',
+                anger: 'SmileyAngry',
+            },
+            native: {
+                default: '👍',
+                like: '👍',
+                love: '🥰',
+                joy: '😂',
+                surprise: '😮',
+                sadness: '😔',
+                anger: '😠',
+            }
+        };
+
+        return oAliases[sKey][sName];
     };
 
     const { actionsData, setActionsData } = useContext(ActionsData);
@@ -122,7 +142,8 @@ export default function ElementReactions(oProps) {
     };
 
     const handleDo = (event, oProps) => {
-        event.preventDefault();
+        if(event)
+            event.preventDefault();
 
         performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
             setContextVars(oData);
@@ -191,9 +212,7 @@ export default function ElementReactions(oProps) {
     };
 
     
-    //--- show action
-    const [ sliderDoVisible, setSliderDoVisible ] = useState(false);
-    
+    //--- show action    
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
@@ -216,23 +235,34 @@ export default function ElementReactions(oProps) {
         sTitle = getContextVar('title');
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
-    
+
     let sActionButton = undefined;
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionVoted) {
-        sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
-        );
+        if(!bWeb) {
+            let sActionTitle = getIconAlias(sReaction);
+            if(bShowActionLabel)
+                sActionTitle = sActionTitle + ' ' + sTitle;
+
+            sActionButton = (
+                <ButtonAction key="action" size={sDisplaySize} title={sActionTitle} onPress={handleUndo} />
+            );
+        }
+        else
+            sActionButton = (
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            );
+            
     }
     else {
-        if(Platform.OS === 'web') {
+        if(bWeb) {
             const sItems = Object.keys(oParams.items).map(function(iKey) {
                 const aItem = oParams.items[iKey];               
 
                 return (
                     <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
                         <DropdownMenuItemIcon>
-                            <Icon className={sClassIconInternal} icon={oIconAliases[aItem.name]}></Icon>
+                            <Icon className={sClassIconInternal} icon={getIconAlias(aItem.name)}></Icon>
                         </DropdownMenuItemIcon>
                         <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
                     </DropdownMenuItemH>
@@ -243,7 +273,7 @@ export default function ElementReactions(oProps) {
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenuRoot>
                         <DropdownMenuTrigger>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
                         </DropdownMenuTrigger>
                         <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
                     </DropdownMenuRoot>
@@ -251,38 +281,23 @@ export default function ElementReactions(oProps) {
             );
         }
         else {
-            const onSliderDoShow = (event) => {
-                event.preventDefault();
+            const aReactionItems = oParams.items.map(oItem => {
+                return {
+                    id: oItem.id,
+                    name: oItem.name,
+                    emoji: getIconAlias(oItem.name),
+                    title: appSetting('lang_keys', 'rvote_' + oItem.name + '_title')
+                };
+            });
 
-                setSliderDoVisible(true);
-            };
-
-            const onSliderDoClose = () => {
-                setSliderDoVisible(false);
-            };
-
-            const onSliderDoSelect = (event, item) => {
-                event.preventDefault();
-
-                onSliderDoClose();
-
-                handleDo(event, item);
+            const onDoSelect = (item) => {
+                handleDo(undefined, item);
             };
 
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={oIconAliases[sReaction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {onSliderDoShow(event)} : () => {}} disabled={bShowActionDisabled} />
-            );
-
-            sActionPopup = (
-                <Modal key="action-popup" animationType="slide" onVisible={sliderDoVisible} onClose={onSliderDoClose}>
-                    <View className="h-9 w-full">
-                        <UniList horizontal  data={oParams.items} renderItem={({ item, index }) => {
-                            return (
-                                <Button key={item.name} size="sm" variant="text" rounded="true" startDecorator={oIconAliases[item.name]} onPress={(event) => {onSliderDoSelect(event, item)}} />
-                            );                                        
-                        }} />
-                    </View>
-                </Modal>
+                <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled}>
+                    <ButtonAction size={sDisplaySize} title={bShowActionLabel ? sTitle : false} />
+                </Reaction>
             );
         }
     }
@@ -324,7 +339,7 @@ export default function ElementReactions(oProps) {
             if(!sUsers || sUsers.length == 0)
                 sUsers = getSkeleton();
 
-            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={oIconAliases[aItem.name]} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
+            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
             aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{sUsers}</Modal>)
         });
 
@@ -355,7 +370,7 @@ export default function ElementReactions(oProps) {
             if(!iCount)
                 return;
             
-            return oIconAliases[aItem.name];
+            return getIconAlias(aItem.name);
         });
 
         if(!iTotal)
@@ -375,7 +390,7 @@ export default function ElementReactions(oProps) {
 
             return (
                 <View key={aItem.name} className={sClass}>
-                    <Button size="sm" fullWidth variant="text" rounded="true" startDecorator={oIconAliases[aItem.name]} onPress={() => {setTabVisibleByCpd(aItem.name)}} />
+                    <Button size="sm" variant="text" title={!bWeb ? getIconAlias(aItem.name) : ''} startDecorator={bWeb ? getIconAlias(aItem.name) : false} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
                 </View>
             );
         });
@@ -410,8 +425,13 @@ export default function ElementReactions(oProps) {
             );
         });
 
+        if(!bWeb && iTotal > 0) {
+            iTotal += ' ';
+            aCounter.forEach((item) => {if(item) iTotal += item});
+        }
+
         return [[
-                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={bWeb ? aCounter : false} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row  border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
@@ -434,7 +454,7 @@ export default function ElementReactions(oProps) {
                 break;
         }
 
-    const sObject = getName();
+    let sResult = undefined;
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
         if(!!aCounter[0])
@@ -442,7 +462,7 @@ export default function ElementReactions(oProps) {
                 aButtonsGroup.push(aItem);
             });
 
-        return (
+        sResult = (
             <View>
                 <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sActionPopup}
@@ -450,13 +470,21 @@ export default function ElementReactions(oProps) {
             </View>
         );
     }
-    else
-        return (
+    else {
+        const sObject = getName();
+        const bCounter = bShowCounter && !!aCounter;
+
+        sResult = (
             <View className="flex-auto flex-row items-center">
-                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+                {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull && bCounter ? ' mr-2' : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
-                {bShowCounter && !!aCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-1">{aCounter[0]}</View>}
+                {bCounter && <View key={sObject + '-counter-button'} className="flex-auto flex-row gap-x-1">{aCounter[0]}</View>}
                 {bShowCounter && !!aCounter && <View key={sObject + '-counter-popup'}>{aCounter[1]}</View>}
             </View>
         );
+    }
+
+    return bWeb ? sResult : (
+        <ReactionProvider>{sResult}</ReactionProvider>
+    )
  }
