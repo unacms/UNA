@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import {Reaction, ReactionProvider} from 'react-native-reactions';
 
 import { appSetting } from 'app/lib/util';
+import { FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
@@ -290,6 +291,8 @@ export default function ElementReactions(oProps) {
             });
 
             const onDoSelect = (item) => {
+                FeedbackHaptics('Select');
+
                 handleDo(undefined, item);
             };
 
