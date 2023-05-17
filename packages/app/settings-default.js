@@ -310,8 +310,8 @@ import Svg, {Path} from 'react-native-svg'
                 blocks: {
                     col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
                     col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1},
-                    col2:{name: 'bx_persons:entity_info', showTitle: true, showBg: true, rightCol: true},
-                    col3:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, rightCol: true},
+                    col2:{name: 'bx_persons:entity_info', showTitle: true, showBg: true, sidebar: true},
+                    col3:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, sidebar: true},
                     
 
                 }

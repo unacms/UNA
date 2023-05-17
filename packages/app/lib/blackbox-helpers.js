@@ -14,6 +14,7 @@ export function fillTabs(menu, data, blocks){
             i.inited = true;
             i.link = item.link;
             i.endpoint = contentAndEndpoint.endpoint;
+            i.sidebar = contentAndEndpoint.sidebar;
         } else {
             i.link = item.link;
             i.inited = false;
@@ -84,56 +85,50 @@ export function getContent(data, block) {
       : { data: b, type: 'block', block: block };
 }
 
-export function processUrl(data, blocks) {
-    const contentAndEndpoint = Object.values(blocks).filter(block => !block.rightCol).reduce(
-        (acc, block) => {
-
-            const b = getContent(data, block);
-            if (b.type === 'browse') {
-                acc.endpoint = {
-                    ...acc.endpoint,
-                    params: b.data.params,
-                    request_url: b.data.request_url,
-                    finished: false,
-                    unit: b.data.unit,
-                };
-                acc.content = [...acc.content, ...b.data.data];
-            } else {
-                if (b?.data?.id)
-                    acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
-            }
-
-            return acc;
-        },
-        { content: [], endpoint: null }
-    );
-    return contentAndEndpoint;
+function processEndpoint(acc, b) {
+    return {
+        ...acc.endpoint,
+        params: b.data.params,
+        request_url: b.data.request_url,
+        finished: false,
+        unit: b.data.unit,
+    };
 }
 
-export function getRightCol(data, blocks) {
-    const contentAndEndpoint = Object.values(blocks).filter(block => block.rightCol).reduce(
-        (acc, block) => {
+function processContent(acc, b) {
+    if (b?.data?.id) {
+        return [...acc.content, { ...b, id: `block-${b.data.id}`, type: 'block' }];
+    }
+    return acc.content;
+}
 
-            const b = getContent(data, block);
-            if (b.type === 'browse') {
-                acc.endpoint = {
-                    ...acc.endpoint,
-                    params: b.data.params,
-                    request_url: b.data.request_url,
-                    finished: false,
-                    unit: b.data.unit,
-                    module:b.data.module,
-                };
-                acc.content = [...acc.content, ...b.data.data];
+function processBrowse(acc, b) {
+    acc.endpoint = processEndpoint(acc, b);
+    acc.content = [...acc.content, ...b.data.data];
+    return acc;
+}
+
+export function processUrl(data, blocks) {
+    const contentAndEndpoint = Object.values(blocks).reduce((acc, block) => {
+        const b = getContent(data, block);
+
+        if (b.type === 'browse') {
+            if (block.sidebar) {
+                acc.sidebar = processBrowse(acc.sidebar, b);
             } else {
-                if (b?.data?.id)
-                    acc.content.push({ ...b, id: `block-${b.data.id}`, type: 'block' });
+                acc = processBrowse(acc, b);
             }
+        } else {
+            if (block.sidebar) {
+                acc.sidebar.content = processContent(acc.sidebar, b);
+            } else {
+                acc.content = processContent(acc, b);
+            }
+        }
 
-            return acc;
-        },
-        { content: [], endpoint: null }
-    );
+        return acc;
+    }, { content: [], endpoint: null, sidebar: { endpoint: null, content: [] } });
+
     return contentAndEndpoint;
 }
 

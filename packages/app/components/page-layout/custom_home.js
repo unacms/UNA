@@ -35,7 +35,7 @@ export default function PageLayout(props) {
                 </View>
 
                 <View className="hidden xl:block w-1/3   flex-none duration-200">
-                    <BlockByName noScroll={true} data={props.data} name={props.blocks.posts} />
+                    <BlockByName no_scroll={true} data={props.data} name={props.blocks.posts} />
                 </View>
             </View>
             </View>

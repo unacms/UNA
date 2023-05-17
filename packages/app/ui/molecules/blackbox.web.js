@@ -18,8 +18,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const initedTabs = fillTabs(menu, data, blocks);
 
-    const rightCol = getRightCol(data, blocks);
-
     const windowWidth = useWindowDimensions().width;
 
     const getNumCols = (width) => {
@@ -186,6 +184,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             };
         });
 
+        const animatedStyle5 = useAnimatedStyle(() => {
+            return {
+                top: withTiming((scroll.value || window.innerWidth >1024) > 0 ? 63: 0, { duration: d }),
+                opacity:1
+            };
+        });
+
+
         const contentContainerStyle = useAnimatedStyle(() => {
             const baseHeight = scroll.value === 1 ? headerMaxHeight.value : headerMinHeight.value;
             const height = Math.max(baseHeight - 300 + menuHeight, 0);
@@ -202,7 +208,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (!header){
             if (tabBarObj)
-                return <><View className="w-full h-12"></View><View className="fixed w-full  z-50" >{tabBarObj}</View></>
+                return <>
+                    <View className="w-full h-12"></View>
+                    <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
+
+                    </>
         }
 
 
@@ -218,7 +228,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         
         return (
             <>
-                <View className="fixed w-full z-50 "  ref={viewRef} style={{zIndex: 50}} >
+                <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}  ref={viewRef} >
                     <Animated.View className="w-full" style={parentAnimatedStyle}>
                         <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'  }, animatedStyleA]}>
                             <View onLayout={handleHeaderMaxLayout}>
@@ -234,7 +244,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View >
                         {tabBarObj}
                     </View>
-                </View>
+                </Animated.View>
                 <Animated.View style={[{ width: '100%'}, contentContainerStyle]}></Animated.View>
                 
             </>
@@ -265,8 +275,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
         if (route.inited){
             const dataItems = route.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
-            console.log(rightCol);
-            let isRightCol = rightCol.content.length > 0
+
+            let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <Row style={{ paddingTop: header ? 300 : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
@@ -274,7 +284,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             index={route.index}
                             data={dataItems}
 
-                            renderItem={({ item, index }) => <ItemRenderer route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
                                 {(route?.endpoint?.finished === false) ? (
@@ -286,9 +296,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
                         <UniList
-                            noScroll
-                            renderItem={({ item, index }) => <ItemRenderer route={route} numColumns={1} item={item} unit={rightCol?.endpoint?.unit} module={rightCol?.endpoint?.module ? rightCol?.endpoint?.module : ''}/>}
-                            data={rightCol.content}
+                            no_scroll
+                            renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
+                            data={route?.sidebar?.content}
                         />
                     </View>}
                 </Row>
