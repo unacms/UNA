@@ -16,7 +16,7 @@ export default function UniList(props) {
             return renderItem({item: data, index});
         }
 
-        if (props.noScroll){
+        if (props.no_scroll){
             return <View>
                {data.map((item, index) => {
                     return renderItem({item: item, index});

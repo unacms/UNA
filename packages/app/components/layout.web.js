@@ -1,15 +1,16 @@
 import Head from 'next/head';
+import { useState, useEffect } from 'react'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
 import { NavigationContainer } from '@react-navigation/native';
 import useSkeleton from '../lib/hooks/skeleton';
-
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
-    var oBreadCrump = null;
+    const scroll = useSharedValue(1);
     const [loading, skeleton] = useSkeleton();
     
     const linking = {
@@ -25,6 +26,31 @@ export default function Layout(props) {
         document.title = props.data.title;
     }, 100);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 200 && window.innerWidth < 1024)
+                scroll.value = 0;
+            if (window.scrollY < 200)
+                scroll.value = 1;
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+      }, []); 
+      
+        const d=200;
+        const animatedStyleA = useAnimatedStyle(() => {
+        const opacityValue = withTiming(scroll.value, { duration: d });
+        
+        return {
+            zIndex: withTiming(100 *scroll.value, { duration: d }),
+            height: withTiming(64 * scroll.value, { duration: d }),
+            opacity: withTiming(100 * scroll.value, { duration: d })
+        };
+    });
+
     return (
         <>
             <Head>
@@ -37,9 +63,12 @@ export default function Layout(props) {
             </Head>
             <NavigationContainer linking={linking}>
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
-                {(props.data && props.data.menu_top) && <Navbar menu_top={props.data.menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />} 
+                {(props.data && props.data.menu_top) && (
+                    <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }, animatedStyleA]} >
+                        <Navbar menu_top={props.data.menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+                    </Animated.View>)} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                    <View  className=' w-full mt-16 relative overflow-hidden mb-16 sm:mb-0 mx-auto'>
+                    <View  className={(scroll.value? ' mt-16': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {loading ? skeleton :<View className='w-full mx-auto'>
                         {props.children}
                         </View>}

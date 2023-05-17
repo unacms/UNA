@@ -59,22 +59,10 @@ export default function ElementCover(props) {
 
     if (props.data.profile.module == "bx_persons")
         sType = 'rounded-full';
-
-   /* if(Platform.OS == 'web') {
-        document.addEventListener("scroll", (event) => {
-            if (window.scrollY > 540 && !isSmall){
-                setIsSmall(true);
-            }
-            if (window.scrollY < 10 && isSmall){
-                setIsSmall(false);
-            }
-        });
-    }*/
     
     return (
       <View className=' backdrop-blur  bg-backgroundnavbar dark:bg-backgroundnavbar-dark ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
-                
                 <View  className=' duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[20%]  xl:rounded-b-lg overflow-hidden'>
                         { !!data.cover && <Image alt={data.group_name} view="cover" sizes="(max-width:1280px) 100vw, 1280px" className="u-cover " src={data.cover.src} />  }
                 </View>
