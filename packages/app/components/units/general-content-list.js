@@ -138,7 +138,7 @@ export default function Unit(props) {
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (
-                <View className="text-center flex-col  h-auto p-4">
+                <View className="text-center flex-col  h-auto px-4  h-36 justify-end">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
             );
@@ -158,7 +158,7 @@ export default function Unit(props) {
                 
                 ">
                     <Link href={data.url}> 
-                    <View className='flex-col '>  
+                    <View className='flex-col pb-4'>  
                         
                         {data.cover &&
                                 <View className="w-full bg-neutral-500/20 rounded-lg aspect-video overflow-hidden items-center absolute" >
@@ -172,8 +172,8 @@ export default function Unit(props) {
                             </View>
                             </View>
                             
-                        <Text className="px-4 pt-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.fullname}</Text>
-                        <View >{sMeta}</View>
+                        <Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.fullname}</Text>
+                        <View className=''>{sMeta}</View>
                     </View>
                 </Link>
             </View>
@@ -190,7 +190,7 @@ export default function Unit(props) {
                 
                 <View className="
                     shadow-sm hover:shadow-lg active:shadow-none 
-                    mt-4 mx-4             
+                    mt-4 mx-2             
                     group duration-200  rounded-lg 
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
@@ -198,25 +198,19 @@ export default function Unit(props) {
                    justify-between 
                     active:translate-y-0.5 ">
                     <Link href={data.url}>  
-                    <View className='justify-between h-full '>    
+                    <View className='flex-col    '>   
                         {data.image && (
                 
                                 
 
-                                <><View className='flex-col '>
-                                    <View className="relative rounded mb-3 aspect-video  overflow-hidden w-full ">
-                                            <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
-                                    </View> 
-                                    
-                                    
-                                    <Text numberOfLines={3} className='px-3 text-neutral-950 dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
-                                        {data.title}
-                                    </Text>
-                                    <Text numberOfLines={3} className="px-3 text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                                    
-
-                                    </View>
-                                <View className=" px-3 py-2.5  ">{sMeta}</View></>
+                                
+                                    <><View className="relative rounded aspect-video  overflow-hidden w-full ">
+                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+                            </View>
+                            
+                           </>
+                                   
+                                
            
                                )
                           
@@ -224,36 +218,27 @@ export default function Unit(props) {
                         
                         {!data.image &&<>
                         
-                        <View className="p-3  ">
+                            
+                                    <View className="relative bg-primary-100 rounded aspect-video  overflow-hidden w-full ">
+                                    </View> 
+                                    
+                                    
+                                    
                                 
-
-
-                                
-                                    <View className=" flex-col gap-2  ">
-                                       
-                                        <Text numberOfLines={3} className='mt-auto text-neutral-950  dark:text-neutral-50 hover:text-accent dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
-                                            {data.title}
-                                        </Text>
-                                        <Text numberOfLines={12} className=" text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-
-                                    </View>
-                                    
-                                        
-
-                                    
-                                    
-                                    
-
-
-                                </View>
-                                <View className=" p-3    ">{sMeta}</View>
                                
 
                         
                         
                         </>}
-
-
+                        <View className="flex flex-col h-28 gap-1 p-3 ">
+                                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                                            {data.title}
+                                        </Text>
+                                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                        
+                        </View>
+                        <View className=" px-3 pb-3  ">{sMeta}</View>
+                                    
                         </View>      
                     </Link>
                 

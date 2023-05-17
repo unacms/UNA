@@ -52,6 +52,7 @@
     "react-native-pager-view": "6.1.2",
     "react-native-paper": "^5.5.2",
     "react-native-quick-md5": "^3.0.4",
+    "react-native-reactions": "^0.0.3",
     "react-native-reanimated": "~2.14.4",
     "react-native-redash": "^18.1.0",
     "react-native-render-html": "^6.3.4",

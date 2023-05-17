@@ -132,7 +132,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                         <Row className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-4 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
+                            
                             <Row className="  mr-auto" >
                             
                                 {routes.map((a) => (
