@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import {Reaction, ReactionProvider} from 'react-native-reactions';
 
 import { appSetting } from 'app/lib/util';
@@ -21,6 +21,7 @@ import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
     const bWeb = Platform.OS === 'web';
+    const sTheme = useColorScheme();
     const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-150 duration-300 active:-translate-y-4';
 
     const oParams = {...appSetting('social_actions', 'reaction'), ...oProps.params};
@@ -281,6 +282,13 @@ export default function ElementReactions(oProps) {
             );
         }
         else {
+            
+            const oReactionStyles = StyleSheet.create({
+                cardStyle: {
+                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'screenBackground'),
+                },
+            });
+
             const aReactionItems = oParams.items.map(oItem => {
                 return {
                     id: oItem.id,
@@ -297,7 +305,7 @@ export default function ElementReactions(oProps) {
             };
 
             sActionButton = (
-                <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled}>
+                <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
                     <ButtonAction size={sDisplaySize} title={bShowActionLabel ? sTitle : false} />
                 </Reaction>
             );
