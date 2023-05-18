@@ -1,13 +1,16 @@
-import Profile from '../../ui/molecules/profile';
-import Time from '../../ui/atoms/time';
 import { useState } from 'react';
-import { Text} from 'app/design/typography'
 import { useWindowDimensions} from 'react-native';
+
+import { menuItemsByName } from 'app/lib/util';
+import { Text} from 'app/design/typography'
 import { View, Pressable, Row } from 'app/design/view'
-import Html from '../../ui/atoms/html';
 import { Button, Modal } from 'app/design/controls'
+import Html from 'app/ui/atoms/html';
+import Time from 'app/ui/atoms/time';
+import Image from 'app/ui/atoms/image';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
-import Image from '../../ui/atoms/image';
 import Menu from 'app/components/menu';
 
 export default function UnitComments(props) {
@@ -37,17 +40,25 @@ export default function UnitComments(props) {
         setShowImage(img);
     } 
 
-    let cells = [];
+    const handleManageMenuSelect = (oItem, event) => {
+        switch(oItem.name) {
+            case 'item-edit':
+                console.log('TODO: Perfom comment edit.');
+                break;
 
+            case 'item-delete':
+                console.log('TODO: Perfom comment delete.');
+                break;
+        }
+    }
+
+    let cells = [];
     for (let i = 0; i < level; i++){
         cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
         {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100 dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
     </View>)
-    };
-    
-   
-    
+    };   
 
     return (
         <View className='w-full'>
@@ -94,8 +105,18 @@ export default function UnitComments(props) {
                         <View className='mr-2'>
                             <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                         </View>
-                        <View className=''>
-                        <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+                        <View className='flex-row gap-x-2'>
+                            <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+                            <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
+                                return {
+                                    id: aItem.id ? aItem.id : aItem.name,
+                                    name: aItem.name,
+                                    link: aItem.link,
+                                    title: aItem.title
+                                };
+                            })} onSelect={handleManageMenuSelect}>
+                                <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
+                            </DropdownMenu>
                         </View>
                     </View>
                 </View>

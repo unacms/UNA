@@ -132,10 +132,10 @@ export function menuItemsByName(name, items, url = '') {
     const menuSettings = appSetting('menu_items', name)
     if (menuSettings){
         if (menuSettings.items){
-            return items.filter((item) => !!item.link && menuSettings.items.includes(getURI(item.link)));
+            return items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
         }
         else
-            return items.filter((item) => !!item.link && menuSettings.includes(getURI(item.link)));
+            return items.filter((item) => (!!item.name && menuSettings.includes(item.name)) || (!!item.link && menuSettings.includes(getURI(item.link))));
     }
     if (!items)
         items =[{link: url, title: ''}];
