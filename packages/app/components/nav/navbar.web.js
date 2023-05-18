@@ -42,7 +42,7 @@ export default function (props) {
     const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title');
     const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all');
     const sNtfsSkeleton = (
-        <View className="px-1.5 pb-1.5">
+        <View key="ddp-content" className="px-1.5 pb-1.5">
            <View className="flex-row items-center mb-1">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
                 <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
@@ -86,7 +86,7 @@ export default function (props) {
             return;
 
         const sContent = (
-            <View className="px-1.5 pb-1.5">
+            <View key="ddp-content" className="px-1.5 pb-1.5">
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
@@ -144,7 +144,7 @@ export default function (props) {
                   {!!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
                       <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}} title={sTxtNtfsTitle}>{[
-                        <Button variant="text" rounded startDecorator="notifications" id="m1" />, ntfsContent]}
+                        <Button key="ddp-trigger" variant="text" rounded startDecorator="notifications" id="m1" />, ntfsContent]}
                       </DropdownPopup>
                       <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" onPress={() => {handleClick('/messenger')}} />
                       <DropdownMenu items={menuItemsByName('add_menu', props.menu_add.items).map((item, index) => {
