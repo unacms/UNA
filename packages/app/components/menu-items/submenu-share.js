@@ -4,15 +4,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
-import { 
-    DropdownMenuRoot, 
-    DropdownMenuContentV, 
-    DropdownMenuTrigger, 
-    DropdownMenuItemV, 
-    DropdownMenuItemTitle,
-    DropdownMenuItemIcon
-} from 'app/design/dropdown';
-import { Icon } from 'app/ui/atoms/icon'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function MenuItemSubmenuShare(oProps) {
     const oIconAliases = {
@@ -24,17 +16,15 @@ export default function MenuItemSubmenuShare(oProps) {
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
 
     const aSubmenuExcept = [];
-    const sSubmenuItems = Object.keys(oProps.submenu.items).map(function(iKey) {
-        const aItem = oProps.submenu.items[iKey];
-
-        if(!(aItem.id || aItem.name) || aSubmenuExcept.includes(aItem.name))
+    const aSubmenuItems = oProps.submenu.items.map((oItem) => {
+        if(!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
             return;
 
         let handleClick = undefined;
-        switch(aItem.name) {
+        switch(oItem.name) {
             case 'item-repost':
                 handleClick = async () => {
-                    const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(aItem.data)));
+                    const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(oItem.data)));
                     if(sResponse?.data && parseInt(sResponse.data?.code) > 0)
                         console.log(sResponse.data);
                 };
@@ -42,7 +32,7 @@ export default function MenuItemSubmenuShare(oProps) {
 
             case 'item-copy':
                 handleClick = () => {
-                    Clipboard.setString(aItem.link);
+                    Clipboard.setString(oItem.link);
                 }
                 break;
 
@@ -50,7 +40,7 @@ export default function MenuItemSubmenuShare(oProps) {
                 handleClick = async () => {
                     try {
                         const result = await Share.share({
-                            message: aItem.link,
+                            message: oItem.link,
                         });
 
                         switch(result.action) {
@@ -73,26 +63,22 @@ export default function MenuItemSubmenuShare(oProps) {
                 break;
         }
 
-        return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick()}>
-                <DropdownMenuItemIcon>
-                    <Icon icon={oIconAliases[aItem.name]}></Icon>
-                </DropdownMenuItemIcon>
-                <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-            </DropdownMenuItemV>
-        );
+        return {
+            id: !!oItem.id ? oItem.id : oItem.name,
+            link: oItem.link,
+            title: oItem.title,
+            icon: oIconAliases[oItem.name],
+            onClick: handleClick
+        };
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     return (
         <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
-            <DropdownMenuRoot>
-                <DropdownMenuTrigger>
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContentV>{sSubmenuItems}</DropdownMenuContentV>
-            </DropdownMenuRoot>
+            <DropdownMenu items={aSubmenuItems}>
+                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+            </DropdownMenu>
         </Pressable>
     );
 }

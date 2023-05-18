@@ -5,8 +5,10 @@ import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
     DropdownMenuContentV, 
+    DropdownMenuContentH, 
     DropdownMenuTrigger, 
     DropdownMenuItemV, 
+    DropdownMenuItemH, 
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
@@ -28,9 +30,9 @@ export default function DropdownMenu(oProps) {
 
     const aDmItems = oProps.items.map((oItem) => {
         return (
-            <DmItem key={oItem.id} onSelect={() => !!oItem?.onClick ? oItem?.onClick(oItem) : onSelect(oItem)}>
-                {!!oItem.icon && <DropdownMenuItemIcon><Icon icon={oItem.icon} /></DropdownMenuItemIcon>}
-                <DropdownMenuItemTitle>{oItem.title}</DropdownMenuItemTitle>
+            <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)}>
+                {!!oItem?.icon && <DropdownMenuItemIcon><Icon icon={oItem.icon} /></DropdownMenuItemIcon>}
+                {!!oItem?.title && <DropdownMenuItemTitle>{oItem.title}</DropdownMenuItemTitle>}
             </DmItem>
         );
     });

@@ -1,40 +1,31 @@
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
-import { View, Pressable } from 'app/design/view'
-import { Icon } from 'app/ui/atoms/icon'
+import { Pressable } from 'app/design/view';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function MenuItemSubmenu(oProps) {
     const oIconAliases = {};
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
-    
-    const aSubmenuExcept = [];
-    const sSubmenuItems = Object.keys(oProps.submenu.items).map(function(iKey) {
-        const aItem = oProps.submenu.items[iKey];
 
-        if(!(aItem.id || aItem.name) || aSubmenuExcept.includes(aItem.name))
+    const aSubmenuExcept = [];
+    const aSubmenuItems = oProps.submenu.items.map((oItem) => {
+        if(!(oItem.id || oItem.name) || aSubmenuExcept.includes(oItem.name))
             return;
 
-        const handleClick = () => {
-            //TODO: Perform click action.
+        return {
+            id: !!oItem.id ? oItem.id : oItem.name,
+            link: oItem.link,
+            title: oItem.title,
         };
-
-        return (
-            <DropdownMenuItemV key={aItem.id ? aItem.id : aItem.name} onSelect={() => handleClick()}>
-                <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-            </DropdownMenuItemV>
-        );
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     return (
         <Pressable onPress={(event) => {event.preventDefault()}}>
-            <DropdownMenuRoot>
-                <DropdownMenuTrigger>
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContentV>{sSubmenuItems}</DropdownMenuContentV>
-            </DropdownMenuRoot>
+            <DropdownMenu items={aSubmenuItems}>
+                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!!oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+            </DropdownMenu>
         </Pressable>
     );
 }
