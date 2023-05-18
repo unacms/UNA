@@ -168,6 +168,7 @@ import Svg, {Path} from 'react-native-svg'
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
+            'bx_posts_item_manange': ['edit-post', 'delete-post'],
             'bx_persons_submenu': {
                 name:'People',
                 icon:'Users',
