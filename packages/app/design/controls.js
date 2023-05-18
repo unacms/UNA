@@ -146,6 +146,7 @@ export function Button(props/*: ButtonProps*/) {
   let { className, classTextName, classIconName, onPress, ...rest } = props
   let buttonType = props.variant ? props.variant : 'default'
   let buttonSize = props.size ? props.size : 'base'
+  let buttonPressed = props.pressed ? true : false
   let buttonDisabled = props.disabled ? true : false
   let buttonIconStart = props.startDecorator ? props.startDecorator : false
   let buttonIconEnd = props.endDecorator ? props.endDecorator : false
@@ -180,6 +181,11 @@ export function Button(props/*: ButtonProps*/) {
   }
 
   sClassContainer += ' justify-' + buttonAlign + ' '
+
+  if (buttonPressed) {
+    sClassContainer += ' ring-2 ring-inset ring-offset-2 ';
+    sClassText += ' font-bold ';
+  }
 
   const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-lg' : '';
 
