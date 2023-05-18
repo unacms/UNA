@@ -61,6 +61,7 @@
     "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-vector-icons": "^9.2.0",
+    "react-native-video": "^5.2.1",
     "react-native-web": "~0.18.9",
     "react-native-webview": "^12.0.2",
     "react-quill": "^2.0.0",

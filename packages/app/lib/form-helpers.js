@@ -23,6 +23,7 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
         password: Password,
         submit: Submit,
         switcher: Switcher,
+        checkbox: Switcher,
         text: TextField,
         textarea: Textarea,
         select: Select,

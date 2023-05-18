@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
-import { NavigationContainer } from '@react-navigation/native';
+
 import useSkeleton from '../lib/hooks/skeleton';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 
@@ -13,25 +13,20 @@ export default function Layout(props) {
     const scroll = useSharedValue(1);
     const [loading, skeleton] = useSkeleton();
     
-    const linking = {
-        prefixes: [
-          /* your linking prefixes */
-        ],
-        config: {
-          /* configuration for matching screens with paths */
-        },
-    };
-
     setTimeout(() => {
         document.title = props.data.title;
     }, 100);
 
     useEffect(() => {
+        let lastScrollTop = 0;
+        
         const handleScroll = () => {
-            if (window.scrollY > 200 && window.innerWidth < 1024)
+            let scrollTop = window.scrollY;
+            if (lastScrollTop < scrollTop && window.innerWidth < 1024)
                 scroll.value = 0;
-            if (window.scrollY < 200)
+            else
                 scroll.value = 1;
+            lastScrollTop = scrollTop;
         };
     
         window.addEventListener('scroll', handleScroll);
@@ -56,12 +51,13 @@ export default function Layout(props) {
             <Head>
                 <link rel="icon" href="/favicon.ico" />
                 <meta name="description" content={siteTitle} />
+                <meta http-equiv="expires" content="Fri, 18 Jul 2025 1:00:00 GMT" />
                 <meta name="og:title" content={props.data.title} />
                 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
                 <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
                 <title>{props.data.title}</title>
             </Head>
-            <NavigationContainer linking={linking}>
+            
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
                 {(props.data && props.data.menu_top) && (
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }, animatedStyleA]} >
@@ -76,7 +72,7 @@ export default function Layout(props) {
                 </View>
                 <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
             </View>
-            </NavigationContainer>
+
   
         </>
     );

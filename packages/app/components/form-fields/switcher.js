@@ -4,7 +4,7 @@ import { Switch } from 'app/design/controls'
 
 export default function FormFieldSwitcher(props) {
 
-    const [isEnabled, setIsEnabled] = useState(props.value == 1 ? true : false);
+    const [isEnabled, setIsEnabled] = useState(props.checked ? true : false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     // TODO: improve value
     return (
@@ -14,7 +14,7 @@ export default function FormFieldSwitcher(props) {
                 thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
-                value={isEnabled}
+                value={0}
                 accessibilityLabel={props.caption}
             />
         </Field>
