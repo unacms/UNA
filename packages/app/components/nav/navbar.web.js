@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
-import * as DropdownMenuWeb from '@radix-ui/react-dropdown-menu'
 import { MotiView, AnimatePresence } from 'moti'
 
 import { fetcher } from 'app/lib/fetcher';
@@ -17,10 +16,11 @@ import { Slider } from 'app/ui/molecules/slider';
 
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import Search from 'app/ui/molecules/search';
 import Browse from 'app/components/elements/browse';
 import Notifications from 'app/components/units/notifications';
-import 'app/styles/dropdown.css';
+
 
 export default function (props) {
     const redirectdRef = useRef();
@@ -143,14 +143,9 @@ export default function (props) {
               <Row>
                   {!!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
-                      <DropdownMenuWeb.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
-                          <DropdownMenuWeb.Trigger className="rounded-full" aria-label={sTxtNtfsTitle}>
-                              <Button variant="text" rounded startDecorator="notifications" id="m1" />
-                          </DropdownMenuWeb.Trigger>
-                          <DropdownMenuWeb.Portal>
-                              <DropdownMenuWeb.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenuWeb.Content>
-                          </DropdownMenuWeb.Portal>
-                      </DropdownMenuWeb.Root>
+                      <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}} title={sTxtNtfsTitle}>{[
+                        <Button variant="text" rounded startDecorator="notifications" id="m1" />, ntfsContent]}
+                      </DropdownPopup>
                       <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" onPress={() => {handleClick('/messenger')}} />
                       <DropdownMenu items={menuItemsByName('add_menu', props.menu_add.items).map((item, index) => {
                             return !item.link.includes('javascript') && {
