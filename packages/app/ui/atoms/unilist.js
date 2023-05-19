@@ -4,12 +4,17 @@ import { Platform } from 'react-native'
 import { View, ScrollView } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
+import  {LayoutData} from 'app/context/layout';
+import { useContext } from 'react';
 
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
-
+    console.log('------------------', props)
+    const { layoutData, setLayoutData } = useContext(LayoutData);
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
-
+    if (props.unit == 'feed' && layoutData?.id){
+        data = [layoutData, ...data]
+    }
     if (isWeb){
 
         const itemContent = (index, data) => {

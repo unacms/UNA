@@ -68,7 +68,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [routes, index]);
 
     const handleScroll = (event) => {
-        console.log(9999);
         if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y < 200)
@@ -284,7 +283,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         <TabFlashList
                             index={route.index}
                             data={dataItems}
-
+                            unit={route.endpoint.unit}
                             renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>

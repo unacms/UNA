@@ -62,7 +62,7 @@ export default function UnitComments(props) {
 
     return (
         <View className='w-full'>
-            <Modal id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
+            <Modal title="Add new" id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
                 <View className="w-full" style={{height: windowHeight}}>
                     <Image className="w-full" src={showImage} alt='' view="cover" />
                 </View>
