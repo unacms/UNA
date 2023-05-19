@@ -88,7 +88,7 @@ export default function PageLayout(props) {
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
                 </View>
             </View>                
-            <KeyboardAvoidingView keyboardVerticalOffset={96} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                 <View ref={viewFormRef} onLayout={handleLayout} className='    '> 
                     <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                 </View>
