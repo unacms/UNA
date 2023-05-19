@@ -22,11 +22,12 @@ export default function PageLayout(props) {
     const handleReply =  async (id, author, text) => {
         setFormData({text:stripTags(text), parent_id:id, author:author})
         document.getElementsByClassName("form-control-cmt_text")[0].getElementsByTagName("textarea")[0].focus();
-        calculateSize();
+        
     }
     
     const handleForm =  async (data) => {
         setAddData(data)
+        calculateSize();
     }   
 
     const handleWindowSizeChange = () => {
@@ -41,7 +42,6 @@ export default function PageLayout(props) {
 
     const calculateSize = () => {
         if (viewFormRef.current){
-            console.log(999);
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let  FormH = height
                 let offset = 100;
