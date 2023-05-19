@@ -510,7 +510,7 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab5',
-                    title: 'Logout',
+                    title: 'Dash',
                     url: '/dashboard',
                     icon: 'app-usermenu',
                 },
