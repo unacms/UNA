@@ -47,7 +47,10 @@ export default function PageLayout(props) {
 
 
     return (<View className="w-full ">
-            <BlockByName data={props.data} name={props.blocks.feed} />
+            <LayoutDataContext>
+                    <BlockByName data={props.data} name={props.blocks.posts2} />
+                    <BlockByName data={props.data} name={props.blocks.feed} />
+                </LayoutDataContext>
         </View>)
 
 }

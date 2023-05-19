@@ -5,6 +5,7 @@ import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view"
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Row, Pressable  } from 'app/design/view';
 import { FlashList } from "@shopify/flash-list";
+import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
@@ -64,13 +65,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
         return (
-            <FlashList
+            <UniList
                 {...props}
                 renderScrollComponent={TabFlashListScrollView}
                 contentContainerStyle={{ paddingTop: scrollViewPaddingTop, paddingBottom:20 }}
-                ref={ref}
+                refer ={ref}
                 onScroll={handleLayout}
-                onEndReachedThreshold={0.5}
                 onEndReached={handleEndReached}
             />
         );
@@ -90,8 +90,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 <TabFlashList
                     index={route.index}
                     data={route.data}
-                    estimatedItemSize={60}
-                    keyExtractor={item => item.id}
+                    unit={route.endpoint.unit}
                     renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route?.endpoint?.finished === false) ? (

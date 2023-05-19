@@ -127,9 +127,9 @@ export default function ElementBrowse(props) {
     if (Platform.OS === 'web')
         styles={};
 
-    const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+    const dataItems = data.data;
     return (
-        (data.data.length > 0) && <View className='w-full h-full' >
+        (data.data.length > 0) && <View className='w-full h-full mb-4' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -138,10 +138,11 @@ export default function ElementBrowse(props) {
                 data={modeItems}
             /></View>}
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-                <UniList numColumns={numColumns} 
-                    useWindowScroll
+                <UniList 
+                    numColumns={numColumns} 
                     data={dataItems}
                     unit={data.unit}
+                    useWindowScroll
                     no_scroll={props.no_scroll}
                     renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     onEndReached = {handleEndReached} 
