@@ -48,6 +48,15 @@ export function FeedbackHaptics(type) {
         case 'Select':
             Haptics.selectionAsync();
             break;
+        case 'Light':
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+            break;
+        case 'Medium':
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+            break;
+        case 'Heavy':
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+            break;
 
     }
 }
