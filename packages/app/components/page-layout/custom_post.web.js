@@ -84,7 +84,6 @@ export default function PageLayout(props) {
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
 
-    console.log('sizes.otherHeight', sizes.cntHeight, sizes.otherHeight)
     return ( 
         <View className="lg:py-4">
             <View className=" justify-betweenw-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
