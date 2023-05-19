@@ -6,6 +6,8 @@ import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
+import { Dimensions } from 'react-native';    
+
 
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
@@ -34,6 +36,7 @@ export default function UniList(props) {
             </View>;
         }
         if (props.useWindowScroll){
+            const windowHeight = Dimensions.get('window').height;
             if (numColumns >1){
                 const lala = styled(ReactNativeView, '  w-1/' + props.numColumns)
                 const lala2 = styled(ReactNativeView, ' flex flex-wrap flex-row ')
@@ -42,7 +45,7 @@ export default function UniList(props) {
                         data={data}
                         itemContent={itemContent} 
                         endReached={onEndReached}
-                        overscan={200}
+                        increaseViewportBy={windowHeight - 200}
                         components={{
                             List: lala2,
                             Item: lala,
@@ -62,7 +65,7 @@ export default function UniList(props) {
                         itemContent={itemContent}
                         ref = {refer}   
                         endReached={onEndReached}
-                        overscan={200}
+                        increaseViewportBy={windowHeight - 200}
                         components={{
                             Footer: () => {
                                 return ListFooterComponent

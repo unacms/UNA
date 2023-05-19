@@ -129,7 +129,7 @@ export default function ElementBrowse(props) {
 
     const dataItems = data.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     return (
-        (data.data.length > 0) && <View className='w-full h-full' >
+        (data.data.length > 0) && <View className='w-full h-full mb-4' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
