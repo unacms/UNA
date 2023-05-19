@@ -13,6 +13,7 @@ export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
     const { layoutData, setLayoutData } = useContext(LayoutData);
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
+   
     if (props.unit == 'feed' && layoutData?.id){
         let insertIndex = data.findIndex(item => item.type !== 'block');
         if (insertIndex === -1) {
@@ -22,6 +23,8 @@ export default function UniList(props) {
             data.splice(insertIndex, 0, layoutData);
         }
     }
+    data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+    
     if (isWeb){
 
         const itemContent = (index, data) => {
@@ -38,8 +41,8 @@ export default function UniList(props) {
         if (props.useWindowScroll){
             const windowHeight = Dimensions.get('window').height;
             if (numColumns >1){
-                const lala = styled(ReactNativeView, '  w-1/' + props.numColumns)
-                const lala2 = styled(ReactNativeView, ' flex flex-wrap flex-row ')
+                const listComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
+                const itemComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
                 return ( <VirtuosoGrid useWindowScroll
                         data={data}
@@ -47,8 +50,8 @@ export default function UniList(props) {
                         endReached={onEndReached}
                         increaseViewportBy={windowHeight - 200}
                         components={{
-                            List: lala2,
-                            Item: lala,
+                            List: listComponent,
+                            Item: itemComponent,
                             Footer: () => {
                                 return ListFooterComponent
                             },
@@ -79,13 +82,13 @@ export default function UniList(props) {
     }
     if (props.masonry){
         return (
-            <FlashList 
-                keyExtractor={item => item.id}
+            <MasonryFlashList
                 ref = {refer}   
-                numColumns={numColumns}
+                keyExtractor={item => item.id}
                 onEndReachedThreshold={0.5}
+                numColumns={numColumns}
                 estimatedItemSize={400}
-                data={dataItems}
+                data={data}
                 renderItem={renderItem}
                 onEndReached = {onEndReached} 
                 ListFooterComponent={ListFooterComponent}
@@ -95,14 +98,17 @@ export default function UniList(props) {
     }
     else{
         return (
-            <MasonryFlashList 
+            <FlashList  
                 ref = {refer}   
                 keyExtractor={item => item.id}
                 onEndReachedThreshold={0.5}
                 numColumns={numColumns}
-
                 estimatedItemSize={400}
-                {...props}
+                data={data}
+                renderItem={renderItem}
+                onEndReached = {onEndReached} 
+                ListFooterComponent={ListFooterComponent}
+                {...rest}
             />
         )
     }

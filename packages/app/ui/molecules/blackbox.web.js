@@ -259,7 +259,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
            <UniList
                 {...props}
                 useWindowScroll
-                ref={ref}
+                refer = {ref}
                 numColumns={numColumns}
                 onScroll={handleScroll}            
                 onEndReached={handleEndReached}
@@ -274,7 +274,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return <View className='m-2 pt-80'><Loading/></View>
         }
         if (route.inited){
-            const dataItems = route.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+            const dataItems = route.data;
 
             let isRightCol = route?.sidebar?.content?.length > 0
             return (

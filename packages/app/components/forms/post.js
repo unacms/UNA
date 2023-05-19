@@ -14,8 +14,6 @@ export default function FormPost(props) {
         }
     }
 
-    console.log(props);
-
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full max-w-5xl'>
