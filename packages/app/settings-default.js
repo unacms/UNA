@@ -102,6 +102,7 @@ import Svg, {Path} from 'react-native-svg'
             max_width: 'max-w-7xl',
             cell_gap: 4,
             cell_style: '',
+            show_user_icon:true,
         },
         comments:{
             show_header: false
@@ -217,6 +218,12 @@ import Svg, {Path} from 'react-native-svg'
                 blocks: {
                     inbox: {name: 'bx_messenger:get_block_inbox'},
                     lot: {name: 'bx_messenger:get_block_lot'},
+                },
+            },
+            'dashboard':{
+                layout: 'custom_dashboard',
+                blocks: {
+                    
                 },
             },
             'home':{
@@ -504,7 +511,7 @@ import Svg, {Path} from 'react-native-svg'
                 {
                     key:'/tab5',
                     title: 'Logout',
-                    url: '/logout',
+                    url: '/dashboard',
                     icon: 'app-usermenu',
                 },
             ],
