@@ -2,6 +2,7 @@ import React from 'react'
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 
+
 const setCookie = require('set-cookie-parser');
 
 export default function Path (props) {
