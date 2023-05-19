@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
+import { Platform } from 'react-native';
 
-import { appSetting } from 'app/lib/util';
+import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view';
@@ -9,6 +10,8 @@ import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementScore(oProps) {
+    const bWeb = Platform.OS === 'web';
+
     const oIconAliases = {
         'up': 'ArrowFatUp',
         'down': 'ArrowFatDown'
@@ -92,6 +95,9 @@ export default function ElementScore(oProps) {
 
     const handleDo = (event, sAction) => {
         event.preventDefault();
+
+        if(!bWeb)
+            FeedbackHaptics(oParams.haptics_type);
 
         performAction('do', {a: sAction}, (oData) => {
             setContextVars(oData);

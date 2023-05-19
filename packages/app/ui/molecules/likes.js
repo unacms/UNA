@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
+import { Platform } from 'react-native';
 
-import { appSetting } from 'app/lib/util';
+import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
@@ -8,6 +9,8 @@ import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementLikes(oProps) {
+    const bWeb = Platform.OS === 'web';
+
     const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
@@ -86,6 +89,9 @@ export default function ElementLikes(oProps) {
 
     const handleDo = (event) => {
         event.preventDefault();
+
+        if(!bWeb)
+            FeedbackHaptics(oParams.haptics_type);
 
         performAction('do', {value: 1}, (oData) => {
             setContextVars(oData);
