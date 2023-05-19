@@ -111,6 +111,7 @@ export default function UnitComments(props) {
                         </View> : <></> }
                         <View className='flex-row gap-x-2'>
                             <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+                            {!!currentUser && 
                             <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
                                 return {
                                     id: aItem.id ? aItem.id : aItem.name,
@@ -121,6 +122,7 @@ export default function UnitComments(props) {
                             })} onSelect={handleManageMenuSelect}>
                                 <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
                             </DropdownMenu>
+                            }
                         </View>
                     </View>
                 </View>
