@@ -58,13 +58,6 @@ export default function PageLayout(props) {
 
     const commentsData = DataByName(props.data, props.blocks.comments);
 
-   /*let aItems = [
-        {id:'block_author', data: <View className='pt-4 px-4'><BlockByName data={props.data} name={props.blocks.author}/></View>},
-        {id:'block_text', data: <BlockByName data={props.data} name={props.blocks.text}/>},
-        {id:'block_actions', data: <View className='border-b border-neoborder dark:border-neoborder-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>},
-        {id:'block_attachments', data: <BlockByName data={props.data} name={props.blocks.attachments}/>}
-    ];*/
-
     let aItems = Object.entries(props.blocks).filter(([key, value]) => value.forList).map(([key, value]) => ({
         id: `block_${key}`,
         data: <BlockByName data={props.data} name={value} />
@@ -87,12 +80,13 @@ export default function PageLayout(props) {
             </View>
         );
     }
+    let isStycky = sizes.otherHeight > Dimensions.get('window').height - sizes.formHeight;
 
-
+    console.log('sizes.otherHeight', sizes.otherHeight)
     return ( 
         <View className="lg:py-4">
             <View ref={viewCntRef} className=" justify-betweenw-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
-                <Row><View style ={{marginBottom: sizes.formHeight + 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+                <Row><View style ={{marginBottom: ? sizes.formHeight + 16: 0, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
                 </Row>

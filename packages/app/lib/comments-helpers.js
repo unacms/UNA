@@ -98,6 +98,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         total_count: browse.data.total_count
     });
 
+
     const addCommentData =  (params) => {
         if (!params.postData)
             params.postData = null;
@@ -106,7 +107,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         setCommentData(Object.assign({}, commentData, params));
     } 
 
-    
+
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
         return requestUrl + JSON.stringify({...def, ...params});
@@ -187,7 +188,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }, [commentData.lastInserted]);
 
-    let header = (
+    let header = commentData.total_count > 0 ? (
         <Row className='flex-row jusity-between items-center m-4'>
             <Text className='flex-auto text-base font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
             <View className="ml-4">
@@ -200,7 +201,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                     </DropdownMenu>
                 </Pressable>
             </View>
-        </Row>);
+        </Row>)  : <Text>&nbsp;</Text>;
 
     let h = dataOut.find(item => item.id === 'block_header') 
     if (!h)

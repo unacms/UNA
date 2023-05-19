@@ -12,8 +12,12 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
+import { useCurrentUser } from 'app/context/user';
+
+
 
 export default function UnitComments(props) {
+    let { currentUser } = useCurrentUser();
 
     const [showImage, setShowImage] = useState(false)
     let level = props.level ? props.level : 0
@@ -102,9 +106,9 @@ export default function UnitComments(props) {
                         
                     </View>
                     <View className=' mb-1 flex-row w-full justify-between items-center'>
-                        <View className='mr-2'>
+                        { !!currentUser ? <View className='mr-2'>
                             <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
-                        </View>
+                        </View> : <></> }
                         <View className='flex-row gap-x-2'>
                             <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
                             <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
