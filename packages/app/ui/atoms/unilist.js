@@ -41,14 +41,14 @@ export default function UniList(props) {
         if (props.useWindowScroll){
             const windowHeight = Dimensions.get('window').height;
             if (numColumns >1){
-                const listComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
-                const itemComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
+                const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
+                const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
                 return ( <VirtuosoGrid useWindowScroll
                         data={data}
                         itemContent={itemContent} 
                         endReached={onEndReached}
-                        increaseViewportBy={windowHeight - 200}
+                        overscan={200}
                         components={{
                             List: listComponent,
                             Item: itemComponent,
