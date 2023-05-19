@@ -105,6 +105,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             params.lastInserted = 0;
         setCommentData(Object.assign({}, commentData, params));
     } 
+
+    
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
         return requestUrl + JSON.stringify({...def, ...params});
