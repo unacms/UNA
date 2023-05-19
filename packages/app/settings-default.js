@@ -119,7 +119,8 @@ import Svg, {Path} from 'react-native-svg'
                 show_action_as_button: true,
                 show_action_label: true,
                 show_counter: true,
-                show_counter_as_button: false
+                show_counter_as_button: false,
+                haptics_type: 'Medium'
             },
             reaction:{
                 show_action: true,
@@ -128,6 +129,7 @@ import Svg, {Path} from 'react-native-svg'
                 show_counter: true,
                 show_counter_style: 'compound',
                 show_counter_as_button: false,
+                haptics_type: 'Medium',
                 items: [
                     {id: 1, name: 'like'},
                     {id: 2, name: 'love'},
@@ -142,7 +144,8 @@ import Svg, {Path} from 'react-native-svg'
                 show_action_as_button: true,
                 show_action_label: false,
                 show_counter: true,
-                show_counter_as_button: false
+                show_counter_as_button: false,
+                haptics_type: 'Medium'
             },
             comment: {
                 show_action: true,
@@ -156,7 +159,7 @@ import Svg, {Path} from 'react-native-svg'
     
         menu_items: {
             'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
-            'add_menu': ['create-post', 'create-event-profile', 'create-group-profile'],
+            'add_menu': ['create-post', 'create-group-profile'],
             'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author', 'posts-home'],
             'comments_manage_menu': ['item-edit', 'item-delete'],
             'bx_posts_submenu': {
