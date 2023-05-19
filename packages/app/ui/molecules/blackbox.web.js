@@ -14,6 +14,7 @@ import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 
+
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
     const initedTabs = fillTabs(menu, data, blocks);
@@ -283,7 +284,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         <TabFlashList
                             index={route.index}
                             data={dataItems}
-                            unit={route.endpoint.unit}
+                            unit={route.endpoint?.unit}
                             renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>

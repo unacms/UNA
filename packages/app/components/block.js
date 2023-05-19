@@ -31,7 +31,7 @@ export function BlockByName(props) {
     if (b)
         return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} {...rest}  />;
     
-    return <Text className="text-black dark:text-white">Not found: {JSON.stringify(name)}</Text>
+    //return <Text className="text-black dark:text-white"><!--Not found: {JSON.stringify(name)}--></Text>
 }
 
 
@@ -55,7 +55,10 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    return <Block key={b.id} uri={''} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
+    //let c = <Block key={b.id} uri={''} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
+
+    let c = Block({key:b.id, uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg})
+    return c;
 }
 
 export default function Block(props) {
@@ -88,6 +91,10 @@ export default function Block(props) {
     if (typeof props.showTitle !== 'undefined'){
         bIsShowTitle = props.showTitle;
     }
+
+    if (block.content.length == 0)
+        return null;
+
     return (
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? ' px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg' : ''}>

@@ -236,7 +236,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 }
 
 export function CommentsForm({form, requestUrl, module, browse, formData, handleForm}) {
-
+    if (!form)
+        return <></>
     const [commentData, setCommentData] = useState({
         parentId: 0, 
         startFrom: browse.data.start, 

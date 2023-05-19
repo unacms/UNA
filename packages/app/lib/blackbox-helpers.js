@@ -3,6 +3,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
+import { Text } from 'app/design/typography'
 
 export function fillTabs(menu, data, blocks){
     const m = menuItemsByName(menu.object, menu.items, data.url);
@@ -134,11 +135,15 @@ export function processUrl(data, blocks) {
 
 export function ItemRenderer({ route, numColumns, item, unit, module }) {
     if (item?.type === 'block') {
-      return (
-        <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
-            <BlockByName2 b={item.data} name={item.block} />
-        </View>
-      );
+        let b = BlockByName2({b:item.data, name:item.block})
+        if (!b)
+            return (<View className='h-[1px]'><Text>&nbsp;</Text></View>);
+
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+            {b}
+            </View>
+        );
     } else {
       return (
         <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
