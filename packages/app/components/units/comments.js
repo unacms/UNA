@@ -109,19 +109,21 @@ export default function UnitComments(props) {
                         { !!currentUser ? <View className='mr-2'>
                             <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                         </View> : <></> }
-                        <View className='flex-row gap-x-2'>
+                        <View className='flex-row'>
                             <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
                             {!!currentUser && 
-                            <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
-                                return {
-                                    id: aItem.id ? aItem.id : aItem.name,
-                                    name: aItem.name,
-                                    link: aItem.link,
-                                    title: aItem.title
-                                };
-                            })} onSelect={handleManageMenuSelect}>
-                                <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
-                            </DropdownMenu>
+                            <View className="ml-2">
+                                <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
+                                    return {
+                                        id: aItem.id ? aItem.id : aItem.name,
+                                        name: aItem.name,
+                                        link: aItem.link,
+                                        title: aItem.title
+                                    };
+                                })} onSelect={handleManageMenuSelect}>
+                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
+                                </DropdownMenu>
+                            </View>
                             }
                         </View>
                     </View>
