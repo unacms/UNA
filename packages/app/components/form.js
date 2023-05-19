@@ -5,6 +5,8 @@ import {getFormFieldByData} from 'app/lib/form-helpers'
 import FormComments from 'app/components/forms/comments';
 import FormFeed from 'app/components/forms/feed';
 import FormPost from 'app/components/forms/post';
+import { FeedbackHaptics } from 'app/lib/util';
+import { Platform } from 'react-native'
 
 function getFormType(name){
     const componentsMapForms = {
@@ -44,6 +46,10 @@ export default function Form(props) {
 
 
     const onSubmit = async d => {
+
+        if (Platform.OS != 'web')
+            FeedbackHaptics('Medium')
+            
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);

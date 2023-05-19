@@ -281,8 +281,7 @@ import Svg, {Path} from 'react-native-svg'
             'view-group-profile':{
                 layout: 'custom_profile',
                 blocks: {
-                    col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
-                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1, sidebar:true},
+                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
                     col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
                 }
             },

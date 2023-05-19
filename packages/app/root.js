@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user';
@@ -6,7 +6,7 @@ import PageLayout from 'app/components/page-layout';
 import { appSetting, getURI } from 'app/lib/util';
 
 export function Root (props) {
-
+    const [value, setValue] = useState([])
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     useEffect(() => {
@@ -20,12 +20,24 @@ export function Root (props) {
         }
 
     }, [props?.data?.user]);
+
+
     /* TODO FIX 404 */
+
+    let a =  <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
+                <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
+                {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
+            </Layout>
+    
+   /* let k = props?.path;
+
+    if (!value[k]){
+        let b = value;
+        b[k]=a
+        setValue(b);
+    }*/
     return (
-        <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
-            <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
-            {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
-        </Layout>
+        a
     );
 }
 

@@ -51,7 +51,8 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     const currentRoute = routes.find((item) => item.index === index);
     if (!currentRoute.inited){
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
-        let settings = appSetting('layouts', getURI(currentRoute.link))
+        let settings = appSetting('layouts', getURI(currentRoute.link));
+        console.log(currentRoute.link, settings, getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
         addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index)
 

@@ -13,6 +13,7 @@ import { useNavigation, useRouter} from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
 import { Dimensions, Keyboard } from 'react-native';
 
+
 export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
@@ -28,6 +29,7 @@ export default function PageLayout(props) {
     }
 
     const handleForm =  async (data) => {
+
         setAddData(data)
     }
     
