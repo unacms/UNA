@@ -173,6 +173,7 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_posts_item_manange': ['edit-post', 'delete-post'],
+
             'bx_persons_submenu': {
                 name:'People',
                 icon:'Users',
@@ -195,6 +196,7 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_groups_view_submenu': ['view-group-profile', 'group-fans'],
+
             'bx_channels_submenu': {
                 name:'Channels',
                 icon:'Hash',
@@ -205,6 +207,8 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_channels_view_submenu': ['view-channel-profile'],
+
+            'bx_timeline_menu_item_manage': ['item-edit', 'item-delete'],
         },
 
         layouts: {
