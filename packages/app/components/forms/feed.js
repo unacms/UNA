@@ -1,14 +1,21 @@
 import { View, Row } from 'app/design/view'
 import { Button, Modal,  } from 'app/design/controls'
 import { Text} from 'app/design/typography'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
+import  { LayoutData } from 'app/context/layout';
 
 export default function FormFeed(props) {
-
     const [showImage, setShowImage] = useState(false);
-
     const [imageSource, setImageSource] = useState([]);
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+
+    if (props.response?.id){
+        setTimeout(() => {
+            setLayoutData(props.response)
+        }, 100);
+       
+    }
 
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -22,7 +29,7 @@ export default function FormFeed(props) {
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full '>
-    <Modal onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
+    <Modal title="Add new" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}

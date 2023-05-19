@@ -9,7 +9,6 @@ export function Suggestion(startfrom) {
         char: startfrom,
         pluginKey: new PluginKey('mentSuggestionPluginKey1ion'+startfrom),
         items: async ({ query }) => {
-            console.log(startfrom, query)
             const result = await fetcher('/searchExtended.php?action=get_mention&symbol=' + (startfrom == '#' ? '%23': startfrom) + '&term=' + query); // keyword
             return result;
         },

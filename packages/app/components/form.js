@@ -32,6 +32,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
 export default function Form(props) {
 
     let data = props.data;
+    let response = props.response;
     let onFormSubmit = props.onFormSubmit;
 
     const defaultValues = {}
@@ -76,7 +77,7 @@ export default function Form(props) {
     const ElementForm = getFormType(name)
 
     if ('undefined' !== typeof ElementForm)
-        inputs = <ElementForm data={data} handleSubmit={_handleSubmit} ></ElementForm>
+        inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>
     return (
         <FormProvider {...methods}> 
             {inputs}

@@ -27,7 +27,7 @@ export default function ElementEntityAttachments(props) {
     });
     
         return (
-            <><Modal id={'file-preview'}  onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
+            <><Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
             <View className="w-full h-64 lg:h-96" >
                 {showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
                 {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}
