@@ -56,20 +56,6 @@ export default function MenuItemLink(oProps) {
                 </View>
             );
             break;
-            
-        case 'submenu':
-            const sSubmenuItems = '';
-
-            sContent = (
-                <DropdownMenuRoot>
-                    <DropdownMenuTrigger>
-                        {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
-                        <Text className="flex text-gray-600 dark:text-gray-400">{oProps.title}</Text>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContentV>{sSubmenuItems}</DropdownMenuContentV>
-                </DropdownMenuRoot>
-            );
-            break;
 
         case 'text':
         default:

@@ -8,15 +8,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
-import { 
-    DropdownMenuRoot, 
-    DropdownMenuContentH, 
-    DropdownMenuTrigger, 
-    DropdownMenuItemH, 
-    DropdownMenuItemTitle,
-    DropdownMenuItemIcon
-} from 'app/design/dropdown';
-import { Icon } from 'app/ui/atoms/icon'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
@@ -142,11 +134,11 @@ export default function ElementReactions(oProps) {
             onLoad(sResponse?.data);
     };
 
-    const handleDo = (event, oProps) => {
+    const handleDo = (event, oItem) => {
         if(event)
             event.preventDefault();
 
-        performAction('do', {value: 1, reaction: oProps.name}, (oData) => {
+        performAction('do', {value: 1, reaction: oItem.name}, (oData) => {
             setContextVars(oData);
         });
 
@@ -178,10 +170,10 @@ export default function ElementReactions(oProps) {
         });
     };
 
-    const handleGetPerformedByDvd = (event, aItem) => {
+    const handleGetPerformedByDvd = (event, oItem) => {
         event.preventDefault();
 
-        const sReaction = aItem?.name || '';
+        const sReaction = oItem?.name || '';
         if(!sReaction)
             return;
 
@@ -257,27 +249,19 @@ export default function ElementReactions(oProps) {
     }
     else {
         if(bWeb) {
-            const sItems = Object.keys(oParams.items).map(function(iKey) {
-                const aItem = oParams.items[iKey];               
-
-                return (
-                    <DropdownMenuItemH key={aItem.id ? aItem.id : aItem.name} onSelect={(event) => {handleDo(event, aItem)}}>
-                        <DropdownMenuItemIcon>
-                            <Icon className={sClassIconInternal} icon={getIconAlias(aItem.name)}></Icon>
-                        </DropdownMenuItemIcon>
-                        <DropdownMenuItemTitle>{aItem.title}</DropdownMenuItemTitle>
-                    </DropdownMenuItemH>
-                );
+            const aItems = oParams.items.map((oItem) => {
+                return {
+                    id: oItem.id ? oItem.id : oItem.name,
+                    name: oItem.name,
+                    icon: getIconAlias(oItem.name)
+                };
             });
 
             sActionButton = (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
-                    <DropdownMenuRoot>
-                        <DropdownMenuTrigger>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContentH>{sItems}</DropdownMenuContentH>
-                    </DropdownMenuRoot>
+                    <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
+                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                    </DropdownMenu>
                 </Pressable>
             );
         }

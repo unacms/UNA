@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { MotiView, AnimatePresence } from 'moti'
 
 import { fetcher } from 'app/lib/fetcher';
@@ -14,21 +13,14 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider';
-import { 
-  DropdownMenuRoot, 
-  DropdownMenuContentV, 
-  DropdownMenuTrigger, 
-  DropdownMenuItemV, 
-  DropdownMenuItemTitle,
-  DropdownMenuItemIcon
-} from 'app/design/dropdown';
-import { Icon } from 'app/ui/atoms/icon'
 
 import Redirect from 'app/ui/atoms/redirect';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import Search from 'app/ui/molecules/search';
 import Browse from 'app/components/elements/browse';
 import Notifications from 'app/components/units/notifications';
-import 'app/styles/dropdown.css';
+
 
 export default function (props) {
     const redirectdRef = useRef();
@@ -50,7 +42,7 @@ export default function (props) {
     const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title');
     const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all');
     const sNtfsSkeleton = (
-        <View className="px-1.5 pb-1.5">
+        <View key="ddp-content" className="px-1.5 pb-1.5">
            <View className="flex-row items-center mb-1">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
                 <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
@@ -94,7 +86,7 @@ export default function (props) {
             return;
 
         const sContent = (
-            <View className="px-1.5 pb-1.5">
+            <View key="ddp-content" className="px-1.5 pb-1.5">
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtNtfsTitle}</Text>
                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtNtfsViewAll} onPress={() => {setNtfsOpen(false); handleClick('/notifications-view');}} />
@@ -151,32 +143,20 @@ export default function (props) {
               <Row>
                   {!!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
-                      <DropdownMenu.Root open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}}>
-                          <DropdownMenu.Trigger className="rounded-full" aria-label={sTxtNtfsTitle}>
-                              <Button variant="text" rounded startDecorator="notifications" id="m1" />
-                          </DropdownMenu.Trigger>
-                          <DropdownMenu.Portal>
-                              <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">{ntfsContent}</DropdownMenu.Content>
-                          </DropdownMenu.Portal>
-                      </DropdownMenu.Root>
+                      <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}} title={sTxtNtfsTitle}>{[
+                        <Button key="ddp-trigger" variant="text" rounded startDecorator="notifications" id="m1" />, ntfsContent]}
+                      </DropdownPopup>
                       <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" onPress={() => {handleClick('/messenger')}} />
-                      <DropdownMenuRoot>
-                        <DropdownMenuTrigger>
-                          <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContentV>
-                          {menuItemsByName('add_menu', props.menu_add.items).map((item, index) => (
-                            !item.link.includes('javascript') && (
-                              <DropdownMenuItemV key={`menu-${index}`} onSelect={() => handleClick(item.link)}>
-                                <DropdownMenuItemIcon>
-                                    <Icon icon={item.icon}></Icon>
-                                </DropdownMenuItemIcon>
-                                <DropdownMenuItemTitle>{item.title}</DropdownMenuItemTitle>
-                              </DropdownMenuItemV>
-                            )
-                          ))}
-                        </DropdownMenuContentV>
-                      </DropdownMenuRoot>
+                      <DropdownMenu items={menuItemsByName('add_menu', props.menu_add.items).map((item, index) => {
+                            return !item.link.includes('javascript') && {
+                              id: 'menu-' + index,
+                              link: item.link,
+                              title: item.title,
+                              icon: item.icon,
+                            };
+                          })}>
+                        <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
+                      </DropdownMenu>
                       <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" onPress={() => {handleClick('/logout')}} />
                   </Row>
                   }

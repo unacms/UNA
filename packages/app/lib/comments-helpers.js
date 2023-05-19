@@ -12,13 +12,7 @@ import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
 import { useTheme } from '@react-navigation/native';
 import {  Keyboard } from 'react-native'
-import { 
-    DropdownMenuRoot, 
-    DropdownMenuContentV, 
-    DropdownMenuTrigger, 
-    DropdownMenuItemV, 
-    DropdownMenuItemTitle
-} from 'app/design/dropdown';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -196,19 +190,12 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             <Text className='flex-auto text-base font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
             <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
-                    <DropdownMenuRoot>
-                        <DropdownMenuTrigger>
-                            <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContentV>
-                            <DropdownMenuItemV key="newest" onSelect={() => handleOrder('desc')}>
-                                <DropdownMenuItemTitle>{appSetting('lang_keys', 'comment_sorting_desc')}</DropdownMenuItemTitle>
-                            </DropdownMenuItemV>
-                            <DropdownMenuItemV key="oldest" onSelect={() => handleOrder('asc')}>
-                                <DropdownMenuItemTitle>{appSetting('lang_keys', 'comment_sorting_asc')}</DropdownMenuItemTitle>
-                            </DropdownMenuItemV>
-                        </DropdownMenuContentV>
-                    </DropdownMenuRoot>
+                    <DropdownMenu items={[
+                        {id: 'newest', name: 'desc', title: appSetting('lang_keys', 'comment_sorting_desc')}, 
+                        {id: 'oldest', name: 'asc', title: appSetting('lang_keys', 'comment_sorting_asc')}
+                    ]} onSelect={(oItem) => {handleOrder(oItem.name)}}>
+                        <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
+                    </DropdownMenu>
                 </Pressable>
             </View>
         </Row>);

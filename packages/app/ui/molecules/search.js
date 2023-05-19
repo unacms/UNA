@@ -1,6 +1,4 @@
 import { useState, useRef } from 'react';
-import { useController } from 'react-hook-form';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
@@ -8,6 +6,7 @@ import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import { Button, Input } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
+import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import SearchResults from 'app/components/units/search-results';
 
 export default function ElementSearch(oProps) {
@@ -86,25 +85,20 @@ export default function ElementSearch(oProps) {
     const sTxtViewExtended = appSetting('lang_keys', 'search_popup_view_extended');
 
     return (
-        <DropdownMenu.Root open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}}>
-            <DropdownMenu.Trigger className="rounded-full" aria-label={sTxtTitle}>
-                <Button variant="text" startDecorator="search" rounded />
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-                <DropdownMenu.Content className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl ">
-                    <Redirect ref={redirectdRef} />
-                    <View className="px-1.5 pb-1.5">
-                        <View className="flex-row items-center mb-1">
-                            <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                            <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search')} />
-                        </View>
-                        <View className="flex-row">
-                            <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
-                        </View>
-                        {!!popupContent && popupContent}
-                    </View>
-                </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
+            <Button key="ddp-trigger" variant="text" startDecorator="search" rounded />, 
+            <View key="ddp-content" className="px-1.5 pb-1.5">
+                <Redirect ref={redirectdRef} />
+                <View className="flex-row items-center mb-1">
+                    <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search')} />
+                </View>
+                <View className="flex-row">
+                    <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
+                </View>
+                {!!popupContent && popupContent}
+            </View>
+        ]}
+        </DropdownPopup>
     );
  }

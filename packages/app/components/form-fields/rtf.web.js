@@ -104,16 +104,16 @@ const MenuBar = ({ editor }) => {
     }
 
     let aButtonsGroup = [];
-    aButtonsGroup.push(<Button disabled={editor.isActive('bold') ? true : false} key="TextB" startDecorator="TextB" onPress={() => editor.chain().focus().toggleBold().run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('italic') ? true : false} key="TextItalic" startDecorator="TextItalic" onPress={() => editor.chain().focus().toggleItalic().run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('strike') ? true : false} key="TextStrikethrough" startDecorator="TextStrikethrough" onPress={() => editor.chain().focus().toggleStrike().run()}/>);
-    //aButtonsGroup.push(<Button disabled={editor.isActive('code') ? true : false} key="Code" startDecorator="Code" onPress={() => editor.chain().focus().toggleCode().run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('heading', { level: 1 }) ? true : false} key="TextHOne" startDecorator="TextHOne" onPress={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('heading', { level: 2 }) ? true : false} key="TextHTwo" startDecorator="TextHTwo" onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('heading', { level: 3 }) ? true : false} key="TextHThree" startDecorator="TextHThree" onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()}/>);
-    aButtonsGroup.push(<Button disabled={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('bold') ? true : false} key="TextB" startDecorator="TextB" onPress={() => editor.chain().focus().toggleBold().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('italic') ? true : false} key="TextItalic" startDecorator="TextItalic" onPress={() => editor.chain().focus().toggleItalic().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('strike') ? true : false} key="TextStrikethrough" startDecorator="TextStrikethrough" onPress={() => editor.chain().focus().toggleStrike().run()}/>);
+    //aButtonsGroup.push(<Button pressed={editor.isActive('code') ? true : false} key="Code" startDecorator="Code" onPress={() => editor.chain().focus().toggleCode().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 1 }) ? true : false} key="TextHOne" startDecorator="TextHOne" onPress={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 2 }) ? true : false} key="TextHTwo" startDecorator="TextHTwo" onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 3 }) ? true : false} key="TextHThree" startDecorator="TextHThree" onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()}/>);
     aButtonsGroup.push(<Button    key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
     aButtonsGroup.push(<Button key="ArrowUUpRight" startDecorator="ArrowUUpRight" onPress={() => editor.chain().focus().redo().run()}/>);
     aButtonsGroup.push(<Button key="Image" startDecorator="Image" onPress={() => handleAddImage()}/>);
