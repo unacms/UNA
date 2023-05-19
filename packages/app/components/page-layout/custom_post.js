@@ -33,18 +33,32 @@ export default function PageLayout(props) {
     
     const commentsData = DataByName(props.data, props.blocks.comments);
     
-    let aItems = [
-        {id:'block_text', data: <BlockByName data={props.data} name={props.blocks.text}/>},
-        {id:'block_attachments', data: <BlockByName data={props.data} name={props.blocks.attachments}/>},
-        {id:'block_actions', data: <View className='border-b border-bordercolorcard dark:border-bordercolorcard-dark'><BlockByName data={props.data} name={props.blocks.actions}/></View>}
-    ];
+    let aItems = Object.entries(props.blocks).filter(([key, value]) => value.forList).filter(([key, value]) => value.forHeader == null).map(([key, value]) => ({
+        id: `block_${key}`,
+        data: <BlockByName data={props.data} name={value} />
+    }));
+
+    let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
+    if (actionsItemIndex !== -1) {
+        aItems[actionsItemIndex].data = (
+            <View className='border-b border-bordercolorcard dark:border-bordercolorcard-dark'>
+                {aItems[actionsItemIndex].data}
+            </View>
+        );
+    }
+
 
     const routerExpo = useRouter();
     const navigation = useNavigation();
     const { colors } = useTheme();   
 
     setTimeout(() => {
-        updateCenterHeader(null, <View style={{width:360}} className=' items-center  '><BlockByName data={props.data} name={props.blocks.author}/></View>, true, navigation, routerExpo, colors, null);
+        let aItems = Object.entries(props.blocks).filter(([key, value]) => value.forHeader).map(([key, value]) => ({
+            data: <BlockByName data={props.data} name={value} />
+        }));
+        if (aItems.length > 0){
+            updateCenterHeader(null, <View style={{width:360}} className=' items-center  '>{aItems[0].data}</View>, true, navigation, routerExpo, colors, null);
+        }
     }, 100);
 
     const handleLayout = () => {

@@ -245,19 +245,18 @@ import Svg, {Path} from 'react-native-svg'
             'view-post': {
                 layout: 'custom_post',
                 blocks: {
-                    author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false},
-                    text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false},
-                    attachments: {name: 'bx_posts:entity_attachments', showTitle: false, showBg: false},
-                    
-                    actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false},
+                    author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true},
+                    text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false, forList: true},
+                    attachments: {name: 'bx_posts:entity_attachments', showTitle: false, showBg: false, forList: true},
+                    actions: {name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false, forList: true},
                     comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
                 },
             },
             'item': {
-                layout: 'custom_feed_item',
+                layout: 'custom_post',
                 blocks: {
-                    author: {name: 'bx_timeline:get_block_item_info', showTitle: false, showBg: false},
-                    text: {name: 'bx_timeline:get_block_item', showTitle: false, showBg: false},
+                    author: {name: 'bx_timeline:get_block_item_info', showTitle: false, showBg: false, forList: true, forHeader: true},
+                    text: {name: 'bx_timeline:get_block_item', showTitle: false, showBg: false, forList: true},
                     comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false},
                 },
             },
@@ -328,8 +327,6 @@ import Svg, {Path} from 'react-native-svg'
                     col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1},
                     col2:{name: 'bx_persons:entity_info', showTitle: true, showBg: true, sidebar: true},
                     col3:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, sidebar: true},
-                    
-
                 }
             },
             'persons-profile-friends':{
