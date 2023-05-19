@@ -138,6 +138,9 @@ export function getURI(url) {
 }
 
 export function menuItemsByName(name, items, url = '') {
+    if (!items)
+        return [];
+        
     const menuSettings = appSetting('menu_items', name)
     if (menuSettings){
         if (menuSettings.items){

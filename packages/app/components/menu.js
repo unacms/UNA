@@ -55,6 +55,9 @@ export default function ElementMenu(oProps) {
     //--- show menu's content only
     const bShowContent = oProps?.params && oProps.params?.showContent === 'true';   
 
+    if (!oProps?.items?.length)
+        return [];
+
     const sItems = Object.keys(oProps.items).map(function(iKey) {
         const aItem = oProps.items[iKey];
 

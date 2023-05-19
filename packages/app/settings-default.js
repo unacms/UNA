@@ -253,6 +253,14 @@ import Svg, {Path} from 'react-native-svg'
                     comments: {name: 'bx_posts:entity_comments', showTitle: false, showBg: false},
                 },
             },
+            'item': {
+                layout: 'custom_feed_item',
+                blocks: {
+                    author: {name: 'bx_timeline:get_block_item_info', showTitle: false, showBg: false},
+                    text: {name: 'bx_timeline:get_block_item', showTitle: false, showBg: false},
+                    comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false},
+                },
+            },
             //############ GROUPS PAGES ############
             'groups-home':{
                 layout: 'custom_blackbox',

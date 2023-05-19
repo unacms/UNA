@@ -1,6 +1,7 @@
 import PageLayoutDefault from './page-layout/default';
 
 import PageCustomPost from './page-layout/custom_post';
+import PageCustomFeedItem from './page-layout/custom_feed_item';
 import PageCustomMessenger from './page-layout/custom_messenger';
 import PageCustomBlackBox from './page-layout/custom_blackbox';
 import PageCustomProfile from './page-layout/custom_profile';
@@ -20,6 +21,7 @@ const componentsMap = {
     'default': PageLayoutDefault,
 
     'custom_post': PageCustomPost,
+    'custom_feed_item': PageCustomFeedItem,
     'custom_blackbox': PageCustomBlackBox,
     'custom_messenger': PageCustomMessenger,
     'custom_profile': PageCustomProfile,
