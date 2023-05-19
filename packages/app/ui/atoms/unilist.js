@@ -9,11 +9,16 @@ import { useContext } from 'react';
 
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
-    console.log('------------------', props)
     const { layoutData, setLayoutData } = useContext(LayoutData);
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
     if (props.unit == 'feed' && layoutData?.id){
-        data = [layoutData, ...data]
+        let insertIndex = data.findIndex(item => item.type !== 'block');
+        if (insertIndex === -1) {
+            data = [layoutData, ...data]
+        }
+        else{
+            data.splice(insertIndex, 0, layoutData);
+        }
     }
     if (isWeb){
 
