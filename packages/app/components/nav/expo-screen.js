@@ -7,7 +7,10 @@ import { appSetting } from 'app/lib/util'
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
+import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
+import Profile from 'app/ui/molecules/profile';
+
 
 export function Screen(params) {
     const { currentUser } = useCurrentUser();
@@ -57,7 +60,15 @@ export function Screen(params) {
                     }*/
                     let settings = appSetting('layouts', data.props.data.uri)
                     updateRightHeader(settings?.header, navigation);
-                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, settings?.icon);
+                    let isProfile = appSetting('layout', 'show_user_icon');
+                    let profile=<></>
+                    if (isProfile && currentUser ){
+                        let dUser = currentUser;
+                        dUser.url_avatar = dUser.avatar
+                        dUser.url = '/dashboard'
+                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="base" /></View>
+                    }
+                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, settings?.icon, profile);
                 }
             }
       };

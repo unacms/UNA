@@ -132,7 +132,14 @@ export function genRnd(length) {
 }
 
 export function getURI(url) {
-    let u = url.split('/');
+    
+    let questionMarkIndex = url.indexOf("?");
+
+    if (questionMarkIndex !== -1) {
+      url = url.substring(0, questionMarkIndex);
+    }
+
+    let u = url.replace('page','').split('/');
     u = u.filter(Boolean);
     return u[0]
 }

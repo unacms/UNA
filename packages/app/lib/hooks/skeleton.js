@@ -24,21 +24,15 @@ export default function (props) {
     
     var skeletons = {
     '': (
-      <View className={maxWidth + ' mx-auto w-full '}>
-        <View className=" p-4 @xl/cell:mx-4 @xl/cell:mt-4 flex flex-col gap-6">
-          <View className="animate-pulse flex gap-3">
-            
-            <View className="flex-1 space-y-2 py-1">
-              <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
-              <View className="h-3 w-1/3 bg-gray-600/20 rounded"></View>
-            </View>
-          </View>
-          <View className="flex-1 animate-pulse space-y-4 py-1">
-            <View className="h-6 w-2/3 bg-gray-600/20 rounded"></View>
-            <View className="space-y-2">
-              <View className="h-4 bg-gray-600/20 rounded"></View>
-              <View className="h-4 bg-gray-600/20 rounded"></View>
-              <View className="h-4 bg-gray-600/20 rounded"></View>
+      <View className={maxWidth + ' mx-auto w-full animate-pulse  '}>
+        <View className=" rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark m-4  p-4 flex flex-col gap-6">
+          
+          <View className="flex-col  gap-y-4 ">
+            <View className="h-6 w-2/3 bg-gray-500/20 rounded-lg"></View>
+            <View className="flex-col gap-y-2">
+              <View className="h-4 bg-neutral-500/10 rounded-lg"></View>
+              <View className="h-4 bg-neutral-500/10 rounded-lg"></View>
+              <View className="h-4 bg-neutral-500/10 rounded-lg"></View>
             </View>
           </View>
         </View>
@@ -152,7 +146,7 @@ export default function (props) {
     ),
     'view-post': (
          <View className="flex w-full justify-center sm:p-4 flex-row gap-4">
-          <View className="max-w-5xl  w-full bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse  sm:m-0">
+          <View className="max-w-5xl  w-full bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg p-4 flex flex-col  animate-pulse  sm:m-0">
                 <View className="flex-row gap-x-2 mb-2">
                   
                   <View className="relative flex-row">
@@ -184,6 +178,157 @@ export default function (props) {
               
               </View>
             </View>
+    ),
+    'item': (
+      <View className="flex w-full justify-center sm:p-4 flex-row gap-4">
+       <View className="max-w-5xl  w-full bg-neocard dark:bg-neocard-dark border-y sm:border border-neoborder dark:border-neoborder-dark sm:rounded-lg p-4 flex flex-col  animate-pulse  sm:m-0">
+             <View className="flex-row gap-x-2 mb-2">
+               
+               <View className="relative flex-row">
+                         <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
+                         <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
+                         <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
+                       
+               </View>
+               </View>
+               <View className="flex-col flex-auto my-auto">
+                 <View className="w-full flex-row justify-between"> 
+                   <View className="h-4 my-1 w-1/3 bg-gray-500/20 rounded-full"></View>
+                   <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
+                 </View>
+                 <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
+                 
+                 
+                 
+               </View>
+               
+             </View>
+             <View className="h-4 my-1 w-full bg-gray-500/30 rounded-full"></View>
+             <View className="h-4 my-1 w-3/4 bg-gray-500/30 rounded-full"></View>
+             <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+             <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+             <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+ 
+             <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
+           
+           </View>
+         </View>
+    ),
+    'posts-home': (
+      <View className="flex mx-auto w-full justify-center sm:p-4 flex-col animate-pulse max-w-7xl">
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+      </View>
+    ),
+    'persons-home': (
+      <View className="flex mx-auto w-full justify-center sm:p-4 flex-col animate-pulse max-w-7xl">
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+        <View className="flex-row w-full ">
+              <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+              <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+              </View> 
+              </View>
+        </View>
+      </View>
     ),
     'view-group': (
       <View>

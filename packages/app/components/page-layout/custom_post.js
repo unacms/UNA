@@ -13,6 +13,7 @@ import { useNavigation, useRouter} from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
 import { Dimensions, Keyboard } from 'react-native';
 
+
 export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
@@ -28,6 +29,7 @@ export default function PageLayout(props) {
     }
 
     const handleForm =  async (data) => {
+
         setAddData(data)
     }
     
@@ -56,7 +58,7 @@ export default function PageLayout(props) {
             data: <BlockByName data={props.data} name={value} />
         }));
         if (aItems.length > 0){
-            updateCenterHeader(null, <View style={{width:360}} className=' items-center  '>{aItems[0].data}</View>, true, navigation, routerExpo, colors, null);
+            updateCenterHeader(null, <View style={{width:Dimensions.get('window').width-65}} className=' items-center '>{aItems[0].data}</View>, true, navigation, routerExpo, colors, null);
         }
     }, 100);
 

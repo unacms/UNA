@@ -36,14 +36,15 @@ export function updateRightHeader(items, navigation) {
     }
 };
 
-export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon) {
+export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent) {
     let type = typeof header;
     const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={routerExpo.back} >
     <Icon icon="left" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
     if (type == 'string'){
         header = (
-            <Row className='w-auto w-full   items-center '>
+            <Row className='w-auto w-full items-center '>
                 {backButton}
+                { leftComponent }
                 { icon ? <Icon icon={icon} width={24} height={24} color={colors.barsColor} /> : <></>}
                 { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>{header}</Text>}
             </Row>

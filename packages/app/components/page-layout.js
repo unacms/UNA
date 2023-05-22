@@ -2,6 +2,7 @@ import PageLayoutDefault from './page-layout/default';
 
 import PageCustomPost from './page-layout/custom_post';
 import PageCustomMessenger from './page-layout/custom_messenger';
+import PageCustomDashboard from './page-layout/custom_dashboard';
 import PageCustomBlackBox from './page-layout/custom_blackbox';
 import PageCustomProfile from './page-layout/custom_profile';
 import PageCustomHome from './page-layout/custom_home';
@@ -22,6 +23,7 @@ const componentsMap = {
     'custom_post': PageCustomPost,
     'custom_blackbox': PageCustomBlackBox,
     'custom_messenger': PageCustomMessenger,
+    'custom_dashboard': PageCustomDashboard,
     'custom_profile': PageCustomProfile,
     'custom_home': PageCustomHome,
     'custom_notif': PageCustomNotif,

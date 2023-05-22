@@ -102,6 +102,7 @@ import Svg, {Path} from 'react-native-svg'
             max_width: 'max-w-7xl',
             cell_gap: 4,
             cell_style: '',
+            show_user_icon:true,
         },
         comments:{
             show_header: false
@@ -174,7 +175,7 @@ import Svg, {Path} from 'react-native-svg'
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
-            'bx_posts_item_manange': ['edit-post', 'delete-post'],
+            'bx_posts_view_actions': ['edit-post', 'delete-post'],
 
             'bx_persons_submenu': {
                 name:'People',
@@ -219,6 +220,12 @@ import Svg, {Path} from 'react-native-svg'
                 blocks: {
                     inbox: {name: 'bx_messenger:get_block_inbox'},
                     lot: {name: 'bx_messenger:get_block_lot'},
+                },
+            },
+            'dashboard':{
+                layout: 'custom_dashboard',
+                blocks: {
+                    
                 },
             },
             'home':{
@@ -283,8 +290,7 @@ import Svg, {Path} from 'react-native-svg'
             'view-group-profile':{
                 layout: 'custom_profile',
                 blocks: {
-                    col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
-                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1, sidebar:true},
+                    col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
                     col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
                 }
             },
@@ -506,9 +512,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab5',
-                    title: 'Logout',
-                    url: '/logout',
-                    icon: 'app-usermenu',
+                    title: 'Menu',
+                    url: '/dashboard',
+                    icon: 'UserList',
                 },
             ],
             bottom_tabs_non_logged: [

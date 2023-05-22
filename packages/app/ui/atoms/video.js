@@ -13,7 +13,9 @@ export default function ElementVideo(props) {
         controls={true}
         ref={(ref) => {
           this.player = ref
-        }}                                      // Store reference
+        }}    
+        paused={true}
+        autoplay={false}                       // Store reference
         onBuffer={this.onBuffer}                // Callback when remote video is buffering
         onError={this.videoError}    
         source={{uri:props.src}}  
