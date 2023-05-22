@@ -67,7 +67,8 @@ import Svg, {Path} from 'react-native-svg'
             <Path d="M60.4569 12.0101C60.4569 10.9904 60.6567 10.0243 61.0563 9.11195C61.4559 8.19958 62.0071 7.39455 62.7098 6.69686C63.4264 5.98574 64.2531 5.42893 65.1901 5.02641C66.1271 4.6239 67.133 4.42264 68.2078 4.42264C69.2688 4.42264 70.2678 4.6239 71.2048 5.02641C72.1418 5.42893 72.9685 5.98574 73.6851 6.69686C74.4154 7.39455 74.9803 8.19958 75.3799 9.11195C75.7933 10.0243 76 10.9904 76 12.0101C76 13.0566 75.7933 14.0361 75.3799 14.9484C74.9803 15.8608 74.4154 16.6658 73.6851 17.3635C72.9685 18.0478 72.1418 18.5845 71.2048 18.9736C70.2678 19.3627 69.2688 19.5572 68.2078 19.5572C67.133 19.5572 66.1271 19.3627 65.1901 18.9736C64.2531 18.5845 63.4264 18.0478 62.7098 17.3635C62.0071 16.6658 61.4559 15.8608 61.0563 14.9484C60.6567 14.0361 60.4569 13.0566 60.4569 12.0101ZM63.5573 12.0101C63.5573 12.8822 63.7639 13.6805 64.1773 14.405C64.6045 15.1161 65.1763 15.6864 65.8929 16.1157C66.6094 16.5317 67.4155 16.7396 68.3111 16.7396C69.1792 16.7396 69.9578 16.5317 70.6467 16.1157C71.3495 15.6864 71.9006 15.1161 72.3002 14.405C72.6998 13.6805 72.8996 12.8822 72.8996 12.0101C72.8996 11.1111 72.693 10.3061 72.2796 9.59497C71.8662 8.87044 71.3081 8.30021 70.6054 7.88428C69.9026 7.45493 69.1103 7.24025 68.2285 7.24025C67.3466 7.24025 66.5543 7.45493 65.8515 7.88428C65.1488 8.30021 64.5907 8.87044 64.1773 9.59497C63.7639 10.3061 63.5573 11.1111 63.5573 12.0101Z" fill="#374151"/>
         </Svg>
     )
-    
+  
+
     export const settingsDefault = {
         urls: {
             embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
@@ -214,20 +215,20 @@ import Svg, {Path} from 'react-native-svg'
 
         layouts: {
             'messenger':{
-                layout: 'custom_messenger',
+                layout: 'messenger',
                 blocks: {
                     inbox: {name: 'bx_messenger:get_block_inbox'},
                     lot: {name: 'bx_messenger:get_block_lot'},
                 },
             },
             'dashboard':{
-                layout: 'custom_dashboard',
+                layout: 'dashboard',
                 blocks: {
                     
                 },
             },
             'home':{
-                layout: 'custom_home',
+                layout: 'home',
                 blocks: {
                     menu: {name: 'system:profile_menu', showTitle: false, showBg: false},
                     feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false},
@@ -241,20 +242,20 @@ import Svg, {Path} from 'react-native-svg'
             },
             //############ POSTS PAGES ############
             'posts-home':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_posts:browse_public', showTitle: false, showBg: false},
                 },
                 icon:'File',
             },
             'posts-popular':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_posts:browse_popular', showTitle: false, showBg: false},
                 },
             },
             'view-post': {
-                layout: 'custom_post',
+                layout: 'post',
                 blocks: {
                     author: {name: 'bx_posts:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true},
                     text: {name: 'bx_posts:entity_text_block', showTitle: false, showBg: false, forList: true},
@@ -264,7 +265,7 @@ import Svg, {Path} from 'react-native-svg'
                 },
             },
             'item': {
-                layout: 'custom_post',
+                layout: 'post',
                 blocks: {
                     author: {name: 'bx_timeline:get_block_item_info', showTitle: false, showBg: false, forList: true, forHeader: true},
                     text: {name: 'bx_timeline:get_block_item', showTitle: false, showBg: false, forList: true},
@@ -273,66 +274,66 @@ import Svg, {Path} from 'react-native-svg'
             },
             //############ GROUPS PAGES ############
             'groups-home':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false},
                 },
                 icon:'UsersThree'
             },
             'groups-joined':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_groups:browse_joined_entries', showTitle: false, showBg: false},
                 }
             },
             'view-group-profile':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col1:{name: 'bx_groups:entity_info', showTitle: false, showBg: false, perLine:1},
                     col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'group-fans':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:1}
                 }
             },
             //############ CHANNELS PAGES ############
             'channels-home':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false},
                 }
             },
             'channels-top':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false},
                 }
             },
             'view-channel-profile':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col2:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1}
                 }
             },
             //############ PERSONS PAGES ############
             'persons-home':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false},
                 },
                 icon:'Users'
             },
             'persons-active':{
-                layout: 'custom_blackbox',
+                layout: 'blackbox',
                 blocks: {
                     browse:{name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
                 }
             },
             'view-persons-profile':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
                     col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1},
@@ -341,20 +342,20 @@ import Svg, {Path} from 'react-native-svg'
                 }
             },
             'persons-profile-friends':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col1:{name: 'system:connections_table', showTitle: false, showBg: false, perLine:1}
                 }
             },
             'persons-profile-info':{
-                layout: 'custom_profile',
+                layout: 'profile',
                 blocks: {
                     col0:{name: 'bx_persons:entity_text_block', showTitle: false, showBg: false},
                     col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
                 }
             },
             'notifications-view':{
-                layout: 'custom_notif',
+                layout: 'notif',
                 blocks: {
                     browse:{name: 'bx_notifications:get_block_view', showTitle: false, showBg: false, perLine:1},
                 },

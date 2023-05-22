@@ -1,15 +1,6 @@
 
-import Link from './menu-items/link';
-import Button from './menu-items/button';
-import Element from './menu-items/element';
-
 import { View } from 'app/design/view'
-
-const oComponentsMap = {
-    link: Link,
-    button: Button,
-    element: Element
-};
+import {componentsMap} from './menu-items/_map';
 
 export default function ElementMenu(oProps) {
 
@@ -71,10 +62,10 @@ export default function ElementMenu(oProps) {
             return;
 
         const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
-        if(!oComponentsMap[sDisplayTypeItem])
+        if(!componentsMap[sDisplayTypeItem])
             return;
 
-        const ItemType = oComponentsMap[sDisplayTypeItem];
+        const ItemType = componentsMap[sDisplayTypeItem];
         return <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center ios:mb-2 android:mb-2' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}><ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} /></View>;
     });
 

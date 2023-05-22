@@ -22,7 +22,6 @@ export default function Layout(props) {
         
         const handleScroll = () => {
             let scrollTop = window.scrollY;
-            console.log(lastScrollTop, '---', scrollTop)
             if ((lastScrollTop <= scrollTop && lastScrollTop > 0) && window.innerWidth < 1024)
                 scroll.value = 0;
             else
