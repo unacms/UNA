@@ -6,7 +6,7 @@ const ElementRedirect = (props, ref) =>  {
 
     useImperativeHandle(ref, () => ({
         redirect: (sUrl) => {
-            router.push(sUrl);
+            router.push('./' + sUrl);
         }
     }));
 }
