@@ -1,4 +1,4 @@
-import { View} from 'app/design/view'
+import { View } from 'app/design/view'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
@@ -7,7 +7,7 @@ import { Button, ButtonsGroup } from 'app/design/controls';
 import { uploadImage } from '../../lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Document from '@tiptap/extension-document'
 import Image from '@tiptap/extension-image'
 import Text from '@tiptap/extension-text'
@@ -144,10 +144,7 @@ var MentionEx = Mention.extend({
         return [
             'a',
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
-            this.options.renderLabel({
-                options: this.options,
-                node,
-            }),
+            node.attrs.id.symbol + ' ' + node.attrs.id.label,
         ]
     },
 })
@@ -182,9 +179,7 @@ export default function FormFieldFtf(props) {
                     class: 'bx-mention-link',
                 },
                 suggestion: Suggestion('@'),
-                renderLabel({ options, node }) {
-                    return options.suggestion.char + ' ' + node.attrs.id.label
-                },
+
                 
             }),
             MentionEx.configure({
@@ -192,12 +187,9 @@ export default function FormFieldFtf(props) {
                     class: 'bx-mention-link',
                 },
                 suggestion: Suggestion('#'),
-                renderLabel({ options, node }) {
-                    return options.suggestion.char + ' ' + node.attrs.id.label
-                },
+                
                 
             }),
-            
             
             StarterKit.configure({
                 bulletList: {
@@ -215,15 +207,25 @@ export default function FormFieldFtf(props) {
             handleChange(editor.getHTML());
         },
     })
-        
+
+    useEffect(() => {
+        if (editor)
+        editor.commands.setContent(field.value)
+
+    }, [field.value]);
+
+    
+    const isFullHtml = props.html == 2;
+
+
     return (
         <View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
         <EditorContent 
                 editor={editor} 
-                className='p-4' 
+                className={isFullHtml? 'p-4' :'p-2'}
             />
-            <View className='m-2'>
-                <MenuBar editor={editor} />
+            <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
+            {isFullHtml  && <MenuBar editor={editor} /> }
             </View>
         </View>
     )

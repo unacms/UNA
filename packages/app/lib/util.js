@@ -10,7 +10,44 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function linkify(text, attrs = '', htmlSpecialChars = false) {
+    const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
   
+  const anchorRegex = /<a [^>]*>[^<]*<\/a>/g;
+  
+  const anchors = [...text.matchAll(anchorRegex)];
+  
+  if (htmlSpecialChars)
+    text = text.replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
+
+  let matches = Array.from(text.matchAll(urlRegex)).reverse();
+
+  matches.forEach(match => {
+    let url = match[0];
+    let attrsLocal = attrs;
+
+    let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
+    if(withinAnchor) return;
+    
+    if (!/^https?:\/\//.test(url)) {
+      url = 'http://' + url;
+    }
+
+    text = text.slice(0, match.index) + '<a ' + attrsLocal + ' href="' + url + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
+  });
+
+  // email pattern
+  const mailPattern = /([A-z0-9._-]+@[A-z0-9_-]+\.[A-z0-9_.-]+)/g;
+  matches = Array.from(text.matchAll(mailPattern)).reverse();
+  matches.forEach(match => {
+    let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
+    if(withinAnchor) return;
+    text = text.slice(0, match.index) + '<a href="mailto:' + match[0] + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
+  });
+
+  return text;
+  }
+
 export function mergeDeep(target, ...sources) {
     if (!sources.length) return target;
     const source = sources.shift();

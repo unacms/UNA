@@ -43,7 +43,7 @@ export default function FormFieldText(props) {
             accessibilityLabel={accessibility}
         />
 
-    if (props.html == 2){
+    if (props.html == 2 || props.html == 3){
         input =  <FormFieldFtf  {...props} />;
     }    
 

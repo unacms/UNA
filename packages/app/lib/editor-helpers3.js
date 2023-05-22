@@ -58,7 +58,7 @@ export default forwardRef((props, ref) => {
                 {item.label}
             </button>
             ))
-            : <div className="item">No result</div>
+            : <></>
         }
         </div>
     )
