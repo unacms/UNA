@@ -130,6 +130,8 @@ import Svg, {Path} from 'react-native-svg'
                 show_counter_style: 'compound',
                 show_counter_as_button: false,
                 haptics_type: 'Medium',
+                icon_type_web: 'svg', //'svg' or 'emoji'
+                icon_type_native: 'emoji', //'emoji' only
                 items: [
                     {id: 1, name: 'like'},
                     {id: 2, name: 'love'},
