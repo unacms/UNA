@@ -510,9 +510,9 @@ import Svg, {Path} from 'react-native-svg'
                 },
                 {
                     key:'/tab5',
-                    title: 'Dash',
+                    title: 'Menu',
                     url: '/dashboard',
-                    icon: 'app-usermenu',
+                    icon: 'UserList',
                 },
             ],
             bottom_tabs_non_logged: [

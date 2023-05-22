@@ -8,19 +8,61 @@ import Link from 'app/ui/atoms/link';
 export default function PageLayout(props) {
     return (<View className="w-full sm:p-5 max-w-5xl mx-auto ">
         <View className='flex-col gap-4 py-4 px-8'>
-            <View className='flex-row w-full gap-4 justify-between items-center'>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>Friends </View>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>Groups </View>
+            <View className='flex-row w-full  justify-between items-center'>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                        
+                        
+                        <Button title="Friends" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+                    </View>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                    <Button title="Groups" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+
+
+                    </View>
             </View>
-            <View className='flex-row w-full gap-4 justify-between items-center'>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>Events </View>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>Posts </View>
+
+            <View className='flex-row w-full  justify-between items-center'>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                        
+                        
+                        <Button title="Posts" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+                    </View>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                    <Button title="People" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+
+
+                    </View>
             </View>
-            <View className='flex-row w-full gap-4 justify-between items-center'>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>Messages </View>
-        <View className='flex-auto bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-8  font-semibold text-neutral-800 dark:text-neutral-200'>People </View>
+            <View className='flex-row w-full  justify-between items-center'>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                        
+                        
+                        <Button title="Events" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+                    </View>
+                    <View className='w-1/2   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                    <Button title="Discussions" align="start" size='xl' fullWidth  startDecorator="Users" iconend />
+                        
+
+
+                    </View>
             </View>
-        <Link href="/logout" ><Button title="Logout" fullWidth variant ='primary' /></Link>
+            <View className=' w-full  '>
+                    <View className='w-full   px-2  font-semibold text-neutral-800 dark:text-neutral-200'>
+                        
+                    <Link href="/logout" ><Button title="Logout" size='lg' fullWidth variant ='outline' /></Link>
+
+                        
+                    </View>
+              
+            </View>
+
+
+
         </View>
     </View>)
 }
