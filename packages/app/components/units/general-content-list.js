@@ -219,7 +219,7 @@ export default function Unit(props) {
                         {!data.image &&<>
                         
                             
-                                    <View className="relative bg-primary-100 rounded aspect-video  overflow-hidden w-full ">
+                                    <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
                                     </View> 
                                     
                                     
