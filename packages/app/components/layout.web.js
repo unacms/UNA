@@ -22,7 +22,8 @@ export default function Layout(props) {
         
         const handleScroll = () => {
             let scrollTop = window.scrollY;
-            if (lastScrollTop < scrollTop && window.innerWidth < 1024)
+            console.log(lastScrollTop, '---', scrollTop)
+            if ((lastScrollTop <= scrollTop && lastScrollTop > 0) && window.innerWidth < 1024)
                 scroll.value = 0;
             else
                 scroll.value = 1;
@@ -37,12 +38,11 @@ export default function Layout(props) {
       
         const d=200;
         const animatedStyleA = useAnimatedStyle(() => {
-        const opacityValue = withTiming(scroll.value, { duration: d });
         
         return {
-            zIndex: withTiming(100 *scroll.value, { duration: d }),
-            height: withTiming(64 * scroll.value, { duration: d }),
-            opacity: withTiming(100 * scroll.value, { duration: d })
+            zIndex: withTiming(100 * scroll.value, { duration: 500 }),
+            //height: withTiming(64 * scroll.value, { duration: 1000 }),
+            opacity: withTiming(100 * scroll.value, { duration: 500 })
         };
     });
 

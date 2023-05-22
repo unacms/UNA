@@ -90,7 +90,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 <TabFlashList
                     index={route.index}
                     data={route.data}
-                    unit={route?.endpoint?.unit}
+                    unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route?.endpoint?.finished === false) ? (

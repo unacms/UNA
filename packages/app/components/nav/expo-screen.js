@@ -66,7 +66,7 @@ export function Screen(params) {
                         let dUser = currentUser;
                         dUser.url_avatar = dUser.avatar
                         dUser.url = '/dashboard'
-                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="base" /></View>
+                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
                     }
                     updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, settings?.icon, profile);
                 }
