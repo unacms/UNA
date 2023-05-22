@@ -36,31 +36,43 @@ export default function ElementReactions(oProps) {
         return [].concat(aName).join('-');
     };
 
+    const getIconType = (sMode) => {
+        const aIconType = {
+            web: !!oParams?.icon_type_web ? oParams.icon_type_web : 'svg', 
+            native: !!oParams?.icon_type_native ? oParams.icon_type_native : 'emoji'
+        }
+
+        return aIconType[sMode];
+    }
+
     const getIconAlias = (sName) => {
         const sKey = bWeb ? 'web' : 'native';
+        const sType = oParams['icon_type_' + sKey];
         const oAliases = {
             web: {
-                default: 'Smiley',
-                like: 'ThumbsUp',
-                love: 'Heart',
-                joy: 'Smiley',
-                surprise: 'SmileyXEyes',
-                sadness: 'SmileySad',
-                anger: 'SmileyAngry',
+                default: {svg: 'Smiley', emoji: '🙂'},
+                like: {svg: 'ThumbsUp', emoji: '👍'},
+                love: {svg: 'Heart', emoji: '🥰'},
+                joy: {svg: 'Smiley', emoji: '😂'},
+                surprise: {svg: 'SmileyXEyes', emoji: '😮'},
+                sadness: {svg: 'SmileySad', emoji: '😔'},
+                anger: {svg: 'SmileyAngry', emoji: '😠'},
             },
             native: {
-                default: '👍',
-                like: '👍',
-                love: '🥰',
-                joy: '😂',
-                surprise: '😮',
-                sadness: '😔',
-                anger: '😠',
+                default: {svg: '', emoji: '🙂'},
+                like: {svg: '', emoji: '👍'},
+                love: {svg: '', emoji: '🥰'},
+                joy: {svg: '', emoji: '😂'},
+                surprise: {svg: '', emoji: '😮'},
+                sadness: {svg: '', emoji: '😔'},
+                anger: {svg: '', emoji: '😠'},
             }
         };
 
-        return oAliases[sKey][sName];
+        return oAliases[sKey][sName][sType];
     };
+
+    const bIconSvg = getIconType(bWeb ? 'web' : 'native') == 'svg';
 
     const { actionsData, setActionsData } = useContext(ActionsData);
     const [ actionsDataState, actisetActionsDataState ] = useState({});
@@ -231,41 +243,53 @@ export default function ElementReactions(oProps) {
     let sActionButton = undefined;
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionVoted) {
-        if(!bWeb) {
-            let sActionTitle = getIconAlias(sReaction);
+        const sActionIcon = getIconAlias(sReaction);
+        if(bWeb) {
+            let sActionTitle = '';
+            if(!bIconSvg)
+                sActionTitle = sActionIcon;
             if(bShowActionLabel)
-                sActionTitle = sActionTitle + ' ' + sTitle;
+                sActionTitle += (sActionTitle.length > 0 ? ' ' : '') + sTitle;
 
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} title={sActionTitle} onPress={handleUndo} />
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={bIconSvg ? sActionIcon : false} title={sActionTitle} onPress={handleUndo} />
             );
         }
         else
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+                <ButtonAction key="action" size={sDisplaySize} title={sActionIcon + (bShowActionLabel ? ' ' + sTitle : '')} onPress={handleUndo} />
             );
-            
     }
     else {
         if(bWeb) {
             const aItems = oParams.items.map((oItem) => {
+                const sItemIcon = getIconAlias(oItem.name);
+
                 return {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
-                    icon: getIconAlias(oItem.name)
+                    title: !bIconSvg ? sItemIcon : '',
+                    icon: bIconSvg ? sItemIcon : false
                 };
             });
+
+            const sActionIcon = getIconAlias(sReaction);
+
+            let sActionTitle = '';
+            if(!bIconSvg)
+                sActionTitle = sActionIcon;
+            if(bShowActionLabel)
+                sActionTitle += (sActionTitle.length > 0 ? ' ' : '') + sTitle;
 
             sActionButton = (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {}} disabled={bShowActionDisabled} />
+                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={bIconSvg ? sActionIcon : false} title={sActionTitle} onPress={() => {}} disabled={bShowActionDisabled} />
                     </DropdownMenu>
                 </Pressable>
             );
         }
         else {
-            
             const oReactionStyles = StyleSheet.create({
                 cardStyle: {
                     backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'screenBackground'),
@@ -320,20 +344,25 @@ export default function ElementReactions(oProps) {
             if(!iCount)
                 return;
 
-            let sUsers = undefined;
+            let aUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
-                sUsers = performedBy[aItem.name].map(aUser => {
+                aUsers = performedBy[aItem.name].map(aUser => {
                     return (
                         <View key={aUser.id}><Profile {...aUser} /></View>
                     );
                 });
             }
 
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
+            if(aUsers && aUsers.length != 0)
+                aUsers = (
+                    <View className="gap-2">{aUsers}</View>
+                );
+            else
+                aUsers = getSkeleton();
 
-            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
-            aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{sUsers}</Modal>)
+            const sItemIcon = getIconAlias(aItem.name);
+            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={bIconSvg ? sItemIcon : false} title={(!bIconSvg ? sItemIcon + ' ' : '' ) + iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
+            aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
         });
 
         return [aButtons, aPopups];
@@ -381,9 +410,10 @@ export default function ElementReactions(oProps) {
             if(aItem.name == sSelected)
                 sClass += ' border-b-2 border-primary dark:border-primary-dark ';
 
+            const sItemIcon = getIconAlias(aItem.name);
             return (
                 <View key={aItem.name} className={sClass}>
-                    <Button size="sm" variant="text" title={!bWeb ? getIconAlias(aItem.name) : ''} startDecorator={bWeb ? getIconAlias(aItem.name) : false} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
+                    <Button size="sm" variant="text" title={!bIconSvg ? sItemIcon : ''} startDecorator={bIconSvg ? sItemIcon : false} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
                 </View>
             );
         });
@@ -396,35 +426,35 @@ export default function ElementReactions(oProps) {
             if(!sSelected && aItem.count != 0)
                 sSelected = aItem.name;
 
-            let sUsers = undefined;
+            let aUsers = undefined;
             if(performedBy && performedBy[aItem.name]) {
-                sUsers = performedBy[aItem.name].map(aUser => {
+                aUsers = performedBy[aItem.name].map(aUser => {
                     return (
                         <View key={aUser.id}><Profile {...aUser} /></View>
                     );
                 });
             }
 
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
+            if(!aUsers || aUsers.length == 0)
+                aUsers = getSkeleton();
 
             let sClass = '';
             if(aItem.name != sSelected) 
                 sClass = 'hidden ';
-            sClass += ' gap-2 overflow-y-auto text-gray-700 dark:text-gray-200';
+            sClass += 'gap-2 overflow-y-auto text-gray-700 dark:text-gray-200';
 
             return (
-                <View key={aItem.name} className={sClass}>{sUsers}</View>
+                <View key={aItem.name} className={sClass}>{aUsers}</View>
             );
         });
 
-        if(!bWeb && iTotal > 0) {
+        if(!bIconSvg && iTotal > 0) {
             iTotal += ' ';
             aCounter.forEach((item) => {if(item) iTotal += item});
         }
 
         return [[
-                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={bWeb ? aCounter : false} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={bIconSvg ? aCounter : false} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row  border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
