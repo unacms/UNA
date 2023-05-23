@@ -8,7 +8,7 @@ export default function ElementEntityActions(props) {
         <View className="">
             <View className="flex flex-col w-full">
                 <View className="flex p-4 flex-row    ">
-                    <Menu {...props.data} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+                    <Menu {...props.data} displayType="element" showMatched={true} autoFilter={false} params={{show_action: true, show_counter: true, show_combined: true}} />
                 </View>
             </View>
         </View>
