@@ -29,9 +29,9 @@ export default function DropdownMenu(oProps) {
 
     const aDmItems = oProps.items.map((oItem) => {
         return (
-            <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)}>
+            <DmItem key={oItem.id} className={oItem?.class_item} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)}>
                 {!!oItem?.icon && <DropdownMenuItemIcon><Icon icon={oItem.icon} /></DropdownMenuItemIcon>}
-                {!!oItem?.title && <DropdownMenuItemTitle>{oItem.title}</DropdownMenuItemTitle>}
+                {!!oItem?.title && <DropdownMenuItemTitle className={oItem?.class_item_title}>{oItem.title}</DropdownMenuItemTitle>}
             </DmItem>
         );
     });
