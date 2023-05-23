@@ -104,6 +104,12 @@ function isObject(item) {
     return (item && typeof item === 'object' && !Array.isArray(item));
 }
 
+export function isEmoji(s) {
+    const emojiRegex = /\p{Emoji}|\p{Extended_Pictographic}/u;
+
+    return s.match(emojiRegex);
+}
+
 export function stripTags(s) {
     if (s)
         return s.replace(/(<([^>]+)>)/ig, '');
