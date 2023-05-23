@@ -20,7 +20,7 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import Search from 'app/ui/molecules/search';
 import Browse from 'app/components/elements/browse';
 import Notifications from 'app/components/units/notifications';
-
+import Profile from 'app/ui/molecules/profile';
 
 export default function (props) {
     const redirectdRef = useRef();
@@ -102,6 +102,14 @@ export default function (props) {
         redirectdRef.current.redirect(sUrl);
     }
 
+    let profile = null
+    if (currentUser){
+        let dUser = currentUser;
+        dUser.url_avatar = dUser.avatar
+        dUser.url = '/dashboard'
+        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
+    }  
+
   return (
     <View className="fixed -top-[1px]  z-50 w-full mb-16">
         <Redirect ref={redirectdRef} />
@@ -157,7 +165,8 @@ export default function (props) {
                           })}>
                         <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
                       </DropdownMenu>
-                      <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" onPress={() => {handleClick('/logout')}} />
+                      {profile ? <View className=' justify-center'>{profile}</View> : <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" onPress={() => {handleClick('/logout')}} />}
+                      
                   </Row>
                   }
 

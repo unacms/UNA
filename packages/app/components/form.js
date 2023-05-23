@@ -2,20 +2,12 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import {getFormFieldByData} from 'app/lib/form-helpers'
 
-import FormComments from 'app/components/forms/comments';
-import FormFeed from 'app/components/forms/feed';
-import FormPost from 'app/components/forms/post';
+import {componentsMap} from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import { Platform } from 'react-native'
 
 function getFormType(name){
-    const componentsMapForms = {
-        comment: FormComments,
-        feed: FormFeed,
-        bx_posts: FormPost,
-    };
-
-    return componentsMapForms[name];
+    return componentsMap[name];
 }
 
 function getFormFieldList(name, inputs, handleSubmit, isInitial = false){

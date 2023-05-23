@@ -1,18 +1,4 @@
-
-import GeneralContentList from './units/general-content-list';
-import Comments from './units/comments';
-import Notifications from './units/notifications';
-import Feed from './units/feed';
-
-const componentsMap = {
-    'general-content-list': GeneralContentList,
-    'general-content-card': GeneralContentList,
-    'general-profile-card': GeneralContentList,
-    'general-context-card': GeneralContentList,
-    comments: Comments,
-    notifications: Notifications,
-    feed: Feed,
-};
+import {componentsMap} from './units/_map';
 
 export default function List(props) {
     const Component = componentsMap[props.unit];

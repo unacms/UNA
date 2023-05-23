@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWindowDimensions} from 'react-native';
 
-import { menuItemsByName } from 'app/lib/util';
+import { menuItemsByName, linkify } from 'app/lib/util';
 import { Text} from 'app/design/typography'
 import { View, Pressable, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
@@ -94,7 +94,7 @@ export default function UnitComments(props) {
                             </View>
                         }
                         <View>
-                            <Html data={data.cmt_text} />
+                            <Html data={linkify(data.cmt_text)} />
                         </View>
                         <Row className='flex-wrap gap-x-1 '>
                             {files.map(a => (
