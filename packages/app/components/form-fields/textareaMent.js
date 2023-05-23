@@ -1,136 +1,87 @@
 import Field from './_field';
-import FormFieldFtf from './rtf';
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useController, useFormContext } from 'react-hook-form';
-import { MentionInput, MentionInputMulti } from 'app/design/controls'
-import { useState, useRef, useEffect  } from 'react';
+import { MentionInputMulti } from 'app/design/controls'
+import { useState, useRef, useEffect} from 'react';
 import { fetcher } from '../../lib/fetcher';
-import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { mentionRegEx,replaceMentionValues  } from 'react-native-controlled-mentions';
 
-export default function FormFieldText(props) {
-    
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    
-    const formContext = useFormContext();
-    const { field } = useController({ name, rules, defaultValue });
-    const [height, setHeight] = useState(null);
-    const editorRef = useRef(null);
-    const [value, setValue] = useState(defaultValue)
-
-    //if (value != field.value)
-    //  setValue(field.value);
-
-
-  const handleChange2 = (val) => {
-     setValue(val);
-     field.onChange(val)
-  }
-    /*setTimeout(() => {
-      formContext.setValue(props.name, value)
-    }, 100);*/
-
+export default function FormFieldText({ name, value = '', numLines = 4, ...props }) {
+    const { field } = useController({ name, rules: {}, defaultValue: value });
+    const [localValue, setLocalValue] = useState(field.value);
     const [suggestions, setSuggestions] = useState([]);
-    const [keyword, setKeyword] = useState('');
+    const [keywordval, setKeyword] = useState(['', '']);
 
     useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetcher('/searchExtended.php?action=get_mention&symbol=%40&term='+keyword); // keyword
+        if (keywordval[0] === '') return;
+        
+        const fetchData = async () => {
+            let url = `/searchExtended.php?action=get_mention&symbol=${keywordval[1] === '#' ? '%23' : '%40'}&term=${keywordval[0]}`;
+            const result = await fetcher(url); 
+            let p = result.map(k => ({ id: k.value, name: k.label }));
+            
+            setSuggestions(p);
+        };
 
+        fetchData();
+    }, [keywordval]);
 
-      let p=[];
-      result.forEach(function (k) { 
-        p.push( {id: k.value, name: k.label})
-      });
-      setSuggestions(p);
-    };
-    if (keyword !='')
-      fetchData();
-    
-  }, [keyword]);
-      
-      const renderSuggestions  =  ({ keyword, onSuggestionPress }) => {
-
-        if (keyword == null) {
-          return null;
+    useEffect(() => {
+        if (field.value == ''){
+            setLocalValue('');
         }
-        setKeyword(keyword)
+    }, [field.value]);    
+
+    const handleChange2 = (val) => {
+        setLocalValue(val);
+        
+        let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${trigger}${name}</a>`)
+        field.onChange(v)
+    }
+
+    const renderSuggestions = ({ keyword, onSuggestionPress, trigger }) => {
+        if (keyword == null) {
+            return null;
+        }
+        if (keyword != keywordval[0] || trigger != keywordval[1])
+            setKeyword([keyword, trigger]);
 
         return (
-         
-          
-          <View>
-            {suggestions.map(one => (
-          <Pressable
-          key={one.id}
-          onPress={() => onSuggestionPress(one)}
-
-          style={{padding: 12}}
-        >
-          <Text>{one.name}</Text>
-        </Pressable>
-          ))}
-            
-          </View>
+            <View>
+                {suggestions.map(one => (
+                    <Pressable
+                        key={one.id}
+                        onPress={() => onSuggestionPress(one)}
+                        style={{padding: 12}}
+                    >
+                        <Text>{one.name}</Text>
+                    </Pressable>
+                ))}
+            </View>
         );
-      };
-
-     
-
-    let input = <MentionInputMulti
-        multiline
-
-        numberOfLines={props.numLines ? props.numLines : 4}
-       
-        value={field.value}
-        onChange={handleChange2}
-      
-        partTypes={[
-          {
-            trigger: '@', // Should be a single character like '@' or '#'
-            renderSuggestions,
-            textStyle: {fontWeight: 'bold', color: 'blue'}, // The mention style in the input
-          },
-          {
-            trigger: '#', // Should be a single character like '@' or '#'
-            renderSuggestions,
-            textStyle: {fontWeight: 'bold', color: 'blue'}, // The mention style in the input
-          },
-        ]}
-    />
-
-   
-
-    if (props.autoheight)
-        input = <MentionInput
-
-        value={field.value}
-        onChange={handleChange2}
-      
-        partTypes={[
-          {
-            trigger: '@', // Should be a single character like '@' or '#'
-            renderSuggestions,
-            textStyle: {fontWeight: 'bold', color: 'blue'}, // The mention style in the input
-          },
-        ]}
-        />
-
-    if (props.html == 2){
-     //   input =  <></>;
-    }    
-
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-      },
-    });
+    };
 
     return (
         <Field {...props}>
-            {input}
+            <MentionInputMulti
+                multiline
+                numberOfLines={numLines}
+                value={localValue}
+                onChange={handleChange2}
+                partTypes={[
+                    {
+                        trigger: '@', 
+                        renderSuggestions: (params) => renderSuggestions({...params, trigger: '@'}),
+                        textStyle: {fontWeight: 'bold', color: 'blue'}, 
+                    },
+                    {
+                        trigger: '#', 
+                        renderSuggestions: (params) => renderSuggestions({...params, trigger: '#'}),
+                        textStyle: {fontWeight: 'bold', color: 'blue'}, 
+                    },
+                ]}
+            />
         </Field>
     );
 }

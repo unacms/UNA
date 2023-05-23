@@ -152,4 +152,4 @@ export function ItemRenderer({ route, numColumns, item, unit, module }) {
         </View>
       );
     }
-  }
+}

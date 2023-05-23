@@ -4,6 +4,7 @@ import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
 import { appSetting } from 'app/lib/util'
+import { Theme } from 'app/design/theme';
 
 /*const IframeRenderer = function IframeRenderer(props) {
     const iframeProps = useHtmlIframeProps(props);
@@ -33,13 +34,14 @@ const domVisitors = {
 };
 
 export default function ElementHtml(props) {
+    const { colors } = Theme();
     let { width } = useWindowDimensions();
     
     const theme = useColorScheme();
     let tagsStyles = {
         body: {
             whiteSpace: 'normal',
-            color: '#374151',
+            color: colors.default,
             fontSize: 16,
             lineHeight: 23,
             marginLeft: 0,
@@ -49,19 +51,19 @@ export default function ElementHtml(props) {
             paddingTop:0
         },
         a: {
-            color: 'red'
+            color: colors.primary
         },
         h1:{
-            color: '#111827'
+            color: colors.default
         },
         h2:{
-            color: '#111827'
+            color: colors.default
         },
         h3:{
-            color: '#111827'
+            color: colors.default
         },
         h4:{
-            color: '#111827'
+            color: colors.default
         }
     };
     
@@ -79,25 +81,25 @@ export default function ElementHtml(props) {
     if(theme == 'dark'){
         let tagsStylesC = {
             body: {
-                color: '#d1d5db',
+                color: colors.default
             },
             p:{
                 marginTop: 0,
             },
             a: {
-                color: 'green'
+                color: colors.primary
             },
             h1:{
-                color: '#f3f4f6'
+                color: colors.default
             },
             h2:{
-                color: '#f3f4f6'
+                color: colors.default
             },
             h3:{
-                color: '#f3f4f6'
+                color: colors.default
             },
             h4:{
-                color: '#f3f4f6'
+                color: colors.default
             }
         };
         tagsStyles = mergeDeep(tagsStyles, tagsStylesC); 
