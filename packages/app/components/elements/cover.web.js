@@ -5,18 +5,17 @@ import { stripTags } from '../../lib/util';
 import { Button } from 'app/design/controls';
 import { appSetting } from 'app/lib/util'
 import Profile from 'app/ui/molecules/profile';
+import Menu from 'app/components/menu';
 import { useWindowDimensions } from 'react-native'
 
 
-function CoverMenu(){
+function CoverMenu(props) {
     return (
-<View className='w-full  '>
-        <View className=' w-full justify-start align-end flex-row gap-2'>
-            <Button  size='sm' startDecorator="ChatTeardropDots" variant="default" fullWidth/>
-            <Button title="Follow" size='sm' startDecorator="UserPlus" variant="primary" fullWidth />
-            
+        <View className='w-full'>
+            <View className='w-full justify-start align-end flex-row gap-2'>
+                <Menu {...props} displayType="button" />
+            </View>
         </View>
-    </View>
     );
 }
 
@@ -40,7 +39,7 @@ export function CoverSmall(props) {
                         </View>
                     </Row>
                     <View className=' w-auto  my-auto '>
-                        <CoverMenu/>
+                        <CoverMenu {...data.actions_menu}/>
                     </View>
                 </View>
             </View>
@@ -94,7 +93,7 @@ export default function ElementCover(props) {
                         
                    
                     <View className='items-start  ml-auto w-auto flex-row '>
-                            <CoverMenu/>
+                        <CoverMenu  {...data.actions_menu}/>
                     </View>
                 </View>
                 

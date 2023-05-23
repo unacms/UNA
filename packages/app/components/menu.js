@@ -4,6 +4,7 @@ import Button from './menu-items/button';
 import Element from './menu-items/element';
 
 import { View } from 'app/design/view'
+import { appSetting, menuItemsByName } from 'app/lib/util';
 
 const oComponentsMap = {
     link: Link,
@@ -58,9 +59,7 @@ export default function ElementMenu(oProps) {
     if (!oProps?.items?.length)
         return [];
 
-    const sItems = Object.keys(oProps.items).map(function(iKey) {
-        const aItem = oProps.items[iKey];
-
+    const sItems = menuItemsByName(oProps.object, oProps.items).map((aItem, iKey) => {
         if(bShowMatched && aItem.display_type != sDisplayType)
             return;
 
