@@ -52,7 +52,6 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     if (!currentRoute.inited){
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
-        console.log(currentRoute.link, settings, getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
         addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index)
 
@@ -94,6 +93,7 @@ function processEndpoint(acc, b) {
         request_url: b.data.request_url,
         finished: false,
         unit: b.data.unit,
+        module: b.data.module,
     };
 }
 

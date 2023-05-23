@@ -157,7 +157,7 @@ export default function UnitFeed(props) {
             data.mainImage = data.content.images.length > 0 ? data.content.images[0] : null;
 
         data.comments = null;
-        if (data.cmts.data.length > 0){
+        if (data?.cmts?.data?.length > 0){
             data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
         }
 

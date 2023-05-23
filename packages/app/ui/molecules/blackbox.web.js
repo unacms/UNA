@@ -285,7 +285,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             index={route.index}
                             data={dataItems}
                             unit={route.endpoint?.unit}
-                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
                                 {(route?.endpoint?.finished === false) ? (
