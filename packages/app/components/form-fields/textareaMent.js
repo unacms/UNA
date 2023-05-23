@@ -93,6 +93,11 @@ export default function FormFieldText(props) {
             renderSuggestions,
             textStyle: {fontWeight: 'bold', color: 'blue'}, // The mention style in the input
           },
+          {
+            trigger: '#', // Should be a single character like '@' or '#'
+            renderSuggestions,
+            textStyle: {fontWeight: 'bold', color: 'blue'}, // The mention style in the input
+          },
         ]}
     />
 
@@ -100,7 +105,6 @@ export default function FormFieldText(props) {
 
     if (props.autoheight)
         input = <MentionInput
-           
 
         value={field.value}
         onChange={handleChange2}
@@ -114,8 +118,6 @@ export default function FormFieldText(props) {
         ]}
         />
 
-       
-
     if (props.html == 2){
      //   input =  <></>;
     }    
@@ -128,9 +130,7 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props}>
-         
             {input}
-          
         </Field>
     );
 }

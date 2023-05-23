@@ -1,6 +1,6 @@
 import Field from './_field';
 import FormFieldFtf from './rtf';
-
+import FormFieldMent from './textareaMent';
 import { useController } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
 import { useState, useRef  } from 'react';
@@ -43,8 +43,8 @@ export default function FormFieldText(props) {
             accessibilityLabel={accessibility}
         />
 
-    if (props.html == 2){
-     //   input =  <FormFieldFtf  {...props} />;
+    if (props.html == 2 || props.html == 3){
+        input =  <FormFieldMent  {...props} />;
     }    
 
     return (

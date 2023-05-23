@@ -46,6 +46,13 @@
     font-size: 1rem;
     line-height: 1.5rem; 
 }
+.u-vanilla-html A{
+    color: #0284c7;
+    text-decoration: underline;
+}
+.u-vanilla-html A:hover{
+    text-decoration: none;
+}
 
 html, body, #__next {
     width: 100%;
