@@ -1,7 +1,7 @@
-
+s
 import { settingsDefault } from './settings-default';
 
-// for custom projects change some specific settings here if needed
+// DON'T EDIT THIS FILE IN MAIN REPO!!!
+// only for custom projects change some specific settings here if needed
 
 export const settings = settingsDefault;
-settings.feed.default_view = '';
