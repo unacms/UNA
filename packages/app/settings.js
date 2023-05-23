@@ -1,4 +1,3 @@
-s
 import { settingsDefault } from './settings-default';
 
 // DON'T EDIT THIS FILE IN MAIN REPO!!!
