@@ -8,6 +8,7 @@ import Image from '../../ui/atoms/image';
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'; 
+import Menu from 'app/components/menu';
 import { Canvas, Fill,Image as Image2, BackdropBlur, useImage } from "@shopify/react-native-skia";
 
 function CoverMenu(props) {
