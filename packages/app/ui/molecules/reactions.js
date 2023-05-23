@@ -13,7 +13,6 @@ import Profile from 'app/ui/molecules/profile';
 export default function ElementReactions(oProps) {
     const bWeb = Platform.OS === 'web';
     const sTheme = useColorScheme();
-    const sClassIconInternal = 'flex h-6 w-6 text-gray-700 dark:text-gray-200 transition active:scale-150 duration-300 active:-translate-y-4';
 
     const oParams = {...appSetting('social_actions', 'reaction'), ...oProps.params};
     const oAction = oProps.action;
@@ -59,7 +58,7 @@ export default function ElementReactions(oProps) {
                 anger: {svg: 'SmileyAngry', emoji: '😠'},
             },
             native: {
-                default: {svg: '', emoji: '🙂'},
+                default: {svg: 'Smiley', emoji: '🙂'},
                 like: {svg: '', emoji: '👍'},
                 love: {svg: '', emoji: '🥰'},
                 joy: {svg: '', emoji: '😂'},
@@ -293,7 +292,7 @@ export default function ElementReactions(oProps) {
 
             sActionButton = (
                 <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                    <ButtonAction size={sDisplaySize} title={bShowActionLabel ? sTitle : false} />
+                    <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} />
                 </Reaction>
             );
         }
