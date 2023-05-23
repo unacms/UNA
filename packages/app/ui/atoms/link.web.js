@@ -5,8 +5,6 @@ import { View, Pressable } from 'app/design/view'
 import { useRouter } from 'next/router';
 
 export default function ElementLink(props) {  
-    //if (props.href.includes('://') || props.href.includes('javascript:'))
-    //    return <Text>{props.children}</Text> 
     let { href,  ...rest } = props;
     const router = useRouter();
 

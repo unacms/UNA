@@ -292,7 +292,12 @@ export default function ElementReactions(oProps) {
         else {
             const oReactionStyles = StyleSheet.create({
                 cardStyle: {
-                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'screenBackground'),
+                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'backgroundModal'),
+                    shadowOpacity: 0.1,
+                    shadowRadius: 5,
+                    borderColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bordercolorModal'),
+                    borderWidth: 1,
+                    
                 },
             });
 

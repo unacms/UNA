@@ -94,7 +94,7 @@ import Svg, {Path} from 'react-native-svg'
         },
         feed: {
             show_selector_view: false,
-            default_view: '',
+            default_view: 'default',
         },
         entry: {
             default_view: '',
@@ -384,6 +384,10 @@ import Svg, {Path} from 'react-native-svg'
                 tabText: 'rgba(75,85,99,1)',
                 activeTabText: 'rgba(3,7,18,1)',
                 screenBackground: '#E5E7EB',
+                backgroundModal: 'rgba(255,255,255,1)',
+                bordercolorModal: 'rgba(229,231,235,1)',
+                  
+                 
             },
             dark: {
                 default: '#D1D5DB', //fix for icons color in iOS
@@ -397,6 +401,9 @@ import Svg, {Path} from 'react-native-svg'
                 tabText: 'rgba(156,163,175,1)',
                 activeTabText: 'rgba(249,250,251,1)',
                 screenBackground: '#030407',
+                backgroundModal: 'rgba(31,41,55,1)',
+                bordercolorModal: 'rgba(55,65,81,0.4)',
+                  
             },
             button_styles: {
                 'u-btn-default-cnt':

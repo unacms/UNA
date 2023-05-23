@@ -29,7 +29,7 @@ export default function FormFeed(props) {
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full '>
-    <Modal title="Add new" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
+    <Modal title="Create a new Post" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}

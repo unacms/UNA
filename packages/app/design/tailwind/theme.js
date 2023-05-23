@@ -111,8 +111,8 @@ const colors = {
     dark: 'rgba(31,41,55,0.8)',
   },
   bordercolormodal: {
-    DEFAULT: 'rgba(209,213,219,0.8)',
-    dark: 'rgba(55,65,81,1)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    dark: 'rgba(31,41,55,1)',
   },
 
   backgroundnavbar: {
