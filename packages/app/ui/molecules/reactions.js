@@ -72,8 +72,6 @@ export default function ElementReactions(oProps) {
         return oAliases[sKey][sName][sType];
     };
 
-    const bIconSvg = getIconType(bWeb ? 'web' : 'native') == 'svg';
-
     const { actionsData, setActionsData } = useContext(ActionsData);
     const [ actionsDataState, actisetActionsDataState ] = useState({});
 
@@ -243,51 +241,26 @@ export default function ElementReactions(oProps) {
     let sActionButton = undefined;
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionVoted) {
-        const sActionIcon = getIconAlias(sReaction);
-        if(bWeb) {
-            let sActionTitle = '';
-            if(!bIconSvg)
-                sActionTitle = sActionIcon;
-            if(bShowActionLabel)
-                sActionTitle += (sActionTitle.length > 0 ? ' ' : '') + sTitle;
-
-            sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={bIconSvg ? sActionIcon : false} title={sActionTitle} onPress={handleUndo} />
-            );
-        }
-        else
-            sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} title={sActionIcon + (bShowActionLabel ? ' ' + sTitle : '')} onPress={handleUndo} />
-            );
+        sActionButton = (
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} />
+        );
     }
     else {
         if(bWeb) {
             const aItems = oParams.items.map((oItem) => {
-                const sItemIcon = getIconAlias(oItem.name);
-
                 return {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
-                    title: !bIconSvg ? sItemIcon : '',
-                    icon: bIconSvg ? sItemIcon : false,
+                    icon: getIconAlias(oItem.name),
                     class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
-                    class_item_title: 'text-2xl'
+                    class_item_icon: 'text-2xl'
                 };
             });
-
-            const sActionIcon = getIconAlias(sReaction);
-            const bActionIconDefault = sReaction == 'default';
-
-            let sActionTitle = '';
-            if(!bIconSvg && !bActionIconDefault)
-                sActionTitle = sActionIcon;
-            if(bShowActionLabel)
-                sActionTitle += (sActionTitle.length > 0 ? ' ' : '') + sTitle;
 
             sActionButton = (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={bIconSvg || bActionIconDefault ? sActionIcon : false} title={sActionTitle} onPress={() => {}} disabled={bShowActionDisabled} />
+                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
                     </DropdownMenu>
                 </Pressable>
             );
@@ -367,8 +340,7 @@ export default function ElementReactions(oProps) {
             else
                 aUsers = getSkeleton();
 
-            const sItemIcon = getIconAlias(aItem.name);
-            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={bIconSvg ? sItemIcon : false} title={(!bIconSvg ? sItemIcon + ' ' : '' ) + iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
+            aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
             aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
         });
 
@@ -417,10 +389,9 @@ export default function ElementReactions(oProps) {
             if(aItem.name == sSelected)
                 sClass += ' border-b-2 border-primary dark:border-primary-dark ';
 
-            const sItemIcon = getIconAlias(aItem.name);
             return (
                 <View key={aItem.name} className={sClass}>
-                    <Button size="sm" variant="text" title={!bIconSvg ? sItemIcon : ''} startDecorator={bIconSvg ? sItemIcon : false} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
+                    <Button size="sm" variant="text" startDecorator={getIconAlias(aItem.name)} onPress={() => {setTabVisibleByCpd(aItem.name)}} rounded="true" />
                 </View>
             );
         });
@@ -455,13 +426,8 @@ export default function ElementReactions(oProps) {
             );
         });
 
-        if(!bIconSvg && iTotal > 0) {
-            iTotal += ' ';
-            aCounter.forEach((item) => {if(item) iTotal += item});
-        }
-
         return [[
-                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={bIconSvg ? aCounter : false} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row  border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>

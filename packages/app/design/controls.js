@@ -3,7 +3,7 @@ import { Pressable, View , Row   } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'
 import { Icon } from 'app/ui/atoms/icon'
-import { appSetting } from 'app/lib/util'
+import { appSetting, isEmoji } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
@@ -244,15 +244,26 @@ export function Button(props/*: ButtonProps*/) {
         if(!sIcon)
           return;
 
-        return (
-          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
-        );
+        if(isEmoji(sIcon))
+          return (
+            <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
+          );
+        else
+          return (
+            <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+          );
       });
     }
-    else
-      sButtonIconStart = (
-          <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconStart}></Icon>
-      );
+    else {
+      if(isEmoji(buttonIconStart))
+        sButtonIconStart = (
+          <Text className={classIconName ? classIconName : sClassText + sIconContainer}>{buttonIconStart}</Text>
+        );
+      else
+        sButtonIconStart = (
+            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconStart}></Icon>
+        );
+    }
   }
 
   let sButtonIconEnd = undefined;
@@ -262,15 +273,26 @@ export function Button(props/*: ButtonProps*/) {
         if(!sIcon)
           return;
 
-        return (
-          <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
-        );
+        if(isEmoji(sIcon))
+          return (
+            <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
+          );
+        else
+          return (
+            <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+          );
       });
     }
-    else
-      sButtonIconEnd = (
-        <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconEnd} ></Icon>
-      );
+    else {
+      if(isEmoji(buttonIconEnd))
+        sButtonIconEnd = (
+          <Text className={classIconName ? classIconName : sClassText + sIconContainer}>{buttonIconEnd}</Text>
+        );
+      else
+        sButtonIconEnd = (
+          <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconEnd} ></Icon>
+        );
+    }
   }
 
   return (

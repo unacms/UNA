@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 
+import { isEmoji } from 'app/lib/util';
+import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { 
     DropdownMenuRoot, 
@@ -28,9 +30,21 @@ export default function DropdownMenu(oProps) {
     const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : DropdownMenuItemH;   
 
     const aDmItems = oProps.items.map((oItem) => {
+        let sIcon = undefined;
+        if(!!oItem?.icon) {
+            if(isEmoji(oItem.icon))
+                sIcon = (
+                    <Text className={oItem?.class_item_icon}>{oItem.icon}</Text>
+                );
+            else
+                sIcon = (
+                    <Icon className={oItem?.class_item_icon} icon={oItem.icon} />
+                );
+        }
+
         return (
             <DmItem key={oItem.id} className={oItem?.class_item} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)}>
-                {!!oItem?.icon && <DropdownMenuItemIcon><Icon icon={oItem.icon} /></DropdownMenuItemIcon>}
+                {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
                 {!!oItem?.title && <DropdownMenuItemTitle className={oItem?.class_item_title}>{oItem.title}</DropdownMenuItemTitle>}
             </DmItem>
         );

@@ -138,7 +138,7 @@ export default function (props) {
                           <Link href={item.link} key={`menu-${index}`}>
                           <Button
                             variant="text"
-                            startDecorator={item.icon}
+                            startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]}
                             align="start"
                             rounded
                             title={item.title}
