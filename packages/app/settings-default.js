@@ -157,6 +157,9 @@ import Svg, {Path} from 'react-native-svg'
                 show_action_label: true,
                 show_counter: true,
                 show_counter_as_button: false
+            },
+            connection: {
+                show_action_as_button: true,
             }
         },
         

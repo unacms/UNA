@@ -13,7 +13,7 @@ function CoverMenu(props) {
     return (
         <View className='w-full'>
             <View className='w-full justify-start align-end flex-row gap-2'>
-                <Menu {...props} displayType="button" />
+                <Menu {...props} displayType="button" params={{button_variant: 'default', button_rounded: false}} />
             </View>
         </View>
     );

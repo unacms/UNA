@@ -11,7 +11,9 @@ export default function MenuItemElement(oProps) {
     if(!Element)
         return;
 
-    if(oProps.data.params != undefined && oProps.params != undefined)
+    if(!oProps.data?.params)
+        oProps.data.params = {};
+    if(oProps?.params != undefined)
         oProps.data.params = {...oProps.data.params, ...oProps.params}
 
     const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem) || 'flex' + (bShowVertical ? ' flex-col w-full ' : ' flex-auto flex-row'));

@@ -33,6 +33,16 @@ export default function MenuItemButton(oProps) {
             break;
 
         default:
+            let oButtonProps = {};
+            if(oProps.primary)
+                oButtonProps.variant = 'primary';
+            if(oProps.params?.button_variant != undefined)
+                oButtonProps.variant = oProps.params.button_variant;
+            if(oProps.params?.button_size != undefined)
+                oButtonProps.size = oProps.params.button_size;
+            if(oProps.params?.button_rounded != undefined)
+                oButtonProps.rounded = oProps.params.button_rounded;
+
             const handleClick = (event) => {
                 if(!oProps?.link && !oProps.params?.onclick)
                     return;
@@ -52,11 +62,11 @@ export default function MenuItemButton(oProps) {
             sContent = (
                 <View className="flex-auto">
                     <Redirect ref={redirectdRef} />
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} />
+                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} {...oButtonProps} />
                 </View>
             );
     }
-    
+
     return (
         <View className={'menu-item flex-auto ' + (bShowVertical ? ' w-full' : ' flex-row items-center justify-center')}>{sContent}</View>
     );
