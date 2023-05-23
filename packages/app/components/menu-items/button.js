@@ -42,6 +42,8 @@ export default function MenuItemButton(oProps) {
                 oButtonProps.size = oProps.params.button_size;
             if(oProps.params?.button_rounded != undefined)
                 oButtonProps.rounded = oProps.params.button_rounded;
+            if(oProps.params?.button_full_width != undefined)
+                oButtonProps.fullWidth = oProps.params.button_full_width;
 
             const handleClick = (event) => {
                 if(!oProps?.link && !oProps.params?.onclick)

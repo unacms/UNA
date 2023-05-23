@@ -313,25 +313,25 @@ export function ButtonMenuGroupItem(props) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuActionText(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} />
+    return <Button variant={!!variant ? variant : 'text'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterDefault(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, ...rest } = props
 
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuCounterText(props) {
-  let { variant, size, title, startDecorator, endDecorator, onPress, rounded, ...rest } = props
+  let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, ...rest } = props
 
-  return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} />
+  return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }

@@ -139,7 +139,7 @@ export default function Unit(props) {
         if(data?.meta)
             sMeta = (
                 <View className="text-center flex-col  h-auto px-4  h-36 justify-end">
-                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
                 </View>
             );
 

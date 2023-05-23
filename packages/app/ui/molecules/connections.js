@@ -19,6 +19,8 @@ export default function ElementConnections(oProps) {
         oButtonProps.size = oProps.params.button_size;
     if(oProps.params?.button_rounded != undefined)
         oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
 
     const isElementVar = (sName) => {
         return elementData && elementData[sName] != undefined;
