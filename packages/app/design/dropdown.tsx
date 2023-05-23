@@ -38,7 +38,7 @@ export const DropdownMenuItemH = DropdownMenu.create(
 export const DropdownMenuItemTitle = DropdownMenu.create(
   styled(
     DropdownMenu.ItemTitle,
-    'font-medium text-gray-700 dark:text-gray-200 '
+    'font-medium text-2xl text-gray-700 dark:text-gray-200 '
   ),
   'ItemTitle'
 )
