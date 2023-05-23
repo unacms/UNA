@@ -26,7 +26,7 @@ export default function () {
                            <Link  href={tab.url} >
                            <View className='flex-col gap-1 items-center'>
                             {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
-                             <Text className=' text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-[10px]'>{tab.title}</Text>
+                             <Text className=' text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-[10px] whitespace-nowrap'>{tab.title}</Text>
                             </View>
                             </Link>
                         </View>

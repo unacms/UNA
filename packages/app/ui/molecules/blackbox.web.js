@@ -98,7 +98,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
       
-        const tabWidth = 100; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
+        const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
@@ -285,7 +285,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             index={route.index}
                             data={dataItems}
                             unit={route.endpoint?.unit}
-                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
                                 {(route?.endpoint?.finished === false) ? (
