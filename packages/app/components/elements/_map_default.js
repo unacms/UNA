@@ -10,9 +10,9 @@ import EntityActions from './entity_actions';
 import EntityInfo from './entity_info';
 import EntityCover from './entity_cover';
 import ProfileMenu from './profile_menu';
-import FeedItem from './feed_item'; 
-import MessengerInbox from './messenger_inbox';
-import MessengerLot from './messenger_lot';
+import FeedItem from './feed_item';
+
+import { MessengerPage } from './messenger';
 
 export const componentsMapDefault = {
     browse: Browse,
@@ -30,8 +30,7 @@ export const componentsMapDefault = {
 
     feed_item: FeedItem,
 
-    messenger_inbox: MessengerInbox,
-    messenger_lot: MessengerLot
+    messenger_main_page: MessengerPage
 };
 
 

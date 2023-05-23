@@ -1,11 +1,5 @@
+import { BlockByName } from 'app/components/block';
 
-import { View } from 'app/design/view';
-import {BlockByName} from 'app/components/block';
-// Layout file for Alexey
-
-export default function PageLayout(props) {
-    return (<View className="w-full sm:p-5 max-w-5xl mx-auto ">
-        <BlockByName data={props.data} name={props.blocks.inbox} />
-        <BlockByName data={props.data} name={props.blocks.lot} />
-    </View>)
+export default function PageLayout({ data , blocks: { main } }) {
+    return <BlockByName data={data} name={ main } />;
 }
