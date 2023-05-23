@@ -10,13 +10,11 @@ import { Theme } from 'app/design/theme';
 import { Icon } from 'app/ui/atoms/icon'; 
 import { Canvas, Fill,Image as Image2, BackdropBlur, useImage } from "@shopify/react-native-skia";
 
-function CoverMenu(){
+function CoverMenu(props) {
     return (
     <View className='w-full mt-3 '>
         <View className=' w-full justify-start align-end flex-row gap-2'>
-        <Button  size='sm' startDecorator="ChatTeardropDots" variant="default" fullWidth/>
-            <Button title="Follow" size='sm' startDecorator="UserPlus" variant="primary" fullWidth />
-            
+            <Menu {...props} displayType="button" params={{button_variant: 'default', button_rounded: false}} />
         </View>
     </View>
     );
@@ -93,7 +91,7 @@ export default function ElementCover(props) {
                     <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
                 </View>
                 <View className='ml-auto '>
-                    <CoverMenu />
+                    <CoverMenu {...data.actions_menu} />
                 </View>
             </View>
             <View className='w-full px-2 mt-4'>

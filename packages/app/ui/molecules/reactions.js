@@ -47,7 +47,7 @@ export default function ElementReactions(oProps) {
 
     const getIconAlias = (sName) => {
         const sKey = bWeb ? 'web' : 'native';
-        const sType = oParams['icon_type_' + sKey];
+        const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
         const oAliases = {
             web: {
                 default: {svg: 'Smiley', emoji: '🙂'},
@@ -269,14 +269,17 @@ export default function ElementReactions(oProps) {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
                     title: !bIconSvg ? sItemIcon : '',
-                    icon: bIconSvg ? sItemIcon : false
+                    icon: bIconSvg ? sItemIcon : false,
+                    class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
+                    class_item_title: 'text-2xl'
                 };
             });
 
             const sActionIcon = getIconAlias(sReaction);
+            const bActionIconDefault = sReaction == 'default';
 
             let sActionTitle = '';
-            if(!bIconSvg)
+            if(!bIconSvg && !bActionIconDefault)
                 sActionTitle = sActionIcon;
             if(bShowActionLabel)
                 sActionTitle += (sActionTitle.length > 0 ? ' ' : '') + sTitle;
@@ -284,7 +287,7 @@ export default function ElementReactions(oProps) {
             sActionButton = (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={bIconSvg ? sActionIcon : false} title={sActionTitle} onPress={() => {}} disabled={bShowActionDisabled} />
+                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={bIconSvg || bActionIconDefault ? sActionIcon : false} title={sActionTitle} onPress={() => {}} disabled={bShowActionDisabled} />
                     </DropdownMenu>
                 </Pressable>
             );
@@ -297,7 +300,6 @@ export default function ElementReactions(oProps) {
                     shadowRadius: 5,
                     borderColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bordercolorModal'),
                     borderWidth: 1,
-                    
                 },
             });
 

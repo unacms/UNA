@@ -39,7 +39,7 @@ export function CoverSmall(props) {
                         </View>
                     </Row>
                     <View className=' w-auto  my-auto '>
-                        <CoverMenu {...data.actions_menu}/>
+                        <CoverMenu {...data.actions_menu} />
                     </View>
                 </View>
             </View>
@@ -93,7 +93,7 @@ export default function ElementCover(props) {
                         
                    
                     <View className='items-start  ml-auto w-auto flex-row '>
-                        <CoverMenu  {...data.actions_menu}/>
+                        <CoverMenu  {...data.actions_menu} />
                     </View>
                 </View>
                 

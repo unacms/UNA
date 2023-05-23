@@ -11,6 +11,9 @@ export default function ElementMenu(oProps) {
      */
     const sDisplayType = oProps.displayType ? oProps.displayType : 'link';
 
+    //--- auto-filter items using app settings.
+    const bAutoFilter = oProps?.autoFilter == undefined || oProps.autoFilter === 'true';
+
     //--- show only items which match with menu's display_type
     const bShowMatched = oProps?.showMatched === 'true';
 
@@ -50,7 +53,8 @@ export default function ElementMenu(oProps) {
     if (!oProps?.items?.length)
         return [];
 
-    const sItems = menuItemsByName(oProps.object, oProps.items).map((aItem, iKey) => {
+    const sItemsSrc = bAutoFilter ? menuItemsByName(oProps.object, oProps.items) : oProps.items;
+    const sItems = sItemsSrc.map((aItem, iKey) => {
         if(bShowMatched && aItem.display_type != sDisplayType)
             return;
 

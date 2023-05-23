@@ -64,6 +64,8 @@ export default function UnitComments(props) {
     </View>)
     };   
 
+    const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items);
+
     return (
         <View className='w-full'>
             <Modal title="Add new" id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
@@ -111,9 +113,9 @@ export default function UnitComments(props) {
                         </View> : <></> }
                         <View className='flex-row'>
                             <Menu {...data.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
-                            {!!currentUser && 
+                            {!!currentUser && !!aMenuManageItems.length && 
                             <View className="ml-2">
-                                <DropdownMenu items={menuItemsByName('comments_manage_menu', data.menu_manage.items).map((aItem) => {
+                                <DropdownMenu items={aMenuManageItems.map((aItem) => {
                                     return {
                                         id: aItem.id ? aItem.id : aItem.name,
                                         name: aItem.name,
@@ -121,7 +123,7 @@ export default function UnitComments(props) {
                                         title: aItem.title
                                     };
                                 })} onSelect={handleManageMenuSelect}>
-                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
+                                    <Button variant="outline" size="sm" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
                                 </DropdownMenu>
                             </View>
                             }
