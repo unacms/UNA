@@ -34,9 +34,9 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit,  'default')}
-        <View className='w-full '>
+        <View className='w-full flex-col pt-2 px-2'>
             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}
-            <Row>
+            <Row className='pb-4'>
                 <View className='w-12'>{getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
                 <View className='w-12'>{getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
                 <View className='w-12'>{getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
