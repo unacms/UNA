@@ -48,10 +48,10 @@
 }
 .u-vanilla-html A{
     color: #0284c7;
-    text-decoration: underline;
+    text-decoration: none;
 }
 .u-vanilla-html A:hover{
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 html, body, #__next {

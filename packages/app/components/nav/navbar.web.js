@@ -149,6 +149,7 @@ export default function (props) {
                 </Slider>
               </Row>
               <Row>
+                  
                   {!!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
                       <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}} title={sTxtNtfsTitle}>{[
@@ -165,18 +166,20 @@ export default function (props) {
                           })}>
                         <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
                       </DropdownMenu>
-                      {profile ? <View className=' justify-center'>{profile}</View> : <Button variant="text" rounded startDecorator="account" id="m4" aria-label="Account" onPress={() => {handleClick('/logout')}} />}
+                      <Search />
+                      {profile ? <View className=' justify-center'><Button variant="text" rounded startDecorator={profile} id="m3" aria-label="Create" onPress={() => {}} /></View> : <></>}
                       
                   </Row>
                   }
 
                   {!currentUser &&
                   <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
+                      <Search />
                       <Button variant="text" rounded startDecorator="account" onPress={() => {handleClick('/login')}} />
                   </Row>
                   }
 
-                  <Search />
+                 
               </Row>
           </Row>
         </View>

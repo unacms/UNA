@@ -237,6 +237,7 @@ export function Button(props/*: ButtonProps*/) {
   const { colors } = Theme()
   let colorIcon = props.variant == 'link' ? colors.primary: '';
   colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)': '';
+  
   let sButtonIconStart = undefined;
   if(buttonIconStart != '' && !buttonIconEnd) {
     if(Array.isArray(buttonIconStart)) {
@@ -255,15 +256,23 @@ export function Button(props/*: ButtonProps*/) {
       });
     }
     else {
-      if(isEmoji(buttonIconStart))
-        sButtonIconStart = (
-          <Text className={classIconName ? classIconName : sClassText + sIconContainer}>{buttonIconStart}</Text>
-        );
-      else
-        sButtonIconStart = (
-            <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconStart}></Icon>
-        );
+
+      if (typeof(buttonIconStart) == 'object'){
+        sButtonIconStart = buttonIconStart;
+      }
+      if (typeof(buttonIconStart) !== 'object'){
+        if(isEmoji(buttonIconStart))
+          sButtonIconStart = (
+            <Text className={classIconName ? classIconName : sClassText + sIconContainer}>{buttonIconStart}</Text>
+          );
+        else
+          sButtonIconStart = (
+              <Icon className={classIconName ? classIconName : sClassText + sIconContainer} color={colorIcon} size={iIconSize} icon={buttonIconStart}></Icon>
+          );
+
+      } 
     }
+
   }
 
   let sButtonIconEnd = undefined;

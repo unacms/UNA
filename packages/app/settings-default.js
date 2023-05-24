@@ -231,8 +231,7 @@ import Svg, {Path} from 'react-native-svg'
             'messenger':{
                 layout: 'messenger',
                 blocks: {
-                    inbox: {name: 'bx_messenger:get_block_inbox'},
-                    lot: {name: 'bx_messenger:get_block_lot'},
+                    main: {name: 'bx_messenger:get_main_messenger_page', showTitle: false}
                 },
             },
             'dashboard':{
