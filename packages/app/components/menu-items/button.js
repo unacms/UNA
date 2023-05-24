@@ -16,8 +16,9 @@ export default function MenuItemButton(oProps) {
     };
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
-    const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
+    const bShowVertical = oProps?.params && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
+    const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
 
     let sContent = undefined;
     switch(oProps.content_type) {
@@ -61,10 +62,18 @@ export default function MenuItemButton(oProps) {
 
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
+            let sButtonIcon = '';
+            if(!bTitleOnly) {
+                if(!!oIconAliases[oProps.name])
+                    sButtonIcon = oIconAliases[oProps.name];
+                else if(!!oIconset[oProps.name])
+                    sButtonIcon = oIconset[oProps.name];
+            }
+
             sContent = (
                 <View className="flex-auto">
                     <Redirect ref={redirectdRef} />
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={!bTitleOnly ? oIconAliases[oProps.name] : ''} onPress={handleClick} {...oButtonProps} />
+                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={sButtonIcon} onPress={handleClick} {...oButtonProps} />
                 </View>
             );
     }

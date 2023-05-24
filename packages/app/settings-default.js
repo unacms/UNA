@@ -191,6 +191,14 @@ import Svg, {Path} from 'react-native-svg'
                 ]
             },
             'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info', 'persons-profile-friends'],
+            'bx_persons_view_meta': {
+                iconset: {
+                    membership: 'UserCircle', 
+                    friends: 'Users', 
+                    subscribers: 'Users'
+                },
+                items: ['membership', 'friends', 'subscribers']
+            },
             'bx_persons_view_actions_all': ['profile-friend-add', 'profile-friend-remove', 'profile-subscribe-add', 'profile-subscribe-remove', 'messenger'],
                 
             'bx_groups_submenu': {

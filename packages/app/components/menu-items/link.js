@@ -17,6 +17,7 @@ export default function MenuItemLink(oProps) {
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
     const bTitleOnly = oProps?.params && oProps.params?.showTitleOnly === true;
+    const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
 
     const DisplayLink = (oProps) => {
         const sClassName = 'menu-item ' + ((oProps?.params && oProps.params?.classNameItem && oProps.params.classNameItem?.link) || 'flex max-w-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:underline cursor-pointer');
@@ -36,14 +37,22 @@ export default function MenuItemLink(oProps) {
         );
     }
 
-    const sClassContent = 'flex flex-row gap-1';
+    const sClassContent = 'flex flex-row items-center gap-1';
+
+    let sIcon = '';
+    if(!bTitleOnly) {
+        if(!!oIconAliases[oProps.name])
+            sIcon = oIconAliases[oProps.name];
+        else if(!!oIconset[oProps.name])
+            sIcon = oIconset[oProps.name];
+    }
 
     let sContent = undefined;
     switch(oProps.content_type) {
         case 'time':
             sContent = (
                 <View className={sClassContent}>
-                    {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
+                    {!!sIcon && <Icon icon={sIcon} />}
                     <Time ts={oProps.title}></Time>
                 </View>
             );
@@ -61,7 +70,7 @@ export default function MenuItemLink(oProps) {
         default:
             sContent = (
                 <View className={sClassContent}>
-                    {!bTitleOnly && oIconAliases[oProps.name] != undefined && <Icon icon={oIconAliases[oProps.name]} />}
+                    {!!sIcon && <Icon icon={sIcon} />}
                     <Text className="flex text-gray-600 dark:text-gray-400">{oProps.title}</Text>
                 </View>
             );

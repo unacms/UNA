@@ -19,6 +19,11 @@ function CoverMenu(props) {
     );
 }
 
+function CoverMenuMeta(props) {
+    return (
+        <Menu {...props} displayType="mixed" params={{button_variant: 'outline'}} />
+    );
+}
 
 export function CoverSmall(props) {
     const data = props.data;
@@ -80,10 +85,8 @@ export default function ElementCover(props) {
                                     </Row>
                                     
                                     <View className='flex-row  gap-1  text-center flex-wrap'>
-                                        <Button title="245 followers" size="sm" rounded startDecorator="Users"  variant="outline" fullWidth />
-                                        <Button title="Administrator" size="sm" rounded startDecorator="UserCircle"  variant="text" fullWidth />
-                                        <Button title="Joined Dec 2021" size="sm" rounded startDecorator="Clock"  variant="text" fullWidth />
-                                   </View>
+                                        <CoverMenuMeta  {...data.meta_menu} />
+                                    </View>
                                     <Text numberOfLines={2} className=' lg:hidden text-base text-gray-800 dark:text-gray-200 '>{stripTags(data.profile.info.description)}</Text>
 
                                     
