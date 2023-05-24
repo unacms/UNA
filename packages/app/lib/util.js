@@ -2,11 +2,11 @@ import * as Haptics from 'expo-haptics';
 import { settings } from 'app/settings';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-import React, { Suspense } from "react";
 
 export function appSetting(section, name, path) {
     if (path)
-        return settings[section] ? settings[section][name][path] : '';
+        return settings[section] && settings[section][name] ? settings[section][name][path] : '';
+
     return settings[section] ? settings[section][name] : '';
 }
 
