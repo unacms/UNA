@@ -13,7 +13,7 @@ export default function ElementFeedItem({data}) {
         </View>
         <View className="m-4 flex-row items-center">
             <View className=" flex-row gap-2 flex-auto flex-wrap ">
-            <Menu {...data.event.menu_actions} displayType="element" showMatched="true" params={{show_action: true, show_counter: true, show_combined: true}} />
+            <Menu {...data.event.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true}} />
             </View>
         </View>
     </View>
