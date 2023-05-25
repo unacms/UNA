@@ -40,7 +40,7 @@ function TopMenu({ items }){
                     sIcon = icon && icon.split(' ')[0],
                     sAIcon = sIcon && ~Object.keys(aIconsAliases).indexOf(sIcon) ? aIconsAliases[sIcon]: sIcon;
 
-                return <Button variant="text" startDecorator={ sAIcon } fullWidth solid align='start' title={title}/>
+                return <Button key={iIndex} variant="text" startDecorator={ sAIcon } fullWidth solid align='start' title={title}/>
             })
         }
     </View>

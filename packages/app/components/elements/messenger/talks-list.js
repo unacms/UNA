@@ -6,11 +6,7 @@ import Image from 'app/ui/atoms/image';
 import { Link } from 'app/ui/atoms/link';
 import { Button, Input } from 'app/design/controls';
 import { useState, useRef } from 'react';
-import { StyleSheet } from 'react-native';
-import { TopMenu, GroupsMenu } from 'app/components/elements/messenger/menu';
 import Time from "app/ui/atoms/time";
-import UnitComments from "../../units/comments";
-import Loading from "../../../ui/atoms/loading";
 
 function UserAvatar({ avatars }) {
     const oAvatar = avatars['bx_if:avatars'],
@@ -63,7 +59,7 @@ function TalksListItem({ item, active, onClick }){
 
      return <View onClick={onClick} className= { "max-h-full flex flex-col " + ( active ? 'bg-blue-600 hover:bg-blue-600' : '')}>
         <View className="hover:bg-white dark:hover:bg-gray-700/20" data-lot={id}>
-            <Link href="javascript:void(0);" className="block w-full">
+            <Link href="" className="block w-full">
                 <View className="min-w-0 w-full flex flex-row gap-3 sm:items-top sm:justify-between items-center p-4">
                     <View className="h-min text-center relative flex text-center flex-0">
                         <UserAvatar avatars={item['bx_repeat:avatars'][0]} />
