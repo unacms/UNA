@@ -21,7 +21,7 @@ function CoverMenu(props) {
 
 function CoverMenuMeta(props) {
     return (
-        <Menu {...props} displayType="mixed" params={{button_variant: 'outline'}} />
+        <Menu {...props} displayType="mixed" params={{button_variant: 'text'}} />
     );
 }
 
