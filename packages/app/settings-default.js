@@ -94,6 +94,7 @@ import Svg, {Path} from 'react-native-svg'
         feed: {
             show_selector_view: false,
             default_view: '',
+            show_html: true,
         },
         entry: {
             default_view: '',

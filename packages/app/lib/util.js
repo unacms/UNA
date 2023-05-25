@@ -113,6 +113,13 @@ export function isEmoji(s) {
 export function stripTags(s) {
     if (s)
         return s.replace(/(<([^>]+)>)/ig, '');
+    
+    return s;
+}
+
+export function stripTagsWithLinks(s) {
+    if (s)
+        return s.replace(/<(?!\/?a(?=>|\s.*>))\/?.*?>/ig, '');
         
     return s;
 }

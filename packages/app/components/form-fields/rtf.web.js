@@ -20,6 +20,7 @@ import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
 
+
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();
     const [showModal, setShowModal] = useState(false);
@@ -60,9 +61,7 @@ const MenuBar = ({ editor }) => {
         if (modalType == 'embed'){
             if (inputValue != '') {
                 let className = "w-full max-w-xl aspect-video mx-auto ";
-                if (inputValue.includes('twitter.com') ) {
-                        className = "w-full max-w-xl aspect-square mx-auto ";
-                }
+                
                 const rvUrl = appSetting("urls", "embeds") + inputValue + '&theme=' + scheme;
                 editor.chain().focus().setIframe({ src: rvUrl, origin: inputValue, class: className }).run()
                 setShowModal(false);

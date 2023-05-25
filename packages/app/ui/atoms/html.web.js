@@ -1,29 +1,41 @@
 import { appSetting } from 'app/lib/util'
-import { useColorScheme } from 'react-native';   
+import { useColorScheme } from 'react-native'; 
+import { useState, useEffect } from 'react' 
+import { stringMd5 } from 'react-native-quick-md5'; 
 
 export default function ElementHtml(props) {
     let data = props.data;
     let sClass = "u-vanilla-html " + props.className;
     const scheme = useColorScheme();
+    console.log(props);
+    window.addEventListener("message", function(event) {
+       
+        if (event.origin !== 'https://ci.una.io') // replace example.com with your iframe's origin
+            return;
+       
+        let data = JSON.parse(event.data)
+
+        const iframe = document.querySelector(`iframe[id="${data[0]}"]`);
+        if (iframe) {
+            iframe.style.height = `${data[1]}px`;
+        }
+
+    }, false);
 
     const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
     if (data){
         data = data.replace(regex, function (match, capture) {
             // Customize the className based on the captured value
-            let className = "aspect-video";
-            if (capture.includes('twitter.com') ) {
-                className = "aspect-square";
-            }
-          
+
+            let hash = stringMd5(capture);
             return (
-              '<iframe scrolling="no"  height=auto class="w-full max-w-xl mx-auto ' + className + '" src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '"></iframe>'
+                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );
           });
     }
-     //   data = data.replace(regex, '<iframe width=100% height=auto class="aspect-video" src="' + appSetting('urls', 'embeds') + '$1"></iframe>');
     
     return (<div>
-            <div className={sClass} dangerouslySetInnerHTML={{__html:data}} styles={props.htmlStyles}/>
+            <div className={sClass} dangerouslySetInnerHTML={{__html:data}} style={props.htmlStyles}/>
         </div>
     )
 }
