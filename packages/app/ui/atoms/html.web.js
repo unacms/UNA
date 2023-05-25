@@ -1,13 +1,11 @@
 import { appSetting } from 'app/lib/util'
 import { useColorScheme } from 'react-native'; 
-import { useState, useEffect } from 'react' 
 import { stringMd5 } from 'react-native-quick-md5'; 
 
 export default function ElementHtml(props) {
     let data = props.data;
     let sClass = "u-vanilla-html " + props.className;
     const scheme = useColorScheme();
-    console.log(props);
     window.addEventListener("message", function(event) {
        
         if (event.origin !== 'https://ci.una.io') // replace example.com with your iframe's origin

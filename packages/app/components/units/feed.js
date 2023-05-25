@@ -37,7 +37,7 @@ function DefaultUnit(data) {
                 }         
             });
     }
-    console.log('------------', data);
+
     return (
         <View className='max-w-5xl w-full mx-auto '>
         <View className=" 
