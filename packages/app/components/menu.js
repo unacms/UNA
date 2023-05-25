@@ -15,7 +15,7 @@ export default function ElementMenu(oProps) {
     const bAutoFilter = oProps?.autoFilter == undefined || oProps.autoFilter === 'true';
 
     //--- show only items which match with menu's display_type
-    const bShowMatched = oProps?.showMatched === 'true';
+    const bShowMatched = oProps?.showMatched === true;
 
     //--- show only items with selected display_type and doesn't take in account the menu's display_type
     const sShowSelected = oProps?.showSelected || false;
