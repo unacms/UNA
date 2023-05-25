@@ -107,7 +107,7 @@ function isObject(item) {
 export function isEmoji(s) {
     const emojiRegex = /\p{Emoji}|\p{Extended_Pictographic}/u;
 
-    return s.match(emojiRegex);
+    return !!s.match(emojiRegex);
 }
 
 export function stripTags(s) {
