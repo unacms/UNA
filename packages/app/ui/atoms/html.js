@@ -5,13 +5,10 @@ import RenderHtml from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
+import { stringMd5 } from 'react-native-quick-md5'; 
+import { useState } from 'react';
 
-/*const IframeRenderer = function IframeRenderer(props) {
-    const iframeProps = useHtmlIframeProps(props);
-    // Do customize the props here; wrap with your own container...
-    return <View className="w-24 bg-red-500"><HTMLIframe {...iframeProps} /></View>;
-  };
-*/
+
 const renderers = {
     iframe: IframeRenderer
   };
@@ -35,6 +32,7 @@ const domVisitors = {
 
 export default function ElementHtml(props) {
     const { colors } = Theme();
+    const [iframeH, setIframeH] = useState({});
     let { width } = useWindowDimensions();
     
     const theme = useColorScheme();
@@ -118,21 +116,34 @@ export default function ElementHtml(props) {
         data = data.replace(regex, function (match, capture) {
             // Customize the className based on the captured value
             let widthIfr = width-32
-            let heightIfr = widthIfr * 9/16 + 80;
-            if (capture.includes('twitter.com') ) {
-                heightIfr = widthIfr * 1.6;
+            let heightIfr = widthIfr * 9/16 + 4;
+
+            let hash = stringMd5(capture);
+            let item = iframeH[hash];
+  
+            if (item && !capture.includes('youtube.com')){
+                heightIfr = item[0];
             }
-            if (capture.includes('youtube.com') ) {
-                heightIfr = widthIfr * 9/16 + 40;
-            }
+
             return (
-                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture + '&theme=' + theme + '"></iframe>'
+                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
               );
             });  
     }
 
     if (!data)
         return <></>
+    
+    const onMessage = (event) => {
+        let a = {};
+        b = event.nativeEvent.data;
+        let data = JSON.parse(event.nativeEvent.data)
+        a[data[0]] = [data[1], data[2]];
+        setIframeH({...iframeH, ...a})
+    };
+   
+
+
 
     return (
         
@@ -155,6 +166,7 @@ export default function ElementHtml(props) {
                     iframe: {
                     scalesPageToFit: true,
                     webViewProps: {
+                        onMessage: onMessage
                         /* Any prop you want to pass to iframe WebViews */
                     }
                     }

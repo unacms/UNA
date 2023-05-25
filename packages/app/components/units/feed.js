@@ -1,5 +1,5 @@
 import Image from '../../ui/atoms/image';
-import { stripTags } from '../../lib/util';
+import { stripTags, stripTagsWithLinks } from '../../lib/util';
 import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
@@ -13,6 +13,7 @@ import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
 import { ContentMore } from 'app/ui/molecules/contentmore';
+import { appSetting } from 'app/lib/util'
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
@@ -66,16 +67,19 @@ function DefaultUnit(data) {
             </View>
         }   
                 <View className="flex-auto p-3   flex-col gap-2">
-                    
                     <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                         {data.content.title}
                     </Text>
+
                         {!showFull ? 
                         <View>
-                            <View className="flex-col gap-3    relative">
+                            <View className="flex-col gap-3 relative">
+                            { appSetting('feed', 'show_html') != true && 
                             <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
                                 {data.plainText}
-                            </Text>
+                            </Text>}
+                            { appSetting('feed', 'show_html') == true && 
+                             <View style={{maxHeight:44, overflow:'hidden'}}><Html  data={stripTagsWithLinks(data.content.text)} /></View>}
                             </View>
                         {!!data.sFirstImg &&
                             <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
@@ -84,7 +88,7 @@ function DefaultUnit(data) {
                         }    
                         </View>
                         :  <View className="flex-col relative w-full">
-                                    <Html data={data.content.text} />
+                                <Html data={data.content.text} />
                              </View>
                                 
                             
