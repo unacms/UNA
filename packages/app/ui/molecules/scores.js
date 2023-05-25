@@ -169,13 +169,24 @@ export default function ElementScore(oProps) {
     let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.score != undefined) {
         let iScore = oCounter.score;
+        let iScoreCountUp = oCounter.count_up;
+        let iScoreCountDown = oCounter.count_down;
         if(isContextVar('counter')) {
             const oCounterGlobal = getContextVar('counter');
-            if(oCounterGlobal?.score)
+            if(oCounterGlobal?.score != undefined)
                 iScore = oCounterGlobal.score;
+            if(oCounterGlobal?.count_up != undefined)
+                iScoreCountUp = oCounterGlobal.count_up;
+            if(oCounterGlobal?.count_down != undefined)
+                iScoreCountDown = oCounterGlobal.count_down;
         }
 
-        if(iScore != 0) {
+        const bScore = iScoreCountUp != 0 || iScoreCountDown != 0;
+        sCounterButton = (
+            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} />
+        );
+
+        if(bScore) {
             let sUsers = undefined;
             if(performedBy) {
                 sUsers = performedBy.map(aVote => {
@@ -195,10 +206,6 @@ export default function ElementScore(oProps) {
             if(!sUsers || sUsers.length == 0)
                 sUsers = getSkeleton();
 
-            sCounterButton = (
-                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} />
-            );
-
             sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'score_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="p-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
@@ -209,12 +216,7 @@ export default function ElementScore(oProps) {
 
     const sObject = getName();
     if(bShowCombined) {
-        let aButtonsGroup = [aActionButtons[0]];
-        if(!!sCounterButton)
-            aButtonsGroup.push(sCounterButton);
-        else
-            aButtonsGroup.push(<ButtonAction key="counter-holder" title={appSetting('lang_keys', 'score_counter_label')} disabled />);
-        aButtonsGroup.push(aActionButtons[1]);
+        const aButtonsGroup = [aActionButtons[0], sCounterButton, aActionButtons[1]];
 
         return (
             <View>

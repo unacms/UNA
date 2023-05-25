@@ -85,7 +85,6 @@ import Svg, {Path} from 'react-native-svg'
             rvote_surprise_title: 'Surprise',
             rvote_sadness_title: 'Sadness',
             rvote_anger_title: 'Anger',
-            score_counter_label: 'Vote',
             score_performed_by_popup_title: 'Upvotes',
             ntfs_popup_title: 'Notifications',
             ntfs_popup_view_all: 'View all',
@@ -127,7 +126,7 @@ import Svg, {Path} from 'react-native-svg'
             reaction:{
                 show_action: true,
                 show_action_as_button: true,
-                show_action_label: true,
+                show_action_label: false,
                 show_counter: true,
                 show_counter_style: 'compound', //'compound' or 'divided'
                 show_counter_as_button: false,
