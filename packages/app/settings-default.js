@@ -357,7 +357,7 @@ import Svg, {Path} from 'react-native-svg'
             'persons-profile-friends':{
                 layout: 'profile',
                 blocks: {
-                    col1:{name: 'system:connections_table', showTitle: false, showBg: false, perLine:1}
+                    col1:{name: 'bx_persons:browse_connections_everywhere', showTitle: false, showBg: false}
                 }
             },
             'persons-profile-info':{
