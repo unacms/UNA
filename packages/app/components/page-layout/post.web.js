@@ -68,7 +68,7 @@ export default function PageLayout(props) {
     let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
-            <View className='border-b border-bordercolorcard dark:border-bordercolorcard-dark'>
+            <View className=' border-b  border-bordercolor dark:border-bordercolor-dark'>
                 {aItems[actionsItemIndex].data}
             </View>
         );
@@ -86,7 +86,7 @@ export default function PageLayout(props) {
 
     return ( 
         <View className="lg:py-4">
-            <View className=" justify-betweenw-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-neoborder dark:border-neoborder-dark ">
+            <View className=" justify-between w-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>

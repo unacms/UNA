@@ -34,7 +34,7 @@ export default function ElementEntityAttachments(props) {
             </View>
         </Modal>
             <Row className="relative gap-4 flex-wrap p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark w-full mx-auto max-w-5xl">
-                {aImages}
+                {aImages}Roman, please don't show this block when attachments are not present ⚡️ it takes too much emty space
             </Row></>
         );
    

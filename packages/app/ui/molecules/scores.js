@@ -227,7 +227,7 @@ export default function ElementScore(oProps) {
         return (
             <View className="flex-auto flex-row items-center">
                 {bShowAction && !!aActionButtons[0] && <View key={sObject + '-action-up'} className="flex-auto mr-0.5">{aActionButtons[0]}</View>}
-                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'} className={'flex-auto flex-row' + (bShowFull ? ' mx-0.5' : '')}>{sCounterButton}</View>}
+                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'} className={'flex-auto flex-row  ' + (bShowFull ? ' mx-0.5' : '')}>{sCounterButton}</View>}
                 {bShowAction && !!aActionButtons[1] && <View key={sObject + '-action-down'} className="flex-auto ml-0.5">{aActionButtons[1]}</View>}
                 {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
             </View>

@@ -429,7 +429,7 @@ export default function ElementReactions(oProps) {
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row  border-b border-neoborder dark:border-neoborder-dark ">{aPerformedByMenu}</View>
+                    <View className="relative flex-row  border-b border-bordercolor dark:border-bordercolor-dark ">{aPerformedByMenu}</View>
                     <View className="p-2">{aPerformedByUsers}</View>
                 </Modal>
             ]
