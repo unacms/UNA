@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
+import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
@@ -39,7 +40,8 @@ export default function ElementScore(oProps) {
     };
 
     const { actionsData, setActionsData } = useContext(ActionsData);
-    const [ actionsDataState, asetActionsDataState ] = useState({});
+    const [ actionsDataState, setActionsDataState ] = useState({});
+    const [ counterClass, setCounterClass ] = useState('');
 
     const [ popupVisible, setPopupVisible ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
@@ -70,9 +72,9 @@ export default function ElementScore(oProps) {
 
         if(bShowFull) {
             if(!actionsDataState)
-                asetActionsDataState(oValue);
+                setActionsDataState(oValue);
             else
-                asetActionsDataState({...actionsDataState, ...oValue});
+                setActionsDataState({...actionsDataState, ...oValue});
         }
         else {
             if(!actionsData)
@@ -100,6 +102,23 @@ export default function ElementScore(oProps) {
             FeedbackHaptics(oParams.haptics_type);
 
         performAction('do', {a: sAction}, (oData) => {
+            let iScoreOld = oCounter.score;
+            if(isContextVar('counter'))
+            iScoreOld = getContextVar('counter').score;
+
+            if(oData?.counter != undefined) {
+                oData.counter.score_old = iScoreOld;
+                if(oData.counter.score != iScoreOld) {
+                    let iScore = parseInt(oData.counter.score);
+                    iScoreOld = parseInt(iScoreOld);
+
+                    if(iScore > iScoreOld)
+                        setCounterClass('translate-y-1/2');
+                    else 
+                        setCounterClass('-translate-y-1/2');
+                }
+            }
+
             setContextVars(oData);
         });
     };
@@ -169,12 +188,15 @@ export default function ElementScore(oProps) {
     let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.score != undefined) {
         let iScore = oCounter.score;
+        let iScoreOld = oCounter.score;
         let iScoreCountUp = oCounter.count_up;
         let iScoreCountDown = oCounter.count_down;
         if(isContextVar('counter')) {
             const oCounterGlobal = getContextVar('counter');
             if(oCounterGlobal?.score != undefined)
                 iScore = oCounterGlobal.score;
+            if(oCounterGlobal?.score_old != undefined)
+                iScoreOld = oCounterGlobal.score_old;
             if(oCounterGlobal?.count_up != undefined)
                 iScoreCountUp = oCounterGlobal.count_up;
             if(oCounterGlobal?.count_down != undefined)
@@ -182,8 +204,20 @@ export default function ElementScore(oProps) {
         }
 
         const bScore = iScoreCountUp != 0 || iScoreCountDown != 0;
+
+        iScore = parseInt(iScore);
+        iScoreOld = parseInt(iScoreOld);
+        const sScore = (
+            <Text className={'flex' + (iScore > iScoreOld ? ' items-end' : ' items-start') + ' h-5 overflow'}>
+                <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : 'flex-col') + ' transition-all duration-500 ' + counterClass}>
+                    <Text className={'sv-old block h-5'}>{iScoreOld.toString()}</Text>
+                    <Text className={'sv-new block h-5'}>{iScore.toString()}</Text>
+                </Text>
+            </Text>
+        );
+
         sCounterButton = (
-            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={iScore.toString()} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} />
+            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} />
         );
 
         if(bScore) {

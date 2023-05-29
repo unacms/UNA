@@ -161,7 +161,7 @@ export default function (props) {
                               id: 'menu-' + index,
                               link: item.link,
                               title: item.title,
-                              icon: item.icon,
+                              icon: item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]
                             };
                           })}>
                         <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
