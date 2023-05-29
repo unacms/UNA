@@ -4,6 +4,8 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
+import { useState } from 'react'
+import EventSource from "react-native-sse";
 
 export default function AppLayout() {
 
@@ -15,11 +17,21 @@ export default function AppLayout() {
   let iconHeight = 24;
 
   let profile = null
+  const [notifCount, setNotifCount] = useState(currentUser? currentUser.notifications : null)
+
   if (currentUser){
     let dUser = currentUser;
     dUser.url_avatar = dUser.avatar
     dUser.url = '/dashboard'
     profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
+
+    const es = new EventSource(appSetting("urls", "notifs") + dUser.id + "&params[]=" + dUser.notifCount);
+
+
+    es.addEventListener("message", (event) => {
+      if (event.data != notifCount)
+            setNotifCount(event.data)
+    });
   }
 
 
@@ -47,7 +59,7 @@ export default function AppLayout() {
             name={`tab${index}`}
             initialParams={{ url2: tab.url}}
             options={{
-              tabBarBadge: index == 4 ? 3 : null,
+              tabBarBadge: tab.url == '/notifications-view' ? notifCount : null,
               title: tab.title,
               headerShown: false,
               tabBarIcon: ({color}) => (

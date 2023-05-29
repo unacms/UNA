@@ -18,16 +18,34 @@ import Link from 'app/ui/atoms/link'
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
     const initedTabs = fillTabs(menu, data, blocks);
-
     const windowWidth = useWindowDimensions().width;
 
-    const getNumCols = (width) => {
+    const iMenuHeight = 64;
 
-        const blockKeys = Object.keys(blocks);
+    const [routes, setRoutes] = useState(initedTabs);
+    
+    const scroll = useSharedValue(1);
+    const headerHeight = useSharedValue(100);
+    const headerMaxHeight = useSharedValue(100);
+    const headerMinHeight = useSharedValue(100);
+    const { colors } = Theme();
+
+    const [index, setIndex] = useState(routes[0].index);
+    const indicatorOffset = useSharedValue(0);
+
+    const isLoading = useRef(false);
+
+    const getNumCols = (width) => {
+        let currentRoute = routes.find((item) => item.index === index);
+        let blocksroutes =  currentRoute.blocks;
+        width = windowWidth;
+        if (!blocksroutes)
+        return 1;
+        const blockKeys = Object.keys(blocksroutes);
 
         for (const key of blockKeys) {
-            if (blocks[key].perLine > 0) {
-                return blocks[key].perLine;
+            if (blocksroutes[key].perLine > 0) {
+                return blocksroutes[key].perLine;
             }
         }
 
@@ -42,21 +60,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return 1;
     };
 
-    const iMenuHeight = 64;
-
-    const [routes, setRoutes] = useState(initedTabs);
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
-    const scroll = useSharedValue(1);
-    const headerHeight = useSharedValue(100);
-    const headerMaxHeight = useSharedValue(100);
-    const headerMinHeight = useSharedValue(100);
-    const { colors } = Theme();
-
-    const [index, setIndex] = useState(routes[0].index);
-    const indicatorOffset = useSharedValue(0);
-
-    const isLoading = useRef(false);
 
     const handleEndReached = useCallback(async () => {
         if (isLoading.current) 
@@ -255,7 +260,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, [numColumns]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
-        
+
+        if (getNumCols(0) != numColumns)
+            setNumColumns(getNumCols(0));
+
         return (
            <UniList
                 {...props}
@@ -276,7 +284,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
         if (route.inited){
             const dataItems = route.data;
-
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <Row style={{ paddingTop: header ? 300 : 0 }} className="mb-4"> 
@@ -310,7 +317,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
-        const containerHeight = event.nativeEvent.layout.height;
         if (getNumCols(containerWidth) != numColumns)
             setNumColumns(getNumCols(containerWidth));
     };

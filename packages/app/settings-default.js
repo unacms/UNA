@@ -72,6 +72,7 @@ import Svg, {Path} from 'react-native-svg'
     export const settingsDefault = {
         urls: {
             embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
+            notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
         },
         lang_keys: {
             comment_list_title: 'Comments',
@@ -190,7 +191,7 @@ import Svg, {Path} from 'react-native-svg'
                     {icon: 'DotsThreeOutlineVertical', name:"More"}
                 ]
             },
-            'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info', 'persons-profile-friends'],
+            'bx_persons_view_submenu': ['view-persons-profile', 'persons-profile-info', 'persons-profile-friends', 'persons-profile-subscriptions'],
             'bx_persons_view_meta': {
                 iconset: {
                     membership: 'UserCircle', 
@@ -348,7 +349,7 @@ import Svg, {Path} from 'react-native-svg'
             'view-persons-profile':{
                 layout: 'profile',
                 blocks: {
-                    col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false, perLine:1},
+                    col0:{name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false},
                     col1:{name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine:1},
                     col2:{name: 'bx_persons:entity_info', showTitle: true, showBg: true, sidebar: true},
                     col3:{name: 'bx_posts:browse_public', showTitle: false, showBg: false, sidebar: true},
@@ -357,13 +358,19 @@ import Svg, {Path} from 'react-native-svg'
             'persons-profile-friends':{
                 layout: 'profile',
                 blocks: {
-                    col1:{name: 'bx_persons:browse_connections_everywhere', showTitle: false, showBg: false}
+                    col1:{name: 'system:connections_table', showTitle: false, showBg: false, perLine:3}
+                }
+            },
+            'persons-profile-subscriptions':{
+                layout: 'profile',
+                blocks: {
+                    col1:{name: 'system:subscribed_me_table', showTitle: false, showBg: false, perLine:3}
                 }
             },
             'persons-profile-info':{
                 layout: 'profile',
                 blocks: {
-                    col0:{name: 'bx_persons:entity_text_block', showTitle: false, showBg: false},
+                    col0:{name: 'bx_persons:entity_text_block', showTitle: false, showBg: false, perLine:1},
                     col1:{name: 'bx_persons:entity_info_full', showTitle: false, showBg: false},
                 }
             },

@@ -118,8 +118,11 @@ export function stripTags(s) {
 }
 
 export function stripTagsWithLinks(s) {
+    var allowed = ['a', 'p'];
     if (s)
-        return s.replace(/<(?!\/?a(?=>|\s.*>))\/?.*?>/ig, '');
+        return s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
+            return allowed.includes(tag.toLowerCase()) ? _ : '';
+        });
         
     return s;
 }

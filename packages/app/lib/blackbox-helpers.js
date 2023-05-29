@@ -16,6 +16,7 @@ export function fillTabs(menu, data, blocks){
             i.link = item.link;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
+            i.blocks = blocks;
         } else {
             i.link = item.link;
             i.inited = false;
@@ -53,16 +54,18 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
-        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index)
+        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks)
 
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index) {
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks) {
     setRoutes((prevRoutes) => {
         const updatedRoutes = prevRoutes.map((route) => {
             if (route.index === index) {
                 route.endpoint = endpoint;
+                if (blocks)
+                    route.blocks = blocks
                 route.inited =true
                 return {
                     ...route,
