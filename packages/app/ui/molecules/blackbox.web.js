@@ -13,13 +13,17 @@ import { fillTabs, getRightCol, parseData, fetchAndUpdateData, ItemRenderer } fr
 import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-
+import { useRouter } from 'next/router';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
 
+    
+    const router = useRouter();
+   
     const initedTabs = fillTabs(menu, data, blocks);
     const windowWidth = useWindowDimensions().width;
-
+    console.log(data);
+    console.log(initedTabs);
     const iMenuHeight = 64;
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -30,7 +34,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const headerMinHeight = useSharedValue(100);
     const { colors } = Theme();
 
-    const [index, setIndex] = useState(routes[0].index);
+    const [index, setIndex] = useState(routes.findIndex(function(item) {
+        return item.key === data.url;
+    }));
     const indicatorOffset = useSharedValue(0);
 
     const isLoading = useRef(false);
@@ -146,6 +152,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index)
+                                            window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >
                                         <Button id="tab" variant="text" rounded size='sm' title={a.title}   />
