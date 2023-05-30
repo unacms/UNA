@@ -364,7 +364,7 @@ import Svg, {Path} from 'react-native-svg'
             'persons-profile-subscriptions':{
                 layout: 'profile',
                 blocks: {
-                    col1:{name: 'system:subscribed_me_table', showTitle: false, showBg: false, perLine:3}
+                    col1:{name: 'system:subscriptions_table', showTitle: false, showBg: false, perLine:3}
                 }
             },
             'persons-profile-info':{
