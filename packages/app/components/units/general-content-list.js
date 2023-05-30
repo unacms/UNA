@@ -172,7 +172,7 @@ export default function Unit(props) {
                             </View>
                             </View>
                             
-                        <Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.fullname}</Text>
+                        <Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text>
                         <View className=''>{sMeta}</View>
                     </View>
                 </Link>
