@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { env } from 'app/lib/env';
 
 const USE_PROXY = true; // TODO: move to some setting 
 
@@ -7,7 +8,7 @@ function getUrlPrefix() {
     if (typeof(window) !== 'undefined')
         [proto, host, port] = [window.location.protocol, window.location.hostname, window.location.port];
     else
-        [proto, host, port] = [process.env.PROTO, process.env.HOST, process.env.PORT];
+        [proto, host, port] = [env('PROTO'), env('HOST'), env('PORT')];
 
     s = `${proto}//${host}`;
     if (port && 80 !== port && 443 !== port)
@@ -16,14 +17,14 @@ function getUrlPrefix() {
 }
 
 export async function fetcher (mixed) {
-    let prefix = process.env.UNA_URL; // by default we don't use proxy
+    let prefix = env('UNA_URL'); // by default we don't use proxy
     if (USE_PROXY) { 
         // since we have proxy setup in NextJS, then for web we use curent site url, 
         // for native we have no standalone server, so we have to set URL of external NextJS app (there no no CORS problem in native)
         if ('web' === Platform.OS)
             prefix =  getUrlPrefix() + "/api";
         else
-            prefix = process.env.API_PROXY_URL;
+            prefix = env('API_PROXY_URL');
     }
 
     return await fetcherRaw(prefix, mixed).then(async (r) => {
@@ -64,7 +65,7 @@ export async function fetcherRaw (host, mixed) {
 
     // when fetcher isn't using proxy then when user login 
     // we need to set cookies on UNA domain (for CSR) and NEO domain (for SSR), so need to make second calls to different domain
-    if (!USE_PROXY && 'web' === Platform.OS && process.env.UNA_URL === host && data && path.includes('system/login_form/') && !process.env.UNA_API_KEY) {
+    if (!USE_PROXY && 'web' === Platform.OS && env('UNA_URL') === host && data && path.includes('system/login_form/') && !env('UNA_API_KEY')) {
         const dataResubmit = await fetcherRaw (getUrlPrefix() + "/api", mixed).then(r => {
             return r.text();
         });

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
-
+import { env } from 'app/lib/env';
 
 const setCookie = require('set-cookie-parser');
 
@@ -15,7 +15,7 @@ export async function getServerSideProps(context) {
     const cookies = context.req.headers.cookie;
     const data = await getData(
         context.params?.path?.join('/'), 
-        process.env.UNA_API_KEY, 
+        env('UNA_API_KEY'), 
         undefined, 
         cookies ? { 'Cookie': cookies } : undefined,
         async (r) => {

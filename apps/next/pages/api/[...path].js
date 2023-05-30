@@ -1,5 +1,6 @@
 
 import { createProxyMiddleware } from "http-proxy-middleware"
+import { env } from 'app/lib/env';
 
 export const config = {
     api: {
@@ -9,7 +10,7 @@ export const config = {
 }
 
 const proxy = createProxyMiddleware({
-    target: process.env.UNA_URL,
+    target: env('UNA_URL'),
     secure: false,
     pathRewrite: { 
         "^/api": "" // remove `/api` prefix
@@ -17,7 +18,7 @@ const proxy = createProxyMiddleware({
     logLevel: 'debug',
     changeOrigin: true,
     headers: {
-        authorization: 'Bearer ' + process.env.UNA_API_KEY
+        authorization: 'Bearer ' + env('UNA_API_KEY')
     },
 });
 
@@ -62,7 +63,7 @@ export default async function handler(req, res) {
         path += '?' + params.substring(1);
     
     // perform fetch
-    const data = await fetcherRaw(process.env.UNA_URL, [path, process.env.UNA_API_KEY, body, undefined, headers]).then(async r => {
+    const data = await fetcherRaw(env('UNA_URL'), [path, env('UNA_API_KEY'), body, undefined, headers]).then(async r => {
         let a;
         try {
             if (r.headers.has('Set-Cookie')) {
@@ -72,7 +73,7 @@ export default async function handler(req, res) {
             }    
             a = await r.json();
         } catch (error) {
-            console.log("----------- Response isn't valid JSON for " + process.env.UNA_URL + path);
+            console.log("----------- Response isn't valid JSON for " + env('UNA_URL) + path);
             if ('readable' == r.body.state)
                 console.log(await r.text());
             else

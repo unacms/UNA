@@ -32,7 +32,15 @@ const expoConfig = {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-    }
+    },
+    extra: {
+      "UNA_API_KEY": process.env.UNA_API_KEY,
+      "UNA_URL": process.env.UNA_URL,
+      "API_PROXY_URL": process.env.API_PROXY_URL,
+      "PROTO": process.env.PROTO,
+      "HOST": process.env.HOST,
+      "PORT": process.env.PORT
+    },    
 };
 
 module.exports = merge(expoConfig, expoConfigCustom);
