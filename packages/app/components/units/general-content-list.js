@@ -9,8 +9,7 @@ import Menu from 'app/components/menu';
 
 export default function Unit(props) {
     let data = props.data;
-   
-    
+
     function getImageSizes(){
         const perLineSettings = appSetting('browse', 'per_line');
         let str ="";
@@ -26,10 +25,11 @@ export default function Unit(props) {
         str += '' + (1280/perLineSettings[0].count) + 'px';
         return str
     }
-    
-    const imageSizes = getImageSizes();
 
-    switch (props.module) {
+    const imageSizes = getImageSizes();
+    const module = !!data?.module ? data.module : props.module;
+
+    switch (module) {
         case 'bx_groups':
             return groupUnit();
 
