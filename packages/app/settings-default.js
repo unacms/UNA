@@ -310,7 +310,7 @@ import Svg, {Path} from 'react-native-svg'
             'group-fans':{
                 layout: 'profile',
                 blocks: {
-                    col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:1}
+                    col1:{name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine:3}
                 }
             },
             //############ CHANNELS PAGES ############
