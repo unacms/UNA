@@ -44,12 +44,12 @@ export default function ElementSearch(oProps) {
          */
         const aParams = {
             keyword: sValue,
-            section: 'bx_posts',
+            section: appSetting('search', 'sections'),
             start: 0,
             per_page: 12,
         };
 
-        const sResponse = await fetcher('/api.php?r=system/get_data_search/TemplServices&params=' + JSON.stringify(aParams));
+        const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
         if(!sResponse?.data) {
             setPopupContent('');
             return;
@@ -91,7 +91,7 @@ export default function ElementSearch(oProps) {
                 <Redirect ref={redirectdRef} />
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search')} />
+                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search-keyword')} />
                 </View>
                 <View className="flex-row">
                     <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
