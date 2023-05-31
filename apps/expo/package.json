@@ -12,6 +12,7 @@
     "@react-navigation/native": "^6.1.6",
     "@shopify/flash-list": "1.4.0",
     "@shopify/react-native-skia": "^0.1.185",
+    "@tanstack/react-query": "^4.29.12",
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-document": "^2.0.3",
     "@tiptap/extension-image": "^2.0.3",

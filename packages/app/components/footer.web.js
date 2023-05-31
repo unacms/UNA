@@ -26,7 +26,6 @@ export default function () {
             if (event.data != notifCount)
                 setNotifCount(event.data)
         };
-
     }
 
     
