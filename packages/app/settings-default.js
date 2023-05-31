@@ -45,6 +45,9 @@ export const settingsDefault = {
             {width: 640, count: 2},
         ]
     },
+    search: {
+        sections: ['bx_posts', 'bx_persons', 'bx_groups']
+    },
     social_actions:{
         like: {
             show_action: true,
