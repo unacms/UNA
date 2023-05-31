@@ -1,5 +1,6 @@
 import 'raf/polyfill'
 import { Analytics } from '@vercel/analytics/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const fixReanimatedIssue = () => {
   // FIXME remove this once this reanimated fix gets released
@@ -18,14 +19,17 @@ import { CurrentUserProvider } from 'app/context/user';
 import '../../../packages/app/styles/global.css'
 
 function MyApp({ Component, pageProps }) {
+  const queryClient = new QueryClient()
 
   return (
     <>
         <Provider>
-          <CurrentUserProvider>
-            <Component {...pageProps} />
-            <Analytics />
-          </CurrentUserProvider>
+          <QueryClientProvider client={queryClient}>
+            <CurrentUserProvider>
+              <Component {...pageProps} />
+              <Analytics />
+            </CurrentUserProvider>
+          </QueryClientProvider>
         </Provider>
       
     </>

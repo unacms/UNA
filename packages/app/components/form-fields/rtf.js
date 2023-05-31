@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
+//import QuillEditor, { QuillToolbar } from 'react-native-cn-quill';
 import { useController, useFormContext } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native'
@@ -62,6 +62,8 @@ export default function FormFieldFtf(props) {
         }
     };
 
+    return (<></>);
+    
     return (
 
             <View className="w-full mb-4">

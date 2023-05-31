@@ -165,8 +165,6 @@ export default function FormFieldFtf(props) {
 
     const editor = useEditor({
         extensions: [
-            Document,
-            Text,
             Image,
             Iframe,
             Link.configure({
