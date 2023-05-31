@@ -11,6 +11,7 @@ import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
+import { appStatic } from 'app/static';
 import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider';
 
@@ -123,8 +124,8 @@ export default function (props) {
             <TouchableOpacity className="" onPress={hideMenu}>
               <Link href="/home" aria-label="Logo">
                 <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                  {appSetting('theme', 'svg', 'logo-mark')}
-                  {appSetting('theme', 'svg', 'logo-text')}
+                  {appStatic('logo', 'mark')}
+                  {appStatic('logo', 'text')}
                 </View>
               </Link>
             </TouchableOpacity>

@@ -12,7 +12,7 @@ import EntityCover from './entity_cover';
 import ProfileMenu from './profile_menu';
 import FeedItem from './feed_item';
 
-import { MessengerPage } from './messenger';
+//import { MessengerPage } from './messenger';
 
 export const componentsMapDefault = {
     browse: Browse,
@@ -30,7 +30,7 @@ export const componentsMapDefault = {
 
     feed_item: FeedItem,
 
-    messenger_main_page: MessengerPage
+    //messenger_main_page: MessengerPage
 };
 
 

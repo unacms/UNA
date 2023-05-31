@@ -4,6 +4,8 @@ import ObjectDataArray from './blocks-content/object-data-array';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { stripTags } from '../lib/util';
+import { appStatic } from 'app/static';
+
 
 const componentsMap = {
     object: ObjectDataObject,
@@ -16,6 +18,11 @@ export function BlockByName(props) {
 
     let b = null;
     if (name){
+
+        if (name.name.includes('static')){
+            return <StaticBlock  {...name} />;
+        }
+
         const blockName = name?.name;
         Object.keys(data?.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {
@@ -33,7 +40,6 @@ export function BlockByName(props) {
     
     //return <Text className="text-black dark:text-white"><!--Not found: {JSON.stringify(name)}--></Text>
 }
-
 
 export function DataByName(data, name) {
 
@@ -55,10 +61,19 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    //let c = <Block key={b.id} uri={''} block={b} showTitle={name.showTitle} showBg={name.showBg} />;
-
     let c = Block({key:b.id, uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg})
     return c;
+}
+
+export function StaticBlock(props) {
+    let block = {designbox_id:0, id: props.name};
+
+    return (
+        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle}> 
+            {appStatic('components', props.name.replace('static:', ''))}
+        </BlockWrapper>
+    );
+
 }
 
 export default function Block(props) {
@@ -70,6 +85,21 @@ export default function Block(props) {
     const aAllowTypes = ['html', 'raw', 'lang'];
     if (type == 'string' && !aAllowTypes.includes(block.type))
     //    return null;
+
+    
+    if (block.content.length == 0)
+        return null;
+
+    return (
+        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle}> 
+            <BlockType data={block.content} type={block.type} {...props}/>
+        </BlockWrapper>
+    );
+}
+
+export function BlockWrapper(props) {
+
+    let { block, showTitle, showBg, ...rest } = props
 
     block.designbox_id = Number(block.designbox_id);
 
@@ -85,21 +115,18 @@ export default function Block(props) {
         bIsShowBg = false;
     }
 
-    if (typeof props.showBg !== 'undefined'){
-        bIsShowBg = props.showBg;
+    if (typeof showBg !== 'undefined'){
+        bIsShowBg = showBg;
     }
-    if (typeof props.showTitle !== 'undefined'){
-        bIsShowTitle = props.showTitle;
+    if (typeof showTitle !== 'undefined'){
+        bIsShowTitle = showTitle;
     }
-
-    if (block.content.length == 0)
-        return null;
 
     return (
         <View key={block.id} className="w-full">
             <View key={block.id} className={bIsShowBg ? ' px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg' : ''}>
                 {bIsShowTitle && <Text className=" text-xl pb-4 text-gray-800 dark:text-gray-200 font-bold my-auto">{stripTags(block.title)}</Text>}
-                <View><BlockType data={block.content} type={block.type} {...props}/></View>
+                <View>{props.children}</View>
             </View>
         </View>
     );
