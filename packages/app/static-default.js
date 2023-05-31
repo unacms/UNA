@@ -70,16 +70,16 @@ export const staticDefault = {
             </Svg>
     },
     components: {
-        intro: <View className="flex-col space-y-4 w-full h-min mx-auto pb-4 bg-neocard dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden rounded-lg">  
-        <View className="w-full h-4 bg-primary/10  mx-auto  "></View>
+        intro: <View className="flex-col space-y-4 w-full h-min mx-auto pb-4 bg-backgroundcard dark:bg-backgroundcard-dark   overflow-hidden rounded-lg">  
+        <View className="w-full h-2 bg-primary-500/50  mx-auto  "></View>
         <View className="px-4 space-y-2">
-            <View className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                <Text>NEO is a community of 88,000+ active members</Text>
+            <View>
+                <Text  className="text-xl font-bold text-gray-800 dark:text-gray-100">NEO is a community of 88,000+ active members</Text>
             </View>
             <View>
             
-                <View className='text-base text-gray-600 dark:text-gray-400 leading-4'>
-                    <Text>The place to share, connect and grow with people you trust. Create account to join the community. </Text>
+                <View >
+                    <Text className='text-base text-neutral-600 dark:text-neutral-400 '>The place to share, connect and grow with people you trust. Create account to join the community. </Text>
                 </View>
             
             </View>     
@@ -87,7 +87,7 @@ export const staticDefault = {
         <View className="text-center px-4 space-y-2">
             <Button title="Sign up" variant="primary" fullWidth />
             <Button title="Log in" variant="default" fullWidth/>
-            <Button title="About us" variant="link" fullWidth/>
+          
         </View>
     </View>
     },

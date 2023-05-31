@@ -63,7 +63,7 @@ export default function FormFeed(props) {
     '>  
             
         <View className='flex-auto'>    
-        <Button size='base' variant='default' startDecorator='Pencil' fullWidth rounded title='Create a new Post...' align="start" onPress={() => setShowImage(true)} >
+        <Button size='base' variant='outline' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => setShowImage(true)} >
             
         </Button>
         </View>
