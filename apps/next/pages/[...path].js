@@ -12,9 +12,14 @@ export default function Path (props) {
 }
 
 export async function getServerSideProps(context) {
+    let params = null;
+    if (context?.query?.q){
+        let {path, ...rest} = context?.query;
+        params = JSON.stringify(rest);
+    }
     const cookies = context.req.headers.cookie;
     const data = await getData(
-        context.params?.path?.join('/'), 
+        context.params?.path?.join('/'),
         env('UNA_API_KEY'), 
         undefined, 
         cookies ? { 'Cookie': cookies } : undefined,
@@ -25,6 +30,7 @@ export async function getServerSideProps(context) {
                 context.res.setHeader('Set-Cookie', splitCookieHeaders);
             }
         }
+        ,params
     );
     if (200 !== parseInt(data.props.status))
         context.res.statusCode = parseInt(data.props.status)

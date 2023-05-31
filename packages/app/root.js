@@ -43,7 +43,7 @@ export function Root (props) {
 
 
 // this function is called in Next as serverSideProps and in Expo to get data dynamically
-export async function getData(path, token, origin, headers, callback) {
+export async function getData(path, token, origin, headers, callback, params) {
     if (!path || path.startsWith('expo-development-client'))
 	    path = 'home';
 
@@ -56,7 +56,13 @@ export async function getData(path, token, origin, headers, callback) {
     if (settings){
         path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
     }
-
+    else{
+        if (params)
+            path = path + '&params[]=';
+    }
+    if (params){
+        path = path + '&params[]=' + params
+    }
     // TODO: pass GET&POST params
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
    // console.log("************** load data:", path, "**************", data);
