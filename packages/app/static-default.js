@@ -70,9 +70,9 @@ export const staticDefault = {
             </Svg>
     },
     components: {
-        intro: <View className="flex-col space-y-4 w-full h-min mx-auto pb-4 bg-backgroundcard dark:bg-backgroundcard-dark   overflow-hidden rounded-lg">  
+        intro: <View className="flex-col gap-y-4 w-full h-min mx-auto pb-4 bg-backgroundcard dark:bg-backgroundcard-dark   overflow-hidden rounded-lg">  
         <View className="w-full h-2 bg-primary-500/50  mx-auto  "></View>
-        <View className="px-4 space-y-2">
+        <View className="px-4 gap-y-4">
             <View>
                 <Text  className="text-xl font-bold text-gray-800 dark:text-gray-100">NEO is a community of 88,000+ active members</Text>
             </View>
@@ -84,7 +84,7 @@ export const staticDefault = {
             
             </View>     
         </View>
-        <View className="text-center px-4 space-y-2">
+        <View className="text-center px-4 gap-y-2">
             <Button title="Sign up" variant="primary" fullWidth />
             <Button title="Log in" variant="default" fullWidth/>
           
