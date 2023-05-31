@@ -1,15 +1,54 @@
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Platform } from 'react-native'
+import {Text} from 'app/design/typography'
+import {StyleSheet, PixelRatio} from 'react-native';
 
 export const SolitoImageStyled = styled(SolitoImage)
 
 
+function extractStyleWidth(style) {
+    if (style) {
+      const { width } = StyleSheet.flatten(style);
+  
+      if (typeof width === 'number') {
+        return width;
+      }
+    }
+}
+
+
+const config = {
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+};
+  
+const SIZES = [...config.imageSizes, ...config.deviceSizes];
+  
+function normalizeWidth(width) {
+    const calculatedSize = PixelRatio.getPixelSizeForLayoutSize(width);
+    const matchingIndex = SIZES.findIndex((size) => size >= calculatedSize);
+    
+    if (matchingIndex === -1) {
+      return SIZES[SIZES.length - 1];
+    } else if (matchingIndex === 0) {
+      return SIZES[0];
+    } else {
+      const left = SIZES[matchingIndex - 1];
+      const right = SIZES[matchingIndex];
+  
+      if ((left + right) / 2 > width) {
+        return left;
+      }
+  
+      return right;
+    }
+}
+
 export default function ElementImage(props) {
     
-    let {width, height, alt, ...rest} = props; // remove width & height
-
-    if (!rest.src)
+    let {width, height, alt, src, style, ...rest} = props; // remove width & height
+    if (!src)
         return null;
 
     if (!alt)
@@ -25,9 +64,18 @@ export default function ElementImage(props) {
             rest.height = 'auto';
         }
     }
-    
+    if (Platform.OS != 'web'){
+        const imageWidth = extractStyleWidth(style) || width;
+        let w = normalizeWidth(imageWidth);
+        if (w > 256)
+            w = 256;
+        src = process.env.API_PROXY_URL.replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
+        console.log(src);
+    }
+
     //
     return (
-        <SolitoImageStyled priority={true} {...rest} alt={alt}>{props.children}</SolitoImageStyled>
+            <SolitoImageStyled priority={true} {...rest} src={src} alt={alt} style={style}/>
+
     );
 }

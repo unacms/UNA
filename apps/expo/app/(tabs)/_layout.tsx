@@ -25,13 +25,13 @@ export default function AppLayout() {
     dUser.url = '/dashboard'
     profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
 
-    const es = new EventSource(appSetting("urls", "notifs") + dUser.id + "&params[]=" + dUser.notifCount);
+    /*const es = new EventSource(appSetting("urls", "notifs") + dUser.id + "&params[]=" + dUser.notifCount);
 
 
     es.addEventListener("message", (event) => {
       if (event.data != notifCount)
             setNotifCount(event.data)
-    });
+    });*/
   }
 
 
