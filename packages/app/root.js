@@ -29,13 +29,6 @@ export function Root (props) {
                 {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
             </Layout>
     
-   /* let k = props?.path;
-
-    if (!value[k]){
-        let b = value;
-        b[k]=a
-        setValue(b);
-    }*/
     return (
         a
     );

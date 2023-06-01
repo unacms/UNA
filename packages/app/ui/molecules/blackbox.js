@@ -100,7 +100,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
-                        (route?.endpoint?.finished === false) ? (
+                        (route.data.length > 0 && route?.endpoint?.finished === false) ? (
                             <View className='m-2'><Loading/></View>
                         ) : null
                     }

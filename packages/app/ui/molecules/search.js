@@ -113,7 +113,7 @@ export default function ElementSearch(oProps) {
   <View className={appSetting('layout', 'max_width') + '  mx-auto w-full p-4 '}>
       <Row className='gap-4 justify-center items-center'>
       <View className='w-10/12'>
-          <Input name="search" defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
+          <Input name="search" placeholder="Phrase for search" defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
           </View>
           <Link href={'/search-keyword?keyword='+inputValue}><Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight"  /></Link>
           

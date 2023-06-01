@@ -2,6 +2,7 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls';
 import Svg, {Path} from 'react-native-svg'
+import Link from 'app/ui/atoms/link';
 
 export const staticDefault = {
     logo:{
@@ -85,9 +86,8 @@ export const staticDefault = {
             </View>     
         </View>
         <View className="text-center px-4 gap-y-2">
-            <Button title="Sign up" variant="primary" fullWidth />
-            <Button title="Log in" variant="default" fullWidth/>
-          
+            <Link href="/create-account"><Button title="Sign up" variant="primary" fullWidth /></Link>
+            <Link href="/login"><Button title="Log in" variant="default" fullWidth/></Link>
         </View>
     </View>
     },
