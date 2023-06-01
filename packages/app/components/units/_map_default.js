@@ -2,6 +2,7 @@ import GeneralContentList from './general-content-list';
 import Comments from './comments';
 import Notifications from './notifications';
 import Feed from './feed';
+import SearchResults from './search-results';
 
 export const componentsMapDefault = {
     'general-content-list': GeneralContentList,
@@ -11,5 +12,6 @@ export const componentsMapDefault = {
     comments: Comments,
     notifications: Notifications,
     feed: Feed,
+    'search-results': SearchResults
 };
 

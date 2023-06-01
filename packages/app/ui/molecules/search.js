@@ -14,6 +14,8 @@ export default function ElementSearch(oProps) {
 
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupContent, setPopupContent] = useState('');
+    const [inputValue, setInputValue] = useState("");
+
 
     const getSkeleton = () => {
         return (
@@ -34,6 +36,8 @@ export default function ElementSearch(oProps) {
     };
 
     const handleSearch = async (sValue) => {
+        setInputValue(sValue);
+
         if(!sValue || sValue.length < 3)
             return;
 
@@ -73,7 +77,7 @@ export default function ElementSearch(oProps) {
     const handleClick = (sUrl) => {
         handleClose();
 
-        redirectdRef.current.redirect(sUrl);
+        redirectdRef.current.redirect(sUrl + (inputValue ? '?keyword=' + inputValue: ''));
     }
 
     const handleClose = () => {

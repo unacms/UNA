@@ -1,7 +1,7 @@
 import Image from '../../ui/atoms/image';
 import Link from '../../ui/atoms/link';
 import Profile from '../../ui/molecules/profile';
-import { appSetting } from 'app/lib/util';
+import { appSetting, getImageSizes } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Menu from 'app/components/menu';
@@ -9,22 +9,6 @@ import Menu from 'app/components/menu';
 
 export default function Unit(props) {
     let data = props.data;
-
-    function getImageSizes(){
-        const perLineSettings = appSetting('browse', 'per_line');
-        let str ="";
-        for (let i = perLineSettings.length-1; i >= 0; i--) {
-
-            if (i == perLineSettings.length-1)
-                str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
-            else{
-   
-                str += "(max-width:" + perLineSettings[i].width + "px) "+Math.round(100/perLineSettings[i+1].count)+"vw, ";
-            }
-        }
-        str += '' + (1280/perLineSettings[0].count) + 'px';
-        return str
-    }
 
     const imageSizes = getImageSizes();
     const module = !!data?.module ? data.module : props.module;

@@ -4,6 +4,7 @@ import PageCustomPost from './post';
 import PageCustomMessenger from './messenger';
 import PageCustomDashboard from './dashboard';
 import PageCustomBlackBox from './blackbox';
+import PageCustomBlackBoxSearch from './blackbox_search';
 import PageCustomProfile from './profile';
 import PageCustomHome from './home';
 import PageCustomNotif from './notif';
@@ -17,6 +18,7 @@ export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
     'blackbox': PageCustomBlackBox,
+    'blackbox_search': PageCustomBlackBoxSearch,
     'messenger': PageCustomMessenger,
     'dashboard': PageCustomDashboard,
     'profile': PageCustomProfile,

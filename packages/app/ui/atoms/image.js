@@ -50,7 +50,7 @@ export default function ElementImage(props) {
     let {width, height, alt, src, style, ...rest} = props; // remove width & height
     if (!src)
         return null;
-
+  console.log(src);
     if (!alt)
         alt = "";    
 
@@ -76,6 +76,5 @@ export default function ElementImage(props) {
     //
     return (
             <SolitoImageStyled priority={true} {...rest} src={src} alt={alt} style={style}/>
-
     );
 }

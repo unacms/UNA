@@ -46,7 +46,7 @@ export const settingsDefault = {
         ]
     },
     search: {
-        sections: ['bx_posts', 'bx_persons', 'bx_groups']
+        sections: [{'': 'Top'}, {'bx_posts': 'Posts'}, {'bx_persons': 'Persons'}, {'bx_groups': 'Groups'}]
     },
     social_actions:{
         like: {
@@ -170,6 +170,12 @@ export const settingsDefault = {
             layout: 'dashboard',
             blocks: {
                 
+            },
+        },
+        'search-keyword':{
+            layout: 'blackbox_search',
+            blocks: {
+                browse:{name: 'system:search_keyword_result', showTitle: false, showBg: false, perLine:3},
             },
         },
         'home':{

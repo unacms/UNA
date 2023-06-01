@@ -123,7 +123,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
-                updateRightHeader(menuSettings.add, navigation);
+                updateRightHeader(menuSettings?.add, navigation);
             }, 300);
 
             return (

@@ -66,7 +66,7 @@ export default function ElementBrowse(props) {
     } 
 
     const getNumCols = (width) => {
-        if (data.unit.startsWith('general-')){
+        if (data.unit.startsWith('general-') || data.unit.startsWith('search-')){
             return width > 600 ? 3 : 1
         }
         return 1
@@ -128,6 +128,7 @@ export default function ElementBrowse(props) {
         styles={};
 
     const dataItems = data.data;
+
     return (
         (data.data.length > 0) && <View className='w-full h-full mb-4' >
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 

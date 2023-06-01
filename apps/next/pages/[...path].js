@@ -13,10 +13,10 @@ export default function Path (props) {
 
 export async function getServerSideProps(context) {
     let params = null;
-    if (context?.query?.q){
-        let {path, ...rest} = context?.query;
-        params = JSON.stringify(rest);
-    }
+    
+    let {path, ...rest} = context?.query;
+    params = JSON.stringify(rest);
+
     const cookies = context.req.headers.cookie;
     const data = await getData(
         context.params?.path?.join('/'),

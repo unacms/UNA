@@ -15,15 +15,16 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'next/router';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
+export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu }) {
 
-    
+   
     const router = useRouter();
    
-    const initedTabs = fillTabs(menu, data, blocks);
+    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+
+    
     const windowWidth = useWindowDimensions().width;
-    console.log(data);
-    console.log(initedTabs);
+
     const iMenuHeight = 64;
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -38,12 +39,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return item.key === data.url;
     }));
     const indicatorOffset = useSharedValue(0);
-
+    
     const isLoading = useRef(false);
 
     const getNumCols = (width) => {
         let currentRoute = routes.find((item) => item.index === index);
-        let blocksroutes =  currentRoute.blocks;
+        let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
         if (!blocksroutes)
         return 1;
@@ -65,7 +66,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         return 1;
     };
-
+   
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
 
 
@@ -132,7 +133,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
-            const addButtons = menuSettings.add?.map((button) => {
+            const addButtons = menuSettings?.add?.map((button) => {
                 let btn = <Button title={button.title} startDecorator={button.icon} variant="text" size="sm"/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
@@ -319,7 +320,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 </Row>
         
     )}};
-
     const currentRoute = routes.find((item) => item.index === index);
 
     const handleLayoutTop = (event) => {

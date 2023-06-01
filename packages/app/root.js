@@ -60,6 +60,7 @@ export async function getData(path, token, origin, headers, callback, params) {
         if (params)
             path = path + '&params[]=';
     }
+    console.log('--------', params)
     if (params){
         path = path + '&params[]=' + params
     }

@@ -5,11 +5,14 @@ import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { Text } from 'app/design/typography'
 
-export function fillTabs(menu, data, blocks){
+export function fillTabs(menu, data, blocks, useSectionAsMenu){
     const m = menuItemsByName(menu.object, menu.items, data.url);
     return m.map((item, index) => {
         const i = { key: item.link, title: item.title, index };
-        if (getURI(item.link) === data.uri) {
+        let bCurrent = getURI(item.link) === data.uri;
+        if (useSectionAsMenu)
+            bCurrent = item.link === data.url;
+        if (bCurrent) {
             let contentAndEndpoint = processUrl(data, blocks);
             i.data = contentAndEndpoint.content;
             i.inited = true;
@@ -49,13 +52,27 @@ export async function parseData(routes, index, setRoutes) {
 }
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
+   
     const currentRoute = routes.find((item) => item.index === index);
     if (!currentRoute.inited){
-        const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + currentRoute.link);
+        let link = currentRoute.link
+        if (currentRoute.link.includes('?')){
+            const urlObj = new URL(currentRoute.link, 'http://example.com/'); // Base URL is required if your URL is relative
+            const queryString = urlObj.search;
+
+            const params = new URLSearchParams(queryString);
+            const obj = {};
+
+            for (let [key, value] of params.entries()) {
+                obj[key] = value;
+            }
+            link  = urlObj.pathname.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
+
+        }
+        const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
         addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks)
-
     }
 }
 

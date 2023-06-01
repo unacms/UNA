@@ -10,6 +10,22 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function getImageSizes(){
+    const perLineSettings = appSetting('browse', 'per_line');
+    let str ="";
+    for (let i = perLineSettings.length-1; i >= 0; i--) {
+
+        if (i == perLineSettings.length-1)
+            str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
+        else{
+
+            str += "(max-width:" + perLineSettings[i].width + "px) "+Math.round(100/perLineSettings[i+1].count)+"vw, ";
+        }
+    }
+    str += '' + (1280/perLineSettings[0].count) + 'px';
+    return str
+}
+
 export function linkify(text, attrs = '', htmlSpecialChars = false) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
   
