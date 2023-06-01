@@ -1,0 +1,58 @@
+import { Button } from 'app/design/controls'
+import { Wrapper } from '../../../components/wrapper'
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Unit } from 'app/components/units/general-content-list'
+import Link from "app/ui/atoms/link"
+import Image from 'app/ui/atoms/image';
+import Svg, {Path} from 'react-native-svg'
+
+# Intro Card
+
+Intro card is a card that is used to display the welcome message, member stats and authentication buttons.
+
+## Variants
+
+```jsx
+import { Button } from 'app/design/controls'
+;<Button text onPress={() => alert('Hello World!')}>
+  Default Button
+</Button>
+```
+
+ <Wrapper className='bg-neutral-100 dark:bg-neutral-950'>
+  
+
+   <View className="relative px-4 pt-4 md:p-0 flex-col  md:py-4 md:flex-row  duration-500  max-w-screen-2xl mx-auto  bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark overflow-hidden rounded-lg">  
+            <View className=" absolute -right-[10%] aspect-square  w-2/3 rounded-full  bg-blue-500  opacity-20 blur-3xl    "></View> 
+                        <View className=" absolute -left-[10%] aspect-square  w-2/3 rounded-full  bg-red-500 opacity-40 blur-3xl    "></View> 
+
+      
+
+      <View className="  w-full 
+       md:w-3/4  bg-white/60 dark:bg-black/60 backdrop-blur-md border-r border-y border-white/20 dark:border-black/20 rounded-t-md md:rounded-t-none md:rounded-r-md   ">
+      <View className="flex-col  gap-y-4 my-auto p-6 flex-auto">
+          <View className=" space-y-4">
+              <View className="text-3xl  font-bold text-primary-800 dark:text-primary-200">
+                 Welcome to the community!          
+              </View>
+                 
+                <View className='text-lg text-neutral-600 dark:text-neutral-400'>
+                  The place to share, connect and grow with people you trust. Create account to join the community. 
+                </View>          
+               
+          </View>
+          <View className="text-center w-40  gap-y-2">
+            
+            <Button title="Get Started" variant="primary" fullWidth />
+          </View>
+      </View>
+      </View> 
+    
+    </View>
+     
+</Wrapper>
+
+
+
+
