@@ -45,9 +45,6 @@ export const settingsDefault = {
             {width: 640, count: 2},
         ]
     },
-    search: {
-        sections: [{'': 'Top'}, {'bx_posts': 'Posts'}, {'bx_persons': 'Persons'}, {'bx_groups': 'Groups'}]
-    },
     social_actions:{
         like: {
             show_action: true,
@@ -107,7 +104,7 @@ export const settingsDefault = {
             items: ['posts-home', 'posts-popular'],
             add:[
                 {icon: 'plus', name: "Add", link: '/create-post'},
-                {icon: 'search', name:"Search"},
+                {icon: 'search', name:"Search", link: '/search-keyword?keyword=a&section=bx_posts'},
                 {icon: 'DotsThreeOutlineVertical', name:"More"}
             ]
         },
@@ -118,7 +115,7 @@ export const settingsDefault = {
             icon:'Users',
             items: ['persons-home', 'persons-active'],
             add:[
-                {icon: 'search', name:"Search"},
+                {icon: 'search', name:"Search", link: '/search-keyword?keyword=&section=bx_persons'},
                 {icon: 'DotsThreeOutlineVertical', name:"More"}
             ]
         },
@@ -139,7 +136,7 @@ export const settingsDefault = {
             items: ['groups-home', 'groups-joined'],
             add:[
                 {icon: 'plus', name: "Add", link: '/create-group-profile'},
-                {icon: 'search', name: "Search"},
+                {icon: 'search', name: "Search", link: '/search-keyword?keyword=&section=bx_groups' },
                 {icon: 'DotsThreeOutlineVertical', name: "More"}
             ]
         },
@@ -150,7 +147,7 @@ export const settingsDefault = {
             icon:'Hash',
             items: ['channels-home', 'channels-top'],
             add:[
-                {icon: 'search', name:"Search"},
+                {icon: 'search', name:"Search", link: '/search-keyword?keyword=&section=bx_channels'},
                 {icon: 'DotsThreeOutlineVertical', name:"More"}
             ]
         },
@@ -175,7 +172,7 @@ export const settingsDefault = {
         'search-keyword':{
             layout: 'blackbox_search',
             blocks: {
-                browse:{name: 'system:search_keyword_result', showTitle: false, showBg: false, perLine:3},
+                browse:{name: 'system:search_keyword_result', showTitle: false, showBg: false},
             },
         },
         'home':{
@@ -189,7 +186,7 @@ export const settingsDefault = {
             },
             header:[
                 {icon: 'plus', name: "Add", link: '/create-post'},
-                {icon: 'search', name:"Search"},
+                {icon: 'search', name:"Search", link: '?keyword='},
             ]
         },
         //############ POSTS PAGES ############

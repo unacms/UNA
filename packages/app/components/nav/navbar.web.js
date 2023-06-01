@@ -10,7 +10,8 @@ import { View, Row } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, appStatic } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
+import { appStatic } from 'app/static';
 import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider';
 

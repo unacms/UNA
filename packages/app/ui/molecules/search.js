@@ -3,11 +3,12 @@ import { useState, useRef } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Row} from 'app/design/view'
 import { Button, Input } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
-import SearchResults from 'app/components/units/search-results';
+import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
+import Link from '../../ui/atoms/link';
 
 export default function ElementSearch(oProps) {
     const redirectdRef = useRef();
@@ -15,7 +16,7 @@ export default function ElementSearch(oProps) {
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupContent, setPopupContent] = useState('');
     const [inputValue, setInputValue] = useState("");
-
+    
 
     const getSkeleton = () => {
         return (
@@ -45,9 +46,6 @@ export default function ElementSearch(oProps) {
 
         const aParams = {params: {
                 keyword: sValue,
-                section: appSetting('search', 'sections'),
-                start: 0,
-                per_page: 12
             }
         };
 
@@ -72,15 +70,13 @@ export default function ElementSearch(oProps) {
         setPopupContent(sContent);            
     }
 
-    const handleClick = (sUrl) => {
-        handleClose();
-
-        redirectdRef.current.redirect(sUrl + (inputValue ? '?keyword=' + inputValue: ''));
-    }
-
     const handleClose = () => {
         setPopupOpen(false);
         setPopupContent('');
+    }
+
+    const handleClick = (sUrl) => {
+        handleClose();
     }
 
     const sTxtTitle = appSetting('lang_keys', 'search_popup_title');
@@ -90,10 +86,11 @@ export default function ElementSearch(oProps) {
         <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
             <Button key="ddp-trigger" variant="text" startDecorator="search" rounded />, 
             <View key="ddp-content" className="px-1.5 pb-1.5">
-                <Redirect ref={redirectdRef} />
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search-keyword?q=upd')} />
+                    <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                    </Link>
                 </View>
                 <View className="flex-row">
                     <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
@@ -104,3 +101,19 @@ export default function ElementSearch(oProps) {
         </DropdownPopup>
     );
  }
+
+ export function SearchPanel(props) {
+
+    const [inputValue, setInputValue] = useState(props.value);
+
+    return (<View className=' backdrop-blur  bg-backgroundnavbar dark:bg-backgroundnavbar-dark ' >
+  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full p-4'}>
+      <Row className='gap-4 justify-center items-center '>
+          <Input name="search" defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
+          <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+            <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" />
+          </Link>
+      </Row>
+  </View>
+</View>);
+}

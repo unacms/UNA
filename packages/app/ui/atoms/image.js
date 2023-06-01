@@ -50,7 +50,6 @@ export default function ElementImage(props) {
     let {width, height, alt, src, style, ...rest} = props; // remove width & height
     if (!src)
         return null;
-  console.log(src);
     if (!alt)
         alt = "";    
 
@@ -70,7 +69,6 @@ export default function ElementImage(props) {
         if (w > 256)
             w = 256;
         src = process.env.API_PROXY_URL.replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
-        console.log(src);
     }
 
     //

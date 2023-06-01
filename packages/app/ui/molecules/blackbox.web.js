@@ -15,7 +15,7 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'next/router';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu }) {
+export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, isFixedHeader = false }) {
 
    
     const router = useRouter();
@@ -30,9 +30,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const [routes, setRoutes] = useState(initedTabs);
     
     const scroll = useSharedValue(1);
-    const headerHeight = useSharedValue(100);
-    const headerMaxHeight = useSharedValue(100);
-    const headerMinHeight = useSharedValue(100);
+    const headerHeight = useSharedValue(minHeaderHeight);
+    const headerMaxHeight = useSharedValue(minHeaderHeight);
+    const headerMinHeight = useSharedValue(minHeaderHeight);
     const { colors } = Theme();
 
     const [index, setIndex] = useState(routes.findIndex(function(item) {
@@ -47,7 +47,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
         if (!blocksroutes)
-        return 1;
+            return 1;
         const blockKeys = Object.keys(blocksroutes);
 
         for (const key of blockKeys) {
@@ -239,7 +239,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         const handleHeaderMinLayout = useCallback((event) => {
             headerMinHeight.value = event.nativeEvent.layout.height;
         });
-        
+
         return (
             <>
                 <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}  ref={viewRef} >
@@ -294,7 +294,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             const dataItems = route.data;
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
-                <Row style={{ paddingTop: header ? 300 : 0 }} className="mb-4"> 
+                <Row style={{ paddingTop: header ? offsetTop : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
                         <TabFlashList
                             index={route.index}

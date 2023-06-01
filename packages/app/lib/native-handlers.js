@@ -4,7 +4,7 @@ import Link from 'app/ui/atoms/link'
 import { View, Row, Pressable } from 'app/design/view'; 
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
-import { appStatic } from 'app/lib/util';
+import { appStatic } from 'app/static';
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
