@@ -1,9 +1,9 @@
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls';
 import Svg, {Path} from 'react-native-svg'
 import Link from 'app/ui/atoms/link';
-
+import Image from 'app/ui/atoms/image';
 export const staticDefault = {
     logo:{
         text:
@@ -71,24 +71,22 @@ export const staticDefault = {
             </Svg>
     },
     components: {
-        intro: <View className="flex-col gap-y-4 w-full h-min mx-auto pb-4 bg-backgroundcard dark:bg-backgroundcard-dark   overflow-hidden rounded-lg">  
-        <View className="w-full h-2 bg-primary-500/50  mx-auto  "></View>
-        <View className="px-4 gap-y-4">
-            <View>
-                <Text  className="text-xl font-bold text-gray-800 dark:text-gray-100">NEO is a community of 88,000+ active members</Text>
-            </View>
-            <View>
-            
-                <View >
-                    <Text className='text-base text-neutral-600 dark:text-neutral-400 '>The place to share, connect and grow with people you trust. Create account to join the community. </Text>
-                </View>
-            
-            </View>     
+        intro: <View className="relative flex-col md:flex-row gap-4 duration-500  max-w-screen-xl mx-auto rounded-lg">  
+        <View className="bottom-0 -right-[10%] absolute  w-[60%] aspect-square rounded-full  bg-primary  opacity-20 blur-3xl "></View> 
+        <View className="flex-col  gap-y-4 my-auto py-8 flex-auto">
+                    <Text className="text-3xl  font-bold text-primary-800 dark:text-primary-200">Welcome to the community!</Text>
+                    <Text className='text-lg text-neutral-600 dark:text-neutral-400'>The place to share, connect and grow with people you trust. Create account to join the community.</Text>
+                    <Row className='gap-4'><Link href="/create-account"><Button title="Get Started" variant="primary"  /></Link>
+                        <Link href="/login"><Button title="Login" variant="default"  /></Link>
+                    </Row>
         </View>
-        <View className="text-center px-4 gap-y-2">
-            <Link href="/create-account"><Button title="Sign up" variant="primary" fullWidth /></Link>
-            <Link href="/login"><Button title="Log in" variant="default" fullWidth/></Link>
+        <View className="border shadow-sm  border-neutral-50 dark:border-neutral-950 w-full md:w-[40%] bg-neutral-50/50 dark:bg-neutral-950/50 backdrop-blur-md   rounded-lg p-1  ">
+            <View className="w-full pb-[50%]  rounded h-full overflow-hidden">
+            <View className="absolute bg-red-500/30 h-full w-full rounded-full rotate-45 blur-3xl  translate-x-[34%]  "></View>
+            <View className="absolute bg-blue-500/30 h-full w-full rounded-full rotate-45 blur-3xl -translate-x-[34%]"></View>
+            <Image src="https://ci.una.io/test3/s/bx_posts_covers/yetmq4v87qwdvuiqqez3ccuu5nqgdpzl.jpg" sizes="512px" view="cover" className="u-cover" />
         </View>
-    </View>
+        </View> 
+        </View>
     },
 };
