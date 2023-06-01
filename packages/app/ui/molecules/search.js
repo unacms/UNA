@@ -43,14 +43,12 @@ export default function ElementSearch(oProps) {
 
         setPopupContent(getSkeleton());
 
-        /**
-         * TODO: Move searchable sections (modules) in config or leave empty to search in all sections.
-         */
-        const aParams = {
-            keyword: sValue,
-            section: appSetting('search', 'sections'),
-            start: 0,
-            per_page: 12,
+        const aParams = {params: {
+                keyword: sValue,
+                section: appSetting('search', 'sections'),
+                start: 0,
+                per_page: 12
+            }
         };
 
         const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
@@ -95,7 +93,7 @@ export default function ElementSearch(oProps) {
                 <Redirect ref={redirectdRef} />
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search-keyword')} />
+                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick('/search-keyword?q=upd')} />
                 </View>
                 <View className="flex-row">
                     <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />

@@ -4,7 +4,7 @@ import ObjectDataArray from './blocks-content/object-data-array';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { stripTags } from '../lib/util';
-import { appStatic } from 'app/static';
+import { appStatic } from 'app/lib/util';
 
 
 const componentsMap = {

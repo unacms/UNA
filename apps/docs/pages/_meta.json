@@ -2,8 +2,9 @@
   "index": "Introduction",
 
   "components": "Components",
-  "atoms": "Atoms",
-  "components": "Components",
+
+
+  
   "about": {
     "title": "About",
     "type": "page"

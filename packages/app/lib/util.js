@@ -1,7 +1,15 @@
 import * as Haptics from 'expo-haptics';
-import { settings } from 'app/settings';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
+import { settings } from 'app/settings';
+import { staticComponents } from 'app/static';
+
+export function appStatic(section, name, path) {
+    if (path)
+        return staticComponents[section] && staticComponents[section][name] ? staticComponents[section][name][path] : '';
+
+    return staticComponents[section] ? staticComponents[section][name] : '';
+}
 
 export function appSetting(section, name, path) {
     if (path)

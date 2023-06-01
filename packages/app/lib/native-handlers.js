@@ -1,11 +1,10 @@
-import { settings } from 'app/settings';
 import { useColorScheme } from 'react-native';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { View, Row, Pressable } from 'app/design/view'; 
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
-import { appStatic } from 'app/static';
+import { appStatic } from 'app/lib/util';
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
