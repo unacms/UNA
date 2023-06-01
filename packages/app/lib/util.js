@@ -3,13 +3,60 @@ import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
 
-
 export function appSetting(section, name, path) {
     if (path)
         return settings[section] && settings[section][name] ? settings[section][name][path] : '';
 
     return settings[section] ? settings[section][name] : '';
 }
+
+export function parseUrl(url) {
+    const parts = url.split('?');
+    const path = parts[0];
+    const queryString = parts[1];
+    return {
+      path: path.startsWith('/') ? path.slice(1) : path, // remove the leading /
+      queryString: queryString
+    };
+}
+
+export function deepEqual(obj1, obj2) {
+    if (obj1 === obj2) {
+        return true;
+    }
+
+    if (typeof obj1 != "object" || obj1 === null ||
+        typeof obj2 != "object" || obj2 === null) {
+        return false;
+    }
+
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj2);
+
+    if (keys1.length != keys2.length) {
+        return false;
+    }
+
+    for (let key of keys1) {
+        if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export function parseQueryString(queryString) {
+    const pairs = queryString.split('&');
+    const obj = {};
+  
+    pairs.forEach(pair => {
+      const [key, value] = pair.split('=');
+      obj[key] = value;
+    });
+  
+    return obj;
+  }
 
 export function getImageSizes(){
     const perLineSettings = appSetting('browse', 'per_line');

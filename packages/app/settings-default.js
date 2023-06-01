@@ -104,7 +104,7 @@ export const settingsDefault = {
             items: ['posts-home', 'posts-popular'],
             add:[
                 {icon: 'plus', name: "Add", link: '/create-post'},
-                {icon: 'search', name:"Search", link: '/search-keyword?keyword=a&section=bx_posts'},
+                {icon: 'search', name:"Search", link: '/search-keyword?keyword=&section=bx_posts'},
                 {icon: 'DotsThreeOutlineVertical', name:"More"}
             ]
         },

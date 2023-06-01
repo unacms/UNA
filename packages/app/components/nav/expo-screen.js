@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigation, usePathname } from "expo-router";
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
@@ -43,7 +43,15 @@ export function Screen(params) {
         const fetchPageData = async () => {
             
             if (isFocused2 && _path && _path.startsWith('/')) {
-                const data = await getData(_path);
+                let path2 = _path;
+                let b = parseUrl(_path);
+                let params = null;
+                if (b.queryString){
+                    path2 = b.path;
+                    params = JSON.stringify(parseQueryString(b.queryString));
+                }
+                
+                const data = await getData(path2, null, null, null, null, params);
                 // console.log("-------------------- BootomTab Screen load data:", pathname, "--------------------",_path, "--------------------",data);
                 if (data?.props) {
                     setPageData(data.props);

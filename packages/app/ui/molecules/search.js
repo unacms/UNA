@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
-import { View, Row} from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Button, Input } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
@@ -86,6 +86,7 @@ export default function ElementSearch(oProps) {
         <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
             <Button key="ddp-trigger" variant="text" startDecorator="search" rounded />, 
             <View key="ddp-content" className="px-1.5 pb-1.5">
+                <Redirect ref={redirectdRef} />
                 <View className="flex-row items-center mb-1">
                     <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                     <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
@@ -102,17 +103,20 @@ export default function ElementSearch(oProps) {
     );
  }
 
- export function SearchPanel(props) {
+ export function  SearchPanel(props) {
 
     const [inputValue, setInputValue] = useState(props.value);
 
+
     return (<View className=' backdrop-blur  bg-backgroundnavbar dark:bg-backgroundnavbar-dark ' >
-  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full p-4'}>
-      <Row className='gap-4 justify-center items-center '>
+
+  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full p-4 '}>
+      <Row className='gap-4 justify-center items-center'>
+      <View className='w-10/12'>
           <Input name="search" defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
-          <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
-            <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" />
-          </Link>
+          </View>
+          <Link href={'/search-keyword?keyword='+inputValue}><Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight"  /></Link>
+          
       </Row>
   </View>
 </View>);

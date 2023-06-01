@@ -47,8 +47,9 @@ export default function UniList(props) {
                 return ( <VirtuosoGrid useWindowScroll
                         data={data}
                         itemContent={itemContent} 
+                        overscan={900}
                         endReached={onEndReached}
-                        overscan={200}
+                        atBottomStateChange={onEndReached}
                         components={{
                             List: listComponent,
                             Item: itemComponent,

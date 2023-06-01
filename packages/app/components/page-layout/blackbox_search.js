@@ -33,11 +33,13 @@ export default function PageLayout(props) {
         items:menuItems
     }
 
+
+
     return (<BlackBox 
         header={header} 
-        minHeaderHeight={76} 
+        minHeaderHeight={0} 
         offsetTop={120}
-        isHideDefaultHeader={true} 
+        isHideDefaultHeader={false} 
         menu={menu} 
         data={props.data} 
         blocks={props.blocks}

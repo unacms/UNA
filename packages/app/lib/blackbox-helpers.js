@@ -1,4 +1,4 @@
-import { appSetting, menuItemsByName, getURI } from 'app/lib/util';
+import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
@@ -57,16 +57,11 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     if (!currentRoute.inited){
         let link = currentRoute.link
         if (currentRoute.link.includes('?')){
-            const urlObj = new URL(currentRoute.link, 'http://example.com/'); // Base URL is required if your URL is relative
-            const queryString = urlObj.search;
+            const urlObj = parseUrl(currentRoute.link); // Base URL is required if your URL is relative
+            const queryString = urlObj.queryString;
 
-            const params = new URLSearchParams(queryString);
-            const obj = {};
-
-            for (let [key, value] of params.entries()) {
-                obj[key] = value;
-            }
-            link  = urlObj.pathname.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
+            let obj= parseQueryString(urlObj.queryString)
+            link  = urlObj.path.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
 
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);

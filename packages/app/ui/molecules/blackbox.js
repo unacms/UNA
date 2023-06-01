@@ -11,16 +11,22 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
-import { appSetting } from 'app/lib/util';
+import { appSetting,deepEqual } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { updateRightHeader } from 'app/lib/native-handlers';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks }) {
+export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false }) {
 
-    const initedTabs = fillTabs(menu, data, blocks);
+    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
 
     const [routes, setRoutes] = useState(initedTabs);
+    const [menuState, setMenuState] = useState(menu);
+    if (!deepEqual(menu,menuState)){
+        setMenuState(menu)
+        setRoutes(initedTabs);
+    }
+        
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
     const { colors } = Theme();
@@ -81,10 +87,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [index]);
 
 
-    const TabScene = ({ route }) => {
+    const TabScene = ({ route,index }) => {
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
+
         if (route.inited)
             return (
                 <TabFlashList
