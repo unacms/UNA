@@ -7,32 +7,22 @@ import Link from "app/ui/atoms/link"
 import Image from 'app/ui/atoms/image';
 import Svg, {Path} from 'react-native-svg'
 
-# Intro Card
+# Hero
 
 Intro card is a card that is used to display the welcome message, member stats and authentication buttons.
 
-## Variants
+## Homepage
 
-```jsx
-import { Button } from 'app/design/controls'
-;<Button text onPress={() => alert('Hello World!')}>
-  Default Button
-</Button>
-```
+<Wrapper className="my-40 overflow-hidden">
 
- <Wrapper className='bg-neutral-100 dark:bg-neutral-950'>
+ 
   
 
-   <View className="relative px-4 pt-4 md:p-0 flex-col  md:py-4 md:flex-row  duration-500  max-w-screen-2xl mx-auto  bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark overflow-hidden rounded-lg">  
-            <View className=" absolute -right-[10%] aspect-square  w-2/3 rounded-full  bg-blue-500  opacity-20 blur-3xl    "></View> 
-                        <View className=" absolute -left-[10%] aspect-square  w-2/3 rounded-full  bg-red-500 opacity-40 blur-3xl    "></View> 
+   <View className="relative flex-col   md:flex-row gap-4 duration-500  max-w-screen-xl mx-auto   rounded-lg">  
+            <View className="bottom-0 -right-[10%] absolute  w-[60%] aspect-square rounded-full  bg-primary  opacity-20 blur-3xl    "></View> 
 
-      
-
-      <View className="  w-full 
-       md:w-3/4  bg-white/60 dark:bg-black/60 backdrop-blur-md   rounded-t-md md:rounded-t-none md:rounded-r-md   ">
-      <View className="flex-col  gap-y-4 my-auto p-6 flex-auto">
-          <View className=" space-y-4">
+      <View className="flex-col  gap-y-4 my-auto py-8 flex-auto">
+          
               <View className="text-3xl  font-bold text-primary-800 dark:text-primary-200">
                  Welcome to the community!          
               </View>
@@ -41,12 +31,20 @@ import { Button } from 'app/design/controls'
                   The place to share, connect and grow with people you trust. Create account to join the community. 
                 </View>          
                
-          </View>
-          <View className="text-center w-40  gap-y-2">
+          
+          
             
-            <Button title="Get Started" variant="primary" fullWidth />
-          </View>
+            <Button title="Get Started" variant="primary"  />
+          
       </View>
+
+        <View className="border shadow-sm  border-neutral-50 dark:border-neutral-950 w-full md:w-[40%] 
+         bg-neutral-50/50 dark:bg-neutral-950/50 backdrop-blur-md   rounded-lg p-1  ">
+         <View className="w-full pb-[50%]  rounded h-full overflow-hidden">
+         <View className="absolute bg-red-500/30 h-full w-full rounded-full rotate-45 blur-3xl  translate-x-[34%]  "></View>
+         <View className="absolute bg-blue-500/30 h-full w-full rounded-full rotate-45 blur-3xl -translate-x-[34%]"></View>
+        </View>
+
       </View> 
     
     </View>
