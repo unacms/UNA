@@ -268,7 +268,7 @@ div::-webkit-scrollbar {
     width: 100%;
     border-color: #000;
     }
-   
+
     .ProseMirror:focus {
         outline: none;
     }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWindowDimensions} from 'react-native';
 
-import { menuItemsByName, linkify } from 'app/lib/util';
+import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text} from 'app/design/typography'
 import { View, Pressable, Row } from 'app/design/view'
 import { Button, Modal } from 'app/design/controls'
@@ -14,8 +14,6 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
 
-
-
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
 
@@ -26,10 +24,12 @@ export default function UnitComments(props) {
     let items = props.items;
     let view = props.view;
     let files = props.files;
-    
+
+
     // request form for reply
 
     const handleReply = async (id, author, text) => {
+        FeedbackHaptics('Medium');
         props.handleReply(id, author, text);
     };
 

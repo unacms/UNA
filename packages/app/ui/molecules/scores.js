@@ -98,8 +98,7 @@ export default function ElementScore(oProps) {
     const handleDo = (event, sAction) => {
         event.preventDefault();
 
-        if(!bWeb)
-            FeedbackHaptics(oParams.haptics_type);
+        FeedbackHaptics(oParams.haptics_type);
 
         performAction('do', {a: sAction}, (oData) => {
             let iScoreOld = oCounter.score;
@@ -125,7 +124,8 @@ export default function ElementScore(oProps) {
 
     const handleGetPerformedBy = (event) => {
         event.preventDefault();
-
+        FeedbackHaptics('Medium');
+        
         performAction('get_performed_by', {}, (oData) => {
             if(!oData?.performed_by)
                 return;

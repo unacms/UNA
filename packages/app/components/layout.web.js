@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
+import { appSetting } from 'app/lib/util'
 
 import useSkeleton from '../lib/hooks/skeleton';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
@@ -44,6 +45,7 @@ export default function Layout(props) {
             opacity: withTiming(100 * scroll.value, { duration: 500 })
         };
     });
+    const menu_top = appSetting('menu_items', 'menu_top')  
 
     return (
         <>
@@ -58,9 +60,9 @@ export default function Layout(props) {
             </Head>
             
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
-                {(props.data && props.data.menu_top) && (
+                {(true) && (
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }, animatedStyleA]} >
-                        <Navbar menu_top={props.data.menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+                      sdf  <Navbar menu_top={menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
                     </Animated.View>)} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={(scroll.value? ' mt-16': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>

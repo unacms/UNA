@@ -186,6 +186,7 @@ export default function ElementReactions(oProps) {
             return;
 
         performAction('get_performed_by', {reaction: sReaction}, (oData) => {
+            FeedbackHaptics('Medium');
             if(!oData?.performed_by)
                 return;
             
@@ -286,7 +287,6 @@ export default function ElementReactions(oProps) {
 
             const onDoSelect = (item) => {
                 FeedbackHaptics(oParams.haptics_type);
-
                 handleDo(undefined, item);
             };
 

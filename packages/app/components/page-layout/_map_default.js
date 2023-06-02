@@ -1,6 +1,7 @@
 import PageLayoutDefault from './default';
 
 import PageCustomPost from './post';
+import PageCustomPostWithoutComments from './post-without-comments';
 import PageCustomMessenger from './messenger';
 import PageCustomDashboard from './dashboard';
 import PageCustomBlackBox from './blackbox';
@@ -17,6 +18,7 @@ import PageLayout3 from './layout_topbottom_area_bar_right';
 export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
+    'post-without-comments': PageCustomPostWithoutComments,
     'blackbox': PageCustomBlackBox,
     'blackbox_search': PageCustomBlackBoxSearch,
     'messenger': PageCustomMessenger,

@@ -111,6 +111,8 @@ export default function (props) {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }  
 
+  const menu_top = appSetting('menu_items', 'menu_top')  
+
   return (
     <View className="fixed -top-[1px]  z-50 w-full mb-16">
         <Redirect ref={redirectdRef} />
@@ -134,7 +136,7 @@ export default function (props) {
           <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between ">
               <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
                 <Slider offset={300}>
-                  {menuItemsByName('main_menu', props.menu_top.items).map((item, index) => (
+                  {menuItemsByName('main_menu', menu_top).map((item, index) => (
                         !item.link.includes('javascript') && (
                           <Link href={item.link} key={`menu-${index}`}>
                           <Button

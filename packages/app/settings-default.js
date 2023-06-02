@@ -94,7 +94,47 @@ export const settingsDefault = {
     },
     
     menu_items: {
-        'main_menu': ['home', 'about', 'posts-home', 'persons-home', 'groups-home', 'channels-home'],
+        menu_top:[
+            {
+
+                "name":"home",
+                "title":"Home",
+                "link":"home",
+                "icon":"home",
+                },
+            {
+
+                "name":"about",
+                "title":"About",
+                "link":"about",
+                "icon":"info-circle",
+            },
+            {
+                "name":"persons-home",
+                "title":"People",
+                "link":"persons-home",
+                "icon":"user",
+            },
+            {
+                "name":"posts-home",
+                "title":"Posts",
+                "link":"posts-home",
+                "icon":"file-alt",
+            },
+            {
+                "name":"groups-home",
+                "title":"Groups",
+                "link":"groups-home",
+                "icon":"users",
+            },
+            {
+                "name":"discussions-home",
+                "title":"Discussions",
+                "link":"discussions-home",
+                "icon":"comments",
+            },
+            ],
+        
         'add_menu': ['create-post', 'create-group-profile'],
         'profile_menu': ['view-persons-profile', 'persons-profile-friends', 'posts-author', 'posts-home'],
         'comments_manage_menu': ['item-edit', 'item-delete'],
@@ -221,6 +261,23 @@ export const settingsDefault = {
                 comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false},
             },
         },
+        //############ POSTS PAGES ############
+        'discussions-home':{
+            layout: 'blackbox',
+            blocks: {
+                browse:{name: 'bx_forum:browse_new', showTitle: false, showBg: false},
+            },
+            icon:'Comments',
+        },
+        'view-discussion': {
+            layout: 'post-without-comments',
+            blocks: {
+                author: {name: 'bx_forum:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true},
+                text: {name: 'bx_forum:entity_text_block', showTitle: false, showBg: false, forList: true},
+                attachments: {name: 'bx_forum:entity_attachments', showTitle: false, showBg: false, forList: true},
+                actions: {name: 'bx_forum:entity_all_actions', showTitle: false, showBg: false, forList: true},
+            },
+        },
         //############ GROUPS PAGES ############
         'groups-home':{
             layout: 'blackbox',
@@ -293,13 +350,13 @@ export const settingsDefault = {
         'persons-profile-friends':{
             layout: 'profile',
             blocks: {
-                col1:{name: 'system:connections_table', showTitle: false, showBg: false, perLine:3}
+                col1:{name: 'system:connections_table', showTitle: false, showBg: false}
             }
         },
         'persons-profile-subscriptions':{
             layout: 'profile',
             blocks: {
-                col1:{name: 'system:subscriptions_table', showTitle: false, showBg: false, perLine:3}
+                col1:{name: 'system:subscriptions_table', showTitle: false, showBg: false}
             }
         },
         'persons-profile-info':{
@@ -414,7 +471,7 @@ export const settingsDefault = {
             'file-alt': 'NoteBlank',
             'contact': 'PaperPlaneRight',
             'reply': 'ArrowBenDownRight',
-            'hashtag': 'Hash'
+            'hashtag': 'Hash',
         },
     },
     menu: {

@@ -4,14 +4,11 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Row, Pressable  } from 'app/design/view';
-import { FlashList } from "@shopify/flash-list";
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { BlockByName2 } from 'app/components/block';
-import Unit from 'app/components/unit';
-import { appSetting,deepEqual } from 'app/lib/util';
+import { appSetting, deepEqual } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { updateRightHeader } from 'app/lib/native-handlers';

@@ -5,12 +5,14 @@ import { Text, H2 } from 'app/design/typography';
 import Link from '../../ui/atoms/link';
 import { Modal } from 'app/design/controls'
 import Video from '../../ui/atoms/video';
+import { FeedbackHaptics } from 'app/lib/util';
 
 export default function ElementEntityAttachments(props) {
     let aImages = [];
     const [showImage, setShowImage] = useState(false);
 
     const handleShowImage = (img) => {
+        FeedbackHaptics('Medium');
         setShowImage(img);
     } 
     props.data.forEach(function (item, index) { 

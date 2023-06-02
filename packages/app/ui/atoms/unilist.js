@@ -86,7 +86,7 @@ export default function UniList(props) {
             <MasonryFlashList
                 ref = {refer}   
                 keyExtractor={item => item.id}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={1}
                 numColumns={numColumns}
                 estimatedItemSize={400}
                 data={data}
@@ -102,7 +102,7 @@ export default function UniList(props) {
             <FlashList  
                 ref = {refer}   
                 keyExtractor={item => item.id}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={1}
                 numColumns={numColumns}
                 estimatedItemSize={400}
                 data={data}

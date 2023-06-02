@@ -17,8 +17,7 @@ export const InputMulti = styled(TextInputDef, ' bg-backgroundinput  border bord
 export const MentionInput = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5')
 export const MentionInputMulti = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5')
 
-
-export const Switch = styled(SwitchDef, ' text-gray-800 ')
+export const Switch = styled(SwitchDef, ' text-gray-800')
 export const Hidden = styled(TextInputDef, 'hidden')
 export const Dropdown = styled(DropdownDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5  ')
 
@@ -77,8 +76,8 @@ export function ButtonsGroup({
     children = [],
     ...rest
 }) {
-    let sClassContainer = ' group relative flex-row items-center ';
-    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0';
+    let sClassContainer = ' group relative flex-row items-center  ';
+    sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
     let ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
     sClassContainer += ThemeCssClasses['u-btn-' + variant + '-cnt'];
@@ -128,7 +127,7 @@ export function Button(props) {
     let sClassContainer = ' group relative flex-row items-center '
     let sIconContainer = ' h-6 w-6 mr-2 '
 
-    sClassContainer += buttonFull ? ' flex-auto' : ' w-fit m-0 '
+    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' w-fit m-0 truncate'
 
     if (buttonDisabled) sClassContainer += ' opacity-50 '
 

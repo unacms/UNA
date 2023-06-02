@@ -1,11 +1,9 @@
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Platform } from 'react-native'
-import {Text} from 'app/design/typography'
 import {StyleSheet, PixelRatio} from 'react-native';
 
 export const SolitoImageStyled = styled(SolitoImage)
-
 
 function extractStyleWidth(style) {
     if (style) {

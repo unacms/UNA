@@ -1,9 +1,9 @@
 import { View, Row } from 'app/design/view'
 import { Button, Modal,  } from 'app/design/controls'
-import { Text} from 'app/design/typography'
 import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import  { LayoutData } from 'app/context/layout';
+import { FeedbackHaptics } from 'app/lib/util';
 
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
@@ -57,15 +57,9 @@ export default function FormFeed(props) {
           border-bordercolorcard dark:border-bordercolorcard-dark 
           sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
           active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
-         
-    
-    
-    '>  
-            
+    '>     
         <View className='flex-auto'>    
-        <Button size='base' variant='outline' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => setShowImage(true)} >
-            
-        </Button>
+            <Button size='base' variant='outline' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>
     </View>
     </View>

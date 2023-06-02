@@ -131,6 +131,8 @@ export function mergeDeep(target, ...sources) {
 }
 
 export function FeedbackHaptics(type) {
+    const bWeb = Platform.OS === 'web';
+    if (bWeb) return ;
     //https://docs.expo.dev/versions/latest/sdk/haptics/
     switch (type) {
         case 'Success':

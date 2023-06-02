@@ -1,15 +1,13 @@
 import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { View, Row, Pressable  } from 'app/design/view';
+import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { BlockByName2 } from 'app/components/block';
-import Unit from 'app/components/unit';
 import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
-import { fillTabs, getRightCol, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -17,15 +15,11 @@ import { useRouter } from 'next/router';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
 
-   
     const router = useRouter();
    
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-
     
     const windowWidth = useWindowDimensions().width;
-
-    const iMenuHeight = 64;
 
     const [routes, setRoutes] = useState(initedTabs);
     
@@ -142,7 +136,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                        <Row className="items-center gap-0 mx-4">
+                        <ScrollView horizontal={true} className="items-center gap-0 mx-4" >
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
                             
@@ -156,13 +150,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >
-                                        <Button id="tab" variant="text" rounded size='sm' title={a.title}   />
+                                        <Button fullWidth={true} id="tab" variant="text" rounded size='sm' title={a.title}   />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
                             </Row>
                             {addButtons}
-                        </Row>
+                        </ScrollView>
                     </View>
                 </View>
 
