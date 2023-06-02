@@ -154,11 +154,13 @@ export default function (props) {
               <Row>
                   
                   {!!currentUser &&
-                  <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
+                  <Row className="flex-row flex-auto sm:flex-none justify-end  flex">
+                    <View className='hidden lg:flex flex-row'>
                       <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {bOpen && handleClickNotifications(); setNtfsOpen(bOpen);}} title={sTxtNtfsTitle}>{[
                         <Button key="ddp-trigger" variant="text" rounded startDecorator="notifications" id="m1" />, ntfsContent]}
                       </DropdownPopup>
                       <Button variant="text" rounded startDecorator="messages"  id="m2" aria-label="Messages" onPress={() => {handleClick('/messenger')}} />
+                      </View>
                       <DropdownMenu items={menuItemsByName('add_menu', props.menu_add.items).map((item, index) => {
                             return !item.link.includes('javascript') && {
                               id: 'menu-' + index,
@@ -170,7 +172,7 @@ export default function (props) {
                         <Button variant="text" rounded startDecorator="plus" id="m3" aria-label="Create" onPress={() => {}} />
                       </DropdownMenu>
                       <Search />
-                      {profile ? <View className=' justify-center'><Button variant="text" rounded startDecorator={profile} id="m3" aria-label="Create" onPress={() => {}} /></View> : <></>}
+                      {profile ? <View className='hidden lg:flex flex-row justify-center'><Button variant="text" rounded startDecorator={profile} id="m3" aria-label="Create" onPress={() => {}} /></View> : <></>}
                       
                   </Row>
                   }

@@ -205,12 +205,12 @@ export default function FormFieldFtf(props) {
         }
 
     })
-
-    /*useEffect(() => {
-        if (editor)
+    console.log('----------', field.value)
+    useEffect(() => {
+        if (editor && field.value == '')
             editor.commands.setContent(field.value)
 
-    }, [field.value]);*/
+    }, [field.value]);
 
     
     const isFullHtml = props.html == 2;
