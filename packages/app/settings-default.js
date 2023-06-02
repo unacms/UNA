@@ -24,7 +24,7 @@ export const settingsDefault = {
     feed: {
         show_selector_view: false,
         default_view: '',
-        show_html: true,
+        show_html: false,
     },
     entry: {
         default_view: '',

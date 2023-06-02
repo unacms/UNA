@@ -136,12 +136,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                        <ScrollView horizontal={true} className="items-center gap-0 mx-4" >
+                        <Row  className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
-                            
+                        <ScrollView horizontal={true} className="items-center gap-0 mx-4 w-full" >
                             <Row className="  mr-auto" >
-                            
                                 {routes.map((a) => (
                                     <Pressable style={{width:tabWidth}} className=" py-1.5 items-center"
                                         key={`tab-${a.index}`}
@@ -155,8 +154,10 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
                             </Row>
-                            {addButtons}
+                            
                         </ScrollView>
+                        {addButtons}
+                        </Row>
                     </View>
                 </View>
 
