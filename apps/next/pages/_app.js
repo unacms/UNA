@@ -26,8 +26,8 @@ function MyApp({ Component, pageProps }) {
         <Provider>
           <QueryClientProvider client={queryClient}>
             <CurrentUserProvider>
-              <Component {...pageProps} />
-              <Analytics />
+              <Component {...pageProps} />              
+              {!!process.env['VERCEL'] ? <Analytics /> : null}
             </CurrentUserProvider>
           </QueryClientProvider>
         </Provider>

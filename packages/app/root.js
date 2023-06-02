@@ -58,7 +58,10 @@ export async function getData(path, token, origin, headers, callback, params) {
         path = path + '&params[]=' + params
     }
     // TODO: pass GET&POST params
+    const t1 = Date.now();
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
-   // console.log("************** load data:", path, "**************", data);
+    const diff = Date.now() - t1;
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", path, ")");
+    // console.log("************** load data:", path, "**************", data);
     return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
 }

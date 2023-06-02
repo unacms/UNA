@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env-shell next dev --hostname $HOST --port $PORT",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname $HOST --port $PORT",
     "lint": "next lint"
   },
   "dependencies": {
