@@ -1,6 +1,8 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
+import { useWindowDimensions} from 'react-native';
+import { Platform } from 'react-native'
 
 export default function FormComments(props) {
     const [imageSource, setImageSource] = useState([]);
@@ -14,15 +16,22 @@ export default function FormComments(props) {
         }
     }
 
+    const windowWidth = useWindowDimensions().width;
+
+    let styles ={};
+    if(Platform.OS !== 'web') {
+        styles = {width: windowWidth-180}
+    }
+    
+
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full  my-0.5'>
-    <Row className='w-full  '>
-
+    <Row className='w-full'>
         <View className=''>
             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
         </View>
-        <View className=' flex-grow mr-2'>
+        <View className='  mr-2 flex-grow ' style={styles}>
             {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
@@ -30,7 +39,7 @@ export default function FormComments(props) {
             {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
         </View>
-        <View className=''>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom')}</View>
+        <View className='w-10'>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom')}</View>
     </Row>
     {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row> }
 </View>

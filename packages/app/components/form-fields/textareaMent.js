@@ -1,11 +1,11 @@
 import Field from './_field';
 import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
-import { useController, useFormContext } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 import { MentionInputMulti } from 'app/design/controls'
-import { useState, useRef, useEffect} from 'react';
+import { useState, useEffect} from 'react';
 import { fetcher } from '../../lib/fetcher';
-import { mentionRegEx,replaceMentionValues  } from 'react-native-controlled-mentions';
+import { replaceMentionValues } from 'react-native-controlled-mentions';
 
 export default function FormFieldText({ name, value = '', numLines = 4, ...props }) {
     const { field } = useController({ name, rules: {}, defaultValue: value });
@@ -62,11 +62,15 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
         );
     };
 
+    let styles ={maxHeight: 100};
+    if(name != 'cmt_text') {
+        styles = {...styles, minHeight: 100}
+    }
+
     return (
         <Field {...props}>
-            <MentionInputMulti
+            <MentionInputMulti style={styles}
                 multiline
-                numberOfLines={numLines}
                 value={localValue}
                 onChange={handleChange2}
                 partTypes={[

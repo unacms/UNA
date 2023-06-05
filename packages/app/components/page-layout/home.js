@@ -33,7 +33,6 @@ export default function PageLayout(props) {
             <View className="flex-auto relative w-full flex-row mx-auto  ">
 
             <View className="hidden md:block  w-1/4 xl:w-1/5 mt-4   duration-200 ">
-               
                 <BlockByName data={props.data} name={props.blocks.menu}  />
             </View>
             <View className="flex-auto  w-3/4 xl:w-4/5 flex-row duration-200">

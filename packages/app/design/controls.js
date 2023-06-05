@@ -8,18 +8,23 @@ import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
 
+let h11 = '';
+if(Platform.OS !== 'ios') {
+    h11 = ' h-11'
+}
+
 import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2  dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 ')
+export const Input = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2  dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base ' + h11)
 export const InputMulti = styled(TextInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
 
-export const MentionInput = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5')
-export const MentionInputMulti = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5')
+export const MentionInput = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 ' + h11)
+export const MentionInputMulti = styled(MentionInputDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
 
 export const Switch = styled(SwitchDef, ' text-gray-800')
 export const Hidden = styled(TextInputDef, 'hidden')
-export const Dropdown = styled(DropdownDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base h-11 leading-5  ')
+export const Dropdown = styled(DropdownDef, ' bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 ' + h11)
 
 const PickerStyles = ' appearance-none bg-backgroundinput  border border-bordercolorinput dark:border-bordercolorinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
@@ -158,7 +163,7 @@ export function Button(props) {
     switch (buttonSize) {
         case 'xs':
             sClassContainer += buttonRounded ? 'rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
-            sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? 'mx-[1px] ' : '');
+            sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
             sClassText += ' text-xs '
             iIconSize = 16;
             sTitleContainer += buttonTitle !== '' ? 'mx-1 ' : '' // Conditionally add 'mx-2' class

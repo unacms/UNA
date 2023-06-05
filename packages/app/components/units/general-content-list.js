@@ -156,7 +156,7 @@ export default function Unit(props) {
                             </View>
                             </View>
                             
-                            <Link href={data.url} ><Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text></Link>
+                            <Link href={data.url} ><Text className="m-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text></Link>
                         <View className=''>{sMeta}</View>
                     </View>
                 </Link>
@@ -170,69 +170,43 @@ export default function Unit(props) {
 
         
         return (
-            
-                
-                <View className="
+            <View className="
                 hover:shadow-sm active:shadow-none 
-                    mt-4 mx-2             
-                    
-                    
-                    p-1   group duration-200 overflow-hidden sm:rounded-lg  
-            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-            
-            active:translate-y-0.5 border
-            border-bordercolorcard dark:border-bordercolorcard-dark 
-            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-            active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
-                    
-                    ">
-                    <Link href={data.url} emulate={true}>  
+                mt-4 mx-2             
+                p-1   group duration-200 overflow-hidden sm:rounded-lg  
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                active:translate-y-0.5 border
+                border-bordercolorcard dark:border-bordercolorcard-dark 
+                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                ">
+                <Link href={data.url} emulate={true}>  
                     <View className='flex-col    '>   
                         {data.image && (
-                
-                                
-
-                                
-                                    <><View className="relative rounded aspect-video  overflow-hidden w-full ">
-                                <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
-                            </View>
-                            
-                           </>
-                                   
-                                
-           
-                               )
-                          
+                            <>
+                                <View className="relative rounded aspect-video  overflow-hidden w-full ">
+                                    <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+                                </View>
+                            </>
+                            ) 
                         } 
-                        
-                        {!data.image &&<>
-                        
-                            
-                                    <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
-                                    </View> 
-                                    
-                                    
-                                    
-                                
-                               
-
-                        
-                        
-                        </>}
+                        {!data.image && 
+                            <>
+                                <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full "></View> 
+                            </>
+                        }
                         <View className="flex flex-col h-28 gap-1 p-3 ">
-                        <Link href={data.url} > <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
-                                            {data.title}
-                                        </Text></Link>
-                                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                        
+                            <Link href={data.url} >
+                                <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                                    {data.title}
+                                </Text>
+                            </Link>
+                            <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
                         </View>
-                        <View className=" px-3 pb-3  ">{sMeta}</View>
-                                    
-                        </View>      
-                    </Link>
-                
-                
+                        <View className=" px-3 pb-3  ">{sMeta}</View>          
+                    </View>      
+                </Link>
             </View>  
         )
     }

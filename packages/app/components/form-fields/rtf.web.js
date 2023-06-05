@@ -205,7 +205,7 @@ export default function FormFieldFtf(props) {
         }
 
     })
-    console.log('----------', field.value)
+
     useEffect(() => {
         if (editor && field.value == '')
             editor.commands.setContent(field.value)

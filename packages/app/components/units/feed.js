@@ -1,5 +1,4 @@
 import Image from '../../ui/atoms/image';
-import { stripTags, stripTagsWithLinks } from '../../lib/util';
 import Link from '../../ui/atoms/link';
 import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
@@ -7,18 +6,16 @@ import Profile from '../../ui/molecules/profile';
 import { useState } from 'react';
 import Html from '../../ui/atoms/html';
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
-import {StyleSheet, useWindowDimensions} from 'react-native';
+import { View, Pressable, Row } from 'app/design/view'
+import { StyleSheet } from 'react-native';
 import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
-import { ContentMore } from 'app/ui/molecules/contentmore';
-import { appSetting } from 'app/lib/util'
+import { Modal } from 'app/design/controls'
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
     const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
-    const {height, width, scale, fontScale} = useWindowDimensions();
 
     if (data.sFirstImg){
         ImageNative.getSize(data.sFirstImg, (width, height) => {
@@ -38,8 +35,8 @@ function DefaultUnit(data) {
             });
     }
 
-
     let url = '/' + data.url;
+    let bIsTimelineContent = data.type.includes('timeline') ? true : false;
 
     return (
         <Link href={url} className="w-full" emulate={true}>
@@ -54,8 +51,6 @@ function DefaultUnit(data) {
                 sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
                 >
- 
-       
         <View className="px-3 pt-3 gap-2 flex-row">
         <View className="flex-auto">        
             <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
@@ -78,12 +73,8 @@ function DefaultUnit(data) {
                         {!showFull ? 
                         <View>
                             <View className="flex-col gap-3 relative">
-                            { appSetting('feed', 'show_html') != true && 
-                            <Text numberOfLines={2}  className="text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100  text-base">
-                                {data.plainText}
-                            </Text>}
-                            { appSetting('feed', 'show_html') == true && 
-                             <View style={{maxHeight:44, overflow:'hidden'}}><Html  data={stripTagsWithLinks(data.content.text)} /></View>}
+                            { bIsTimelineContent && <View style={{maxHeight:44, overflow:'hidden'}}><Html  data={(data.content.text)} /></View>}
+                            { !bIsTimelineContent && <Text numberOfLines={2} >{data.content.text}</Text>}
                             </View>
                         {!!data.sFirstImg &&
                             <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
@@ -97,17 +88,17 @@ function DefaultUnit(data) {
                                 
                             
                         }
-                    
-                    
-
+                        { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
                 <View className=" flex-auto  pt-2   flex-row  w-full">
                     
                     <View className="mt-auto flex-row space-x-2 flex-auto">
                         <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
                     </View>
+                    { bIsTimelineContent && 
                     <View className='mt-auto flex-none'>
                         { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" />}
                     </View>
+                    }
                     
                 </View>
                 </View>
@@ -157,12 +148,37 @@ function SmallUnit(data) {
     )
 }
 
+function UnitImages(images) {
+
+    if (images?.images.length == 0)
+        return <></>;
+
+    const [showImage, setShowImage] = useState(false);
+
+    const handleShowImage = (img) => {
+        setShowImage(img);
+    } 
+
+    return (
+        <>
+        <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
+            <View className="w-full h-64 lg:h-96" >
+                {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
+            </View>
+        </Modal>
+        <Row>
+        {images?.images.map((image, index) => (
+             <Pressable key={index} className="h-24 w-24" onPress={() => handleShowImage([image.src_orig, 'image'])} ><Image sizes="96px" src={image.src_orig} alt='' view="cover" /></Pressable>
+        ))
+        }
+        </Row>
+        </>
+    )
+}
+
 export default function UnitFeed(props) {
 
         let data = props.data;
-
-        //TODO: rework url
-        let url = '/' + data.url;
 
         data.mainImage = null;
         if (data?.content?.images)    
@@ -173,7 +189,7 @@ export default function UnitFeed(props) {
             data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data;
         }
 
-        data.sFirstImg = '';
+       /* data.sFirstImg = '';
         let sImages = [];
         
         const regex = /<img.*?src=['"](.*?)['"]/g;
@@ -198,7 +214,8 @@ export default function UnitFeed(props) {
                 data.showMore = true;
             }
         }
-
+*/
+        data.showMore = true;
         let unit = props.mode == '' ? DefaultUnit(data) : SmallUnit(data);
 
         return (

@@ -52,7 +52,7 @@ export default function PageLayout(props) {
                 let otherH = Dimensions.get('window').height;
                 otherH = otherH - FormH - offset
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    setSizes({formHeight: FormH, formWidth: width-2, otherHeight:otherH, cntHeight:height})             
+                    setSizes({formHeight: FormH, formWidth: width, otherHeight:otherH, cntHeight:height})             
                 });
             });
         }
@@ -86,12 +86,12 @@ export default function PageLayout(props) {
 
     return ( 
         <View className="lg:py-4">
-            <View className=" justify-between w-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
+            <View className=" justify-between w-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
                 </Row>
-                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
+                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
                     </KeyboardAvoidingView>

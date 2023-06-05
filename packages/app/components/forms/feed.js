@@ -56,14 +56,10 @@ export default function FormFeed(props) {
           active:translate-y-0.5 border 
           border-bordercolorcard dark:border-bordercolorcard-dark 
           sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv
-          
-          
-
-          
+          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
     '>     
         <View className='flex-auto'>    
-            <Button size='base' size='lg' variant='text' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
+            <Button size='base' variant='text' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>
     </View>
     </View>
