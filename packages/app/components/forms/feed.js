@@ -5,6 +5,8 @@ import { getFormFieldByData } from 'app/lib/form-helpers'
 import  { LayoutData } from 'app/context/layout';
 import { FeedbackHaptics } from 'app/lib/util';
 import { KeyboardAvoidingView } from 'react-native';
+import { Platform } from 'react-native'
+
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
     const [imageSource, setImageSource] = useState([]);
