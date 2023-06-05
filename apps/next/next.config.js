@@ -27,6 +27,8 @@ const nextConfig = {
   webpack5: true,
   experimental: {
     forceSwcTransforms: true,
+    // scrollRestoration: true,
+    runtime: 'experimental-edge',
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
   },
   images: {

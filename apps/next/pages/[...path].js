@@ -5,6 +5,8 @@ import { env } from 'app/lib/env';
 
 const setCookie = require('set-cookie-parser');
 
+export const runtime = 'experimental-edge';
+
 export default function Path (props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
