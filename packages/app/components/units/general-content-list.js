@@ -173,14 +173,20 @@ export default function Unit(props) {
             
                 
                 <View className="
-                    shadow-sm hover:shadow-lg active:shadow-none 
+                hover:shadow-sm active:shadow-none 
                     mt-4 mx-2             
-                    group duration-200  rounded-lg 
-                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                       border-4 border-transparent 
-                   justify-between 
-                    active:translate-y-0.5 ">
+                    
+                    
+                    p-1   group duration-200 overflow-hidden sm:rounded-lg  
+            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+            
+            active:translate-y-0.5 border
+            border-bordercolorcard dark:border-bordercolorcard-dark 
+            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+            active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                    
+                    ">
                     <Link href={data.url}>  
                     <View className='flex-col    '>   
                         {data.image && (

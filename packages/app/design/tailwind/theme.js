@@ -56,7 +56,7 @@ const colors = {
 
 
   backgroundbody: {
-    DEFAULT: 'rgba(229,231,235,1)',
+    DEFAULT: 'rgba(243,244,246,1)',
     dark: 'rgba(3,7,18,1)',
   },
 
@@ -67,21 +67,23 @@ const colors = {
 
 
 
+
+
   backgroundcard: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.8)',
-    active: 'rgba(255,255,255,0.6)',
-    dark: 'rgba(17,24,39,1)',
-    darkhover: 'rgba(17,24,39,0.8)',
-    darkactive: 'rgba(17,24,39,0.6)'
-  },
-  bordercolorcard: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    hover: 'rgba(229,231,235,1)',
-    active: 'rgba(229,231,235,0.5)',
-    dark: 'rgba(17,24,39,1)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    hover: 'rgba(255,255,255,1)',
+    active: 'rgba(255,255,255,0.5)',
+    dark: 'rgba(17,24,39,0.8)',
     darkhover: 'rgba(17,24,39,1)',
     darkactive: 'rgba(17,24,39,0.5)'
+  },
+  bordercolorcard: {
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    hover: 'rgba(229,231,235,1)',
+    active: 'rgba(229,231,235,0.5)',
+    dark: 'rgba(31,41,55,0.5)',
+    darkhover: 'rgba(31,41,55,1)',
+    darkactive: 'rgba(31,41,55,0.2)'
   },
 
   backgroundinput: {
@@ -116,13 +118,13 @@ const colors = {
   },
 
   backgroundnavbar: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    dark: 'rgba(17,24,39,0.9)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(17,24,39,0.5)',
 
   },
   bordercolornavbar: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(3,7,18,1)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
   },
 
   backgroundtabbar: {
@@ -131,17 +133,19 @@ const colors = {
   },
 
   bordercolortabbar: {
-    DEFAULT: 'rgba(rgba(229,231,235,0.8)',
+    DEFAULT: 'rgba(229,231,235,1)',
     dark: 'rgba(31,41,55,0.8)',
   },
 
+
+
   backgrounditem: {
-    DEFAULT: 'rgba(209,213,219,0.8)',
-    dark: 'rgba(55,65,81,0.8)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.8)',
   },
   bordercoloritem: {
-    DEFAULT: 'rgba(209,213,219,1)',
-    dark: 'rgba(55,65,81,1)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    dark: 'rgba(229,231,235,1)',
   },
 
   backgroundbutton: {
@@ -187,18 +191,7 @@ const colors = {
     DEFAULT: '#FFFFFF',
     dark: '#111827',
   },
-  neocard: {
-    DEFAULT: '#FFFFFF',
-    dark: '#111827',
-    hover: '#f9fafb',
-    darkhover: '#1f2937',
-    active: '#f3f4f6',
-    darkactive: '#030712',
-    border: 'rgba(209, 213, 219, 0.5)',
-    borderhover: 'rgba(209, 213, 219, 1)',
-    darkborder: 'rgba(55, 65, 81, 0.3)',
-    darkborderhover: 'rgba(55, 65, 81, 1)',
-  },
+
 
   neoitem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',

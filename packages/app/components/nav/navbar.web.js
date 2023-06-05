@@ -133,7 +133,7 @@ export default function (props) {
             </TouchableOpacity>
           </Row>
 
-          <Row className="flex-row space-x-2 flex-auto justify-end lg:justify-between ">
+          <Row className="flex-row  flex-auto justify-end lg:justify-between ">
               <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
                 <Slider offset={300}>
                   {menuItemsByName('main_menu', menu_top).map((item, index) => (
@@ -143,7 +143,7 @@ export default function (props) {
                             variant="text"
                             startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]}
                             align="start"
-                            rounded
+                            
                             title={item.title}
                           />
                         </Link>

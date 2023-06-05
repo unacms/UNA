@@ -29,7 +29,7 @@ export default function FormFeed(props) {
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full '>
-    <Modal title="Create a new Post" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
+    <Modal title="Create new Post" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
         {getFormFieldByData(props.data.inputs['action'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}
@@ -49,17 +49,21 @@ export default function FormFeed(props) {
     </Modal>
     <View className='max-w-5xl w-full items-center pt-2 sm:pt-4  sm:px-4 mx-auto'>
     <View className='max-w-5xl w-full  
-          p-4   group duration-200 overflow-hidden sm:rounded-lg  
+             group duration-200 overflow-hidden sm:rounded-lg  
           bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
           hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-          shadow-sm hover:shadow-md active:shadow-none 
-          active:translate-y-0.5
+          hover:shadow-sm active:shadow-none 
+          active:translate-y-0.5 border 
           border-bordercolorcard dark:border-bordercolorcard-dark 
           sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
+          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv
+          
+          
+
+          
     '>     
         <View className='flex-auto'>    
-            <Button size='base' variant='outline' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
+            <Button size='base' size='lg' variant='text' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>
     </View>
     </View>
