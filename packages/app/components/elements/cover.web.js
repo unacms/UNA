@@ -43,13 +43,13 @@ export function CoverSmall(props) {
     return (
         <View className=' backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark  w-full ' >
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                <View className=' mx-4 py-2    flex-row gap-2'>
+                <View className=' mx-4 py-2 flex-row gap-2'>
                     <Row className=' items-center  flex-auto'>
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize="base" />
-                        <View className='flex-row items-center ml-3'>
+                        <Row className=' items-center ml-3 w-full bg-red-500'>
                             <Text className="text-lg xl:text-xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
-                            <Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth />
-                        </View>
+                            <View className='ml-4'><Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth /></View>
+                        </Row>
                     </Row>
                     <View className=' w-auto  my-auto '>
                         <CoverMenuSmall {...data.actions_menu} />
