@@ -24,9 +24,10 @@ function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false);
 
     return (
-            <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {setNtfsOpen(bOpen);}} title="Test">{[
+            <DropdownPopup open={ntfsOpen} onOpenChange={(bOpen) => {setNtfsOpen(bOpen);}} title="Test">
                 <Button variant="text" rounded startDecorator="DotsThreeOutline" />, 
-                <Menu {...props} displayType="button" params={{showVertical: true, button_variant: 'default', button_rounded: false, button_full_width: true}} />]}
+                <Menu {...props} displayType="button" params={{showVertical: true, button_variant: 'default', button_rounded: false, button_full_width: true}} />
+               
             </DropdownPopup>
     );
 }
