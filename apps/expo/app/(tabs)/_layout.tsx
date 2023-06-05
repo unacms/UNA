@@ -20,7 +20,7 @@ export default function AppLayout() {
   const [notifCount, setNotifCount] = useState(currentUser? currentUser.notifications : null)
 
   if (currentUser){
-    let dUser = currentUser;
+    let dUser = Object.assign({}, currentUser);
     dUser.url_avatar = dUser.avatar
     dUser.url = '/dashboard'
     profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />

@@ -1,20 +1,26 @@
 
 import { View } from 'app/design/view';
-import {BlockByName} from 'app/components/block';
 import { Text } from 'app/design/typography'
-import { Button, ButtonsGroup } from 'app/design/controls';
+import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link';
 import { Row } from 'app/design/view';
-import { Pressable } from 'dripsy';
 import { Icon } from 'app/ui/atoms/icon'; 
-
+import { useCurrentUser } from 'app/context/user';
+import Profile from 'app/ui/molecules/profile';
 
 export default function PageLayout(props) {
+
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    if (!currentUser)
+        return <></>;
+        
+
+
     return (<View className="w-full p-3 max-w-5xl mx-auto ">
         
         <Row className='flex-wrap  '>
         <View className=' w-full  p-1 '>
-   
+   <Link href={currentUser.url}>
    <View  className='w-full p-4 flex-row gap-4
    
    duration-200 rounded-lg  group
@@ -34,19 +40,21 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
        
        
        <View className='flex-col my-auto mr-auto bg-backgrounditem dark:bg-backgrounditem-dark  p-2 rounded-full'>
-       <Icon icon="User" width={32} height={32}  />
+       <Profile {...currentUser} displayType="unit_wo_info" displaySize="sm" />
        </View>
        
        <View className='flex-auto flex-row my-auto '>
-       <Text className='my-auto flex-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Andrey Yasko</Text>
-       <Button variant="outline" startDecorator='UserSwitch' rounded  />
+       <Text className='my-auto flex-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>{currentUser.display_name}</Text>
+       <View className='hidden'><Button variant="outline" startDecorator='UserSwitch' rounded  /></View>
 
        </View>
    </View>
+   </Link>
         </View>
-
+        
+       
             <View className=' w-1/2 lg:w-1/3  p-1 '>
-   
+            <Link href={currentUser.url.replace('view-persons-profile', 'persons-profile-friends')}>
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
                     duration-200 rounded-lg  group
@@ -71,12 +79,43 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         
                         <View className='flex-auto flex-col my-auto '>
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Friends</Text>
-                       
                         </View>
                     </View>
+                    </Link>
             </View>
 
             <View className=' w-1/2 lg:w-1/3  p-1 '>
+            <Link href={currentUser.url.replace('view-persons-profile', 'persons-profile-subscriptions')}>
+                    <View  className='w-full p-4 flex-col sm:flex-row gap-4
+                    
+                    duration-200 rounded-lg  group
+            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+            hover:shadow-sm active:shadow-none 
+            active:translate-y-0.5 border
+            border-bordercolorcard dark:border-bordercolorcard-dark 
+            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+            active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                    
+                    
+                    overflow-hidden
+                    
+                    
+                    '>
+                        
+                        
+                        <View className='flex-col my-auto mr-auto bg-backgrounditem dark:bg-backgrounditem-dark  p-2 rounded-md'>
+                        <Icon icon="Users" width={32} height={32}  />
+                        </View>
+                        
+                        <View className='flex-auto flex-col my-auto '>
+                        <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Following</Text>
+                        </View>
+                    </View>
+                    </Link>
+            </View>
+            
+            <View className=' w-1/2 lg:w-1/3  p-1 hidden'>
    
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
@@ -107,7 +146,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                     </View>
             </View>
 
-            <View className=' w-1/2 lg:w-1/3  p-1 '>
+            <View className=' w-1/2 lg:w-1/3  p-1 hidden'>
    
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
@@ -139,7 +178,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
             </View>
 
 
-            <View className=' w-1/2 lg:w-1/3  p-1 '>
+            <View className=' w-1/2 lg:w-1/3  p-1 hidden'>
    
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
@@ -170,7 +209,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                     </View>
             </View>
 
-            <View className=' w-1/2 lg:w-1/3  p-1 '>
+            <View className=' w-1/2 lg:w-1/3  p-1 hidden'>
    
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
@@ -201,7 +240,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                     </View>
             </View>
 
-            <View className=' w-1/2 lg:w-1/3  p-1 '>
+            <View className=' w-1/2 lg:w-1/3  p-1 hidden'>
    
             <View  className='w-full p-4 flex-col sm:flex-row gap-4
             
@@ -233,7 +272,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
             </View>
 
             <View className=' w-1/2 lg:w-1/3  p-1 '>
-   
+                    <Link href='account-settings-email'>
                     <View  className='w-full p-4 flex-col sm:flex-row gap-4
                     
                     duration-200 rounded-lg  group
@@ -260,11 +299,13 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Settings</Text>
                         
                         </View>
+                       
                     </View>
+                    </Link> 
             </View>
 
             <View className=' w-1/2 lg:w-1/3  p-1 '>
-            
+            <Link href='logout'>
             <View  className='w-full p-4 flex-col sm:flex-row gap-4
 
             duration-200 rounded-lg  group
@@ -281,6 +322,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
 
 
             '>
+               
 
 
             <View className='flex-col my-auto mr-auto bg-backgrounditem dark:bg-backgrounditem-dark  p-2 rounded-md'>
@@ -292,7 +334,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                 </Link>
             </View>
             </View>
-           
+           </Link>
             </View>
        
             

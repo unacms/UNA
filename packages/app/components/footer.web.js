@@ -16,7 +16,7 @@ export default function () {
 
     let profile = null
     if (currentUser){
-        let dUser = currentUser;
+        let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
         dUser.url = '/dashboard'
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />

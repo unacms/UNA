@@ -71,7 +71,7 @@ export function Screen(params) {
                     let isProfile = appSetting('layout', 'show_user_icon');
                     let profile=<></>
                     if (isProfile && currentUser ){
-                        let dUser = currentUser;
+                        let dUser = Object.assign({}, currentUser);
                         dUser.url_avatar = dUser.avatar
                         dUser.url = '/dashboard'
                         profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
