@@ -123,7 +123,7 @@ export default function UnitComments(props) {
                                         title: aItem.title
                                     };
                                 })} onSelect={handleManageMenuSelect}>
-                                    <Button variant="outline" size="sm" startDecorator="DotsThreeOutline" onPress={() => {}} rounded />
+                                    <Button variant="outline" size="sm" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} rounded />
                                 </DropdownMenu>
                             </View>
                             }
