@@ -175,8 +175,9 @@ export default function AtomProfile(oProps) {
             ) : (
               <DisplayNameText title={oProps.display_name} />
             )}
+            </Link>
             <View className="flex text-gray-600 dark:text-gray-400 text-sm">{sShowInfo}</View>
-            </Link></View>
+            </View>
      
       )
       break

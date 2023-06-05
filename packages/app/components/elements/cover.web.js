@@ -79,10 +79,10 @@ export default function ElementCover(props) {
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize={width >= 1024? "4xl" : "3xl"} />
                     </View>
                     <View className='w-min lg:pt-24 lg:flex-row lg:justify-between flex-auto'>
-                        <View className='items-start shrink gap-3'>
+                        <View className='items-start shrink gap-3 w-full'>
                             <Row className='items-center w-full truncate mt-1 lg:mt-0'>
                                 <Text className="ml-1 tracking-tight truncate text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
-                                <Button size="sm" rounded startDecorator="SealCheck" variant="link" fullWidth />
+                                <View className='ml-4'><Button size="sm" rounded startDecorator="SealCheck" variant="link" fullWidth /></View>
                             </Row>
                             <Row className='flex-wrap gap-1 text-center'>
                                 <CoverMenuMeta  {...data.meta_menu} />

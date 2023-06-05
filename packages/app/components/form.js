@@ -39,8 +39,7 @@ export default function Form(props) {
 
     const onSubmit = async d => {
 
-        if (Platform.OS != 'web')
-            FeedbackHaptics('Medium')
+        FeedbackHaptics('Medium')
             
         const formData = new FormData();
         Object.keys(d).map(function (key) {

@@ -39,7 +39,7 @@ export default function () {
                            <View className='flex-col gap-1 items-center'>
                             {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
                              <Text className=' text-gray-700 hover:text-gray-900 dark:hover:text-white dark:text-gray-300 text-[10px] whitespace-nowrap'>{tab.title}</Text>
-                             {tab.url == '/notifications-view' && <View className='absolute bg-red-500 rounded-full h-5 w-5 items-center justify-center right-1'><Text className='text-white text-xs'>{notifCount}</Text></View>}
+                             {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 rounded-full h-5 w-5 items-center justify-center right-1'><Text className='text-white text-xs'>{notifCount}</Text></View>}
                             </View>
                             </Link>
                         </View>

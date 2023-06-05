@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
@@ -62,7 +62,7 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
                 {(true) && (
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }, animatedStyleA]} >
-                      sdf  <Navbar menu_top={menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+                        <Navbar menu_top={menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
                     </Animated.View>)} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={(scroll.value? ' mt-16': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
