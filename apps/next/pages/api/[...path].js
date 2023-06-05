@@ -20,6 +20,16 @@ const proxy = createProxyMiddleware({
     headers: {
         authorization: 'Bearer ' + env('UNA_API_KEY')
     },
+    onProxyRes: function (proxyRes, req, res) {
+        console.log('----------------- BEFORE -------------');
+        console.log(proxyRes.headers);
+        if (typeof(proxyRes.headers['Logged']) !== 'undefined')
+            proxyRes.headers['Cache-Control'] = 'private';
+        else
+            proxyRes.headers['Cache-Control'] = 'public, s-maxage=86400, stale-while-revalidate=2592000';
+        console.log('----------------- AFTER -------------');
+        console.log(proxyRes.headers);
+      }
 });
 
 export default function handler(req, res) {
