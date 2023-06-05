@@ -512,8 +512,8 @@ export const settingsDefault = {
             },
             {
                 key:'/tab3',
-                title: 'Groups',
-                url: '/groups-home', //'/view-persons-profile/dr-andrey-yasko-phd',
+                title: 'Messenger',
+                url: '/messenger', //'/view-persons-profile/dr-andrey-yasko-phd',
                 icon: 'UsersThree',
             },
             {
@@ -550,8 +550,8 @@ export const settingsDefault = {
             },
             {
                 key:'/tab3',
-                title: 'Groups',
-                url: '/groups-home', //'/view-persons-profile/dr-andrey-yasko-phd',
+                title: 'Messenger',
+                url: '/messenger', //'/view-persons-profile/dr-andrey-yasko-phd',
                 icon: 'UsersThree',
             },
             {

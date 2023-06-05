@@ -5,12 +5,3 @@ const Index = () => {
 };
 export default Index;
 
-/*
-import { Redirect, useRouter } from "expo-router";
-
-const Index = () => {
-  const router = useRouter();
-  router.push("/tab0");
-
-};
-export default Index;*/

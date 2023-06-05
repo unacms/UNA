@@ -10,7 +10,7 @@ import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
-
+import * as Linking from 'expo-linking';
 
 export function Screen(params) {
     const { currentUser } = useCurrentUser();
@@ -23,6 +23,17 @@ export function Screen(params) {
     const { colors } = Theme();
   
     let _path = route?.path;
+
+    // DEEP LINKING
+    const url = Linking.useURL();
+    if (url &&  typeof url !== 'undefined'){
+        let a = parseUrl(url);
+        _path = '/'+ a.path + (a.queryString ? '?' + a.queryString : '')
+        if (_path == '/')
+            _path = '/home';
+    }
+    // DEEP LINKING
+    
     if (!_path || _path.includes('/tab')){
         const tabList = currentUser
             ? appSetting('menu', 'bottom_tabs_logged')

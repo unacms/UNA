@@ -1,4 +1,4 @@
-import { View, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 export const siteTitle = 'NEO';
 
 

@@ -11,12 +11,16 @@ export function appSetting(section, name, path) {
 }
 
 export function parseUrl(url) {
-    const parts = url.split('?');
-    const path = parts[0];
-    const queryString = parts[1];
+    let withoutProtocol = url;
+    if (url.includes('//')){
+        withoutProtocol = url.split('//')[1];
+    }
+    const parts = withoutProtocol.split('/');
+    parts.shift(); // remove the domain
+    const pathParts = parts.join('/').split('?');
     return {
-      path: path.startsWith('/') ? path.slice(1) : path, // remove the leading /
-      queryString: queryString
+      path: pathParts[0],
+      queryString: pathParts[1],
     };
 }
 
