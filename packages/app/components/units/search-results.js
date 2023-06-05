@@ -22,23 +22,17 @@ export default function UnitSearchResults(props) {
            justify-between 
             active:translate-y-0.5 ">
             <Link href={data.url}>  
-            <View className='flex-col    '>   
-               
-                <View className="flex flex-col h-28 gap-1 p-3 ">
-                                <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
-                                    {data.title}
-                                </Text>
-                                <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                
-                </View>
-              
-                            
+                <View className='flex-col    '>   
+                    <View className="flex flex-col h-28 gap-1 p-3 ">
+                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                            {data.title}
+                        </Text>
+                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 text-sm ">{data.summary_plain}</Text>
+                    </View>          
                 </View>      
             </Link>
-        
-        
-    </View>  
-)
+        </View>  
+    )
 }
 
 

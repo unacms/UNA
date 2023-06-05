@@ -38,23 +38,27 @@ function DefaultUnit(data) {
             });
     }
 
+
+    let url = '/' + data.url;
+
     return (
+        <Link href={url} className="w-full" emulate={true}>
         <View className='max-w-5xl w-full mx-auto '>
-        <View className=" 
-            p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
-            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-            hover:shadow-sm active:shadow-none 
-            active:translate-y-0.5 border
-            border-bordercolorcard dark:border-bordercolorcard-dark 
-            sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-            active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
-            >
+            <View className=" 
+                p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                hover:shadow-sm active:shadow-none 
+                active:translate-y-0.5 border
+                border-bordercolorcard dark:border-bordercolorcard-dark 
+                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
+                >
  
        
         <View className="px-3 pt-3 gap-2 flex-row">
         <View className="flex-auto">        
-            <Profile {...data.author_data} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+            <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
         </View>
         
         {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
@@ -67,9 +71,9 @@ function DefaultUnit(data) {
             </View>
         }   
                 <View className="flex-auto p-3   flex-col gap-2">
-                    <Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
+                <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                         {data.content.title}
-                    </Text>
+                    </Text></Link>
 
                         {!showFull ? 
                         <View>
@@ -110,12 +114,15 @@ function DefaultUnit(data) {
         </View>
         
 
-    </View></View>);
+    </View></View></Link>);
 }
 
 function SmallUnit(data) {
-    
+
+    let url = '/' + data.url;
+
     return (
+        <Link href={url} className="w-full" emulate={true}>
         <View className="
         flex-row p-2 sm:p-3 sm:mx-4 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg   
             bg-backgroundcard dark:bg-backgroundcard-dark 
@@ -146,6 +153,7 @@ function SmallUnit(data) {
                 </View>         
             </View>
     </View>
+    </Link>
     )
 }
 
@@ -194,6 +202,6 @@ export default function UnitFeed(props) {
         let unit = props.mode == '' ? DefaultUnit(data) : SmallUnit(data);
 
         return (
-            <Link href={url} className="w-full">{unit}</Link>         
+            <>{unit}</>      
         );
 }

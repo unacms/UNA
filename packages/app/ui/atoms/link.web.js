@@ -1,10 +1,11 @@
 import { styled } from 'nativewind'
 import { Link as SolitoLink} from 'solito/link'
 export const Link = styled(SolitoLink)
-import { View, Pressable } from 'app/design/view'
+import { Pressable } from 'app/design/view'
 import { useRouter } from 'next/router';
 
 export default function ElementLink(props) {  
+
     let { href,  ...rest } = props;
     const router = useRouter();
 
@@ -15,7 +16,7 @@ export default function ElementLink(props) {
         }
     }
 
-    if (props.emulate == true)
+    if (props.emulate === true)
         return (
             <Pressable {...rest} onPress={() => handlePress(event, href)} >
                 {props.children}

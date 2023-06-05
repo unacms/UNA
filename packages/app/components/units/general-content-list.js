@@ -50,7 +50,7 @@ export default function Unit(props) {
                 active:translate-y-0.5 
                 
                 ">
-                    <Link href={data.url}> 
+                    <Link href={data.url} emulate={true}> 
                     <View>  
                     <View className=''>  
                     {data.cover &&
@@ -63,7 +63,7 @@ export default function Unit(props) {
                            
                         </View>
                         </View>
-                        <Text numberOfLines={2}  className=" px-4 text-base font-bold text-gray-800 sm:h-12 dark:text-gray-100">{data.group_name}</Text>
+                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 text-base font-bold text-gray-800 sm:h-12 dark:text-gray-100">{data.group_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
@@ -96,7 +96,7 @@ export default function Unit(props) {
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                 ">
-                    <Link href={data.url}> 
+                    <Link href={data.url} emulate={true}> 
                     <View>  
                     <View className='mb-2'>  
                     {data.cover &&
@@ -109,7 +109,7 @@ export default function Unit(props) {
                            
                         </View>
                         </View>
-                        <Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.channel_name}</Text>
+                        <Link href={data.url} ><Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.channel_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
@@ -141,7 +141,7 @@ export default function Unit(props) {
            active:translate-y-0.5
                 
                 ">
-                    <Link href={data.url}> 
+                    <Link href={data.url} emulate={true}> 
                     <View className='flex-col pb-4'>  
                         
                         {data.cover &&
@@ -156,7 +156,7 @@ export default function Unit(props) {
                             </View>
                             </View>
                             
-                        <Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text>
+                            <Link href={data.url} ><Text className="m-4 h-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text></Link>
                         <View className=''>{sMeta}</View>
                     </View>
                 </Link>
@@ -166,7 +166,7 @@ export default function Unit(props) {
     }
 
     function defaultUnit(){
-        let sMeta = <Profile {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
+        let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
         
         return (
@@ -187,7 +187,7 @@ export default function Unit(props) {
             active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                     
                     ">
-                    <Link href={data.url}>  
+                    <Link href={data.url} emulate={true}>  
                     <View className='flex-col    '>   
                         {data.image && (
                 
@@ -221,9 +221,9 @@ export default function Unit(props) {
                         
                         </>}
                         <View className="flex flex-col h-28 gap-1 p-3 ">
-                                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                        <Link href={data.url} > <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                             {data.title}
-                                        </Text>
+                                        </Text></Link>
                                         <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
                         
                         </View>
