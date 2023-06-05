@@ -43,7 +43,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
 
        </View>
    </View>
-</View>
+        </View>
 
             <View className=' w-1/2 lg:w-1/3  p-1 '>
    
@@ -70,13 +70,8 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         </View>
                         
                         <View className='flex-auto flex-col my-auto '>
-                        <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Connections</Text>
-                        <Row className='my-auto gap-1'>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>23 Friends</Text>
-                        <Text className='my-auto text-neutral-500  text-sm  '>·</Text>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>908 Followers</Text>
-
-                        </Row>
+                        <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Friends</Text>
+                       
                         </View>
                     </View>
             </View>
@@ -107,12 +102,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         
                         <View className='flex-col my-auto flex-auto'>
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Posts</Text>
-                        <Row className='my-auto gap-1'>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>8 published</Text>
-                        <Text className='my-auto text-neutral-500  text-sm  '>·</Text>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>2 drafts</Text>
-
-                        </Row>
+                       
                         </View>
                     </View>
             </View>
@@ -143,11 +133,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         
                         <View className='flex-col my-auto flex-auto'>
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Discussions</Text>
-                        <Row className='my-auto gap-1'>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>23 published</Text>
-
-
-                        </Row>
+                        
                         </View>
                     </View>
             </View>
@@ -179,12 +165,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         
                         <View className='flex-col my-auto flex-auto'>
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Groups</Text>
-                        <Row className='my-auto gap-1'>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>2 created</Text>
-                        <Text className='my-auto text-neutral-500  text-sm  '>·</Text>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>2 joined</Text>
-
-                        </Row>
+           
                         </View>
                     </View>
             </View>
@@ -215,12 +196,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                         
                         <View className='flex-col my-auto flex-auto'>
                         <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Events</Text>
-                        <Row className='my-auto gap-1'>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>1 created</Text>
-                        <Text className='my-auto text-neutral-500  text-sm  '>·</Text>
-                        <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>123 attending</Text>
-
-                        </Row>
+                       
                         </View>
                     </View>
             </View>
@@ -251,11 +227,7 @@ active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkacti
                 
                 <View className='flex-col my-auto flex-auto'>
                 <Text className='my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold '>Bookmarks</Text>
-                <Row className='my-auto gap-1'>
-                <Text className='my-auto  text-neutral-600 group-hover:text-neutral-800 dark:text-neutral-400 group-hover:dark:text-neutral-200 text-sm font-normal  '>254 saved</Text>
                 
-
-                </Row>
                 </View>
             </View>
             </View>
