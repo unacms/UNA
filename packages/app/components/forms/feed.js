@@ -4,7 +4,7 @@ import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import  { LayoutData } from 'app/context/layout';
 import { FeedbackHaptics } from 'app/lib/util';
-
+import { KeyboardAvoidingView } from 'react-native';
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
     const [imageSource, setImageSource] = useState([]);
@@ -34,18 +34,20 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit,  'default')}
-        <View className='w-full flex-col pt-2 px-2'>
-            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', {placeholder: 'Write your text here...'})}
-            <Row className='mt-2'>
-                <View className='w-12'>{getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
-                <View className='w-12'>{getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
-                <View className='w-12'>{getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
-            </Row>
-            { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
-            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit,  'notitle')}
-            {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit,  'default')}
+        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <View className='w-full flex-col pt-2 px-2'>
+                {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', {placeholder: 'Write your text here...'})}
+                <Row className='mt-2'>
+                    <View className='w-12'>{getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+                    <View className='w-12'>{getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+                    <View className='w-12'>{getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+                </Row>
+                { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
+                {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit,  'notitle')}
+                {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit,  'default')}
 
-        </View>   
+            </View>  
+        </KeyboardAvoidingView> 
     </Modal>
     <View className='max-w-5xl w-full items-center pt-2 sm:pt-4  sm:px-4 mx-auto'>
     <View className='max-w-5xl w-full  
