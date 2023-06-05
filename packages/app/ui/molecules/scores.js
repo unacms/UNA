@@ -124,8 +124,9 @@ export default function ElementScore(oProps) {
 
     const handleGetPerformedBy = (event) => {
         event.preventDefault();
-        FeedbackHaptics('Medium');
-        
+
+        FeedbackHaptics(oParams.haptics_type);
+
         performAction('get_performed_by', {}, (oData) => {
             if(!oData?.performed_by)
                 return;

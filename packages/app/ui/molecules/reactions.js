@@ -167,6 +167,8 @@ export default function ElementReactions(oProps) {
     const handleGetPerformedByCpd = (event) => {
         event.preventDefault();
 
+        FeedbackHaptics(oParams.haptics_type);
+
         performAction('get_performed_by', {}, (oData) => {
             if(!oData?.performed_by)
                 return;
@@ -181,12 +183,13 @@ export default function ElementReactions(oProps) {
     const handleGetPerformedByDvd = (event, oItem) => {
         event.preventDefault();
 
+        FeedbackHaptics(oParams.haptics_type);
+
         const sReaction = oItem?.name || '';
         if(!sReaction)
             return;
 
         performAction('get_performed_by', {reaction: sReaction}, (oData) => {
-            FeedbackHaptics('Medium');
             if(!oData?.performed_by)
                 return;
             
