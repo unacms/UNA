@@ -124,8 +124,9 @@ export default function ElementScore(oProps) {
 
     const handleGetPerformedBy = (event) => {
         event.preventDefault();
-        FeedbackHaptics('Medium');
-        
+
+        FeedbackHaptics(oParams.haptics_type);
+
         performAction('get_performed_by', {}, (oData) => {
             if(!oData?.performed_by)
                 return;
@@ -207,14 +208,14 @@ export default function ElementScore(oProps) {
 
         iScore = parseInt(iScore);
         iScoreOld = parseInt(iScoreOld);
-        const sScore = (
+        const sScore = bWeb ? (
             <Text className={'flex' + (iScore > iScoreOld ? ' items-end' : ' items-start') + ' h-5 overflow'}>
-                <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : 'flex-col') + ' transition-all duration-500 ' + counterClass}>
+                <Text className={'flex' + (iScore > iScoreOld ? ' flex-col-reverse' : ' flex-col') + ' transition-all duration-500 ' + counterClass}>
                     <Text className={'sv-old block h-5'}>{iScoreOld.toString()}</Text>
                     <Text className={'sv-new block h-5'}>{iScore.toString()}</Text>
                 </Text>
             </Text>
-        );
+        ) : iScore.toString();
 
         sCounterButton = (
             <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} />

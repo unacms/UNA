@@ -105,8 +105,9 @@ export default function ElementLikes(oProps) {
     const handleGetPerformedBy = (event) => {
         event.preventDefault();
 
+        FeedbackHaptics(oParams.haptics_type);
+
         performAction('get_performed_by', {}, (oData) => {
-            FeedbackHaptics('Medium');
             if(!oData?.performed_by)
                 return;
 

@@ -1,4 +1,4 @@
-import { menuItemsByName } from 'app/lib/util';
+import { menuItemsByName, FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';
@@ -27,7 +27,7 @@ export default function ElementEntityAuthor(oProps) {
             <View>
             {aMenuManageItems.length > 0 && 
                 <DropdownMenu items={aMenuManageItems}>
-                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => {}} />
+                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
                 </DropdownMenu>
             }
             </View>
