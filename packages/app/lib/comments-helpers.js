@@ -78,7 +78,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     const flashListRef = useRef(null);
 
     let dataOut = [];
-    let viewMode = browse.data.view;
+    let viewMode = browse?.data?.view;
 
     const [commentData, setCommentData] = useState({
         parentId: 0, 

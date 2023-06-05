@@ -6,5 +6,6 @@ export const componentsMapDefault = {
     comment: FormComments,
     feed: FormFeed,
     bx_posts: FormPost,
+    bx_forum: FormPost,
 };
 

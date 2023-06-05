@@ -38,8 +38,8 @@ export async function parseData(routes, index, setRoutes) {
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
-        const newData = sResponse.data[0].data.data;
-        const finished = newData.length === 0;
+        const newData = sResponse.data[0]?.data?.data? sResponse.data[0]?.data?.data : [];
+        const finished = newData?.length === 0 || newData;
 
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint

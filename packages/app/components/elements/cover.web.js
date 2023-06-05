@@ -46,7 +46,7 @@ export function CoverSmall(props) {
                 <View className=' mx-4 py-2 flex-row gap-2'>
                     <Row className=' items-center  flex-auto'>
                         <Profile {...data.profile} displayType="unit_wo_info" displaySize="base" />
-                        <Row className=' items-center ml-3 w-full bg-red-500'>
+                        <Row className=' items-center ml-3 w-full'>
                             <Text className="text-lg xl:text-xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">{data.profile.display_name}</Text>
                             <View className='ml-4'><Button  size="sm" rounded startDecorator="SealCheck"  variant="link" fullWidth /></View>
                         </Row>

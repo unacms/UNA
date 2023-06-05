@@ -2,8 +2,11 @@ import { View } from 'app/design/view';
 import Image from '../../ui/atoms/image';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls'
+import EntityAuthor from './entity_author';
 
-export default function ElementEntityCover({data}) {
+export default function ElementEntityCover(props) {
+   const data = props.data;
+    console.log('xxx', props);
     return (
         <View className="flex-col  w-full mx-auto  bg-neocard h-min dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden rounded-lg">  
       <View className="w-28 h-28 mt-4 mx-4 overflow-hidden bg-gray-100 dark:bg-gray-700  rounded-full  ">
@@ -28,7 +31,7 @@ export default function ElementEntityCover({data}) {
         </View>
        <View className="text-center flex-row px-2 py-4 space-x-2 items-center">
         
-        <Button title="321 Followers" startDecorator="people" size='sm' rounded variant="text"  />
+        <Button title="325 Followers" startDecorator="people" size='sm' rounded variant="text"  />
         <Button title="123 Following" startDecorator="people" size='sm' rounded variant="text"  />
       </View>
       <View className="bg-gray-50 dark:bg-gray-700 m-4 p-2 rounded-lg">

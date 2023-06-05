@@ -180,6 +180,16 @@ export const settingsDefault = {
                 {icon: 'DotsThreeOutlineVertical', name: "More"}
             ]
         },
+        'bx_forum_submenu': {
+            name:'Discussion',
+            icon:'comments',
+            items: ['discussions-home', 'discussions-search'],
+            add:[
+                {icon: 'plus', name: "Add", link: '/create-discussion'},
+                {icon: 'search', name: "Search", link: '/search-keyword?keyword=&section=bx_forum' },
+                {icon: 'DotsThreeOutlineVertical', name: "More"}
+            ]
+        },
         'bx_groups_view_submenu': ['view-group-profile', 'group-fans'],
 
         'bx_channels_submenu': {
@@ -270,12 +280,13 @@ export const settingsDefault = {
             icon:'Comments',
         },
         'view-discussion': {
-            layout: 'post-without-comments',
+            layout: 'post',
             blocks: {
                 author: {name: 'bx_forum:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true},
                 text: {name: 'bx_forum:entity_text_block', showTitle: false, showBg: false, forList: true},
                 attachments: {name: 'bx_forum:entity_attachments', showTitle: false, showBg: false, forList: true},
                 actions: {name: 'bx_forum:entity_all_actions', showTitle: false, showBg: false, forList: true},
+                comments: {name: 'bx_forum:entity_comments', showTitle: false, showBg: false},
             },
         },
         //############ GROUPS PAGES ############

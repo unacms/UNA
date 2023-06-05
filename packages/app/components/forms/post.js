@@ -23,8 +23,9 @@ export default function FormPost(props) {
         <Row>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['pictures'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['videos'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
-            <View className='w-12'>{getFormFieldByData(props.data.inputs['sounds'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+            <View className='w-12'>{getFormFieldByData(props.data.inputs['sounds'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
+           
         </Row>
         { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
         {getFormFieldByData(props.data.inputs['cat'], props.handleSubmit, 'notitle')}
