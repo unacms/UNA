@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Platform } from 'react-native';
 
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
@@ -18,6 +19,7 @@ import { Icon } from 'app/ui/atoms/icon'
 
 export default function DropdownMenu(oProps) {
     const redirectdRef = useRef();
+    const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
         redirectdRef.current.redirect(oItem.link);
@@ -43,9 +45,9 @@ export default function DropdownMenu(oProps) {
         }
 
         return (
-            <DmItem key={oItem.id} className={oItem?.class_item} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)}>
+            <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
                 {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
-                {!!oItem?.title && <DropdownMenuItemTitle className={oItem?.class_item_title}>{oItem.title}</DropdownMenuItemTitle>}
+                {!!oItem?.title && <DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenuItemTitle>}
             </DmItem>
         );
     });
