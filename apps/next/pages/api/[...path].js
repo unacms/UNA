@@ -20,12 +20,14 @@ const proxy = createProxyMiddleware({
     headers: {
         authorization: 'Bearer ' + env('UNA_API_KEY')
     },
+    /*    
     onProxyRes: function (proxyRes, req, res) {
         if (typeof(proxyRes.headers['Logged']) !== 'undefined')
             proxyRes.headers['Cache-Control'] = 'private';
         else
             proxyRes.headers['Cache-Control'] = 'public, s-maxage=86400, stale-while-revalidate=2592000';
       }
+      */
 });
 
 export default async function handler(req, res) {
@@ -34,6 +36,7 @@ export default async function handler(req, res) {
             await new Promise(resolve => setTimeout(resolve, parseInt(req.query?.d) * 1000));
         res.status(200).json({ ping: 'pong' });
     } else {
+
         proxy(req, res, (err) => {        
             if (err) {
                 throw err;
