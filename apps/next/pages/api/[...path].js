@@ -15,32 +15,31 @@ const proxy = createProxyMiddleware({
     pathRewrite: { 
         "^/api": "" // remove `/api` prefix
     }, 
-    logLevel: 'debug',
+    logLevel: 'info', //'debug',
     changeOrigin: true,
     headers: {
         authorization: 'Bearer ' + env('UNA_API_KEY')
     },
     onProxyRes: function (proxyRes, req, res) {
-        console.log('----------------- BEFORE -------------');
-        console.log(proxyRes.headers);
         if (typeof(proxyRes.headers['Logged']) !== 'undefined')
             proxyRes.headers['Cache-Control'] = 'private';
         else
             proxyRes.headers['Cache-Control'] = 'public, s-maxage=86400, stale-while-revalidate=2592000';
-        console.log('----------------- AFTER -------------');
-        console.log(proxyRes.headers);
       }
 });
 
 export default function handler(req, res) {
-    proxy(req, res, (err) => {        
-      if (err) {
-        throw err;
-      }
-      throw new Error(
-        `Request '${req.url}' is not proxied! We should never reach here!`
-      );
-    });    
+    if ('ping' === req.query.r)
+        res.status(200).json({ ping: 'pong' });
+    else
+        proxy(req, res, (err) => {        
+            if (err) {
+                throw err;
+            }
+            throw new Error(
+                `Request '${req.url}' is not proxied! We should never reach here!`
+            );
+        });
 }
 
 /* OLD implementation: 
