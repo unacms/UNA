@@ -28,10 +28,12 @@ const proxy = createProxyMiddleware({
       }
 });
 
-export default function handler(req, res) {
-    if ('ping' === req.query.r)
+export default async function handler(req, res) {
+    if ('ping' === req.query.r) {
+        if (req.query?.d)
+            await new Promise(resolve => setTimeout(resolve, parseInt(req.query?.d) * 1000));
         res.status(200).json({ ping: 'pong' });
-    else
+    } else {
         proxy(req, res, (err) => {        
             if (err) {
                 throw err;
@@ -40,6 +42,7 @@ export default function handler(req, res) {
                 `Request '${req.url}' is not proxied! We should never reach here!`
             );
         });
+    }
 }
 
 /* OLD implementation: 
