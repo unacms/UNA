@@ -183,9 +183,9 @@ export const staticDefault = {
   },
   components: {
     intro: (
-      <View className="relative flex-col p-8 w-full md:flex-row gap-4 duration-500  max-w-screen-2xl mx-auto ">
+      <View className="relative flex-col p-8 xl:p-12 w-full md:flex-row gap-4 xl:gap-8 duration-500  max-w-screen-2xl mx-auto ">
 
-        <View className="flex-col items-center text-center md:items-start md:text-start gap-y-4 my-auto py-8 flex-auto">
+        <View className="flex-col items-center text-center md:items-start md:text-start gap-y-6 my-auto py-8 flex-auto">
           <Text className="text-3xl lg:text-4xl xl:text-5xl  font-bold text-neutral-800 dark:text-neutral-200">
             Welcome to the community!
           </Text>
