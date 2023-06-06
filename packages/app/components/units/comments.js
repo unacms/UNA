@@ -13,11 +13,12 @@ import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
+import Carousel from '../../ui/molecules/carousel';
 
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
 
-    const [showImage, setShowImage] = useState(false)
+
     let level = props.level ? props.level : 0
     let lvls= props.lvls ? props.lvls : []
     let data = props.data;
@@ -40,9 +41,7 @@ export default function UnitComments(props) {
     if (!data)
         return (<View></View>);
                 
-    const handleShowImage = (img) => {
-        setShowImage(img);
-    } 
+
 
     const handleManageMenuSelect = (oItem, event) => {
         switch(oItem.name) {
@@ -66,13 +65,16 @@ export default function UnitComments(props) {
 
     const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items);
 
+    let aImg = files.map(obj => {
+        return {
+            src: obj.file,
+            type: 'image'
+        };
+    });
+
     return (
         <View className='w-full'>
-            <Modal title="Title" id={'file-preview'}  onVisible={showImage} onClose={() => {setShowImage(null)}}>
-                <View className="w-full h-64 lg:h-96" >
-                    <Image className="w-full" src={showImage} alt='' view="cover" />
-                </View>
-            </Modal>
+           
             <View  className="flex-row gap-x-2 ">
                 {cells}
                 <View className="w-10 flex-0 ">
@@ -98,13 +100,8 @@ export default function UnitComments(props) {
                         <View>
                             <Html data={linkify(data.cmt_text)} />
                         </View>
-                        <Row className='flex-wrap gap-x-1 '>
-                            {files.map(a => (
-                                <Pressable key={'file-'+a.file_id} className='w-24 h-24 mt-1 ' onPress={() => handleShowImage(a.file)} >
-                                    <Image sizes="96px" src={a.file} alt={a.file_name} view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  />
-                                </Pressable>
-                            ))}
-                        </Row>
+                        <Carousel data={aImg}/>
+                        
                         
                     </View>
                     <View className=' mb-1 flex-row w-full justify-between items-center'>

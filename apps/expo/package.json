@@ -51,6 +51,7 @@
     "react-native-quick-md5": "^3.0.4",
     "react-native-reactions": "^0.0.3",
     "react-native-reanimated": "~2.14.4",
+    "react-native-reanimated-carousel": "^3.3.2",
     "react-native-redash": "^18.1.0",
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^4.5.0",

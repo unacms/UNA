@@ -13,6 +13,7 @@ import { Button } from 'app/design/controls';
 import Menu from '../menu';
 import { Modal } from 'app/design/controls'
 import { truncateHTML } from 'app/lib/util'
+import Carousel from '../../ui/molecules/carousel';
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
@@ -42,73 +43,77 @@ function DefaultUnit(data) {
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
 
     return (
-        <Link href={url} className="w-full" emulate={true}>
-        <View className='max-w-5xl w-full mx-auto '>
-            <View className=" 
-                p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
-                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                hover:shadow-sm active:shadow-none 
-                active:translate-y-0.5 border
-                border-bordercolorcard dark:border-bordercolorcard-dark 
-                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
-                >
-        <View className="px-3 pt-3 gap-2 flex-row">
-        <View className="flex-auto">        
-            <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
-        </View>
         
-        {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
-
-        </View>
-        <View className="flex-col ">
-        {data.mainImage &&
-            <View className="w-full   mb-auto mt-3 aspect-video " style={styles.card_image}>
-                <Image {...data.mainImage} alt={data.title} view="cover" className=" u-cover rounded" sizes="(max-width:768px) 100vw, 500px"   />
-            </View>
-        }   
-                <View className="flex-auto p-3   flex-col gap-2">
-                {(bIsTitle) && <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
-                        {data.content.title}
-                    </Text></Link>}
-                        {!showFull ? 
-                        <View>
-                            <View className="flex-col gap-3 relative">
-                            { bIsTimelineContent && (
-                                <View>
-                                    <Html  data={truncateHTML(data.content.text, 380)} />
-                                    { data.showMore && !showFull && <View className='absolute right-0 bottom-0'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
-                                </View>
-                                )}
-                            { !bIsTimelineContent && <Text className='text-gray-950 dark:text-gray-50 text-base' numberOfLines={2} >{data.content.text}</Text>}
-                            </View>
-                        {!!data.sFirstImg &&
-                            <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
-                                <Image src={data.sFirstImg} alt={data.title} view="cover"        />
-                            </View>
-                        }    
-                        </View>
-                        :  <View className="flex-col relative w-full">
-                                <Html data={data.content.text} />
-                             </View>
-                                
-                            
-                        }
-                        { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
-                <View className=" flex-auto  pt-2   flex-row  w-full">
-                    
-                    <View className="mt-auto flex-row space-x-2 flex-auto">
-                        <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
+            <View className='max-w-5xl w-full mx-auto '>
+                <View className=" 
+                    p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
+                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                    hover:shadow-sm active:shadow-none 
+                    active:translate-y-0.5 border
+                    border-bordercolorcard dark:border-bordercolorcard-dark 
+                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
+                    >
+                        <Link href={url} className="w-full" emulate={true}>
+                <View className="px-3 pt-3 gap-2 flex-row">
+                    <View className="flex-auto">        
+                        <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
                     </View>
-                   
                     
-                </View>
-                </View>
-        </View>
-        
+                    {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
 
-    </View></View></Link>);
+                    </View>
+                    </Link>
+                   
+                    <View className="flex-col ">
+                        
+                            {data.mainImage &&
+                                <View className="w-full   mb-auto mt-3 aspect-video " style={styles.card_image}>
+                                    <Image {...data.mainImage} alt={data.title} view="cover" className=" u-cover rounded" sizes="(max-width:768px) 100vw, 500px"   />
+                                </View>
+                            }   
+                            <View className="flex-auto p-3   flex-col gap-2">
+                            {(bIsTitle) && <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
+                                    {data.content.title}
+                                </Text></Link>}
+                                    {!showFull ? 
+                                    <View>
+                                        <View className="flex-col gap-3 relative">
+                                        { bIsTimelineContent && (
+                                            <View>
+                                            <Html  data={truncateHTML(data.content.text, 380)} />
+                                                { data.showMore && !showFull && <View className='absolute right-0 bottom-0'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
+                                            </View>
+                                            )}
+                                        { !bIsTimelineContent && <Text className='text-gray-950 dark:text-gray-50 text-base' numberOfLines={2} >{data.content.text}</Text>}
+                                        </View>
+                                    {!!data.sFirstImg &&
+                                        <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
+                                            <Image src={data.sFirstImg} alt={data.title} view="cover"        />
+                                        </View>
+                                    }    
+                                    </View>
+                                    :  <View className="flex-col relative w-full">
+                                            <Html data={data.content.text} />
+                                        </View>
+                                            
+                                        
+                                    }
+                                  
+                                    { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
+                                <View className=" flex-auto  pt-2   flex-row  w-full">
+                                    
+                                    <View className="mt-auto flex-row space-x-2 flex-auto">
+                                        <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
+                                    </View> 
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+           
+        );
 }
 
 function SmallUnit(data) {
@@ -156,26 +161,15 @@ function UnitImages(images) {
     if (images?.images.length == 0)
         return <></>;
 
-    const [showImage, setShowImage] = useState(false);
-
-    const handleShowImage = (img) => {
-        setShowImage(img);
-    } 
+    let aImg = images?.images.map(obj => {
+        return {
+            src: obj.src_orig,
+            type: 'image'
+        };
+    });
 
     return (
-        <>
-        <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
-            <View className="w-full h-64 lg:h-96" >
-                {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
-            </View>
-        </Modal>
-        <Row className='flex-wrap gap-x-1'>
-        {images?.images.map((image, index) => (
-             <Pressable key={index} className="w-24 h-24 mt-1 " onPress={() => handleShowImage([image.src_orig, 'image'])} ><Image sizes="96px" src={image.src_orig} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
-        ))
-        }
-        </Row>
-        </>
+        <><Carousel data={aImg}/></>
     )
 }
 
