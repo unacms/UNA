@@ -59,7 +59,7 @@ export default function Layout(props) {
                 <title>{props.data.title}</title>
             </Head>
             
-            <View className="bg-backgroundbody dark:bg-backgroundbody-dark text-gray-900 dark:text-gray-50 h-full items-stretch flex-row">
+            <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 {(true) && (
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }, animatedStyleA]} >
                         <Navbar menu_top={menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />

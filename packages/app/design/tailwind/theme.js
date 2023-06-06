@@ -17,7 +17,6 @@ const colors = {
     800: 'rgba(31,41,55,1)',
     900: 'rgba(17,24,39,1)',
     950: 'rgba(3,7,18,1)',
-  
   },
   primary: {
     DEFAULT: 'rgba(2,132,199,1)',
@@ -33,7 +32,6 @@ const colors = {
     800: 'rgba(7,89,133,1)',
     900: 'rgba(12,74,110,1)',
     950: 'rgba(8,47,73,1)',
-  
   },
 
   accent: {
@@ -50,10 +48,7 @@ const colors = {
     800: 'rgba(154,52,18,1)',
     900: 'rgba(124,45,18,1)',
     950: 'rgba(67,20,7,1)',
-  
   },
-
-
 
   backgroundbody: {
     DEFAULT: 'rgba(243,244,246,1)',
@@ -65,25 +60,21 @@ const colors = {
     dark: 'rgba(55 55 55 / 0.5)',
   },
 
-
-
-
-
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,0.8)',
     hover: 'rgba(255,255,255,1)',
     active: 'rgba(255,255,255,0.5)',
     dark: 'rgba(17,24,39,0.8)',
     darkhover: 'rgba(17,24,39,1)',
-    darkactive: 'rgba(17,24,39,0.5)'
+    darkactive: 'rgba(17,24,39,0.5)',
   },
   bordercolorcard: {
     DEFAULT: 'rgba(229,231,235,0.8)',
-    hover: 'rgba(229,231,235,1)',
-    active: 'rgba(229,231,235,0.5)',
-    dark: 'rgba(31,41,55,0.5)',
-    darkhover: 'rgba(31,41,55,1)',
-    darkactive: 'rgba(31,41,55,0.2)'
+    hover: 'rgba(209,213,219,0.8)',
+    active: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
+    darkhover: 'rgba(55,65,81,0.6)',
+    darkactive: 'rgba(31,41,55,0.6)',
   },
 
   backgroundinput: {
@@ -100,27 +91,26 @@ const colors = {
   },
 
   backgroundcell: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    dark: 'rgba(17,24,39,0.9)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(17,24,39,0.8)',
   },
   bordercolorcell: {
-    DEFAULT: 'rgba(209,213,219,1)',
-    dark: 'rgba(17,24,39,1)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
   },
 
   backgroundmodal: {
-    DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(31,41,55,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.9)',
+    dark: 'rgba(17,24,39,0.9)',
   },
   bordercolormodal: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(31,41,55,1)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
   },
 
   backgroundnavbar: {
     DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(17,24,39,0.5)',
-
+    dark: 'rgba(17,24,39,0.8)',
   },
   bordercolornavbar: {
     DEFAULT: 'rgba(229,231,235,0.8)',
@@ -128,16 +118,14 @@ const colors = {
   },
 
   backgroundtabbar: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    dark: 'rgba(17,24,39,0.9)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    dark: 'rgba(17,24,39,0.8)',
   },
 
   bordercolortabbar: {
-    DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(31,41,55,0.8)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
   },
-
-
 
   backgrounditem: {
     DEFAULT: 'rgba(229,231,235,0.8)',
@@ -153,24 +141,17 @@ const colors = {
     hover: 'rgba(209,213,219,0.2)',
     dark: 'rgba(107,114,128,0.5)',
     darkhover: 'rgba(107,114,128,0.2)',
-    
   },
   bordercolorbutton: {
     DEFAULT: 'rgba(107,114,128,0.2)',
     dark: 'rgba(107,114,128,0.2)',
   },
 
-
   bordercolor: {
-    DEFAULT: 'rgba(209,213,219,0.5)',
-    dark: 'rgba(55,65,81,0.5)',
-    
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    dark: 'rgba(31,41,55,0.6)',
   },
 
-
-
-    
-  
   screen: {
     DEFAULT: '#f3f4f6',
     dark: '#030712',
@@ -192,7 +173,6 @@ const colors = {
     dark: '#111827',
   },
 
-
   neoitem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',
     dark: 'rgba(30, 41, 59, 0.8)',
@@ -205,7 +185,7 @@ const colors = {
     DEFAULT: 'rgba(209, 213, 219, 0.5)',
     dark: 'rgba(55, 65, 81, 0.3)',
   },
-  
+
   neolink: {
     DEFAULT: '#3B82F6',
     dark: '#3B82F6',
@@ -213,9 +193,7 @@ const colors = {
   neoinput: {
     DEFAULT: 'rgba(241, 245, 249, 0.5)',
     dark: 'rgba(30, 41, 59, 0.5)',
-     
   },
-
 }
 
 const theme = {

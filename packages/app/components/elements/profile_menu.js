@@ -4,7 +4,6 @@ import { Button } from 'app/design/controls'
 import {  Dimensions, Platform  } from 'react-native';
 import { appSetting } from 'app/lib/util'
 
-//2xl:bg-transparent 2xl:dark:bg-transparent  bg-sidebar dark:bg-sidebar-dark border-r 2xl:border-none border-neoborder dark:border-neoborder-dark
 export default function ElementProfileMenu(props) {
 
     let windowHeight = Dimensions.get('window').height;
@@ -26,7 +25,16 @@ export default function ElementProfileMenu(props) {
 
     return (
         
-        <View  style={styles} className="   px-4   max-h-screen overflow-y-scroll profile-menu flex-col gap-2">
+        <View  style={styles} className=" xl:mx-2  p-4   max-h-screen overflow-y-scroll profile-menu flex-col gap-2
+        
+         overflow-hidden rounded-r-lg xl:rounded-lg  
+                bg-backgroundcard dark:bg-backgroundcard-dark  
+                border-y border-r xl:border
+                border-bordercolorcard dark:border-bordercolorcard-dark 
+                
+        
+        
+        ">
             <View className="flex-col gap-0.5 mb-16" >
             {appSetting('menu', 'left').map((item, index) => (
                 <Link key={`menu-${index}`} href= {item.link.replace('?owner=1', '')}>
