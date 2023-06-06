@@ -139,17 +139,17 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         <Row  className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
-                        <ScrollView horizontal={true} className="items-center gap-0 mx-4 w-full" >
+                        <ScrollView horizontal={true} className="items-center gap-0  w-full" >
                             <Row className="  mr-auto" >
                                 {routes.map((a) => (
-                                    <Pressable style={{width:tabWidth}} className=" py-1.5 items-center"
+                                    <Pressable style={{width:tabWidth}} className=" py-2 items-center"
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index)
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant="text" rounded size='sm' title={a.title}   />
+                                        <Button fullWidth={true} id="tab" variant="text"  size='sm' title={a.title}   />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
