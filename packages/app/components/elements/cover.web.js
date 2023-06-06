@@ -136,10 +136,10 @@ export default function ElementCover(props) {
             
           </View>
         </View>
-        <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-3 py-1 rounded-lg mx-4 mt-4 flex-none   ">
+        <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
-                className=" w-full text-base text-gray-800 dark:text-gray-200 "
+                className=" w-full text-sm sm:text-base text-gray-800 dark:text-gray-200 "
               >
                 {stripTags(data.profile.info.description)}
               </Text>
