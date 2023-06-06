@@ -48,9 +48,5 @@ function Wrapper(p){
 
     const isWeb = Platform.OS == 'web'
 
-  /*  if (isWeb){
-        return <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>{p}</View>
-    }*/
-
     return <View className='flex-1 mx-auto w-full h-full '>{p}</View>
 }

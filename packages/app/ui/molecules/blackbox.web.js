@@ -30,7 +30,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const { colors } = Theme();
 
     const [index, setIndex] = useState(routes.findIndex(function(item) {
-        return item.key === data.url;
+        return item.key === data.url.replace('+', '');
     }));
     const indicatorOffset = useSharedValue(0);
     
@@ -54,7 +54,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (currentRoute.endpoint.unit.includes('-profile-') || currentRoute.endpoint.unit.includes('-context-')){
             perLineSettings = appSetting('browse', 'per_line_profile');
         }
-        
+
         for (let i = 0; i < perLineSettings.length; i++) {
             if (width > perLineSettings[i].width) {
                 return perLineSettings[i].count;
@@ -285,6 +285,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const headerObj = renderHeader();
 
     const TabScene = ({ route }) => {
+
+        console.log(routes);
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
@@ -294,7 +296,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <Row style={{ paddingTop: header ? offsetTop : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
-                        <TabFlashList
+                        {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
                             data={dataItems}
                             unit={route.endpoint?.unit}
@@ -306,7 +308,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                 ) : null}
                                 </View>
                             }
-                        />
+                        /> : <View className="text-center m-4"><Text>No avaliable data</Text></View>}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
                         <UniList
@@ -319,6 +321,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         
     )}};
     const currentRoute = routes.find((item) => item.index === index);
+    console.log('currentRoute', currentRoute, index , routes)
 
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;

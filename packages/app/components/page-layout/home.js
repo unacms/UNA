@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import {BlockByName} from 'app/components/block';
+import { BlockByName} from 'app/components/block';
 import { Platform } from 'react-native'
 import { useState, useEffect } from 'react';
 import { appSetting } from 'app/lib/util'
@@ -22,7 +22,6 @@ export default function PageLayout(props) {
             return () => window.removeEventListener('resize', handleResize);
         }
     }, []);
-    console.log('************', currentUser)
     if (isDesktop){
         if (currentUser === null)
         return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >

@@ -11,7 +11,8 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
         const i = { key: item.link, title: item.title, index };
         let bCurrent = getURI(item.link) === data.uri;
         if (useSectionAsMenu)
-            bCurrent = item.link === data.url;
+            bCurrent = item.link.replace(' ', '') === data.url.replace('+', '');
+
         if (bCurrent) {
             let contentAndEndpoint = processUrl(data, blocks);
             i.data = contentAndEndpoint.content;
@@ -60,7 +61,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         if (currentRoute.link.includes('?')){
             const urlObj = parseUrl(currentRoute.link); // Base URL is required if your URL is relative
             const queryString = urlObj.queryString;
-
+            console.log(currentRoute.link);
             let obj= parseQueryString(urlObj.queryString)
             link  = urlObj.path.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
 

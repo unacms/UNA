@@ -84,11 +84,14 @@ function reverseHtml(str) {
 
 export function parseUrl(url) {
     let withoutProtocol = url;
+    let parts = withoutProtocol.split('/');
+
     if (url.includes('//')){
         withoutProtocol = url.split('//')[1];
+        parts = withoutProtocol.split('/');
+        parts.shift(); // remove the domain
     }
-    const parts = withoutProtocol.split('/');
-    parts.shift(); // remove the domain
+   
     const pathParts = parts.join('/').split('?');
     return {
       path: pathParts[0],
@@ -123,7 +126,8 @@ export function deepEqual(obj1, obj2) {
 }
 
 export function parseQueryString(queryString) {
-    const pairs = queryString.split('&');
+    console.log("queryString", queryString);
+    const pairs = queryString?.split('&');
     const obj = {};
   
     pairs.forEach(pair => {

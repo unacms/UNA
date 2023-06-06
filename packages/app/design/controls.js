@@ -9,7 +9,7 @@ import { Theme } from 'app/design/theme';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
 
 let h11 = '';
-if(Platform.OS !== 'ios') {
+if(Platform.OS === 'android') {
     h11 = ' h-11'
 }
 

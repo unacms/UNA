@@ -11,7 +11,6 @@ import {SearchPanel} from 'app/ui/molecules/search';
 export default function PageLayout(props) {
     
     const searchData = DataByName(props.data, props.blocks.browse);
-    
     let header = <SearchPanel value={searchData.content[0].data.params.keyword}/>;
     let smallHeader = header
     let sect = searchData.content[0].data.params.sections;
@@ -24,7 +23,7 @@ export default function PageLayout(props) {
             id: index + 1,
             name: obj.name,
             title: obj.title,
-            link: 'search-keyword?keyword='+ searchData.content[0].data.params.keyword + (obj.name != '' ? '&section=' +obj.name : ''),
+            link: 'search-keyword?keyword='+ searchData.content[0].data.params.keyword.replace(' ','') + (obj.name != '' ? '&section=' +obj.name : ''),
             icon: ''
         }
     });  
