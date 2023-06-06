@@ -12,6 +12,7 @@ import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
 import { Modal } from 'app/design/controls'
+import { truncateHTML } from 'app/lib/util'
 
 function DefaultUnit(data) {
     const [showFull, setShowFull] = useState(false)
@@ -37,6 +38,8 @@ function DefaultUnit(data) {
 
     let url = '/' + data.url;
     let bIsTimelineContent = data.type.includes('timeline') ? true : false;
+
+    let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
 
     return (
         <Link href={url} className="w-full" emulate={true}>
@@ -66,15 +69,19 @@ function DefaultUnit(data) {
             </View>
         }   
                 <View className="flex-auto p-3   flex-col gap-2">
-                <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
+                {(bIsTitle) && <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                         {data.content.title}
-                    </Text></Link>
-
+                    </Text></Link>}
                         {!showFull ? 
                         <View>
                             <View className="flex-col gap-3 relative">
-                            { bIsTimelineContent && <View style={{maxHeight:44, overflow:'hidden'}}><Html  data={(data.content.text)} /></View>}
-                            { !bIsTimelineContent && <Text numberOfLines={2} >{data.content.text}</Text>}
+                            { bIsTimelineContent && (
+                                <View>
+                                    <Html  data={truncateHTML(data.content.text, 380)} />
+                                    { data.showMore && !showFull && <View className='absolute right-0 bottom-0'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
+                                </View>
+                                )}
+                            { !bIsTimelineContent && <Text className='text-gray-950 dark:text-gray-50 text-base' numberOfLines={2} >{data.content.text}</Text>}
                             </View>
                         {!!data.sFirstImg &&
                             <View className={imageAspect + " w-full rounded mt-4 overflow-hidden"} >
@@ -94,11 +101,7 @@ function DefaultUnit(data) {
                     <View className="mt-auto flex-row space-x-2 flex-auto">
                         <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
                     </View>
-                    { bIsTimelineContent && 
-                    <View className='mt-auto flex-none'>
-                        { data.showMore && !showFull && <Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" />}
-                    </View>
-                    }
+                   
                     
                 </View>
                 </View>
@@ -166,9 +169,9 @@ function UnitImages(images) {
                 {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
             </View>
         </Modal>
-        <Row>
+        <Row className='flex-wrap gap-x-1'>
         {images?.images.map((image, index) => (
-             <Pressable key={index} className="h-24 w-24" onPress={() => handleShowImage([image.src_orig, 'image'])} ><Image sizes="96px" src={image.src_orig} alt='' view="cover" /></Pressable>
+             <Pressable key={index} className="w-24 h-24 mt-1 " onPress={() => handleShowImage([image.src_orig, 'image'])} ><Image sizes="96px" src={image.src_orig} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
         ))
         }
         </Row>

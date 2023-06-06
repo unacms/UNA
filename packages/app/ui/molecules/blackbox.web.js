@@ -50,8 +50,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             }
         }
 
-        const perLineSettings = appSetting('browse', 'per_line');
-
+        console.log(currentRoute.endpoint.unit)
+        let perLineSettings = appSetting('browse', 'per_line');
+        if (currentRoute.endpoint.unit.includes('-profile-') || currentRoute.endpoint.unit.includes('-context-')){
+            perLineSettings = appSetting('browse', 'per_line_profile');
+        }
         for (let i = 0; i < perLineSettings.length; i++) {
             if (width > perLineSettings[i].width) {
                 return perLineSettings[i].count;

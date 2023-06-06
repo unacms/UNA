@@ -179,7 +179,7 @@ export function Button(props) {
         break
 
         case 'base':
-            sClassContainer += buttonRounded ? 'rounded-full p-2 ' : sClassDefaultRounding + ' px-2 py-2 ';
+            sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-2 py-2 ';
             sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
             sClassText += ' text-base '
             iIconSize = 24;

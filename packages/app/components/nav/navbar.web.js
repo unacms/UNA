@@ -140,7 +140,7 @@ export default function (props) {
     let dUser = Object.assign({}, currentUser)
     dUser.url_avatar = dUser.avatar
     dUser.url = '/dashboard'
-    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
+    profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
   }
 
   const menu_top = appSetting('menu_items', 'menu_top')
@@ -264,6 +264,7 @@ export default function (props) {
                     <Button
                       variant="text"
                       rounded
+                      padding={1}
                       startDecorator={profile}
                       id="m3"
                       aria-label="Create"
