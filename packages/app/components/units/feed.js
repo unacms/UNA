@@ -12,7 +12,7 @@ import { Platform, Image as ImageNative } from 'react-native';
 import { Button } from 'app/design/controls';
 import Menu from '../menu';
 import { Modal } from 'app/design/controls'
-import { truncateHTML } from 'app/lib/util'
+import { truncateHTML, stripTags } from 'app/lib/util'
 import Carousel from '../../ui/molecules/carousel';
 
 function DefaultUnit(data) {
@@ -41,7 +41,9 @@ function DefaultUnit(data) {
     let bIsTimelineContent = data.type.includes('timeline') ? true : false;
 
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
-
+    let sShort = truncateHTML(data.content.text, 380);
+    let bIsLong = stripTags(sShort.trim()) != stripTags(data.content.text.trim());
+    console.log(data.content.text, sShort)
     return (
         
             <View className='max-w-5xl w-full mx-auto '>
@@ -83,7 +85,7 @@ function DefaultUnit(data) {
                                         { bIsTimelineContent && (
                                             <View>
                                             <Html  data={truncateHTML(data.content.text, 380)} />
-                                                { data.showMore && !showFull && <View className='absolute right-0 bottom-0'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
+                                                { (data.showMore && !showFull && bIsLong) && <View className='absolute right-0 bottom-0'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
                                             </View>
                                             )}
                                         { !bIsTimelineContent && <Text className='text-gray-950 dark:text-gray-50 text-base' numberOfLines={2} >{data.content.text}</Text>}

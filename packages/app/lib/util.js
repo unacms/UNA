@@ -126,7 +126,7 @@ export function deepEqual(obj1, obj2) {
 }
 
 export function parseQueryString(queryString) {
-    console.log("queryString", queryString);
+
     const pairs = queryString?.split('&');
     const obj = {};
   

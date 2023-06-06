@@ -286,7 +286,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const TabScene = ({ route }) => {
 
-        console.log(routes);
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
@@ -321,7 +320,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         
     )}};
     const currentRoute = routes.find((item) => item.index === index);
-    console.log('currentRoute', currentRoute, index , routes)
 
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;

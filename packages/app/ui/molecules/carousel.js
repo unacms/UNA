@@ -35,7 +35,7 @@ export default function ElementCarousel(props) {
     const handleLayout = (event) => {
         setWidth(event.nativeEvent.layout.width);
     };
-    console.log(data);
+
     const nextSlide = () => {
         
         carouselRef.current.next();

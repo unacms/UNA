@@ -6,7 +6,6 @@ import EntityAuthor from './entity_author';
 
 export default function ElementEntityCover(props) {
    const data = props.data;
-    console.log('xxx', props);
     return (
         <View className="flex-col  w-full mx-auto  bg-neocard h-min dark:bg-neocard-dark border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden rounded-lg">  
       <View className="w-28 h-28 mt-4 mx-4 overflow-hidden bg-gray-100 dark:bg-gray-700  rounded-full  ">

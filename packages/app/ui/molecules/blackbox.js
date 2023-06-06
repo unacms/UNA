@@ -88,7 +88,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (!route.inited){
             return <View className='m-2 pt-140'><Loading/></View>
         }
-        console.log('---------', route?.endpoint?.finished)
+
         if (route.inited)
             return (
                 <TabFlashList

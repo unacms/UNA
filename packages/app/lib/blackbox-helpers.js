@@ -61,7 +61,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         if (currentRoute.link.includes('?')){
             const urlObj = parseUrl(currentRoute.link); // Base URL is required if your URL is relative
             const queryString = urlObj.queryString;
-            console.log(currentRoute.link);
+
             let obj= parseQueryString(urlObj.queryString)
             link  = urlObj.path.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
 
