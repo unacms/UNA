@@ -22,9 +22,9 @@ export default function PageLayout(props) {
             return () => window.removeEventListener('resize', handleResize);
         }
     }, []);
-
+    console.log('************', currentUser)
     if (isDesktop){
-        if (!currentUser)
+        if (currentUser === null)
         return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
              <BlockByName name={props.blocks.intro}  />
             </View>);

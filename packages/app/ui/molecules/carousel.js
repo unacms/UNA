@@ -20,14 +20,12 @@ export default function ElementCarousel(props) {
     } 
 
     const handleLayout = (event) => {
-            console.log(event.nativeEvent.layout.width)
         setWidth(event.nativeEvent.layout.width);
     };
 
-
     if (data.length == 0)
         return <></>
-        
+
     return ( 
         <View className="w-full aspect-video" onLayout={handleLayout}>
             <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
@@ -43,7 +41,7 @@ export default function ElementCarousel(props) {
                 data={data}
                 customConfig={{viewCount: 2}}
                 scrollAnimationDuration={1000}
-                onSnapToItem={(index) => console.log('current index:', index)}
+              
                 renderItem={({ item, index }) => (
                     <Pressable style={{
                         flex: 1,
