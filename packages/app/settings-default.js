@@ -46,9 +46,10 @@ export const settingsDefault = {
       { width: 640, count: 2 },
     ],
     per_line_profile: [
-      { width: 1280, count: 4 },
-      { width: 1024, count: 3 },
-      { width: 240, count: 2 },
+        { width: 1440, count: 6 },
+      { width: 1024, count: 4 },
+      { width: 680, count: 3 },
+      { width: 340, count: 2 },
     ],
   },
   social_actions: {
