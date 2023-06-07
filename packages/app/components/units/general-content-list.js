@@ -131,29 +131,26 @@ export default function Unit(props) {
             
                 
                 <View className="
-           shadow-sm hover:shadow-md active:shadow-none 
-           mt-4 mx-4             
-           group duration-200  rounded-lg overflow-hidden  
+           p-1 mt-2 mx-1 sm:mx-2     group duration-200 overflow-hidden rounded-lg  
            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-              
-          justify-between 
-           active:translate-y-0.5
+           hover:shadow-sm active:shadow-none 
+           active:translate-y-0.5 border
+           border-bordercolorcard dark:border-bordercolorcard-dark 
+           sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+           active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                 
                 ">
                     <Link href={data.url} emulate={true}> 
                     <View className='flex-col pb-4'>  
                         
                         {data.cover &&
-                                <View className="w-full bg-neutral-500/20 rounded-lg aspect-video overflow-hidden items-center absolute" >
+                                <View className="w-full bg-neutral-500/20 rounded-lg pt-[56%] overflow-hidden items-center absolute" >
                                     <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                                 </View>
                             } 
-                            {!data.image &&<View className="bg-primary-100 dark:bg-primary-900 absolute w-full rounded aspect-video"></View> }
-                            <View className=" aspect-video w-full items-center justify-center">
-                            <View className=" rounded-full mx-auto border-2 border-backgroundcard dark:border-backgroundcard-dark  bg-red-500 items-center justify-center">
+                            <View className="mt-[34%] rounded-full mx-auto p-1 bg-backgroundcard dark:bg-backgroundcard-dark   items-center justify-center">
                                 <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
-                            </View>
                             </View>
                             
                             <Link href={data.url} ><Text className="m-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text></Link>
