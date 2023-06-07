@@ -140,7 +140,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between">
-                        <Row className="items-center pt-2">
+                        <Row className="items-center">
                         <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>

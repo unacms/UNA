@@ -262,6 +262,7 @@ export const settingsDefault = {
     },
     dashboard: {
       layout: 'dashboard',
+      top:true,
       blocks: {},
     },
     'search-keyword': {
@@ -276,6 +277,7 @@ export const settingsDefault = {
     },
     home: {
       layout: 'home',
+      top:true,
       blocks: {
         home: { name: 'static:home', showTitle: false, showBg: false },
         menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
@@ -324,6 +326,7 @@ export const settingsDefault = {
     },
     'view-post': {
       layout: 'post',
+      top:true,
       blocks: {
         author: {
           name: 'bx_posts:entity_author',
@@ -359,6 +362,7 @@ export const settingsDefault = {
     },
     item: {
       layout: 'post',
+      top:true,
       blocks: {
         author: {
           name: 'bx_timeline:get_block_item_info',
@@ -394,6 +398,7 @@ export const settingsDefault = {
     },
     'view-discussion': {
       layout: 'post',
+      top:true,
       blocks: {
         author: {
           name: 'bx_forum:entity_author',
@@ -597,6 +602,7 @@ export const settingsDefault = {
     },
     'notifications-view': {
       layout: 'notif',
+      top:true,
       blocks: {
         browse: {
           name: 'bx_notifications:get_block_view',
