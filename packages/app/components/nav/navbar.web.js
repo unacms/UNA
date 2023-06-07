@@ -22,7 +22,7 @@ import Search from 'app/ui/molecules/search'
 import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
-
+import { useRouter } from 'next/router';
 
 export default function (props) {
   const redirectdRef = useRef()
@@ -146,10 +146,37 @@ export default function (props) {
 
   const menu_top = appSetting('menu_items', 'menu_top')
   const windowWidth = useWindowDimensions().width;
-  console.log(windowWidth, props.uri );
 
+  const router = useRouter();
+  let settings = appSetting('layouts', props.uri)
+ 
+  let bHeader = true; 
+  let bBackHeader = false; 
+  if (windowWidth < 1024){
+      bHeader = false; 
+    if (settings?.top)
+      bHeader = true; 
+    
+    if (bHeader && props.uri != 'home')
+      bBackHeader = true
+  }
+  if (bBackHeader){
+    return (<View className="fixed -top-[1px]  z-50 w-full mb-16">
+      <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
+        <Row className="items-center ">
+        <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+          <Icon icon="left" width={24} height={24} />
+        </Pressable>
+        <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text>
+        </Row> 
+        <Row >
+     
+      </Row>
+      </View>
+    </View>);
+  }
 
-  if (props.uri == 'home' || windowWidth > 1024)
+  if (bHeader)
   return (
     <>
     <View className="fixed -top-[1px]  z-50 w-full mb-16">
