@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import Image from '../../ui/atoms/image'
 import { Text } from 'app/design/typography'
 import { stripTags } from '../../lib/util'
@@ -9,6 +9,8 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Profile from 'app/ui/molecules/profile'
 import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
+import { useRouter } from 'next/router';
+import { Icon } from 'app/ui/atoms/icon'; 
 
 function CoverMenu(props) {
   return (
@@ -57,12 +59,18 @@ function CoverMenuMeta(props) {
 }
 
 export function CoverSmall(props) {
+  const router = useRouter();
   const data = props.data
   return (
     <View className=" backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark  w-full ">
       <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-        <View className=" mx-4 py-2 flex-row gap-2">
+        <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">
+          <View className='mr-2'>
+          <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+            <Icon icon="left" width={24} height={24} />
+          </Pressable>
+</View>
             <Profile
               {...data.profile}
               displayType="unit_wo_info"
@@ -94,7 +102,7 @@ export function CoverSmall(props) {
 
 export default function ElementCover(props) {
   const data = props.data
-
+  const router = useRouter();
   let { width } = useWindowDimensions()
 
   let sType = 'lg:rounded'
@@ -113,6 +121,11 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
+          <View className='absolute lg:hidden top-4 left-8 z-50'>
+          <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+            <Icon icon="left" width={24} height={24} />
+          </Pressable>
+          </View>
         </View>
         <View className="relative  flex-row flex-wrap px-4 gap-4 ">
           <View

@@ -2,6 +2,7 @@
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@native-html/iframe-plugin": "^2.6.1",
+    "@next/bundle-analyzer": "^13.4.4",
     "@phosphor-icons/react": "^2.0.6",
     "@radix-ui/react-select": "^1.2.1",
     "@react-native-clipboard/clipboard": "^1.11.2",

@@ -130,8 +130,7 @@ export default function ElementCarousel(props) {
                 mode="parallax"
                 modeConfig={{
                   parallaxScrollingScale: 0.9,
-                  parallaxScrollingOffset: 50,
-                  parallaxAdjacentItemScale:Math.pow(0.9, 2)
+                  parallaxScrollingOffset: 100,
                 }}
                 customConfig={{viewCount: 2}}
                 scrollAnimationDuration={1000}

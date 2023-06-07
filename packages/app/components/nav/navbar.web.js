@@ -23,6 +23,7 @@ import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 
+
 export default function (props) {
   const redirectdRef = useRef()
   const { currentUser, setCurrentUser } = useCurrentUser()
@@ -144,20 +145,14 @@ export default function (props) {
   }
 
   const menu_top = appSetting('menu_items', 'menu_top')
+  const windowWidth = useWindowDimensions().width;
+  console.log(windowWidth, props.uri );
 
+
+  if (props.uri == 'home' || windowWidth > 1024)
   return (
     <>
-    <View className="fixed -top-[1px]  z-50 w-full mb-16 flex lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark">
-        
-           <Row className='w-full items-center'>
-           <Pressable className="mr-2 ml-2 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={console.log(54)} >
-            <Icon icon="ArrowLeft" width={24} height={24}  />
-            </Pressable>
-            <Text className="font-bold text-base ml-2 tracking-tight text-black dark:text-gray-50">Titlellle</Text>
-            </Row>
-       
-    </View>
-    <View className="fixed -top-[1px]  z-50 w-full mb-16 hidden lg:flex">
+    <View className="fixed -top-[1px]  z-50 w-full mb-16">
       <Redirect ref={redirectdRef} />
       <TouchableOpacity
         className="xl:hidden"

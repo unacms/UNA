@@ -62,7 +62,7 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 {(true) && (
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:100  }]} >
-                        <Navbar menu_top={menu_top} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+                        <Navbar menu_top={menu_top} title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
                     </Animated.View>)} 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={(scroll.value? ' mt-0 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>

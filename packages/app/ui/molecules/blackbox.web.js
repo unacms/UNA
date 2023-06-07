@@ -134,11 +134,23 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 let btn = <Button title={button.title} startDecorator={button.icon} variant="text" size="sm"/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
-                    <View className="ml-2 hidden sm:block" key={`add-${button.icon}`} >{btn}</View>
+                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
+                    {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between">
+                        <Row className="items-center pt-2">
+                        <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+                            <Icon icon="left" width={24} height={24} />
+                        </Pressable>
+                            <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>
+                        </Row> 
+                        <Row >
+                            {addButtons}
+                        </Row>
+                    </Row>
+                    }
                         <Row  className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2 hidden lg:flex"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
@@ -159,7 +171,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             </Row>
                             
                         </ScrollView>
+                        <Row className="hidden lg:flex">
                         {addButtons}
+                        </Row>
                         </Row>
                     </View>
                 </View>
@@ -198,7 +212,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         const animatedStyle5 = useAnimatedStyle(() => {
             return {
-                top: withTiming((scroll.value || window.innerWidth >0) > 0 ? 63: 0, { duration: d }),
+                top: withTiming((scroll.value || window.innerWidth >0) > 0 ? (windowWidth > 1024 ? 63: 0): 0, { duration: d }),
                 opacity:1
             };
         });
@@ -221,7 +235,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (!header){
             if (tabBarObj)
                 return <>
-                    <View className="w-full h-12"></View>
+                    <View className="w-full h-24 lg:h-12"></View>
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
 
                     </>
@@ -293,6 +307,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             const dataItems = route.data;
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
+                <>
+                
                 <Row style={{ paddingTop: header ? offsetTop : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
                         {dataItems.length > 0 ? <TabFlashList
@@ -316,7 +332,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             data={route?.sidebar?.content}
                         />
                     </View>}
-                </Row>
+                </Row></>
         
     )}};
     const currentRoute = routes.find((item) => item.index === index);

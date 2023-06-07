@@ -43,12 +43,11 @@ function DefaultUnit(data) {
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
     let sShort = truncateHTML(data.content.text, 380);
     let bIsLong = stripTags(sShort.trim()) != stripTags(data.content.text.trim());
-    console.log(data.content.text, sShort)
     return (
         
             <View className='max-w-5xl w-full mx-auto '>
                 <View className=" 
-                    p-1 mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
+                    mt-2 sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                     hover:shadow-sm active:shadow-none 
@@ -58,7 +57,7 @@ function DefaultUnit(data) {
                     active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
                     >
                         <Link href={url} className="w-full" emulate={true}>
-                <View className="px-3 pt-3 gap-2 flex-row">
+                <View className="px-4 pt-3 gap-2 flex-row">
                     <View className="flex-auto">        
                         <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
                     </View>
@@ -75,7 +74,7 @@ function DefaultUnit(data) {
                                     <Image {...data.mainImage} alt={data.title} view="cover" className=" u-cover rounded" sizes="(max-width:768px) 100vw, 500px"   />
                                 </View>
                             }   
-                            <View className="flex-auto p-3   flex-col gap-2">
+                            <View className="flex-auto py-3  px-4  flex-col gap-2">
                             {(bIsTitle) && <Link href={url} className="w-full"><Text numberOfLines={2} className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold">
                                     {data.content.title}
                                 </Text></Link>}
@@ -102,8 +101,9 @@ function DefaultUnit(data) {
                                             
                                         
                                     }
-                                  
-                                    { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
+                                </View>
+                                { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
+                                <View className="flex-col gap-3 relative">
                                 <View className=" flex-auto  pt-2   flex-row  w-full">
                                     
                                     <View className="mt-auto flex-row space-x-2 flex-auto">
