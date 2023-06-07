@@ -56,16 +56,16 @@ function DefaultUnit(data) {
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"    
                     >
-                        <Link href={url} className="w-full" emulate={true}>
+                        
                 <View className="px-4 pt-3 gap-2 flex-row">
                     <View className="flex-auto">        
-                        <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Time className="" ts={data.date}></Time>)}  />
+                        <Profile {...data.author_data} showLink={true} displayType="unit" displaySize="base" showInfo={(<Link href={url}><Time className="" ts={data.date}></Time></Link>)}  />
                     </View>
                     
                     {!!data.content.category && <View className="flex-none"><Button title={data.content.category}   size="xs" solid rounded variant="outline"/></View> }
 
                     </View>
-                    </Link>
+                    
                    
                     <View className="flex-col ">
                         
@@ -103,7 +103,7 @@ function DefaultUnit(data) {
                                     }
                                 </View>
                                 { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
-                                <View className="flex-col gap-3 relative">
+                                <View className="flex-col gap-3 relative px-4 pb-3">
                                 <View className=" flex-auto  pt-2   flex-row  w-full">
                                     
                                     <View className="mt-auto flex-row space-x-2 flex-auto">

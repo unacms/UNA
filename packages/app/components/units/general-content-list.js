@@ -178,8 +178,9 @@ export default function Unit(props) {
                 sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                 ">
-                <Link href={data.url} emulate={true}>  
-                    <View className='flex-col    '>   
+               
+                    <View className='flex-col    '> 
+                        <Link href={data.url} >  
                         {data.image && (
                             <>
                                 <View className="relative rounded aspect-video  overflow-hidden w-full ">
@@ -194,16 +195,16 @@ export default function Unit(props) {
                             </>
                         }
                         <View className="flex flex-col h-28 gap-1 p-3 ">
-                            <Link href={data.url} >
+                           
                                 <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                     {data.title}
                                 </Text>
-                            </Link>
+                            
                             <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
                         </View>
+                        </Link>
                         <View className=" px-3 pb-3  ">{sMeta}</View>          
                     </View>      
-                </Link>
             </View>  
         )
     }
