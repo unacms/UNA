@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { MotiView, AnimatePresence } from 'moti'
-
+import { Icon } from 'app/ui/atoms/icon'; 
 import { fetcher } from 'app/lib/fetcher'
 import { TouchableOpacity } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
+import { Text, H1C } from 'app/design/typography'
+import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
@@ -146,7 +146,18 @@ export default function (props) {
   const menu_top = appSetting('menu_items', 'menu_top')
 
   return (
-    <View className="fixed -top-[1px]  z-50 w-full mb-16">
+    <>
+    <View className="fixed -top-[1px]  z-50 w-full mb-16 flex lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark">
+        
+           <Row className='w-full items-center'>
+           <Pressable className="mr-2 ml-2 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center" onPress={console.log(54)} >
+            <Icon icon="ArrowLeft" width={24} height={24}  />
+            </Pressable>
+            <Text className="font-bold text-base ml-2 tracking-tight text-black dark:text-gray-50">Titlellle</Text>
+            </Row>
+       
+    </View>
+    <View className="fixed -top-[1px]  z-50 w-full mb-16 hidden lg:flex">
       <Redirect ref={redirectdRef} />
       <TouchableOpacity
         className="xl:hidden"
@@ -348,5 +359,6 @@ export default function (props) {
         )}
       </AnimatePresence>
     </View>
+    </>
   )
 }

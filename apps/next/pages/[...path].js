@@ -1,4 +1,3 @@
-import React from 'react'
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 import { env } from 'app/lib/env';
@@ -8,7 +7,7 @@ const setCookie = require('set-cookie-parser');
 export default function Path (props) {
     const router = useRouter()
     const path = router?.query?.path?.join('/')
-    return <Root path={path} {...props}>props.children</Root>
+    return <Root path={path} {...props}></Root>
 }
 
 export async function getServerSideProps(context) {

@@ -1,7 +1,10 @@
+'use client'
+
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Platform } from 'react-native'
 import {StyleSheet, PixelRatio} from 'react-native';
+import { useState } from "react";
 
 export const SolitoImageStyled = styled(SolitoImage)
 
@@ -69,8 +72,26 @@ export default function ElementImage(props) {
         src = process.env.API_PROXY_URL.replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
     }
 
-    //
+    const [srcIm, setSrcIm] = useState("https://ci.una.io/test3/loading.jpg");
+    const [srcOr, setSrcOr] = useState(src);
+
+    const handleImageLoad = (e) => {
+      if (srcIm!=srcOr)
+        setSrcIm(srcOr)
+
+    };
+  
+
     return (
-            <SolitoImageStyled priority={true} {...rest} src={src} alt={alt} style={style}/>
+            <SolitoImageStyled 
+              priority={true} 
+              {...rest} 
+              src={srcIm} 
+              alt={alt} 
+              style={style} 
+              onLoadingComplete={(e) => {
+                handleImageLoad(e);
+              }}
+            />
     );
 }

@@ -140,8 +140,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                         <Row  className="items-center gap-0 mx-4">
-                        {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2"><Icon  icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2 hidden lg:flex"><Icon  icon={menuSettings?.icon} /></View> : <></>}
+                        {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0  w-full" >
                             <Row className="  mr-auto" >
                                 {routes.map((a) => (
@@ -198,7 +198,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         const animatedStyle5 = useAnimatedStyle(() => {
             return {
-                top: withTiming((scroll.value || window.innerWidth >1024) > 0 ? 63: 0, { duration: d }),
+                top: withTiming((scroll.value || window.innerWidth >0) > 0 ? 63: 0, { duration: d }),
                 opacity:1
             };
         });
