@@ -99,7 +99,10 @@ export const settingsDefault = {
       show_action_as_button: true,
     },
   },
-
+  static_pages: {
+    home: 'Home',
+    about: 'About'
+  },
   menu_items: {
     menu_top: [
       {
@@ -274,7 +277,7 @@ export const settingsDefault = {
     home: {
       layout: 'home',
       blocks: {
-        intro: { name: 'static:intro', showTitle: false, showBg: false },
+        home: { name: 'static:home', showTitle: false, showBg: false },
         menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
         feed: {
           name: 'bx_timeline:get_block_view_home',

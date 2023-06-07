@@ -25,7 +25,7 @@ export default function PageLayout(props) {
     if (isDesktop){
         if (currentUser === null)
         return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
-             <BlockByName name={props.blocks.intro}  />
+             <BlockByName name={props.blocks.home}  />
             </View>);
         if (currentUser)
         return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'} >
@@ -53,7 +53,7 @@ export default function PageLayout(props) {
 
     return (<View className="w-full ">
             <LayoutDataContext>
-                    {!currentUser && <BlockByName name={props.blocks.intro}  />}
+                    {!currentUser && <BlockByName name={props.blocks.home}  />}
                     {!!currentUser && <>
                     <BlockByName data={props.data} name={props.blocks.posts2} />
                     <BlockByName data={props.data} name={props.blocks.feed} />

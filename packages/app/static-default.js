@@ -23,8 +23,8 @@ export const staticDefault = {
           fill="currentColor"
         />
         <Path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M72.6757 23.4455C72.9795 23.173 73.5 23.3775 73.5 23.7855V24.75C73.5 25.4403 74.0597 26 74.75 26C75.4403 26 76 25.4403 76 24.75V16C76 10.4771 71.5228 6 66 6C60.4772 6 56 10.4771 56 16C56 21.5228 60.4772 26 66 26C68.5655 26 70.9055 25.0337 72.6757 23.4455ZM73.5 16C73.5 20.1421 70.1423 23.5 66 23.5C61.8577 23.5 58.5 20.1421 58.5 16C58.5 11.8579 61.8577 8.5 66 8.5C70.1423 8.5 73.5 11.8579 73.5 16Z"
           fill="currentColor"
         />
@@ -40,15 +40,15 @@ export const staticDefault = {
         xmlns="http://www.w3.org/2000/svg"
       >
         <Path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M25.1428 28.6939C25.1428 28.8789 25.3502 28.9863 25.4987 28.8766C29.4425 25.9625 32 21.28 32 16C32 13.9664 31.6206 12.0214 30.9287 10.232C30.8496 10.0274 30.5495 10.0486 30.4775 10.2557C29.7051 12.4736 27.826 14.173 25.5015 14.6923C25.2587 14.7465 25.0891 14.9726 25.1102 15.2204C25.1319 15.4774 25.1428 15.7374 25.1428 16V28.6939Z"
           className=" text-primary dark:text-primary-dark"
           fill="currentColor"
         />
         <Path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M16 6.85714C13.4866 6.85714 11.2101 7.87129 9.55736 9.51273C9.40796 9.6611 9.14282 9.55858 9.14282 9.34802V1.82866C9.14282 1.65218 9.24415 1.49095 9.4049 1.41813C11.4158 0.5072 13.6487 0 16 0C18.0336 0 19.9785 0.379383 21.768 1.07125C21.9725 1.15033 21.9513 1.4504 21.7442 1.52251C19.5263 2.29479 17.827 4.17403 17.3077 6.49856C17.2535 6.74128 17.0274 6.91083 16.7796 6.88992C16.5226 6.86821 16.2626 6.85714 16 6.85714Z"
           className=" text-primary dark:text-primary-dark"
           fill="currentColor"
@@ -59,15 +59,15 @@ export const staticDefault = {
           fill="currentColor"
         />
         <Path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M22.8571 30.1714C22.8571 30.3479 22.7559 30.509 22.5949 30.5819C20.5842 31.4928 18.3513 32 16 32C13.9664 32 12.0214 31.6206 10.2319 30.9287C10.0274 30.8496 10.0486 30.5497 10.2557 30.4775C12.4736 29.7051 14.173 27.8261 14.6922 25.5015C14.7465 25.2587 14.9725 25.0891 15.2203 25.1102C15.4773 25.1319 15.7374 25.1429 16 25.1429C18.5133 25.1429 20.7899 24.1287 22.4425 22.4873C22.592 22.339 22.8571 22.4414 22.8571 22.6519V30.1714Z"
           className=" text-primary dark:text-primary-dark"
           fill="currentColor"
         />
         <Path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M1.07125 21.768C1.15033 21.9726 1.4504 21.9513 1.52251 21.7442C2.29479 19.5264 4.17403 17.827 6.49856 17.3078C6.74128 17.2536 6.91083 17.0275 6.88992 16.7797C6.86821 16.5227 6.85714 16.2626 6.85714 16V3.30602C6.85714 3.12126 6.64983 3.01363 6.50126 3.12343C2.55749 6.03749 0 10.7201 0 16C0 18.0336 0.379383 19.9786 1.07125 21.768Z"
           className=" text-primary dark:text-primary-dark"
           fill="currentColor"
@@ -182,7 +182,14 @@ export const staticDefault = {
     ),
   },
   components: {
-    intro: (
+    about: (<><Text className="text-3xl lg:text-4xl xl:text-5xl  font-bold text-neutral-800 dark:text-neutral-200">
+      About
+    </Text><Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
+            The place to share, connect and grow with people you trust. Create
+            account to join the community.
+          </Text></>)
+    ,
+    home: (
       <View className="relative flex-col p-8 xl:p-12 w-full md:flex-row gap-4 xl:gap-8 duration-500  max-w-screen-2xl mx-auto ">
 
         <View className="flex-col items-center text-center md:items-start md:text-start gap-y-6 my-auto py-8 flex-auto">

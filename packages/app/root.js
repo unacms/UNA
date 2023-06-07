@@ -6,7 +6,6 @@ import PageLayout from 'app/components/page-layout';
 import { appSetting, getURI } from 'app/lib/util';
 
 export function Root (props) {
-    const [value, setValue] = useState([])
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     useEffect(() => {
@@ -16,7 +15,9 @@ export function Root (props) {
             }
 
         }else{
-            setCurrentUser(null);
+            
+            if (currentUser != null)
+                setCurrentUser(null);
         }
 
     }, [props?.data?.user]);

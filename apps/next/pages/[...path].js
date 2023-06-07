@@ -1,6 +1,7 @@
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 import { env } from 'app/lib/env';
+import { appSetting } from 'app/lib/util'
 
 const setCookie = require('set-cookie-parser');
 
@@ -17,6 +18,22 @@ export async function getServerSideProps(context) {
     params = JSON.stringify(rest);
 
     const cookies = context.req.headers.cookie;
+
+    const staticPage = appSetting('static_pages', path[0]);
+
+    if (!cookies.includes('logged=1') && staticPage){
+        let data = {
+            "data": {
+              "title": staticPage,
+              "uri": path[0],
+              "url": path[0],
+              "elements": {
+              },
+            }
+        }
+        return {props:data}
+    }
+
     const data = await getData(
         context.params?.path?.join('/'),
         env('UNA_API_KEY'), 
