@@ -18,6 +18,7 @@ function dedupe(bundles) {
  * Custom NextScript to defer loading of unnecessary JS.
  * Standard behavior is async. Compatible with Next.js 10.0.3
  */
+/*
 class DeferNextScript extends NextScript {
   getDynamicChunks(files) {
     const {
@@ -80,6 +81,7 @@ class DeferNextScript extends NextScript {
     });
   }
 }
+*/
 
 export default function Document() {
   return (
@@ -87,7 +89,8 @@ export default function Document() {
       <Head />
       <body className="relative bg-backgroundnavbar dark:bg-backgroundnavbar-dark text-neutral-900 dark:text-neutral-50">
         <Main />
-        <DeferNextScript />
+        {/*<DeferNextScript />*/}
+        <NextScript />
       </body>
     </Html>
   )
