@@ -1,10 +1,10 @@
-import * as IconSet from "phosphor-react-native";
+import {Horse, Heart, Cube} from "phosphor-react-native";
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 
 export function Icon(props) {
     const { colors } = Theme();
-
+    let IconSet = [];
     let { icon, className, color, size, ...rest } = props
     icon = icon.replace('far ', '').replace('fa-','').replace('fa ', '')
     let a = icon.split(' ')[0];

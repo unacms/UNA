@@ -35,5 +35,10 @@ const nextConfig = {
     disableStaticImages: true
   }
 }
-console.log(merge(nextConfig, nextConfigCustom));
+
+/*const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: true,
+})*/
+//module.exports = withBundleAnalyzer({})
+
 module.exports = withPlugins([withTM, withExpo, withImages], merge(nextConfig, nextConfigCustom))
