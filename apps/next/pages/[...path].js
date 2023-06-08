@@ -19,7 +19,7 @@ export async function getServerSideProps(context) {
 
     const cookies = context.req.headers.cookie;
 
-    const staticPage = appSetting('static_pages', path[0]);
+    /*const staticPage = appSetting('static_pages', path[0]);
 
     if (!cookies.includes('logged=1') && staticPage){
         let data = {
@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
             }
         }
         return {props:data}
-    }
+    }*/
 
     const data = await getData(
         context.params?.path?.join('/'),

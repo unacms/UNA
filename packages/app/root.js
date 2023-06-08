@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user';
@@ -13,25 +13,21 @@ export function Root (props) {
             if (currentUser?.id != props.data.user?.id){
                 setCurrentUser(props.data.user);
             }
-
-        }else{
-            
+        }
+        else{
             if (currentUser != null)
                 setCurrentUser(null);
         }
 
     }, [props?.data?.user]);
 
-
     /* TODO FIX 404 */
-
-    let a =  <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
-                <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
-                {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
-            </Layout>
     
     return (
-        a
+        <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
+            <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
+            {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
+        </Layout>
     );
 }
 

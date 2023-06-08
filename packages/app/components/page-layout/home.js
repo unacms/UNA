@@ -9,7 +9,9 @@ import { useCurrentUser } from 'app/context/user';
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
     const [isDesktop, setIsDesktop] = useState(false);
+    const [renderBlock, setRenderBlock] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();
+    
     useEffect(() => {
         if (isWeb){
             const handleResize = () => {
@@ -22,11 +24,22 @@ export default function PageLayout(props) {
             return () => window.removeEventListener('resize', handleResize);
         }
     }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (!currentUser)
+                setRenderBlock(true);
+        }, 100);
+    
+        return () => clearTimeout(timer); // This will clear the timer when the component is unmounted.
+      }, []);
+
+
     if (isDesktop){
-        if (currentUser === null)
-        return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
-             <BlockByName name={props.blocks.home}  />
-            </View>);
+        if (currentUser === null && renderBlock)
+            return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
+                <BlockByName name={props.blocks.home}  />
+                </View>);
         if (currentUser)
         return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'} >
             <View className="flex-auto relative w-full flex-row mx-auto  ">
@@ -53,10 +66,10 @@ export default function PageLayout(props) {
 
     return (<View className="w-full ">
             <LayoutDataContext>
-                    {!currentUser && <BlockByName name={props.blocks.home}  />}
+                    {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
                     {!!currentUser && <>
-                    <BlockByName data={props.data} name={props.blocks.posts2} />
-                    <BlockByName data={props.data} name={props.blocks.feed} />
+                        <BlockByName data={props.data} name={props.blocks.posts2} />
+                        <BlockByName data={props.data} name={props.blocks.feed} />
                     </>}
                 </LayoutDataContext>
         </View>)
