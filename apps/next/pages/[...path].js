@@ -50,6 +50,7 @@ export async function getServerSideProps(context) {
     );
     if (200 !== parseInt(data.props.status))
         context.res.statusCode = parseInt(data.props.status)
-        
+    context.res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');    
+    
     return data;
 }
