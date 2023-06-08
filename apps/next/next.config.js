@@ -25,6 +25,7 @@ const nextConfig = {
   // once that gets fixed, set this back to true
   reactStrictMode: false,
   webpack5: true,
+  poweredByHeader: false,
   experimental: {
     forceSwcTransforms: true,
     // scrollRestoration: true,

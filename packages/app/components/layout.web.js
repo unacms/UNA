@@ -35,6 +35,26 @@ export default function Layout(props) {
             window.removeEventListener('scroll', handleScroll);
         };
       }, []); 
+
+      useEffect(() => {
+        const handlePageShow = (event) => {
+          if (event.persisted) {
+            // The page was loaded from the BFCache
+            // Do something when the page is shown
+            console.log('Page is shown');
+          }
+        };
+    
+        window.addEventListener('beforeunload', handlePageShow);
+    
+        // Cleanup function
+        return () => {
+          window.removeEventListener('beforeunload', handlePageShow);
+        };
+      }, []);  // Empty dependency array ensures this runs once on mount and cleanup on unmount
+    
+        
+
       
         const d=200;
         const animatedStyleA = useAnimatedStyle(() => {
@@ -56,6 +76,8 @@ export default function Layout(props) {
                 <meta name="og:title" content={props.data.title} />
                 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
                 <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+                <link rel="manifest" href="/manifest.json" />
+                <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}</title>
             </Head>
             

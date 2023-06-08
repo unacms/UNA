@@ -2,7 +2,9 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
     NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
     ChatTeardropDots, Smiley, ShareNetwork, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
-	UserSwitch, Gear, SignOut, Files, UsersFour, CaretDoubleRight
+	UserSwitch, Gear, SignOut, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
+	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
+	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp
 }  
 from "@phosphor-icons/react";
 
@@ -45,5 +47,26 @@ export const IconSet = {
 	SignOut: SignOut,
 	Files: Files, 
 	UsersFour: UsersFour,
-	CaretDoubleRight: CaretDoubleRight
+	CaretDoubleRight: CaretDoubleRight,
+	ArrowFatLineDown: ArrowFatLineDown,
+	TextB: TextB, 
+	TextItalic: TextItalic, 
+	TextStrikethrough: TextStrikethrough,
+	TextHOne: TextHOne, 
+	TextHTwo: TextHTwo, 
+	TextHThree: TextHThree, 
+	ListBullets:ListBullets,
+	ListNumbers: ListNumbers,
+	Quotes: Quotes, 
+	ArrowUUpLeft: ArrowUUpLeft, 
+	ArrowUUpRight: ArrowUUpRight,
+	Image: Image,
+	Code: Code,
+	ImageSquare: ImageSquare, 
+	PaperPlaneRight: PaperPlaneRight,
+	ArrowFatUp: ArrowFatUp,
+	ArrowFatDown: ArrowFatDown,
+	SortAscending: SortAscending,
+	ArrowBendLeftUp: ArrowBendLeftUp,
+	ThumbsUp: ThumbsUp
 }

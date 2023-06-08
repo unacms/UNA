@@ -4,7 +4,7 @@ import {getFormFieldByData} from 'app/lib/form-helpers'
 
 import {componentsMap} from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
-import { Platform } from 'react-native'
+import {  Platform  } from 'react-native';
 
 function getFormType(name){
     return componentsMap[name];
@@ -59,6 +59,23 @@ export default function Form(props) {
         }
       }, [methods.formState, methods.submittedData, methods.reset]);
 
+    function handleKeyUp(event) {
+        if (event.srcElement.tagName == 'DIV' || event.srcElement.tagName == 'TEXTAREA')
+            return 
+
+        if (event.keyCode === 13) {
+            _handleSubmit();
+        }
+    }
+
+    React.useEffect(() => {
+        if(Platform.OS === 'web') {
+            window.addEventListener("keyup", handleKeyUp);
+                return () => {
+                    window.removeEventListener("keyup", handleKeyUp);
+                };
+        }
+    }, []);  
 
     if(data.reset){
         //TODO: Set Value without timeout

@@ -17,8 +17,6 @@ export default function FormFieldFtf(props) {
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
 
-
-
     const { field } = useController({ name, rules, defaultValue });
 
     const handleChange = (value) => {

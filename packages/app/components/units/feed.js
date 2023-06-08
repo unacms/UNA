@@ -42,7 +42,7 @@ function DefaultUnit(data) {
 
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
     let sShort = truncateHTML(data.content.text, 380);
-    let bIsLong = stripTags(sShort.trim()) != stripTags(data.content.text.trim());
+    let bIsLong = data?.content?.text && stripTags(sShort.trim()) != stripTags(data?.content?.text?.trim());
     return (
         
             <View className='max-w-5xl w-full mx-auto '>

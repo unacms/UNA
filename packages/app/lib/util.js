@@ -11,6 +11,8 @@ export function appSetting(section, name, path) {
 }
 
 export function truncateHTML(text, length) {
+    if (!text)
+        return '';
     var truncated = text.substring(0, length);
     // Remove line breaks and surrounding whitespace
     truncated = truncated.replace(/(\r\n|\n|\r)/gm,"").trim();
