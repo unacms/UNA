@@ -2,7 +2,7 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
     NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
     ChatTeardropDots, Smiley, ShareNetwork, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
-	UserSwitch, Gear, SignOut, Files, UsersFour
+	UserSwitch, Gear, SignOut, Files, UsersFour, CaretDoubleRight
 }  
 from "@phosphor-icons/react";
 
@@ -44,5 +44,6 @@ export const IconSet = {
 	Gear: Gear,
 	SignOut: SignOut,
 	Files: Files, 
-	UsersFour: UsersFour
+	UsersFour: UsersFour,
+	CaretDoubleRight: CaretDoubleRight
 }

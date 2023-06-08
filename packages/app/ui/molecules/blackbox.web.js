@@ -71,8 +71,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (isLoading.current) 
             return;
         
-            isLoading.current = true;
-
+        isLoading.current = true;
         parseData(routes, index, setRoutes);
         isLoading.current = false;
     }, [routes, index]);

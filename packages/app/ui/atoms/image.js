@@ -5,6 +5,7 @@ import { styled } from 'nativewind'
 import { Platform } from 'react-native'
 import {StyleSheet, PixelRatio} from 'react-native';
 import { useState } from "react";
+import { appSetting } from 'app/lib/util'
 
 export const SolitoImageStyled = styled(SolitoImage)
 
@@ -71,7 +72,7 @@ export default function ElementImage(props) {
         src = process.env.API_PROXY_URL.replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
     }
 
-    const [srcIm, setSrcIm] = useState("https://ci.una.io/test3/loading.jpg");
+    const [srcIm, setSrcIm] = useState(appSetting("urls", "images") + src);
     const [srcOr, setSrcOr] = useState(src);
 
     const handleImageLoad = (e) => {
