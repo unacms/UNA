@@ -96,5 +96,6 @@ export async function fetcherRaw (host, mixed) {
     })
     .catch((error) => {
         console.log("Api call error: " + error.message);
+        throw error;
     });
 }

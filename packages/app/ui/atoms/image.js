@@ -6,6 +6,7 @@ import { Platform } from 'react-native'
 import {StyleSheet, PixelRatio} from 'react-native';
 import { useState } from "react";
 import { appSetting } from 'app/lib/util'
+import { env } from 'app/lib/env'
 
 export const SolitoImageStyled = styled(SolitoImage)
 
@@ -69,7 +70,7 @@ export default function ElementImage(props) {
         let w = normalizeWidth(imageWidth);
         if (w > 256)
             w = 256;
-        src = process.env.API_PROXY_URL.replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
+        src = env('API_PROXY_URL').replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
     }
 
     const [srcIm, setSrcIm] = useState(appSetting("urls", "images") + src);

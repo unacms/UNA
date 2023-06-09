@@ -53,7 +53,8 @@ export function Screen(params) {
 
         const fetchPageData = async () => {
             
-            if (isFocused2 && _path && _path.startsWith('/')) {
+            // TODO: tmp check for !_path.includes('/?url=') was added to avoid double fething and errors
+            if (isFocused2 && _path && _path.startsWith('/') && !_path.includes('/?url=')) {
                 let path2 = _path;
                 let b = parseUrl(_path);
                 let params = null;
