@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { appSetting } from 'app/lib/util'
 import  LayoutDataContext from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user';
+import {BlackBox} from 'app/ui/molecules/blackbox';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
@@ -64,12 +65,42 @@ export default function PageLayout(props) {
     }
 
 
+    let sect =[{"name":"", "title":"Top"}];
+
+    const menuItems  = sect
+        .map((obj, index) => {
+        const key = Object.keys(obj)[0];
+        return {
+            id: index + 1,
+            name: obj.name,
+            title: obj.title,
+            link: 'home',
+            icon: ''
+        }
+    });  
+    let data = props.data;
+    delete data.elements.cell_1;
+    delete data.elements.cell_2;
+    delete data.elements.cell_4;
+
+    let menu={
+        object:'search',
+        items:menuItems
+    }
+    console.log(props.data)
+
     return (<View className="w-full ">
             <LayoutDataContext>
                     {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
                     {!!currentUser && <>
-                        <BlockByName data={props.data} name={props.blocks.posts2} />
-                        <BlockByName data={props.data} name={props.blocks.feed} />
+                        <BlackBox 
+                        minHeaderHeight={0} 
+                        isHideDefaultHeader={false} 
+                        menu={menu} 
+                        data={data} 
+                        blocks={props.blocks}
+                    />
+                       
                     </>}
                 </LayoutDataContext>
         </View>)

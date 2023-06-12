@@ -281,6 +281,11 @@ export const settingsDefault = {
       top:true,
       blocks: {
         home: { name: 'static:home', showTitle: false, showBg: false },
+        posts2: {
+          name: 'bx_timeline:get_block_post_home',
+          showTitle: false,
+          showBg: false,
+        },
         menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
         feed: {
           name: 'bx_timeline:get_block_view_home',
@@ -292,11 +297,7 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
-        posts2: {
-          name: 'bx_timeline:get_block_post_home',
-          showTitle: false,
-          showBg: false,
-        },
+        
       },
       header: [
         { icon: 'plus', name: 'Add', link: '/create-post' },

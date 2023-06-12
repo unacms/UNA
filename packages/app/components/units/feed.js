@@ -84,7 +84,7 @@ function DefaultUnit(data) {
                                         { bIsTimelineContent && (
                                             <View>
                                             <Html  data={truncateHTML(data.content.text, 380)} />
-                                                { (data.showMore && !showFull && bIsLong) && <View className='-ml-2'><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
+                                                { (data.showMore && !showFull && bIsLong) && <View className='-ml-2 items-start -mt-1 justify-left '><Button  title='More' onPress={(e) => {setShowFull(true); e.preventDefault() }} startDecorator="ArrowFatLineDown" size="xs" solid rounded  variant="link" /></View>}
                                             </View>
                                             )}
                                         { !bIsTimelineContent && <Text className='text-gray-950 dark:text-gray-50 text-base' numberOfLines={2} >{data.content.text}</Text>}
