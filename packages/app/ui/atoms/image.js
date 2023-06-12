@@ -81,8 +81,6 @@ export default function ElementImage(props) {
     
     const [srcIm, setSrcIm] = useState(srcImIn);
     const [srcOr, setSrcOr] = useState(src);
-    
-    console.log(srcIm)
     const handleImageLoad = (e) => {
       if (srcIm!=srcOr){
         setSrcIm(srcOr)
