@@ -1,26 +1,33 @@
 
 
 import Unit from '../unit';
-import { useState, useRef } from 'react';
+import { useState,useEffect, useRef } from 'react';
 import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
-import Dropdown from 'app/ui/atoms/dropdown'
-import { appSetting } from 'app/lib/util'
+import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
-import { Theme } from 'app/design/theme';
 import Loading from 'app/ui/atoms/loading'
-
+import  CurRouter from "app/ui/atoms/router";
 
 export default function ElementBrowse(props) {
+
+    let storageKeyValue = storageKey(props.data.request_url)
+
+    const isFirstMount = useRef(true);
+    let uniRef = useRef();
+
+    useEffect(() => {
+        if (isFirstMount.current)
+            isFirstMount.current = false;
+    });
+
+
     let data = props.data;
-   /* if (localStorage.getItem('list-'+window.location.href)){
-        data = localStorage.getItem('list-'+window.location.href);
-        console.log('---------', data)
-    }*/
+
     let defParams = data.params;
     if(props?.params)
         defParams = {...defParams, ...props.params};
@@ -32,14 +39,31 @@ export default function ElementBrowse(props) {
         defParams.moduleName = data.module ? data.module : '';
         defParams.loadedAll = data.data.length > 0 ? false : true;
         defParams.loading = false ;
+        defParams.loading = false ;
+    }
+    if (isFirstMount?.current){
+       
+        let defParams1 = storageGet('params', storageKeyValue);
+      
+        if (defParams1){
+            defParams = defParams1;
+            data.data = storageGet('data', storageKeyValue);
+        }
     }
 
     const [browseParams, setbrowseParams] = useState(defParams);
+    
+    const exitingFunction = () => {
+        storageSet('data', storageKeyValue, data.data)
+        storageSet('params', storageKeyValue, browseParams)
+    };
+    
     const updateBrowseParams =  (params) => {
         setbrowseParams(Object.assign({}, browseParams, params));
     } 
 
     const isLoading = useRef(false);
+
 
     const handleEndReached = () => { 
         if (isLoading.current) 
@@ -130,12 +154,8 @@ export default function ElementBrowse(props) {
         styles={};
 
     const dataItems = data.data;
-
-    //console.log(data);
-    //localStorage.setItem('list-'+window.location.href, JSON.stringify(data));
-
     return (
-        (data.data.length > 0) && <View className='w-full h-full mb-4' >
+        (data.data.length > 0) && <View className='w-full h-full mb-4' ><CurRouter exitingFunction={exitingFunction}  />
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"
@@ -148,7 +168,9 @@ export default function ElementBrowse(props) {
                     numColumns={numColumns} 
                     data={dataItems}
                     unit={data.unit}
+                    storagekey={storageKeyValue}
                     useWindowScroll
+                    refer={uniRef}
                     no_scroll={props.no_scroll}
                     renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     onEndReached = {handleEndReached} 

@@ -6,12 +6,15 @@ import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
-import { Dimensions } from 'react-native';    
-
+import { Dimensions } from 'react-native';  
+import { useRef, useEffect } from 'react';  
+import { storageSet, storageGet } from 'app/lib/util'
+import  CurRouter from "app/ui/atoms/router";
 
 export default function UniList(props) {
     const isWeb = Platform.OS == 'web'
     const { layoutData, setLayoutData } = useContext(LayoutData);
+
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
    
     if (props.unit == 'feed' && layoutData?.id){
@@ -40,7 +43,7 @@ export default function UniList(props) {
         }
         if (props.useWindowScroll){
             const windowHeight = Dimensions.get('window').height;
-            if (numColumns >1){
+            if (numColumns > 1){
                 const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
                 const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
@@ -63,9 +66,22 @@ export default function UniList(props) {
             }
             else{
 
+                const exitingFunction = () => {
+                    if (refer.current) {
+                        refer.current.getState((state) => {
+                            storageSet('list', rest.storagekey, state);
+                        });
+                    }
+                };
+
+                let restoreState =  storageGet('list', rest.storagekey);
+
+                let parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+                  
                 return (
-                    <Virtuoso useWindowScroll
+                    <><CurRouter exitingFunction={exitingFunction} /><Virtuoso useWindowScroll
                         data={data}
+                        {...parsedRestoreState}
                         itemContent={itemContent}
                         ref = {refer}   
                         endReached={onEndReached}
@@ -76,7 +92,7 @@ export default function UniList(props) {
                             },
                         }}
                         {...rest}
-                    />
+                    /></>
                 )
             }
         }

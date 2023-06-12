@@ -3,15 +3,13 @@ import { useEffect } from 'react'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
-import { appSetting } from 'app/lib/util'
-
 import useSkeleton from '../lib/hooks/skeleton';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
+import { storageClear } from 'app/lib/util'
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
-    const scroll = useSharedValue(1);
+
     const [loading, skeleton] = useSkeleton();
     
     setTimeout(() => {
@@ -38,34 +36,14 @@ export default function Layout(props) {
 
       useEffect(() => {
         const handlePageShow = (event) => {
-          if (event.persisted) {
-            // The page was loaded from the BFCache
-            // Do something when the page is shown
-            console.log('Page is shown');
-          }
+                storageClear();
         };
     
         window.addEventListener('beforeunload', handlePageShow);
-    
-        // Cleanup function
-        return () => {
-          window.removeEventListener('beforeunload', handlePageShow);
-        };
-      }, []);  // Empty dependency array ensures this runs once on mount and cleanup on unmount
-    
-        
-
-      
-        const d=200;
-        const animatedStyleA = useAnimatedStyle(() => {
-        
-        return {
-            zIndex: withTiming(100 * scroll.value, { duration: 500 }),
-            //height: withTiming(64 * scroll.value, { duration: 1000 }),
-            opacity: withTiming(100 * scroll.value, { duration: 500 })
-        };
-    });
-    const menu_top = appSetting('menu_items', 'menu_top')  
+            return () => {
+                window.removeEventListener('beforeunload', handlePageShow);
+            };
+    }, []);  
 
     return (
         <>

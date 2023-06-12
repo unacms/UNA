@@ -10,6 +10,22 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function storageKey(url) {
+    return window.location.href + '-' + url;
+} 
+
+export function storageSet(pref, key, data) {
+    localStorage.setItem(pref + '-' + key.toString(), JSON.stringify(data));
+}
+
+export function storageGet(pref, key) {
+    return JSON.parse(localStorage.getItem(pref + '-' + key.toString()))
+} 
+
+export function storageClear(pref, key) {
+    localStorage.clear();
+} 
+
 export function truncateHTML(text, length) {
     if (!text)
         return '';

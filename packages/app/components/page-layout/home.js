@@ -78,31 +78,32 @@ export default function PageLayout(props) {
             icon: ''
         }
     });  
-    let data = props.data;
-    delete data.elements.cell_1;
-    delete data.elements.cell_2;
-    delete data.elements.cell_4;
+    let data = {...props.data};
+    if (!isWeb){
+        delete data.elements.cell_1;
+        delete data.elements.cell_2;
+        delete data.elements.cell_4;
+    }
 
     let menu={
         object:'search',
         items:menuItems
     }
-    console.log(props.data)
 
     return (<View className="w-full ">
-            <LayoutDataContext>
-                    {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
-                    {!!currentUser && <>
-                        <BlackBox 
-                        minHeaderHeight={0} 
-                        isHideDefaultHeader={false} 
-                        menu={menu} 
-                        data={data} 
-                        blocks={props.blocks}
-                    />
-                       
-                    </>}
-                </LayoutDataContext>
-        </View>)
+        <LayoutDataContext>
+            {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
+            {!!currentUser && <>
+                <BlackBox 
+                minHeaderHeight={0} 
+                isHideDefaultHeader={false} 
+                menu={menu} 
+                data={data} 
+                blocks={props.blocks}
+            />
+                
+            </>}
+        </LayoutDataContext>
+    </View>)
 
 }

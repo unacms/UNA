@@ -1,9 +1,10 @@
-import React, { useCallback, useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import Carousel from "react-native-reanimated-carousel";
 import { Dimensions} from 'react-native';
 import { View, Pressable, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
+
 import Image from '../../ui/atoms/image';
+import Story from '../../ui/molecules/stories';
 import { Modal } from 'app/design/controls'
 import Animated, {
     Extrapolate,
@@ -111,6 +112,7 @@ export default function ElementCarousel(props) {
             {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
           </View>
         </Modal>
+        
 
         <View className="w-full mx-auto aspect-video mb-0" onLayout={handleLayout}>
         <Pressable style={{
@@ -121,7 +123,8 @@ export default function ElementCarousel(props) {
 
         </>);
     
-
+    let data2 = ['https://ci.una.io/test3/s/bx_timeline_photos_processed/syjvssx33hn6dnrvwcr5ajwwxbkz5aen.jpeg', 'https://ci.una.io/test3/s/bx_timeline_photos_processed/syjvssx33hn6dnrvwcr5ajwwxbkz5aen.jpeg']
+// <Story data={data2}/>
     return ( 
         <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'>
         <View className="w-full aspect-video " onLayout={handleLayout}>
@@ -130,6 +133,7 @@ export default function ElementCarousel(props) {
                     {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
                 </View>
             </Modal>
+           
             { data.length > 1 && <>
                 <View className='absolute top-1/2 z-50 -mt-8 left-0'>
                     <Button onPress={prevSlide} variant="text" size='xl' startDecorator="ArrowCircleLeft" />
