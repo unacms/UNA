@@ -49,7 +49,8 @@ export default function ElementHtml(props) {
             paddingTop:0
         },
         a: {
-            color: colors.primary
+            color: colors.primary,
+            textDecorationLine: 'none',
         },
         h1:{
             color: colors.default
@@ -62,7 +63,10 @@ export default function ElementHtml(props) {
         },
         h4:{
             color: colors.default
-        }
+        },
+        p:{
+            marginTop: 0,
+        },
     };
     
     const classesStyles = {
@@ -75,33 +79,6 @@ export default function ElementHtml(props) {
         }
     }
 
-    
-    if(theme == 'dark'){
-        let tagsStylesC = {
-            body: {
-                color: colors.default
-            },
-            p:{
-                marginTop: 0,
-            },
-            a: {
-                color: colors.primary
-            },
-            h1:{
-                color: colors.default
-            },
-            h2:{
-                color: colors.default
-            },
-            h3:{
-                color: colors.default
-            },
-            h4:{
-                color: colors.default
-            }
-        };
-        tagsStyles = mergeDeep(tagsStyles, tagsStylesC); 
-    }
 
     if (props.htmlStyles)
         tagsStyles = mergeDeep(tagsStyles, props.htmlStyles);

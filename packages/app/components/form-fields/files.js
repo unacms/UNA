@@ -182,7 +182,7 @@ export default function FormFieldFiles(props) {
     }
 
     function getButton(imagesList) {
-        let button = <Button startDecorator={sIcon} title={sTitle} variant="text" onPress={selectImage} />
+        let button = <Button startDecorator={sIcon} title={sTitle} variant="outline" onPress={selectImage} />
         
         if (!bMultiple){
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;

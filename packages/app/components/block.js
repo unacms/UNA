@@ -105,7 +105,7 @@ export function BlockWrapper(props) {
 
     const aNoTitle = [0,10,13,3];
     const aNoBg = [0,10,14,4];
-    let bIsShowTitle = true;
+    let bIsShowTitle = false;
     if(aNoTitle.indexOf(block.designbox_id) != -1){
         bIsShowTitle = false;
     }

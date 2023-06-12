@@ -73,7 +73,7 @@ export default function ElementImage(props) {
         const imageWidth = extractStyleWidth(style) || width;
         let w = normalizeWidth(imageWidth);
         if (w > 256)
-            w = 256;
+            w = 640;
         src = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75"
       //  srcImIn = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75";
       srcImIn = src;

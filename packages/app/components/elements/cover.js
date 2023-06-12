@@ -67,6 +67,12 @@ return (
     );
 }
 
+function CoverMenuMeta(props) {
+    return (
+      <Menu {...props} displayType="mixed" params={{ button_variant: 'text' }} />
+    )
+  }
+
 export default function ElementCover(props) {
     const routerExpo = useRouter();
     const data = props.data;
@@ -86,19 +92,46 @@ export default function ElementCover(props) {
                 <Icon icon="left" width={24} height={24} color={colors.barsColor} />
             </Pressable>
         </Row>
-        <View className='px-2 mt-24 bg-backgroundnavbar dark:bg-backgroundnavbar-dark pb-2' >
-            <View className='flex-row '>
-                <View className=' absolute -translate-y-12 bg-backgroundnavbar dark:bg-backgroundnavbar-dark rounded-full p-1 '>
-                    <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
-                </View>
-                <View className='ml-auto '>
-                    <CoverMenu {...data.actions_menu} />
-                </View>
+        <View className='px-2 mt-24  pb-2' >
+        <View className="relative  flex-row flex-wrap px-4 gap-4 ">
+          <View
+            className={
+              sType +
+              ' w-min p-1  absolute -bottom-1  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
+            }
+          >
+            <Profile
+              {...data.profile}
+              displayType="unit_wo_info"
+              displaySize={'2xl'}
+            />
+          </View>
+            
+          <View className=" flex-col pl-24 mt-auto py-2 flex-auto">
+            <Text className="tracking-tight text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50">
+              {data.profile.display_name}
+            </Text>
+
+            
+          </View>
+        </View>
+        </View>
+        <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
+              <Text
+                numberOfLines={3}
+                className=" w-full text-sm sm:text-base text-gray-800 dark:text-gray-200 "
+              >
+                {stripTags(data.profile.info.description)}
+              </Text>
             </View>
-            <View className='w-full px-2 mt-4'>
-                <H1C className="font-bold tracking-tight text-xl text-gray-900 dark:text-gray-50">{data.profile.display_name}</H1C>
-                <Text numberOfLines={1} className='text-base text-gray-800 dark:text-gray-200 text-wrap '>{stripTags(data.profile.info.description)}</Text>
-            </View>
+        <View className="p-4 flex-row flex-wrap items-center align-center  gap-4 w-full justify-between">
+          <View className="  flex-none ">
+            <CoverMenuMeta {...data.meta_menu} />
+          </View>
+          
+          <View className="flex-none">
+            <CoverMenu {...data.actions_menu} />
+          </View>
         </View>
     </View>
     );

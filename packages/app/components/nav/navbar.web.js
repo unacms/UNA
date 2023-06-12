@@ -381,6 +381,7 @@ export default function (props) {
         )}
       </AnimatePresence>
     </View>
+    <View className='h-16 lg:h-0 w-full'></View>
     </>
   )
 }

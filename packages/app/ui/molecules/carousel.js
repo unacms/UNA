@@ -21,6 +21,10 @@ export default function ElementCarousel(props) {
 
 
     let data = props.data;
+
+    if (data.length == 0)
+        return <></>
+
     const progressValue = useSharedValue(0);
 
     const height = Dimensions.get('window').height;
@@ -72,7 +76,7 @@ export default function ElementCarousel(props) {
           };
         }, [animValue, index, length]);
         return (
-          <View className='bg-bordercolortabbar dark:bg-bordercolortabbar-dark'
+          <View className='bg-backgroundcard dark:bg-backgroundcard-dark'
             style={{
               width,
               height: width,
@@ -100,12 +104,26 @@ export default function ElementCarousel(props) {
         );
       };  
 
+    if (data.length == 1)
+      return (<>
+        <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
+          <View className="w-full " style={{height:height/2}} >
+            {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
+          </View>
+        </Modal>
 
-    if (data.length == 0)
-        return <></>
+        <View className="w-full mx-auto aspect-video mb-0" onLayout={handleLayout}>
+        <Pressable style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
+        </View>
+
+        </>);
+    
 
     return ( 
-        <View className='bg-neutral-200 dark:bg-neutral-800 pb-4'>
+        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'>
         <View className="w-full aspect-video " onLayout={handleLayout}>
             <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className="w-full h-screen" style={{height:height - 100}} >

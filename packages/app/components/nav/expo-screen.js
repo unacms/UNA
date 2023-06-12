@@ -67,17 +67,7 @@ export function Screen(params) {
                 // console.log("-------------------- BootomTab Screen load data:", pathname, "--------------------",_path, "--------------------",data);
                 if (data?.props) {
                     setPageData(data.props);
-                    
-                    /*if (backButtonPresented){
-                        navigation.setOptions({ 
-                            headerTitle:(props) => <><Text className='text-base'>{data.props.data.title}</Text></>
-                        });
-                    }
-                    else{
-                        navigation.setOptions({ 
-                            header:(props) => Header(data.props.data.title)
-                        });
-                    }*/
+
                     let settings = appSetting('layouts', data.props.data.uri)
                     updateRightHeader(settings?.header, navigation);
                     let isProfile = appSetting('layout', 'show_user_icon');
@@ -88,7 +78,8 @@ export function Screen(params) {
                         dUser.url = '/dashboard'
                         profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
                     }
-                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, settings?.icon, profile);
+                    //settings?.icon
+                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
             }
       };

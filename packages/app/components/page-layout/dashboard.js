@@ -25,9 +25,9 @@ export default function PageLayout(props) {
                                 active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
                                 overflow-hidden"
             >
-              <View className="flex-auto flex-row gap-3 my-auto ">
+              <View className="flex-auto flex-row my-auto items-center">
                 
-              <View className=" my-auto p-0.5">
+              <View className=" my-auto p-0.5 mr-3">
                 <Profile
                   {...currentUser}
                   displayType="unit_wo_info"
@@ -38,7 +38,7 @@ export default function PageLayout(props) {
                   {currentUser.display_name}
                 </Text>
                 <View className="flex-row gap-1 my-auto xl:hidden">
-                  <Button
+                <Button
                     variant="text"
                     startDecorator="UserSwitch"
                     rounded
@@ -414,11 +414,11 @@ export default function PageLayout(props) {
               </View>
 
               <View className="flex-col my-auto flex-auto">
-                <Link href="/logout">
+                
                   <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                     Sign out
                   </Text>
-                </Link>
+            
               </View>
             </View>
           </Link>

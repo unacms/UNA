@@ -17,6 +17,10 @@ import Loading from 'app/ui/atoms/loading'
 
 export default function ElementBrowse(props) {
     let data = props.data;
+   /* if (localStorage.getItem('list-'+window.location.href)){
+        data = localStorage.getItem('list-'+window.location.href);
+        console.log('---------', data)
+    }*/
     let defParams = data.params;
     if(props?.params)
         defParams = {...defParams, ...props.params};
@@ -85,8 +89,6 @@ export default function ElementBrowse(props) {
             setNumColumns(getNumCols(containerWidth));
     };
 
-    const { colors } = Theme();
-
     function prepareUrl (params) {
         let sUrl = undefined;
 
@@ -128,6 +130,9 @@ export default function ElementBrowse(props) {
         styles={};
 
     const dataItems = data.data;
+
+    //console.log(data);
+    //localStorage.setItem('list-'+window.location.href, JSON.stringify(data));
 
     return (
         (data.data.length > 0) && <View className='w-full h-full mb-4' >
