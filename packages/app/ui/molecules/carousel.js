@@ -105,7 +105,7 @@ export default function ElementCarousel(props) {
         return <></>
 
     return ( 
-        <View className="w-full aspect-video" onLayout={handleLayout}>
+        <><View className="w-full aspect-video" onLayout={handleLayout}>
             <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className="w-full h-screen" style={{height:height - 100}} >
                     {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
@@ -146,41 +146,35 @@ export default function ElementCarousel(props) {
                     
                 )}
             />
-              {!!progressValue && (
-        <View
-          style={
-            false
-              ? {
-                flexDirection: "column",
-                justifyContent: "space-between",
-                width: 10,
-                alignSelf: "center",
-                position: "absolute",
-                right: 5,
-                top: 40,
-              }
-              : {
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: 100,
-                alignSelf: "center",
-              }
-          }
-        >
-          {data.map((backgroundColor, index) => {
-            return (
-              <PaginationItem
-                backgroundColor={backgroundColor}
-                animValue={progressValue}
-                index={index}
-                key={index}
-                isRotate={false}
-                length={data.length}
-              />
-            );
-          })}
+              
         </View>
-      )}
-        </View>
+        {!!progressValue && (
+          <View
+            style={
+              {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: 100,
+                  alignSelf: "center",
+                  marginBottom:20
+                }
+            }
+          >
+            {data.map((backgroundColor, index) => {
+              return (
+                <PaginationItem
+                  backgroundColor={backgroundColor}
+                  animValue={progressValue}
+                  index={index}
+                  key={index}
+                  isRotate={false}
+                  length={data.length}
+                />
+              );
+            })}
+          </View>
+        )}
+      </>
+      
   )
 }

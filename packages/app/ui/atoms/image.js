@@ -65,20 +65,28 @@ export default function ElementImage(props) {
             rest.height = 'auto';
         }
     }
+
+    let srcImIn = appSetting("urls", "images") + src;
+
+
     if (Platform.OS != 'web'){
         const imageWidth = extractStyleWidth(style) || width;
         let w = normalizeWidth(imageWidth);
         if (w > 256)
             w = 256;
-        src = env('API_PROXY_URL').replace('/api', '/')+  "/_next/image?url="+ src +"&w=" + w + "&q=75"
+        src = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75"
+      //  srcImIn = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75";
+      srcImIn = src;
     }
-
-    const [srcIm, setSrcIm] = useState(appSetting("urls", "images") + src);
+    
+    const [srcIm, setSrcIm] = useState(srcImIn);
     const [srcOr, setSrcOr] = useState(src);
-
+    
+    console.log(srcIm)
     const handleImageLoad = (e) => {
-      if (srcIm!=srcOr)
+      if (srcIm!=srcOr){
         setSrcIm(srcOr)
+      }
 
     };
   

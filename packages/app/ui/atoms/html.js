@@ -18,16 +18,16 @@ const renderers = {
   };
 
 function onElement(element) {
-    if (element.parent.children[0] === 'p') {
+    if (element?.parent?.children[0] === 'p') {
         element.parent.children[0] = {class: 'firstP'}
     }
-    if (element.parent.children[element.parent.children.length-1] === 'p') {
+    if (element?.parent?.children[element.parent.children.length-1] === 'p') {
         element.parent.children[element.parent.children.length-1].attribs = {class: 'lastP'}
     }
 }
 
 const domVisitors = {
-  onElement: onElement
+ /* onElement: onElement*/
 };
 
 export default function ElementHtml(props) {

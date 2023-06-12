@@ -12,10 +12,10 @@ export default function PageLayout(props) {
   if (!currentUser) return <></>
 
   return (
-    <View className="w-full p-3 max-w-screen-2xl mx-auto flex-col xl:flex-row">
-        <View className=" w-full xl:w-1/4  p-1 xl:pr-3">
+    <View className="w-full p-3 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
+        <View className=" w-full xl:w-1/4 p-1 xl:pr-3">
           <Link href={currentUser.url}>
-            <View className="w-full p-4 flex-col xl:flex-col gap-4 duration-200 rounded-lg  group
+            <View  className="w-full p-4 flex-col xl:flex-col xl:gap-4 duration-200 rounded-lg  group
                                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                                 hover:shadow-sm active:shadow-none 
@@ -86,9 +86,7 @@ export default function PageLayout(props) {
             </View>
           </Link>
         </View>
-      <Row className="flex-wrap flex-auto mb-auto">
-        
-
+      <Row className="flex-wrap flex-auto mb-auto ">
         <View className=" w-1/2 lg:w-1/3  p-1 ">
           <Link
             href={currentUser.url.replace(
@@ -97,7 +95,7 @@ export default function PageLayout(props) {
             )}
           >
             <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -135,7 +133,7 @@ export default function PageLayout(props) {
             )}
           >
             <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -173,7 +171,7 @@ export default function PageLayout(props) {
             )}
           >
             <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -205,7 +203,7 @@ export default function PageLayout(props) {
 
         <View className=" w-1/2 lg:w-1/3 hidden p-1 ">
           <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -236,7 +234,7 @@ export default function PageLayout(props) {
 
         <View className=" w-1/2 lg:w-1/3  p-1 hidden">
           <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -267,7 +265,7 @@ export default function PageLayout(props) {
 
         <View className=" w-1/2 lg:w-1/3  p-1 hidden">
           <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -298,7 +296,7 @@ export default function PageLayout(props) {
 
         <View className=" w-1/2 lg:w-1/3  p-1 hidden">
           <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -329,7 +327,7 @@ export default function PageLayout(props) {
 
         <View className=" w-1/2 lg:w-1/3  p-1 hidden">
           <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
             
             duration-200 rounded-lg  group
             bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -361,7 +359,7 @@ export default function PageLayout(props) {
         <View className=" w-1/2 lg:w-1/3  p-1 ">
           <Link href="account-settings-email">
             <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
                     
                     duration-200 rounded-lg  group
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -394,7 +392,7 @@ export default function PageLayout(props) {
         <View className=" w-1/2 lg:w-1/3  p-1 ">
           <Link href="logout">
             <View
-              className="w-full p-3 sm:p-1 flex-col sm:flex-row gap-2
+              className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
 
               duration-200 rounded-lg  group
               bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 

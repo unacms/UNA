@@ -161,7 +161,7 @@ export default function (props) {
       bBackHeader = true
   }
   if (bBackHeader){
-    return (<View className="fixed -top-[1px]  z-50 w-full mb-16">
+    return (<><View className="fixed -top-[1px]  z-50 w-full">
       <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
         <Row className="items-center ">
         <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
@@ -173,7 +173,7 @@ export default function (props) {
      
       </Row>
       </View>
-    </View>);
+    </View><View className='h-16 w-full'></View></>);
   }
 
   if (bHeader)

@@ -1,4 +1,4 @@
-import { TextInput as TextInputDef, Modal as ModalDef, ModalProps, Platform, Switch as SwitchDef, ViewProps,} from 'react-native'
+import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef} from 'react-native'
 import { Pressable, View , Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { styled } from 'nativewind'

@@ -105,7 +105,6 @@ function DefaultUnit(data) {
                                 { bIsTimelineContent && <UnitImages images={data.content.images_attach}/>}
                                 <View className="flex-col gap-3 relative px-4 pb-3">
                                 <View className=" flex-auto  pt-2   flex-row  w-full">
-                                    
                                     <View className="mt-auto flex-row space-x-2 flex-auto">
                                         <Menu {...data.menu_actions} displayType="button"  params={{show_action: true, show_counter: true, show_combined: true}} />
                                     </View> 
