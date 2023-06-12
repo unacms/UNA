@@ -2,6 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
+import { stringMd5 } from 'react-native-quick-md5'; 
 
 export function appSetting(section, name, path) {
     if (path)
@@ -11,7 +12,7 @@ export function appSetting(section, name, path) {
 }
 
 export function storageKey(url) {
-    return window.location.href + '-' + url;
+    return stringMd5(window.location.href + '-' + url);
 } 
 
 export function storageSet(pref, key, data) {

@@ -64,7 +64,7 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                    <View  className={(scroll.value? ' mt-0 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                    <View  className={(true ? ' mt-0 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {loading ? skeleton :<View className='w-full mx-auto'>
                         {props.children}
                         </View>}
