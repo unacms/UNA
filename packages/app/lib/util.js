@@ -16,15 +16,15 @@ export function storageKey(url) {
 } 
 
 export function storageSet(pref, key, data) {
-    localStorage.setItem(pref + '-' + key.toString(), JSON.stringify(data));
+    sessionStorage.setItem(pref + '-' + key.toString(), JSON.stringify(data));
 }
 
 export function storageGet(pref, key) {
-    return JSON.parse(localStorage.getItem(pref + '-' + key.toString()))
+    return JSON.parse(sessionStorage.getItem(pref + '-' + key.toString()))
 } 
 
 export function storageClear(pref, key) {
-    localStorage.clear();
+    sessionStorage.clear();
 } 
 
 export function truncateHTML(text, length) {

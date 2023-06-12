@@ -43,19 +43,18 @@ export default function ElementBrowse(props) {
     }
     if (isFirstMount?.current){
        
-        let defParams1 = storageGet('params', storageKeyValue);
+        let defParams1 = storageGet('ls-d', storageKeyValue);
       
         if (defParams1){
-            defParams = defParams1;
-            data.data = storageGet('data', storageKeyValue);
+            defParams = defParams1.params;
+            data.data = defParams1.data;
         }
     }
 
     const [browseParams, setbrowseParams] = useState(defParams);
     
     const exitingFunction = () => {
-        storageSet('data', storageKeyValue, data.data)
-        storageSet('params', storageKeyValue, browseParams)
+        storageSet('ls-d', storageKeyValue, {data:data.data, params:browseParams})
     };
     
     const updateBrowseParams =  (params) => {

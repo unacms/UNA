@@ -36,7 +36,8 @@ export default function Layout(props) {
 
       useEffect(() => {
         const handlePageShow = (event) => {
-                storageClear();
+            document.cookie = `pg=${JSON.stringify([])}`;
+            storageClear();
         };
     
         window.addEventListener('beforeunload', handlePageShow);

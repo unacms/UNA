@@ -4,14 +4,46 @@ import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
 import { appSetting, getURI } from 'app/lib/util';
+import { storageKey, storageSet, storageGet } from 'app/lib/util'
+import  CurRouter from "app/ui/atoms/router";
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
+    /* TODO FIX 404 */
+
+    let storageKeyValue = storageKey('');
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const exitingFunction = () => {
+        let a = getCookie('pg');
+        if (a){
+            const array1 = JSON.parse(a);
+            const array = [...new Set([...array1, props.data?.url].filter(item => item !== null))];
+            document.cookie = `pg=${JSON.stringify(array)}`;
+        }
+        if (props?.data)
+            storageSet('pg-d', storageKeyValue, props.data)
+    };
+
+    let defParams1 = storageGet('pg-d', storageKeyValue);
+      
+    let data = props?.data;
+
+    if (defParams1){
+        console.log('defParams1', defParams1);
+        data = defParams1;
+    }
+
     useEffect(() => {
-        if (props?.data?.user){
-            if (currentUser?.id != props.data.user?.id){
-                setCurrentUser(props.data.user);
+        if (data?.user){
+            if (currentUser?.id != data.user?.id){
+                setCurrentUser(data.user);
             }
         }
         else{
@@ -19,13 +51,12 @@ export function Root (props) {
                 setCurrentUser(null);
         }
 
-    }, [props?.data?.user]);
-
-    /* TODO FIX 404 */
-    
+    }, [data?.user]);
+   
     return (
-        <Layout path={props?.path} data={props?.data} uri={props?.data?.uri}>
-            <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} />
+        <Layout path={props?.path} data={data} uri={data?.uri}>
+            <CurRouter exitingFunction={exitingFunction}  />
+            <PageLayout path={props?.path} data={data} uri={data?.uri} />
             {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
         </Layout>
     );

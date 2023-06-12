@@ -67,17 +67,18 @@ export default function UniList(props) {
             else{
 
                 const exitingFunction = () => {
-                    if (refer.current) {
+                    if (refer?.current && rest.storagekey) {
                         refer.current.getState((state) => {
-                            storageSet('list', rest.storagekey, state);
+                            storageSet('ls', rest.storagekey, state);
                         });
                     }
                 };
 
-                let restoreState =  storageGet('list', rest.storagekey);
-
-                let parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
-                  
+                let parsedRestoreState = {};
+                if (rest.storagekey){
+                    let restoreState =  storageGet('ls', rest.storagekey);
+                    parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+                }
                 return (
                     <><CurRouter exitingFunction={exitingFunction} /><Virtuoso useWindowScroll
                         data={data}
