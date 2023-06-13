@@ -4,8 +4,8 @@ import { Dimensions} from 'react-native';
 import { View, Pressable, Row } from 'app/design/view'
 
 import Image from '../../ui/atoms/image';
-import Story from '../../ui/molecules/stories';
-import { Modal } from 'app/design/controls'
+
+
 import Animated, {
     Extrapolate,
     interpolate,
@@ -13,7 +13,8 @@ import Animated, {
     useSharedValue,
   } from "react-native-reanimated";
   import { Button } from 'app/design/controls';
-
+  import { Modal } from 'react-native';
+  import ImageViewer from 'react-native-image-zoom-viewer';
   
 
 export default function ElementCarousel(props) {
@@ -22,13 +23,12 @@ export default function ElementCarousel(props) {
 
 
     let data = props.data;
-
+    console.log('-------------', data)
     if (data.length == 0)
         return <></>
 
     const progressValue = useSharedValue(0);
 
-    const height = Dimensions.get('window').height;
 
     const [showImage, setShowImage] = useState(false);
     const [width, setWidth] = useState(400);
@@ -105,35 +105,25 @@ export default function ElementCarousel(props) {
         );
       };  
 
+    const data2 = data.map(item => ({url: item.src}));  
+
+
     if (data.length == 1)
       return (<>
-        <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
-          <View className="w-full " style={{height:height/2}} >
-            {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
-          </View>
-        </Modal>
-        
-
+        <Modal visible={!!showImage} transparent={true}><ImageViewer imageUrls={data2} onClick={() => {setShowImage(null)}}/></Modal>
         <View className="w-full mx-auto aspect-video mb-0" onLayout={handleLayout}>
         <Pressable style={{
                         flex: 1,
                         justifyContent: 'center',
                     }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
         </View>
-
         </>);
     
-    let data2 = ['https://ci.una.io/test3/s/bx_timeline_photos_processed/syjvssx33hn6dnrvwcr5ajwwxbkz5aen.jpeg', 'https://ci.una.io/test3/s/bx_timeline_photos_processed/syjvssx33hn6dnrvwcr5ajwwxbkz5aen.jpeg']
-// <Story data={data2}/>
+    
     return ( 
-        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'>
+        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'><Modal visible={!!showImage} transparent={true}><ImageViewer imageUrls={data2} onClick={() => {setShowImage(null)}}/></Modal>
         <View className="w-full aspect-video " onLayout={handleLayout}>
-            <Modal id={'file-preview'} title="Preview title" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
-                <View className="w-full h-screen" style={{height:height - 100}} >
-                    {!!showImage && showImage[1] == 'image' && <Image className="w-full h-full" src={showImage[0]} alt='' view="cover" />}
-                </View>
-            </Modal>
-           
+            
             { data.length > 1 && <>
                 <View className='absolute top-1/2 z-50 -mt-8 left-0'>
                     <Button onPress={prevSlide} variant="text" size='xl' startDecorator="ArrowCircleLeft" />
