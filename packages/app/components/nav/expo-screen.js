@@ -11,6 +11,7 @@ import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
 import * as Linking from 'expo-linking';
+import { Text } from 'app/design/typography';
 
 export function Screen(params) {
     const { currentUser } = useCurrentUser();
@@ -48,9 +49,6 @@ export function Screen(params) {
 
     const isFocused2 = useIsFocused();
     useEffect(() => {
-       // navigation.setOptions({ headerTitle:() => Header('Loading')});
-     //   navigation.setOptions({ headerRight:  () => (addButtons) });
-
         const fetchPageData = async () => {
             
             // TODO: tmp check for !_path.includes('/?url=') was added to avoid double fething and errors
@@ -64,7 +62,7 @@ export function Screen(params) {
                 }
                 
                 const data = await getData(path2, null, null, null, null, params);
-                // console.log("-------------------- BootomTab Screen load data:", pathname, "--------------------",_path, "--------------------",data);
+                
                 if (data?.props) {
                     setPageData(data.props);
 
@@ -89,5 +87,5 @@ export function Screen(params) {
 
     return pageData?.data ? (
         <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
-    ) : null;
+    ) : <></>;
 }

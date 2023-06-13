@@ -5,23 +5,40 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting } from 'app/lib/util';
+import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'next/router';
+import  CurRouter from "app/ui/atoms/router";
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
 
     const router = useRouter();
+
+    let uniRef = useRef();
    
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+
+
     
     const windowWidth = useWindowDimensions().width;
 
     const [routes, setRoutes] = useState(initedTabs);
+    const routesRef = useRef();
+
+    useEffect(() => {
+        routesRef.current = routes;
+      }, [routes]); // This runs every time `routes` changes
+
+    const exitingFunction = (index) => {
+        const route = routesRef.current.find((item) => item.index === index);
+        if (appSetting('cache', 'list')){
+            storageSet('ls-d', route.storageKeyValue, {index:index, data:route.data, endpoint:route.endpoint})
+        }
+    };
     
     const scroll = useSharedValue(1);
     const headerHeight = useSharedValue(minHeaderHeight);
@@ -35,6 +52,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const indicatorOffset = useSharedValue(0);
     
     const isLoading = useRef(false);
+    
 
     const getNumCols = (width) => {
         let currentRoute = routes.find((item) => item.index === index);
@@ -234,7 +252,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (!header){
             if (tabBarObj)
                 return <>
-                    <View className="w-full h-24 lg:h-12"></View>
+                    <View className="w-full h-6 lg:h-12"></View>
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
 
                     </>
@@ -286,8 +304,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return (
            <UniList
                 {...props}
+                
                 useWindowScroll
-                refer = {ref}
                 numColumns={numColumns}
                 onScroll={handleScroll}            
                 onEndReached={handleEndReached}
@@ -307,12 +325,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <>
-                
+                <CurRouter route={route} exitingFunction={() => exitingFunction(route.index)}  />
                 <Row style={{ paddingTop: header ? offsetTop : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
                             data={dataItems}
+                            storagekey={route.storageKeyValue}
+                            refer={uniRef}
                             unit={route.endpoint?.unit}
                             renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {

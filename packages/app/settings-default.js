@@ -23,6 +23,11 @@ export const settingsDefault = {
     search_popup_title: 'Search',
     search_popup_view_extended: 'Extended',
   },
+  cache: {
+    page: true,
+    list: true,
+    compress: true
+  },
   feed: {
     show_selector_view: false,
     default_view: '',

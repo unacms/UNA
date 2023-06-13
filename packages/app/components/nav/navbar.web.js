@@ -159,7 +159,7 @@ export default function (props) {
     
     if (bHeader && props.uri != 'home')
       bBackHeader = true
-  }
+  }//<View className='h-16 w-full'></View>
   if (bBackHeader){
     return (<><View className="fixed -top-[1px]  z-50 w-full">
       <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
@@ -173,7 +173,7 @@ export default function (props) {
      
       </Row>
       </View>
-    </View><View className='h-16 w-full'></View></>);
+    </View></>);
   }
 
   if (bHeader)
@@ -381,7 +381,8 @@ export default function (props) {
         )}
       </AnimatePresence>
     </View>
-    <View className='h-16 lg:h-0 w-full'></View>
+   
     </>
   )
 }
+// <View className='h-16 lg:h-0 w-full'></View>

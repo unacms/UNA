@@ -6,9 +6,8 @@ import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
-import { Dimensions } from 'react-native';  
-import { useRef, useEffect } from 'react';  
-import { storageSet, storageGet } from 'app/lib/util'
+import { Dimensions } from 'react-native';   
+import { storageSet, storageGet , appSetting} from 'app/lib/util'
 import  CurRouter from "app/ui/atoms/router";
 
 export default function UniList(props) {
@@ -43,14 +42,33 @@ export default function UniList(props) {
         }
         if (props.useWindowScroll){
             const windowHeight = Dimensions.get('window').height;
+
+            const exitingFunction = () => {
+                if (appSetting('cache', 'list')){
+                    if (refer?.current && refer.current.getState && rest.storagekey) {
+                        refer.current.getState((state) => {
+                            storageSet('ls', rest.storagekey, state);
+                        });
+                    }
+                }
+            };
+
+            let parsedRestoreState = {};
+            if (rest.storagekey && appSetting('cache', 'list')){
+                let restoreState =  storageGet('ls', rest.storagekey);
+                parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+            }
+
             if (numColumns > 1){
                 const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
                 const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
-                return ( <VirtuosoGrid useWindowScroll
+                return ( <><CurRouter exitingFunction={exitingFunction} /><VirtuosoGrid useWindowScroll
                         data={data}
                         itemContent={itemContent} 
+                        {...parsedRestoreState}
                         overscan={900}
+                        ref = {refer}   
                         endReached={onEndReached}
                         atBottomStateChange={onEndReached}
                         components={{
@@ -61,24 +79,11 @@ export default function UniList(props) {
                             },
                         }}
                         {...rest}
-                    />
+                    /></>
                 )
             }
             else{
 
-                const exitingFunction = () => {
-                    if (refer?.current && rest.storagekey) {
-                        refer.current.getState((state) => {
-                            storageSet('ls', rest.storagekey, state);
-                        });
-                    }
-                };
-
-                let parsedRestoreState = {};
-                if (rest.storagekey){
-                    let restoreState =  storageGet('ls', rest.storagekey);
-                    parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
-                }
                 return (
                     <><CurRouter exitingFunction={exitingFunction} /><Virtuoso useWindowScroll
                         data={data}

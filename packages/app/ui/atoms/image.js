@@ -65,18 +65,18 @@ export default function ElementImage(props) {
             rest.height = 'auto';
         }
     }
-
-    let srcImIn = appSetting("urls", "images") + src;
-
+    
+    let srcImIn =  '/_next/image?url=' + src + "&w=" + 32 + "&q=75"
 
     if (Platform.OS != 'web'){
         const imageWidth = extractStyleWidth(style) || width;
         let w = normalizeWidth(imageWidth);
         if (w > 256)
             w = 640;
+
         src = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75"
-      //  srcImIn = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75";
-      srcImIn = src;
+        //  srcImIn = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75";
+        srcImIn = src;
     }
     
     const [srcIm, setSrcIm] = useState(srcImIn);
@@ -85,7 +85,6 @@ export default function ElementImage(props) {
       if (srcIm!=srcOr){
         setSrcIm(srcOr)
       }
-
     };
   
     return (

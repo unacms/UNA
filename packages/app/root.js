@@ -3,9 +3,10 @@ import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
-import { appSetting, getURI } from 'app/lib/util';
+import { appSetting, getURI, parseUrl } from 'app/lib/util';
 import { storageKey, storageSet, storageGet } from 'app/lib/util'
 import  CurRouter from "app/ui/atoms/router";
+import { Platform } from 'react-native'
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -14,6 +15,8 @@ export function Root (props) {
 
     let storageKeyValue = storageKey('');
 
+    let data = props?.data;
+
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -21,23 +24,35 @@ export function Root (props) {
     }
 
     const exitingFunction = () => {
-        let a = getCookie('pg');
-        if (a){
-            const array1 = JSON.parse(a);
-            const array = [...new Set([...array1, props.data?.url].filter(item => item !== null))];
-            document.cookie = `pg=${JSON.stringify(array)}`;
+        if (appSetting('cache', 'page')){
+            let a = getCookie('pg');
+            if (a) document.cookie = `pg=${JSON.stringify([...new Set([...JSON.parse(a), props.data?.url].filter(item => item))])}`;
+            if (props?.data)
+                storageSet('pg-d', storageKeyValue, props.data)
         }
-        if (props?.data)
-            storageSet('pg-d', storageKeyValue, props.data)
     };
 
-    let defParams1 = storageGet('pg-d', storageKeyValue);
-      
-    let data = props?.data;
+    if (appSetting('cache', 'page') && Platform.OS === 'web'){
+        let defParams1 = storageGet('pg-d', storageKeyValue);
+        if (defParams1){
+            data = defParams1;
+            data.cached = true;
+        }
+        else{{
+            let a = getCookie('pg');
+            if (a){
+                let array1 = JSON.parse(a),
+                    u = parseUrl(window.location.href),
+                    index = array1.indexOf(u.path);
 
-    if (defParams1){
-        console.log('defParams1', defParams1);
-        data = defParams1;
+                if (index > -1) {
+                    array1.splice(index, 1);
+                    document.cookie = `pg=${JSON.stringify(array1)}`;
+                    location.reload();
+                    return <></>;
+                }
+            }
+        }}
     }
 
     useEffect(() => {
@@ -55,7 +70,7 @@ export function Root (props) {
    
     return (
         <Layout path={props?.path} data={data} uri={data?.uri}>
-            <CurRouter exitingFunction={exitingFunction}  />
+            {Platform.OS === 'web' && <CurRouter exitingFunction={exitingFunction}  />}
             <PageLayout path={props?.path} data={data} uri={data?.uri} />
             {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
         </Layout>

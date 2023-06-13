@@ -45,7 +45,7 @@ export default function Layout(props) {
                 window.removeEventListener('beforeunload', handlePageShow);
             };
     }, []);  
-
+    console.log(']]]]]]]]]]]', props.data.cache, props.data)
     return (
         <>
             <Head>
@@ -59,16 +59,16 @@ export default function Layout(props) {
                 <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}</title>
             </Head>
-            {(true) && (
-                    <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
-                )} 
+            <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                    <View  className={(true ? ' mt-0 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
-                    {loading ? skeleton :<View className='w-full mx-auto'>
-                        {props.children}
-                        </View>}
+                    <View  className={(true ? ' mt-16 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                    {
+                        (loading) ? skeleton : (<View className='w-full mx-auto'>
+                            {props.children}
+                        </View>)
+                    }
                     </View>
                 </View>
                 <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>

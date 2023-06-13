@@ -1,6 +1,7 @@
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 import { env } from 'app/lib/env';
+import { appSetting } from 'app/lib/util';
 
 const setCookie = require('set-cookie-parser');
 
@@ -16,25 +17,25 @@ export async function getServerSideProps(context) {
     let {path, ...rest} = context?.query;
     let p = context.params?.path?.join('/');
 
-    
-    
     params = JSON.stringify(rest);
-
     const cookies = context.req.headers.cookie;
-    const cookies2 = setCookie.parse(cookies, { map: true });
-    console.log('-------------', cookies2)
-    let cookie3 = cookies2?.memberID?.pg;
-    if (!cookie3)
-        cookie3 = cookies2?.memberSession?.pg;
 
-    let ignoredPaths = [];
-    if (cookie3){
-        ignoredPaths = JSON.parse(cookie3);
+    if (appSetting('cache', 'page')){
+        const cookies2 = setCookie.parse(cookies, { map: true });
+        let cookie3 = cookies2?.memberID?.pg;
+        if (!cookie3)
+            cookie3 = cookies2?.memberSession?.pg;
+
+        let ignoredPaths = [];
+        if (cookie3){
+            ignoredPaths = JSON.parse(cookie3);
+        }
+
+        if (ignoredPaths?.includes(p)) {
+            return { props: {} };
+        }
     }
 
-    if (ignoredPaths?.includes(p)) {
-        return { props: {} };
-    }
     /*const staticPage = appSetting('static_pages', path[0]);
 
     if (!cookies.includes('logged=1') && staticPage){

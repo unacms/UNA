@@ -16,7 +16,6 @@ import  CurRouter from "app/ui/atoms/router";
 export default function ElementBrowse(props) {
 
     let storageKeyValue = storageKey(props.data.request_url)
-
     const isFirstMount = useRef(true);
     let uniRef = useRef();
 
@@ -42,19 +41,22 @@ export default function ElementBrowse(props) {
         defParams.loading = false ;
     }
     if (isFirstMount?.current){
-       
-        let defParams1 = storageGet('ls-d', storageKeyValue);
-      
-        if (defParams1){
-            defParams = defParams1.params;
-            data.data = defParams1.data;
+        if (appSetting('cache', 'list')){
+            let defParams1 = storageGet('ls-d', storageKeyValue);
+        
+            if (defParams1){
+                defParams = defParams1.params;
+                data.data = defParams1.data;
+            }
         }
     }
 
     const [browseParams, setbrowseParams] = useState(defParams);
     
     const exitingFunction = () => {
-        storageSet('ls-d', storageKeyValue, {data:data.data, params:browseParams})
+        if (appSetting('cache', 'list')){
+            storageSet('ls-d', storageKeyValue, {data:data.data, params:browseParams})
+        }
     };
     
     const updateBrowseParams =  (params) => {

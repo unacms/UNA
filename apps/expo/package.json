@@ -33,6 +33,7 @@
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.2",
     "moti": "0.23.7",
+    "pako": "^2.1.0",
     "phosphor-react-native": "^1.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",

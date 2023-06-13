@@ -3,6 +3,7 @@ import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
+import pako from 'pako';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -11,16 +12,32 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
-export function storageKey(url) {
-    return stringMd5(window.location.href + '-' + url);
+export function storageKey(url, useUrl = true) {
+    //stringMd5
+    if ( Platform.OS !== 'web')
+        return ;
+    
+    let s = window.location.href + '-' + url;
+    if (!useUrl)
+        s = url;
+    return stringMd5(s);
 } 
 
 export function storageSet(pref, key, data) {
-    sessionStorage.setItem(pref + '-' + key.toString(), JSON.stringify(data));
+    if ( Platform.OS !== 'web')
+    return ;
+
+    sessionStorage.setItem(pref + '-' + key, appSetting('cache', 'compress') ? Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64') : JSON.stringify(data));    
 }
 
 export function storageGet(pref, key) {
-    return JSON.parse(sessionStorage.getItem(pref + '-' + key.toString()))
+    if ( Platform.OS !== 'web')
+    return ;
+
+    const s = sessionStorage.getItem(pref + '-' + key);
+    if (!s) return;
+    return appSetting('cache', 'compress') ? JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(s, 'base64')), { to: 'string' })) : JSON.parse(s);
+
 } 
 
 export function storageClear(pref, key) {

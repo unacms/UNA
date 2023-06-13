@@ -1,4 +1,4 @@
-import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString } from 'app/lib/util';
+import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, storageGet } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
@@ -20,11 +20,30 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.link = item.link;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
+            i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
+
+            if (appSetting('cache', 'list')){
+                let defParams1 = storageGet('ls-d', i.storageKeyValue);
+                if (defParams1){
+                    i.endpoint = defParams1.endpoint;
+                    i.data = defParams1.data;
+                }
+            }
+
         } else {
             i.link = item.link;
             i.inited = false;
+            i.storageKeyValue = storageKey(i.link, false);
             i.data = [];
+            if (appSetting('cache', 'list')){
+                let defParams1 = storageGet('ls-d', i.storageKeyValue);
+                if (defParams1){
+                    i.endpoint = defParams1.endpoint;
+                    i.data = defParams1.data;
+                    i.inited = true;
+                }
+            }
         }
       
         return i;
@@ -32,7 +51,6 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
 }
 
 export async function parseData(routes, index, setRoutes) {
-
     const currentRoute = routes.find((item) => item.index === index);
     if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
         const params = { ...currentRoute.endpoint.params, start: parseInt(currentRoute.endpoint.params.start) + parseInt(currentRoute.endpoint.params.per_page) };

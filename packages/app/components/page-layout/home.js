@@ -36,7 +36,7 @@ export default function PageLayout(props) {
       }, []);
 
 
-    if (isDesktop){
+    if (isWeb){
         if (currentUser === null && renderBlock)
             return (<View className={ appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
                 <BlockByName name={props.blocks.home}  />
@@ -64,7 +64,7 @@ export default function PageLayout(props) {
             </View>)
     }
 
-    if (isWeb && !isDesktop){
+    /*if (isWeb && !isDesktop){
         return (<View className="w-full ">
             <LayoutDataContext>
                     {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
@@ -74,7 +74,7 @@ export default function PageLayout(props) {
                     </>}
                 </LayoutDataContext>
         </View>)
-    }
+    }*/
 
 
     let sect =[{"name":"", "title":"Top"}];
