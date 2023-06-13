@@ -26,7 +26,7 @@ export const settingsDefault = {
   cache: {
     page: true,
     list: true,
-    compress: true
+    compress: false
   },
   feed: {
     show_selector_view: false,

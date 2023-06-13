@@ -50,13 +50,26 @@ export default function UniList(props) {
                             storageSet('ls', rest.storagekey, state);
                         });
                     }
+                    else{
+                        if (window)
+                        storageSet('ls', rest.storagekey, window.scrollY);
+                    }
                 }
             };
 
             let parsedRestoreState = {};
             if (rest.storagekey && appSetting('cache', 'list')){
                 let restoreState =  storageGet('ls', rest.storagekey);
-                parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+                if (!isNaN(parseFloat(restoreState))){
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: restoreState,
+                        }); 
+                    }, 100);
+                }
+                else{
+                    parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+                }   
             }
 
             if (numColumns > 1){
