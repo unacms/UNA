@@ -63,7 +63,7 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                    <View  className={(true ? ' mt-16 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                    <View  className={' mt-16 lg:mt-16 w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
                         (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
                             {props.children}

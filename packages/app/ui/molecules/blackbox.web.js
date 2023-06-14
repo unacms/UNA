@@ -95,17 +95,17 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [routes, index]);
 
     const handleScroll = (event) => {
-        if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
+     /*   if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
             scroll.value = 0;
         if (event.nativeEvent.contentOffset.y < 200)
-            scroll.value = 1;
+            scroll.value = 1;*/
     };
 
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > headerMinHeight.value)
                 scroll.value = 0;
-            if (window.scrollY < 200)
+            if (window.scrollY == 0)
                 scroll.value = 1;
         };
     
@@ -156,7 +156,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between">
+                    {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between h-16">
                         <Row className="items-center">
                         <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
                             <Icon icon="left" width={24} height={24} />
@@ -168,7 +168,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         </Row>
                     </Row>
                     }
-                        <Row  className="items-center gap-0 mx-4">
+                    <Row  className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2 hidden lg:flex"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0  w-full" >
@@ -189,11 +189,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             
                         </ScrollView>
                         <Row className="hidden lg:flex">
-                        {addButtons}
+                            {addButtons}
                         </Row>
-                        </Row>
-                    </View>
+                    </Row>
                 </View>
+            </View>
 
         )}
     };
@@ -252,7 +252,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (!header){
             if (tabBarObj)
                 return <>
-                    <View className="w-full h-6 lg:h-12"></View>
+                    <View className="w-full h-12 lg:h-12"></View>
                     <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
 
                     </>
@@ -292,7 +292,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 
             </>
         );
-    }, [scroll, index]);
+    }, [scroll, index, windowWidth]);
 
     const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, [numColumns]);  
 

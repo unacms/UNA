@@ -24,6 +24,7 @@ import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
 
+
 export default function (props) {
   const redirectdRef = useRef()
   const { currentUser, setCurrentUser } = useCurrentUser()
@@ -150,36 +151,18 @@ export default function (props) {
   const router = useRouter();
   let settings = appSetting('layouts', props.uri)
  
-  let bHeader = true; 
+  if (windowWidth < 1024 && (settings.layout == 'blackbox' || settings.layout == 'profile'))
+    return <></>
+
   let bBackHeader = false; 
   if (windowWidth < 1024){
-      bHeader = false; 
-    if (settings?.top)
-      bHeader = true; 
     
-    if (bHeader && props.uri != 'home')
+    if (props.uri != 'home')
       bBackHeader = true
-  }//<View className='h-16 w-full'></View>
-  if (bBackHeader){
-    return (<><View className="fixed -top-[1px]  z-50 w-full">
-      <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
-        <Row className="items-center ">
-        <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
-          <Icon icon="left" width={24} height={24} />
-        </Pressable>
-        <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text>
-        </Row> 
-        <Row >
-     
-      </Row>
-      </View>
-    </View></>);
   }
-
-  if (bHeader)
   return (
     <>
-    <View className="fixed -top-[1px]  z-50 w-full mb-16">
+    <View className="fixed -top-[1px]  z-30 w-full">
       <Redirect ref={redirectdRef} />
       <TouchableOpacity
         className="xl:hidden"
@@ -188,8 +171,8 @@ export default function (props) {
       <View className="  backdrop-blur h-16 px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
         <Row className="flex-row space-x-4 flex-none items-center">
           {
-            /*props.uri == 'home'*/ true && (
-              <TouchableOpacity className="xl:hidden " onPress={showMenu}>
+            !bBackHeader && (
+              <><TouchableOpacity className="xl:hidden " onPress={showMenu}>
                 <Button
                   variant="text"
                   startDecorator="List"
@@ -197,16 +180,27 @@ export default function (props) {
                   align="start"
                 />
               </TouchableOpacity>
+              <TouchableOpacity className="" onPress={hideMenu}>
+              <Link href="/home" aria-label="Logo">
+                <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
+                  {appStatic('logo', 'mark')}
+                  {appStatic('logo', 'text')}
+                </View>
+              </Link>
+            </TouchableOpacity></>
             )
           }
-          <TouchableOpacity className="" onPress={hideMenu}>
-            <Link href="/home" aria-label="Logo">
-              <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                {appStatic('logo', 'mark')}
-                {appStatic('logo', 'text')}
-              </View>
-            </Link>
-          </TouchableOpacity>
+          {
+            bBackHeader && (
+            <>
+              <Pressable className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+              <Icon icon="left" width={24} height={24} />
+              </Pressable>
+              <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text>
+            </>
+            )
+          }
+          
         </Row>
 
         <Row className="flex-row  flex-auto justify-end lg:justify-between ">
@@ -233,8 +227,8 @@ export default function (props) {
           </Row>
           <Row>
             {!!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-end  flex">
-                <View className="hidden sm:flex flex-row">
+              <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
+                <View className="hidden sm:flex flex-row ">
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
