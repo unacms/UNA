@@ -62,7 +62,7 @@ export function CoverSmall(props) {
   const router = useRouter();
   const data = props.data
   return (
-    <View className=" backdrop-blur bg-backgroundtabbar dark:bg-backgroundtabbar-dark  w-full ">
+    <View className=" backdrop-blur bg-backgroundtabbar  border-b border-bordercolornavbar dark:border-bordercolor-dark dark:bg-backgroundtabbar-dark  w-full ">
       <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
         <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">

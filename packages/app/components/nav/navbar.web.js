@@ -186,7 +186,7 @@ export default function (props) {
         onPress={hideMenu}
       ></TouchableOpacity>
       <View className="  backdrop-blur h-16 px-2 sm:px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
-        <Row className="flex-row space-x-1 flex-none items-center">
+        <Row className="flex-row space-x-2 flex-none items-center">
           {
             /*props.uri == 'home'*/ true && (
               <TouchableOpacity className="xl:hidden " onPress={showMenu}>
@@ -324,6 +324,7 @@ export default function (props) {
               </Row>
             )}
           </Row>
+ 
         </Row>
       </View>
       <AnimatePresence exitBeforeEnter>
