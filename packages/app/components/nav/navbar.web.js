@@ -151,7 +151,7 @@ export default function (props) {
   const router = useRouter();
   let settings = appSetting('layouts', props.uri)
  
-  if (windowWidth < 1024 && (settings.layout == 'blackbox' || settings.layout == 'profile'))
+  if (windowWidth < 1024 && (settings?.layout == 'blackbox' || settings?.layout == 'profile'))
     return <></>
 
   let bBackHeader = false; 
@@ -172,7 +172,7 @@ export default function (props) {
         <Row className="flex-row space-x-4 flex-none items-center">
           {
             !bBackHeader && (
-              <><TouchableOpacity className="xl:hidden " onPress={showMenu}>
+              <><TouchableOpacity className="lg:hidden " onPress={showMenu}>
                 <Button
                   variant="text"
                   startDecorator="List"

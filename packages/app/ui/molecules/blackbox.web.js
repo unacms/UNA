@@ -226,7 +226,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 height: withTiming(headerMinHeight.value * (1 - scroll.value), { duration: d }),
             };
         });
-
         const animatedStyle5 = useAnimatedStyle(() => {
             return {
                 top: withTiming((scroll.value || window.innerWidth >0) > 0 ? (windowWidth > 1024 ? 63: 0): 0, { duration: d }),
