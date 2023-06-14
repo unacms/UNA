@@ -2,8 +2,10 @@
 
 import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCircleText, 
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
-    NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
-    ChatTeardropDots, Smiley, ShareNetwork, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
+    NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight
+}  
+from "phosphor-react-native";
+import { ChatTeardropDots, Smiley, ShareNetwork, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
 	UserSwitch, Gear, SignOut, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X
