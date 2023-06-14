@@ -2,7 +2,6 @@
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@native-html/iframe-plugin": "^2.6.1",
-    "@phosphor-icons/react": "^2.0.10",
     "@radix-ui/react-select": "^1.2.1",
     "@react-native-clipboard/clipboard": "^1.11.2",
     "@react-native-community/masked-view": "^0.1.11",
