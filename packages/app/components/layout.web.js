@@ -45,7 +45,7 @@ export default function Layout(props) {
                 window.removeEventListener('beforeunload', handlePageShow);
             };
     }, []);  
-    console.log(']]]]]]]]]]]', props.data.cache, props.data)
+
     return (
         <>
             <Head>
@@ -65,7 +65,7 @@ export default function Layout(props) {
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={(true ? ' mt-16 lg:mt-16 ': '') +' w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
-                        (loading) ? skeleton : (<View className='w-full mx-auto'>
+                        (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
                             {props.children}
                         </View>)
                     }

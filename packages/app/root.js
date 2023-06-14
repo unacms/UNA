@@ -24,9 +24,12 @@ export function Root (props) {
     }
 
     const exitingFunction = () => {
+        console.log('add1');
         if (appSetting('cache', 'page')){
             let a = getCookie('pg');
-            if (a) document.cookie = `pg=${JSON.stringify([...new Set([...JSON.parse(a), props.data?.url].filter(item => item))])}`;
+            let b = a? JSON.parse(a) : [];
+            if (a) document.cookie = `pg=${JSON.stringify([...new Set([...b, props.data?.url].filter(item => item))])}`;
+            console.log('add');
             if (props?.data)
                 storageSet('pg-d', storageKeyValue, props.data)
         }
@@ -47,6 +50,7 @@ export function Root (props) {
 
                 if (index > -1) {
                     array1.splice(index, 1);
+                    console.log('rem');
                     document.cookie = `pg=${JSON.stringify(array1)}`;
                     location.reload();
                     return <></>;

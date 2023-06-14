@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import Carousel from "react-native-reanimated-carousel";
-import { Dimensions} from 'react-native';
-import { View, Pressable, Row } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 
 import Image from '../../ui/atoms/image';
 
@@ -21,14 +20,12 @@ export default function ElementCarousel(props) {
 
     const carouselRef = useRef();
 
-
     let data = props.data;
-    console.log('-------------', data)
     if (data.length == 0)
         return <></>
 
     const progressValue = useSharedValue(0);
-
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [showImage, setShowImage] = useState(false);
     const [width, setWidth] = useState(400);
@@ -107,6 +104,31 @@ export default function ElementCarousel(props) {
 
     const data2 = data.map(item => ({url: item.src}));  
 
+    const ImViewer = () => (
+      <Modal visible={!!showImage} transparent={true}>
+        <ImageViewer 
+          index={currentImageIndex}
+          imageUrls={data2} 
+          renderArrowLeft={() => (
+            currentImageIndex == 0 ? null : <Button
+              variant="text"
+              size='xl'
+              startDecorator="ArrowCircleLeft"
+              onPress={() => setCurrentImageIndex((prevIndex) => prevIndex > 0 ? prevIndex - 1 : prevIndex)}
+            />
+          )}
+          renderArrowRight={() => (
+              currentImageIndex == data2.length - 1 ? null : <Button
+              variant="text"
+              size='xl'
+              startDecorator="ArrowCircleRight"
+              onPress={() => setCurrentImageIndex((prevIndex) => prevIndex < data2.length - 1 ? prevIndex + 1 : prevIndex)}
+            />
+          )}
+          onClick={() => {setShowImage(null)}}
+        />
+      </Modal>
+    );
 
     if (data.length == 1)
       return (<>
@@ -121,7 +143,8 @@ export default function ElementCarousel(props) {
     
     
     return ( 
-        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'><Modal visible={!!showImage} transparent={true}><ImageViewer imageUrls={data2} onClick={() => {setShowImage(null)}}/></Modal>
+        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'>
+        <ImViewer/>
         <View className="w-full aspect-video " onLayout={handleLayout}>
             
             { data.length > 1 && <>
