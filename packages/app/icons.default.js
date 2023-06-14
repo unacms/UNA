@@ -4,7 +4,7 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
     NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
     ChatTeardropDots, Smiley, ShareNetwork, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
-	UserSwitch, Gear, SignOut, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
+	UserSwitch, Gear, SignOut, SignIn, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X
 }  
@@ -47,6 +47,7 @@ export const IconSet = {
 	UserSwitch: UserSwitch,
 	Gear: Gear,
 	SignOut: SignOut,
+	SignIn: SignIn,
 	Files: Files, 
 	UsersFour: UsersFour,
 	CaretDoubleRight: CaretDoubleRight,

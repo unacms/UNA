@@ -24,8 +24,8 @@ export const settingsDefault = {
     search_popup_view_extended: 'Extended',
   },
   cache: {
-    page: true,
-    list: true,
+    page: false,
+    list: false,
     compress: false
   },
   feed: {
@@ -803,21 +803,21 @@ export const settingsDefault = {
       },
       {
         key: '/tab3',
-        title: 'Messenger',
-        url: '/messenger', //'/view-persons-profile/dr-andrey-yasko-phd',
-        icon: 'UsersThree',
+        title: 'About',
+        url: '/about', //'/view-persons-profile/dr-andrey-yasko-phd',
+        icon: 'Info',
       },
       {
         key: '/tab4',
-        title: 'Notifications',
-        url: '/notifications-view',
-        icon: 'app-notifications',
+        title: 'Sign-up',
+        url: '/create-account',
+        icon: 'app-usermenu',
       },
       {
         key: '/tab5',
         title: 'Login',
         url: '/login',
-        icon: 'app-usermenu',
+        icon: 'SignIn',
       },
     ],
   },
