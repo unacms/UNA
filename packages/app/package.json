@@ -12,7 +12,8 @@
     "react-native-reanimated": "~2.14.4",
     "set-cookie-parser": "^2.6.0",
     "solito": "^2.3.0",
-    "zeego": "^1.0.2"
+    "zeego": "^1.0.2",
+    "swr": "^2.0.3"
   },
   "sideEffects": false
 }

@@ -34,7 +34,12 @@ const nextConfig = {
   images: {
     domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com', 'hihi.com', 'una.so'],
     disableStaticImages: true
-  }
+  },
+  modularizeImports: {
+    "@phosphor-icons/react": {
+      transform: "@phosphor-icons/react/{{member}}",
+    },
+  }  
 }
 
 /*const withBundleAnalyzer = require('@next/bundle-analyzer')({

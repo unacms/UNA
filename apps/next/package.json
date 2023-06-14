@@ -15,6 +15,18 @@
     "@react-navigation/material-top-tabs": "6.6.2",
     "@vercel/analytics": "^0.1.10",
     "@phosphor-icons/react": "^2.0.10",
+    "@radix-ui/react-select": "^1.2.1",
+    "@tiptap/extension-color": "^2.0.3",
+    "@tiptap/extension-document": "^2.0.3",
+    "@tiptap/extension-image": "^2.0.3",
+    "@tiptap/extension-link": "^2.0.3",
+    "@tiptap/extension-list-item": "^2.0.3",
+    "@tiptap/extension-mention": "^2.0.3",
+    "@tiptap/extension-text-style": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/react": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/suggestion": "^2.0.3",
     "app": "*",
     "autoprefixer": "^10.4.14",
     "deepmerge": "^4.3.1",
@@ -31,7 +43,8 @@
     "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-tab-view": "3.5.1",
-    "swr": "^2.0.3"
+    "tippy.js": "^6.3.7",
+    "react-virtuoso": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "18.15.2",
