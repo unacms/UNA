@@ -3,7 +3,6 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
-import Image from 'app/ui/atoms/image'
 export const staticDefault = {
   logo: {
     text: (
@@ -76,19 +75,19 @@ export const staticDefault = {
           </Text>
           
 
-          <Text className="text-xl  text-neutral-700 dark:text-neutral-700 text-center md:text-start">
+          <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
            Connect, create, discover, learn, share and grow together with your community.
           </Text>
           <Row className="gap-4">
             <Link href="/create-account">
-              <Button title="Create new account" variant="primary" />
+              <Button size="lg" title="Create new account" variant="primary" startDecorator="UserCirclePlus" />
             </Link>
             <Link href="/login">
-              <Button title="Log in" variant="default" />
+              <Button size="lg" title="Log in" variant="default"  startDecorator="SignIn"/>
             </Link>
           </Row>
         </View>
-        <View className=" w-full md:w-[40%] border border-transparent hover:border-bordercolor   hover:shadow-xl hover:rotate-3 duration-500 w-full  backdrop-blur-md   rounded-full p-4  ">
+        <View className=" w-full md:w-[40%] border border-transparent hover:border-bordercolor dark:hover:border-bordercolor-dark   hover:shadow-xl hover:rotate-3 duration-500 w-full  backdrop-blur-md   rounded-full p-4  ">
         <Svg aria-label="Logo Mark" className="   "  viewBox="0 0 2400 2400" fill="none" xmlns="http://www.w3.org/2000/svg">
 <Path d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z" className="  text-accent-400 dark:text-accent-600" fill="currentColor"/>
 <Path d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"  className="text-accent-400 dark:text-accent-600" fill="currentColor"/>
@@ -98,19 +97,6 @@ export const staticDefault = {
         </Svg>
         </View>
 
-        <View className="hidden w-full md:w-[40%] mt-4 lg:mt-0 border shadow-xl hover:rotate-3 duration-500 border-neutral-50/50 dark:border-neutral-700/50 w-full bg-neutral-50/50 dark:bg-neutral-800/50 backdrop-blur-md   rounded-xl p-2  ">
-          
-
-          <View className="w-full pb-[50%]  rounded-md overflow-hidden">
-
-            <Image
-              src="https://ci.una.io/test3/s/bx_posts_covers/yetmq4v87qwdvuiqqez3ccuu5nqgdpzl.jpg"
-              sizes="512px"
-              view="cover"
-              className="u-cover"
-            />
-          </View>
-        </View>
         
       </View>
     ),

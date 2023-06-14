@@ -102,7 +102,7 @@ function DefaultUnit(data) {
                     <View>
                       <Html data={truncateHTML(data.content.text, 380)} />
                       {data.showMore && !showFull && bIsLong && (
-                        <View className=" items-start w-full border-b py-2 border-bordercolor ">
+                        <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
                           <Button
                             title="More"
                             onPress={(e) => {
