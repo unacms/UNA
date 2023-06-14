@@ -10,7 +10,7 @@ export default function PageLayout(props) {
         header={header} 
         smallHeader={smallHeader} 
         minHeaderHeight={104} 
-        offsetTop={250}
+        offsetTop={300}
         isHideDefaultHeader={true} 
         menu={props.data.menu} 
         data={props.data} 

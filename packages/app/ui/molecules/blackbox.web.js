@@ -325,7 +325,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <>
                 <CurRouter route={route} exitingFunction={() => exitingFunction(route.index)}  />
-                <Row style={{ paddingTop: header ? offsetTop : 0 }} className="mb-4"> 
+                <Row style={{ paddingTop: header ? (windowWidth > 1024 ? offsetTop : offsetTop - 50) : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
