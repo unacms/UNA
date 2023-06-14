@@ -1,3 +1,5 @@
+'use client'
+
 import { IconSet as IconSetDedault } from './icons.default';
 import { Airplane}  
 

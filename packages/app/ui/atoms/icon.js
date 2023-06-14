@@ -1,3 +1,5 @@
+'use client'
+
 import { IconSet } from 'app/icons';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
