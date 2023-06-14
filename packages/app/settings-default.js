@@ -661,9 +661,9 @@ export const settingsDefault = {
       'u-btn-default-trans': 'duration-200 ',
 
       'u-btn-primary-cnt':
-        ' border active:shadow-none border-transparent  shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
+        ' border active:shadow-none border-transparent  shadow-sm hover:shadow bg-primary-700 hover:bg-primary-800 active:bg-primary-900 dark:bg-primary-800 dark:hover:bg-primary-700 dark:active:bg-primary-900',
       'u-btn-primary-text':
-        ' font-medium text-gray-100 group-hover:text-white ',
+        ' font-medium text-neutral-50 group-hover:text-white ',
       'u-btn-primary-trans': 'duration-200 ',
 
       'u-btn-danger-cnt':
