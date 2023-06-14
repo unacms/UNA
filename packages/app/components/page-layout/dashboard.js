@@ -117,7 +117,7 @@ export default function PageLayout(props) {
               </View>
 
               <View className="flex-auto flex-col my-auto ">
-                <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                   Friends
                 </Text>
               </View>
@@ -155,7 +155,7 @@ export default function PageLayout(props) {
               </View>
 
               <View className="flex-auto flex-col my-auto ">
-                <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                   Followers
                 </Text>
               </View>
@@ -193,7 +193,7 @@ export default function PageLayout(props) {
               </View>
 
               <View className="flex-auto flex-col my-auto ">
-                <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                   Following
                 </Text>
               </View>
@@ -225,7 +225,7 @@ export default function PageLayout(props) {
             </View>
 
             <View className="flex-col my-auto flex-auto">
-              <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+            <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 Posts
               </Text>
             </View>
@@ -287,7 +287,7 @@ export default function PageLayout(props) {
             </View>
 
             <View className="flex-col my-auto flex-auto">
-              <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+            <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 Groups
               </Text>
             </View>
@@ -349,7 +349,7 @@ export default function PageLayout(props) {
             </View>
 
             <View className="flex-col my-auto flex-auto">
-              <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+            <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 Bookmarks
               </Text>
             </View>
@@ -381,7 +381,7 @@ export default function PageLayout(props) {
               </View>
 
               <View className="flex-col my-auto flex-auto">
-                <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                   Settings
                 </Text>
               </View>
@@ -415,7 +415,7 @@ export default function PageLayout(props) {
 
               <View className="flex-col my-auto flex-auto">
                 
-                  <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                     Sign out
                   </Text>
             
