@@ -169,17 +169,17 @@ export default function (props) {
         onPress={hideMenu}
       ></TouchableOpacity>
       <View className="  backdrop-blur h-16 px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
-        <Row className="flex-row space-x-4 flex-none items-center">
+        <Row className="flex-row  flex-none items-center">
           {
             !bBackHeader && (
-              <><TouchableOpacity className="lg:hidden " onPress={showMenu}>
+              <><View className="lg:hidden mr-4"><TouchableOpacity  onPress={showMenu}>
                 <Button
                   variant="text"
                   startDecorator="List"
                   rounded
                   align="start"
                 />
-              </TouchableOpacity>
+              </TouchableOpacity></View>
               <TouchableOpacity className="" onPress={hideMenu}>
               <Link href="/home" aria-label="Logo">
                 <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
