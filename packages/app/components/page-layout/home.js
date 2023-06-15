@@ -6,6 +6,8 @@ import { appSetting } from 'app/lib/util'
 import  LayoutDataContext from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user';
 import {BlackBox} from 'app/ui/molecules/blackbox';
+import {Text} from 'app/design/typography';
+import { Button } from 'app/design/controls';
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
@@ -56,7 +58,43 @@ export default function PageLayout(props) {
                 </LayoutDataContext>
                 </View>
 
-                <View className="hidden xl:block w-1/3   flex-none duration-200">
+                <View className="hidden xl:block w-1/3  flex-none duration-200">
+                    <View className=" w-full  pt-4 px-2 ">
+                            <View className=" p-6 shadow-sm top-0 overflow-hidden  flex-col  w-full aspect-video bg-primary/20 rounded-lg ">
+                                <View className="mt-auto w-full gap-y-4 flex-col align-justify  ">      
+                                      
+                                        <Text className="text-3xl  font-bold text-neutral-800 dark:text-neutral-200 ">
+                                            Go Premium!
+                                        </Text>
+                                        
+
+                                        <Text className="text-lg  text-neutral-600 dark:text-neutral-400 ">
+                                        Connect, create, discover, learn, share and grow together with your community.
+                                        </Text>
+                                        <View className="mt-auto flex-auto">
+                                        <Button variant="primary" title="Upgrade Membership" startDecorator="RocketLaunch" className="mt-auto" />
+                                        </View>
+                               
+                                </View>
+                               
+                                <View className="absolute -top-2/3 -right-2/3 aspect-square w-full bg-primary/5  p-8 rounded-full">
+                                    <View className=" aspect-square w-full bg-primary/5 p-8 rounded-full">
+                                        <View className=" aspect-square w-full bg-primary/5  p-8 rounded-full">
+                                         
+                                        </View>
+                                    </View>
+                                </View>
+                                <View className="absolute top-0  aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
+                                <View className="absolute top-1/4 -left-1/4 aspect-square w-3/4 rotate-12 rounded-lg bg-primary/5  "></View>
+                                <View className="absolute top-3/4 -left-1/4 aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
+
+                               
+
+
+
+                                
+                            </View>
+                    </View>
                     <BlockByName no_scroll={true} data={props.data} name={props.blocks.posts} />
                 </View>
             </View>
