@@ -1,10 +1,8 @@
+import dynamic from 'next/dynamic'
 import Field from './_field';
-import FormFieldFtf from './rtf';
-
 import { useController } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
-import { useState, useRef  } from 'react';
-
+import { useState } from 'react';
 
 export default function FormFieldText(props) {
     
@@ -14,7 +12,6 @@ export default function FormFieldText(props) {
     
     const { field } = useController({ name, rules, defaultValue });
     const [height, setHeight] = useState(null);
-    const editorRef = useRef(null);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
 
     let input = <InputMulti
@@ -44,6 +41,9 @@ export default function FormFieldText(props) {
         />
 
     if (props.html == 2 || props.html == 3){
+        const FormFieldFtf = dynamic(() => import('./rtf'), {
+            loading: () => <></>,
+        })
         input =  <FormFieldFtf  {...props} />;
     }    
 

@@ -1,5 +1,4 @@
 import Field from './_field';
-import FormFieldFtf from './rtf';
 import FormFieldMent from './textareaMent';
 import { useController } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'

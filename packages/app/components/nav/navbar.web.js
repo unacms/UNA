@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { MotiView, AnimatePresence } from 'moti'
@@ -5,7 +7,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { fetcher } from 'app/lib/fetcher'
 import { TouchableOpacity } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import { Text, H1C } from 'app/design/typography'
+import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
@@ -23,7 +25,6 @@ import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
-
 
 export default function (props) {
   const redirectdRef = useRef()

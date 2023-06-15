@@ -3,8 +3,9 @@ import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';
 import Time from 'app/ui/atoms/time';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+//import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
+import dynamic from 'next/dynamic'
 
 export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -20,6 +21,10 @@ export default function ElementEntityAuthor(oProps) {
             title: aItem.title
         };
     }) : [];
+
+    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+        ssr: false,
+    })
 
     return (
         <View className={ false ? "mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4 sm:rounded-t-lg bg-neocard dark:bg-neocard-dark sm:border-t  sm:m-0 border-neoborder dark:border-neoborder-dark sm:border-x" : " w-full items-center flex-row justify-between  "}>

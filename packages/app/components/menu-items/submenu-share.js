@@ -1,12 +1,19 @@
 import { Share } from 'react-native';
-import Clipboard from '@react-native-clipboard/clipboard';
-
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import dynamic from 'next/dynamic'
 
 export default function MenuItemSubmenuShare(oProps) {
+
+    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+        ssr: false,
+    })
+
+    const Clipboard = dynamic(() => import('@react-native-clipboard/clipboard'), {
+        ssr: false,
+    })
+
     const oIconAliases = {
         'item-share': 'ShareNetwork',
         'item-copy': 'Clipboard',
@@ -73,6 +80,7 @@ export default function MenuItemSubmenuShare(oProps) {
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
 
     return (
         <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
