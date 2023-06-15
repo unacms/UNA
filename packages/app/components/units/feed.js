@@ -36,7 +36,7 @@ function DefaultUnit(data) {
   }
 
   let url = '/' + data.url
-  let bIsTimelineContent = data.type.includes('timeline') ? true : false
+  let bIsTimelineContent = data?.type?.includes('timeline') ? true : false
 
   let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
   let sShort = truncateHTML(data.content.text, 380)

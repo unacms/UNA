@@ -25,7 +25,7 @@ export const settingsDefault = {
   },
   cache: {
     page: false,
-    list: false,
+    list: true,
     compress: false
   },
   feed: {
@@ -54,7 +54,7 @@ export const settingsDefault = {
     per_line_profile: [
         { width: 1440, count: 6 },
       { width: 1024, count: 4 },
-      { width: 680, count: 3 },
+      { width: 640, count: 3 },
       { width: 340, count: 2 },
     ],
   },

@@ -64,19 +64,6 @@ export default function PageLayout(props) {
             </View>)
     }
 
-    /*if (isWeb && !isDesktop){
-        return (<View className="w-full ">
-            <LayoutDataContext>
-                    {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
-                    {!!currentUser && <>
-                        <BlockByName data={props.data} name={props.blocks.posts2} />
-                        <BlockByName data={props.data} name={props.blocks.feed} />
-                    </>}
-                </LayoutDataContext>
-        </View>)
-    }*/
-
-
     let sect =[{"name":"", "title":"Top"}];
 
     const menuItems  = sect

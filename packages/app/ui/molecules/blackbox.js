@@ -12,6 +12,8 @@ import { appSetting, deepEqual } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
 import { updateRightHeader } from 'app/lib/native-handlers';
+import { useInfiniteQuery } from  '@tanstack/react-query'
+import { getSkeleton } from 'app/lib/hooks/skeleton';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false }) {
 
@@ -36,14 +38,26 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const isLoading = useRef(false);
 
-    const handleEndReached = useCallback(async () => {
-        if (isLoading.current) 
-            return;
-        isLoading.current = true;
+    const {
+        status,
+        data: newData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery([routes[index]?.endpoint?.request_url, index], 
+        ({ pageParam }) => parseData(routes, index, setRoutes),
+        {
+            getNextPageParam: lastPage => {
+            if (lastPage?.data?.length == 0)
+                return;
+            return lastPage?.endpoint;
+            },
+    });
 
-        parseData(routes, index, setRoutes);
-        
-        isLoading.current = false;
+    const handleEndReached = useCallback(async () => {
+        if (isFetchingNextPage) 
+            return;
+        fetchNextPage();
     }, [routes, index]);
 
     if (isHideDefaultHeader) {
@@ -85,8 +99,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
 
     const TabScene = ({ route,index }) => {
+        const Preload = getSkeleton(data.module? data.module : data.unit);
         if (!route.inited){
-            return <View className='m-2 pt-140'><Loading/></View>
+            return Preload
         }
 
         if (route.inited)
@@ -98,7 +113,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route.data.length > 0 && route?.endpoint?.finished === false) ? (
-                            <View className='m-2'><Loading/></View>
+                            Preload
                         ) : null
                     }
                 />

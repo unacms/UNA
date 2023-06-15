@@ -50,10 +50,14 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
     });
 }
 
-export async function parseData(routes, index, setRoutes) {
+export async function parseData(routes, index, setRoutes, newData) {
     const currentRoute = routes.find((item) => item.index === index);
     if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
-        const params = { ...currentRoute.endpoint.params, start: parseInt(currentRoute.endpoint.params.start) + parseInt(currentRoute.endpoint.params.per_page) };
+        let params = { ...currentRoute.endpoint.params};
+       /* if (newData && newData?.pages.length > 0){
+            let ld = newData.pages[newData.pages.length - 1].params;
+            params.start = parseInt(ld.start) + parseInt(ld.per_page);
+        }*/
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
@@ -62,11 +66,18 @@ export async function parseData(routes, index, setRoutes) {
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
         endpoint.finished = finished;
+
+        let ld = sResponse.data[0]?.data.params;
+        if (ld){
+            params.start = parseInt(ld.start) + parseInt(ld.per_page);
+        }
         endpoint.params = params;
+
 
         if (newData.length > 0 || isFinished) {
             addMoreData(newData, endpoint, setRoutes, index);
         }
+        return {data:newData, endpoint: endpoint};
     }
 }
 

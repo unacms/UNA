@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
@@ -13,6 +15,8 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'next/router';
 import  CurRouter from "app/ui/atoms/router";
+import { useInfiniteQuery } from  '@tanstack/react-query'
+import { getSkeleton } from 'app/lib/hooks/skeleton';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
 
@@ -21,9 +25,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     let uniRef = useRef();
    
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-
-
-    
     const windowWidth = useWindowDimensions().width;
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -83,23 +84,28 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     };
    
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
-
+    const {
+        status,
+        data: newData,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery([routes[index]?.endpoint?.request_url, index], 
+        ({ pageParam }) => parseData(routes, index, setRoutes),
+        {
+            getNextPageParam: lastPage => {
+            if (lastPage?.data?.length == 0)
+                return;
+            return lastPage?.endpoint;
+            },
+    });
 
     const handleEndReached = useCallback(async () => {
-        if (isLoading.current) 
+        if (isFetchingNextPage) 
             return;
-        
-        isLoading.current = true;
-        parseData(routes, index, setRoutes);
-        isLoading.current = false;
+        fetchNextPage();
     }, [routes, index]);
 
-    const handleScroll = (event) => {
-     /*   if (event.nativeEvent.contentOffset.y > headerMinHeight.value)
-            scroll.value = 0;
-        if (event.nativeEvent.contentOffset.y < 200)
-            scroll.value = 1;*/
-    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -293,7 +299,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         );
     }, [scroll, index, windowWidth]);
 
-    const RenderScene = useCallback(({ route }) => <TabScene route={route} index={index} />, [numColumns]);  
+    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
@@ -305,8 +311,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 {...props}
                 
                 useWindowScroll
-                numColumns={numColumns}
-                onScroll={handleScroll}            
+                numColumns={numColumns}     
                 onEndReached={handleEndReached}
             />
         );
@@ -314,18 +319,21 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const headerObj = renderHeader();
 
-    const TabScene = ({ route }) => {
+    const TabScene = ({ route, width, status }) => {
+
+
+        const Preload = getSkeleton(data.module? data.module : data.unit);
 
         if (!route.inited){
             return <View className='m-2 pt-80'><Loading/></View>
         }
         if (route.inited){
-            const dataItems = route.data;
+            const dataItems = route.data
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <>
                 <CurRouter route={route} exitingFunction={() => exitingFunction(route.index)}  />
-                <Row style={{ paddingTop: header ? (windowWidth > 1024 ? offsetTop : offsetTop - 50) : 0 }} className="mb-4"> 
+                <Row style={{ paddingTop: header ? (width > 1024 ? offsetTop : offsetTop - 50) : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
@@ -336,12 +344,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
-                                {(route?.endpoint?.finished === false) ? (
-                                    <Loading/>
+                                {(hasNextPage && isFetchingNextPage) ? (
+                                    Preload
                                 ) : null}
                                 </View>
                             }
-                        /> : <View className="text-center m-4"><Text>No avaliable data</Text></View>}
+                        /> : Preload}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
                         <UniList
