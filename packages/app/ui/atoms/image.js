@@ -89,7 +89,7 @@ export default function ElementImage(props) {
   
     return (
             <SolitoImageStyled 
-              priority={true} 
+              priority
               {...rest} 
               src={srcIm} 
               alt={alt} 
