@@ -3,17 +3,16 @@ import { useWindowDimensions} from 'react-native';
 
 import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text} from 'app/design/typography'
-import { View, Pressable, Row } from 'app/design/view'
-import { Button, Modal } from 'app/design/controls'
+import { View } from 'app/design/view'
+import { Button } from 'app/design/controls'
 import Html from 'app/ui/atoms/html';
 import Time from 'app/ui/atoms/time';
-import Image from 'app/ui/atoms/image';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
 import Carousel from '../../ui/molecules/carousel';
+import dynamic from 'next/dynamic'
 
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
@@ -27,6 +26,9 @@ export default function UnitComments(props) {
     let files = props.files;
 
 
+    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+        ssr: false,
+    })
     // request form for reply
 
     const handleReply = async (id, author, text) => {

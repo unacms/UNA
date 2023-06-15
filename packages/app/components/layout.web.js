@@ -5,7 +5,6 @@ import Footer from './footer';
 import { View } from 'app/design/view'
 import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
-import { Suspense } from 'react';
 
 export const siteTitle = 'NEO';
 
@@ -64,7 +63,7 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                <Suspense fallback={<div>Loading...</div>}> 
+
                     <View  className={' mt-16 lg:mt-16 w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
                         (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
@@ -72,7 +71,7 @@ export default function Layout(props) {
                         </View>)
                     }
                     </View>
-                </Suspense>                    
+                   
                 </View>
                 <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
             </View>

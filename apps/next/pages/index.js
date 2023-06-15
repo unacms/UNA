@@ -1,4 +1,3 @@
-import React from 'react'
 import { Root, getData } from 'app/root'
 import { useRouter } from 'next/router';
 import { env } from 'app/lib/env';

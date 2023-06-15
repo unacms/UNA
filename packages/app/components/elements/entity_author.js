@@ -3,7 +3,6 @@ import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
 import { View } from 'app/design/view';
 import Time from 'app/ui/atoms/time';
-//import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import dynamic from 'next/dynamic'
 

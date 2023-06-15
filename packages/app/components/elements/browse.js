@@ -1,5 +1,3 @@
-'use client'
-
 import Unit from '../unit';
 import { useState,useEffect, useRef } from 'react';
 import { View } from 'app/design/view'

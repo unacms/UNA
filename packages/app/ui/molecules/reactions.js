@@ -7,7 +7,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import dynamic from 'next/dynamic'
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementReactions(oProps) {
@@ -34,6 +34,8 @@ export default function ElementReactions(oProps) {
 
         return [].concat(aName).join('-');
     };
+
+  
 
     const getIconType = (sMode) => {
         const aIconType = {
@@ -259,6 +261,10 @@ export default function ElementReactions(oProps) {
                     class_item_icon: 'text-2xl'
                 };
             });
+
+            const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+                loading: () =>    <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
+            })
 
             sActionButton = (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>

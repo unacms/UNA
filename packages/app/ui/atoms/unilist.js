@@ -1,7 +1,7 @@
 import { MasonryFlashList, FlashList } from "@shopify/flash-list";
 import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { Platform } from 'react-native'
-import { View, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
@@ -11,6 +11,7 @@ import { storageSet, storageGet , appSetting} from 'app/lib/util'
 import  CurRouter from "app/ui/atoms/router";
 
 export default function UniList(props) {
+    
     const isWeb = Platform.OS == 'web'
     const { layoutData, setLayoutData } = useContext(LayoutData);
 

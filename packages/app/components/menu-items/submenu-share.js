@@ -2,16 +2,14 @@ import { Share } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
+import React from 'react';
 import dynamic from 'next/dynamic'
 
 export default function MenuItemSubmenuShare(oProps) {
 
-    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-        ssr: false,
-    })
-
+   
     const Clipboard = dynamic(() => import('@react-native-clipboard/clipboard'), {
-        ssr: false,
+        loading: () => <></>,
     })
 
     const oIconAliases = {
@@ -80,6 +78,10 @@ export default function MenuItemSubmenuShare(oProps) {
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+
+    const DropdownMenu = React.memo(dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+        loading: () => <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />,
+    }));
 
 
     return (

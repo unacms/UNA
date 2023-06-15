@@ -18,13 +18,13 @@ import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider'
 
 import Redirect from 'app/ui/atoms/redirect'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Search from 'app/ui/molecules/search'
 import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic'
 
 export default function (props) {
   const redirectdRef = useRef()
@@ -42,6 +42,10 @@ export default function (props) {
   const hideMenu = (params) => {
     setMenuPopup(false)
   }
+
+  const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
+    ssr: false,
+  })
 
   const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
   const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
