@@ -248,7 +248,7 @@ function UnitImages(images) {
 
   return (
     <>
-      <Carousel data={aImg} />
+      <View className='w-full aspect-video mb-6'><Carousel data={aImg} /></View>
     </>
   )
 }

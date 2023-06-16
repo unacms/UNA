@@ -39,6 +39,14 @@ export default function Layout(props) {
             document.cookie = `pg=${JSON.stringify([])}`;
             storageClear();
         };
+
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('/sw.js').then(function(registration) {
+              console.log('ServiceWorker registration successful with scope:',  registration.scope);
+            }).catch(function(error) {
+              console.log('ServiceWorker registration failed:', error);
+            });
+          }
     
         window.addEventListener('beforeunload', handlePageShow);
             return () => {
@@ -58,6 +66,7 @@ export default function Layout(props) {
                 <link rel="manifest" href="/manifest.json" />
                 <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}</title>
+
             </Head>
             <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">

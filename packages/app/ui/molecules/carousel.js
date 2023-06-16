@@ -17,12 +17,11 @@ import Animated, {
   
 
 export default function ElementCarousel(props) {
-    console.log('5555');
     const carouselRef = useRef();
 
     let data = props.data;
     if (data.length == 0)
-        return <>zzz</>
+        return <></>
 
     const progressValue = useSharedValue(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
