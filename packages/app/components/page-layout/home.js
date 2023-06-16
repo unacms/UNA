@@ -60,7 +60,7 @@ export default function PageLayout(props) {
 
                 <View className="hidden xl:block w-1/3  flex-none duration-200">
                     <View className=" w-full  pt-4 px-2 ">
-                            <View className=" p-6 shadow-sm top-0 overflow-hidden  flex-col  w-full aspect-video bg-primary/20 rounded-lg ">
+                            <View className="hidden p-6 shadow-sm top-0 overflow-hidden  flex-col  w-full aspect-video bg-primary/20 rounded-lg ">
                                 <View className="mt-auto w-full gap-y-4 flex-col align-justify  ">      
                                       
                                         <Text className="text-3xl  font-bold text-neutral-800 dark:text-neutral-200 ">
