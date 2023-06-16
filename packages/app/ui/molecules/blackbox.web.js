@@ -307,7 +307,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return (
            <UniList
                 {...props}
-                
                 useWindowScroll
                 numColumns={numColumns}     
                 onEndReached={handleEndReached}
@@ -318,7 +317,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const headerObj = renderHeader();
 
     const TabScene = ({ route, width, status }) => {
-
 
         const Preload = getSkeleton(data.module? data.module : data.unit);
 
@@ -342,9 +340,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
-                                {(hasNextPage && isFetchingNextPage) ? (
-                                    Preload
-                                ) : null}
+                                    {(hasNextPage && isFetchingNextPage) ? (
+                                        Preload
+                                    ) : null}
                                 </View>
                             }
                         /> : Preload}

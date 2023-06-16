@@ -73,7 +73,6 @@ export default function ElementImage(props) {
             w = 640;
 
         src = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75"
-        //  srcImIn = env('API_PROXY_URL').replace('/api', '/') +  "/_next/image?url=" + src + "&w=" + w + "&q=75";
         srcImIn = src;
     }
     
