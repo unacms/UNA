@@ -68,7 +68,7 @@ export default function Layout(props) {
                 <title>{props.data.title}</title>
 
             </Head>
-            <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+            
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
                 
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
@@ -85,7 +85,7 @@ export default function Layout(props) {
                 </View>
                 <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
             </View>
-
+            <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
   
         </>
     );

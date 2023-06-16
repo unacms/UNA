@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { useWindowDimensions} from 'react-native';
-
+import { useMemo } from 'react';
 import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -16,13 +14,18 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import dynamic from 'next/dynamic'
 import React from 'react';
 
+
+function CarouselMemo({ aImg, b }) {
+    const computedData = useMemo(() => {
+        const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
+      return  <Carousel data={aImg}/>
+    }, [b]); 
+    return computedData;
+}
+
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
 
-    const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel'), {
-        loading: () => <></>,
-    }));
-    
     let level = props.level ? props.level : 0
     let lvls= props.lvls ? props.lvls : []
     let data = props.data;
@@ -37,15 +40,11 @@ export default function UnitComments(props) {
         props.handleReply(id, author, text);
     };
 
-    const windowHeight = useWindowDimensions().height;
-
     let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10  rounded-lg   px-2.5  u-vanilla-html-small ";
 
     if (!data)
         return (<View></View>);
                 
-
-
     const handleManageMenuSelect = (oItem, event) => {
         switch(oItem.name) {
             case 'item-edit':
@@ -83,7 +82,6 @@ export default function UnitComments(props) {
         return (
            <UniList
                 {...props}
-                
                 useWindowScroll
                 numColumns={numColumns}     
                 onEndReached={handleEndReached}
@@ -119,9 +117,10 @@ export default function UnitComments(props) {
                         <View>
                             <Html data={linkify(data.cmt_text)} />
                         </View>
-                        <View className='w-full aspect-video mb-6'>
-                            <Carousel data={aImg}/>
-                        </View>
+                        { aImg.length > 0 && <View className='w-full aspect-video mb-6'>
+                                <CarouselMemo aImg={aImg}/>
+                            </View>
+                        }
                     </View>
                     <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser ? <View className='mr-2'>

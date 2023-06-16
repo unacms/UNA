@@ -3,10 +3,10 @@ import Link from '../../ui/atoms/link'
 import Time from '../../ui/atoms/time'
 import Profile from '../../ui/molecules/profile'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Html from '../../ui/atoms/html'
 import { Text } from 'app/design/typography'
-import { View, Pressable, Row } from 'app/design/view'
+import { View } from 'app/design/view'
 import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
@@ -231,12 +231,17 @@ function SmallUnit(data) {
   )
 }
 
+function CarouselMemo({ aImg, b }) {
+  const computedData = useMemo(() => {
+      const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
+    return  <Carousel data={aImg}/>
+  }, [b]); 
+  return computedData;
+}
+
 function UnitImages(images) {
 
-  const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel'), {
-    loading: () => <></>,
-  }));
-
+ 
   if (images?.images.length == 0) return <></>
 
   let aImg = images?.images.map((obj) => {
@@ -248,7 +253,7 @@ function UnitImages(images) {
 
   return (
     <>
-      <View className='w-full aspect-video mb-6'><Carousel data={aImg} /></View>
+      <View className='w-full aspect-video mb-6'><CarouselMemo aImg={aImg} /></View>
     </>
   )
 }

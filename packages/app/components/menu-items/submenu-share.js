@@ -2,7 +2,6 @@ import { Share } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
-import React from 'react';
 import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 

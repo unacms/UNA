@@ -163,7 +163,7 @@ export default function (props) {
   }
   return (
     <>
-    <View className="fixed -top-[1px]  z-30 w-full">
+    <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
       <TouchableOpacity
         className="xl:hidden"
@@ -228,7 +228,7 @@ export default function (props) {
           </Row>
           <Row>
             {!!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
+              <Row className="flex-row flex-auto sm:flex-none justify-endhidden lg:flex">
                 <View className="hidden sm:flex flex-row ">
                   <DropdownPopup
                     open={ntfsOpen}

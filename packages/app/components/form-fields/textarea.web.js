@@ -2,7 +2,17 @@ import dynamic from 'next/dynamic'
 import Field from './_field';
 import { useController } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import React from 'react';
+//import FormFieldFtf  from './rtf';
+
+function FormFieldFtf(props) {
+    const computedData = useMemo(() => {
+        const FormFieldFtf_ = React.memo(dynamic(() => import('./rtf')));
+      return  <FormFieldFtf_ {...props} />
+    }, [props.b]); 
+    return computedData;
+}
 
 export default function FormFieldText(props) {
     
@@ -41,9 +51,7 @@ export default function FormFieldText(props) {
         />
 
     if (props.html == 2 || props.html == 3){
-        const FormFieldFtf = dynamic(() => import('./rtf'), {
-            loading: () => <></>,
-        })
+       
         input =  <FormFieldFtf  {...props} />;
     }    
 

@@ -53,7 +53,7 @@ export default function DropdownMenu(oProps) {
     });
 
     return (
-        <View>
+        <View >
             <Redirect ref={redirectdRef} />
             <DropdownMenuRoot>
                 <DropdownMenuTrigger>{oProps.children}</DropdownMenuTrigger>
