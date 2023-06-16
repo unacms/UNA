@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useRef } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { MotiView, AnimatePresence } from 'moti'
@@ -206,7 +204,7 @@ export default function (props) {
 
         <Row className="flex-row  flex-auto justify-end lg:justify-between ">
           <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
-            <Slider offset={300}>
+            <Row className='relative items-center'>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                   !item.link.includes('javascript') && (
@@ -224,7 +222,7 @@ export default function (props) {
                     </Link>
                   )
               )}
-            </Slider>
+   </Row>
           </Row>
           <Row>
             {!!currentUser && (

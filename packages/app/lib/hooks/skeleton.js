@@ -92,19 +92,38 @@ var blockSkeletons = {
   </>,  
   'bx_posts:browse': <>
   {items.map((item, index) => (
-      <View key={'bx_posts' + index} className="p-0.5 mt-2 sm:mx-2                   
-      overflow-hidden sm:rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  animate-pulse">
-    <View className="bg-primary/10 rounded w-full aspect-video"></View>
-    <View className="flex-col  p-2.5 ">
-        <View className="h-6 my-1  w-1/4 bg-gray-500/20 rounded-full"></View>
+      <View className="
+
+      mt-4 mx-2             
+      p-1   group duration-200 overflow-hidden sm:rounded-lg  
+      bg-backgroundcard dark:bg-backgroundcard-dark  dark:active:bg-backgroundcard-darkactive 
+    
+       border
+      border-bordercolorcard dark:border-bordercolorcard-dark 
+
+      ">
+     
+          <View className='flex-col    '> 
+             <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full "></View> 
+          
+   
+              <View className="flex flex-col gap-1 p-3 ">
+              <View className="h-6 my-1  w-1/4 bg-gray-500/20 rounded-full"></View>
         <View className="h-5 my-1 w-full bg-gray-500/20 rounded-full"></View>
         <View className="h-5 mb-6 w-3/4 bg-gray-500/20 rounded-full"></View>
         <View className="flex-row gap-2"> 
               <View className="h-6 w-6 rounded-full w-1/4 bg-gray-500/20 rounded-full"></View>
               <View className="h-4 w-1/2 my-auto bg-gray-500/20 rounded-full"></View>
         </View>
-        </View>
-    </View>
+                      
+                  
+                 
+              </View>
+
+            
+          </View>      
+  </View>  
+ 
   ))}  
   </>,
   'feed': <View className="sm:px-4 sm:py-2  sm:gap-2">
