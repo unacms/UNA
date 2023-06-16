@@ -48,17 +48,18 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         ({ pageParam }) => parseData(routes, index, setRoutes),
         {
             getNextPageParam: lastPage => {
-            if (lastPage?.data?.length == 0)
-                return;
-            return lastPage?.endpoint;
+                if (lastPage?.data?.length == 0)
+                    return;
+                return lastPage?.endpoint;
             },
     });
 
     const handleEndReached = useCallback(async () => {
+        console.log('================')
         if (isFetchingNextPage) 
             return;
         fetchNextPage();
-    }, [routes, index]);
+    }, [routes, index, isFetchingNextPage, status]);
 
     if (isHideDefaultHeader) {
         setTimeout(() => {

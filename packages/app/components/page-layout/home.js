@@ -127,17 +127,21 @@ export default function PageLayout(props) {
         items:menuItems
     }
 
-    return (<View className="w-full ">
-        <LayoutDataContext>
-            {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
-            {!!currentUser && <>
-                <BlackBox 
+    /*
+     <BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
                 data={data} 
                 blocks={props.blocks}
-            />
+            />*/
+    return (<View className="w-full ">
+        <LayoutDataContext>
+            {!currentUser && renderBlock && <BlockByName name={props.blocks.home}  />}
+            {!!currentUser && <>
+                <BlockByName data={props.data} name={props.blocks.posts2} />
+                    <BlockByName data={props.data} name={props.blocks.feed} />
+               
                 
             </>}
         </LayoutDataContext>

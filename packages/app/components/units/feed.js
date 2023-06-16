@@ -40,9 +40,11 @@ function DefaultUnit(data) {
 
   let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
   let sShort = truncateHTML(data.content.text, 380)
+  let sLong = truncateHTML(data.content.text, 10000000)
+
   let bIsLong =
     data?.content?.text &&
-    stripTags(sShort.trim()) != stripTags(data?.content?.text?.trim())
+    stripTags(sShort.trim()) != stripTags(sLong.trim())
   return (
     <View className="max-w-5xl w-full mx-auto ">
       <View
@@ -252,9 +254,7 @@ function UnitImages(images) {
   })
 
   return (
-    <>
       <View className='w-full aspect-video mb-6'><CarouselMemo aImg={aImg} /></View>
-    </>
   )
 }
 

@@ -124,7 +124,7 @@ export default function (props) {
           />
         </View>
         {bInfinite ? (
-          <Browse type={oBlock.type} params={{ height: 660 }} {...oBlock} />
+          <Browse type={oBlock.type} height={400} {...oBlock} />
         ) : (
           oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
         )}

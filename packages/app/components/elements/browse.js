@@ -43,6 +43,7 @@ export default function ElementBrowse(props) {
             if (defParams1){
                 defParams = defParams1.params;
                 data.data = defParams1.data;
+                console.log('----------')
             }
         }
     }
@@ -142,7 +143,10 @@ export default function ElementBrowse(props) {
 
     const Preload = getSkeleton(data.module? data.module : data.unit, 'browse')
 
-    if (status === 'loading')
+    let dataItems = getCurrentData();
+    console.log('dataItems', dataItems)
+    
+    if (status === 'loading' && dataItems.length == 0)
         return Preload 
 
     return (
@@ -157,10 +161,11 @@ export default function ElementBrowse(props) {
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
                 <UniList 
                     numColumns={numColumns} 
-                    data={getCurrentData()}
+                    data={dataItems}
                     unit={data.unit}
                     storagekey={storageKeyValue}
                     useWindowScroll
+                    height={props?.height}
                     refer={uniRef}
                     no_scroll={props.no_scroll}
                     renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
