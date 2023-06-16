@@ -1,6 +1,6 @@
-'use client'
+
 import { useState, useRef } from 'react';
-//import Carousel from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
 import { View, Pressable } from 'app/design/view'
 
 import Image from '../../ui/atoms/image';
@@ -13,25 +13,16 @@ import Animated, {
   } from "react-native-reanimated";
   import { Button } from 'app/design/controls';
   import { Modal } from 'react-native';
-  import dynamic from 'next/dynamic'
-  import React from 'react';
-  //import ImageViewer from 'react-native-image-zoom-viewer';
+  import ImageViewer from 'react-native-image-zoom-viewer';
   
 
 export default function ElementCarousel(props) {
-
+    console.log('5555');
     const carouselRef = useRef();
-
-    const Carousel = React.memo(dynamic(() => import('react-native-reanimated-carousel'), {
-      loading: () => <></>,
-  }));
-  const ImageViewer = React.memo(dynamic(() => import('react-native-image-zoom-viewer'), {
-    loading: () => <></>,
-}));
 
     let data = props.data;
     if (data.length == 0)
-        return <></>
+        return <>zzz</>
 
     const progressValue = useSharedValue(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);

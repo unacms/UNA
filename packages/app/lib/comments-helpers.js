@@ -12,7 +12,7 @@ import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
 import { useTheme } from '@react-navigation/native';
 import {  Keyboard } from 'react-native'
-import dynamic from 'next/dynamic'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -74,10 +74,6 @@ export function parseData (browse, dynamicData) {
 }
 
 export function CommentsBrowse({browse, requestUrl, module, handleReply, addData, addItems}) {
-
-    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-        ssr: false,
-    })
 
     const flashListRef = useRef(null);
 

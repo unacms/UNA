@@ -1,5 +1,3 @@
-'use client'
-
 import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Platform } from 'react-native'

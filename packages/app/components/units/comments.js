@@ -11,13 +11,18 @@ import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
-import Carousel from '../../ui/molecules/carousel';
+//import Carousel from '../../ui/molecules/carousel';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import dynamic from 'next/dynamic'
+import React from 'react';
 
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
 
-
+    const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel'), {
+        loading: () => <></>,
+    }));
+    
     let level = props.level ? props.level : 0
     let lvls= props.lvls ? props.lvls : []
     let data = props.data;
@@ -25,10 +30,6 @@ export default function UnitComments(props) {
     let view = props.view;
     let files = props.files;
 
-
-    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-        ssr: false,
-    })
     // request form for reply
 
     const handleReply = async (id, author, text) => {
@@ -74,6 +75,22 @@ export default function UnitComments(props) {
         };
     });
 
+    const TabFlashList = React.forwardRef((props, ref) => {
+
+        if (getNumCols(0) != numColumns)
+            setNumColumns(getNumCols(0));
+
+        return (
+           <UniList
+                {...props}
+                
+                useWindowScroll
+                numColumns={numColumns}     
+                onEndReached={handleEndReached}
+            />
+        );
+    });
+
     return (
         <View className='w-full'>
            
@@ -102,9 +119,9 @@ export default function UnitComments(props) {
                         <View>
                             <Html data={linkify(data.cmt_text)} />
                         </View>
-                        <Carousel data={aImg}/>
-                        
-                        
+                        <View className='w-full aspect-video mb-6'>
+                            <Carousel data={aImg}/>
+                        </View>
                     </View>
                     <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser ? <View className='mr-2'>

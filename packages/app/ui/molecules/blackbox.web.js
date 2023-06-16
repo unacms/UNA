@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useCallback, useState, useEffect, useRef  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";

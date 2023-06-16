@@ -11,9 +11,9 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from '../menu'
-import { Modal } from 'app/design/controls'
 import { truncateHTML, stripTags } from 'app/lib/util'
-import Carousel from '../../ui/molecules/carousel'
+import dynamic from 'next/dynamic'
+import React from 'react';
 
 function DefaultUnit(data) {
   const [showFull, setShowFull] = useState(false)
@@ -232,6 +232,11 @@ function SmallUnit(data) {
 }
 
 function UnitImages(images) {
+
+  const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel'), {
+    loading: () => <></>,
+  }));
+
   if (images?.images.length == 0) return <></>
 
   let aImg = images?.images.map((obj) => {

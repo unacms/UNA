@@ -4,6 +4,7 @@ import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/contro
 import { Pressable } from 'app/design/view'
 import React from 'react';
 import dynamic from 'next/dynamic'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function MenuItemSubmenuShare(oProps) {
 
@@ -78,10 +79,6 @@ export default function MenuItemSubmenuShare(oProps) {
     });
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-
-    const DropdownMenu = React.memo(dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-        loading: () => <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />,
-    }));
 
 
     return (

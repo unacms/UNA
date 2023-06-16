@@ -1,12 +1,8 @@
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { Pressable } from 'app/design/view';
-import dynamic from 'next/dynamic'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function MenuItemSubmenu(oProps) {
-
-    const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-        ssr: false,
-    })
 
     const oIconAliases = {};
 

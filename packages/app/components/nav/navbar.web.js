@@ -24,7 +24,7 @@ import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function (props) {
   const redirectdRef = useRef()
@@ -42,10 +42,6 @@ export default function (props) {
   const hideMenu = (params) => {
     setMenuPopup(false)
   }
-
-  const DropdownMenu = dynamic(() => import('app/ui/atoms/dropdown-menu'), {
-    ssr: false,
-  })
 
   const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
   const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
