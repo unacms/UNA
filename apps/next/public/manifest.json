@@ -1,6 +1,8 @@
 {
   "short_name": "NEO",
-  "name": "NEO - Networking Organizer",
+  "name": "NEO",
+  "description": "Networking Organizer",
+  "orientation": "any",
   "icons": [
     {
       "src": "logo192.png",
