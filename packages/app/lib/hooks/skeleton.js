@@ -92,16 +92,12 @@ var blockSkeletons = {
   </>,  
   'bx_posts:browse': <>
   {items.map((item, index) => (
-      <View className="
-
+      <View  key={'home33' + index} className="
       mt-4 mx-2             
-      p-1   group duration-200 overflow-hidden sm:rounded-lg  
-      bg-backgroundcard dark:bg-backgroundcard-dark  dark:active:bg-backgroundcard-darkactive 
-    
-       border
-      border-bordercolorcard dark:border-bordercolorcard-dark 
-
-      ">
+      p-1 group duration-200 overflow-hidden sm:rounded-lg  
+      bg-backgroundcard dark:bg-backgroundcard-dark dark:active:bg-backgroundcard-darkactive 
+      border
+      border-bordercolorcard dark:border-bordercolorcard-dark">
      
           <View className='flex-col    '> 
              <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full "></View> 

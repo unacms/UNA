@@ -144,7 +144,6 @@ export default function ElementBrowse(props) {
     const Preload = getSkeleton(data.module? data.module : data.unit, 'browse')
 
     let dataItems = getCurrentData();
-    console.log('dataItems', dataItems)
     
     if (status === 'loading' && dataItems.length == 0)
         return Preload 
