@@ -131,7 +131,7 @@ export default function Unit(props) {
             
                 
                 <View className="
-           p-1 mt-2 mx-1 sm:mx-2     group duration-200 overflow-hidden rounded-lg  
+           p-1 mt-2 mx-2    group duration-200 overflow-hidden rounded-lg  
            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
            hover:shadow-sm active:shadow-none 
@@ -142,19 +142,22 @@ export default function Unit(props) {
                 
                 ">
                     <Link href={data.url} emulate={true}> 
-                    <View className='flex-col pb-4'>  
+                    <View className='flex-col pb-4  '>  
                         
                         {data.cover &&
-                                <View className="w-full bg-neutral-500/20 rounded-lg pt-[56%] overflow-hidden items-center absolute" >
+                                <View className="w-full bg-neutral-500/20 rounded pt-[56%] overflow-hidden items-center absolute" >
                                     <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                                 </View>
                             } 
-                            <View className="mt-[34%] rounded-full mx-auto p-1 bg-backgroundcard dark:bg-backgroundcard-dark   items-center justify-center">
+                            <View className="w-full aspect-video rounded-full ml-4 sm:mx-auto p-1   items-center justify-center">
+                                <View className=" p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full  items-center justify-center">
+
                                 <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
+                                </View>
                             </View>
                             
                             <Link href={data.url} ><Text className="m-4 text-base font-bold text-gray-800 text-center dark:text-gray-100 ">{data.title}</Text></Link>
-                        <View className=''>{sMeta}</View>
+                            <View className=''>{sMeta}</View>
                     </View>
                 </Link>
             </View>
