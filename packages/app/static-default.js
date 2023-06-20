@@ -163,15 +163,15 @@ export const staticDefault = {
     ),
     home: (
       <View className=" w-full max-w-screen-xl mx-auto">
-        <View className=" flex-col p-12  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
+        <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
           <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
             <View>
-              <Text className="text-5xl  xl:text-6xl  font-bold text-primary dark:text-primary-dark text-center md:text-start">
-              Welcome 
-            </Text>
-            <Text className="text-5xl   xl:text-6xl  font-bold text-neutral-900 dark:text-neutral-100 text-center md:text-start">
-              to your network!
-            </Text>
+              <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-primary dark:text-primary-dark text-center md:text-start">
+                Welcome
+              </Text>
+              <Text className="text-4xl sm:text-5xl   xl:text-6xl  font-bold text-neutral-900 dark:text-neutral-100 text-center md:text-start">
+                to your network!
+              </Text>
             </View>
             <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
               Connect, create, discover, learn, share and grow together with
@@ -192,7 +192,6 @@ export const staticDefault = {
                   startDecorator="SignIn"
                 />
               </Link>
-             
             </View>
           </View>
           <View className=" w-full p-8 md:w-[40%] border border-transparent hover:border-bordercolor dark:hover:border-bordercolor-dark   hover:shadow-xl hover:rotate-3 duration-500 w-full  backdrop-blur-md   rounded-full p-4  ">
@@ -232,115 +231,108 @@ export const staticDefault = {
           </View>
         </View>
 
-        <Row className="flex-wrap p-8  flex-auto mb-20 ">
+        <Row className="flex-wrap p-4  flex-auto mb-20 ">
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
-                <Icon icon="Graph" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                  <Icon icon="Graph" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Connect
                 </Text>
-                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Make friends and create lasting connections with like-minded people. 
+                Make friends and create lasting connections with like-minded
+                people.
               </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                <Icon icon="ChatsTeardrop" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                  <Icon icon="ChatsTeardrop" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Discuss
                 </Text>
-                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Talk about your interests and hobbies. Bring out thoughts and ideas.
+                Talk about your interests and hobbies. Bring out thoughts and
+                ideas.
               </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
-                <Icon icon="ShareNetwork" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                  <Icon icon="ShareNetwork" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Share
                 </Text>
-                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Share your thoughts, ideas, experiences and knowledge with the community.
+                Share your thoughts, ideas, experiences and knowledge with the
+                community.
               </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                <Icon icon="MagicWand" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                  <Icon icon="MagicWand" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Create
                 </Text>
-                
               </View>
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                 Write articles, create polls, publish video, post comments and more.
+                Write articles, create polls, publish video, post comments and
+                more.
               </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                <Icon icon="Student" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                  <Icon icon="Student" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Learn
                 </Text>
-                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Explore new ideas and learn from experts and peers in your field.
+                Explore new ideas and learn from experts and peers in your
+                field.
               </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
             <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              
               <View className=" gap-y-3 ">
-              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                <Icon icon="Handshake" width={32} height={32} />
-              </View>
+                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                  <Icon icon="Handshake" width={32} height={32} />
+                </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Collaborate
                 </Text>
-                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Work together to achieve common goals as a team and grow together.
+                Work together to achieve common goals as a team and grow
+                together.
               </Text>
             </View>
           </View>
-
-
         </Row>
       </View>
     ),

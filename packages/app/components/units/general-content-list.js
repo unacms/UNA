@@ -170,7 +170,7 @@ export default function Unit(props) {
             <View className="
                 hover:shadow-sm active:shadow-none 
                 mt-4 mx-2             
-                p-1   group duration-200 overflow-hidden sm:rounded-lg  
+                p-1   group duration-200 overflow-hidden rounded-lg  
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                 active:translate-y-0.5 border
@@ -194,7 +194,7 @@ export default function Unit(props) {
                                 <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full "></View> 
                             </>
                         }
-                        <View className="flex flex-col h-28 gap-1 p-3 ">
+                        <View className="flex flex-col sm:h-28 gap-1 p-3 ">
                            
                                 <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                     {data.title}
