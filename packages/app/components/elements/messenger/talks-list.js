@@ -211,7 +211,7 @@ export default function TalksList(props) {
                     <Button variant="custom" startDecorator="list" solid align="start" className="xl:hidden" onPress={ handlerMenuClick }/>
                     <TalksListHeader />
                </View>
-               <View className="h-full max-h-full w-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1 border-t">
+               <View className="h-full max-h-full w-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1 border-t  border-bordercolor dark:bordercolor-dark">
                   <TalkListItems {...props} />
                </View>
            </View>

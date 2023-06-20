@@ -65,7 +65,7 @@ export default function PageLayout({ data , blocks: { main } }) {
                             { translateX: offsetValue }
                         ]
                     }}>
-                    <TalksList list={oData?.list?.items} stylesName={"bg-backgroundnavbar dark:bg-backgroundnavbar-dark opacity-100 z-10 border-l"}/>
+                    <TalksList list={oData?.list?.items} stylesName={"bg-backgroundnavbar dark:bg-backgroundnavbar-dark opacity-100 z-10 border-l border-bordercolor dark:bordercolor-dark"}/>
                     </Animated.View>
                     <Animated.View style={{
                         flexGrow: 1,
