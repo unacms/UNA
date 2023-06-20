@@ -132,7 +132,7 @@ export function Button(props) {
     let sClassContainer = ' group relative flex-row items-center '
     let sIconContainer = ' h-6 w-6 mr-2 '
 
-    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' w-fit m-0 truncate'
+    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' w-fit m-0 truncate '
 
     if (buttonDisabled) sClassContainer += ' opacity-50 '
 
