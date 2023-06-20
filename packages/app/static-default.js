@@ -165,18 +165,22 @@ export const staticDefault = {
       <View className=" w-full max-w-screen-xl mx-auto">
         <View className=" flex-col p-12  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
           <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
-            <Text className="text-4xl lg:text-5xl   font-bold text-neutral-900 dark:text-neutral-100 text-center md:text-start">
-              Welcome to your network!
+            <View>
+              <Text className="text-5xl  xl:text-6xl  font-bold text-primary dark:text-primary-dark text-center md:text-start">
+              Welcome 
             </Text>
-
+            <Text className="text-5xl   xl:text-6xl  font-bold text-neutral-900 dark:text-neutral-100 text-center md:text-start">
+              to your network!
+            </Text>
+            </View>
             <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
               Connect, create, discover, learn, share and grow together with
               your community.
             </Text>
-            <Row className="gap-x-2">
+            <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
               <Link href="/create-account">
                 <Button
-                  title="Create new account"
+                  title="Create account"
                   variant="primary"
                   startDecorator="UserCirclePlus"
                 />
@@ -184,11 +188,12 @@ export const staticDefault = {
               <Link href="/login">
                 <Button
                   title="Log in"
-                  variant="default"
+                  variant="outline"
                   startDecorator="SignIn"
                 />
               </Link>
-            </Row>
+             
+            </View>
           </View>
           <View className=" w-full p-8 md:w-[40%] border border-transparent hover:border-bordercolor dark:hover:border-bordercolor-dark   hover:shadow-xl hover:rotate-3 duration-500 w-full  backdrop-blur-md   rounded-full p-4  ">
             <Svg
@@ -227,14 +232,17 @@ export const staticDefault = {
           </View>
         </View>
 
-        <Row className="flex-wrap p-2  flex-auto mb-20 ">
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
+        <Row className="flex-wrap p-8  flex-auto mb-20 ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                <Icon icon="Graph" width={32} height={32} />
+              </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Connect
                 </Text>
-                <Icon icon="Graph" width={32} height={32} />
+                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
@@ -242,13 +250,17 @@ export const staticDefault = {
               </Text>
             </View>
           </View>
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+              
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <Icon icon="ChatsTeardrop" width={32} height={32} />
+              </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Discuss
                 </Text>
-                <Icon icon="ChatsTeardrop" width={32} height={32} />
+                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
@@ -256,13 +268,17 @@ export const staticDefault = {
               </Text>
             </View>
           </View>
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold  ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+              
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                <Icon icon="ShareNetwork" width={32} height={32} />
+              </View>
+                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Share
                 </Text>
-                <Icon icon="ShareNetwork" width={32} height={32} />
+                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
@@ -270,27 +286,34 @@ export const staticDefault = {
               </Text>
             </View>
           </View>
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+              
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <Icon icon="MagicWand" width={32} height={32} />
+              </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Create
                 </Text>
-                <Icon icon="MagicWand" width={32} height={32} />
+                
               </View>
-
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
                  Write articles, create polls, publish video, post comments and more.
               </Text>
             </View>
           </View>
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+              
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <Icon icon="Student" width={32} height={32} />
+              </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Learn
                 </Text>
-                <Icon icon="Student" width={32} height={32} />
+                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
@@ -298,13 +321,17 @@ export const staticDefault = {
               </Text>
             </View>
           </View>
-          <View className=" w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-4 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className="flex-row  gap-x-4 items-center ">
+          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+              
+              <View className=" gap-y-3 ">
+              <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <Icon icon="Handshake" width={32} height={32} />
+              </View>
                 <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                   Collaborate
                 </Text>
-                <Icon icon="Handshake" width={32} height={32} />
+                
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
