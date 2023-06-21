@@ -167,7 +167,7 @@ export default function (props) {
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className="  backdrop-blur h-16 px-4  items-center w-full   border-b  bg-backgroundnavbar dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
+      <View className="  backdrop-blur h-16 px-4 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
         <Row className="flex-row  flex-none items-center">
           {
             !bBackHeader && (

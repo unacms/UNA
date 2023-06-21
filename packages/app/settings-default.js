@@ -30,7 +30,7 @@ export const settingsDefault = {
   },
   feed: {
     show_selector_view: false,
-    default_view: 'short',
+    default_view: '',
     show_html: false,
   },
   entry: {
