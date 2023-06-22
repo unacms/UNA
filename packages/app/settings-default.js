@@ -24,8 +24,8 @@ export const settingsDefault = {
     search_popup_view_extended: 'Extended',
   },
   cache: {
-    page: true,
-    list: true,
+    page: false,
+    list: false,
     compress: false
   },
   feed: {
@@ -272,6 +272,12 @@ export const settingsDefault = {
       layout: 'dashboard',
       top:true,
       blocks: {},
+      headerSettings: {
+        header: true,
+        backButton: false,
+        menu: false,
+        title: true
+      },
     },
     'search-keyword': {
       layout: 'blackbox_search',
@@ -304,12 +310,17 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
-        
       },
       header: [
         { icon: 'plus', name: 'Add', link: '/create-post' },
         { icon: 'search', name: 'Search', link: '?keyword=' },
       ],
+      headerSettings: {
+        header: true,
+        backButton: false,
+        menu: true,
+        title: false
+      },
     },
     //############ POSTS PAGES ############
     'posts-home': {
@@ -322,6 +333,9 @@ export const settingsDefault = {
         },
       },
       icon: 'File',
+      headerSettings: {
+        backButton: false
+      }
     },
     'posts-popular': {
       layout: 'blackbox',
@@ -368,6 +382,9 @@ export const settingsDefault = {
           showBg: false,
         },
       },
+      headerSettings: {
+        header: true,
+      },
     },
     item: {
       layout: 'post',
@@ -391,6 +408,9 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
+      },
+      headerSettings: {
+        header: true,
       },
     },
     //############ POSTS PAGES ############
@@ -439,6 +459,9 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
+      },
+      headerSettings: {
+        header: true,
       },
     },
     //############ GROUPS PAGES ############
@@ -621,6 +644,10 @@ export const settingsDefault = {
         },
       },
       header: [{ icon: 'search', name: 'Search' }],
+      headerSettings: {
+        header:true,
+        backButton: false
+      },
       icon: 'Bell',
     },
   },

@@ -12,7 +12,7 @@ export default function PageLayout(props) {
   if (!currentUser) return <></>
 
   return (
-    <View className="w-full p-3 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
+    <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
         <View className=" w-full xl:w-1/4 p-1 xl:pr-3">
           <Link href={currentUser.url}>
             <View  className="w-full p-4 flex-col xl:flex-col xl:gap-4 duration-200 rounded-lg  group

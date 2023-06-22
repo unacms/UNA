@@ -12,6 +12,33 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function getHeaderSettings(uri) {
+    let settings = appSetting('layouts', uri)
+
+    const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' 
+    ? settings.headerSettings.backButton 
+    : true;
+
+    const bHeader = typeof settings?.headerSettings?.header !== 'undefined' 
+    ? settings.headerSettings.header 
+    : false;
+
+    const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' 
+    ? settings.headerSettings.menu 
+    : false;
+
+    const bTitle = typeof settings?.headerSettings?.title !== 'undefined' 
+    ? settings.headerSettings.title 
+    : true;
+
+    return {
+        backButton: bBackButton,
+        header: bHeader,
+        menu: bMenu,
+        title: bTitle,
+    }
+}
+
 export function storageKey(url, useUrl = true) {
     //stringMd5
     if ( Platform.OS !== 'web')

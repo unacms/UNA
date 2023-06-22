@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util';
+import { appSetting, getHeaderSettings, storageSet } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import Loading from 'app/ui/atoms/loading'
@@ -127,7 +127,9 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }, [index]);
 
     const renderTabBar = (props) => {
-      
+        const currentRoute = routes.find((item) => item.index === index);
+        let headerSettings = getHeaderSettings(currentRoute.key);
+
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -162,17 +164,19 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between h-16">
                         <Row className="items-center">
-                        <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+                        <View className="ml-4 "></View>
+                        { headerSettings.header && <Pressable className="mr-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>
-                            <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>
+                        }
+                         { headerSettings.title && <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
                         </Row> 
-                        <Row >
+                        <Row className="pr-2">
                             {addButtons}
                         </Row>
                     </Row>
                     }
-                    <Row  className="items-center gap-0 mx-4">
+                    <Row className="items-center gap-0 mx-4">
                         {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2 hidden lg:flex"><Icon  icon={menuSettings?.icon} /></View> : <></>}
                         {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0  w-full" >

@@ -10,7 +10,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting } from 'app/lib/util'
+import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import { Slider } from 'app/ui/molecules/slider'
@@ -148,17 +148,12 @@ export default function (props) {
   const windowWidth = useWindowDimensions().width;
 
   const router = useRouter();
-  let settings = appSetting('layouts', props.uri)
- 
-  if (windowWidth < 1024 && (settings?.layout == 'blackbox' || settings?.layout == 'profile'))
+
+  let headerSettings = getHeaderSettings(props.uri);
+  
+  if (windowWidth < 1024 && (!headerSettings.header))
     return <></>
 
-  let bBackHeader = false; 
-  if (windowWidth < 1024){
-    
-    if (props.uri != 'home')
-      bBackHeader = true
-  }
   return (
     <>
     <View className="fixed -top-[1px]  w-full">
@@ -167,18 +162,20 @@ export default function (props) {
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className="  backdrop-blur h-16 px-4 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
+      <View className="  backdrop-blur h-16 pl-4 pr-2 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
         <Row className="flex-row  flex-none items-center">
           {
-            !bBackHeader && (
-              <><View className="lg:hidden mr-4"><TouchableOpacity  onPress={showMenu}>
+            headerSettings.menu && (
+              <View className="lg:hidden mr-4"><TouchableOpacity  onPress={showMenu}>
                 <Button
                   variant="text"
                   startDecorator="List"
                   rounded
                   align="start"
                 />
-              </TouchableOpacity></View>
+              
+              </TouchableOpacity></View>  )}
+              { (props.uri == 'home' || windowWidth >= 1024) &&  
               <TouchableOpacity className="" onPress={hideMenu}>
               <Link href="/home" aria-label="Logo">
                 <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
@@ -186,19 +183,14 @@ export default function (props) {
                   {appStatic('logo', 'text')}
                 </View>
               </Link>
-            </TouchableOpacity></>
-            )
-          }
-          {
-            bBackHeader && (
-            <>
-              <Pressable className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+            </TouchableOpacity>
+            }
+              { headerSettings.backButton && <Pressable className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
-              <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text>
-            </>
-            )
-          }
+              }
+              { headerSettings.title && <Text  className="text-lg xl:hidden lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+         
           
         </Row>
         <View className="flex-row flex-auto md:flex-none justify-end ml-2 "><Search /></View>
@@ -220,7 +212,6 @@ export default function (props) {
                             : item.icon.split(' ')[0]
                         }
                         align="start"
-                        /* title={item.title} */
                       />
                     </Link>
                   )
