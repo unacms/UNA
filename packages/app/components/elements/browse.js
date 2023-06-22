@@ -43,7 +43,6 @@ export default function ElementBrowse(props) {
             if (defParams1){
                 defParams = defParams1.params;
                 data.data = defParams1.data;
-                console.log('----------')
             }
         }
     }
@@ -65,9 +64,9 @@ export default function ElementBrowse(props) {
 
     const windowWidth = useWindowDimensions().width;
     const windowHeight = Dimensions.get('window').height;
-    
+    const [dataItems, setDataItems] = useState({data: data.data, enable:true}); 
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
-
+   
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         if (getNumCols(containerWidth) != numColumns)
@@ -98,7 +97,12 @@ export default function ElementBrowse(props) {
 
     const fetchData = async ({ }) => {
         let sResponse =  await fetcher(prepareUrl());
+        upadteDataItems(sResponse.data[0].data.data)
         return sResponse.data[0].data
+    };
+
+    const upadteDataItems = (data) => { 
+        setDataItems({data: [...dataItems.data, ...data], enable:false})
     };
 
     const {
@@ -112,7 +116,8 @@ export default function ElementBrowse(props) {
             if (lastPage.data.length == 0)
                 return;
             return lastPage.params;
-            },
+        },
+        enabled: dataItems.enable,
     });
 
     function prepareUrl () {
@@ -142,8 +147,11 @@ export default function ElementBrowse(props) {
     };
 
     const Preload = getSkeleton(data.module? data.module : data.unit, 'browse')
+   
 
-    let dataItems = getCurrentData();
+   
+
+    //let dataItems = getCurrentData();
     
     if (status === 'loading' && dataItems.length == 0)
         return Preload 
@@ -160,7 +168,7 @@ export default function ElementBrowse(props) {
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
                 <UniList 
                     numColumns={numColumns} 
-                    data={dataItems}
+                    data={dataItems.data}
                     unit={data.unit}
                     storagekey={storageKeyValue}
                     useWindowScroll

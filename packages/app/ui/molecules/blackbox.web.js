@@ -80,7 +80,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
         return 1;
     };
-   
+
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
         status,

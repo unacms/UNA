@@ -185,7 +185,7 @@ export default function (props) {
               </Link>
             </TouchableOpacity>
             }
-              { headerSettings.backButton && <Pressable className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+              { headerSettings.backButton  && <Pressable className=" xl:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
               }
