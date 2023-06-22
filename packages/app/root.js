@@ -91,7 +91,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 
 	const uri = getURI(path);
     let settings = appSetting('layouts', uri)
-    if (settings){
+    if (settings && settings?.blocks){
         path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
     }
     else{

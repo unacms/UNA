@@ -145,15 +145,15 @@ export default function (props) {
   }
 
   const menu_top = appSetting('menu_items', 'menu_top')
-  const windowWidth = useWindowDimensions().width;
+  const windowWidth = useWindowDimensions().width + 24;
 
   const router = useRouter();
 
-  let headerSettings = getHeaderSettings(props.uri);
+  let headerSettings = getHeaderSettings(props.uri, width);
   
   if (windowWidth < 1024 && (!headerSettings.header))
     return <></>
-
+console.log(windowWidth);
   return (
     <>
     <View className="fixed -top-[1px]  w-full">
@@ -185,17 +185,17 @@ export default function (props) {
               </Link>
             </TouchableOpacity>
             }
-              { headerSettings.backButton  && <Pressable className=" xl:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
               }
-              { headerSettings.title && <Text  className="text-lg xl:hidden lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+              { headerSettings.title && <Text  className="text-lg lg:hidden lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
          
           
         </Row>
-        <View className="flex-row flex-auto md:flex-none justify-end ml-2 "><Search /></View>
+        <View className="flex-row flex-auto lg:flex-none justify-end ml-2"><Search /></View>
         
-        <Row className="flex-row  flex-none md:flex-auto justify-end lg:justify-between ">
+        <Row className="flex-row  flex-none lg:flex-auto justify-end lg:justify-between ">
           <Row className="hidden lg:flex  flex-auto">
             <Row className='relative flex-row gap-x-2 mx-auto'>
               {menuItemsByName('main_menu', menu_top).map(
@@ -302,11 +302,12 @@ export default function (props) {
             )}
 
             {!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex">
+              <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex my-auto ml-2 space-x-2">
                 <Search />
                 <Button
-                  variant="text"
+                  variant="outline"
                   rounded
+
                   startDecorator="account"
                   onPress={() => {
                     handleClick('/login')

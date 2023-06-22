@@ -25,20 +25,20 @@ export default function PageLayout(props) {
         Component = componentsMap['default'];
     
     // return data for custom pages
-    if(layoutCustomKey)
+    if(layoutCustomKey && layoutCustomKey.blocks)
         return Wrapper(<Component {...props} blocks={layoutBlocks}/>);
 
     let cells = null;
-    if (!layoutCustomKey){
-        let data = props.data;
 
-        if (!data || !data.elements)
-            return <></>
-        
-        cells = Object.keys(data.elements).map(key => {
-            return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
-        });
-    }
+    let data = props.data;
+
+    if (!data || !data.elements)
+        return <></>
+    
+    cells = Object.keys(data.elements).map(key => {
+        return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
+    });
+
     
     // return data web layouts
     return Wrapper(<Component {...props} >{cells}</Component>);

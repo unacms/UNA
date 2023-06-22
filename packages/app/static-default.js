@@ -161,6 +161,77 @@ export const staticDefault = {
         </Text>
       </>
     ),
+
+    home2: (
+      <><View className=" w-full  pt-4 px-2 ">
+                  <View className=" p-6 shadow-sm border border-primary/40 top-0 overflow-hidden  flex-col  bg-primary/10 rounded-lg ">
+                    <View className="mt-auto w-full gap-y-4 flex-col align-justify  ">
+                      <Text className="text-3xl  font-bold text-neutral-800 dark:text-neutral-200 ">
+                        Go Premium!
+                      </Text>
+
+                      <Text className="text-lg  text-neutral-600 dark:text-neutral-400 ">
+                        Connect, create, discover, learn, share and grow
+                        together with your community.
+                      </Text>
+                      <View className="mt-auto flex-auto">
+                        <Button
+                          variant="primary"
+                          title="Upgrade Membership"
+                          startDecorator="RocketLaunch"
+                          className="mt-auto"
+                        />
+                      </View>
+                    </View>
+
+                    <View className="absolute -top-2/3 -right-2/3 aspect-square w-full bg-primary/5  p-8 rounded-full">
+                      <View className=" aspect-square w-full bg-primary/5 p-8 rounded-full">
+                        <View className=" aspect-square w-full bg-primary/5  p-8 rounded-full"></View>
+                      </View>
+                    </View>
+                    <View className="absolute top-0  aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
+                    <View className="absolute top-1/4 -left-1/4 aspect-square w-3/4 rotate-12 rounded-lg bg-primary/5  "></View>
+                    <View className="absolute top-3/4 -left-1/4 aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
+                  </View>
+                </View></>
+    ),
+    footer: (
+      <>
+        <View className=" w-full px-2 ">
+                  <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+                    <Button
+                      variant="text"
+                      title="About"
+                      
+                      className="mt-auto"
+                      size="sm"
+                    />
+
+                    <Button
+                      variant="text"
+                      title="Contact"
+                      
+                      className="mt-auto"
+                      size="sm"
+                    />
+                    <Button
+                      variant="text"
+                      title="Privacy"
+                      
+                      className="mt-auto"
+                      size="sm"
+                    />
+                    <Button
+                      variant="text"
+                      title="Terms"
+                      
+                      className="mt-auto"
+                      size="sm"
+                    />
+                  </View>
+                </View>
+      </>
+    ),
     home: (
       <View className=" w-full max-w-screen-xl mx-auto">
         <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">

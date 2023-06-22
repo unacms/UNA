@@ -12,16 +12,26 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
-export function getHeaderSettings(uri) {
+export function getPageWidth(uri) {
+    let settings = appSetting('layouts', uri)
+    if (settings?.max_width)
+        return settings.max_width;
+
+    return getPageWidth('layout', 'max_width');
+}
+
+export function getHeaderSettings(uri, width) {
     let settings = appSetting('layouts', uri)
 
     const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' 
     ? settings.headerSettings.backButton 
     : true;
 
-    const bHeader = typeof settings?.headerSettings?.header !== 'undefined' 
+    let bHeader = typeof settings?.headerSettings?.header !== 'undefined' 
     ? settings.headerSettings.header 
     : false;
+    if (width > 1024)
+        bHeader = true;
 
     const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' 
     ? settings.headerSettings.menu 

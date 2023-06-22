@@ -294,6 +294,8 @@ export const settingsDefault = {
       top:true,
       blocks: {
         home: { name: 'static:home', showTitle: false, showBg: false },
+        footer: { name: 'static:footer', showTitle: false, showBg: false },
+        home2: { name: 'static:home2', showTitle: false, showBg: false },
         posts2: {
           name: 'bx_timeline:get_block_post_home',
           showTitle: false,
@@ -321,6 +323,10 @@ export const settingsDefault = {
         menu: true,
         title: false
       },
+    },
+    login:{
+      max_width: 'max-w-xl',
+
     },
     //############ POSTS PAGES ############
     'posts-home': {

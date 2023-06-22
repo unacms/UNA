@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { useEffect } from 'react'
+import { useWindowDimensions } from 'react-native'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
@@ -55,7 +56,10 @@ export default function Layout(props) {
             };
     }, []);  
 
-    let headerSettings = getHeaderSettings(props.uri);
+    let { width } = useWindowDimensions()
+    let headerSettings = getHeaderSettings(props.uri, width);
+
+    
 
     return (
         <>
@@ -69,16 +73,14 @@ export default function Layout(props) {
                 <link rel="manifest" href="/manifest.json" />
                 <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}</title>
-
             </Head>
-            
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
                         (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
-                            { headerSettings.header && <View className='w-full h-16'></View> }
-                            {props.children}
+                            { (headerSettings.header || true) && <View className='w-full h-16'></View> }
+                            { props.children }
                         </View>)
                     }
                     </View>

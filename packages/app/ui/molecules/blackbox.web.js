@@ -128,7 +128,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
         const currentRoute = routes.find((item) => item.index === index);
-        let headerSettings = getHeaderSettings(currentRoute.key);
+        let headerSettings = getHeaderSettings(currentRoute.key, windowWidth);
 
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });

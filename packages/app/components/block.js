@@ -123,7 +123,7 @@ export function BlockWrapper(props) {
     }
 
     return (
-        <View key={block.id} className="w-full">
+        <View key={block.id} className="w-full max-w-5xl mx-auto">
             <View key={block.id} className={bIsShowBg ? ' px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg' : ''}>
                 {bIsShowTitle && <Text className=" text-xl pb-4 text-gray-800 dark:text-gray-200 font-bold my-auto">{stripTags(block.title)}</Text>}
                 <View>{props.children}</View>
