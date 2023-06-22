@@ -201,33 +201,35 @@ export default function (props) {
           }
           
         </Row>
-
+        <Search />
         <Row className="flex-row  flex-auto justify-end lg:justify-between ">
-          <Row className="hidden lg:flex flex-row flex-none  grow mx-auto px-12">
-            <Row className='relative items-center'>
+          <Row className="hidden lg:flex  flex-auto">
+            <Row className='relative flex-row gap-x-2 mx-auto'>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                   !item.link.includes('javascript') && (
                     <Link href={item.link} key={`menu-${index}`}>
                       <Button
                         variant="text"
+                        size="lg"
+                        fullWidth
                         startDecorator={
                           item.icon.indexOf(' ') == -1
                             ? item.icon
                             : item.icon.split(' ')[0]
                         }
                         align="start"
-                        title={item.title}
+                        /* title={item.title} */
                       />
                     </Link>
                   )
               )}
-   </Row>
+              </Row>
           </Row>
           <Row>
             {!!currentUser && (
               <Row className="flex-row flex-auto sm:flex-none justify-endhidden lg:flex">
-                <View className="hidden sm:flex flex-row ">
+                <View className="hidden sm:flex flex-row space-x-2 my-auto ">
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
@@ -239,7 +241,7 @@ export default function (props) {
                     {[
                       <Button
                         key="ddp-trigger"
-                        variant="text"
+                        variant="outline"
                         rounded
                         startDecorator="notifications"
                         id="m1"
@@ -248,9 +250,9 @@ export default function (props) {
                     ]}
                   </DropdownPopup>
                   <Button
-                    variant="text"
+                    variant="outline"
                     rounded
-                    startDecorator="messages"
+                    startDecorator="ChatTeardropDots"
                     id="m2"
                     aria-label="Messages"
                     onPress={() => {
@@ -258,6 +260,7 @@ export default function (props) {
                     }}
                   />
                 </View>
+                <View className="hidden sm:flex flex-row mx-2 my-auto ">
                 <DropdownMenu
                   items={menuItemsByName('add_menu', props.menu_add.items).map(
                     (item, index) => {
@@ -276,7 +279,7 @@ export default function (props) {
                   )}
                 >
                   <Button
-                    variant="text"
+                    variant="outline"
                     rounded
                     startDecorator="plus"
                     id="m3"
@@ -284,11 +287,12 @@ export default function (props) {
                     onPress={() => {}}
                   />
                 </DropdownMenu>
-                <Search />
+                
+                
                 {profile ? (
-                  <View className="hidden sm:flex flex-row justify-center">
+                  <View className="hidden sm:flex ml-2 flex-row justify-center">
                     <Button
-                      variant="text"
+                      variant="outline"
                       rounded
                       padding={1}
                       startDecorator={profile}
@@ -300,6 +304,7 @@ export default function (props) {
                 ) : (
                   <></>
                 )}
+                </View>
               </Row>
             )}
 
