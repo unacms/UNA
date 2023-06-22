@@ -52,7 +52,7 @@ export const settingsDefault = {
       { width: 640, count: 2 },
     ],
     per_line_profile: [
-        { width: 1440, count: 6 },
+        
       { width: 1024, count: 4 },
       { width: 800, count: 3 },
       { width: 640, count: 2 },

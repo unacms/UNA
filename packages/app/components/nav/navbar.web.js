@@ -167,7 +167,7 @@ export default function (props) {
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className="  backdrop-blur h-16 px-4 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row space-x-2 sm:space-x-4 ">
+      <View className="  backdrop-blur h-16 px-4 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
         <Row className="flex-row  flex-none items-center">
           {
             !bBackHeader && (
@@ -201,8 +201,9 @@ export default function (props) {
           }
           
         </Row>
-        <Search />
-        <Row className="flex-row  flex-auto justify-end lg:justify-between ">
+        <View className="flex-row flex-auto md:flex-none justify-end ml-2 "><Search /></View>
+        
+        <Row className="flex-row  flex-none md:flex-auto justify-end lg:justify-between ">
           <Row className="hidden lg:flex  flex-auto">
             <Row className='relative flex-row gap-x-2 mx-auto'>
               {menuItemsByName('main_menu', menu_top).map(
@@ -229,7 +230,34 @@ export default function (props) {
           <Row>
             {!!currentUser && (
               <Row className="flex-row flex-auto sm:flex-none justify-endhidden lg:flex">
-                <View className="hidden sm:flex flex-row space-x-2 my-auto ">
+                     <View className=" flex-row mx-2 my-auto ">
+                <DropdownMenu
+                  items={menuItemsByName('add_menu', props.menu_add.items).map(
+                    (item, index) => {
+                      return (
+                        !item.link.includes('javascript') && {
+                          id: 'menu-' + index,
+                          link: item.link,
+                          title: item.title,
+                          icon:
+                            item.icon.indexOf(' ') == -1
+                              ? item.icon
+                              : item.icon.split(' ')[0],
+                        }
+                      )
+                    }
+                  )}
+                >
+                  <Button
+                    variant="outline"
+                    rounded
+                    startDecorator="plus"
+                    id="m3"
+                    aria-label="Create"
+                    onPress={() => {}}
+                  />
+                </DropdownMenu>
+                <View className="hidden ml-2 sm:flex flex-row space-x-2 my-auto ">
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
@@ -260,34 +288,6 @@ export default function (props) {
                     }}
                   />
                 </View>
-                <View className="hidden sm:flex flex-row mx-2 my-auto ">
-                <DropdownMenu
-                  items={menuItemsByName('add_menu', props.menu_add.items).map(
-                    (item, index) => {
-                      return (
-                        !item.link.includes('javascript') && {
-                          id: 'menu-' + index,
-                          link: item.link,
-                          title: item.title,
-                          icon:
-                            item.icon.indexOf(' ') == -1
-                              ? item.icon
-                              : item.icon.split(' ')[0],
-                        }
-                      )
-                    }
-                  )}
-                >
-                  <Button
-                    variant="outline"
-                    rounded
-                    startDecorator="plus"
-                    id="m3"
-                    aria-label="Create"
-                    onPress={() => {}}
-                  />
-                </DropdownMenu>
-                
                 
                 {profile ? (
                   <View className="hidden sm:flex ml-2 flex-row justify-center">
@@ -305,6 +305,8 @@ export default function (props) {
                   <></>
                 )}
                 </View>
+                
+           
               </Row>
             )}
 
