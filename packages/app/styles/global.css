@@ -268,7 +268,9 @@ div::-webkit-scrollbar {
     width: 100%;
     border-color: #000;
     }
-
+    .editor-height .ProseMirror{
+        min-height: 150px;
+    }
     .ProseMirror:focus {
         outline: none;
     }

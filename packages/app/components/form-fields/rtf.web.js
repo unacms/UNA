@@ -8,12 +8,10 @@ import { uploadImage } from '../../lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { useState, useEffect } from 'react'
-import Document from '@tiptap/extension-document'
 import Image from '@tiptap/extension-image'
-import Text from '@tiptap/extension-text'
 import Link from '@tiptap/extension-link'
 import Iframe from 'app/lib/editor-helpers'
-import {Suggestion} from 'app/lib/editor-helpers2'
+import { Suggestion } from 'app/lib/editor-helpers2'
 import Mention from '@tiptap/extension-mention'
 import { mergeAttributes, Node } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
@@ -214,16 +212,13 @@ export default function FormFieldFtf(props) {
 
     
     const isFullHtml = props.html == 2;
-    let sHeight = 100
-    if (props?.numLines == 1)
-        sHeight = '0';
+
 
     return (
         <View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
         <EditorContent 
                 editor={editor} 
-                className={(isFullHtml? 'p-4 ' :'p-2')}
-                style={{minHeight: sHeight}}
+                className={(props?.numLines == 1 ? '' : 'editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}
             />
             <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
             {isFullHtml  && <MenuBar editor={editor} /> }
