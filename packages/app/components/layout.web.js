@@ -69,10 +69,8 @@ export default function Layout(props) {
 
             </Head>
             
-            <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch flex-row">
-                
+            <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
-
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
                         (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
@@ -83,7 +81,7 @@ export default function Layout(props) {
                     </View>
                    
                 </View>
-                <View className="fixed bottom-0 z-30 w-full lg:hidden"><Footer/></View>
+                <Footer/>
             </View>
             <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
   

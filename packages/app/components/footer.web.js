@@ -6,7 +6,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
 import { useState } from 'react'
-
+import { Button } from 'app/design/controls'
 
 export default function () {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -31,20 +31,56 @@ export default function () {
     
 
  	return (
-        <View className=" backdrop-blur z-50  bg-backgroundnavbar dark:bg-backgroundnavbar-dark border-t  border-bordercolornavbar dark:border-bordercolornavbar-dark w-full px-2 h-16">
-            <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
-                {TabList.map((tab, index) => (
-                        <View key={"fl" + index} className='w-1/6 text-gray-700 dark:text-gray-300 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '>
-                           <Link  href={tab.url} >
-                           <View className='flex-col gap-1 items-center'>
-                            {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
-                             <Text className='group-hover:text-primary dark:group-hover:text-primary  text-[10px] text-gray-700 dark:text-gray-300 whitespace-nowrap'>{tab.title}</Text>
-                             {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 rounded-full h-5 w-5 items-center justify-center right-1'><Text className='text-white text-xs'>{notifCount}</Text></View>}
-                            </View>
-                            </Link>
-                        </View>
-                ))}
-          </Row>
-        </View>
+        <>
+        <View className="fixed bottom-0 z-30 w-full lg:hidden">
+          <View className=" backdrop-blur z-50  bg-backgroundnavbar dark:bg-backgroundnavbar-dark border-t  border-bordercolornavbar dark:border-bordercolornavbar-dark w-full px-2 h-16">
+              <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
+                  {TabList.map((tab, index) => (
+                          <View key={"fl" + index} className='w-1/6 text-gray-700 dark:text-gray-300 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '>
+                             <Link  href={tab.url} >
+                             <View className='flex-col gap-1 items-center'>
+                              {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
+                               <Text className='group-hover:text-primary dark:group-hover:text-primary  text-[10px] text-gray-700 dark:text-gray-300 whitespace-nowrap'>{tab.title}</Text>
+                               {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 rounded-full h-5 w-5 items-center justify-center right-1'><Text className='text-white text-xs'>{notifCount}</Text></View>}
+                              </View>
+                              </Link>
+                          </View>
+                  ))}
+            </Row>
+          </View></View>
+
+        <View className=" w-full px-2 hidden lg:flex">
+            <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+            <Button
+            variant="text"
+            title="About"
+
+            className="mt-auto"
+            size="sm"
+            />
+
+            <Button
+            variant="text"
+            title="Contact"
+
+            className="mt-auto"
+            size="sm"
+            />
+            <Button
+            variant="text"
+            title="Privacy"
+
+            className="mt-auto"
+            size="sm"
+            />
+            <Button
+            variant="text"
+            title="Terms"
+
+            className="mt-auto"
+            size="sm"
+            />
+            </View>
+        </View></>
     );
 } 

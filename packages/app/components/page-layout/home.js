@@ -97,39 +97,7 @@ export default function PageLayout(props) {
                   data={props.data}
                   name={props.blocks.posts}
                 />
-                <View className=" w-full px-2 ">
-                  <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
-                    <Button
-                      variant="text"
-                      title="About"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    />
-
-                    <Button
-                      variant="text"
-                      title="Contact"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    />
-                    <Button
-                      variant="text"
-                      title="Privacy"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    />
-                    <Button
-                      variant="text"
-                      title="Terms"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    />
-                  </View>
-                </View>
+                
               </View>
             </View>
           </View>
