@@ -84,7 +84,7 @@ export default function ElementSearch(oProps) {
 
     return (
         <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
-            <Button key="ddp-trigger" variant="text" startDecorator="search" rounded />, 
+            <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
             <View key="ddp-content" className="px-1.5 pb-1.5">
                 <Redirect ref={redirectdRef} />
                 <View className="flex-row items-center mb-1">

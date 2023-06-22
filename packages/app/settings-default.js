@@ -52,7 +52,7 @@ export const settingsDefault = {
       { width: 640, count: 2 },
     ],
     per_line_profile: [
-        { width: 1440, count: 6 },
+        
       { width: 1024, count: 4 },
       { width: 800, count: 3 },
       { width: 640, count: 2 },
@@ -118,35 +118,36 @@ export const settingsDefault = {
         link: 'home',
         icon: 'home',
       },
-      {
-        name: 'about',
-        title: 'About',
-        link: 'about',
-        icon: 'info-circle',
-      },
+      
       {
         name: 'persons-home',
         title: 'People',
         link: 'persons-home',
-        icon: 'user',
+        icon: 'users',
       },
       {
         name: 'posts-home',
         title: 'Posts',
         link: 'posts-home',
-        icon: 'file-alt',
+        icon: 'ChatCenteredText',
       },
       {
         name: 'groups-home',
         title: 'Groups',
         link: 'groups-home',
-        icon: 'users',
+        icon: 'UsersThree',
       },
       {
         name: 'discussions-home',
         title: 'Discussions',
         link: 'discussions-home',
-        icon: 'comments',
+        icon: 'Chats',
+      },
+      {
+        name: 'about',
+        title: 'About',
+        link: 'about',
+        icon: 'Info',
       },
     ],
 

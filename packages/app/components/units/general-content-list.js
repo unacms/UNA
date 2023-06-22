@@ -131,7 +131,7 @@ export default function Unit(props) {
             
                 
                 <View className="
-           p-1 mt-2 mx-2    group duration-200 overflow-hidden rounded-lg  
+           p-1 mt-4 sm:mt-2 mx-8 sm:mx-2    group duration-200 overflow-hidden rounded-lg  
            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
            hover:shadow-sm active:shadow-none 

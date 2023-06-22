@@ -188,7 +188,7 @@ export function Button(props) {
         break
 
         case 'lg':
-            sClassContainer += buttonRounded ? 'rounded-full p-3 ' : sClassDefaultRounding + ' px-4 py-3 ';
+            sClassContainer += buttonRounded ? 'rounded-full p-3 ' : sClassDefaultRounding + ' px-6 py-3 ';
             sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
             sClassText += ' text-lg '
             iIconSize = 28;
@@ -198,7 +198,7 @@ export function Button(props) {
 
         case 'xl':
             sClassContainer += buttonRounded ? 'rounded-full p-4 ' : sClassDefaultRounding + ' px-6 py-4 ';
-            sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+            sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-4 ' : '');
             sClassText += ' text-xl '
             iIconSize = 32;
             sTitleContainer += buttonTitle !== '' ? 'mx-3 ' : '' // Conditionally add 'mx-2' class

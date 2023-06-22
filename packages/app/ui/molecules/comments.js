@@ -150,7 +150,7 @@ export default function ElementComments(oProps) {
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     const sActionButton = (
-        <ButtonAction key="action" size={sDisplaySize} startDecorator="ChatTeardropDots" title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
+        <ButtonAction key="action" size={sDisplaySize} startDecorator="ChatCircleText" title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
     );
 
 

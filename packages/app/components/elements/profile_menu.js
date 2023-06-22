@@ -22,7 +22,7 @@ export default function ElementProfileMenu(props) {
   return (
     <View
       style={styles}
-      className=" xl:mx-2 p-4  overflow-y-scroll profile-menu flex-col gap-2
+      className=" xl:mx-2 p-3  overflow-y-scroll profile-menu flex-col 
         
          overflow-hidden rounded-r-lg xl:rounded-lg  
                 bg-backgroundcard dark:bg-backgroundcard-dark  
