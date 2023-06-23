@@ -162,13 +162,14 @@ console.log(windowWidth);
         className="xl:hidden"
         onPress={hideMenu}
       ></TouchableOpacity>
-      <View className="  backdrop-blur h-16 pl-4 pr-2 brigh items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
+      <View className="  backdrop-blur h-16 px-4 lg:px-6  items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
+        
         <Row className="flex-row  flex-none items-center">
           {
             headerSettings.menu && (
               <View className="lg:hidden mr-4"><TouchableOpacity  onPress={showMenu}>
                 <Button
-                  variant="text"
+                  variant="outline"
                   startDecorator="List"
                   rounded
                   align="start"
@@ -193,34 +194,14 @@ console.log(windowWidth);
          
           
         </Row>
-        <View className="flex-row flex-auto lg:flex-none justify-end ml-2"><Search /></View>
         
-        <Row className="flex-row  flex-none lg:flex-auto justify-end lg:justify-between ">
-          <Row className="hidden lg:flex  flex-auto">
-            <Row className='relative flex-row gap-x-2 mx-auto'>
-              {menuItemsByName('main_menu', menu_top).map(
-                (item, index) =>
-                  !item.link.includes('javascript') && (
-                    <Link href={item.link} key={`menu-${index}`}>
-                      <Button
-                        variant="text"
-                        size="lg"
-                        fullWidth
-                        startDecorator={
-                          item.icon.indexOf(' ') == -1
-                            ? item.icon
-                            : item.icon.split(' ')[0]
-                        }
-                        align="start"
-                      />
-                    </Link>
-                  )
-              )}
-              </Row>
-          </Row>
+        <View className="flex-row flex-auto justify-end lg:justify-start ml-2"><Search /></View>
+        
+        <Row className="flex-row  flex-none justify-end lg:justify-between ">
+          
           <Row>
             {!!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-endhidden lg:flex">
+              <Row className="flex-row   justify-end   lg:flex">
                      <View className=" flex-row mx-2 my-auto ">
                 <DropdownMenu
                   items={menuItemsByName('add_menu', props.menu_add.items).map(
@@ -302,8 +283,8 @@ console.log(windowWidth);
             )}
 
             {!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-end  hidden lg:flex my-auto ml-2 space-x-2">
-                <Search />
+              <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 space-x-2">
+                
                 <Button
                   variant="outline"
                   rounded
@@ -318,6 +299,28 @@ console.log(windowWidth);
           </Row>
  
         </Row>
+        <Row className="hidden  left-1/2 -translate-x-1/2 absolute  lg:flex  flex-auto">
+            <Row className='relative flex-row  mx-auto pr-1 mr-4 '>
+              {menuItemsByName('main_menu', menu_top).map(
+                (item, index) =>
+                  !item.link.includes('javascript') && (
+                    <Link href={item.link} key={`menu-${index}`}>
+                      <Button
+                        variant="text"
+                        size="lg"
+                        fullWidth
+                        startDecorator={
+                          item.icon.indexOf(' ') == -1
+                            ? item.icon
+                            : item.icon.split(' ')[0]
+                        }
+                        align="start"
+                      />
+                    </Link>
+                  )
+              )}
+              </Row>
+          </Row>
       </View>
       <AnimatePresence exitBeforeEnter>
         {menuPopup && (

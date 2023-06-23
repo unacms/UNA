@@ -154,13 +154,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} variant="text" size="sm"/>;
+                let btn = <Button title={button.title} startDecorator={button.icon} variant="text" rounded size=""/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur border-b  border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
+                <View className="w-full backdrop-blur border-b px-2 border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between h-16">
                         <Row className="items-center">

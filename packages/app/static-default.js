@@ -9,7 +9,7 @@ export const staticDefault = {
     text: (
       <Svg
         aria-label="Logo Text"
-        className="h-6 w-16 hidden sm:block text-neutral-800 dark:text-neutral-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 duration-500"
+        className="h-8 hidden sm:block text-neutral-800 dark:text-neutral-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ export const staticDefault = {
     mark: (
       <Svg
         aria-label="Logo Mark"
-        className=" group-hover:rotate-[360deg]  group-active:scale-125 duration-500 h-8 w-8  "
+        className=" group-hover:rotate-[360deg]  group-active:scale-125 duration-500 h-10 w-10  "
         viewBox="0 0 2400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
