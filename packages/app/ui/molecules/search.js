@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
@@ -91,12 +91,21 @@ export default function ElementSearch(oProps) {
     const sTxtViewExtended = appSetting('lang_keys', 'search_popup_view_extended');
 
     const inputRef = useRef();
-    
+
     let sResult = undefined;
     switch(sType) {
         case 'small':
+            const handleOpenPopup = (bOpen) => {
+                if(bOpen)
+                    setTimeout(() => {inputRef.current && inputRef.current.focus()}, 100);
+                else
+                    setPopupContent(''); 
+
+                setPopupOpen(bOpen); 
+            }
+
             sResult = (
-                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => { !bOpen && setPopupContent(''); setPopupOpen(bOpen); bOpen && inputRef.current && inputRef.current.focus();}} title={sTxtTitle}>{[
+                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {handleOpenPopup(bOpen)}} title={sTxtTitle}>{[
                     <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
                     <View key="ddp-content" className="px-1.5 pb-1.5">
                         <Redirect ref={redirectdRef} />
@@ -107,7 +116,7 @@ export default function ElementSearch(oProps) {
                             </Link>
                         </View>
                         <View className="flex-row">
-                            <Input name="search" ref={inputRef}  onChangeText={(value) => handleSearch(value)}  accessibilityLabel="Search" />
+                            <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} accessibilityLabel="Search" />
                         </View>
                         {!!popupContent && popupContent}
                     </View>
@@ -121,8 +130,8 @@ export default function ElementSearch(oProps) {
             sResult = (
                 <Row className=''>
                     <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[
-                        <View className="flex-row" key="ddp-trigger" >
-                            <Input name="search" onChangeText={(value) => handleSearch(value)} value={inputValue}  placeholder="Search..." accessibilityLabel="Search" />
+                        <View key="ddp-trigger" className="flex-row">
+                            <Input name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." accessibilityLabel="Search" />
                         </View>,
                         <View key="ddp-content" className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />
