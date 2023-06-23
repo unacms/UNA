@@ -17,7 +17,7 @@ export function getPageWidth(uri) {
     if (settings?.max_width)
         return settings.max_width;
 
-    return getPageWidth('layout', 'max_width');
+    return appSetting('layout', 'max_width');
 }
 
 export function getHeaderSettings(uri, width) {
