@@ -169,7 +169,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>
                         }
-                         { headerSettings.title && <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
+                        { headerSettings.title && <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
                         </Row> 
                         <Row className="pr-2">
                             {addButtons}
