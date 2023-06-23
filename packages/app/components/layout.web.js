@@ -73,6 +73,7 @@ export default function Layout(props) {
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="apple-mobile-web-app-capable" content="yes"></meta>
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></meta>
+                <meta name="viewport" content="initial-scale=1, viewport-fit=cover, width=device-width"></meta>
                 <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}zz</title>
             </Head>

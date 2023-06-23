@@ -2,7 +2,7 @@
   "short_name": "NEO",
   "name": "NEO",
   "description": "Networking Organizer",
-  "orientation": "any",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "logo192.png",
