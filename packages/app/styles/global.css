@@ -279,11 +279,6 @@ div::-webkit-scrollbar {
         padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
 
-    html,
-    body {
-        position: fixed;
-        overflow: hidden;
-    }
 
     .tabbar{
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
