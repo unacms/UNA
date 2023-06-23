@@ -170,7 +170,6 @@ export const settingsDefault = {
           name: 'Search',
           link: '/search-keyword?keyword=&section=bx_posts',
         },
-        { icon: 'DotsThreeOutlineVertical', name: 'More' },
       ],
     },
     bx_posts_view_actions: ['edit-post', 'delete-post'],
@@ -225,7 +224,7 @@ export const settingsDefault = {
       ],
     },
     bx_forum_submenu: {
-      name: 'Discussion',
+      name: 'Discussions',
       icon: 'comments',
       items: ['discussions-home', 'discussions-search'],
       add: [
@@ -235,7 +234,7 @@ export const settingsDefault = {
           name: 'Search',
           link: '/search-keyword?keyword=&section=bx_forum',
         },
-        { icon: 'DotsThreeOutlineVertical', name: 'More' },
+        
       ],
     },
     bx_groups_view_submenu: ['view-group-profile', 'group-fans'],
