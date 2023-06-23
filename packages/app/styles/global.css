@@ -277,9 +277,12 @@ div::-webkit-scrollbar {
     html {
         min-height: calc(100% + env(safe-area-inset-top));
         padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+
+    }
+    body{
+        -webkit-overflow-scrolling: touch;
     }
 
-
     .tabbar{
-        padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left);
     }

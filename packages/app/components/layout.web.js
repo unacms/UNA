@@ -7,11 +7,12 @@ import { View } from 'app/design/view'
 import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
+import { useColorScheme } from 'react-native';
 
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
-
+    
     const [loading, skeleton] = useSkeleton();
     
     setTimeout(() => {
@@ -59,6 +60,9 @@ export default function Layout(props) {
     let { width } = useWindowDimensions()
     let headerSettings = getHeaderSettings(props.uri, width);
 
+    const scheme = useColorScheme();
+    let bg = scheme === 'dark' ? 'rgba(17,24,39,0.8)' : 'rgba(255,255,255,0.8)';
+    
     
 
     return (
@@ -68,14 +72,12 @@ export default function Layout(props) {
                 <meta name="description" content={siteTitle} />
                 <meta http-equiv="expires" content="Fri, 18 Jul 2025 1:00:00 GMT" />
                 <meta name="og:title" content={props.data.title} />
-                <meta name="theme-color" media="(prefers-color-scheme: light)" content="cyan" />
-                <meta name="theme-color" media="(prefers-color-scheme: dark)" content="red" />
+                <meta name="theme-color"  content={bg} />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="apple-mobile-web-app-capable" content="yes"></meta>
-                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></meta>
                 <meta name="viewport" content="initial-scale=1, viewport-fit=cover, width=device-width"></meta>
                 <meta http-equiv="cache-control" content="max-age=36000" />
-                <title>{props.data.title}zz</title>
+                <title>{props.data.title}</title>
             </Head>
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
