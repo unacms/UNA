@@ -787,26 +787,27 @@ export const settingsDefault = {
       },
       {
         key: '/tab1',
-        title: 'Posts',
-        url: '/posts-home',
-        icon: 'NoteBlank',
-      },
-      {
-        key: '/tab2',
-        title: 'People',
+        title: 'Friends',
         url: '/persons-home',
         icon: 'users',
       },
       {
+        key: '/tab2',
+        title: 'Posts',
+        url: '/posts-home',
+        icon: 'ChatCenteredText',
+      },
+   
+      {
         key: '/tab3',
-        title: 'Messenger',
-        url: '/messenger', //'/view-persons-profile/dr-andrey-yasko-phd',
+        title: 'Groups',
+        url: '/groups-home', 
         icon: 'UsersThree',
       },
       {
         key: '/tab4',
         title: 'Notifications',
-        url: '/notifications-view', //'/view-persons-profile/dr-andrey-yasko-phd',
+        url: '/notifications-view', 
         icon: 'app-notifications',
       },
       {

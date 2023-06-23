@@ -78,7 +78,7 @@ export default function Layout(props) {
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
-                        (loading) ? (props?.data?.cached? <></>: <><View className='w-full h-16'></View>{skeleton}</>) : (<View className='w-full mx-auto'>
+                        (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
                             { (headerSettings.header || true) && <View className='w-full h-16'></View> }
                             { props.children }
                         </View>)
