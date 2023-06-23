@@ -68,13 +68,13 @@ export default function Layout(props) {
                 <meta name="description" content={siteTitle} />
                 <meta http-equiv="expires" content="Fri, 18 Jul 2025 1:00:00 GMT" />
                 <meta name="og:title" content={props.data.title} />
-                <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
-                <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+                <meta name="theme-color" media="(prefers-color-scheme: light)" content="cyan" />
+                <meta name="theme-color" media="(prefers-color-scheme: dark)" content="red" />
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="apple-mobile-web-app-capable" content="yes"></meta>
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></meta>
                 <meta http-equiv="cache-control" content="max-age=36000" />
-                <title>{props.data.title}</title>
+                <title>{props.data.title}zz</title>
             </Head>
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
