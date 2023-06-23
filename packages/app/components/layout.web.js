@@ -62,8 +62,6 @@ export default function Layout(props) {
 
     const scheme = useColorScheme();
     let bg = scheme === 'dark' ? 'rgba(17,24,39,0.8)' : 'rgba(255,255,255,0.8)';
-    
-    
 
     return (
         <>
@@ -83,8 +81,8 @@ export default function Layout(props) {
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {
-                        (loading) ? (props?.data?.cached? <></>: skeleton) : (<View className='w-full mx-auto'>
-                            { (headerSettings.header || true) && <View className='w-full h-16'></View> }
+                        (loading) ? (props?.data?.cached? <></>: <>{ (headerSettings.header) && <View className='w-full h-16'/> }{skeleton}</>) : (<View className='w-full mx-auto'>
+                            { (headerSettings.header) && <View className='w-full h-16'/> }
                             { props.children }
                         </View>)
                     }
