@@ -339,7 +339,8 @@ export const settingsDefault = {
       },
       icon: 'File',
       headerSettings: {
-        backButton: false
+        backButton: false,
+        header: false,
       }
     },
     'posts-popular': {
@@ -479,6 +480,10 @@ export const settingsDefault = {
           showBg: false,
         },
       },
+      headerSettings: {
+        backButton: false,
+        header: false,
+      },
       icon: 'UsersThree',
     },
     'groups-joined': {
@@ -560,6 +565,10 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
+      },
+      headerSettings: {
+        backButton: false,
+        header: false,
       },
       icon: 'Users',
     },

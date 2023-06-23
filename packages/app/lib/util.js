@@ -29,7 +29,7 @@ export function getHeaderSettings(uri, width) {
 
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' 
     ? settings.headerSettings.header 
-    : false;
+    : true;
     if (width > 1024)
         bHeader = true;
 
