@@ -194,41 +194,47 @@ console.log(windowWidth);
          
           
         </Row>
-        
-        <View className="flex-row flex-auto justify-end lg:justify-start ml-2"><Search /></View>
-        
-        <Row className="flex-row  flex-none justify-end lg:justify-between ">
-          
+
+        <View className="flex-row flex-auto justify-end lg:justify-start ml-2">
+          <View className="hidden xl:flex"><Search /></View>
+        </View>
+
+        <Row className="flex-row  flex-none justify-end lg:justify-between ">          
           <Row>
             {!!currentUser && (
               <Row className="flex-row   justify-end   lg:flex">
-                     <View className=" flex-row mx-2 my-auto ">
-                <DropdownMenu
-                  items={menuItemsByName('add_menu', props.menu_add.items).map(
-                    (item, index) => {
-                      return (
-                        !item.link.includes('javascript') && {
-                          id: 'menu-' + index,
-                          link: item.link,
-                          title: item.title,
-                          icon:
-                            item.icon.indexOf(' ') == -1
-                              ? item.icon
-                              : item.icon.split(' ')[0],
-                        }
-                      )
-                    }
-                  )}
-                >
-                  <Button
-                    variant="outline"
-                    rounded
-                    startDecorator="plus"
-                    id="m3"
-                    aria-label="Create"
-                    onPress={() => {}}
-                  />
-                </DropdownMenu>
+                <View className=" flex-row mx-2 my-auto ">
+                <View className="xl:hidden">
+                  <Search type="small" />
+                </View>
+                <View className="ml-2">
+                  <DropdownMenu
+                    items={menuItemsByName('add_menu', props.menu_add.items).map(
+                      (item, index) => {
+                        return (
+                          !item.link.includes('javascript') && {
+                            id: 'menu-' + index,
+                            link: item.link,
+                            title: item.title,
+                            icon:
+                              item.icon.indexOf(' ') == -1
+                                ? item.icon
+                                : item.icon.split(' ')[0],
+                          }
+                        )
+                      }
+                    )}
+                  >
+                    <Button
+                      variant="outline"
+                      rounded
+                      startDecorator="plus"
+                      id="m3"
+                      aria-label="Create"
+                      onPress={() => {}}
+                    />
+                  </DropdownMenu>
+                </View>
                 <View className="hidden ml-2 sm:flex flex-row space-x-2 my-auto ">
                   <DropdownPopup
                     open={ntfsOpen}
