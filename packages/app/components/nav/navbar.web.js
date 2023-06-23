@@ -153,7 +153,7 @@ export default function (props) {
   
   if (windowWidth < 1024 && (!headerSettings.header))
     return <></>
-console.log(windowWidth);
+    
   return (
     <>
     <View className="fixed -top-[1px]  w-full">
