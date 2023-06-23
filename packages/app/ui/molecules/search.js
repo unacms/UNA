@@ -13,6 +13,8 @@ import Link from '../../ui/atoms/link';
 export default function ElementSearch(oProps) {
     const redirectdRef = useRef();
 
+    const sType = oProps?.type ? oProps.type : 'default';
+
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupContent, setPopupContent] = useState('');
     const [inputValue, setInputValue] = useState("");
@@ -51,13 +53,13 @@ export default function ElementSearch(oProps) {
 
         const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
         if(!sResponse?.data) {
-            setPopupContent('');
+            handleSetPopupContent('');
             return;
         }
 
         const oBlock = sResponse.data.shift();
-        if(oBlock.data?.unit != 'search-results' || !oBlock.data?.data) {
-            setPopupContent('');
+        if(oBlock.data?.unit != 'search-results' || !oBlock.data?.data || !oBlock.data.data.length) {
+            handleSetPopupContent('');
             return;
         }
 
@@ -67,7 +69,7 @@ export default function ElementSearch(oProps) {
             </View>
         );
 
-        setPopupContent(sContent);            
+        handleSetPopupContent(sContent);
     }
 
     const handleClose = () => {
@@ -79,28 +81,65 @@ export default function ElementSearch(oProps) {
         handleClose();
     }
 
+    const handleSetPopupContent = (sContent) => {
+        setPopupContent(sContent);
+        if(sType == 'default')
+            setPopupOpen(!!sContent);
+    }
+
     const sTxtTitle = appSetting('lang_keys', 'search_popup_title');
     const sTxtViewExtended = appSetting('lang_keys', 'search_popup_view_extended');
 
-    return (
-        <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
-            <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
-            <View key="ddp-content" className="px-1.5 pb-1.5">
-                <Redirect ref={redirectdRef} />
-                <View className="flex-row items-center mb-1">
-                    <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                    <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
-                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
-                    </Link>
-                </View>
-                <View className="flex-row">
-                    <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
-                </View>
-                {!!popupContent && popupContent}
-            </View>
-        ]}
-        </DropdownPopup>
-    );
+    let sResult = undefined;
+    switch(sType) {
+        case 'small':
+            sResult = (
+                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle}>{[
+                    <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
+                    <View key="ddp-content" className="px-1.5 pb-1.5">
+                        <Redirect ref={redirectdRef} />
+                        <View className="flex-row items-center mb-1">
+                            <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+                            <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                            </Link>
+                        </View>
+                        <View className="flex-row">
+                            <Input name="search" onChangeText={(value) => handleSearch(value)} defaultValue="" accessibilityLabel="Search" />
+                        </View>
+                        {!!popupContent && popupContent}
+                    </View>
+                ]}
+                </DropdownPopup>
+            );
+            break;
+
+        case 'default':
+        default:
+            sResult = (
+                <Row className=''>
+                    <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[
+                        <View className="flex-row">
+                            <Input name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} defaultValue="" placeholder="Search..." accessibilityLabel="Search" />
+                        </View>,
+                        <View key="ddp-content" className="px-1.5 pb-1.5">
+                            <Redirect ref={redirectdRef} />
+                            <View className="flex-row items-center">
+                                <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+                                <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                                </Link>
+                            </View>
+                            {!!popupContent && popupContent}
+                        </View>
+                    ]}
+                    </DropdownPopup>
+                </Row>
+            );
+            break;
+    }
+
+    return sResult;
  }
 
  export function  SearchPanel(props) {

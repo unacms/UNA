@@ -5,10 +5,11 @@ export default function DropdownPopup(oProps) {
     let { open, onOpenChange, ...rest } = oProps;
 
     const sTitle = oProps?.title ? oProps.title : '';
+    const bAsChildTrigger = oProps?.asChildTrigger ? oProps.asChildTrigger : false;
 
     return (
         <Root open={open} onOpenChange={(bOpen) => {onOpenChange(bOpen)}}>
-            <Trigger aria-label={sTitle}>
+            <Trigger asChild={bAsChildTrigger} aria-label={sTitle}>
                 {oProps.children[0]}
             </Trigger>
             <Portal>
