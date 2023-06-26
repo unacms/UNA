@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { MotiView, AnimatePresence } from 'moti'
 import { Icon } from 'app/ui/atoms/icon'; 
@@ -13,7 +13,6 @@ import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
-import { Slider } from 'app/ui/molecules/slider'
 
 import Redirect from 'app/ui/atoms/redirect'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -151,6 +150,16 @@ export default function (props) {
 
   let headerSettings = getHeaderSettings(props.uri, width);
   
+  useEffect(() => {
+      const handleClick = () => {
+        hideMenu();
+      }
+
+      document.addEventListener('click', handleClick)
+
+      return () => document.removeEventListener('click', handleClick)
+  }, [])
+
   if (windowWidth < 1024 && (!headerSettings.header))
     return <></>
     
@@ -158,10 +167,6 @@ export default function (props) {
     <>
     <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
-      <TouchableOpacity
-        className="xl:hidden"
-        onPress={hideMenu}
-      ></TouchableOpacity>
       <View className="  backdrop-blur h-16 px-4 lg:px-6  items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
         
         <Row className="flex-row  flex-none items-center">
@@ -177,14 +182,13 @@ export default function (props) {
               
               </TouchableOpacity></View>  )}
               { (props.uri == 'home' || windowWidth >= 1024) &&  
-              <TouchableOpacity className="" onPress={hideMenu}>
+
               <Link href="/home" aria-label="Logo">
                 <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
                   {appStatic('logo', 'mark')}
                   {appStatic('logo', 'text')}
                 </View>
               </Link>
-            </TouchableOpacity>
             }
               { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
               <Icon icon="left" width={24} height={24} />
@@ -305,7 +309,7 @@ export default function (props) {
           </Row>
  
         </Row>
-        <Row className="hidden  left-1/2 -translate-x-1/2 absolute  lg:flex  flex-auto">
+        <Row className="hidden left-1/2 -translate-x-1/2 absolute  lg:flex flex-auto">
             <Row className='relative flex-row  mx-auto pr-1 mr-4 '>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
@@ -332,25 +336,24 @@ export default function (props) {
         {menuPopup && (
           <View>
             <MotiView
+             style={{ width: 550 }}
               from={{
-                opacity: 0,
+                opacity: 1,
               }}
               animate={{
                 opacity: 1,
               }}
               exit={{
-                height: 0,
                 opacity: 0,
-                translateX: -1000,
               }}
               transition={{
                 duration: 0,
               }}
             >
               <TouchableOpacity
-                className="bg-white/80 dark:bg-black/80 bg-red-500 w-full absolute top-0 h-screen"
+                
                 onPress={showMenu}
-              ></TouchableOpacity>
+              ><View className="bg-white/80 dark:bg-black/80 bg-red-500 w-full absolute top-0 h-screen z-50"></View></TouchableOpacity>
             </MotiView>
             <MotiView
               style={{ width: 288 }}
@@ -375,7 +378,7 @@ export default function (props) {
           delay: 100,*/
               }}
             >
-              <TouchableOpacity className="w-72 h-screen" onPress={showMenu}>
+              <TouchableOpacity className="w-72 h-screen m-menu" onPress={showMenu}>
                 <MainMenu {...props} />
               </TouchableOpacity>
             </MotiView>
