@@ -1,14 +1,14 @@
-import { View, Row, ScrollView} from 'app/design/view';
+import { View, Row, ScrollView, Pressable} from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
-import { Text } from 'app/design/typography'
-
+import { useRouter } from 'next/router';
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { stripTags } from '../../lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform, Keyboard } from 'react-native'
-
+import { Icon } from 'app/ui/atoms/icon'; 
+import { useWindowDimensions } from 'react-native'
 
 export default function PageLayout(props) {
 
@@ -39,6 +39,9 @@ export default function PageLayout(props) {
     const handleLayout = () => {
         calculateSize();
     }; 
+
+    const router = useRouter();
+    const windowWidth = useWindowDimensions().width + 24;
 
     const calculateSize = () => {
         if (viewFormRef.current){
@@ -74,17 +77,33 @@ export default function PageLayout(props) {
         );
     }
 
+    let header = <></>
     actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
     if (actionsItemIndex !== -1) {
-        aItems[actionsItemIndex].data = (
-            <View className='pt-4 px-4'>
-                {aItems[actionsItemIndex].data}
-            </View>
-        );
+        if(windowWidth < 1024){
+            header = (
+                <><Row className='py-2 px-4 w-full fixed top-0 z-50 border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row'>
+                    <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center mr-2" onPress={() => router.back()}  >
+                <Icon icon="left" width={24} height={24} />
+                </Pressable>
+                    {aItems[actionsItemIndex].data}
+                </Row></>
+            );
+            aItems.splice(actionsItemIndex, 1);
+        }
+        else{
+            aItems[actionsItemIndex].data = (
+                <View className='pt-4 px-4'>
+                    {aItems[actionsItemIndex].data}
+                </View>
+            );
+        }
+
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
 
     return ( 
+        <>{header}
         <View className="lg:py-4">
             <View className=" justify-between w-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
@@ -97,7 +116,7 @@ export default function PageLayout(props) {
                     </KeyboardAvoidingView>
                 </View>
             </View>
-        </View> 
+        </View> </>
     )
 
 }

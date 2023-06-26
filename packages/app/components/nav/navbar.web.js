@@ -190,7 +190,7 @@ export default function (props) {
                 </View>
               </Link>
             }
-              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={() => router.back()} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
               }
@@ -239,7 +239,7 @@ export default function (props) {
                     />
                   </DropdownMenu>
                 </View>
-                <View className="hidden ml-2 sm:flex flex-row space-x-2 my-auto ">
+                <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
@@ -353,7 +353,7 @@ export default function (props) {
               <TouchableOpacity
                 
                 onPress={showMenu}
-              ><View className="bg-white/80 dark:bg-black/80 bg-red-500 w-full absolute top-0 h-screen z-50"></View></TouchableOpacity>
+              ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></TouchableOpacity>
             </MotiView>
             <MotiView
               style={{ width: 288 }}

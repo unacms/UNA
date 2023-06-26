@@ -41,11 +41,16 @@ export function getHeaderSettings(uri, width) {
     ? settings.headerSettings.title 
     : true;
 
+    const bOffset = typeof settings?.headerSettings?.offset !== 'undefined' 
+    ? settings.headerSettings.offset 
+    : true;
+
     return {
         backButton: bBackButton,
         header: bHeader,
         menu: bMenu,
         title: bTitle,
+        offset: bOffset
     }
 }
 

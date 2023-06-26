@@ -260,7 +260,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             if (tabBarObj)
                 return <>
                     <View className="w-full h-12 lg:h-12"></View>
-                    <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
+                    <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
 
                     </>
         }

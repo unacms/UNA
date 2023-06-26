@@ -389,7 +389,7 @@ export const settingsDefault = {
         },
       },
       headerSettings: {
-        header: true,
+        header: false,
       },
     },
     item: {
@@ -416,7 +416,7 @@ export const settingsDefault = {
         },
       },
       headerSettings: {
-        header: true,
+        header: false,
       },
     },
     //############ POSTS PAGES ############
@@ -467,7 +467,7 @@ export const settingsDefault = {
         },
       },
       headerSettings: {
-        header: true,
+        header: false,
       },
     },
     //############ GROUPS PAGES ############

@@ -111,7 +111,7 @@ export default function ElementCover(props) {
   return (
     <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
       <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
-        <View className=" duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[25%]  xl:rounded-b-lg overflow-hidden">
+        <View className=" duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[40%]  xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
             <Image
               alt={data.group_name}
