@@ -3,12 +3,10 @@ import { useState,useEffect, useRef } from 'react';
 import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
-
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
 import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
-import Loading from 'app/ui/atoms/loading'
 import  CurRouter from "app/ui/atoms/router";
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/hooks/skeleton';
@@ -25,7 +23,9 @@ export default function ElementBrowse(props) {
     });
 
     let data = props.data;
-
+    if (!data.unit){
+        data.unit = 'general-profile-card';
+    }
     let defParams = data.params;
     if(props?.params)
         defParams = {...defParams, ...props.params};

@@ -67,7 +67,12 @@ export default function PageLayout(props) {
                 <BlockByName
                   no_scroll={true}
                   data={props.data}
-                  name={props.blocks.posts}
+                  name={props.blocks.friends}
+                />
+                <BlockByName
+                  no_scroll={true}
+                  data={props.data}
+                  name={props.blocks.subscriptions}
                 />
                 <BlockByName
                   name={props.blocks.footer}
@@ -104,6 +109,13 @@ export default function PageLayout(props) {
   }
 
   /*
+<BlockByName
+                  no_scroll={true}
+                  data={props.data}
+                  name={props.blocks.posts}
+                />
+
+
      <BlockByName data={props.data} name={props.blocks.posts2} />
             <BlockByName data={props.data} name={props.blocks.feed} />*/
   return (
