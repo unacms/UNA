@@ -14,7 +14,7 @@ export default function FormField(props) {
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&
             <View >
-                <Text className="label-text capitalize block ml-1 text-sm font-medium text-gray-700 dark:text-gray-200">{caption}</Text>
+                <Text className="label-text  block ml-0.5 my-1.5 text-sm font-medium text-gray-700 dark:text-gray-200">{caption}</Text>
             </View> }
             {props.children}
             { !!props.error &&
