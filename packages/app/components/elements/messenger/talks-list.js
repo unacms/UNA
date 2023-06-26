@@ -1,17 +1,16 @@
-import { View} from 'app/design/view';
-import { FlashList } from "@shopify/flash-list";
+import {TouchableOpacity, View} from 'app/design/view';
 import { Text } from 'app/design/typography'
-import {appSetting, menuItemsByName} from 'app/lib/util'
-import { Icon } from 'app/ui/atoms/icon';
 import Image from 'app/ui/atoms/image';
 import Loading from 'app/ui/atoms/loading'
 import { Link } from 'app/ui/atoms/link';
 import { Button, Input } from 'app/design/controls';
 import React, { useState, useRef, memo, useEffect, useContext } from 'react';
 import Time from "app/ui/atoms/time";
-import { StyleSheet } from "react-native";
 import { fetcher } from "../../../lib/fetcher";
 import MessengerContext from './messenger-сontext';
+import {WrappedTopMenu} from "./menu";
+import UniList from 'app/ui/atoms/unilist';
+import { truncateHTML } from 'app/lib/util'
 
 const styles = {
     infoText: [
@@ -27,14 +26,14 @@ function UserAvatar({ avatars }) {
           oLetter = avatars['bx_if:letters'];
 
      return <View className="ring-2 ring-white dark:ring-gray-900 bg-gray-500/20 rounded-full overflow-hidden w-8 h-8">
-            { oAvatar.condition === true &&
+            { oAvatar.condition === true && oAvatar.content.thumb &&
                 <View className="w-8 h-8" alt={oAvatar.content.title}>
                     <Image src={oAvatar.content.thumb} priority className="rounded-xl u-cover" view="cover" />
                </View>
             }
-            {oLetter.condition === true &&
-                <View className="w-8 h-8 rounded-full " style={`background-color:rgba(${oLetter.content.letter})`}>
-                    <Text className="text-3xl">{oLetter.content.letter}</Text>
+            {(oLetter.condition === true || oAvatar.content.thumb.length === 0) &&
+                <View className="w-8 h-8 rounded-full " style={`background-color:rgba(${oLetter.content.color})`}>
+                    <Text className="text-2xl text-center">{oLetter.content.letter}</Text>
                 </View>
             }
            </View>
@@ -63,16 +62,21 @@ function UserOnlineStatus(props){
         oStatuses = { away: 'bg-bubble-away', online: 'bg-green-600'};
 
     let sClass = status ? oStatuses[status] : 'hidden';
-    return <View data-user-status={id} className={sClass} title={title}></View>
+    return <View data-user-status={id} className={sClass + " absolute -bottom-0.5 right-0 block h-3 w-3 rounded-full ring-2 ring-white dark:ring-gray-900 z-20"} title={title}></View>
 }
 
-function TalksListItem({ item, active, onClick }){
+function TalksListItem({ item }){
     const { id, updated, title } = item,
           { talk_type, icon, message } = item['bx_if:user'].content,
           { time } = item['bx_if:timer'].content;
 
-    const textColor = active ? styles.infoActiveText : styles.infoText;
-    return <View onClick={() => onClick(id)} className= { "max-h-full w-full flex flex-col " + ( active ? 'bg-blue-600 hover:bg-blue-600' : '')}>
+    const { talk, selectTalk } = useContext(MessengerContext);
+
+    //console.log('---- log -----', item, selectTalk)
+
+    const textColor = talk ? styles.infoActiveText : styles.infoText;
+    return <TouchableOpacity onPress={() => selectTalk(id)}>
+             <View className= { "max-h-full w-full flex flex-col " + ( talk === id ? 'bg-blue-600 hover:bg-blue-600' : '')}>
                 <View className="hover:bg-white dark:hover:bg-gray-700/20 w-full" data-lot={id}>
                         <View className="min-w-0 w-full flex flex-row gap-3 sm:items-top sm:justify-between items-center p-4">
                             <View className="h-min text-center relative flex text-center flex-0">
@@ -87,27 +91,16 @@ function TalksListItem({ item, active, onClick }){
                                     { icon && <View className="w-4 h-4 flex-0" alt={title}>
                                         <Image src={icon} priority className="rounded-xl u-cover" view="cover" />
                                     </View> }
-                                    <View className="flex-0">
+                                    <View className="flex-0 flex flex-row items-center truncate overflow-hidden leading-tight space-x-1">
                                         <Text className={ "font-bold whitespace-nowrap text-xs " + textColor } >{talk_type}:</Text>
+                                        <Text className={ "overflow-hidden truncate w-full max-h-6 text-xs items-center flex " + textColor }>{truncateHTML(message, 40)}</Text>
                                     </View>
-                                    <Text className={"w-full flex overflow-hidden flex-1 leading-tight text-ellipsis whitespace-nowrap text-xs " + textColor }>{message}</Text>
                                 </View>
                             </View>
-                            { /*<View className="flex min-w-max h-min inline-block self-center -space-x-4">
-                                <bx_repeat:participants>
-                                    <bx_if:avatars>
-                                        <img title="__title__" src="__thumb__"
-                                             className="inline-block h-8 w-8 max-w-auto rounded-full ring-2 ring-white dark:ring-gray-900"/>
-                                    </bx_if:avatars>
-                                    <bx_if:letters>
-                                        <p className="flex items-center justify-center text-white bx-base-pofile-unit-thumb max-w-auto bx-def-ava bx-def-box-sizing inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-gray-900"
-                                           style="background-color:rgba(__color__)">__letter__</p>
-                                    </bx_if:letters>
-                                </bx_repeat:participants>
-                            </View> */}
                         </View>
                  </View>
             </View>
+        </TouchableOpacity>
 }
 
 function SearchBox(props){
@@ -121,72 +114,76 @@ function SearchBox(props){
 
 const TalksListHeader = memo(({ title }) => {
     const [visible, setVisibility] = useState(false),
+         { menuItem } = useContext(MessengerContext),
           handlerVisibility = () => setVisibility(!visible);
 
     return <View className="group relative justify-end flex flex-1 w-full whitespace-nowrap min-w-0 overflow-hidden">
-             <View className="text-center flex flex-row justify-between text-gray-800 dark:text-gray-100 text-ellipsis overflow-hidden">
-               <Text className={"ml-3 truncate text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50 flex items-center capitalize " + ( visible ? 'hidden' : '' ) }>{title}</Text>
+             <View className="items-center flex flex-row justify-between text-gray-800 dark:text-gray-100 text-ellipsis overflow-hidden">
+               <Text className={"ml-3 truncate text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50 capitalize flex items-center" + ( visible ? 'hidden' : '' ) }>{menuItem}</Text>
                <SearchBox visible={visible}></SearchBox>
                <Button variant="text" endDecorator={ 'search' } onPress={handlerVisibility}/>
              </View>
          </View>
 });
 
-const TalkListItems = memo(function TalkListItems({ list, onLoadHistory, menuItem }){
+const TalkListItems = memo(function TalkListItems({ list, onLoadHistory }){
     const [active, setActive] = useState(0),
           [loading, setLoading] = useState(false),
           [talks, setTalks] = useState( list || []),
-         // { menu } = useContext(MessengerContext),
+          { talk, menuItem } = useContext(MessengerContext),
           handlerActive = (id) => {
             if (typeof onLoadHistory === 'function')
                 onLoadHistory(id);
 
             setActive(id);
           },
-         loadListItems = async (menu ) => {
-            const { data } = await fetcher('/api.php?r=bx_messenger/get_talks_list_json/&params=' + JSON.stringify({ group: menu, count: talks?.length }));
+         loadListItems = async (menu, count) => {
+            setLoading(true);
+            const { data } = await fetcher('/api.php?r=bx_messenger/get_talks_list_json/&params=' + JSON.stringify({ group: menu, count }));
             if (typeof data !== 'undefined') {
                 setLoading(false);
-                setTalks([...talks, ...data]);
+                if (count)
+                    setTalks([...talks, ...data]);
+                else
+                    setTalks(data);
             }
          },
         renderListItem = ({item}) => {
             const { id } = item;
-            return <TalksListItem onClick={() => handlerActive(id)} key={id} item={item} active={active === id} />
+            return <TalksListItem key={id} item={item} />
         },
-        loadList = () => loadListItems(menuItem),
+        loadList = () => loadListItems(menuItem, talks?.length),
         keyExtractor = item => item?.id,
         flashListRef = useRef(null),
         init = useRef(false);
 
         useEffect(() => {
-            loadListItems(menuItem);
-            console.log('----- log use effect ------', talks);
+            loadListItems(menuItem, 0);
+            //console.log('----- log use effect ------', talk, menuItem);
         }, [menuItem]);
 
-    if (typeof talks === 'undefined')
+    if (typeof talks === 'undefined' || loading)
         return <View className='m-2'><Loading/></View>;
 
-    console.log(' --- log generate talks list items ----');
+    //console.log(' --- log generate talks list items ----');
 
     return !talks.length ? <Text className={"text-2xl text-white text-center"}>Empty</Text> :
-           <FlashList shList
-                      ref={flashListRef}
-                      data={talks}
-                      renderItem={renderListItem}
-                      onEndReachedThreshold={0.3}
-                     // onEndReached={loadList}
-                      keyExtractor={keyExtractor}
-                      estimatedItemSize = {72}
-                      ListFooterComponent={
-                          loading && <View className='m-2'><Loading/></View>
-                      }
-            >
-            </FlashList>
+        <UniList
+            data={talks}
+            ref={flashListRef}
+            renderItem={renderListItem}
+            onEndReachedThreshold={1}
+           //onEndReached={loadList}
+            keyExtractor={keyExtractor}
+            estimatedItemSize = {72}
+            ListFooterComponent={
+                loading && <View className='m-2'><Loading/></View>
+            }
+        />
 });
 
 export const TalksListColumn = ({ list, colWidth }) => {
-    console.log('------ log generate talks list column  ----', list, colWidth);
+    //console.log('------ log generate talks list column  ----', list, colWidth);
 
     return <View className={"h-full max-h-full overflow-hidden " + ( colWidth || 'w-full' ) } >
                 <TalksList list={list} />
@@ -196,23 +193,29 @@ export const TalksListColumn = ({ list, colWidth }) => {
 }
 
 export default function TalksList(props) {
-    const { selectPanel, viewMenu } = useContext(MessengerContext);
+    const { menuItem, viewMenu } = useContext(MessengerContext);
     const [ menu, setView ] = useState(viewMenu);
 
     const handlerMenuClick = () => {
-        selectPanel( menu ? false : 'menu');
-        setView(!menu);
+        setView((menu) => !menu);
     }
 
-    console.log('------ log generate talks list area ----', props);
+    useEffect(() => {
+        setView(false);
+    }, [menuItem]);
 
-    return <View className={"max-h-full flex w-full h-full flex-col" + (props.stylesName || "")}>
-               <View className="w-full p-2 flex items-center flex flex-row">
-                    <Button variant="custom" startDecorator="list" solid align="start" className="xl:hidden" onPress={ handlerMenuClick }/>
-                    <TalksListHeader />
-               </View>
-               <View className="h-full max-h-full w-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1 border-t  border-bordercolor dark:bordercolor-dark">
-                  <TalkListItems {...props} />
-               </View>
-           </View>
+    //console.log('------ log generate talks list area ----', props, menu);
+
+    return  <View className="h-full">
+               <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
+                   <View className="w-full p-2 flex items-center flex flex-row border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
+                        <Button variant="custom" startDecorator="list" solid align="start" className="xl:hidden" onPress={ handlerMenuClick }/>
+                        <TalksListHeader />
+                   </View>
+                   <View className="h-full max-h-full w-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1">
+                      <TalkListItems {...props} />
+                   </View>
+                   { menu && <WrappedTopMenu handlerMenuClick={ handlerMenuClick } /> }
+                </View>
+             </View>
 }
