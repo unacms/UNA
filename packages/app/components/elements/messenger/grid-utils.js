@@ -99,7 +99,7 @@ function getGrid(sMode, sPanel = false){
         return { [sColumn + 'Col'] : sValue };
     };
 
-    console.log('----- log execute dimension  -----');
+    //console.log('----- log execute dimension  -----');
     return Object.assign( getStyle('history'), getStyle('list'), getStyle('menu') );
 }
 
