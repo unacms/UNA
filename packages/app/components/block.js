@@ -91,7 +91,7 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle}> 
+        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle} fullWidth={props.fullWidth}>
             <BlockType data={block.content} type={block.type} {...props}/>
         </BlockWrapper>
     );
@@ -99,7 +99,7 @@ export default function Block(props) {
 
 export function BlockWrapper(props) {
 
-    let { block, showTitle, showBg, ...rest } = props
+    let { block, showTitle, showBg, fullWidth, ...rest } = props
 
     block.designbox_id = Number(block.designbox_id);
 
@@ -123,7 +123,7 @@ export function BlockWrapper(props) {
     }
 
     return (
-        <View key={block.id} className="w-full max-w-5xl mx-auto">
+        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth ? "max-w-5xl" : "" )}>
             <View key={block.id} className={bIsShowBg ? ' px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg' : ''}>
                 {bIsShowTitle && <Text className=" text-xl pb-4 text-gray-800 dark:text-gray-200 font-bold my-auto">{stripTags(block.title)}</Text>}
                 <View>{props.children}</View>
