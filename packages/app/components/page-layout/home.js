@@ -104,13 +104,8 @@ export default function PageLayout(props) {
   }
 
   /*
-     <BlackBox 
-                minHeaderHeight={0} 
-                isHideDefaultHeader={false} 
-                menu={menu} 
-                data={data} 
-                blocks={props.blocks}
-            />*/
+     <BlockByName data={props.data} name={props.blocks.posts2} />
+            <BlockByName data={props.data} name={props.blocks.feed} />*/
   return (
     <View className="w-full ">
       <LayoutDataContext>
@@ -119,8 +114,14 @@ export default function PageLayout(props) {
         )}
         {!!currentUser && (
           <>
-            <BlockByName data={props.data} name={props.blocks.posts2} />
-            <BlockByName data={props.data} name={props.blocks.feed} />
+          <BlackBox 
+                minHeaderHeight={0} 
+                isHideDefaultHeader={false} 
+                menu={menu} 
+                data={data} 
+                blocks={props.blocks}
+            />
+           
           </>
         )}
       </LayoutDataContext>
