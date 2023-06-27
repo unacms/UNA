@@ -205,7 +205,10 @@ export default function TalksList(props) {
     return  <View className="h-full">
                <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
                    <View className="w-full p-2 flex items-center flex flex-row border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
-                        <Button variant="custom" startDecorator="list" solid align="start" className="xl:hidden" onPress={ handlerMenuClick }/>
+                        <Button variant="outline"
+                  startDecorator="List"
+                  rounded
+                  align="start" className="xl:hidden" onPress={ handlerMenuClick }/>
                         <TalksListHeader />
                    </View>
                    <View className="h-full max-h-full w-full overflow-y-auto scroll-smooth rounded-none min-h-0 flex-1">

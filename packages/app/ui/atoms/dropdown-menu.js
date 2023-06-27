@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Platform } from 'react-native';
-
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
@@ -51,14 +50,16 @@ export default function DropdownMenu(oProps) {
             </DmItem>
         );
     });
-
-    return (
-        <View >
-            <Redirect ref={redirectdRef} />
-            <DropdownMenuRoot>
+/* FIX ANTON/ROMAN
+<DropdownMenuRoot>
                 <DropdownMenuTrigger>{oProps.children}</DropdownMenuTrigger>
                 <DmContent>{aDmItems}</DmContent>
             </DropdownMenuRoot>
+            */
+    return (
+        <View >
+            <Redirect ref={redirectdRef} />
+            
         </View>
     );
 }

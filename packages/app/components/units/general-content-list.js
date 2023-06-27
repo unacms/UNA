@@ -152,7 +152,7 @@ export default function Unit(props) {
                             <View className="w-full aspect-video rounded-full ml-4 sm:mx-auto p-1   items-center justify-center">
                                 <View className=" p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full  items-center justify-center">
 
-                                <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
+                                <Profile url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
                                 </View>
                             </View>
                             

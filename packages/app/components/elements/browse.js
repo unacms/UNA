@@ -24,7 +24,7 @@ export default function ElementBrowse(props) {
 
     let data = props.data;
     if (!data.unit){
-        data.unit = 'general-profile-card';
+        data.unit = 'general-profile-list';
     }
     let defParams = data.params;
     if(props?.params)
@@ -157,7 +157,7 @@ export default function ElementBrowse(props) {
         return Preload 
 
     return (
-        (data.data.length > 0 || true) && <View className='w-full h-full mb-4' ><CurRouter exitingFunction={exitingFunction}  />
+        (data.data.length > 0 || true) && <View className='w-full h-full' ><CurRouter exitingFunction={exitingFunction}  />
             { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
                 labelField="label"
                 valueField="value"

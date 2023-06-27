@@ -197,7 +197,7 @@ export const staticDefault = {
     ),
     footer: (
       <>
-        <View className=" w-full px-2 ">
+        <View className=" w-full px-2 mt-4">
                   <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
                   <Link href='/about'><Button
                       variant="text"

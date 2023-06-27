@@ -24,9 +24,9 @@ export const settingsDefault = {
     search_popup_view_extended: 'Extended',
   },
   cache: {
-    page: false,
-    list: false,
-    compress: false
+    page: true,
+    list: true,
+    compress: true
   },
   feed: {
     show_selector_view: false,
