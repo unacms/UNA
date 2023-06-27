@@ -1,13 +1,9 @@
 import {TouchableOpacity, View} from 'app/design/view';
-import { Text } from 'app/design/typography'
-import {appSetting, menuItemsByName} from 'app/lib/util'
-import { Icon } from 'app/ui/atoms/icon';
-import Image from 'app/ui/atoms/image';
 import { Link } from 'app/ui/atoms/link';
 import { Button } from 'app/design/controls';
-import {useState, useContext, memo, useEffect} from 'react'
+import {useState, useContext, memo } from 'react'
 import MessengerContext from "./messenger-сontext";
-import {MotiView} from "moti";
+import { MotiView } from "moti";
 
 function GroupsMenuItem({ item }){
     const [visible, setVisibility] = useState(true),

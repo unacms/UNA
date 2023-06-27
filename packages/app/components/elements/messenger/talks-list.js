@@ -22,21 +22,17 @@ const styles = {
 };
 
 function UserAvatar({ avatars }) {
-    const oAvatar = avatars['bx_if:avatars'],
-          oLetter = avatars['bx_if:letters'];
-
-     return <View className="ring-2 ring-white dark:ring-gray-900 bg-gray-500/20 rounded-full overflow-hidden w-8 h-8">
-            { oAvatar.condition === true && oAvatar.content.thumb &&
-                <View className="w-8 h-8" alt={oAvatar.content.title}>
-                    <Image src={oAvatar.content.thumb} priority className="rounded-xl u-cover" view="cover" />
-               </View>
-            }
-            {(oLetter.condition === true || oAvatar.content.thumb.length === 0) &&
-                <View className="w-8 h-8 rounded-full " style={`background-color:rgba(${oLetter.content.color})`}>
-                    <Text className="text-2xl text-center">{oLetter.content.letter}</Text>
-                </View>
-            }
-           </View>
+    const { thumb, title, color, letter } = Object.assign(avatars['bx_if:avatars'].content, avatars['bx_if:letters'].content);
+    return <View className="ring-2 ring-white dark:ring-gray-900 bg-gray-500/20 rounded-full overflow-hidden w-8 h-8">
+                    { thumb.length ?
+                        <View className="w-8 h-8" alt={title}>
+                             <Image src={thumb} priority className="rounded-xl u-cover" view="cover"/>
+                        </View>
+                       : <View className="w-8 h-8 rounded-full" style={{ backgroundColor: `rgba(${color}`}}>
+                          <Text className="text-2xl text-center">{letter.toString()}</Text>
+                        </View>
+                    }
+            </View>
 }
 
 function TalkParts({ parts }) {
@@ -76,31 +72,31 @@ function TalksListItem({ item }){
 
     const textColor = talk ? styles.infoActiveText : styles.infoText;
     return <TouchableOpacity onPress={() => selectTalk(id)}>
-             <View className= { "max-h-full w-full flex flex-col " + ( talk === id ? 'bg-blue-600 hover:bg-blue-600' : '')}>
-                <View className="hover:bg-white dark:hover:bg-gray-700/20 w-full" data-lot={id}>
-                        <View className="min-w-0 w-full flex flex-row gap-3 sm:items-top sm:justify-between items-center p-4">
-                            <View className="h-min text-center relative flex text-center flex-0">
-                                <UserAvatar avatars={item['bx_repeat:avatars'][0]} />
-                                <UserOnlineStatus {...item} />
-                            </View>
-                            <View className="flex space-y-1 flex-1 flex-col">
-                                <Text className="w-full flex leading-tight text-base text-ellipsis overflow-hidden
-                                                     font-bold text-gray-900 dark:text-white whitespace-nowrap">{title}</Text>
-                                <View className="w-full space-x-1 flex flex-row items-center items-center overflow-hidden text-xs">
-                                    <Time stylesName={ "flex-0 whitespace-nowrap text-xs " + textColor}  ts={time} />
-                                    { icon && <View className="w-4 h-4 flex-0" alt={title}>
-                                        <Image src={icon} priority className="rounded-xl u-cover" view="cover" />
-                                    </View> }
-                                    <View className="flex-0 flex flex-row items-center truncate overflow-hidden leading-tight space-x-1">
-                                        <Text className={ "font-bold whitespace-nowrap text-xs " + textColor } >{talk_type}:</Text>
-                                        <Text className={ "overflow-hidden truncate w-full max-h-6 text-xs items-center flex " + textColor }>{truncateHTML(message, 40)}</Text>
+                 <View className= { "max-h-full w-full flex flex-col " + ( talk === id ? 'bg-blue-600 hover:bg-blue-600' : '')}>
+                    <View className="hover:bg-white dark:hover:bg-gray-700/20 w-full" data-lot={id}>
+                            <View className="min-w-0 w-full flex flex-row gap-3 sm:items-top sm:justify-between items-center p-4">
+                                <View className="h-min text-center relative flex text-center flex-0">
+                                    <UserAvatar avatars={item['bx_repeat:avatars'][0]} />
+                                    <UserOnlineStatus {...item} />
+                                </View>
+                                <View className="flex space-y-1 flex-1 flex-col">
+                                    <Text className="w-full flex leading-tight text-base text-ellipsis overflow-hidden
+                                                         font-bold text-gray-900 dark:text-white whitespace-nowrap">{title}</Text>
+                                    <View className="w-full space-x-1 flex flex-row items-center items-center overflow-hidden text-xs">
+                                        <Time stylesName={ "flex-0 whitespace-nowrap text-xs " + textColor}  ts={time} />
+                                        { icon && <View className="w-4 h-4 flex-0" alt={title}>
+                                            <Image src={icon} priority className="rounded-xl u-cover" view="cover" />
+                                        </View> }
+                                        <View className="flex-0 flex flex-row items-center truncate overflow-hidden leading-tight space-x-1">
+                                            <Text className={ "font-bold whitespace-nowrap text-xs " + textColor } >{talk_type}:</Text>
+                                            <Text className={ "overflow-hidden truncate w-full max-h-6 text-xs items-center flex " + textColor }>{truncateHTML(message, 40)}</Text>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
-                        </View>
-                 </View>
-            </View>
-        </TouchableOpacity>
+                     </View>
+                </View>
+            </TouchableOpacity>
 }
 
 function SearchBox(props){
@@ -148,7 +144,7 @@ const TalkListItems = memo(function TalkListItems({ list, onLoadHistory }){
                     setTalks(data);
             }
          },
-        renderListItem = ({item}) => {
+        renderListItem = ({ item }) => {
             const { id } = item;
             return <TalksListItem key={id} item={item} />
         },
@@ -170,12 +166,12 @@ const TalkListItems = memo(function TalkListItems({ list, onLoadHistory }){
     return !talks.length ? <Text className={"text-2xl text-white text-center"}>Empty</Text> :
         <UniList
             data={talks}
-            ref={flashListRef}
             renderItem={renderListItem}
-            onEndReachedThreshold={1}
-           //onEndReached={loadList}
+            /*onEndReachedThreshold={1}
+            onEndReached={loadList}
+            */
             keyExtractor={keyExtractor}
-            estimatedItemSize = {72}
+            /*estimatedItemSize = {72}*/
             ListFooterComponent={
                 loading && <View className='m-2'><Loading/></View>
             }

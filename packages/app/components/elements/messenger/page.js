@@ -1,12 +1,10 @@
 import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import {Text} from 'app/design/typography'
-import {useState, useRef, useContext} from 'react';
+import { Text } from 'app/design/typography'
+import { useState, useRef } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { TalksListColumn } from 'app/components/elements/messenger/talks-list';
-import { Platform, useWindowDimensions, StyleSheet } from 'react-native';
-import { useMemo } from 'react'
-import { fetcher } from "../../../lib/fetcher";
+import { useWindowDimensions } from 'react-native';
 import { Button } from "../../../design/controls";
 import MessengerContext from './messenger-сontext';
 import { getGrid, getScreenMode, getSpace, sDesktop, sPhone }  from './grid-utils';
