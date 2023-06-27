@@ -50,16 +50,14 @@ export default function DropdownMenu(oProps) {
             </DmItem>
         );
     });
-/* FIX ANTON/ROMAN
-<DropdownMenuRoot>
-                <DropdownMenuTrigger>{oProps.children}</DropdownMenuTrigger>
-                <DmContent>{aDmItems}</DmContent>
-            </DropdownMenuRoot>
-            */
+
     return (
         <View >
             <Redirect ref={redirectdRef} />
-            
+            <DropdownMenuRoot>
+                <DropdownMenuTrigger>{oProps.children}</DropdownMenuTrigger>
+                <DmContent>{aDmItems}</DmContent>
+            </DropdownMenuRoot>
         </View>
     );
 }
