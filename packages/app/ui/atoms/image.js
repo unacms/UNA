@@ -66,8 +66,7 @@ export default function ElementImage(props) {
         }
     }
     
-    let srcImIn =  '/_next/image?url=' + src + "&w=" + 32 + "&q=75"
-
+    let srcImIn =  src.includes('/_next/image?url=') || src.includes('data:') ? src : '/_next/image?url=' + src + "&w=" + 32 + "&q=75"
     if (Platform.OS != 'web'){
         const imageWidth = extractStyleWidth(style) || width;
         let w = normalizeWidth(imageWidth);
