@@ -206,8 +206,9 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     let h = dataOut.find(item => item.id === 'block_header') 
     if (!h)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
-
-
+    
+    dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
+    //dataOut = dataOut.filter((item) => (item.data?.props?.children != undefined));
     return (
        
             <UniList
