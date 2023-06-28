@@ -3,17 +3,19 @@ import Field from './_field';
 import { View, Row, Pressable } from 'app/design/view'
 import Image from '../../ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd } from '../../lib/util';
 import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
-import { useController, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { uploadImage } from '../../lib/util';
 import { stringMd5 } from 'react-native-quick-md5';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
+import { Image as ImageNative } from 'react-native';
 
 export default function FormFieldFiles(props) {
     const [imageSource, setImageSource] = useState({ images: null});
@@ -87,25 +89,49 @@ export default function FormFieldFiles(props) {
                 mediaTypes: mediaTypes,
                 quality: 1,
                 allowsMultipleSelection: bMultiple,
-            });
-
-            if (!result.canceled) {
-                let k = imageSource.images;
-                result.assets.forEach(function (i) {
-                    let hash = stringMd5(i.uri);
-                    uploadImage(
-                        i.uri, 
-                        url + '&a=upload', 
-                        handleInsertImageFinish,
-                        {hash: hash}
-                    );
-
-                    let fileType = i.type? i.type + '/': i.uri.split(';')[0].split(':')[1];
-                    k = [...k , {file_url: i.uri, file_type:fileType, preload:true, hash: hash}]
                 });
                 
-                setImageSource({images:k});
-            }
+                if (!result.cancelled) {
+                    let k = imageSource.images;
+                
+                    for (const i of result.assets) {
+                        let uri = i.uri;
+                        
+                        ImageNative.getSize(uri, async (width, height) => {
+                          let manipulatedWidth = 2000;
+                          let manipulatedHeight = 2000;
+                          
+                          if (width > manipulatedWidth || height > manipulatedHeight) {
+                            if (width > height) {
+                                manipulatedHeight = Math.round((height * manipulatedWidth) / width);
+                            } else {
+                                manipulatedWidth = Math.round((width * manipulatedHeight) / height);
+                            }
+                      
+                            const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
+                              { resize: { width: manipulatedWidth, height: manipulatedHeight } }
+                            ]);
+                            uri = resizedPhoto.uri;
+                          }
+                          
+                          let hash = stringMd5(uri);
+                          uploadImage(
+                            uri,
+                            url + '&a=upload',
+                            handleInsertImageFinish,
+                            { hash: hash }
+                          );
+                          
+                          let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
+                          k = [
+                            ...k,
+                            { file_url: uri, file_type: fileType, preload: true, hash: hash }
+                          ];
+                        });
+                      }
+                
+                    setImageSource({ images: k });
+                }
         }
         else{
             try {
