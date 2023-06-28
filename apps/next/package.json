@@ -6,6 +6,7 @@
     "dev": "cross-env-shell next dev --hostname $HOST --port $PORT",
     "build": "next build",
     "start": "next start --hostname $HOST --port $PORT",
+    "start:pm2": "pm2 startOrRestart pm2.config.js --env prod",
     "lint": "next lint"
   },
   "dependencies": {
