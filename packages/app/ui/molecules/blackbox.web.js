@@ -169,7 +169,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>
                         }
-                        { headerSettings.title && <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
+                        { headerSettings.title && <Text  className="text-3xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
                         </Row> 
                         <Row className="pr-2">
                             {addButtons}
@@ -177,8 +177,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </Row>
                     }
                     <Row className="items-center gap-0 mx-4">
-                        {menuSettings?.icon ? <View className="text-2xl lg:text-3xl mr-2 hidden lg:flex"><Icon  icon={menuSettings?.icon} /></View> : <></>}
-                        {menuSettings?.name ? <Text  className="text-lg lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.name ? <Text  className="text-3xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0  w-full" >
                             <Row className="  mr-auto" >
                                 {routes.map((a) => (

@@ -122,7 +122,7 @@ export default function Unit(props) {
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (
-                <View className="text-center flex-col  h-auto px-4  h-36 justify-end">
+                <View className="px-3">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
                 </View>
             );
@@ -131,7 +131,7 @@ export default function Unit(props) {
             
                 
                 <View className="
-            mt-4 p-1 sm:mt-2 mx-2     group duration-200 overflow-hidden rounded-lg  
+            mt-4  sm:mt-2 mx-2     group duration-200 overflow-hidden rounded-lg  
            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
            hover:shadow-sm active:shadow-none 
@@ -145,23 +145,23 @@ export default function Unit(props) {
                     <View className='flex-col pb-4  '>  
                         
                         {data.cover &&
-                                <View className="w-full bg-neutral-500/20 rounded pt-[40%] overflow-hidden absolute" >
-                                    <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
+                                <View className="w-full bg-neutral-500/20 rounded  " >
+                                    <Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
+                                    <View className="sm:mx-auto mr-3 ml-auto translate-y-16    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+
+                                    <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
+                                    </View>
                                 </View>
                             } 
-                            
-                                <View className="sm:mx-auto mr-auto ml-4 mt-[25%]  p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+                               
+                                <View className="sm:mt-16">
 
-                                <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
-                                </View>
-                            
-                            
                             <Link href={data.url} >
                                 
-                                <Text className=" text-lg  font-bold text-gray-800 px-4 sm:text-center dark:text-gray-100 ml-36 sm:mx-auto -mt-12 sm:my-4">{data.title}</Text>
+                                <Text className=" text-xl sm:text-lg  font-bold text-gray-800 p-4 sm:text-center dark:text-gray-100 sm:mx-auto">{data.title}</Text>
                                 
                             </Link>
-                            <View className=''>{sMeta}</View>
+                            <View className=''>{sMeta}</View></View>
                     </View>
                 </Link>
             </View>
@@ -177,7 +177,7 @@ export default function Unit(props) {
             <View className="
                 hover:shadow-sm active:shadow-none 
                 mt-4 mx-2             
-                p-1   group duration-200 overflow-hidden rounded-lg  
+                  group duration-200 overflow-hidden rounded-lg  
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                 active:translate-y-0.5 border
@@ -190,7 +190,7 @@ export default function Unit(props) {
                         <Link href={data.url} >  
                         {data.image && (
                             <>
-                                <View className="relative rounded aspect-video  overflow-hidden w-full ">
+                                <View className="relative  aspect-video  overflow-hidden w-full ">
                                     <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
                                 </View>
                             </>

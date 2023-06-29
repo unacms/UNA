@@ -14,7 +14,7 @@ export const DropdownMenuContentV = DropdownMenu.create(
 export const DropdownMenuItemV = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'flex flex-row-reverse justify-end items-center px-3 py-2.5 gap-3 hover:bg-neoitem dark:hover:bg-neoitem-dark font-medium text-gray-700 dark:text-gray-200 dark:hover:text-white hover:cursor-pointer'
+    'flex flex-row-reverse  justify-end items-center px-3 py-2.5 gap-x-3 hover:bg-backgroundbutton-hover dark:hover:bg-backgroundbutton-darkhover font-medium text-gray-700 dark:text-gray-200 dark:hover:text-white hover:cursor-pointer'
   ),
   'Item'
 )
@@ -38,7 +38,7 @@ export const DropdownMenuItemH = DropdownMenu.create(
 export const DropdownMenuItemTitle = DropdownMenu.create(
   styled(
     DropdownMenu.ItemTitle,
-    'font-medium text-gray-700 dark:text-gray-200 '
+    'text-base text-gray-700 dark:text-gray-200 '
   ),
   'ItemTitle'
 )
@@ -46,7 +46,7 @@ export const DropdownMenuItemTitle = DropdownMenu.create(
 export const DropdownMenuItemIcon = DropdownMenu.create(
   styled(
     DropdownMenu.ItemIcon,
-     ' text-base text-gray-700 dark:text-gray-200 '
+     ' text-xl text-gray-700 dark:text-gray-200 '
   ),
   'ItemIcon'
 )

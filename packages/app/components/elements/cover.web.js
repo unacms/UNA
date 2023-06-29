@@ -111,7 +111,7 @@ export default function ElementCover(props) {
   return (
     <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
       <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
-        <View className=" duration-500 bg-primary-200 dark:bg-primary-950  -mx-4 w-auto pt-[40%]  xl:rounded-b-lg overflow-hidden">
+        <View className=" duration-500 bg-primary-200 dark:bg-primary-950  aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
             <Image
               alt={data.group_name}
@@ -121,6 +121,14 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
+          <View className="hidden bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1  rounded-lg  mx-4 my-auto  flex-none flex-row items-center  ">
+              <Text
+                numberOfLines={3}
+                className=" w-full text-sm  text-gray-800 dark:text-gray-200 "
+              >
+                {stripTags(data.profile.info.description)}
+              </Text>
+            </View>
           <View className='absolute lg:hidden top-4 left-8 z-50'>
           <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
             <Icon icon="left" width={24} height={24} />
@@ -131,38 +139,31 @@ export default function ElementCover(props) {
           <View
             className={
               sType +
-              ' w-min p-1  absolute -bottom-1  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
+              ' w-min p-1  absolute -bottom-12  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
             }
           >
             <Profile
               {...data.profile}
               displayType="unit_wo_info"
-              displaySize={width >= 1024 ? '3xl' : '2xl'}
+              displaySize={width >= 1024 ? '4xl' : '3xl'}
             />
           </View>
             
-          <View className=" flex-col ml-28 lg:ml-36  gap-4 mt-auto py-4 flex-auto">
-            <Text className="tracking-tight text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50">
+          <View className=" flex-col pl-36 lg:pl-52 mt-auto pt-4">
+            <Text className="tracking-tight text-3xl lg:text-4xl mb-1 font-bold text-gray-900 dark:text-gray-50">
               {data.profile.display_name}
             </Text>
 
             
           </View>
         </View>
-        <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
-              <Text
-                numberOfLines={3}
-                className=" w-full text-sm sm:text-base text-gray-800 dark:text-gray-200 "
-              >
-                {stripTags(data.profile.info.description)}
-              </Text>
-            </View>
-        <View className="p-4 flex-row flex-wrap items-center align-center  gap-4 w-full justify-between">
+        
+        <View className="pl-2 pr-4 pb-4 ml-36 lg:ml-52 flex-col md:flex-row   gap-4 justify-between">
           <View className="  flex-none ">
             <CoverMenuMeta {...data.meta_menu} />
           </View>
           
-          <View className="flex-none">
+          <View className="flex-none ">
             <CoverMenu {...data.actions_menu} />
           </View>
         </View>

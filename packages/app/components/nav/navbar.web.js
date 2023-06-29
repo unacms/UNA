@@ -190,11 +190,11 @@ export default function (props) {
                 </View>
               </Link>
             }
-              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={() => router.back()} >
+              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 rounded-full justify-center items-center" onPress={() => router.back()} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
               }
-              { headerSettings.title && <Text  className="text-lg lg:hidden lg:text-xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+              { headerSettings.title && <Text  className="text-2xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
          
           
         </Row>

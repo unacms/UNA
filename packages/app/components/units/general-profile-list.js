@@ -36,14 +36,14 @@ export default function Unit(props) {
                     mt-[1px] max-w-5xl self-center w-full sm:border
                     active:translate-y-0.5 
                     border-bordercolorcard dark:border-bordercolorcard-dark ">  
-                        <View className="w-12 h-12 mr-2 rounded-full flex-none ">
-                            <Profile url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="lg" />
+                        <View className="w-10 h-10 mr-2 rounded-full flex-none ">
+                            <Profile url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="base" />
                         </View>
                         <View className="flex-auto my-auto ">
                             <View className='flex-row justify-between'>
-                                <View className="justify-start">
-                                    <Text className='text-sm mr-2 font-semibold text-gray-900 dark:text-gray-100'>{data.title}</Text>
-                                    <Text className=' text-sm text-gray-900 dark:text-gray-100' numberOfLines={1}>TODO FRIENDS COUNT</Text>    
+                                <View className="justify-center">
+                                    <Text className='text-base mr-2 font-semibold text-gray-900 dark:text-gray-100'>{data.title}</Text>
+                                      
                                 </View>
             
                                 <View className=''>{sMeta}</View>

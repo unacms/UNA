@@ -128,12 +128,12 @@ const colors = {
   },
 
   backgrounditem: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    dark: 'rgba(31,41,55,0.8)',
+    DEFAULT: 'rgba(229,231,235,0.9)',
+    dark: 'rgba(31,41,55,0.9)',
   },
   bordercoloritem: {
     DEFAULT: 'rgba(229,231,235,1)',
-    dark: 'rgba(229,231,235,1)',
+    dark: 'rgba(31,41,55,1)',
   },
 
   backgroundbutton: {
