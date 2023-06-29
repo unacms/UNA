@@ -2,7 +2,6 @@ import Image from '../../ui/atoms/image'
 import Link from '../../ui/atoms/link'
 import Time from '../../ui/atoms/time'
 import Profile from '../../ui/molecules/profile'
-
 import { useState, useMemo } from 'react'
 import Html from '../../ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -13,7 +12,7 @@ import { Button } from 'app/design/controls'
 import Menu from '../menu'
 import { truncateHTML, stripTags } from 'app/lib/util'
 import dynamic from 'next/dynamic'
-import React from 'react';
+import React from 'react'
 
 function DefaultUnit(data) {
   const [showFull, setShowFull] = useState(false)
@@ -43,8 +42,7 @@ function DefaultUnit(data) {
   let sLong = truncateHTML(data.content.text, 10000000)
 
   let bIsLong =
-    data?.content?.text &&
-    stripTags(sShort.trim()) != stripTags(sLong.trim())
+    data?.content?.text && stripTags(sShort.trim()) != stripTags(sLong.trim())
   return (
     <View className="max-w-5xl w-full mx-auto ">
       <View
@@ -58,7 +56,7 @@ function DefaultUnit(data) {
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
       >
-        <View className="flex-auto px-4 pt-4">
+        <View className="flex-auto flex-row items-top gap-x-4 px-4 pt-4">
           <Profile
             {...data.author_data}
             showLink={true}
@@ -70,11 +68,21 @@ function DefaultUnit(data) {
               </Link>
             }
           />
+         
+          <View className="flex-auto  justify-end flex-row gap-x-2 my-auto">
+          <Button title="Follow" size="sm" solid rounded variant="outline" />
+
+            <Button startDecorator="DotsThreeOutline" size="sm"  rounded variant="outline" />
+          </View>
         </View>
 
         <View className="flex-col ">
-          {data.mainImage && (
-            <View className="w-full   mb-auto px-1 mt-4 aspect-video ">
+         
+      
+          
+            <View className="flex-auto px-2 py-4  flex-col md:flex-row-reverse gap-x-2 gap-y-3">
+            {data.mainImage && (
+            <View className="w-full md:w-1/3 mb-auto md:pr-2  aspect-video ">
               <View className="w-full aspect-video " style={styles.card_image}>
                 <Image
                   {...data.mainImage}
@@ -86,86 +94,92 @@ function DefaultUnit(data) {
               </View>
             </View>
           )}
-          <View className="flex-auto p-4  flex-col gap-2">
-            {bIsTitle && (
-              <Link href={url} className="w-full">
-                <Text
-                  numberOfLines={2}
-                  className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold"
-                >
-                  {data.content.title}
-                </Text>
-              </Link>
-            )}
-            {!showFull ? (
-              <View>
-                <View className="flex-col gap-y-3 relative">
-                  {bIsTimelineContent && (
-                    <View>
-                      <Html data={truncateHTML(data.content.text, 380)} />
-                      {data.showMore && !showFull && bIsLong && (
-                        <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
-                          <Button
-                            title="More"
-                            onPress={(e) => {
-                              setShowFull(true)
-                              e.preventDefault()
-                            }}
-                            startDecorator="ArrowFatLineDown"
-                            size="xs"
-                            solid
-                            rounded
-                            variant="outline"
-                          />
-                        </View>
-                      )}
+              <View className="flex-auto px-2 flex-col gap-2">
+              {bIsTitle && (
+                <Link href={url} className="">
+                  <Text
+                    numberOfLines={2}
+                    className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold"
+                  >
+                    {data.content.title}
+                  </Text>
+                </Link>
+              )}
+              {!showFull ? (
+                <View>
+                  <View className="flex-col gap-y-3 relative">
+                    {bIsTimelineContent && (
+                      <View>
+                        <Html data={truncateHTML(data.content.text, 380)} />
+                        {data.showMore && !showFull && bIsLong && (
+                          <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
+                            <Button
+                              title="More"
+                              onPress={(e) => {
+                                setShowFull(true)
+                                e.preventDefault()
+                              }}
+                              startDecorator="ArrowFatLineDown"
+                              size="xs"
+                              solid
+                              rounded
+                              variant="outline"
+                            />
+                          </View>
+                        )}
+                      </View>
+                    )}
+                    {!bIsTimelineContent && (
+                      <Text
+                        className="text-gray-950 dark:text-gray-50 text-base"
+                        numberOfLines={3}
+                      >
+                        {data.content.text}
+                      </Text>
+                    )}
+                  </View>
+                  {!!data.sFirstImg && (
+                    <View
+                      className={
+                        imageAspect + ' w-full rounded mt-4 overflow-hidden'
+                      }
+                    >
+                      <Image
+                        src={data.sFirstImg}
+                        alt={data.title}
+                        view="cover"
+                      />
                     </View>
                   )}
-                  {!bIsTimelineContent && (
-                    <Text
-                      className="text-gray-950 dark:text-gray-50 text-base"
-                      numberOfLines={2}
-                    >
-                      {data.content.text}
-                    </Text>
-                  )}
                 </View>
-                {!!data.sFirstImg && (
-                  <View
-                    className={
-                      imageAspect + ' w-full rounded mt-4 overflow-hidden'
-                    }
-                  >
-                    <Image src={data.sFirstImg} alt={data.title} view="cover" />
-                  </View>
-                )}
-              </View>
-            ) : (
-              <View className="flex-col relative w-full">
-                <Html data={data.content.text} />
+              ) : (
+                <View className="flex-col relative">
+                  <Html data={data.content.text} />
+                </View>
+              )}
+             </View>
+            </View>
+            {bIsTimelineContent && (
+              <View className="pb-2">
+                <UnitImages images={data.content.images_attach} />
               </View>
             )}
-          </View>
-          {bIsTimelineContent && (
-            <View className="pb-3">
-            <UnitImages images={data.content.images_attach} />
-            </View>
-          )}
-          <View className="flex-col gap-3 relative px-4 pb-4">
-            <View className=" flex-auto   flex-row  w-full">
-              <View className="mt-auto flex-row space-x-2 flex-auto">
-                <Menu
-                  {...data.menu_actions}
-                  displayType="button"
-                  params={{
-                    show_action: true,
-                    show_counter: true,
-                    show_combined: true,
-                  }}
-                />
+            <View className="flex-col gap-3 relative px-4 pb-4">
+              <View className=" flex-auto   flex-row  w-full">
+                <View className="mt-auto flex-row space-x-2 flex-auto">
+                  <Menu
+                    {...data.menu_actions}
+                    displayType="button"
+                    params={{
+                      show_action: true,
+                      show_counter: true,
+                      show_combined: true,
+                    }}
+                  />
+                </View>
               </View>
             </View>
-          </View>
+          
         </View>
       </View>
     </View>
@@ -235,15 +249,15 @@ function SmallUnit(data) {
 
 function CarouselMemo({ aImg, b }) {
   const computedData = useMemo(() => {
-      const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
-    return  <Carousel data={aImg}/>
-  }, [b]); 
-  return computedData;
+    const Carousel = React.memo(
+      dynamic(() => import('../../ui/molecules/carousel'))
+    )
+    return <Carousel data={aImg} />
+  }, [b])
+  return computedData
 }
 
 function UnitImages(images) {
-
- 
   if (images?.images.length == 0) return <></>
 
   let aImg = images?.images.map((obj) => {
@@ -254,7 +268,9 @@ function UnitImages(images) {
   })
 
   return (
-      <View className='w-full aspect-video mb-6'><CarouselMemo aImg={aImg} /></View>
+    <View className="w-full aspect-video mb-6">
+      <CarouselMemo aImg={aImg} />
+    </View>
   )
 }
 
