@@ -207,8 +207,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     if (!h)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     
-    dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
-    //dataOut = dataOut.filter((item) => (item.data?.props?.children != undefined));
+    //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
+
     return (
        
             <UniList
@@ -219,6 +219,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 renderItem={({item, index }) => {
 
                     if (item.id.toString().includes('block')){
+                        //console.log(typeof item.data?.props?.children, item.data)
                         return item.data;
                     }
                     return (

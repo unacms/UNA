@@ -86,13 +86,11 @@ export default function Layout(props) {
                             { props.children }
                         </View>)
                     }
-                    </View>
-                   
+                    </View> 
                 </View>
                 <Footer/>
             </View>
             <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
-  
         </>
     );
 }
