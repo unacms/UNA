@@ -1,5 +1,5 @@
 import MessengerPage from 'app/components/elements/messenger/page';
 import { TopMenu, GroupsMenu } from 'app/components/elements/messenger/menu';
-import TalksList from 'app/components/elements/messenger/talks-list';
+import { ConvosList } from 'app/components/elements/messenger/convos-list';
 
-export { MessengerPage, TalksList, TopMenu, GroupsMenu };
+export { MessengerPage, ConvosList, TopMenu, GroupsMenu };

@@ -1,9 +1,10 @@
 import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
 import { Text } from 'app/design/typography'
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
-import { TalksListColumn } from 'app/components/elements/messenger/talks-list';
+import { ConvosListColumn } from 'app/components/elements/messenger/convos-list';
+import History from 'app/components/elements/messenger/history';
 import { useWindowDimensions } from 'react-native';
 import { Button } from "../../../design/controls";
 import MessengerContext from './messenger-сontext';
@@ -12,13 +13,16 @@ import { getGrid, getScreenMode, getSpace, sDesktop, sPhone }  from './grid-util
 export default function PageLayout({ data }) {
     const [panel, selectPanel] = useState(false);
     const [menuItem, selectMenu] = useState('inbox');
-    const [talk, selectTalk] = useState(0);
+    const [convo, selectConvo] = useState(0);
+    const [convoInfo, setConvoItem] = useState([]);
 
     const { list, history } = data,
           { height } = useWindowDimensions(),
           sMode = getScreenMode(),
           iSpace = getSpace(sMode),
-         { historyCol, listCol, menuCol } = getGrid( sMode, panel );
+         { historyCol, listCol } = useMemo(() => getGrid( sMode, panel ), [sMode, panel]);
+
+    const [viewMenu, setMenuView] = useState(sMode === sDesktop);
 
     const oWindowRef = useRef(),
           iHeight = height - iSpace;
@@ -26,37 +30,43 @@ export default function PageLayout({ data }) {
     const handlerSelectMenu = (sMenu) => {
         //console.log( '-- log select menu --', sMenu);
         selectMenu(sMenu);
+        setMenuView((viewMenu) => !viewMenu);
 
         /*if (panel === 'menu' && sMode !== sDesktop)
             selectPanel(false);*/
     };
 
-    const handlerSelectTalk = (iTalk) => {
-        selectTalk(iTalk);
-
-        if (sMode === sPhone)
-            selectPanel(panel !== 'history' && 'history');
-
-        //console.log('--- log select talk ---', iTalk);
+    const handlerMenuView = (bView) => {
+        if (typeof bView !== 'undefined')
+            setMenuView(bView);
+        else
+            setMenuView((viewMenu) => !viewMenu);
     };
 
-    // {/*grid grid-cols-10*/}
-    //{/*list={data?.list?.items}*/}
-    //console.log('----- log rerender main page ----', data);
-    return <MessengerContext.Provider value={{ device: sMode, handlerSelectMenu, menuItems: data.menu, menuItem, talk, selectTalk: handlerSelectTalk, viewMenu: sMode === sDesktop, selectPanel }}>
+    const handlerSelectConvo = (item) => {
+        const { id } = item;
+        selectConvo(id);
+        setConvoItem(item);
+
+        //console.log('------ log data ----', sMode, id);
+        if (sMode === sPhone)
+            selectPanel(panel !== 'history' && 'history');
+    };
+
+    //console.log('----- log rerender main page ----', sMode );
+    return <MessengerContext.Provider value={{ height: iHeight, handlerSelectMenu,
+        handlerMenuView, menuItems: data.menu, menuItem, convo,
+        handlerSelectConvo, viewMenu, selectPanel }}>
         <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
             <View className="w-full h-full mx-auto flex flex-row bg-gray-50 dark:bg-gray-900">
-                <View className="hidden xl:block xl:w-2/12 border-r border-bordercolornavbar dark:border-bordercolornavbar-dark">
-                    <MenuColumn {...data.menu} />
+                <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
+                    <MenuColumn { ...data.menu } />
                 </View>
-                <View className="w-full md:w-4/12 xl:w-4/12">
-                    <TalksListColumn />
+                <View className={ listCol }>
+                    <ConvosListColumn />
                 </View>
-                <View className="w-full md:w-8/12 xl:w-6/12 border-l border-bordercolornavbar dark:border-bordercolornavbar-dark">
-                    <View className="w-full absolute top-0 p-4">
-                        <Button variant="custom" startDecorator="CaretLeft" solid align="start" className="block md:hidden" onPress={() => selectPanel(panel !== 'history')}/>
-                    </View>
-                    <Text>History</Text>
+                <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark"}>
+                   <History convo={convoInfo} pressBack={() => selectPanel(panel !== 'history')}/>
                 </View>
             </View>
         </View>

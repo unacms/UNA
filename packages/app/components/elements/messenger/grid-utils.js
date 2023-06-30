@@ -1,19 +1,24 @@
 import { useWindowDimensions } from "react-native";
+import { memo } from "react";
 
 const sTablet = 'tablet',
+    sTablet2 = 'tablet2',
     sPhone = 'phone',
     sDesktop = 'desktop';
 
 function getScreenMode(){
     const { width } = useWindowDimensions(),
-        aModePrefixes = {[sPhone]: { pfx: '', width: 0 }, [sTablet]: { pfx: 'md', width: 768 }, [sDesktop]: { pfx: 'xl', width: 1280 }};
+        aModePrefixes = {[sPhone]: { pfx: '', width: 0 }, [sTablet]: { pfx: 'md', width: 768 }, [sTablet2]: { pfx: 'md', width: 1024 }, [sDesktop]: { pfx: 'xl', width: 1280 }};
 
     let sMode = sDesktop;
     if (width > aModePrefixes[sPhone].width && width <= aModePrefixes[sTablet].width)
         sMode = sPhone;
 
-    if (width > aModePrefixes[sTablet].width && width <= aModePrefixes[sDesktop].width)
+    if (width > aModePrefixes[sTablet].width && width <= aModePrefixes[sTablet2].width)
         sMode = sTablet;
+
+    if (width > aModePrefixes[sTablet2].width && width <= aModePrefixes[sDesktop].width)
+        sMode = sTablet2;
 
     return sMode;
 }
@@ -29,7 +34,10 @@ function getSpace(sMode) {
             iSpace = iHeader;
             break;
         case sTablet:
-            iSpace = iFooter;
+            iSpace = iFooter + iHeader;
+            break;
+        case sTablet2:
+            iSpace = iHeader;
             break;
         case sPhone:
             iSpace = iFooter;
@@ -39,68 +47,39 @@ function getSpace(sMode) {
     return iSpace;
 };
 
-function getGrid(sMode, sPanel = false){
+function getGrid(sMode, sPanel = false) {
     const aMainViewScheme = {
         history: {
-            [sDesktop]: { view: 'col-span-5', enabled: true },
-            [sTablet]: { view : 'col-span-6', enabled: true },
-            [sPhone]: { view : 'col-span-10', columns: { list: 'hidden' }},
+            [sDesktop]: { view: 'w-6/12', enabled: true },
+            [sTablet]: { view : 'w-8/12', enabled: true },
+            [sTablet2]: { view : 'w-8/12', enabled: true },
+            [sPhone]: { view : 'w-full', columns: { list: 'hidden' }},
         },
         list: {
-            [sDesktop]: { view: 'col-span-3', enabled: true },
-            [sTablet]: { view: 'col-span-4', enabled: true },
-            [sPhone]: { view: 'col-span-10', enabled: true, columns: { history: 'hidden' }},
-        },
-        menu: {
-            [sDesktop]: { view: 'col-span-2', enabled: true, columns: { list: 'col-span-2', history: 'col-span-3' }},
-            [sTablet]: {
-                view: 'col-span-3',
-                columns: { list: 'col-span-3', history: 'col-span-4' }
-            },
-            [sPhone]: {
-                view: 'col-span-8', columns: { list: 'col-span-2' }
-            },
-        },
-        info: {
-            [sDesktop]: {
-                view: 'col-span-3',
-                columns: {
-                    menu: 'col-span-2',
-                    list: 'col-span-2',
-                    history: 'col-span-3'
-                }
-            },
-            [sTablet]: {
-                view: 'col-span-4',
-                columns: {
-                    list: 'col-span-3',
-                    history: 'col-span-3'
-                }
-            },
-            [sPhone]: {
-                view: 'col-span-10',
-                columns: {
-                    history: 'hidden'
-                }
-            },
-        },
+            [sDesktop]: { view: 'w-4/12', enabled: true },
+            [sTablet]: { view: 'w-4/12', enabled: true },
+            [sTablet2]: { view: 'w-4/12', enabled: true },
+            [sPhone]: { view: 'w-full', enabled: true, columns: { history: 'hidden' }},
+        }
     };
 
     const getStyle = (sColumn) => {
         let sValue = aMainViewScheme[sColumn][sMode].enabled ? aMainViewScheme[sColumn][sMode].view : 'hidden';
-
         if (sPanel && typeof aMainViewScheme[sPanel][sMode] !== 'undefined') {
+            const { view, columns } = aMainViewScheme[sPanel][sMode];
             if (sPanel === sColumn)
-                sValue = typeof aMainViewScheme[sPanel][sMode].view !== 'undefined' ? aMainViewScheme[sPanel][sMode].view : 'hidden';
+                sValue = view ? view : 'hidden';
             else
-                sValue = typeof aMainViewScheme[sPanel][sMode].columns[sColumn] !== 'undefined' ? aMainViewScheme[sPanel][sMode].columns[sColumn] : 'hidden';
+                sValue = columns && columns[sColumn] !== 'undefined' ? columns[sColumn] : 'hidden';
         }
+
+        //console.log('----- log execute dimension  -----', aMainViewScheme, sMode, sColumn, sPanel, sValue);
 
         return { [sColumn + 'Col'] : sValue };
     };
 
-    //console.log('----- log execute dimension  -----');
-    return Object.assign( getStyle('history'), getStyle('list'), getStyle('menu') );
-}
+
+    return Object.assign( getStyle('history'), getStyle('list') );
+};
 
 export { getScreenMode, getGrid, getSpace, sTablet, sDesktop, sPhone };
