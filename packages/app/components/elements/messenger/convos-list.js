@@ -175,10 +175,11 @@ export default function ConvosList(props) {
     const { menuItem, viewMenu, handlerMenuView } = useContext(MessengerContext);
 
     const handlerCloseMenu = () => handlerMenuView(false);
-
     useEffect(() => {
-        document.addEventListener('click', handlerCloseMenu);
-        return () => document.removeEventListener('click', handlerCloseMenu);
+        if (typeof document !== 'undefined') {
+            document.addEventListener('click', handlerCloseMenu);
+            return () => document.removeEventListener('click', handlerCloseMenu);
+        }
     }, []);
 
    //console.log('------ log generate talks list area ----');
