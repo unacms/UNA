@@ -165,19 +165,18 @@ export const staticDefault = {
           <View className="border-b  w-full  border-dashed border-backgroundcard dark:border-backgroundcard-dark  bg-gradient-to-r from-neutral-200 dark:from-neutral-800 ">
             <View className="px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark ">
               <Text className="text-xl  font-bold text-neutral-800 dark:text-neutral-200 ">
-              About
+                About
               </Text>
             </View>
-
           </View>
           <Text className="text-sm p-4 text-neutral-600 dark:text-neutral-400 ">
-          NEO is an open-source universal frontend app for UNA platform. Powered by ReactJS with NextJS and React Native with Expo. Curerent version - 0.1.0.
+            NEO is an open-source universal frontend app for UNA platform.
+            Powered by ReactJS with NextJS and React Native with Expo. Curerent
+            version - 0.1.0.
           </Text>
           <Text className="text-sm px-4 pb-4 font-semibold text-neutral-600 dark:text-neutral-400 ">
-          Developed by Yasko.Studio. 
+            Developed by Yasko.Studio.
           </Text>
-
-
         </View>
 
         <></>
@@ -225,172 +224,191 @@ export const staticDefault = {
       </>
     ),
     home: (
-      <View className=" w-full max-w-screen-xl mx-auto">
-        <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
-          <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
-            <View>
-              <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-accent dark:text-accent-dark text-center md:text-start">
-                Welcome
+      <View className="flex-col  ">
+       
+        <View className=" w-full max-w-screen-xl mx-auto">
+          <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
+            <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
+              <View>
+                <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-accent dark:text-accent-dark text-center md:text-start">
+                  Welcome
+                </Text>
+                <Text className="text-4xl sm:text-5xl   xl:text-6xl  font-bold text-neutral-800 dark:text-neutral-200 text-center md:text-start">
+                  to your network!
+                </Text>
+              </View>
+              <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
+                Connect, create, discover, learn, share and grow together with
+                your community. Powered by UNA platform.
               </Text>
-              <Text className="text-4xl sm:text-5xl   xl:text-6xl  font-bold text-neutral-800 dark:text-neutral-200 text-center md:text-start">
-                to your network!
-              </Text>
+              <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
+                <Link href="/create-account">
+                  <Button
+                    title="Create account"
+                    variant="primary"
+                    startDecorator="UserCirclePlus"
+                  />
+                </Link>
+                <Link href="/login">
+                  <Button
+                    title="Log in"
+                    variant="outline"
+                    startDecorator="SignIn"
+                  />
+                </Link>
+              </View>
             </View>
-            <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
-              Connect, create, discover, learn, share and grow together with
-              your community.
-            </Text>
-            <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
-              <Link href="/create-account">
-                <Button
-                  title="Create account"
-                  variant="primary"
-                  startDecorator="UserCirclePlus"
+            <View className=" w-full p-8 md:w-[40%]  hover:scale-110 hover:rotate-[360deg] duration-500 w-full  p-4  ">
+              <Svg
+                aria-label="Logo Mark"
+                className=" groups  "
+                viewBox="0 0 2400 2400"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <Path
+                  d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
+                  className="  text-accent-400 dark:text-accent-600 opacity-80"
+                  fill="#E2554F"
                 />
-              </Link>
-              <Link href="/login">
-                <Button
-                  title="Log in"
-                  variant="outline"
-                  startDecorator="SignIn"
+                <Path
+                  d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
+                  className="text-accent-400 dark:text-accent-600 opacity-80"
+                  fill="#E2554F"
                 />
-              </Link>
+                <Path
+                  d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
+                  className="text-accent dark:text-accent-dark"
+                  fill="#E2554F"
+                />
+                <Path
+                  d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
+                  className="text-neutral-400 dark:text-neutral-600 "
+                  fill="currentColor"
+                />
+                <Path
+                  d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
+                  className="text-neutral-400 dark:text-neutral-600 "
+                  fill="currentColor"
+                />
+              </Svg>
             </View>
           </View>
-          <View className=" w-full p-8 md:w-[40%]  hover:scale-110 hover:rotate-[360deg] duration-500 w-full  p-4  ">
-            <Svg
-              aria-label="Logo Mark"
-              className=" groups  "
-              viewBox="0 0 2400 2400"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <Path
-                d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-                className="  text-accent-400 dark:text-accent-600 opacity-80"
-                fill="#E2554F"
-              />
-              <Path
-                d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-                className="text-accent-400 dark:text-accent-600 opacity-80"
-                fill="#E2554F"
-              />
-              <Path
-                d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-                className="text-accent dark:text-accent-dark"
-                fill="#E2554F"
-              />
-              <Path
-                d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-                className="text-neutral-400 dark:text-neutral-600 "
-                fill="currentColor"
-              />
-              <Path
-                d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-                className="text-neutral-400 dark:text-neutral-600 "
-                fill="currentColor"
-              />
-            </Svg>
-          </View>
+
+          <Row className="flex-wrap p-4  flex-auto  ">
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                    <Icon icon="Graph" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Connect
+                  </Text>
+                </View>
+
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Make friends and create lasting connections.
+                </Text>
+              </View>
+            </View>
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                    <Icon icon="ChatsTeardrop" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Discuss
+                  </Text>
+                </View>
+
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Ask questions and talk about your interests.{' '}
+                </Text>
+              </View>
+            </View>
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                    <Icon icon="ShareNetwork" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Share
+                  </Text>
+                </View>
+
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Share your thoughts, ideas and experiences.
+                </Text>
+              </View>
+            </View>
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                    <Icon icon="MagicWand" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Create
+                  </Text>
+                </View>
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Publish your own content and grow your audience.
+                </Text>
+              </View>
+            </View>
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                    <Icon icon="Student" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Learn
+                  </Text>
+                </View>
+
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Explore new ideas and learn from experts and peers.
+                </Text>
+              </View>
+            </View>
+            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
+              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
+                <View className=" gap-y-3 ">
+                  <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                    <Icon icon="Handshake" width={32} height={32} />
+                  </View>
+                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
+                    Collaborate
+                  </Text>
+                </View>
+
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                  Work together to achieve common goals as a team.
+                </Text>
+              </View>
+            </View>
+          </Row>
         </View>
 
-        <Row className="flex-wrap p-4  flex-auto mb-20 ">
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
-                  <Icon icon="Graph" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Connect
-                </Text>
-              </View>
-
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Make friends and create lasting connections.
+        <View className="flex-row w-full  mb-12   ">
+          <View className="border-b  w-20 border-dashed border-neutral-100 dark:border-neutral-950  bg-gradient-to-r from-neutral-100 to-neutral-300 dark:from-neutral-950 dark:to-neutral-900 ">
+            <View className="h-2 bg-neutral-100 dark:bg-neutral-950"></View>
+          </View>
+          <View className="border-b flex-auto  border-dashed border-neutral-100 dark:border-neutral-950  bg-neutral-300 dark:bg-neutral-900 ">
+            <View className="h-2 bg-neutral-100 dark:bg-neutral-950">
+              <Text className="text-xs  mx-auto px-2 bg-neutral-100 dark:bg-neutral-950 text-neutral-500/60 ">
+                NEO v.0.1.0
               </Text>
             </View>
           </View>
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                  <Icon icon="ChatsTeardrop" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Discuss
-                </Text>
-              </View>
-
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Ask questions and talk about your interests.{' '}
-              </Text>
-            </View>
+          <View className="border-b  w-20 border-dashed border-neutral-100 dark:border-neutral-950  bg-gradient-to-l from-neutral-100 to-neutral-300 dark:from-neutral-950 dark:to-neutral-900 ">
+            <View className="h-2 bg-neutral-100 dark:bg-neutral-950"></View>
           </View>
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
-                  <Icon icon="ShareNetwork" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Share
-                </Text>
-              </View>
-
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Share your thoughts, ideas and experiences.
-              </Text>
-            </View>
-          </View>
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                  <Icon icon="MagicWand" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Create
-                </Text>
-              </View>
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Publish your own content and grow your audience.
-              </Text>
-            </View>
-          </View>
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                  <Icon icon="Student" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Learn
-                </Text>
-              </View>
-
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Explore new ideas and learn from experts and peers.
-              </Text>
-            </View>
-          </View>
-          <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-            <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-              <View className=" gap-y-3 ">
-                <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
-                  <Icon icon="Handshake" width={32} height={32} />
-                </View>
-                <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                  Collaborate
-                </Text>
-              </View>
-
-              <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Work together to achieve common goals as a team.
-              </Text>
-            </View>
-          </View>
-        </Row>
+        </View>
       </View>
     ),
   },
