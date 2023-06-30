@@ -130,10 +130,7 @@ export const staticDefault = {
           d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
           fill="#E2554F"
         />
-        <Path
-          d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-          fill="#E2554F"
-        />
+        <Path d="M987.5 1502L740 921.75L120 2000L987.5 1502Z" fill="#E2554F" />
 
         <Path
           d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
@@ -163,73 +160,68 @@ export const staticDefault = {
     ),
 
     home2: (
-      <><View className=" w-full  pt-4 px-2 ">
-                  <View className=" p-6 shadow-sm border border-primary/40 top-0 overflow-hidden  flex-col  bg-primary/10 rounded-lg ">
-                    <View className="mt-auto w-full gap-y-4 flex-col align-justify  ">
-                      <Text className="text-3xl  font-bold text-neutral-800 dark:text-neutral-200 ">
-                        Go Premium!
-                      </Text>
+      <>
+        <View className="  mt-4  overflow-hidden flex-col rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+          <View className="border-b  w-full  border-dashed border-backgroundcard dark:border-backgroundcard-dark  bg-gradient-to-r from-neutral-200 dark:from-neutral-800 ">
+            <View className="px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark ">
+              <Text className="text-xl  font-bold text-neutral-800 dark:text-neutral-200 ">
+              About
+              </Text>
+            </View>
 
-                      <Text className="text-lg  text-neutral-600 dark:text-neutral-400 ">
-                        Connect, create, discover, learn, share and grow
-                        together with your community.
-                      </Text>
-                      <View className="mt-auto flex-auto">
-                        <Button
-                          variant="primary"
-                          title="Upgrade Membership"
-                          startDecorator="RocketLaunch"
-                          className="mt-auto"
-                        />
-                      </View>
-                    </View>
+          </View>
+          <Text className="text-sm p-4 text-neutral-600 dark:text-neutral-400 ">
+          NEO is an open-source universal frontend app for UNA platform. Powered by ReactJS with NextJS and React Native with Expo. Curerent version - 0.1.0.
+          </Text>
+          <Text className="text-sm px-4 pb-4 font-semibold text-neutral-600 dark:text-neutral-400 ">
+          Developed by Yasko.Studio. 
+          </Text>
 
-                    <View className="absolute -top-2/3 -right-2/3 aspect-square w-full bg-primary/5  p-8 rounded-full">
-                      <View className=" aspect-square w-full bg-primary/5 p-8 rounded-full">
-                        <View className=" aspect-square w-full bg-primary/5  p-8 rounded-full"></View>
-                      </View>
-                    </View>
-                    <View className="absolute top-0  aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
-                    <View className="absolute top-1/4 -left-1/4 aspect-square w-3/4 rotate-12 rounded-lg bg-primary/5  "></View>
-                    <View className="absolute top-3/4 -left-1/4 aspect-square w-full rotate-12 rounded-lg bg-primary/5   "></View>
-                  </View>
-                </View></>
+
+        </View>
+
+        <></>
+      </>
     ),
     footer: (
       <>
         <View className=" w-full px-2 mt-4">
-                  <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
-                  <Link href='/about'><Button
-                      variant="text"
-                      title="About"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    /></Link>
+          <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+            <Link href="/about">
+              <Button
+                variant="text"
+                title="About"
+                className="mt-auto"
+                size="sm"
+              />
+            </Link>
 
-<Link href='/contact'><Button
-                      variant="text"
-                      title="Contact"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    /></Link>
-                    <Link href='/privacy'><Button
-                      variant="text"
-                      title="Privacy"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    /></Link>
-                    <Link href='/terms'><Button
-                      variant="text"
-                      title="Terms"
-                      
-                      className="mt-auto"
-                      size="sm"
-                    /></Link>
-                  </View>
-                </View>
+            <Link href="/contact">
+              <Button
+                variant="text"
+                title="Contact"
+                className="mt-auto"
+                size="sm"
+              />
+            </Link>
+            <Link href="/privacy">
+              <Button
+                variant="text"
+                title="Privacy"
+                className="mt-auto"
+                size="sm"
+              />
+            </Link>
+            <Link href="/terms">
+              <Button
+                variant="text"
+                title="Terms"
+                className="mt-auto"
+                size="sm"
+              />
+            </Link>
+          </View>
+        </View>
       </>
     ),
     home: (
@@ -331,7 +323,8 @@ export const staticDefault = {
               </View>
 
               <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                Ask questions and talk about your interests.            </Text>
+                Ask questions and talk about your interests.{' '}
+              </Text>
             </View>
           </View>
           <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">

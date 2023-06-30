@@ -111,7 +111,7 @@ export default function ElementCover(props) {
   return (
     <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
       <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
-        <View className=" duration-500 bg-primary-200 dark:bg-primary-950  aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
+        <View className=" duration-500 bg-primary-200 dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
             <Image
               alt={data.group_name}
@@ -135,38 +135,41 @@ export default function ElementCover(props) {
           </Pressable>
           </View>
         </View>
-        <View className="relative  flex-row flex-wrap px-4 gap-4 ">
-          <View
-            className={
-              sType +
-              ' w-min p-1  absolute -bottom-12  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
-            }
-          >
-            <Profile
-              {...data.profile}
-              displayType="unit_wo_info"
-              displaySize={width >= 1024 ? '4xl' : '3xl'}
-            />
-          </View>
-            
-          <View className=" flex-col pl-36 lg:pl-52 mt-auto pt-4">
-            <Text className="tracking-tight text-3xl lg:text-4xl mb-1 font-bold text-gray-900 dark:text-gray-50">
-              {data.profile.display_name}
-            </Text>
 
-            
+        <View className="relative  flex-col md:flex-row gap-x-4 px-2 sm:px-4 pb-4 ">
+          
+          <View className=" flex-col  w-full md:w-52 ">
+            <View
+              className={
+                sType +
+                ' w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
+              }
+            >
+              <Profile
+                {...data.profile}
+                displayType="unit_wo_info"
+                displaySize={width >= 640 ? '4xl' : '3xl'}
+              />
+            </View>  
+          </View> 
+          <View className=" flex-row flex-wrap gap-x-2 gap-y-4  flex-auto ">
+              <View className=" flex-col  mt-4 flex-auto gap-y-2 ">
+                <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 ml-2">
+                  {data.profile.display_name}
+                </Text>
+                <View className="   ">
+                <CoverMenuMeta {...data.meta_menu} />
+              </View>
+                
+              </View>
+          
+              <View className="flex-none ml-2 mt-auto  ">
+                <CoverMenu {...data.actions_menu} />
+              </View>
           </View>
         </View>
         
-        <View className="pl-2 pr-4 pb-4 ml-36 lg:ml-52 flex-col md:flex-row   gap-4 justify-between">
-          <View className="  flex-none ">
-            <CoverMenuMeta {...data.meta_menu} />
-          </View>
-          
-          <View className="flex-none ">
-            <CoverMenu {...data.actions_menu} />
-          </View>
-        </View>
+       
       </View>
     </View>
   )
