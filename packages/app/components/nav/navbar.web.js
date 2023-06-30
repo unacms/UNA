@@ -335,16 +335,19 @@ export default function (props) {
       <AnimatePresence exitBeforeEnter>
         {menuPopup && (
           <View>
-            <MotiView
-             style={{ width: 550 }}
+             <MotiView
+             style={{ width: '100%' }}
               from={{
                 opacity: 1,
+                width: '100%'
               }}
               animate={{
                 opacity: 1,
+                width: '100%'
               }}
               exit={{
                 opacity: 0,
+                width: '0'
               }}
               transition={{
                 duration: 0,

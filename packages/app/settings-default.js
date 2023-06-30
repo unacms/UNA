@@ -611,7 +611,13 @@ export const settingsDefault = {
         },
         col2: {
           name: 'bx_persons:entity_info',
-          showTitle: true,
+          showTitle: false,
+          showBg: true,
+          sidebar: true,
+        },
+        col4: {
+          name: 'bx_persons:entity_text_block',
+          showTitle: false,
           showBg: true,
           sidebar: true,
         },
@@ -621,6 +627,7 @@ export const settingsDefault = {
           showBg: false,
           sidebar: true,
         },
+        
       },
     },
     'persons-profile-friends': {
@@ -631,6 +638,8 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
         },
+        
+        
       },
     },
     'persons-profile-subscriptions': {
