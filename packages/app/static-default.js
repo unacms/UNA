@@ -161,7 +161,7 @@ export const staticDefault = {
 
     home2: (
       <>
-        <View className="  mt-4  overflow-hidden flex-col rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+        <View className="mx-2  mt-4  overflow-hidden flex-col rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
           <View className="border-b  w-full  border-dashed border-backgroundcard dark:border-backgroundcard-dark  bg-gradient-to-r from-neutral-200 dark:from-neutral-800 ">
             <View className="px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark ">
               <Text className="text-xl  font-bold text-neutral-800 dark:text-neutral-200 ">

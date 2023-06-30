@@ -121,10 +121,10 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          <View className=" bg-backgrounditem dark:bg-backgrounditem-dark px-5 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-2   mt-auto  flex-none flex-row items-center  ">
+          <View className=" bg-backgrounditem dark:bg-backgrounditem-dark pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
-                className=" w-full text-sm  text-gray-800 dark:text-gray-200 "
+                className=" w-full text-sm md:text-base text-gray-800 dark:text-gray-200 "
               >
                 {stripTags(data.profile.info.description)}
               </Text>
