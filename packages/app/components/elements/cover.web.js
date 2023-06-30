@@ -121,7 +121,7 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          <View className="hidden bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1  rounded-lg  mx-4 my-auto  flex-none flex-row items-center  ">
+          <View className=" bg-backgrounditem dark:bg-backgrounditem-dark px-5 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-2   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm  text-gray-800 dark:text-gray-200 "
@@ -136,7 +136,7 @@ export default function ElementCover(props) {
           </View>
         </View>
 
-        <View className="relative  flex-col md:flex-row gap-x-4 px-2 sm:px-4 pb-4 ">
+        <View className="relative  flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
           
           <View className=" flex-col  w-full md:w-52 ">
             <View
@@ -152,7 +152,7 @@ export default function ElementCover(props) {
               />
             </View>  
           </View> 
-          <View className=" flex-row flex-wrap gap-x-2 gap-y-4  flex-auto ">
+          <View className="flex-col lg:flex-row gap-x-2 gap-y-4  flex-auto ">
               <View className=" flex-col  mt-4 flex-auto gap-y-2 ">
                 <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 ml-2">
                   {data.profile.display_name}
