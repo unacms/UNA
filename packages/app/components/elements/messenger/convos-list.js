@@ -173,16 +173,6 @@ export const ConvosListColumn = ({ list, colWidth }) => {
 
 export default function ConvosList(props) {
     const { menuItem, viewMenu, handlerMenuView } = useContext(MessengerContext);
-
-    const handlerCloseMenu = () => handlerMenuView(false);
-    useEffect(() => {
-        if (typeof document !== 'undefined') {
-            document.addEventListener('click', handlerCloseMenu);
-            return () => document.removeEventListener('click', handlerCloseMenu);
-        }
-    }, []);
-
-   //console.log('------ log generate talks list area ----');
    return  <View className="h-full">
                <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
                    <View className="w-full p-2 flex items-center flex flex-row border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-[60px]">

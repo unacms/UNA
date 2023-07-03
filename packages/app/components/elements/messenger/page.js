@@ -1,12 +1,10 @@
-import { View } from 'app/design/view';
+import { View, Pressable } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import { Text } from 'app/design/typography'
 import { useState, useRef, useMemo } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosListColumn } from 'app/components/elements/messenger/convos-list';
 import History from 'app/components/elements/messenger/history';
 import { useWindowDimensions } from 'react-native';
-import { Button } from "../../../design/controls";
 import MessengerContext from './messenger-сontext';
 import { getGrid, getScreenMode, getSpace, sDesktop, sPhone }  from './grid-utils';
 
@@ -16,8 +14,7 @@ export default function PageLayout({ data }) {
     const [convo, selectConvo] = useState(0);
     const [convoInfo, setConvoItem] = useState([]);
 
-    const { list, history } = data,
-          { height } = useWindowDimensions(),
+    const { height } = useWindowDimensions(),
           sMode = getScreenMode(),
           iSpace = getSpace(sMode),
          { historyCol, listCol } = useMemo(() => getGrid( sMode, panel ), [sMode, panel]);
@@ -54,21 +51,26 @@ export default function PageLayout({ data }) {
     };
 
     //console.log('----- log rerender main page ----', sMode );
-    return <MessengerContext.Provider value={{ height: iHeight, handlerSelectMenu,
-        handlerMenuView, menuItems: data.menu, menuItem, convo,
-        handlerSelectConvo, viewMenu, selectPanel }}>
-        <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
-            <View className="w-full h-full mx-auto flex flex-row bg-gray-50 dark:bg-gray-900">
-                <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
-                    <MenuColumn { ...data.menu } />
-                </View>
-                <View className={ listCol }>
-                    <ConvosListColumn />
-                </View>
-                <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark"}>
-                   <History convo={convoInfo} pressBack={() => selectPanel(panel !== 'history')}/>
-                </View>
-            </View>
-        </View>
-    </MessengerContext.Provider>
+    return <Pressable onPress={(e) => {
+               if (viewMenu)
+                  handlerMenuView(false);
+           }}>
+              <MessengerContext.Provider value={{ height: iHeight, handlerSelectMenu,
+                    handlerMenuView, menuItems: data.menu, menuItem, convo,
+                    handlerSelectConvo, viewMenu, selectPanel }}>
+                    <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
+                        <View className="w-full h-full mx-auto flex flex-row bg-gray-50 dark:bg-gray-900">
+                            <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
+                                <MenuColumn { ...data.menu } />
+                            </View>
+                            <View className={ listCol }>
+                                <ConvosListColumn />
+                            </View>
+                            <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark"}>
+                               <History convo={convoInfo} pressBack={() => selectPanel(panel !== 'history')}/>
+                            </View>
+                        </View>
+                    </View>
+                </MessengerContext.Provider>
+            </Pressable>
 }
