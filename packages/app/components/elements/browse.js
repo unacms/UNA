@@ -23,7 +23,7 @@ export default function ElementBrowse(props) {
     });
 
     let data = props.data;
-    if (!data.unit){
+    if (data.unit == 'mixed'){
         data.unit = 'general-profile-list';
     }
     let defParams = data.params;

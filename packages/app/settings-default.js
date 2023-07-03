@@ -123,8 +123,8 @@ export const settingsDefault = {
       
       {
         name: 'persons-home',
-        title: 'People',
-        link: 'persons-home',
+        title: 'Connections',
+        link: 'recommended-friends',
         icon: 'users',
       },
       {
@@ -188,6 +188,11 @@ export const settingsDefault = {
         },
         { icon: 'DotsThreeOutlineVertical', name: 'More' },
       ],
+    },
+    sys_con_submenu: {
+      name: 'Connections',
+      icon: 'Users',
+      items: ['recommended-friends', 'friends', 'friend-requests', 'friend-requested', 'recommended-subscriptions', 'followers', 'following'],
     },
     bx_persons_view_submenu: [
       'view-persons-profile',
@@ -435,6 +440,113 @@ export const settingsDefault = {
         header: false,
       },
     },
+    //############ POSTS PAGES ############
+    'recommended-friends': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_recommendations_friends',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'friends': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_friends',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'recommended-subscriptions': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_recommendations_subscriptions',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'followers': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_subscribed_me',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'following': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_subscriptions',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'friend-requests': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_friend_requests',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'friend-requested': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'system:browse_friend_requested',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: '',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    
     //############ POSTS PAGES ############
     'discussions-home': {
       layout: 'blackbox',
