@@ -400,7 +400,7 @@ export const staticDefault = {
           </View>
           <View className="border-b flex-auto  border-dashed border-neutral-100 dark:border-neutral-950  bg-neutral-300 dark:bg-neutral-900 ">
             <View className="h-2 bg-neutral-100 dark:bg-neutral-950">
-              <Text className="text-xs  mx-auto px-2 bg-neutral-100 dark:bg-neutral-950 text-neutral-500/60 ">
+              <Text className="text-xs  mx-auto px-2 bg-neutral-100 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400 ">
                 NEO v.0.1.0
               </Text>
             </View>
