@@ -15,6 +15,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             bCurrent = item.link.replace(' ', '') === data.url.replace('+', '');
 
         if (bCurrent) {
+
             let contentAndEndpoint = processUrl(data, blocks);
             i.data = contentAndEndpoint.content;
             i.inited = true;
@@ -151,6 +152,7 @@ function processContent(acc, b) {
 }
 
 function processBrowse(acc, b) {
+
     acc.endpoint = processEndpoint(acc, b);
     acc.content = [...acc.content, ...b.data.data];
     return acc;

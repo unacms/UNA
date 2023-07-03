@@ -8,6 +8,7 @@ import { useCurrentUser } from 'app/context/user'
 import { BlackBox } from 'app/ui/molecules/blackbox'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
+import { Story } from 'app/ui/molecules/stories'
 
 export default function PageLayout(props) {
   const isWeb = Platform.OS == 'web'
@@ -55,6 +56,7 @@ export default function PageLayout(props) {
             <View className="flex-auto  w-3/4 xl:w-4/5 flex-row duration-200">
               <View className="flex-auto w-2/3">
                 <LayoutDataContext>
+                  <Story></Story>
                   <BlockByName data={props.data} name={props.blocks.posts2} />
                   <BlockByName data={props.data} name={props.blocks.feed} />
                 </LayoutDataContext>

@@ -166,7 +166,7 @@ function DefaultUnit(data) {
             )}
             <View className="flex-col gap-3 relative px-4 pb-4">
               <View className=" flex-auto   flex-row  w-full">
-                <View className="mt-auto flex-row space-x-2 flex-auto">
+                <View className="mt-auto flex-row gap-x-2 flex-auto">
                   <Menu
                     {...data.menu_actions}
                     displayType="button"

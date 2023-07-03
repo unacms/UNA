@@ -10,7 +10,7 @@ module.exports = {
     '../../packages/**/*.{js,jsx,ts,tsx}'
   ],
   safelist: [
-    'space-x-2',
+    'gap-x-2',
   ],
   theme: {
     ...theme,

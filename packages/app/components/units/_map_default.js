@@ -11,6 +11,7 @@ export const componentsMapDefault = {
     'general-profile-card': GeneralContentList,
     'general-context-card': GeneralContentList,
     'general-profile-list': GeneralProfileList,
+    'mixed': GeneralContentList,
     comments: Comments,
     notifications: Notifications,
     feed: Feed,

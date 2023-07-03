@@ -77,7 +77,7 @@ const WrappedTopMenu = memo( () => {
                     <View className="backdrop-blur h-full xl:flex shadow-xl p-4
                                      2xl:bg-transparent 2xl:dark:bg-transparent bg-navbar/80
                                      dark:bg-navbar-dark/50 border-r 2xl:border-none border-neoborder
-                                     dark:border-neoborder-dark flex-col space-y-2">
+                                     dark:border-neoborder-dark flex-col gap-y-2">
                         <MenuColumn />
                     </View>
                 </MotiView>

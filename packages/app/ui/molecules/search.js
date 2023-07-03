@@ -27,7 +27,7 @@ export default function ElementSearch(oProps) {
                 <View key={i} className="flex-col my-2 p-2 bg-gray-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
                         <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-                        <View className="flex-1 space-y-1">
+                        <View className="flex-1 gap-y-1">
                             <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
                             <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
                         </View>

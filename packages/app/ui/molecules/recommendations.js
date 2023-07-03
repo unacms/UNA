@@ -3,7 +3,8 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
-export default function ElementConnections(oProps) {
+export default function ElementRecommendations(oProps) {
+    //MAY BE REWORK NEEDED BY ANTON
     const [ elementData, setElementData ] = useState(false);
 
     const oParams = {...appSetting('social_actions', 'connection'), ...oProps.params};
