@@ -2,7 +2,16 @@ import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
-import React from 'react';
+import React, {useMemo, useState} from 'react';
+import dynamic from "next/dynamic";
+import {useCurrentUser} from "../../context/user";
+import {FeedbackHaptics, linkify, menuItemsByName} from "../../lib/util";
+import {ContentMore} from "../../ui/molecules/contentmore";
+import Html from "../../ui/atoms/html";
+import {Button} from "../../design/controls";
+import Menu from "../menu";
+import DropdownMenu from "../../ui/atoms/dropdown-menu";
+import Reactions from 'app/ui/molecules/reactions';
 
 export function ListFeed(data) {
   const { author_data, message, date, title, count, onPress } = data || {};
@@ -46,4 +55,125 @@ export function ListFeed(data) {
         </View>
       </View>
     </Pressable>
+}
+
+function CarouselMemo({ aImg, b }) {
+    const computedData = useMemo(() => {
+        const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
+        return  <Carousel data={aImg}/>
+    }, [b]);
+    return computedData;
+}
+
+export function MsgFeed({ item }) {
+    let { currentUser } = useCurrentUser();
+    const [selectedEmoji, setSelectedEmoji] = useState();
+
+    let { author_data, created, count, files, level, message, menu } = item;
+    level = 0;
+    let lvls= [];
+    const data = created;
+    let view = false;
+    /*let data = props.created;
+    let items = props.items;
+    let view = props.view;
+    let files = props.files;*/
+
+    // request form for reply
+
+    console.log('---- render items -----', item);
+    const handleReply = async (id, author, text) => {
+        FeedbackHaptics('Medium');
+        props.handleReply(id, author, text);
+    };
+
+    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10  rounded-lg   px-2.5  u-vanilla-html-small ";
+
+    if (!data)
+        return (<View></View>);
+
+    const handleManageMenuSelect = (oItem, event) => {
+        switch(oItem.name) {
+            case 'item-edit':
+                console.log('TODO: Perfom comment edit.');
+                break;
+
+            case 'item-delete':
+                console.log('TODO: Perfom comment delete.');
+                break;
+        }
+    }
+
+    /*let cells = [];
+    for (let i = 0; i < level; i++){
+        cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /!*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*!/}
+            {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
+            {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100 dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        </View>)
+    };
+*/
+   /* const aMenuManageItems = menuItemsByName(menu);
+
+    console.log('-------- menu items -----', aMenuManageItems, menu);*/
+
+    let aImg = files?.map(obj => {
+        return {
+            src: obj.file,
+            type: 'image'
+        };
+    });
+
+    //{/*items.length != 0 && */}
+        //                     {{/*(view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-gray-100 dark:bg-gray-800"><Text>&nbsp;</Text></View> */}}
+    return (
+        <View className='w-full p-4'>
+            <View className="flex-row gap-x-2">
+                {/*{cells}*/}
+                <View className="w-10 flex-0 ">
+                    <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+                </View>
+                <View className='flex-1 flex-col gap-y-1 mb-2'>
+                    <View className={sCommentClass + ' py-2'} >
+                        <View className="flex-row flex-1 items-center mb-0.5">
+                            <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                            <Text className="text-gray-500 px-1">·</Text>
+                            <Time className="" ts={created}></Time>
+                        </View>
+                        <View>
+                            <Html data={linkify(message)} />
+                        </View>
+                        { aImg && aImg.length > 0 && <View className='w-full aspect-video mb-6'>
+                            <CarouselMemo aImg={aImg}/>
+                        </View>
+                        }
+                    </View>
+                    <View className="mb-1 flex-row w-full justify-between items-center">
+                        { !!currentUser ? <View className='mr-2'>
+                                           {/* <Reactions>
+                                                <Text>{selectedEmoji ? selectedEmoji?.emoji : 'Like'}</Text>
+                                            </Reactions>*/}
+                                          </View> : <></>
+                        }
+                        <View className='flex-row'>
+                            <Menu items={ menu } displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs'}} />
+                            {!!currentUser && !!menu.length &&
+                            <View className="ml-2">
+                                <DropdownMenu items={menu.map((aItem) => {
+                                    return {
+                                        id: aItem.id ? aItem.id : aItem.name,
+                                        name: aItem.name,
+                                        link: aItem.link,
+                                        title: aItem.title
+                                    };
+                                })} onSelect={handleManageMenuSelect}>
+                                    <Button variant="outline" size="sm" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} rounded />
+                                </DropdownMenu>
+                            </View>
+                            }
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
 }

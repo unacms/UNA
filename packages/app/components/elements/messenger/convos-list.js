@@ -4,17 +4,13 @@ import Image from 'app/ui/atoms/image';
 import Loading from 'app/ui/atoms/loading'
 import { Link } from 'app/ui/atoms/link';
 import { Button, Input } from 'app/design/controls';
-import React, { useState, memo, useEffect, useContext } from 'react';
-import Time from "app/ui/atoms/time";
+import React, { useState, memo, useContext } from 'react';
 import { fetcher } from "../../../lib/fetcher";
 import MessengerContext from './messenger-сontext';
 import {WrappedTopMenu} from "./menu";
 import UniList from 'app/ui/atoms/unilist';
-import { truncateHTML } from 'app/lib/util';
 import { useInfiniteQuery } from  '@tanstack/react-query';
-import Profile from 'app/ui/molecules/profile';
 import { ListFeed } from 'app/components/units/convos-feeds';
-
 
 const styles = {
     infoText: [
@@ -96,13 +92,15 @@ const ConvosListHeader = memo(({menu}) => {
 });
 
 const Convos = ({ list, onLoadHistory }) => {
-    const { convo, menuItem, height } = useContext(MessengerContext),
-          sUrl = '/api.php?r=bx_messenger/get_talks_list_json/&params=';
+    const { menuItem, height, handlerSelectConvo, convo } = useContext(MessengerContext),
+          sUrl = '/api.php?r=bx_messenger/get_convos_list_json/&params=';
 
     const fetchData = async({ pageParam = 0 }) => {
             const { data } =  await fetcher(sUrl + JSON.stringify({ group: menuItem, count: pageParam }));
 
-            //console.log('---- log -- get infinite ---', data);
+            console.log('---- log -- get talks list ---', data, convo);
+            if (typeof handlerSelectConvo === 'function' && data && data.length && !convo)
+                handlerSelectConvo(data[0]);
 
             return data || [];
         };
