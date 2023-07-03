@@ -73,7 +73,7 @@ export default function FormFeed(props) {
         sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
         active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
     '>     
-        <View className='flex-auto flex-row space-x-2'>    
+        <View className='flex-auto flex-row gap-x-2'>    
             {profile}
             <Button size='base' variant='outline' startDecorator='Pencil' fullWidth rounded title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>

@@ -57,7 +57,7 @@ export function Modal({
                                     { title && <View><Text className='text-gray-700 dark:text-gray-200 text-lg font-bold'>{title}</Text></View>}
                                     { onClose && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose}/></View>}
                                 </Row>
-                            <View className="space-y-0 overflow-y-auto text-gray-700 dark:text-gray-200">{children}</View>
+                            <View className="gap-y-0 overflow-y-auto text-gray-700 dark:text-gray-200">{children}</View>
                         </View>
                     </View>
                 </View>
