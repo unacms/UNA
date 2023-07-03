@@ -138,12 +138,12 @@ export default function ElementScore(oProps) {
 
     const getSkeleton = () => {
         return (
-            <View className="space-y-2">
+            <View className="gap-y-2">
             {[...Array(1, 2, 3)].map( i => 
                 <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
                         <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
-                        <View className="flex-1 space-y-1">
+                        <View className="flex-1 gap-y-1">
                             <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
                             <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
                         </View>
@@ -243,7 +243,7 @@ export default function ElementScore(oProps) {
 
             sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'score_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 space-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    <View className="p-2 gap-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
                 </Modal>
             );
         }

@@ -21,14 +21,14 @@ export default function ElementEntityCover(props) {
                 <Text  className='text-base text-gray-600 dark:text-gray-400'>hz what this</Text>
               </View>     
             </View>
-            <View className="flex-none my-auto px-4 pt-4  flex-row space-x-2 ">
+            <View className="flex-none my-auto px-4 pt-4  flex-row gap-x-2 ">
               
               <Button title="Follow" startDecorator="plus" variant="primary"  />
               <Button title="Message" startDecorator="messages" variant="default" />
             </View>
 
         </View>
-       <View className="text-center flex-row px-2 py-4 space-x-2 items-center">
+       <View className="text-center flex-row px-2 py-4 gap-x-2 items-center">
         
         <Button title="325 Followers" startDecorator="people" size='sm' rounded variant="text"  />
         <Button title="123 Following" startDecorator="people" size='sm' rounded variant="text"  />

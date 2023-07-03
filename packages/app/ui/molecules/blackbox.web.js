@@ -162,7 +162,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full backdrop-blur border-b px-2 border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    {!header && <Row className="lg:hidden flex-row space-x-1 flex-none items-center justify-between h-16">
+                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
                         { headerSettings.header && <Pressable className="mr-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >

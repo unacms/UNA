@@ -303,7 +303,7 @@ export default function (props) {
             )}
 
             {!currentUser && (
-              <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 space-x-2">
+              <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
                 
                 <Button
                   variant="outline"
