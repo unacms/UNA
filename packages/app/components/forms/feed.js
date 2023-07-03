@@ -52,7 +52,7 @@ export default function FormFeed(props) {
         </KeyboardAvoidingView> 
     </Modal>
     <View className='max-w-5xl w-full items-center px-2 pt-2  sm:px-4 sm:pt-4 mx-auto'>
-    <View className='max-w-5xl w-full  
+    <View className='max-w-5xl w-full  px-4 py-3
              group duration-200 overflow-hidden rounded-lg  
           bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
           hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
@@ -63,7 +63,7 @@ export default function FormFeed(props) {
           active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
     '>     
         <View className='flex-auto'>    
-            <Button size='base' variant='text' startDecorator='Pencil' fullWidth  title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
+            <Button size='base' variant='outline' startDecorator='Pencil' fullWidth rounded title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>
     </View>
     </View>

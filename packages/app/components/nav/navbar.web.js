@@ -269,6 +269,16 @@ export default function (props) {
                       handleClick('/messenger')
                     }}
                   />
+                  <Button
+                    variant="outline"
+                    rounded
+                    startDecorator="CirclesFour"
+                    id="m2"
+                    aria-label="Apps"
+                    onPress={() => {
+                      handleClick('/dashboard')
+                    }}
+                  />
                 </View>
                 
                 {profile ? (

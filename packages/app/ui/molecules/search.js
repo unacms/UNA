@@ -4,7 +4,7 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { Button, Input } from 'app/design/controls';
+import { Button, Input, InputRounded } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
@@ -131,7 +131,7 @@ export default function ElementSearch(oProps) {
                 <Row className=''>
                     <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[
                         <View key="ddp-trigger" className="flex-row">
-                            <Input name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." accessibilityLabel="Search" />
+                            <InputRounded name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." accessibilityLabel="Search" />
                         </View>,
                         <View key="ddp-content" className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />

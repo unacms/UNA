@@ -23,19 +23,17 @@ export default function Unit(props) {
         if(data?.meta)
             sMeta = (
                 <View className="text-center flex-col  h-auto justify-end">
-                    <Menu {...data.meta} displayType="mixed" params={{showVertical: false, button_size:'base', button_full_width: true, button_rounded: false}} />
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: false, button_size:'sm', button_full_width: true, button_rounded: false}} />
                 </View>
             );     
         return (
-            <View className="mx-8 sm:mx-2">
+            <View className="">
                 <Link href={data.url} emulate={true}> 
                     <View className=" p-2 flex-row  
                     group duration-200 overflow-hidden rounded-md  
-                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
+                    active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                    mt-[1px] max-w-5xl self-center w-full sm:border
-                    active:translate-y-0.5 
-                    border-bordercolorcard dark:border-bordercolorcard-dark ">  
+                     max-w-5xl self-center w-full  ">  
                         <View className="w-10 h-10 mr-2 rounded-full flex-none ">
                             <Profile url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="base" />
                         </View>
