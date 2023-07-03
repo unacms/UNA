@@ -158,6 +158,13 @@ export const staticDefault = {
         </Text>
       </>
     ),
+    comments_empty: (
+      <>
+        <Text className="text-center text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
+        Without comment, because none is necessary.
+        </Text>
+      </>
+    ),
 
     home2: (
       <>

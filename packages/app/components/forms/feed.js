@@ -6,12 +6,15 @@ import  { LayoutData } from 'app/context/layout';
 import { FeedbackHaptics } from 'app/lib/util';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
+import { useCurrentUser } from 'app/context/user';
+import Profile from 'app/ui/molecules/profile';
+
 
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
     const [imageSource, setImageSource] = useState([]);
     const { layoutData, setLayoutData } = useContext(LayoutData);
-
+    let { currentUser, setCurrentUser } = useCurrentUser();
     if (props.response?.id){
         setTimeout(() => {
             setLayoutData(props.response)
@@ -29,6 +32,14 @@ export default function FormFeed(props) {
     }
     
     let prevList = Object.values(imageSource).flat();
+
+    let profile = null
+    if (currentUser){
+        let dUser = Object.assign({}, currentUser);
+        dUser.url_avatar = dUser.avatar
+        dUser.url = '/dashboard'
+        profile = <Profile {...dUser} displayType="unit_wo_info" />
+    }
 
     return <View className='w-full '>
     <Modal title="Create new Post" onVisible={showImage} onClose={() => {setShowImage(null)}} outerClickClose={false} transparent={false}>
@@ -52,18 +63,18 @@ export default function FormFeed(props) {
         </KeyboardAvoidingView> 
     </Modal>
     <View className='max-w-5xl w-full items-center px-2 pt-2  sm:px-4 sm:pt-4 mx-auto'>
-    <View className='max-w-5xl w-full  px-4 py-3
-             group duration-200 overflow-hidden rounded-lg  
-          bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-          hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-          hover:shadow-sm active:shadow-none 
-          active:translate-y-0.5 border 
-          border-bordercolorcard dark:border-bordercolorcard-dark 
-          sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-          active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
+    <View className='max-w-5xl w-full px-4 py-3
+        group duration-200 overflow-hidden rounded-lg  
+        bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+        hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+        hover:shadow-sm active:shadow-none 
+        active:translate-y-0.5 border 
+        border-bordercolorcard dark:border-bordercolorcard-dark 
+        sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+        active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
     '>     
         <View className='flex-auto flex-row space-x-2'>    
-            <View className='h-10 w-10 rounded-full bg-blue-500 animate-pulse items-center'>👾</View>
+            {profile}
             <Button size='base' variant='outline' startDecorator='Pencil' fullWidth rounded title='Create new Post...' align="start" onPress={() => {FeedbackHaptics('Medium'); setShowImage(true)}} />
         </View>
     </View>

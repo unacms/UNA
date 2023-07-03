@@ -395,6 +395,9 @@ export const settingsDefault = {
           showBg: false,
           forList: true,
         },
+        'comments-empty': {
+          name: 'static:comments_empty', showTitle: false, showBg: false,forList: true,
+        },
         comments: {
           name: 'bx_posts:entity_comments',
           showTitle: false,
