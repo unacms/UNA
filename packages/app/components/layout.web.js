@@ -63,6 +63,26 @@ export default function Layout(props) {
     const scheme = useColorScheme();
     let bg = scheme === 'dark' ? 'rgba(17,24,39,0.8)' : 'rgba(255,255,255,0.8)';
 
+    /*useEffect(() => {
+        const script = document.createElement('script');
+    
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/instantclick/3.1.0/instantclick.min.js";
+        script.async = true;
+        script.dataset.noInstant = '';
+    
+        document.body.appendChild(script);
+
+        script.onload = () => {
+            if (window.InstantClick) {
+              window.InstantClick.init();
+            }
+          };
+    
+        return () => {
+          document.body.removeChild(script);
+        }
+      }, []);*/
+
     return (
         <>
             <Head>
@@ -76,6 +96,7 @@ export default function Layout(props) {
                 <meta name="viewport" content="initial-scale=1, viewport-fit=cover, width=device-width"></meta>
                 <meta http-equiv="cache-control" content="max-age=36000" />
                 <title>{props.data.title}</title>
+
             </Head>
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 

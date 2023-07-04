@@ -147,7 +147,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 position:'absolute',
                 justifyContent: 'center',
                 alignItems: 'center',
-                display:'flex'
+                display:'none'
             },
         });
 
@@ -169,7 +169,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>
                         }
-                        { headerSettings.title && <Text  className="text-3xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{menuSettings?.name}</Text>}
+                        { headerSettings.title && <Text className="text-3xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
                         </Row> 
                         <Row className="pr-2">
                             {addButtons}
@@ -177,18 +177,18 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </Row>
                     }
                     <Row className="items-center gap-0 mx-4">
-                        {menuSettings?.name ? <Text  className="text-3xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.name ? <Text  className="text-3xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex leading-tight">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0  w-full" >
-                            <Row className="  mr-auto" >
+                            <Row className="mr-auto gap-x-2" >
                                 {routes.map((a) => (
-                                    <Pressable style={{width:tabWidth}} className=" py-2 items-center"
+                                    <Pressable  className=" py-2 items-center"
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index)
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant="text"  size='sm' title={a.title}   />
+                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"}  size='sm' title={a.title}   />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>

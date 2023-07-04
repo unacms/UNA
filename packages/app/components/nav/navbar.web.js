@@ -329,6 +329,7 @@ export default function (props) {
                         variant="text"
                         size="lg"
                         fullWidth
+                        alt={item.title}
                         startDecorator={
                           item.icon.indexOf(' ') == -1
                             ? item.icon

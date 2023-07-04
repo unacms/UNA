@@ -244,7 +244,7 @@ export function Button(props) {
     let Cnt = onPress !== undefined ? Pressable : View
 
     return (
-        <Cnt className={sClassContainer} {...rest} onPress={onPress}>
+        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { accessibilityLabel: rest.alt, accessibilityRole: 'button' } : {} )} onPress={onPress}>
             {sButtonIconStart}
             {buttonTitle !== undefined && (
                 <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>
