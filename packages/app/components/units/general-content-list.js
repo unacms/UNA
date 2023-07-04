@@ -203,7 +203,7 @@ export default function Unit(props) {
                         }
                         <View className="flex flex-col sm:h-28 gap-1 p-3 ">
                            
-                                <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-accent sm:dark:hover:text-accent-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                                <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark sm:leading-5  text-lg sm:text-base  font-bold'>
                                     {data.title}
                                 </Text>
                             

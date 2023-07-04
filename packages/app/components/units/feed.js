@@ -99,7 +99,7 @@ function DefaultUnit(data) {
                 <Link href={url} className="">
                   <Text
                     numberOfLines={2}
-                    className=" duration-200  text-neutral-950 hover:text-accent dark:text-neutral-50 hover:text-accent-dark text-xl tracking-tight font-bold"
+                    className=" duration-200  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
                   >
                     {data.content.title}
                   </Text>

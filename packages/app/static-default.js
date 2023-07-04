@@ -237,7 +237,7 @@ export const staticDefault = {
           <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
             <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
               <View>
-                <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-accent dark:text-accent-dark text-center md:text-start">
+                <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-primary dark:text-primary-dark text-center md:text-start">
                   Welcome
                 </Text>
                 <Text className="text-4xl sm:text-5xl   xl:text-6xl  font-bold text-neutral-800 dark:text-neutral-200 text-center md:text-start">
