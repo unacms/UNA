@@ -59,7 +59,7 @@ export default function PageLayout({ data }) {
                     handlerMenuView, menuItems: data.menu, menuItem, convo,
                     handlerSelectConvo, viewMenu, selectPanel }}>
                     <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
-                        <View className="w-full h-full mx-auto flex flex-row bg-gray-50 dark:bg-gray-900">
+                        <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
                             <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
                                 <MenuColumn { ...data.menu } />
                             </View>

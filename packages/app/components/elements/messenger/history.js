@@ -67,15 +67,15 @@ export default function ElementHistory({ convo, pressBack }) {
     const messages = data.pages.flatMap(page => page);
 
     return id && <View className="h-full">
-                    <View className="flex w-full p-2 flex-row h-[60px] relative border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" >
+                    <View className="flex w-full px-3.5 py-2 flex-row h-14 relative border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" >
                         <View className="md:hidden">
-                            <Button variant="outline" startDecorator="CaretLeft" rounded align="start" onPress={pressBack} />
+                            <Button variant="outline" startDecorator="ArrowLeft" rounded align="start" onPress={pressBack} />
                         </View>
                         <View className="w-full flex-1 flex items-center justify-center">
-                           <Text className="truncate text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50 capitalize flex items-center">{title}</Text>
+                           <Text className="truncate text-lg lg:text-xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center">{title}</Text>
                         </View>
                     </View>
-                    <View className="lg:p-4 xl:p-4">
+                    <View className="mb-24 px-3">
                         <UniList
                             data={messages}
                             renderItem={renderItem}

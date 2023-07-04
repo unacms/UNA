@@ -104,12 +104,12 @@ var blockSkeletons = {
           
    
               <View className="flex flex-col gap-1 p-3 ">
-              <View className="h-6 my-1  w-1/4 bg-gray-500/20 rounded-full"></View>
-        <View className="h-5 my-1 w-full bg-gray-500/20 rounded-full"></View>
-        <View className="h-5 mb-6 w-3/4 bg-gray-500/20 rounded-full"></View>
+              <View className="h-6 my-1  w-1/4 bg-neutral-500/20 rounded-full"></View>
+        <View className="h-5 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+        <View className="h-5 mb-6 w-3/4 bg-neutral-500/20 rounded-full"></View>
         <View className="flex-row gap-2"> 
-              <View className="h-6 w-6 rounded-full w-1/4 bg-gray-500/20 rounded-full"></View>
-              <View className="h-4 w-1/2 my-auto bg-gray-500/20 rounded-full"></View>
+              <View className="h-6 w-6 rounded-full w-1/4 bg-neutral-500/20 rounded-full"></View>
+              <View className="h-4 w-1/2 my-auto bg-neutral-500/20 rounded-full"></View>
         </View>
                       
                   
@@ -128,19 +128,19 @@ var blockSkeletons = {
         <View className="flex-row gap-2">
           
           <View className="relative flex-row">
-                    <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
-                    <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
+                    <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                    <View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
+                    <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View>
                   
           </View>
           </View>
           <View className="flex-col flex-auto my-auto">
             <View className="w-full flex-row justify-between"> 
-              <View className="h-3 my-1 w-1/4 bg-gray-500/20 rounded-full"></View>
-              <View className="h-3 my-1 w-6 bg-gray-500/20 rounded-full"></View>
+              <View className="h-3 my-1 w-1/4 bg-neutral-500/20 rounded-full"></View>
+              <View className="h-3 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
             </View>
-            <View className="h-5 my-1  w-full bg-gray-500/30 rounded-full"></View>
-            <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>  
+            <View className="h-5 my-1  w-full bg-neutral-500/30 rounded-full"></View>
+            <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>  
           </View>
         </View>
       
@@ -151,28 +151,28 @@ var blockSkeletons = {
       <View className="flex-row gap-x-2 mb-2">
         
         <View className="relative flex-row">
-                  <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
-                  <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
+                  <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                  <View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
+                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View>
                 
         </View>
         </View>
         <View className="flex-col flex-auto my-auto">
           <View className="w-full flex-row justify-between"> 
-            <View className="h-4 my-1 w-1/3 bg-gray-500/20 rounded-full"></View>
-            <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
+            <View className="h-4 my-1 w-1/3 bg-neutral-500/20 rounded-full"></View>
+            <View className="h-4 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
           </View>
-          <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
+          <View className="h-3 my-1  w-1/4 bg-neutral-500/30 rounded-full"></View>
         </View>
         
       </View>
-      <View className="h-4 my-1 w-full bg-gray-500/30 rounded-full"></View>
-      <View className="h-4 my-1 w-3/4 bg-gray-500/30 rounded-full"></View>
-      <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-      <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-      <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+      <View className="h-4 my-1 w-full bg-neutral-500/30 rounded-full"></View>
+      <View className="h-4 my-1 w-3/4 bg-neutral-500/30 rounded-full"></View>
+      <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+      <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+      <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
 
-      <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
+      <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
     
     </View>
     ))}</View>
@@ -184,7 +184,7 @@ var skeletons = {
       <View className=" rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark m-4  p-4 flex flex-col gap-6">
         
         <View className="flex-col  gap-y-4 ">
-          <View className="h-6 w-2/3 bg-gray-500/20 rounded-lg"></View>
+          <View className="h-6 w-2/3 bg-neutral-500/20 rounded-lg"></View>
           <View className="flex-col gap-y-2">
             <View className="h-4 bg-neutral-500/10 rounded-lg"></View>
             <View className="h-4 bg-neutral-500/10 rounded-lg"></View>
@@ -202,12 +202,12 @@ var skeletons = {
           {items.map((item, index) => (
               <View key={'home1' + index}>
                   <View className="p-2 border border-transparent flex-row gap-2 ">
-                      <View className="h-6 w-6  flex-none  bg-gray-500/30  rounded-full"></View>
-                      <View className="h-5 flex-auto my-0.5  bg-gray-500/20 rounded-full"></View>
+                      <View className="h-6 w-6  flex-none  bg-neutral-500/30  rounded-full"></View>
+                      <View className="h-5 flex-auto my-0.5  bg-neutral-500/20 rounded-full"></View>
                   </View>
                   <View className="p-2 border border-transparent flex-row gap-2 ">
-                      <View className="h-6 w-6  flex-none  bg-gray-500/30  rounded-full"></View>
-                      <View className="h-5 w-3/4 my-0.5  bg-gray-500/20 rounded-full"></View>
+                      <View className="h-6 w-6  flex-none  bg-neutral-500/30  rounded-full"></View>
+                      <View className="h-5 w-3/4 my-0.5  bg-neutral-500/20 rounded-full"></View>
                   </View>
             </View>
           ))}
@@ -234,31 +234,31 @@ var skeletons = {
               <View className="flex-row gap-x-2 mb-2">
                 
                 <View className="relative flex-row">
-                          <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
-                          <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
+                          <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                          <View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
+                          <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View>
                         
                 </View>
                 </View>
                 <View className="flex-col flex-auto my-auto">
                   <View className="w-full flex-row justify-between"> 
-                    <View className="h-4 my-1 w-1/3 bg-gray-500/20 rounded-full"></View>
-                    <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
+                    <View className="h-4 my-1 w-1/3 bg-neutral-500/20 rounded-full"></View>
+                    <View className="h-4 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
                   </View>
-                  <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
+                  <View className="h-3 my-1  w-1/4 bg-neutral-500/30 rounded-full"></View>
                   
                   
                   
                 </View>
                 
               </View>
-              <View className="h-4 my-1 w-full bg-gray-500/30 rounded-full"></View>
-              <View className="h-4 my-1 w-3/4 bg-gray-500/30 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+              <View className="h-4 my-1 w-full bg-neutral-500/30 rounded-full"></View>
+              <View className="h-4 my-1 w-3/4 bg-neutral-500/30 rounded-full"></View>
+              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
   
-              <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
+              <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
             
             </View>
           </View>
@@ -269,31 +269,31 @@ var skeletons = {
            <View className="flex-row gap-x-2 mb-2">
              
              <View className="relative flex-row">
-                       <View className="h-12 w-12 aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full">
-                       <View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                       <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View>
+                       <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                       <View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
+                       <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View>
                      
              </View>
              </View>
              <View className="flex-col flex-auto my-auto">
                <View className="w-full flex-row justify-between"> 
-                 <View className="h-4 my-1 w-1/3 bg-gray-500/20 rounded-full"></View>
-                 <View className="h-4 my-1 w-6 bg-gray-500/20 rounded-full"></View>
+                 <View className="h-4 my-1 w-1/3 bg-neutral-500/20 rounded-full"></View>
+                 <View className="h-4 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
                </View>
-               <View className="h-3 my-1  w-1/4 bg-gray-500/30 rounded-full"></View>
+               <View className="h-3 my-1  w-1/4 bg-neutral-500/30 rounded-full"></View>
                
                
                
              </View>
              
            </View>
-           <View className="h-4 my-1 w-full bg-gray-500/30 rounded-full"></View>
-           <View className="h-4 my-1 w-3/4 bg-gray-500/30 rounded-full"></View>
-           <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-           <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
-           <View className="h-3 my-1 w-full bg-gray-500/20 rounded-full"></View>
+           <View className="h-4 my-1 w-full bg-neutral-500/30 rounded-full"></View>
+           <View className="h-4 my-1 w-3/4 bg-neutral-500/30 rounded-full"></View>
+           <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+           <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+           <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
 
-           <View className="h-3 my-1 w-3/4 bg-gray-500/20 rounded-full"></View>
+           <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
          
          </View>
        </View>
@@ -315,42 +315,42 @@ var skeletons = {
   ),
   'view-group': (
     <View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         view-group
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>
       </View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>
       </View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>
@@ -359,42 +359,42 @@ var skeletons = {
   ),
   'view-person': (
     <View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         view-person
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>
       </View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>
       </View>
-      <View className="bg-gray-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
+      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4  @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
           <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-gray-600/20 rounded"></View>
+            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
             <View className="gap-y-1">
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
-              <View className="h-3 bg-gray-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
+              <View className="h-3 bg-neutral-600/20 rounded"></View>
             </View>
           </View>
         </View>

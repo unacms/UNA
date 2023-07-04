@@ -77,7 +77,7 @@ export function CoverSmall(props) {
               displaySize="base"
             />
             <Row className=" items-center ml-3 w-full">
-              <Text className="text-lg xl:text-xl font-bold tracking-tight  text-gray-900 dark:text-gray-50">
+              <Text className="text-lg xl:text-xl font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">
                 {data.profile.display_name}
               </Text>
               <View className="ml-4">
@@ -124,7 +124,7 @@ export default function ElementCover(props) {
           <View className=" bg-backgrounditem dark:bg-backgrounditem-dark pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
-                className=" w-full text-sm md:text-base text-gray-800 dark:text-gray-200 "
+                className=" w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
               >
                 {stripTags(data.profile.info.description)}
               </Text>
@@ -154,7 +154,7 @@ export default function ElementCover(props) {
           </View> 
           <View className="flex-col lg:flex-row gap-x-2 gap-y-4  flex-auto ">
               <View className=" flex-col  mt-4 flex-auto gap-y-2 ">
-                <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-50 ml-2">
+                <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 ml-2">
                   {data.profile.display_name}
                 </Text>
                 <View className="   ">

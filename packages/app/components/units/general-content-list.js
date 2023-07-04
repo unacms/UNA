@@ -54,7 +54,7 @@ export default function Unit(props) {
                     <View>  
                     <View className=''>  
                     {data.cover &&
-                            <View className="w-full bg-gray-500/20 rounded-md aspect-video overflow-hidden items-center absolute" >
+                            <View className="w-full bg-neutral-500/20 rounded-md aspect-video overflow-hidden items-center absolute" >
                                 <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
@@ -63,7 +63,7 @@ export default function Unit(props) {
                            
                         </View>
                         </View>
-                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 text-base font-bold text-gray-800 sm:h-12 dark:text-gray-100">{data.group_name}</Text></Link>
+                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 text-base font-bold text-neutral-800 sm:h-12 dark:text-neutral-100">{data.group_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
@@ -100,7 +100,7 @@ export default function Unit(props) {
                     <View>  
                     <View className='mb-2'>  
                     {data.cover &&
-                            <View className="w-full bg-gray-500/20 rounded aspect-video overflow-hidden items-center absolute" >
+                            <View className="w-full bg-neutral-500/20 rounded aspect-video overflow-hidden items-center absolute" >
                                 <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
@@ -109,7 +109,7 @@ export default function Unit(props) {
                            
                         </View>
                         </View>
-                        <Link href={data.url} ><Text className="px-4 text-lg font-bold text-gray-800 text-center dark:text-gray-100">{data.channel_name}</Text></Link>
+                        <Link href={data.url} ><Text className="px-4 text-lg font-bold text-neutral-800 text-center dark:text-neutral-100">{data.channel_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
@@ -158,7 +158,7 @@ export default function Unit(props) {
 
                             <Link href={data.url} >
                                 
-                                <Text className=" text-xl sm:text-lg  font-bold text-gray-800 p-4 sm:text-center dark:text-gray-100 sm:mx-auto">{data.title}</Text>
+                                <Text className=" text-xl sm:text-lg  font-bold text-neutral-800 p-4 sm:text-center dark:text-neutral-100 sm:mx-auto">{data.title}</Text>
                                 
                             </Link>
                             <View className=''>{sMeta}</View></View>

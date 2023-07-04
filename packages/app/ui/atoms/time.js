@@ -40,5 +40,5 @@ export default function ElementTime(props) {
   }
 
   const { stylesName } = props;
-  return <Text className={ stylesName || "text-gray-600 dark:text-gray-400 text-sm"}>{s}</Text>;
+  return <Text className={ stylesName || "text-neutral-600 dark:text-neutral-400 text-sm"}>{s}</Text>;
 }

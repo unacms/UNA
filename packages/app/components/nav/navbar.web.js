@@ -105,7 +105,7 @@ export default function (props) {
     const sContent = (
       <View key="ddp-content" className="px-1.5 pb-1.5">
         <View className="flex-row items-center mb-1">
-          <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">
+          <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
             {sTxtNtfsTitle}
           </Text>
           <Button

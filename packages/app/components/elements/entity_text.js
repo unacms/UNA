@@ -30,8 +30,8 @@ function Small({ data }) {
     return (
         <View className=" bg-neocard  dark:bg-neocard-dark sm:border-x  border-neoborder dark:border-neoborder-dark w-full mx-auto  ">
            <View className=' bg-primary/10 dark:bg-primary-dark/10 sm:bg-transparent dark:bg-neoitem-dark rounded-lg flex-col px-2.5 py-2 sm:p-0 mx-4 my-2'>
-                <Text className="font-bold text-gray-900 dark:text-gray-50 text-base sm:text-xl ">{data.entry_title}</Text>
-                <ContentMore content={data.entry_text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-gray-600 dark:text-gray-400"/>
+                <Text className="font-bold text-neutral-900 dark:text-neutral-50 text-base sm:text-xl ">{data.entry_title}</Text>
+                <ContentMore content={data.entry_text} numberOfLines={3} textStyle={oCommentTextStyle} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400"/>
             </View>
         </View>
     );
@@ -42,7 +42,7 @@ function Default({ data }) {
         <View className="">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" mt-4 u-cover" view="cover"   /></View>}              
             <View className="mx-4 mb-4">
-                <H1 className="font-bold tracking-tight  text-gray-900 dark:text-gray-50 ">{data.entry_title}</H1>
+                <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>
                 <Html data={data.entry_text} />
             </View>
         </View>

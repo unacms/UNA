@@ -62,7 +62,7 @@ return (
             <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
         </Pressable>
         <Profile {...data.profile} displayType="unit_wo_info" displaySize="base" />
-        <H1C className="font-bold text-base ml-2 tracking-tight text-white dark:text-gray-50">{data.profile.display_name}</H1C>
+        <H1C className="font-bold text-base ml-2 tracking-tight text-white dark:text-neutral-50">{data.profile.display_name}</H1C>
     </Row>
     );
 }
@@ -108,7 +108,7 @@ export default function ElementCover(props) {
           </View>
             
           <View className=" flex-col pl-24 mt-auto py-2 flex-auto">
-            <Text className="tracking-tight text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-50">
+            <Text className="tracking-tight text-lg sm:text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50">
               {data.profile.display_name}
             </Text>
 
@@ -119,7 +119,7 @@ export default function ElementCover(props) {
         <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
-                className=" w-full text-sm sm:text-base text-gray-800 dark:text-gray-200 "
+                className=" w-full text-sm sm:text-base text-neutral-800 dark:text-neutral-200 "
               >
                 {stripTags(data.profile.info.description)}
               </Text>

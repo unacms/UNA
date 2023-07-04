@@ -36,11 +36,11 @@ export default function () {
           <View className=" backdrop-blur z-50  bg-backgroundnavbar dark:bg-backgroundnavbar-dark border-t  border-bordercolornavbar dark:border-bordercolornavbar-dark w-full px-2 h-16">
               <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                   {TabList.map((tab, index) => (
-                          <View key={"fl" + index} className='w-1/6 text-gray-700 dark:text-gray-300 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '>
+                          <View key={"fl" + index} className='w-1/6 text-neutral-700 dark:text-neutral-300 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '>
                              <Link  href={tab.url} >
                              <View className='flex-col gap-1 items-center'>
                               {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
-                               <Text className='group-hover:text-primary dark:group-hover:text-primary  text-[10px] text-gray-700 dark:text-gray-300 whitespace-nowrap'>{tab.title}</Text>
+                               <Text className='group-hover:text-primary dark:group-hover:text-primary  text-[10px] text-neutral-700 dark:text-neutral-300 whitespace-nowrap'>{tab.title}</Text>
                                {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 rounded-full h-5 w-5 items-center justify-center right-1'><Text className='text-white text-xs'>{notifCount}</Text></View>}
                               </View>
                               </Link>

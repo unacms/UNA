@@ -120,12 +120,12 @@ export default function ElementLikes(oProps) {
         return (
             <View className="gap-y-2">
             {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col p-2 bg-gray-500/5 sm:rounded-lg">
+                <View key={i} className="flex-col p-2 bg-neutral-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
                         <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
+                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
                         </View>
                     </View>
                 </View>
@@ -196,7 +196,7 @@ export default function ElementLikes(oProps) {
 
             sCounterPopup = (
                 <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-gray-700 dark:text-gray-200">{sUsers}</View>
+                    <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
                 </Modal>
             );
         }

@@ -9,7 +9,7 @@ export const staticDefault = {
     text: (
       <Svg
         aria-label="Logo Text"
-        className="h-8 hidden sm:block  group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 duration-500"
+        className="h-8 hidden sm:block  group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

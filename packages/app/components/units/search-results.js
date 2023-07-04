@@ -71,10 +71,10 @@ export function UnitSearchResultsSmall({data, onPress}) {
                     </View>
                     <View className="flex-auto my-auto ">
                         <View className='flex-row '>
-                            <Text className='text-sm flex-none text-gray-500'><Time ts={data.added}></Time></Text>
+                            <Text className='text-sm flex-none text-neutral-500'><Time ts={data.added}></Time></Text>
                         </View>
                         <View className='flex-row  w-full items-end content-end'>
-                            <Text className='flex-auto mr-2 text-sm text-gray-900 dark:text-gray-100' numberOfLines={1}>{sText}</Text>    
+                            <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
                         </View>         
                     </View>
                 </View>

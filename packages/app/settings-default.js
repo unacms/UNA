@@ -837,7 +837,7 @@ export const settingsDefault = {
       'u-btn-default-cnt':
         ' bg-neutral-500/20 hover:bg-neutral-500/10  border border-neutral-500/20 active:shadow-none  active:opacity-50 shadow-sm  hover:shadow  ',
       'u-btn-default-text':
-        ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-gray-300 dark:group-hover:text-gray-50',
+        ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
       'u-btn-default-trans': 'duration-200 ',
 
       'u-btn-primary-cnt':
@@ -848,13 +848,13 @@ export const settingsDefault = {
 
       'u-btn-danger-cnt':
         ' border active:shadow-none border-black/10 dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900',
-      'u-btn-danger-text': 'font-medium text-gray-100 group-hover:text-white ',
+      'u-btn-danger-text': 'font-medium text-neutral-100 group-hover:text-white ',
       'u-btn-danger-trans': 'duration-200',
 
       'u-btn-text-cnt':
         ' border border-transparent hover:bg-neutral-500/10 active:opacity-50  ',
       'u-btn-text-text':
-        ' font-medium text-gray-700 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-50',
+        ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
       'u-btn-text-trans': ' duration-200 ',
 
       'u-btn-link-cnt': ' border border-transparent ',

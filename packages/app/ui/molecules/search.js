@@ -24,12 +24,12 @@ export default function ElementSearch(oProps) {
         return (
             <View className="w-full mt-1">
             {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col my-2 p-2 bg-gray-500/5 sm:rounded-lg">
+                <View key={i} className="flex-col my-2 p-2 bg-neutral-500/5 sm:rounded-lg">
                     <View className="animate-pulse flex-row items-center gap-3">
-                        <View className="rounded-full bg-gray-600/20 h-10 w-10"></View>
+                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
                         <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-gray-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-gray-600/20 rounded-full"></View>
+                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
+                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
                         </View>
                     </View>
                 </View>
@@ -110,7 +110,7 @@ export default function ElementSearch(oProps) {
                     <View key="ddp-content" className="px-1.5 pb-1.5">
                         <Redirect ref={redirectdRef} />
                         <View className="flex-row items-center mb-1">
-                            <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+                            <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                             <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
                                 <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                             </Link>
@@ -136,7 +136,7 @@ export default function ElementSearch(oProps) {
                         <View key="ddp-content" className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />
                             <View className="flex-row items-center">
-                                <Text className="text-gray-700 dark:text-gray-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+                                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                                 <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
                                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                 </Link>

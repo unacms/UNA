@@ -99,7 +99,7 @@ function DefaultUnit(data) {
                 <Link href={url} className="">
                   <Text
                     numberOfLines={2}
-                    className=" duration-200  text-gray-950 hover:text-accent dark:text-gray-50 hover:text-accent-dark text-xl tracking-tight font-bold"
+                    className=" duration-200  text-neutral-950 hover:text-accent dark:text-neutral-50 hover:text-accent-dark text-xl tracking-tight font-bold"
                   >
                     {data.content.title}
                   </Text>
@@ -131,7 +131,7 @@ function DefaultUnit(data) {
                     )}
                     {!bIsTimelineContent && (
                       <Text
-                        className="text-gray-950 dark:text-gray-50 text-base"
+                        className="text-neutral-950 dark:text-neutral-50 text-base"
                         numberOfLines={3}
                       >
                         {data.content.text}
@@ -214,13 +214,13 @@ function SmallUnit(data) {
         </View>
         <View className="flex-auto flex-col my-auto ">
           <View className="flex-row gap-2">
-            <Text className="text-sm flex-auto  font-semibold text-gray-800 dark:text-gray-200">
+            <Text className="text-sm flex-auto  font-semibold text-neutral-800 dark:text-neutral-200">
               {data.author_data.display_name}
             </Text>
             <Time className="text-sm flex-none" ts={data.date}></Time>
           </View>
           <Text
-            className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50"
+            className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
             numberOfLines={1}
           >
             {data.content.title}
@@ -228,7 +228,7 @@ function SmallUnit(data) {
 
           <View className="flex-row  w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50"
+              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
               {data.plainText}

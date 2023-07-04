@@ -675,7 +675,7 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: false
 
-  /gray-matter/4.0.3:
+  /neutral-matter/4.0.3:
     resolution: {integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==}
     engines: {node: '>=6.0'}
     dependencies:
@@ -1600,7 +1600,7 @@ packages:
       '@napi-rs/simple-git': 0.1.8
       github-slugger: 2.0.0
       graceful-fs: 4.2.10
-      gray-matter: 4.0.3
+      neutral-matter: 4.0.3
       katex: 0.16.4
       lodash.get: 4.4.2
       next: 13.0.6_react-dom@18.2.0+react@18.2.0

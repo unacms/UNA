@@ -190,7 +190,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 
     let header = commentData.total_count > 0 ? (
         <Row className='flex-row jusity-between items-center m-4'>
-            <Text className='flex-auto text-base font-bold text-gray-900 dark:text-gray-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
+            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
             <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu items={[
@@ -320,10 +320,10 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
-                                <Text className='text-xs text-gray-900 dark:text-gray-50'>Reply to:</Text>
-                                <Text className='font-semibold text-xs text-gray-900 dark:text-gray-50'>{ commentData.formAuthor}</Text>
+                                <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to:</Text>
+                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{ commentData.formAuthor}</Text>
                             </Row>
-                            <Text className='text-sm overflow-hidden text-gray-900 dark:text-gray-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
+                            <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
                         <View className=" right-0 t-0">
                             <Button align="start"  rounded startDecorator="X" size ="xs" variant="outline" onPress={() => handleCancel()} />

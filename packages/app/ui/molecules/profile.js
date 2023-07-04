@@ -100,7 +100,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameLink(oProps) {
     return (
-      <Text className={'text-gray-900 hover:text-primary dark:text-gray-100 dark:hover:text-primary-dark ' + sSizeFont + ' truncate'}>
+      <Text className={'text-neutral-900 hover:text-primary dark:text-neutral-100 dark:hover:text-primary-dark ' + sSizeFont + ' truncate'}>
         {oProps.title}
       </Text>
     )
@@ -108,7 +108,7 @@ export default function AtomProfile(oProps) {
 
   function DisplayNameText(oProps) {
     return (
-      <Text className={'text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-50 ' + sSizeFont + ' tracking-tight truncate hover:underline'}>
+      <Text className={'text-neutral-700 hover:text-neutral-900 dark:text-neutral-200 dark:hover:text-neutral-50 ' + sSizeFont + ' tracking-tight truncate hover:underline'}>
         {oProps.title}
       </Text>
     )
@@ -118,7 +118,7 @@ export default function AtomProfile(oProps) {
   function DisplayInfo(oProps) {
     return (
       <View className="flex-row ">
-        <Text className="mr-2 text-gray-600 dark:text-gray-400 text-sm  tracking-tight">
+        <Text className="mr-2 text-neutral-600 dark:text-neutral-400 text-sm  tracking-tight">
           user
         </Text>   
       </View>
@@ -149,9 +149,9 @@ export default function AtomProfile(oProps) {
     case 'unit_wo_info':
       sResult = (
         <Link emulate={emulate} href={oProps.url}><View className="relative flex-row">
-              <View className={sSize +" aspect-square overflow-hidden bg-gray-100 dark:bg-gray-700 mx-auto rounded-full "}>
-                  {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-gray-200  dark:bg-gray-600 border-2 border-gray-100 dark:border-gray-700  mx-auto rounded-full mt-[15%] "></View>
-                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-gray-200  dark:bg-gray-600  mx-auto rounded-t-full  "></View></View>}
+              <View className={sSize +" aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full "}>
+                  {!oProps.url_avatar && <View><View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
+                  <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View></View>}
                   {!!oProps.url_avatar && <Image
                       className={sSize+"  z-50"}
                       width={iSizeWidth}
@@ -178,7 +178,7 @@ export default function AtomProfile(oProps) {
               <DisplayNameText title={oProps.display_name} />
             )}
             </Link>
-            <View className="flex text-gray-600 dark:text-gray-400 text-sm">{sShowInfo}</View>
+            <View className="flex text-neutral-600 dark:text-neutral-400 text-sm">{sShowInfo}</View>
             </View>
      
       )

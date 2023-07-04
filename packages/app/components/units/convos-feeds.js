@@ -32,14 +32,14 @@ export function ListFeed(data) {
         <View className="flex-auto flex-col my-auto ">
           <View className="flex-row gap-2">
             <Text
-                className="flex-auto text-lg font-bold text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50"
+                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                 numberOfLines={1}
             > { title } </Text>
             <Time className="text-sm flex-none" ts={ date }></Time>
           </View>
           <View className="flex-row  w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-950 dark:group-hover:text-gray-50"
+              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
               { message }
@@ -107,8 +107,8 @@ export function MsgFeed({ item }) {
     /*let cells = [];
     for (let i = 0; i < level; i++){
         cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /!*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*!/}
-            {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-gray-100 dark:bg-gray-800"></View> }
-            {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-gray-100 dark:border-gray-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+            {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View> }
+            {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
         </View>)
     };
 */
@@ -124,19 +124,19 @@ export function MsgFeed({ item }) {
     });
 
     //{/*items.length != 0 && */}
-        //                     {{/*(view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-gray-100 dark:bg-gray-800"><Text>&nbsp;</Text></View> */}}
+        //                     {{/*(view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> */}}
     return (
-        <View className='w-full p-4'>
+        <View className='w-full mt-4'>
             <View className="flex-row gap-x-2">
                 {/*{cells}*/}
                 <View className="w-10 flex-0 ">
                     <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                 </View>
-                <View className='flex-1 flex-col gap-y-1 mb-2'>
+                <View className='flex-1 flex-col gap-y-1 '>
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center mb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <Text className="text-gray-500 px-1">·</Text>
+                            <Text className="text-neutral-500 px-1">·</Text>
                             <Time className="" ts={created}></Time>
                         </View>
                         <View>
@@ -166,7 +166,7 @@ export function MsgFeed({ item }) {
                                         title: aItem.title
                                     };
                                 })} onSelect={handleManageMenuSelect}>
-                                    <Button variant="outline" size="sm" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} rounded />
+                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" onPress={() => {FeedbackHaptics('Medium');}} rounded />
                                 </DropdownMenu>
                             </View>
                             }
