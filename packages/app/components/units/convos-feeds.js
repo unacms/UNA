@@ -17,10 +17,11 @@ export function ListFeed(data) {
   const { author_data, message, date, title, count, onPress } = data || {};
 
   return <Pressable onPress={onPress} >
-            <View className="flex-row p-2 sm:p-3 sm:mx-1 sm:mt-2  group duration-200 overflow-hidden sm:rounded-lg
-                        bg-backgroundcard dark:bg-backgroundcard-dark hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-            active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive mt-[1px] active:translate-y-0.5
-                        border-bordercolorcard dark:border-bordercolorcard-dark sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover">
+            <View className="flex-row p-2 sm:p-3   group duration-200 overflow-hidden mx-1 mt-1 rounded-lg
+                         hover:bg-neutral-200 dark:hover:bg-neutral-800
+                        active:opacity-50  active:translate-y-0.5 
+                        
+                        h ">
 
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
             <Profile
@@ -87,7 +88,7 @@ export function MsgFeed({ item }) {
         props.handleReply(id, author, text);
     };
 
-    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10  rounded-lg   px-2.5  u-vanilla-html-small ";
+    let sCommentClass = " bg-backgrounditem dark:bg-backgrounditem-dark rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
 
     if (!data)
         return (<View></View>);
@@ -126,13 +127,11 @@ export function MsgFeed({ item }) {
     //{/*items.length != 0 && */}
         //                     {{/*(view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> */}}
     return (
-        <View className='w-full mt-4'>
-            <View className="flex-row gap-x-2">
+        <View className='w-full mt-3'>
+            <View className="flex-row-reverse ">
                 {/*{cells}*/}
-                <View className="w-10 flex-0 ">
-                    <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-                </View>
-                <View className='flex-1 flex-col gap-y-1 '>
+                
+                <View className='flex-1 flex-col gap-y-1 -translate-x-2 translate-y-1 '>
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center mb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
@@ -147,7 +146,7 @@ export function MsgFeed({ item }) {
                         </View>
                         }
                     </View>
-                    <View className="mb-1 flex-row w-full justify-between items-center">
+                    <View className="flex-row w-full  justify-between items-center">
                         { !!currentUser ? <View className='mr-2'>
                                            {/* <Reactions>
                                                 <Text>{selectedEmoji ? selectedEmoji?.emoji : 'Like'}</Text>
@@ -172,6 +171,9 @@ export function MsgFeed({ item }) {
                             }
                         </View>
                     </View>
+                </View>
+                <View className=" bg-neutral-50 dark:bg-neutral-900 rounded-full mb-auto p-0.5">
+                    <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                 </View>
             </View>
         </View>
