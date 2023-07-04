@@ -17,9 +17,8 @@ export function ListFeed(data) {
   const { author_data, message, date, title, count, onPress } = data || {};
 
   return <Pressable onPress={onPress} >
-            <View className="flex-row p-2 sm:p-3   group duration-200 overflow-hidden mx-1 mt-1 rounded-lg
-                         hover:bg-neutral-200 dark:hover:bg-neutral-800
-                        active:opacity-50  active:translate-y-0.5 
+            <View className="flex-row p-2 sm:px-3   group duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg
+                         hover:bg-neutral-500/10 active:opacity-50   active:translate-y-0.5 
                         
                         h ">
 
@@ -88,7 +87,7 @@ export function MsgFeed({ item }) {
         props.handleReply(id, author, text);
     };
 
-    let sCommentClass = " bg-backgrounditem dark:bg-backgrounditem-dark rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
+    let sCommentClass = " bg-neutral-500/10   rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
 
     if (!data)
         return (<View></View>);
