@@ -53,7 +53,13 @@ export function Story(props) {
     });
 
     return (
-        <View className="w-full h-48 bg-red-500">
+        <View className=" 
+          overflow-hidden sm:rounded-lg  
+        bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border 
+        border-bordercolorcard dark:border-bordercolorcard-dark 
+        sm:mx-4 mt-2 sm:mt-4
+        
+        ">
             <Modal onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className='h-4 w-full  flex-row gap-x-2'>
                     {images.map((image, index) => (
@@ -76,29 +82,47 @@ export function Story(props) {
                 </View>
             </Modal>
         <ScrollView horizontal={true}>
-            <Row>
+            <Row className='gap-x-2 p-2'>
             <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
             </Pressable>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
-            <View className="w-24 h-24 bg-blue-500 m-2">
+            </Pressable>
+            <Pressable onPress={() => setShowImage(true)}>
+            <View className="w-28 h-48 rounded bg-primary/20 ">
             </View>
+            </Pressable>
             </Row>
         </ScrollView>
     </View>);

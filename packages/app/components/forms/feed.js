@@ -64,14 +64,10 @@ export default function FormFeed(props) {
     </Modal>
     <View className='max-w-5xl w-full items-center px-2 pt-2  sm:px-4 sm:pt-4 mx-auto'>
     <View className='max-w-5xl w-full px-4 py-3
-        group duration-200 overflow-hidden rounded-lg  
-        bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-        hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-        hover:shadow-sm active:shadow-none 
-        active:translate-y-0.5 border 
+          overflow-hidden rounded-lg  
+        bg-backgroundcard dark:bg-backgroundcard-dark  border 
         border-bordercolorcard dark:border-bordercolorcard-dark 
-        sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-        active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactiv 
+        
     '>     
         <View className='flex-auto flex-row gap-x-2'>    
             {profile}
