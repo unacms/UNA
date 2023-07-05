@@ -50,7 +50,7 @@ export default function PageLayout(props) {
       return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
           <View className="flex-auto relative w-full flex-row mx-auto  ">
-            <View className="hidden md:block  w-1/4 xl:w-1/5 mt-4   duration-200 sticky  top-0 ">
+            <View className="hidden md:block  w-1/4 xl:w-1/5 mt-4 duration-200  ">
               <BlockByName data={props.data} name={props.blocks.menu} />
             </View>
             <View className="flex-auto  w-3/4 xl:w-4/5 flex-row duration-200">
@@ -62,7 +62,7 @@ export default function PageLayout(props) {
                 </LayoutDataContext>
               </View>
 
-              <View className="hidden xl:block w-1/3  flex-none duration-200">
+              <View className="hidden xl:block w-1/3  flex-none duration-200 sticky ">
               <BlockByName
                   name={props.blocks.home2}
                 />
@@ -118,8 +118,7 @@ export default function PageLayout(props) {
                 />
 
 
-     <BlockByName data={props.data} name={props.blocks.posts2} />
-            <BlockByName data={props.data} name={props.blocks.feed} />*/
+    */
   return (
     <View className="w-full ">
       <LayoutDataContext>
@@ -128,14 +127,8 @@ export default function PageLayout(props) {
         )}
         {!!currentUser && (
           <>
-          <BlackBox 
-                minHeaderHeight={0} 
-                isHideDefaultHeader={false} 
-                menu={menu} 
-                data={data} 
-                blocks={props.blocks}
-            />
-           
+           <BlockByName data={props.data} name={props.blocks.posts2} />
+           <BlockByName data={props.data} name={props.blocks.feed} />
           </>
         )}
       </LayoutDataContext>

@@ -1,4 +1,9 @@
 export const settingsDefault = {
+  sockets: {
+    host: '192.168.2.17',
+    port: '6001',
+    key: 'app-key',
+  },
   urls: {
     embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
     images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
@@ -429,6 +434,9 @@ export const settingsDefault = {
           showTitle: false,
           showBg: false,
           forList: true,
+        },
+        'comments-empty': {
+          name: 'static:comments_empty', showTitle: false, showBg: false,forList: true,
         },
         comments: {
           name: 'bx_timeline:get_block_item_comments',
@@ -934,7 +942,7 @@ export const settingsDefault = {
       {
         key: '/tab1',
         title: 'Friends',
-        url: '/persons-home',
+        url: '/recommended-friends',
         icon: 'users',
       },
       {

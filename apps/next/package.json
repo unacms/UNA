@@ -11,10 +11,9 @@
   },
   "dependencies": {
     "@expo/next-adapter": "^4.0.12",
-    "@react-native-clipboard/clipboard": "^1.11.2",
-    "@vercel/analytics": "^0.1.10",
     "@phosphor-icons/react": "^2.0.10",
     "@radix-ui/react-select": "^1.2.1",
+    "@react-native-clipboard/clipboard": "^1.11.2",
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-document": "^2.0.3",
     "@tiptap/extension-image": "^2.0.3",
@@ -26,6 +25,7 @@
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
     "@tiptap/suggestion": "^2.0.3",
+    "@vercel/analytics": "^0.1.10",
     "app": "*",
     "autoprefixer": "^10.4.14",
     "deepmerge": "^4.3.1",
@@ -33,6 +33,7 @@
     "lucide-react-native": "^0.115.0",
     "moti": "0.23.7",
     "next": "13.1.6",
+    "pusher-js": "^8.2.0",
     "raf": "^3.4.1",
     "react-native-component-inview": "^1.0.2",
     "react-native-extended-stylesheet": "^0.12.0",
@@ -42,8 +43,8 @@
     "react-native-svg": "13.9.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-tab-view": "3.5.1",
-    "tippy.js": "^6.3.7",
-    "react-virtuoso": "^4.3.6"
+    "react-virtuoso": "^4.3.6",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@types/node": "18.15.2",

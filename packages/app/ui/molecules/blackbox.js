@@ -3,7 +3,7 @@ import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Row, Pressable  } from 'app/design/view';
+import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/b
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/hooks/skeleton';
+import { Button } from 'app/design/controls';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false }) {
 
@@ -146,23 +147,24 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             }, 300);
 
             return (
-                <View className="">
-                    <Row  >
+                <ScrollView  horizontal={true} className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark min-w-full">
+                    <Row >
                         {props.navigationState.routes.map((a) => (
-                            <Pressable className="flex-1 bg-backgroundnavbar dark:bg-backgroundnavbar-dark items-center justify-center py-2.5 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
+                            <Pressable className="items-center justify-center py-2.5 px-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
                                 key={`tab-${a.index}`}
                                 onPress={() => {
                                     setIndex(a.index)
                                 }}
                             >
-                                <Text className="font-semibold text-base" style={{color: (props.navigationState.index === a.index ? colors.activeTabText : colors.tabText)}}>{a.title}</Text>
+                            <View className="w-40">
+                                <Button fullWidth={true} id="tab" variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title}   />
+                            </View>
                             </Pressable>
                         ))}
-                        <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>
+                      
                     </Row>
-                </View>
-        
-
+                </ScrollView>
+                /*  <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>*/
             )
         }
     };

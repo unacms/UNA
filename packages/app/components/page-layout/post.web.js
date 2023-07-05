@@ -1,14 +1,15 @@
-import { View, Row, ScrollView, Pressable} from 'app/design/view';
-import {BlockByName, DataByName} from 'app/components/block';
+import { View, Row, Pressable} from 'app/design/view';
+import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from 'next/router';
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useRef} from 'react';
 import { stripTags } from '../../lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
-import { Platform, Keyboard } from 'react-native'
+import { Platform } from 'react-native'
 import { Icon } from 'app/ui/atoms/icon'; 
 import { useWindowDimensions } from 'react-native'
+import {subscribe} from 'app/ui/atoms/socket'; 
 
 export default function PageLayout(props) {
 
@@ -102,8 +103,12 @@ export default function PageLayout(props) {
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
 
+    console.log(1)
+    subscribe();
+
     return ( 
         <>{header}
+ 
         <View className="lg:py-4">
             <View className=" justify-between w-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>

@@ -1,6 +1,5 @@
 import { View } from 'app/design/view';
-import {BlockByName, DataByName} from 'app/components/block';
-import { Text } from 'app/design/typography'
+import { BlockByName, DataByName} from 'app/components/block';
 
 import { useState, useContext, useRef, useEffect } from 'react';
 import { stripTags } from '../../lib/util';
@@ -12,7 +11,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useNavigation, useRouter} from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
 import { Dimensions, Keyboard } from 'react-native';
-
+import { subscribe } from 'app/ui/atoms/socket'; 
 
 export default function PageLayout(props) {
 
@@ -83,6 +82,9 @@ export default function PageLayout(props) {
         };
       }, []);
    
+      console.log(1)
+      subscribe();
+
     return (//style ={{marginBottom: sizes.formHeight}}
         <View className='flex-1 w-full h-full'>
             <View ref={viewCntRef} className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark" >
