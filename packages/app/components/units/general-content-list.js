@@ -147,19 +147,19 @@ export default function Unit(props) {
                         {data.cover &&
                                 <View className="w-full bg-neutral-500/20 rounded  " >
                                     <Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
-                                    <View className="sm:mx-auto mr-3 ml-auto translate-y-16    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+                                    <View className="sm:mx-auto mr-3 ml-auto translate-y-14    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
 
                                     <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
                                     </View>
                                 </View>
                             } 
                                
-                                <View className="sm:mt-16">
+                                <View className="sm:mt-12">
 
                             <Link href={data.url} >
-                                
-                                <Text className=" text-xl sm:text-lg  font-bold text-neutral-800 p-4 sm:text-center dark:text-neutral-100 sm:mx-auto">{data.title}</Text>
-                                
+                                <View className="sm:mx-auto w-fit mr-auto bg-backgroundcard/80 dark:bg-backgroundcard-dark/80 backdrop-blur rounded-lg p-2 my-3 ml-2">
+                                <Text className=" text-xl sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
+                                </View>
                             </Link>
                             <View className=''>{sMeta}</View></View>
                     </View>
