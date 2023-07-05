@@ -160,9 +160,17 @@ export const staticDefault = {
     ),
     comments_empty: (
       <>
-        <Text className="text-center text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
-        Without comment, because none is necessary.
+        <View className="flex-col gap-y-2 items-center justify-center w-1/2 mx-auto mt-8 p-4  h-full items-center rounded-lg bg-neutral-500/10 ">
+        <View className="flex-col mx-auto text-neutral-800 dark:text-neutral-200 ">
+                                <Icon icon="ChatCircle" width={32} height={32} />
+                            </View>
+        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+        No comments yet
         </Text>
+        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+        Be the first to share what you think
+        </Text>
+        </View>
       </>
     ),
 
