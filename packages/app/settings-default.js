@@ -943,13 +943,18 @@ export const settingsDefault = {
         url: '/posts-home',
         icon: 'ChatCenteredText',
       },
-   
       {
+        key: '/tab3',
+        title: 'Messenger',
+        url: '/messenger',
+        icon: 'ChatsCircle',
+      },
+      /*{
         key: '/tab3',
         title: 'Groups',
         url: '/groups-home', 
         icon: 'UsersThree',
-      },
+      },*/
       {
         key: '/tab4',
         title: 'Notifications',

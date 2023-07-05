@@ -35,14 +35,14 @@ export function ListFeed(data) {
             > { title } </Text>
             <Time className="text-sm flex-none" ts={ date }></Time>
           </View>
-          <View className="flex-row  w-full items-end content-end">
+          <View className="flex-row w-full items-end content-end">
             <Text
               className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
               { message }
             </Text>
-            <View className="flex-none bg-primary dark:bg-primary-dark rounded-full  my-auto h-min px-1.5">
+            <View className="flex-none bg-primary dark:bg-primary-dark rounded-full my-auto h-min px-1.5">
               { count > 0 && (
                 <Text className="text-xs text-white dark:text-black font-medium">
                   { count }
@@ -64,17 +64,12 @@ function CarouselMemo({ aImg, b }) {
 }
 
 export function MsgFeed({ item }) {
-    let { currentUser } = useCurrentUser();
+    const { currentUser } = useCurrentUser();
 
-    let { author_data, created, count, files, level, message, menu, id } = item;
-    level = 0;
-    let lvls= [];
-    const data = created;
-    let view = false;
+    const { author_data, created, count, files, message, menu, id } = item,
+        sCommentClass = " bg-neutral-500/10   rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
 
-    let sCommentClass = " bg-neutral-500/10   rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
-
-    if (!data)
+    if (!created)
         return (<View></View>);
 
     const handleManageMenuSelect = (oItem, event) => {
@@ -89,7 +84,7 @@ export function MsgFeed({ item }) {
         }
     }
 
-    let aImg = files?.map(obj => {
+    const aImg = files?.map(obj => {
         return {
             src: obj.file,
             type: 'image'
@@ -114,9 +109,9 @@ export function MsgFeed({ item }) {
                         </View>
                         }
                     </View>
-                    <View className="flex-row w-full  justify-between items-center">
+                    <View className="flex-row w-full justify-between items-center">
                         { !!currentUser ? <View className='mr-2'>
-                                          { <Reactions { ...{ type: 'icon', system: 'jot-menu', object_id: id, action: { reaction: 'default' }} } /> }
+                                          { <Reactions { ...{ type: 'icon', system: 'jot-menu', object_id: id, action: { reaction: 'default' } } } /> }
                                           </View> : <></> }
                         <View className='flex-row'>
                             <Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />

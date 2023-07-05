@@ -1,6 +1,6 @@
 import { View, Pressable } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosListColumn } from 'app/components/elements/messenger/convos-list';
 import History from 'app/components/elements/messenger/history';
@@ -19,18 +19,15 @@ export default function PageLayout({ data }) {
           iSpace = getSpace(sMode),
          { historyCol, listCol } = useMemo(() => getGrid( sMode, panel ), [sMode, panel]);
 
-    const [viewMenu, setMenuView] = useState(sMode === sDesktop);
+    const [viewMenu, setMenuView] = useState(true);
 
     const oWindowRef = useRef(),
           iHeight = height - iSpace;
 
     const handlerSelectMenu = (sMenu) => {
-        //console.log( '-- log select menu --', sMenu);
         selectMenu(sMenu);
-        setMenuView((viewMenu) => !viewMenu);
-
-        /*if (panel === 'menu' && sMode !== sDesktop)
-            selectPanel(false);*/
+        if (sMode !== sDesktop)
+            setMenuView((viewMenu) => !viewMenu);
     };
 
     const handlerMenuView = (bView) => {
@@ -40,24 +37,42 @@ export default function PageLayout({ data }) {
             setMenuView((viewMenu) => !viewMenu);
     };
 
+    const handlerSetConvoItem = (item) => {
+        setConvoItem(item);
+    }
+
     const handlerSelectConvo = (item) => {
         const { id } = item;
         selectConvo(id);
         setConvoItem(item);
 
-        //console.log('------ log data ----', sMode, id);
         if (sMode === sPhone)
-            selectPanel(panel !== 'history' && 'history');
+            selectPanel('history');
     };
 
-    //console.log('----- log rerender main page ----', sMode );
-    return <Pressable onPress={(e) => {
-               if (viewMenu)
-                  handlerMenuView(false);
-           }}>
-              <MessengerContext.Provider value={{ height: iHeight, handlerSelectMenu,
-                    handlerMenuView, menuItems: data.menu, menuItem, convo,
-                    handlerSelectConvo, viewMenu, selectPanel }}>
+    useEffect(() => {
+        if (sMode !== sPhone) {
+            selectPanel(false);
+        }
+
+        if (viewMenu)
+            setMenuView(false);
+
+    }, [sMode]);
+
+   //console.log('----- log rerender main page ----', sMode, historyCol, listCol, panel, convoInfo );
+
+    return <MessengerContext.Provider value={{
+                                                  height: iHeight, handlerSelectMenu,
+                                                  handlerMenuView, menuItems: data.menu,
+                                                  menuItem, convo, handlerSelectConvo,
+                                                  viewMenu, selectPanel,
+                                                  handlerSetConvoItem
+                                                }}>
+                <Pressable onPress={(e) => {
+                    if (viewMenu)
+                        handlerMenuView(false);
+                    }}>
                     <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
                         <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
                             <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
@@ -66,11 +81,11 @@ export default function PageLayout({ data }) {
                             <View className={ listCol }>
                                 <ConvosListColumn />
                             </View>
-                            <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark"}>
-                               <History convo={convoInfo} pressBack={() => selectPanel(panel !== 'history')}/>
+                            <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark h-full"}>
+                               <History convo={ convoInfo } pressBack={ () => selectPanel(false) }/>
                             </View>
                         </View>
                     </View>
-                </MessengerContext.Provider>
-            </Pressable>
+                </Pressable>
+        </MessengerContext.Provider>
 }

@@ -91,15 +91,15 @@ const ConvosListHeader = memo(({menu}) => {
 });
 
 const Convos = ({ list, onLoadHistory }) => {
-    const { menuItem, height, handlerSelectConvo, convo } = useContext(MessengerContext),
+    const { menuItem, height, handlerSetConvoItem, convo } = useContext(MessengerContext),
           sUrl = '/api.php?r=bx_messenger/get_convos_list_json/&params=';
 
     const fetchData = async({ pageParam = 0 }) => {
             const { data } =  await fetcher(sUrl + JSON.stringify({ group: menuItem, count: pageParam }));
 
-            console.log('---- log -- get talks list ---', data, convo);
-            if (typeof handlerSelectConvo === 'function' && data && data.length && !convo)
-                handlerSelectConvo(data[0]);
+            //console.log('---- log -- get talks list ---', data, convo);
+            if (typeof handlerSetConvoItem === 'function' && data && data.length && !convo)
+                handlerSetConvoItem(data[0]);
 
             return data || [];
         };
@@ -164,22 +164,20 @@ export const ConvosListColumn = ({ list, colWidth }) => {
    //console.log('------ log generate talks list column  ----', list);
 
    return <View className={"h-full max-h-full overflow-hidden " + ( colWidth || 'w-full' ) } >
-                <ConvosList list={list} />
+            <ConvosList list={list} />
           </View>;
 }
 
 export default function ConvosList(props) {
     const { menuItem, viewMenu, handlerMenuView } = useContext(MessengerContext);
-   return  <View className="h-full">
-               <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
-                   <View className="w-full px-3.5 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
-                        <View className="xl:hidden ">
-                            <Button variant="outline" startDecorator="List" rounded align="start" onPress={ handlerMenuView }/>
-                        </View>
-                        <ConvosListHeader menu={menuItem} />
-                   </View>
-                   <Convos {...props} />
-                   { viewMenu && <WrappedTopMenu /> }
+   return <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
+                <View className="w-full px-3.5 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
+                     <View className="xl:hidden ">
+                         <Button variant="outline" startDecorator="List" rounded align="start" onPress={ handlerMenuView }/>
+                     </View>
+                     <ConvosListHeader menu={menuItem} />
                 </View>
-             </View>
+                <Convos {...props} />
+                { viewMenu && <WrappedTopMenu /> }
+          </View>
 }
