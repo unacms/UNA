@@ -107,6 +107,9 @@ export const settingsDefault = {
     connection: {
       show_action_as_button: true,
     },
+    recommendation: {
+      show_action_as_button: true,
+    },
   },
   static_pages: {
     home: 'Home',

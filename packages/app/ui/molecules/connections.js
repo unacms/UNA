@@ -66,11 +66,6 @@ export default function ElementConnections(oProps) {
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
-
-    if (oProps.a == 'ignore'){
-        return (<ButtonAction startDecorator="x" onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />);
-    }
-
     return (
         <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
     );

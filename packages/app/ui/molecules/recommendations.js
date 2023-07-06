@@ -4,10 +4,9 @@ import { fetcher } from 'app/lib/fetcher';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
-    //MAY BE REWORK NEEDED BY ANTON
     const [ elementData, setElementData ] = useState(false);
 
-    const oParams = {...appSetting('social_actions', 'connection'), ...oProps.params};
+    const oParams = {...appSetting('social_actions', 'recommendation'), ...oProps.params};
 
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
 
@@ -42,7 +41,7 @@ export default function ElementRecommendations(oProps) {
         const aParamsDefault = {o:oProps.o, iid:oProps.iid, cid:oProps.cid};
 
         aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
+        const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceRecommendations&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
         if(typeof onLoad === 'function')
@@ -67,12 +66,15 @@ export default function ElementRecommendations(oProps) {
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
-
-    if (oProps.a == 'ignore'){
-        return (<ButtonAction startDecorator="x" onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />);
+    let sIcon = undefined;
+    switch(sAction) {
+        case 'ignore':
+            sIcon = 'x';
+            sTitle = false;
+            break;
     }
 
     return (
-        <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
+        <ButtonAction title={sTitle} startDecorator={sIcon} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
     );
 }
