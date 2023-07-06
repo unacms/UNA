@@ -132,7 +132,7 @@ export const settingsDefault = {
       {
         name: 'persons-home',
         title: 'Connections',
-        link: 'recommended-friends',
+        link: 'friend-suggestions',
         icon: 'users',
       },
       {
@@ -200,7 +200,7 @@ export const settingsDefault = {
     sys_con_submenu: {
       name: 'Connections',
       icon: 'Users',
-      items: ['recommended-friends', 'friends', 'friend-requests', 'friend-requested', 'recommended-subscriptions', 'followers', 'following'],
+      items: ['friends', 'friend-suggestions', 'friend-requests', 'sent-friend-requests', 'follow-suggestions', 'followers', 'following'],
     },
     bx_persons_view_submenu: [
       'view-persons-profile',
@@ -452,7 +452,7 @@ export const settingsDefault = {
       },
     },
     //############ POSTS PAGES ############
-    'recommended-friends': {
+    'friend-suggestions': {
       layout: 'blackbox',
       blocks: {
         browse: {
@@ -482,7 +482,7 @@ export const settingsDefault = {
         header: false,
       }
     },
-    'recommended-subscriptions': {
+    'follow-suggestions': {
       layout: 'blackbox',
       blocks: {
         browse: {
@@ -542,7 +542,7 @@ export const settingsDefault = {
         header: false,
       }
     },
-    'friend-requested': {
+    'sent-friend-requests': {
       layout: 'blackbox',
       blocks: {
         browse: {
@@ -945,7 +945,7 @@ export const settingsDefault = {
       {
         key: '/tab1',
         title: 'Friends',
-        url: '/recommended-friends',
+        url: '/friend-suggestions',
         icon: 'users',
       },
       {
