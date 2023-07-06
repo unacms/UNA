@@ -11,7 +11,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { useNavigation, useRouter} from "expo-router";
 import { updateCenterHeader } from 'app/lib/native-handlers'
 import { Dimensions, Keyboard } from 'react-native';
-import { subscribe } from 'app/ui/atoms/socket'; 
+
 
 export default function PageLayout(props) {
 
@@ -81,9 +81,7 @@ export default function PageLayout(props) {
           keyboardDidHideListener.remove();
         };
       }, []);
-   
-      console.log(1)
-      subscribe();
+
 
     return (//style ={{marginBottom: sizes.formHeight}}
         <View className='flex-1 w-full h-full'>

@@ -152,12 +152,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         {props.navigationState.routes.map((a) => (
                             <Pressable className="items-center justify-center py-2.5 px-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
                                 key={`tab-${a.index}`}
-                                onPress={() => {
-                                    setIndex(a.index)
-                                }}
                             >
-                            <View className="w-40">
-                                <Button fullWidth={true} id="tab" variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title}   />
+                            <View >
+                                <Button onPress={() => {
+                                   setIndex(a.index)
+                                }} fullWidth={false} id="tab" variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title} />
                             </View>
                             </Pressable>
                         ))}

@@ -15,6 +15,12 @@ export default function ElementLink(props) {
             event.preventDefault();
         }
     }
+   
+    if ((href == '/home' || href == 'home')){
+        console.log(href);
+        href ='/'
+        console.log(href);
+    }
 
     if (props.emulate === true)
         return (
@@ -24,7 +30,7 @@ export default function ElementLink(props) {
         );
 
     return (
-        <Link href={href} {...props}   > 
+        <Link href={href} {...rest}   > 
             {props.children}
         </Link>
     );

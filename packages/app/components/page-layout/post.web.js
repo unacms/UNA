@@ -102,10 +102,6 @@ export default function PageLayout(props) {
 
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
-
-    console.log(1)
-    subscribe();
-
     return ( 
         <>{header}
  
