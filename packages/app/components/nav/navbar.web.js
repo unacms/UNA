@@ -195,8 +195,6 @@ export default function (props) {
               </Pressable>
               }
               { headerSettings.title && <Text  className="text-2xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
-         
-          
         </Row>
 
         <View className="flex-row flex-auto justify-end lg:justify-start ml-2">

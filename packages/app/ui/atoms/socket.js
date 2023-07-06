@@ -1,7 +1,7 @@
 import Pusher from 'pusher-js';
 import { appSetting } from 'app/lib/util'
 
-export function subscribe() {
+export function subscribe(channel_name, event_name, cb) {
 
     const pusher = new Pusher(appSetting('sockets', 'key'), {
         wsHost: appSetting('sockets', 'host'),
@@ -10,10 +10,10 @@ export function subscribe() {
         enabledTransports: ['ws', 'wss'],
         cluster: '',
     });
+    console.log('reload', pusher);
 
-    var channel = pusher.subscribe('bx_posts_53');
-        
-    channel.bind('comment_added', function(data) {
-        console.log(data)
+    var channel = pusher.subscribe(channel_name);
+    channel.bind(event_name, function(data) {
+        cb(data)
     });
 };

@@ -1,8 +1,8 @@
 export const settingsDefault = {
   sockets: {
-    host: '192.168.2.17',
-    port: '6001',
-    key: 'app-key',
+	host: 'ci.una.io',
+	port: '443',
+	key: 'app-key',
   },
   urls: {
     embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',

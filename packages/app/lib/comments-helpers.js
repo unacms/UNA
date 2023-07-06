@@ -11,8 +11,11 @@ import { fetcher } from 'app/lib/fetcher';
 import Loading from 'app/ui/atoms/loading'
 import Form from 'app/components/elements/form';
 import { useTheme } from '@react-navigation/native';
-import {  Keyboard } from 'react-native'
+import { Keyboard } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { subscribe } from 'app/ui/atoms/socket'; 
+import { Platform } from 'react-native'
+import { useCurrentUser } from 'app/context/user';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -76,6 +79,7 @@ export function parseData (browse, dynamicData) {
 export function CommentsBrowse({browse, requestUrl, module, handleReply, addData, addItems}) {
 
     const flashListRef = useRef(null);
+    let { currentUser, setCurrentUser } = useCurrentUser();
 
     let dataOut = [];
     let viewMode = browse?.data?.view;
@@ -103,7 +107,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         if (!params.postData)
             params.postData = null;
         if (!params.lastInserted)
-            params.lastInserted = 0;
+            params.lastInserted = 0;   
         setCommentData(Object.assign({}, commentData, params));
     } 
 
@@ -121,7 +125,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             addCommentData({ listData: browse,total_count: commentData.total_count + 1, lastInserted:i })
         }
     }, [addData]);
-
 
     function DataForList(items, level, last_child_in, lvls){
         Object.keys(items).forEach(function (k) { 
@@ -152,18 +155,23 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         })
     }
 
-    const handleMore = async () => {
+    const handleMore = async (force = false) => {
         if (commentData.last_count == commentData.perView){
-            const sRequest = prepareUrl({'is_form' : false}) ;
-            const sResponse = await fetcher(sRequest);
-            if(sResponse && sResponse.data != undefined){
-                let browse = parseData(commentData.listData, sResponse);
-                let iCount = sResponse.data.browse.data.count;
-                if (sResponse.data.browse.data.start == 0)
-                    iCount = 0;
-                addCommentData({startFrom: sResponse.data.browse.data.start, last_count: iCount, listData: browse })
-            }
+            handleMoreInner();
         }
+    }
+
+    const handleMoreInner = async () => {
+        const sRequest = prepareUrl({'is_form' : false}) ;
+        const sResponse = await fetcher(sRequest);
+        if(sResponse && sResponse.data != undefined){
+            let browse = parseData(commentData.listData, sResponse);
+            let iCount = sResponse.data.browse.data.count;
+            if (sResponse.data.browse.data.start == 0)
+                iCount = 0;
+            addCommentData({startFrom: sResponse.data.browse.data.start > commentData.startFrom ? sResponse.data.browse.data.start  : commentData.startFrom, last_count: iCount, listData: browse })
+        }
+
     }
 
     const handleOrder =  async (orderWay) => { 
@@ -176,7 +184,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }
 
-
     DataForList(commentData.listData.data.data, 0, 0, []);
 
     useEffect(() => {
@@ -188,6 +195,23 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }, [commentData.lastInserted]);
 
+    const cb = (data) => {
+        console.log(currentUser);
+        if (currentUser && currentUser.id != data.author_id)
+            cb2('flex')
+    }
+
+    const cb2 = (val) => {
+        const current = textRef.current;
+        if (current) {
+          current.setNativeProps({ style: { display: val } });
+        }
+    }
+    useEffect(() => {
+        subscribe(commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+    }, [])
+
+    const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
         <Row className='flex-row jusity-between items-center m-4'>
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
@@ -212,9 +236,14 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
-    
+    let sClassName = 'absolute top-0 w-full items-center';
+    if (Platform.OS === 'web')
+        sClassName = 'fixed top-16 w-full items-center';
+
+    const textRef = useRef();
+
     return (
-       
+        <> 
             <UniList
                 useWindowScroll
                 data={dataOut}
@@ -223,7 +252,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                 renderItem={({item, index }) => {
 
                     if (item.id.toString().includes('block')){
-                        //console.log(typeof item.data?.props?.children, item.data)
                         return item.data;
                     }
                     return (
@@ -240,6 +268,12 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                     ) : null
                   }
             />
+            <View className={sClassName} ref={textRef} style={{display:'none'}}>
+                <View className='w-1/2 items-center'>
+                    <Button variant="primary" title="New comment" size="sm" onPress={() => {cb2('none'); handleMoreInner(); }} />
+                </View>
+            </View>
+        </>
   
     )
 }
@@ -269,9 +303,11 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
     } 
 
     useEffect(() => {
-        form.data.inputs.cmt_parent_id.value = formData.parent_id;
-        form.data.reset = true;
-        addCommentData({formText:formData.text, formAuthor:formData.author, parentId:formData.parent_id})
+        if(formData.parent_id > 0){
+            form.data.inputs.cmt_parent_id.value = formData.parent_id;
+            form.data.reset = true;
+            addCommentData({formText:formData.text, formAuthor:formData.author, parentId:formData.parent_id})
+        }
     }, [formData.parent_id]);
 
     const [commentForm, setCommentForm] = useState();
