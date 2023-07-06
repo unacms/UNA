@@ -55,5 +55,4 @@ const expoConfig = {
       "PORT": process.env.PORT
     },    
 };
-
 module.exports = merge(expoConfig, expoConfigCustom);

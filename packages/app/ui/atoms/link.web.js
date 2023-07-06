@@ -1,7 +1,6 @@
 import { styled } from 'nativewind'
-//import { Link as SolitoLink} from 'solito/link'
-//export const Link = styled(SolitoLink)
-import Link from 'next/link'
+import { Link as SolitoLink} from 'solito/link'
+export const Link = styled(SolitoLink)
 import { Pressable } from 'app/design/view'
 import { useRouter } from 'next/router';
 
