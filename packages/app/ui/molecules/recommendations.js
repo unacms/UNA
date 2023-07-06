@@ -64,6 +64,11 @@ export default function ElementRecommendations(oProps) {
     if(isElementVar('title'))
         sTitle = getElementVar('title');
 
+    if(!sAction) {
+        //TODO: Hide profile card.
+        return;
+    }
+
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     let sIcon = undefined;
