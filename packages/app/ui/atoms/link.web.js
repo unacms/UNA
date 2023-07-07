@@ -15,6 +15,9 @@ export default function ElementLink(props) {
             event.preventDefault();
         }
     }
+
+    if (!href)
+        href='aaa';
    
     if ((href == '/home' || href == 'home')){
         href ='/'

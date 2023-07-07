@@ -219,7 +219,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
 
     
     const showNewContent = () => {
-        console.log(dataArrayRef);
         cb2('none'); 
         handleMoreNew();
         dataArrayRef.current=[];
@@ -256,6 +255,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     
     if (dataOut.length > 0){
         let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
+        if (actionsItemIndex > 0)
         addItems.splice(actionsItemIndex, 1);
     }
     let h = dataOut.find(item => item.id === 'block_header') 

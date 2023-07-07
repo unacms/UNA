@@ -31,7 +31,7 @@ export default function ElementEntityInfo({data}) {
                 return <Time ts={a.value}></Time>
                 break;
             case 'select':
-                return <Text className=' text-neutral-800 dark:text-neutral-200'>{a.values[a.value]}</Text>
+                return <Text className=' text-neutral-800 dark:text-neutral-200'>{a.values ? a.values[a.value]: a.value}</Text>
                 break;
             default:
                 return <Text className=' text-neutral-800 dark:text-neutral-200'>{a.value}</Text>

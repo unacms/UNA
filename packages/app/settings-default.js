@@ -122,39 +122,13 @@ export const settingsDefault = {
   },
   menu_items: {
     menu_top: [
-      {
-        name: 'home',
-        title: 'Home',
-        link: 'home',
-        icon: 'home',
-      },
-      
-      {
-        name: 'friends',
-        title: 'Connections',
-        link: 'friends',
-        icon: 'users',
-      },
-      {
-        name: 'posts-home',
-        title: 'Posts',
-        link: 'posts-home',
-        icon: 'ChatCenteredText',
-      },
-      {
-        name: 'groups-home',
-        title: 'Groups',
-        link: 'groups-home',
-        icon: 'UsersThree',
-      },
-      {
-        name: 'apps',
-        title: 'All Apps',
-        link: 'dashboard',
-        icon: 'CirclesFour',
-      },
-  
-    
+      { name: 'home',title: 'Home', link: 'home', icon: 'home'},
+      { name: 'friends', title: 'Connections', link: 'friends', icon: 'users' }, 
+      { name: 'posts-home', title: 'Posts', link: 'posts-home', icon: 'ChatCenteredText' }, 
+      { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'Users' }, 
+      { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
+      { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
+      { name: 'apps', title: 'All Apps', link: 'dashboard', icon: 'CirclesFour' }
     ],
 
     add_menu: ['create-post', 'create-group-profile'],
@@ -171,11 +145,7 @@ export const settingsDefault = {
       items: ['posts-home', 'posts-popular'],
       add: [
         { icon: 'plus', name: 'Add', link: '/create-post' },
-        {
-          icon: 'search',
-          name: 'Search',
-          link: '/search-keyword?keyword=&section=bx_posts',
-        },
+        { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_posts'},
       ],
     },
     bx_posts_view_actions: ['edit-post', 'delete-post'],
@@ -190,6 +160,16 @@ export const settingsDefault = {
           name: 'Search',
           link: '/search-keyword?keyword=&section=bx_persons',
         },
+        { icon: 'DotsThreeOutlineVertical', name: 'More' },
+      ],
+    },
+    bx_events_submenu: {
+      name: 'Events',
+      icon: 'Calendar',
+      items: ['events-home', 'events-top'],
+      add: [
+        { icon: 'plus', name: 'Add', link: '/create-event-profile' },
+        { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_events' },
         { icon: 'DotsThreeOutlineVertical', name: 'More' },
       ],
     },
@@ -249,6 +229,7 @@ export const settingsDefault = {
       ],
     },
     bx_groups_view_submenu: ['view-group-profile', 'group-fans'],
+    bx_events_view_submenu: ['view-event-profile', 'event-fans'],
 
     bx_channels_submenu: {
       name: 'Channels',
@@ -348,6 +329,60 @@ export const settingsDefault = {
     login:{
       max_width: 'max-w-xl',
 
+    },
+    //############ EVENTS PAGES ############
+    'events-home': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'bx_events:browse_recent_profiles',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+      icon: 'Calendar',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
+    },
+    'events-top': {
+      layout: 'blackbox',
+      blocks: {
+        browse: {
+          name: 'bx_events:browse_top_profiles',
+          showTitle: false,
+          showBg: false,
+        },
+      },
+    },
+    'view-event-profile': {
+      layout: 'profile',
+      blocks: {
+        col1: {
+          name: 'bx_events:entity_info',
+          showTitle: false,
+          showBg: false,
+          perLine: 1,
+        },
+        col2: {
+          name: 'bx_events:get_block_view_profile',
+          showTitle: false,
+          showBg: false,
+          perLine: 1,
+        },
+      },
+    },
+    'event-fans': {
+      layout: 'profile',
+      blocks: {
+        col1: {
+          name: 'bx_events:fans_table',
+          showTitle: false,
+          showBg: false,
+          perLine: 3,
+        },
+      },
     },
     //############ POSTS PAGES ############
     'posts-home': {
@@ -634,18 +669,36 @@ export const settingsDefault = {
     'view-group-profile': {
       layout: 'profile',
       blocks: {
+        col0: {
+          name: 'bx_groups:get_block_post_profile',
+          showTitle: false,
+          showBg: false,
+        },
         col1: {
-          name: 'bx_groups:entity_info',
+          name: 'bx_groups:get_block_view_profile',
           showTitle: false,
           showBg: false,
           perLine: 1,
         },
         col2: {
-          name: 'bx_timeline:get_block_view_profile',
+          name: 'bx_groups:entity_info',
+          showTitle: false,
+          showBg: true,
+          sidebar: true,
+        },
+        col4: {
+          name: 'bx_groups:entity_text_block',
+          showTitle: false,
+          showBg: true,
+          sidebar: true,
+        },
+        /*col3: {
+          name: 'bx_posts:browse_public',
           showTitle: false,
           showBg: false,
-          perLine: 1,
-        },
+          sidebar: true,
+        },*/
+        
       },
     },
     'group-fans': {

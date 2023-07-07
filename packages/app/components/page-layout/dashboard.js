@@ -77,10 +77,7 @@ export default function PageLayout(props) {
       <Row className="flex-wrap flex-auto mb-auto ">
         <View className=" w-1/2 lg:w-1/3 p-1 ">
           <Link
-            href={currentUser.url.replace(
-              'view-persons-profile',
-              'persons-profile-friends'
-            )}
+            href='/friends'
           >
             <View
               className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
@@ -172,7 +169,10 @@ export default function PageLayout(props) {
             </View>
           </Link>
         </View>
-        <View className=" w-1/2 lg:w-1/3 hidden p-1 ">
+        <View className=" w-1/2 lg:w-1/3  p-1 ">
+        <Link
+            href='/posts-home'
+          >
           <View
             className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
 
@@ -201,9 +201,13 @@ export default function PageLayout(props) {
               </Text>
             </View>
           </View>
+          </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-1 hidden">
+        <View className=" w-1/2 lg:w-1/3 p-1">
+        <Link
+            href='/discussions-home'
+          >
           <View
             className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
 
@@ -228,9 +232,13 @@ export default function PageLayout(props) {
               </Text>
             </View>
           </View>
+          </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-1 hidden">
+        <View className=" w-1/2 lg:w-1/3 p-1 ">
+        <Link
+            href='/groups-home'
+          >
           <View
             className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
 
@@ -259,9 +267,13 @@ export default function PageLayout(props) {
               </Text>
             </View>
           </View>
+          </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-1 hidden">
+        <View className=" w-1/2 lg:w-1/3 p-1 ">
+        <Link
+            href='/events-home'
+          >
           <View
             className="w-full p-3 sm:p-1 flex-col sm:flex-row lg:gap-2
 
@@ -290,6 +302,7 @@ export default function PageLayout(props) {
               </Text>
             </View>
           </View>
+          </Link>
         </View>
 
         <View className=" w-1/2 lg:w-1/3 p-1 hidden">
