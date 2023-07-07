@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { CardData } from 'app/context/card';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
+    const { cardData, setCardData } = useContext(CardData);
     const [ elementData, setElementData ] = useState(false);
 
     const oParams = {...appSetting('social_actions', 'recommendation'), ...oProps.params};
@@ -22,19 +24,63 @@ export default function ElementRecommendations(oProps) {
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
 
-    const isElementVar = (sName) => {
-        return elementData && elementData[sName] != undefined;
+    const getName = (sName) => {
+        let aName = [oProps.type, oProps.o.replace(/_/g, '-'), oProps.iid, oProps.cid];
+        if(sName != undefined && sName.length > 0)
+            aName.push(sName);
+
+        return [].concat(aName).join('-');
     };
 
-    const getElementVar = (sName) => {
-        return elementData[sName];
-    };
+    const isElementVar = (sName, bUseContext = false, bUseContextWide = false) => {
+        if(bUseContext) {
+            if(!bUseContextWide) {
+                const sContextKey = getName();
 
-    const setElementVars = (mValue) => {
-        if(!elementData)
-            setElementData(mValue);
+                return cardData && cardData[sContextKey] != undefined && cardData[sContextKey][sName] != undefined;
+            }
+            else
+                return cardData && cardData[sName] != undefined;
+        }
         else
-            setElementData({...elementData, ...mValue});
+            return elementData && elementData[sName] != undefined;
+    };
+
+    const getElementVar = (sName, bUseContext = false, bUseContextWide = false) => {
+        if(bUseContext) {
+            if(!bUseContextWide) {
+                const sContextKey = getName();
+
+                return cardData[sContextKey][sName];
+            }
+            else
+                return cardData[sName];
+        }
+        else
+            return elementData[sName];
+    };
+
+    const setElementVars = (mValue, bUseContext = false, bUseContextWide = false) => {
+        if(bUseContext) {
+            let oValue = undefined;
+            if(!bUseContextWide) {
+                const sContextKey = getName();
+                oValue = {[sContextKey]: mValue};
+            }
+            else
+                oValue = mValue;
+
+            if(!cardData)
+                setCardData(oValue);
+            else
+                setCardData({...cardData, ...oValue});
+        }
+        else {
+            if(!elementData)
+                setElementData(mValue);
+            else
+                setElementData({...elementData, ...mValue});
+        }
     };
 
     const performAction = async (sAction, aParams, onLoad) => {
@@ -52,7 +98,10 @@ export default function ElementRecommendations(oProps) {
         event.preventDefault();
 
         performAction('perform', {a:sAction}, (oData) => {
-            setElementVars(oData);
+            if(!oData.a)
+                setElementVars({hidden:true}, true, true);
+            else
+                setElementVars(oData);
         });
     };
 
@@ -63,11 +112,6 @@ export default function ElementRecommendations(oProps) {
     let sTitle = oProps?.title || '';
     if(isElementVar('title'))
         sTitle = getElementVar('title');
-
-    if(!sAction) {
-        //TODO: Hide profile card.
-        return;
-    }
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
