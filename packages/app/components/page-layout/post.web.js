@@ -9,7 +9,6 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { Icon } from 'app/ui/atoms/icon'; 
 import { useWindowDimensions } from 'react-native'
-import {subscribe} from 'app/ui/atoms/socket'; 
 
 export default function PageLayout(props) {
 

@@ -1,10 +1,11 @@
-import { useState, useContext } from 'react';
+import { useState, useContext,useEffect } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
+import { subscribe } from 'app/ui/atoms/socket';
 
 export default function ElementLikes(oProps) {
 
@@ -161,6 +162,15 @@ export default function ElementLikes(oProps) {
         );
     }
 
+    useEffect(() => {
+        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+    }, [])
+
+    const cb = (data) => {
+        let a= JSON.parse(data);
+        setContextVars ({counter:{count:a.count, sum:a.count, rate:a.rate}})
+    }
+
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
@@ -191,7 +201,7 @@ export default function ElementLikes(oProps) {
                 sUsers = getSkeleton();
 
             sCounterButton = (
-                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
             );
 
             sCounterPopup = (
