@@ -9,7 +9,7 @@ export const staticDefault = {
     text: (
       <Svg
         aria-label="Logo Text"
-        className="h-8 hidden sm:block  group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+        className="h-8   group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,7 @@ export const staticDefault = {
     mark: (
       <Svg
         aria-label="Logo Mark"
-        className="p-[1px] group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-10 w-10  "
+        className="p-[1px] group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
         viewBox="0 0 2400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +160,7 @@ export const staticDefault = {
     ),
     comments_empty: (
       <>
-        <View className="flex-col gap-y-2 items-center justify-center w-1/2 mx-auto mt-8 p-4  h-full items-center rounded-lg bg-neutral-500/10 ">
+        <View className="flex-col gap-y-2 items-center -translate-y-6 justify-center  mx-auto mt-8 mb-auto py-2 px-8 h-full items-center rounded-lg bg-neutral-500/10 ">
         <View className="flex-col mx-auto text-neutral-800 dark:text-neutral-200 ">
                                 <Icon icon="ChatCircle" width={32} height={32} />
                             </View>
@@ -171,27 +171,24 @@ export const staticDefault = {
         Be the first to share what you think
         </Text>
         </View>
+       
       </>
     ),
 
     home2: (
       <>
         <View className="mx-2  mt-4  overflow-hidden flex-col rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
-          <View className="border-b  w-full  border-dashed border-backgroundcard dark:border-backgroundcard-dark  bg-gradient-to-r from-neutral-200 dark:from-neutral-800 ">
-            <View className="px-4 py-3 bg-backgroundcard dark:bg-backgroundcard-dark ">
-              <Text className="text-xl  font-bold text-neutral-800 dark:text-neutral-200 ">
-                About
+          <Text className="text-xl py-3 px-4 font-bold text-neutral-800 dark:text-neutral-200 ">
+                Welcome!
               </Text>
-            </View>
-          </View>
-          <Text className="text-sm p-4 text-neutral-600 dark:text-neutral-400 ">
-            NEO is an open-source universal frontend app for UNA platform.
-            Powered by ReactJS with NextJS and React Native with Expo. Curerent
-            version - 0.1.0.
+           
+          <Text className="text-base px-4 mb-4 text-neutral-800 font-semibold dark:text-neutral-200 ">
+            Neo.so is a community of 12 active members.
           </Text>
-          <Text className="text-sm px-4 pb-4 font-semibold text-neutral-600 dark:text-neutral-400 ">
-            Developed by Yasko.Studio.
+          <Text className="text-sm px-4 mb-4 text-neutral-600 dark:text-neutral-400 ">
+            Powered by NEO - the universal app for UNA platform, built with React, Next, ReactNative and Expo. Open-source. MIT license. Developed by Yasko.Studio.
           </Text>
+         
         </View>
 
         <></>
@@ -347,7 +344,7 @@ export const staticDefault = {
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
                   <View className="p-2 gap-y-4 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
-                    <Icon icon="ShareNetwork" width={32} height={32} />
+                    <Icon icon="ShareFat" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
                     Share

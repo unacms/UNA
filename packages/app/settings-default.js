@@ -130,9 +130,9 @@ export const settingsDefault = {
       },
       
       {
-        name: 'persons-home',
+        name: 'friends',
         title: 'Connections',
-        link: 'friend-suggestions',
+        link: 'friends',
         icon: 'users',
       },
       {
@@ -148,17 +148,13 @@ export const settingsDefault = {
         icon: 'UsersThree',
       },
       {
-        name: 'discussions-home',
-        title: 'Discussions',
-        link: 'discussions-home',
-        icon: 'Chats',
+        name: 'apps',
+        title: 'All Apps',
+        link: 'dashboard',
+        icon: 'CirclesFour',
       },
-      {
-        name: 'about',
-        title: 'About',
-        link: 'about',
-        icon: 'Info',
-      },
+  
+    
     ],
 
     add_menu: ['create-post', 'create-group-profile'],
@@ -956,7 +952,7 @@ export const settingsDefault = {
       },
       {
         key: '/tab3',
-        title: 'Messenger',
+        title: 'Messages',
         url: '/messenger',
         icon: 'ChatsCircle',
       },
@@ -968,7 +964,7 @@ export const settingsDefault = {
       },*/
       {
         key: '/tab4',
-        title: 'Notifications',
+        title: 'Notif*s',
         url: '/notifications-view', 
         icon: 'app-notifications',
       },

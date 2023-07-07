@@ -167,7 +167,7 @@ export default function (props) {
     <>
     <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
-      <View className="  backdrop-blur h-16 px-4 lg:px-6  items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark  backdrop-saturate-200 border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
+      <View className="  backdrop-blur h-16 px-4  items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
         
         <Row className="flex-row  flex-none items-center">
           {
@@ -190,11 +190,11 @@ export default function (props) {
                 </View>
               </Link>
             }
-              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 rounded-full justify-center items-center" onPress={() => router.back()} >
+              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => router.back()} >
               <Icon icon="left" width={24} height={24} />
               </Pressable>
               }
-              { headerSettings.title && <Text  className="text-2xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+              { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
         </Row>
 
         <View className="flex-row flex-auto justify-end lg:justify-start ml-2">
@@ -204,8 +204,8 @@ export default function (props) {
         <Row className="flex-row  flex-none justify-end lg:justify-between ">          
           <Row>
             {!!currentUser && (
-              <Row className="flex-row   justify-end   lg:flex">
-                <View className=" flex-row mx-2 my-auto ">
+              <Row className="flex-row  ml-2 justify-end   lg:flex">
+                <View className=" flex-row my-auto ">
                 <View className="xl:hidden">
                   <Search type="small" />
                 </View>
@@ -267,16 +267,7 @@ export default function (props) {
                       handleClick('/messenger')
                     }}
                   />
-                  <Button
-                    variant="outline"
-                    rounded
-                    startDecorator="CirclesFour"
-                    id="m2"
-                    aria-label="Apps"
-                    onPress={() => {
-                      handleClick('/dashboard')
-                    }}
-                  />
+                  
                 </View>
                 
                 {profile ? (
@@ -318,7 +309,7 @@ export default function (props) {
  
         </Row>
         <Row className="hidden left-1/2 -translate-x-1/2 absolute  lg:flex flex-auto">
-            <Row className='relative flex-row  mx-auto pr-1 mr-4 '>
+            <Row className='relative flex-row  mx-auto  '>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                   !item.link.includes('javascript') && (

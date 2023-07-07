@@ -171,7 +171,7 @@ export const ConvosListColumn = ({ list, colWidth }) => {
 export default function ConvosList(props) {
     const { menuItem, viewMenu, handlerMenuView } = useContext(MessengerContext);
    return <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
-                <View className="w-full px-3.5 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
+                <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
                      <View className="xl:hidden ">
                          <Button variant="outline" startDecorator="List" rounded align="start" onPress={ handlerMenuView }/>
                      </View>

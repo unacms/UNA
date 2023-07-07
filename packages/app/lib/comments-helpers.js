@@ -297,7 +297,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             />
             <View className={sClassName} ref={textRef} style={{display:'none'}}>
                 <View className='w-1/2 items-center'>
-                    <Button variant="primary" title="New comment" size="sm" onPress={() => {showNewContent() }} />
+                    <Button variant="primary" title="New comment" size="sm" rounded onPress={() => {showNewContent() }} />
                 </View>
             </View>
         </>
