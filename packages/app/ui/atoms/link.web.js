@@ -17,9 +17,7 @@ export default function ElementLink(props) {
     }
    
     if ((href == '/home' || href == 'home')){
-        console.log(href);
         href ='/'
-        console.log(href);
     }
 
     if (props.emulate === true)

@@ -10,7 +10,6 @@ export function subscribe(channel_name, event_name, cb) {
         enabledTransports: ['ws', 'wss'],
         cluster: '',
     });
-    console.log('reload', pusher);
 
     var channel = pusher.subscribe(channel_name);
     channel.bind(event_name, function(data) {

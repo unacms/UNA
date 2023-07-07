@@ -67,7 +67,7 @@ export function CoverSmall(props) {
         <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">
           <View className='mr-2'>
-          <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+          <Pressable className="mr-2 ml-2 bg-backgroundnavbar bordder dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
             <Icon icon="left" width={24} height={24} />
           </Pressable>
 </View>
@@ -130,7 +130,7 @@ export default function ElementCover(props) {
               </Text>
             </View>
           <View className='absolute lg:hidden top-4 left-8 z-50'>
-          <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
+          <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark border  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
             <Icon icon="left" width={24} height={24} />
           </Pressable>
           </View>

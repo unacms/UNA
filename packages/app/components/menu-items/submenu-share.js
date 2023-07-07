@@ -13,7 +13,7 @@ export default function MenuItemSubmenuShare(oProps) {
     })
 
     const oIconAliases = {
-        'item-share': 'ShareNetwork',
+        'item-share': 'ShareFat',
         'item-copy': 'Clipboard',
         'item-repost': 'ArrowsClockwise'
     };

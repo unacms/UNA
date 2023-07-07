@@ -25,7 +25,7 @@ export default function ElementSearch(oProps) {
             <View className="w-full mt-1">
             {[...Array(1, 2, 3)].map( i => 
                 <View key={i} className="flex-col my-2 p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-3">
+                    <View className="animate-pulse flex-row items-center gap-y-1">
                         <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
                         <View className="flex-1 gap-y-1">
                             <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
@@ -160,12 +160,12 @@ export default function ElementSearch(oProps) {
 
     return (<View className=' backdrop-blur  bg-backgroundnavbar dark:bg-backgroundnavbar-dark ' >
 
-  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full p-4 '}>
-      <Row className='gap-4 justify-center items-center'>
-      <View className='w-10/12'>
+  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 pt-4 '}>
+      <Row className='gap-x-2 justify-center items-center'>
+      
           <Input name="search" placeholder="Search..." defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
-          </View>
-          <Link href={'/search-keyword?keyword='+inputValue}><Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight"  /></Link>
+          
+          <Link href={'/search-keyword?keyword='+inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
           
       </Row>
   </View>

@@ -169,9 +169,19 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             let iCount = sResponse.data.browse.data.count;
             if (sResponse.data.browse.data.start == 0)
                 iCount = 0;
-            addCommentData({startFrom: sResponse.data.browse.data.start > commentData.startFrom ? sResponse.data.browse.data.start  : commentData.startFrom, last_count: iCount, listData: browse })
+            addCommentData({startFrom: sResponse.data.browse.data.start, last_count: iCount, listData: browse })
         }
+    }
 
+    const handleMoreNew = async () => {
+        const sRequest = prepareUrl({'is_form' : false, comment_id: dataArrayRef.current.join(',')}) ;
+        const sResponse = await fetcher(sRequest);
+        if(sResponse && sResponse.data != undefined){
+            let browse = parseData(commentData.listData, sResponse);
+            let iCount = sResponse.data.browse.data.count;
+            let i = Object.keys(sResponse.data.browse.data.data[0])[0].replace('i', '');
+            addCommentData({ last_count: iCount, listData: browse, total_count: commentData.total_count + iCount, lastInserted:i })
+        }
     }
 
     const handleOrder =  async (orderWay) => { 
@@ -195,21 +205,38 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }, [commentData.lastInserted]);
 
+    const dataArrayRef = useRef([]);
+
     const cb = (data) => {
-        console.log(currentUser);
-        if (currentUser && currentUser.id != data.author_id)
-            cb2('flex')
+        if (currentUser && currentUser.id != data.author_id){
+            let k = JSON.parse(data);
+            if (!dataArrayRef.current.includes(k.id)) {
+                dataArrayRef.current.push(k.id);
+            }
+            cb2('flex');
+        }
+    }
+
+    
+    const showNewContent = () => {
+        console.log(dataArrayRef);
+        cb2('none'); 
+        handleMoreNew();
+        dataArrayRef.current=[];
     }
 
     const cb2 = (val) => {
         const current = textRef.current;
         if (current) {
-          current.setNativeProps({ style: { display: val } });
+            current.setNativeProps({ style: { display: val } });
         }
     }
     useEffect(() => {
-        subscribe(commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
-    }, [])
+        if (currentUser){
+            console.log(999);
+            subscribe(commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+        }
+    }, [currentUser])
 
     const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
@@ -238,7 +265,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
     let sClassName = 'absolute top-0 w-full items-center';
     if (Platform.OS === 'web')
-        sClassName = 'fixed top-16 w-full items-center';
+        sClassName = 'fixed top-16 left-0 w-full items-center';
 
     const textRef = useRef();
 
@@ -270,7 +297,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             />
             <View className={sClassName} ref={textRef} style={{display:'none'}}>
                 <View className='w-1/2 items-center'>
-                    <Button variant="primary" title="New comment" size="sm" onPress={() => {cb2('none'); handleMoreInner(); }} />
+                    <Button variant="primary" title="New comment" size="sm" rounded onPress={() => {showNewContent() }} />
                 </View>
             </View>
         </>

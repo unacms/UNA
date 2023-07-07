@@ -125,10 +125,6 @@ export default function Unit(props) {
         )
     }
 
-    function personUnit(){
-        
-    }
-
     function defaultUnit(){
         let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
@@ -188,7 +184,7 @@ export function UnitPerson(props) {
     const imageSizes = getImageSizes();
     return (
             <View className="
-        mt-4  sm:mt-2 mx-2     group duration-200 overflow-hidden rounded-lg  
+        mt-4 sm:mt-2 mx-2 group duration-200 overflow-hidden rounded-lg 
         bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
         hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
         hover:shadow-sm active:shadow-none 
@@ -196,7 +192,6 @@ export function UnitPerson(props) {
         border-bordercolorcard dark:border-bordercolorcard-dark 
         sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
         active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
-            
             ">
             <Link href={data.url} emulate={true}> 
                 <View className='flex-col pb-4  '>  

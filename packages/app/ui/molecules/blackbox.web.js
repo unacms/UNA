@@ -154,32 +154,32 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} variant="text" rounded size=""/>;
+                let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded size=""/>;
                 btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur border-b px-2 border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
+                <View className="w-full backdrop-blur border-b items-center justify-center border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16">
+                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
                         { headerSettings.header && <Pressable className="mr-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
                             <Icon icon="left" width={24} height={24} />
                         </Pressable>
                         }
-                        { headerSettings.title && <Text className="text-3xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
+                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
                         </Row> 
-                        <Row className="pr-2">
+                        <Row className="pr-4">
                             {addButtons}
                         </Row>
                     </Row>
                     }
-                    <Row className="items-center gap-0 mx-4">
-                        {menuSettings?.name ? <Text  className="text-3xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex leading-tight">{menuSettings?.name}</Text> : <></>}
-                        <ScrollView horizontal={true} className="items-center gap-0  w-full" >
-                            <Row className="mr-auto gap-x-2" >
+                    <Row className="items-center ">
+                        {menuSettings?.name ? <Text  className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
+                        <ScrollView horizontal={true} className="items-center gap-0 " >
+                            <Row className="mr-auto ml-4 gap-x-2" >
                                 {routes.map((a) => (
                                     <Pressable  className=" py-2 items-center"
                                         key={`tab-${a.index}`}
@@ -188,14 +188,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"}  size='sm' title={a.title}   />
+                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={a.title}   />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
                             </Row>
                             
                         </ScrollView>
-                        <Row className="hidden lg:flex">
+                        <Row className="hidden lg:flex px-4">
                             {addButtons}
                         </Row>
                     </Row>
