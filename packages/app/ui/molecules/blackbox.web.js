@@ -177,7 +177,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </Row>
                     }
                     <Row className="items-center ">
-                        {menuSettings?.name ? <Text  className="text-3xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-10">{menuSettings?.name}</Text> : <></>}
+                        {menuSettings?.name ? <Text  className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0 " >
                             <Row className="mr-auto ml-4 gap-x-2" >
                                 {routes.map((a) => (
