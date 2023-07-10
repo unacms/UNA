@@ -23,7 +23,7 @@ export default function Unit(props) {
         if(data?.meta)
             sMeta = (
                 <View className="text-center flex-col  h-auto justify-end">
-                    <Menu {...data.meta} displayType="mixed" params={{showVertical: false, button_size:'sm', button_full_width: true, button_rounded: false}} />
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: false, button_size:'sm', button_full_width: true, button_rounded: false, only_icon: true}} />
                 </View>
             );     
         return (

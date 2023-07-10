@@ -23,6 +23,8 @@ export default function ElementRecommendations(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.only_icon != undefined)
+        oButtonProps.onlyIcon = oProps.params.only_icon;
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.o.replace(/_/g, '-'), oProps.iid, oProps.cid];
@@ -118,7 +120,11 @@ export default function ElementRecommendations(oProps) {
     let sIcon = undefined;
     switch(sAction) {
         case 'ignore':
-            //sIcon = 'x';
+            if (oButtonProps.onlyIcon){
+                sTitle = '';
+                sIcon = 'x';
+            }
+           
             break;
     }
 

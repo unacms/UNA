@@ -111,11 +111,9 @@ export default function PageLayout(props) {
   }
 
   /*
-<BlockByName
-                  no_scroll={true}
-                  data={props.data}
-                  name={props.blocks.posts}
-                />
+   <BlockByName data={props.data} name={props.blocks.posts2} />
+           <BlockByName data={props.data} name={props.blocks.feed} />
+
 
 
     */
@@ -127,8 +125,13 @@ export default function PageLayout(props) {
         )}
         {!!currentUser && (
           <>
-           <BlockByName data={props.data} name={props.blocks.posts2} />
-           <BlockByName data={props.data} name={props.blocks.feed} />
+           <BlackBox 
+                minHeaderHeight={0} 
+                isHideDefaultHeader={false} 
+                menu={menu} 
+                data={data} 
+                blocks={props.blocks}
+            />
           </>
         )}
       </LayoutDataContext>

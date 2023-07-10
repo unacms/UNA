@@ -104,9 +104,7 @@ export default function ElementCover(props) {
   const data = props.data
   const router = useRouter();
   let { width } = useWindowDimensions()
-
-  let sType = 'lg:rounded'
-  if (props.data.profile.module == 'bx_persons') sType = 'rounded-full'
+  let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 
   return (
     <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
@@ -121,7 +119,7 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          <View className=" bg-backgrounditem dark:bg-backgrounditem-dark pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
+          { bPerson && <View className=" bg-backgrounditem dark:bg-backgrounditem-dark pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
@@ -129,6 +127,7 @@ export default function ElementCover(props) {
                 {stripTags(data.profile.info.description)}
               </Text>
             </View>
+          }
           <View className='absolute lg:hidden top-4 left-8 z-50'>
           <Pressable className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark border  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
             <Icon icon="left" width={24} height={24} />
@@ -138,20 +137,16 @@ export default function ElementCover(props) {
 
         <View className="relative  flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
           
-          <View className=" flex-col  w-full md:w-52 ">
-            <View
-              className={
-                sType +
-                ' w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
-              }
-            >
+        {bPerson && <View className=" flex-col  w-full md:w-52 ">
+            <View className=' w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '>
               <Profile
                 {...data.profile}
                 displayType="unit_wo_info"
                 displaySize={width >= 640 ? '4xl' : '3xl'}
               />
             </View>  
-          </View> 
+          </View>
+          }
           <View className="flex-col lg:flex-row gap-x-2 gap-y-4  flex-auto ">
               <View className=" flex-col  mt-4 flex-auto gap-y-2 ">
                 <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 ml-2">

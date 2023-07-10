@@ -65,8 +65,16 @@ export default function ElementHtml(props) {
             color: colors.default
         },
         p:{
-            marginTop: 0,
+            marginTop: 0
         },
+        ul:{
+            margin: 0,
+            padding:0
+        },
+        ol:{
+
+            padding:0
+        }
     };
     
     const classesStyles = {

@@ -79,8 +79,7 @@ export default function ElementCover(props) {
     const { colors } = Theme();
     let sType = 'lg:rounded'
 
-    if (props.data.profile.module == "bx_persons")
-        sType = 'rounded-full';
+    let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 
     return (
     <View className='w-full ' >
@@ -93,19 +92,15 @@ export default function ElementCover(props) {
             </Pressable>
         </Row>
         <View className='px-2 mt-24  pb-2' >
+
         <View className="relative  flex-row flex-wrap px-4 gap-4 ">
-          <View
-            className={
-              sType +
-              ' w-min p-1  absolute -bottom-1  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '
-            }
-          >
+        { bPerson && <View className=' w-min p-1  absolute -bottom-1  flex-none bg-backgroundcard dark:bg-backgroundcard-dark '          >
             <Profile
               {...data.profile}
               displayType="unit_wo_info"
               displaySize={'2xl'}
             />
-          </View>
+          </View> }
             
           <View className=" flex-col pl-24 mt-auto py-2 flex-auto">
             <Text className="tracking-tight text-lg sm:text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50">
@@ -116,7 +111,7 @@ export default function ElementCover(props) {
           </View>
         </View>
         </View>
-        <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
+        { bPerson && <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm sm:text-base text-neutral-800 dark:text-neutral-200 "
@@ -124,6 +119,7 @@ export default function ElementCover(props) {
                 {stripTags(data.profile.info.description)}
               </Text>
             </View>
+  }
         <View className="p-4 flex-row flex-wrap items-center align-center  gap-4 w-full justify-between">
           <View className="  flex-none ">
             <CoverMenuMeta {...data.meta_menu} />
