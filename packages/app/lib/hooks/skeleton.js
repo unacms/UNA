@@ -10,16 +10,24 @@ const maxWidth = appSetting('layout', 'max_width');
 var blockSkeletons = {
   'bx_posts': <>
     {items.map((item, index) => (
-        <View key={'bx_posts' + index} className="flex-row w-full ">
+        <View  key={'bx_persons' + index} className="flex-row w-full ">
         <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
           <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+        </View> 
+        </View>
+        <View className="mt-4  mx-2  flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+        <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
         </View> 
         </View>
         <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
         <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
         </View> 
         </View>
-        <View className="mt-4  mx-2 hidden lg:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+        <View className="hidden lg:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+        <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+        </View> 
+        </View>
+        <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
         <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
         </View> 
         </View>
@@ -30,6 +38,36 @@ var blockSkeletons = {
   </View>
     ))}  
     </>,
+  'system': <>
+  {items.map((item, index) => (
+      <View  key={'bx_persons' + index} className="flex-row w-full ">
+      <View className="mt-4  mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+        <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+      <View className="mt-4  mx-2  flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+      <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+      <View className="mt-4  mx-2 hidden md:block flex-auto  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+      <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+      <View className="hidden lg:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+      <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+      <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+      <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+      <View className="hidden xl:block flex-auto mt-4  mx-2  aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
+      <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full ">
+      </View> 
+      </View>
+</View>
+  ))}  
+  </>,
   'bx_persons': <>
   {items.map((item, index) => (
       <View  key={'bx_persons' + index} className="flex-row w-full ">
@@ -59,7 +97,8 @@ var blockSkeletons = {
       </View>
 </View>
   ))}  
-  </>,  
+  </>, 
+   
   'bx_groups': <>
   {items.map((item, index) => (
       <View  key={'bx_persons' + index} className="flex-row w-full ">
@@ -125,7 +164,7 @@ var blockSkeletons = {
   'feed': <View className="sm:px-4 sm:py-2  sm:gap-2">
     {appSetting('feed', 'default_view') == 'small' && items.map((item, index) => (
         <View  key={'home2' + index} className="bg-backgroundcard dark:bg-backgroundcard-dark mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse">
-        <View className="flex-row gap-2">
+        <View className="flex-row gap-2">sadas
           
           <View className="relative flex-row">
                     <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
@@ -308,6 +347,11 @@ var skeletons = {
         {blockSkeletons['bx_persons']}
     </View>
   ),
+  'friends': (
+    <View className="flex mx-auto w-full justify-center sm:p-4 flex-col animate-pulse max-w-screen-2xl">
+        {blockSkeletons['bx_persons']}
+    </View>
+  ),
   'groups-home': (
     <View className="flex mx-auto w-full justify-center sm:p-4 flex-col animate-pulse max-w-screen-2xl">
         {blockSkeletons['bx_groups']}
@@ -404,10 +448,10 @@ var skeletons = {
 }
 
 export function getSkeleton (name, view) {
+
   let a = blockSkeletons[name + ':' + view]
   if (a)
     return a;
-
   return blockSkeletons[name];
 }
 
@@ -427,14 +471,13 @@ export default function (props) {
     })
     }, []);
 
-   
-
-
     var skeleton = ''
-    if (url =='' || url =='/')
-        url =='/home'
-    if (url) {
-        let u = url.split('/');
+    let sUrl = url;
+    if (sUrl =='' || sUrl =='/')
+    sUrl = 'home'
+
+    if (sUrl) {
+        let u = sUrl.split('/');
         u = u.filter(Boolean);
         skeleton = skeletons['' + u[0]];
         if (!skeleton)

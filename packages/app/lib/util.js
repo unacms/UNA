@@ -62,7 +62,8 @@ export function storageKey(url, useUrl = true) {
     let s = window.location.href + '-' + url;
     if (!useUrl)
         s = url;
-    return stringMd5(s);
+        //stringMd5
+    return (s);
 } 
 
 export function storageSet(pref, key, data) {
