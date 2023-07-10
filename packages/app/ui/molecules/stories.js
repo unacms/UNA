@@ -88,13 +88,16 @@ export function Story(props) {
             <Row className='gap-x-2 p-2'>
             {images.map((image, index) => (
                   <Pressable key={'slide' + index} onPress={() => setShowImage(true)}>
-                    <View className="w-28 h-48 rounded bg-primary/20 ">
+                    <View className="w-28 h-48 rounded bg-primary/20 overflow-hidden">
+                    <View className="w-48 h-48 ">
                         <Image
-                                view="cover"
-                                
+                               width={192}
+                               height={192}
+                               
                                 src={image}
                                 alt="Show image" 
                             />
+                             </View>
                     </View>
                   </Pressable>
             ))}

@@ -224,7 +224,7 @@ export default function FormFieldFiles(props) {
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                         <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
                                 </View>
-                                </>)
+                            </>)
                     }
                     </View>
                 </Pressable>
