@@ -72,7 +72,6 @@ export default function ElementHtml(props) {
             padding:0
         },
         ol:{
-
             padding:0
         }
     };

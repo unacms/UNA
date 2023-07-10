@@ -59,7 +59,6 @@ export const IconSet = {
 	ArrowCircleRight: ArrowCircleRight,
 	ChatTeardropDots: ChatTeardropDots,
 	Smiley: Smiley,
-	ShareFat: ShareFat,
 	UserCircle: UserCircle,
 	DotsThreeOutlineVertical: DotsThreeOutlineVertical,
 	File: File,

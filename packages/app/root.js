@@ -7,6 +7,7 @@ import { appSetting, getURI, parseUrl } from 'app/lib/util';
 import { storageKey, storageSet, storageGet } from 'app/lib/util'
 import  CurRouter from "app/ui/atoms/router";
 import { Platform } from 'react-native'
+import { connect } from 'app/ui/atoms/socket'; 
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -60,6 +61,7 @@ export function Root (props) {
     useEffect(() => {
         if (data?.user){
             if (currentUser?.id != data.user?.id){
+                data.user.pusher = connect();
                 setCurrentUser(data.user);
             }
         }

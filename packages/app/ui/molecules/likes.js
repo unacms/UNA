@@ -6,6 +6,7 @@ import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
+import { useCurrentUser } from 'app/context/user';
 
 export default function ElementLikes(oProps) {
 
@@ -162,8 +163,9 @@ export default function ElementLikes(oProps) {
         );
     }
 
+    let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+        subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
     }, [])
 
     const cb = (data) => {

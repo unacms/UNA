@@ -280,6 +280,8 @@ export const settingsDefault = {
                 home: { name: 'static:home', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
+                friends: { name: 'system:browse_recommendations_friends', showTitle: true, showBg: false },
+                subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: true, showBg: false },
             },
             header: [
                 { icon: 'plus', name: 'Add', link: '/create-post' },

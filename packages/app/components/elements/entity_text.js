@@ -6,9 +6,6 @@ import { appSetting  } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 
 export default function ElementEntityText({data}) {
-
-    
-
     const view = appSetting('entry', 'default_view');
     switch (view) {
         case 'small':
