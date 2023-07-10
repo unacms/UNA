@@ -217,14 +217,14 @@ export default function FormFieldFiles(props) {
                 <Pressable onPress={selectImage} >
                     <View className='w-full h-48 bg-backgroundinput dark:bg-backgroundinput-dark border border-bordercolorinput dark:border-bordercolorinput-dark rounded-lg items-center justify-center'>
                         {img == null ? 
-                        <Text className='text-neutral-500/50 text-lg font-semibold'>Add a cover image</Text>:(
-                        <>{ img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
-                           { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
-                           { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
-                           <View className='absolute top-1 right-0 w-8 text-center mx-auto'>
-                                <Button onPress={() => handleDelete(img.file_id)} startDecorator="X" align="start" title="" rounded size ="xs" />
-                           </View>
-                           </>)
+                            <Text className='text-neutral-500/50 text-lg font-semibold'>Add a cover image</Text> 
+                            :( <>{ img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
+                                { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                                { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
+                                <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
+                                        <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
+                                </View>
+                                </>)
                     }
                     </View>
                 </Pressable>

@@ -184,44 +184,39 @@ export function UnitPerson(props) {
     const imageSizes = getImageSizes();
     return (
             <View className="
-        mt-4 sm:mt-2 mx-2 group duration-200 overflow-hidden rounded-lg 
-        bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-        hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-        hover:shadow-sm active:shadow-none 
-        active:translate-y-0.5 border
-        border-bordercolorcard dark:border-bordercolorcard-dark 
-        sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-        active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                mt-4 sm:mt-2 mx-2 group duration-200 overflow-hidden rounded-lg 
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                hover:shadow-sm active:shadow-none 
+                active:translate-y-0.5 border
+                border-bordercolorcard dark:border-bordercolorcard-dark 
+                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
             ">
-            <Link href={data.url} emulate={true}> 
-                <View className='flex-col pb-4  '>  
-                    
+            <View className='flex-col pb-4  '>
+                <Link href={data.url} >
                     {data.cover &&
-                            <View className="w-full bg-neutral-500/20 rounded  " >
-                                <Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
-                                <View className="sm:mx-auto mr-3 ml-auto translate-y-14    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
-
+                        <View className="w-full bg-neutral-500/20 rounded  " >
+                            <Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
+                            <View className="sm:mx-auto mr-3 ml-auto translate-y-14    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
                                 <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
-                                </View>
                             </View>
-                        } 
-                            
-                            <View className="sm:mt-12">
-
-                        <Link href={data.url} >
-                            <View className="sm:mx-auto w-fit mr-auto bg-backgroundcard/80 dark:bg-backgroundcard-dark/80 backdrop-blur rounded-lg p-2 my-3 ml-2">
+                        </View>
+                    }   
+                    <View className="sm:mt-12">
+                        <View className="sm:mx-auto w-fit mr-auto bg-backgroundcard/80 dark:bg-backgroundcard-dark/80 backdrop-blur rounded-lg p-2 my-3 ml-2">
                             <Text className=" text-xl sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
-                            </View>
-                        </Link>
-                        <View className=''>
-                        {data?.meta &&
-                            <View className="px-3">
-                                <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
-                            </View>
-                        }
-                        </View></View>
+                        </View>
+                    </View>
+                </Link>
+                <View>
+                    {data?.meta &&
+                        <View className="px-3">
+                            <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
+                        </View>
+                    }
                 </View>
-            </Link>
+            </View>
         </View>
     )
 }

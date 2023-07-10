@@ -13,11 +13,11 @@ import { Canvas, Fill,Image as Image2, BackdropBlur, useImage } from "@shopify/r
 
 function CoverMenu(props) {
     return (
-    <View className='w-full mt-3 '>
-        <View className=' w-full justify-start align-end flex-row gap-2'>
-            <Menu {...props} displayType="button" params={{button_variant: 'default', button_rounded: false}} />
+        <View className='w-full mt-3 '>
+                <View className=' w-full justify-start align-end flex-row gap-2'>
+                <Menu {...props} displayType="button" params={{button_variant: 'default', button_rounded: false}} />
+                </View>
         </View>
-    </View>
     );
 }
 
@@ -111,7 +111,7 @@ export default function ElementCover(props) {
           </View>
         </View>
         </View>
-        { bPerson && <View className="bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
+        { bPerson && <View className="rounded-full bg-backgrounditem dark:bg-backgrounditem-dark px-2.5 py-1 rounded-lg mx-4 mt-4 flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm sm:text-base text-neutral-800 dark:text-neutral-200 "
