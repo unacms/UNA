@@ -15,13 +15,13 @@ export function Story(props) {
     }, [currentImageIndex, opacity]);
 
     const images = [
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg', 
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/jacrfp7dxxup4r4kcysmctkqcxrpqxcf.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/xad3wcrecjzseazbz4pafghsn6xc7xxu.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/efcupgrnxphpjeqrs7s3zyz9vtifuadr.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/xaurzdanv39cteuc2nkyjjcz4gmqmxcu.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/uvl9ltecz5qekked9zsa6mzyxhxfhkuc.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/umj3krzwnnavv2srknq3ncuzggpvks3g.jpg',
+        'https://ci.una.io/test3/s/bx_albums_photos_resized/wptg3pgdtwevhgvgabvraverc34qewqg.jpg', 
         'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
         'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg'
     ];
@@ -91,6 +91,7 @@ export function Story(props) {
                     <View className="w-28 h-48 rounded bg-primary/20 ">
                         <Image
                                 view="cover"
+                                
                                 src={image}
                                 alt="Show image" 
                             />
