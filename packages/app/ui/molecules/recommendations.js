@@ -118,8 +118,7 @@ export default function ElementRecommendations(oProps) {
     let sIcon = undefined;
     switch(sAction) {
         case 'ignore':
-            sIcon = 'x';
-            sTitle = false;
+            //sIcon = 'x';
             break;
     }
 
