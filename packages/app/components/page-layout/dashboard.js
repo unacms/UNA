@@ -40,10 +40,10 @@ export default function PageLayout(props) {
               <Text className="my-auto flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-xl font-semibold ">
                 {currentUser.display_name}
               </Text>
-              <View className="flex-row gap-1 my-auto xl:hidden">
-                <Button variant="text" startDecorator="UserSwitch" rounded />
-                <Button variant="text" startDecorator="Gear" rounded />
-                <Button variant="text" startDecorator="SignOut" rounded />
+              <View className="flex-row gap-x-2 my-auto xl:hidden">
+                <Button variant="outline" startDecorator="UserSwitch" rounded />
+                <Button variant="outline" startDecorator="Gear" rounded />
+                <Button variant="outline" startDecorator="SignOut" rounded />
               </View>
             </View>
             <View className="flex-auto flex-col my-auto hidden xl:flex ">
@@ -227,7 +227,7 @@ export default function PageLayout(props) {
             </View>
 
             <View className="flex-col my-auto flex-auto">
-              <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+            <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 Discussions
               </Text>
             </View>
@@ -297,7 +297,7 @@ export default function PageLayout(props) {
             </View>
 
             <View className="flex-col my-auto flex-auto">
-              <Text className="my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+            <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 Events
               </Text>
             </View>

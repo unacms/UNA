@@ -62,7 +62,7 @@ export default function FormFeed(props) {
             </View>  
         </KeyboardAvoidingView> 
     </Modal>
-    <View className='max-w-5xl w-full items-center sm:px-2 pt-2  sm:px-4 sm:pt-4 mx-auto'>
+    <View className='max-w-5xl w-full items-center sm:px-4 pt-2  sm:px-4 sm:pt-4 mx-auto'>
     <View className='max-w-5xl w-full px-4 py-3
           overflow-hidden sm:rounded-lg  
         bg-backgroundcard dark:bg-backgroundcard-dark  border-y sm:border 
