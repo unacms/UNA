@@ -227,9 +227,37 @@ export const settingsDefault = {
             'view-group-profile', 
             'group-fans'
         ],
+        bx_groups_view_meta: {
+          iconset: {
+              members: 'Users',
+              friends: 'Users',
+              subscribers: 'Users',
+          },
+          items: ['members', 'friends', 'subscribers'],
+        },
+        bx_groups_view_actions_all: [
+          'profile-fan-add',
+          'profile-fan-remove',
+          'profile-subscribe-add',
+          'profile-subscribe-remove',
+        ],
         bx_events_view_submenu: [
             'view-event-profile', 
             'event-fans'
+        ],
+        bx_events_view_meta: {
+          iconset: {
+              members: 'Users',
+              friends: 'Users',
+              subscribers: 'Users',
+          },
+          items: ['members', 'friends', 'subscribers'],
+        },
+        bx_events_view_actions_all: [
+          'profile-fan-add',
+          'profile-fan-remove',
+          'profile-subscribe-add',
+          'profile-subscribe-remove',
         ],
         bx_channels_submenu: {
             name: 'Channels',
