@@ -279,6 +279,11 @@ export const settingsDefault = {
           showBg: false,
         },
       },
+      icon: 'Search',
+      headerSettings: {
+        backButton: false,
+        header: true,
+      }
     },
     home: {
       layout: 'home',
@@ -409,6 +414,11 @@ export const settingsDefault = {
           showBg: false,
         },
       },
+      icon: 'File',
+      headerSettings: {
+        backButton: false,
+        header: false,
+      }
     },
     'view-post': {
       layout: 'post',
