@@ -7,6 +7,8 @@ import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import { useCurrentUser } from 'app/context/user';
+import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
+
 
 export default function ElementLikes(oProps) {
 
@@ -22,6 +24,8 @@ export default function ElementLikes(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
+
+    
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -179,15 +183,60 @@ export default function ElementLikes(oProps) {
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
+    let iCount = '';
+    if (oCounter?.count)
+        iCount = oCounter.count;
+    if(isContextVar('counter')) {
+        const oCounterGlobal = getContextVar('counter');
+        if(oCounterGlobal?.count)
+            iCount = oCounterGlobal.count;
+    }    
+    /*
+    const animatedCount = useDerivedValue(() => iCount);
+    const animatedStyles = useAnimatedStyle(() => {
+        const interpolatedValue = interpolate(animatedCount.value, [0, iCount], [0, iCount]);
+        return { opacity: interpolatedValue };
+    });*/
+   // const indicatorOffset = useSharedValue(0);
+   // indicatorOffset.value = withTiming(0, { duration: 200, easing: Easing.inOut(Easing.ease) });
+
+   /* const indicatorStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ translateX: indicatorOffset.value }],
+        };
+    });
+*/
+/*
+const indicatorStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withRepeat(
+        withTiming(0, { duration: 1000 }), // fade-in animation
+        1, // number of times to repeat (-1 for indefinitely)
+        true // whether it should reverse on every second run (to fade-out)
+      ),
+    };
+  });*/
+
+  const sharedValue = useSharedValue(1);
+
+  const indicatorStyle = useAnimatedStyle(() => {
+    return {
+      opacity: sharedValue.value,
+    };
+  });
+
+  useEffect(() => {
+    sharedValue.value = withSequence(
+      withTiming(0, { duration: 500 }), // fade out
+      withTiming(1, { duration: 500 }) // fade in
+    );
+  }, [iCount]);
+  
+    
+ 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.count != undefined) {
-        let iCount = oCounter.count;
-        if(isContextVar('counter')) {
-            const oCounterGlobal = getContextVar('counter');
-            if(oCounterGlobal?.count)
-                iCount = oCounterGlobal.count;
-        }
 
         if(iCount > 0) {
             let sUsers = undefined;
@@ -199,11 +248,14 @@ export default function ElementLikes(oProps) {
                 });
             }
 
+
             if(!sUsers || sUsers.length == 0)
                 sUsers = getSkeleton();
 
             sCounterButton = (
-                <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <Animated.View style={indicatorStyle}>
+                    <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
+                </Animated.View>
             );
 
             sCounterPopup = (

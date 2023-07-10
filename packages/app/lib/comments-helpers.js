@@ -232,7 +232,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
     }
     useEffect(() => {
         if (currentUser){
-            console.log(currentUser);
             subscribe(currentUser.pusher, commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
         }
     }, [currentUser])
