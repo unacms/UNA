@@ -16,6 +16,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
+import Toster from 'app/ui/atoms/toster';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -213,21 +214,22 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
             if (!dataArrayRef.current.includes(k.id)) {
                 dataArrayRef.current.push(k.id);
             }
-            cb2('flex');
+            cb2(true);
         }
     }
 
     
     const showNewContent = () => {
-        cb2('none'); 
+        cb2(false); 
         handleMoreNew();
         dataArrayRef.current=[];
     }
 
     const cb2 = (val) => {
-        const current = textRef.current;
+        const current = tosterRef.current;
         if (current) {
-            current.setNativeProps({ style: { display: val } });
+            current.setVisible(val);
+            //  current.setNativeProps({ style: { display: val } });
         }
     }
     useEffect(() => {
@@ -262,11 +264,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
-    let sClassName = 'absolute top-0 w-full items-center';
-    if (Platform.OS === 'web')
-        sClassName = 'fixed top-16 left-0 w-full items-center';
 
-    const textRef = useRef();
+    const tosterRef = useRef();
 
     return (
         <> 
@@ -294,11 +293,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                     ) : null
                   }
             />
-            <View className={sClassName} ref={textRef} style={{display:'none'}}>
-                <View className='w-1/2 items-center'>
-                    <Button variant="primary" title="New comment" size="sm" rounded onPress={() => {showNewContent() }} />
-                </View>
-            </View>
+            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
+           
         </>
   
     )

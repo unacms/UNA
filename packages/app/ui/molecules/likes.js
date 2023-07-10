@@ -191,31 +191,7 @@ export default function ElementLikes(oProps) {
         if(oCounterGlobal?.count)
             iCount = oCounterGlobal.count;
     }    
-    /*
-    const animatedCount = useDerivedValue(() => iCount);
-    const animatedStyles = useAnimatedStyle(() => {
-        const interpolatedValue = interpolate(animatedCount.value, [0, iCount], [0, iCount]);
-        return { opacity: interpolatedValue };
-    });*/
-   // const indicatorOffset = useSharedValue(0);
-   // indicatorOffset.value = withTiming(0, { duration: 200, easing: Easing.inOut(Easing.ease) });
-
-   /* const indicatorStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ translateX: indicatorOffset.value }],
-        };
-    });
-*/
-/*
-const indicatorStyle = useAnimatedStyle(() => {
-    return {
-      opacity: withRepeat(
-        withTiming(0, { duration: 1000 }), // fade-in animation
-        1, // number of times to repeat (-1 for indefinitely)
-        true // whether it should reverse on every second run (to fade-out)
-      ),
-    };
-  });*/
+   
 
   const sharedValue = useSharedValue(1);
 
