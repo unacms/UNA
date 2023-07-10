@@ -15,10 +15,15 @@ export function Story(props) {
     }, [currentImageIndex, opacity]);
 
     const images = [
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/cq6im7k8qqbbqq38ycjplybjwtx9m8an.webp',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/vbcykn7wncy6vqjbfzfakc5rvryfj2ys.jpg',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/cq6im7k8qqbbqq38ycjplybjwtx9m8an.webp',
-        'https://ci.una.io/test3/s/bx_posts_photos_resized/vbcykn7wncy6vqjbfzfakc5rvryfj2ys.jpg'
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg', 
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg',
+        'https://ci.una.io/test3/s/bx_posts_photos_resized/fkntirm9qfbvkah2t7e63qz5fvlw67qe.jpg'
     ];
 
     useEffect(() => {
@@ -54,27 +59,25 @@ export function Story(props) {
 
     return (
         <View className=" 
-          overflow-hidden sm:rounded-lg  
-        bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border 
-        border-bordercolorcard dark:border-bordercolorcard-dark 
-        sm:mx-4 mt-2 sm:mt-4
-        
-        ">
+            overflow-hidden sm:rounded-lg  
+            bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border 
+            border-bordercolorcard dark:border-bordercolorcard-dark 
+            sm:mx-4 mt-2 sm:mt-4">
             <Modal onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className='h-4 w-full  flex-row gap-x-2'>
                     {images.map((image, index) => (
-                        <View className='h-3 w-1/4 bg-green-500'><Animated.View style={[{height:12, position:'absolute', backgroundColor:'orange'}, animatedStyles2[index]]} className='h-96 w-96' >
-                           
-                        </Animated.View></View>
+                        <View  key={'slideindex' + index} className='h-3 w-1/4 bg-green-500'>
+                            <Animated.View style={[{height:12, position:'absolute', backgroundColor:'orange'}, animatedStyles2[index]]} className='h-96 w-96' >
+                            </Animated.View>
+                        </View>
                     ))}
                 </View>
                 <View className='h-96 w-96' >
                     {images.map((image, index) => (
-                        <Animated.View key={'slide'+index} style={[{width:500, height:500, position:'absolute'}, animatedStyles[index]]} className='h-96 w-96' >
+                        <Animated.View key={'slide' + index} style={[{width:500, height:500, position:'absolute'}, animatedStyles[index]]} className='h-96 w-96' >
                             <Image
-                                key={index}
                                 src={image}
-                                alt="cxv" 
+                                alt="Show image" 
                                 view="cover"
                             />
                         </Animated.View>
@@ -83,46 +86,17 @@ export function Story(props) {
             </Modal>
         <ScrollView horizontal={true}>
             <Row className='gap-x-2 p-2'>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
-            <Pressable onPress={() => setShowImage(true)}>
-            <View className="w-28 h-48 rounded bg-primary/20 ">
-            </View>
-            </Pressable>
+            {images.map((image, index) => (
+                  <Pressable key={'slide' + index} onPress={() => setShowImage(true)}>
+                    <View className="w-28 h-48 rounded bg-primary/20 ">
+                        <Image
+                                view="cover"
+                                src={image}
+                                alt="Show image" 
+                            />
+                    </View>
+                  </Pressable>
+            ))}
             </Row>
         </ScrollView>
     </View>);

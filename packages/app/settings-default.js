@@ -123,7 +123,7 @@ export const settingsDefault = {
   menu_items: {
     menu_top: [
       { name: 'home',title: 'Home', link: 'home', icon: 'home'},
-      { name: 'friends', title: 'Connections', link: 'friends', icon: 'users' }, 
+      { name: 'friends', title: 'Connections', link: 'friends', icon: 'UserPlus' }, 
       { name: 'posts-home', title: 'Posts', link: 'posts-home', icon: 'ChatCenteredText' }, 
       { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'Users' }, 
       { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
@@ -177,6 +177,9 @@ export const settingsDefault = {
       name: 'Connections',
       icon: 'Users',
       items: ['friends', 'friend-suggestions', 'friend-requests', 'sent-friend-requests', 'follow-suggestions', 'followers', 'following'],
+      add: [
+        {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
+      ],
     },
     bx_persons_view_submenu: [
       'view-persons-profile',
