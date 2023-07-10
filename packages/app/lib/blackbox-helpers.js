@@ -161,7 +161,6 @@ function processBrowse(acc, b) {
 export function processUrl(data, blocks) {
     const contentAndEndpoint = Object.values(blocks).reduce((acc, block) => {
         const b = getContent(data, block);
-
         if (b.type === 'browse') {
             if (block.sidebar) {
                 acc.sidebar = processBrowse(acc.sidebar, b);
@@ -175,7 +174,6 @@ export function processUrl(data, blocks) {
                 acc.content = processContent(acc, b);
             }
         }
-
         return acc;
     }, { content: [], endpoint: null, sidebar: { endpoint: null, content: [] } });
 

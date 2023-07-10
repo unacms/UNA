@@ -138,7 +138,7 @@ export default function ElementCover(props) {
         <View className="relative  flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
           
         {bPerson && <View className=" flex-col  w-full md:w-52 ">
-            <View className=' w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '>
+            <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '>
               <Profile
                 {...data.profile}
                 displayType="unit_wo_info"

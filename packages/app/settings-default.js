@@ -7,8 +7,7 @@ export const settingsDefault = {
     urls: {
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
-        notifs:
-            'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
+        notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
     },
     lang_keys: {
         comment_list_title: 'Comments',
@@ -29,7 +28,7 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
     },
     cache: {
-        page: true,
+        page: false,
         list: true,
         compress: true
     },
@@ -130,15 +129,20 @@ export const settingsDefault = {
             { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
             { name: 'apps', title: 'All Apps', link: 'dashboard', icon: 'CirclesFour' }
         ],
-
-        add_menu: ['create-post', 'create-group-profile'],
+        add_menu: [
+            'create-post', 
+            'create-group-profile'
+        ],
         profile_menu: [
             'view-persons-profile',
             'persons-profile-friends',
             'posts-author',
             'posts-home',
         ],
-        comments_manage_menu: ['item-edit', 'item-delete'],
+        comments_manage_menu: [
+            'item-edit', 
+            'item-delete'
+        ],
         bx_posts_submenu: {
             name: 'Posts',
             icon: 'File',
@@ -148,18 +152,16 @@ export const settingsDefault = {
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_posts'},
             ],
         },
-        bx_posts_view_actions: ['edit-post', 'delete-post'],
-
+        bx_posts_view_actions: [
+            'edit-post', 
+            'delete-post'
+        ],
         bx_persons_submenu: {
             name: 'People',
             icon: 'Users',
             items: ['persons-home', 'persons-active'],
             add: [
-                {
-                    icon: 'search',
-                    name: 'Search',
-                    link: '/search-keyword?keyword=&section=bx_persons',
-                },
+                {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
@@ -202,18 +204,13 @@ export const settingsDefault = {
             'profile-subscribe-remove',
             'messenger',
         ],
-
         bx_groups_submenu: {
             name: 'Groups',
             icon: 'UsersThree',
             items: ['groups-home', 'groups-joined'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-group-profile' },
-                {
-                    icon: 'search',
-                    name: 'Search',
-                    link: '/search-keyword?keyword=&section=bx_groups',
-                },
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_groups'},
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
@@ -223,70 +220,55 @@ export const settingsDefault = {
             items: ['discussions-home', 'discussions-search'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-discussion' },
-                {
-                    icon: 'search',
-                    name: 'Search',
-                    link: '/search-keyword?keyword=&section=bx_forum',
-                },
-                
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_forum'},
             ],
         },
-        bx_groups_view_submenu: ['view-group-profile', 'group-fans'],
-        bx_events_view_submenu: ['view-event-profile', 'event-fans'],
-
+        bx_groups_view_submenu: [
+            'view-group-profile', 
+            'group-fans'
+        ],
+        bx_events_view_submenu: [
+            'view-event-profile', 
+            'event-fans'
+        ],
         bx_channels_submenu: {
             name: 'Channels',
             icon: 'Hash',
             items: ['channels-home', 'channels-top'],
             add: [
-                {
-                    icon: 'search',
-                    name: 'Search',
-                    link: '/search-keyword?keyword=&section=bx_channels',
-                },
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_channels' },
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
-        bx_channels_view_submenu: ['view-channel-profile'],
-
-        bx_timeline_menu_item_manage: ['item-edit', 'item-delete'],
+        bx_channels_view_submenu: [
+            'view-channel-profile'
+        ],
+        bx_timeline_menu_item_manage: [
+            'item-edit', 
+            'item-delete'
+        ],
     },
 
     layouts: {
         messenger: {
             layout: 'messenger',
             blocks: {
-                main: {
-                    name: 'bx_messenger:get_main_messenger_page',
-                    showTitle: false,
-                },
+                main: { name: 'bx_messenger:get_main_messenger_page', showTitle: false },
             },
         },
         dashboard: {
             layout: 'dashboard',
             top:true,
             blocks: {},
-            headerSettings: {
-                header: true,
-                backButton: false,
-                menu: false,
-                title: true
-            },
+            headerSettings: { header: true, backButton: false, menu: false, title: true },
         },
         'search-keyword': {
             layout: 'blackbox_search',
             blocks: {
-                browse: {
-                    name: 'system:search_keyword_result',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:search_keyword_result', showTitle: false, showBg: false },
             },
             icon: 'Search',
-            headerSettings: {
-                backButton: false,
-                header: true,
-            }
+            headerSettings: { backButton: false, header: true }
         },
         home: {
             layout: 'home',
@@ -298,297 +280,150 @@ export const settingsDefault = {
                 home: { name: 'static:home', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
-                
-                
             },
             header: [
                 { icon: 'plus', name: 'Add', link: '/create-post' },
                 { icon: 'search', name: 'Search', link: '?keyword=' },
             ],
-            headerSettings: {
-                header: true,
-                backButton: false,
-                menu: true,
-                title: false
-            },
+            headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
         login:{
             max_width: 'max-w-xl',
-
         },
         //############ EVENTS PAGES ############
         'events-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_events:browse_recent_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
             icon: 'Calendar',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'events-top': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_events:browse_top_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
             },
         },
         'view-event-profile': {
             layout: 'profile',
             blocks: {
-                col1: {
-                    name: 'bx_events:entity_info',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
-                col2: {
-                    name: 'bx_events:get_block_view_profile',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
+                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
+                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col2: { name: 'bx_events:entity_info', showTitle: false, showBg: false, perLine: 1, sidebar: true },
+                col3: { name: 'bx_events:get_block_view_profile', showTitle: false, showBg: false, perLine: 1, sidebar: true },
             },
         },
         'event-fans': {
             layout: 'profile',
             blocks: {
-                col1: {
-                    name: 'bx_events:fans_table',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 3,
-                },
+                col1: { name: 'bx_events:fans_table', showTitle: false, showBg: false, perLine: 3 },
             },
         },
         //############ POSTS PAGES ############
         'posts-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_posts:browse_public',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false },
             },
             icon: 'File',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'posts-popular': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_posts:browse_popular',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
             },
             icon: 'File',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'view-post': {
             layout: 'post',
             top:true,
             blocks: {
-                author: {
-                    name: 'bx_posts:entity_author',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                    forHeader: true,
-                },
-                text: {
-                    name: 'bx_posts:entity_text_block',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                attachments: {
-                    name: 'bx_posts:entity_attachments',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                actions: {
-                    name: 'bx_posts:entity_all_actions',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                'comments-empty': {
-                    name: 'static:comments_empty', showTitle: false, showBg: false,forList: true,
-                },
-                comments: {
-                    name: 'bx_posts:entity_comments',
-                    showTitle: false,
-                    showBg: false,
-                },
+                author: { name: 'bx_posts:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },
+                text: { name: 'bx_posts:entity_text_block', showTitle: false, showBg: false, forList: true },
+                attachments: { name: 'bx_posts:entity_attachments', showTitle: false, showBg: false, forList: true },
+                actions: { name: 'bx_posts:entity_all_actions', showTitle: false, showBg: false, forList: true },
+                'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
+                comments: { name: 'bx_posts:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: {
-                header: false,
-            },
+            headerSettings: { header: false },
         },
         item: {
             layout: 'post',
             top:true,
             blocks: {
-                author: {
-                    name: 'bx_timeline:get_block_item_info',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                    forHeader: true,
-                },
-                text: {
-                    name: 'bx_timeline:get_block_item',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                'comments-empty': {
-                    name: 'static:comments_empty', showTitle: false, showBg: false,forList: true,
-                },
-                comments: {
-                    name: 'bx_timeline:get_block_item_comments',
-                    showTitle: false,
-                    showBg: false,
-                },
+                author: { name: 'bx_timeline:get_block_item_info', showTitle: false, showBg: false, forList: true, forHeader: true },
+                text: { name: 'bx_timeline:get_block_item', showTitle: false, showBg: false, forList: true },
+                'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
+                comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false },
             },
-            headerSettings: {
-                header: false,
-            },
+            headerSettings: { header: false },
         },
         //############ POSTS PAGES ############
         'friend-suggestions': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_recommendations_friends',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'friends': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_friends',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'follow-suggestions': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_recommendations_subscriptions',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'followers': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_subscribed_me',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'following': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_subscriptions',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'friend-requests': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_friend_requests',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         'sent-friend-requests': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'system:browse_friend_requested',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: {
-                backButton: false,
-                header: false,
-            }
+            headerSettings: { backButton: false, header: false }
         },
         
-        //############ POSTS PAGES ############
+        //############ DISCUSSION PAGES ############
         'discussions-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_forum:browse_new',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false },
             },
             icon: 'Comments',
         },
@@ -596,55 +431,21 @@ export const settingsDefault = {
             layout: 'post',
             top:true,
             blocks: {
-                author: {
-                    name: 'bx_forum:entity_author',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                    forHeader: true,
-                },
-                text: {
-                    name: 'bx_forum:entity_text_block',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                attachments: {
-                    name: 'bx_forum:entity_attachments',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                actions: {
-                    name: 'bx_forum:entity_all_actions',
-                    showTitle: false,
-                    showBg: false,
-                    forList: true,
-                },
-                comments: {
-                    name: 'bx_forum:entity_comments',
-                    showTitle: false,
-                    showBg: false,
-                },
+                author: { name: 'bx_forum:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },
+                text: { name: 'bx_forum:entity_text_block', showTitle: false, showBg: false, forList: true },
+                attachments: { name: 'bx_forum:entity_attachments', showTitle: false, showBg: false, forList: true },
+                actions: { name: 'bx_forum:entity_all_actions', showTitle: false, showBg: false, forList: true },
+                comments: { name: 'bx_forum:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: {
-                header: false,
-            },
+            headerSettings: { header: false },
         },
         //############ GROUPS PAGES ############
         'groups-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_groups:browse_recent_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: {
-                backButton: false,
-                header: false,
-            },
+            headerSettings: { backButton: false, header: false },
             icon: 'UsersThree',
         },
         'groups-joined': {
@@ -660,196 +461,89 @@ export const settingsDefault = {
         'view-group-profile': {
             layout: 'profile',
             blocks: {
-                col0: {
-                    name: 'bx_groups:get_block_post_profile',
-                    showTitle: false,
-                    showBg: false,
-                },
-                col1: {
-                    name: 'bx_groups:get_block_view_profile',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
-                col2: {
-                    name: 'bx_groups:entity_info',
-                    showTitle: false,
-                    showBg: true,
-                    sidebar: true,
-                },
-                col4: {
-                    name: 'bx_groups:entity_text_block',
-                    showTitle: false,
-                    showBg: true,
-                    sidebar: true,
-                },
-                /*col3: {
-                    name: 'bx_posts:browse_public',
-                    showTitle: false,
-                    showBg: false,
-                    sidebar: true,
-                },*/
-                
+                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
+                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col3: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, sidebar: true  },
+                col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true, sidebar: true },
+                col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
         },
         'group-fans': {
             layout: 'profile',
             blocks: {
-                col1: {
-                    name: 'bx_groups:fans_table',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 3,
-                },
+                col1: { name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine: 3 },
             },
         },
         //############ CHANNELS PAGES ############
         'channels-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_channels:browse_recent_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false },
             },
         },
         'channels-top': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_channels:browse_top_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false },
             },
         },
         'view-channel-profile': {
             layout: 'profile',
             blocks: {
-                col2: {
-                    name: 'bx_timeline:get_block_view_profile',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
+                col2: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
             },
         },
         //############ PERSONS PAGES ############
         'persons-home': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_persons:browse_recent_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: {
-                backButton: false,
-                header: false,
-            },
+            headerSettings: { backButton: false, header: false },
             icon: 'Users',
         },
         'persons-active': {
             layout: 'blackbox',
             blocks: {
-                browse: {
-                    name: 'bx_persons:browse_active_profiles',
-                    showTitle: false,
-                    showBg: false,
-                },
+                browse: { name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
             },
         },
         'view-persons-profile': {
             layout: 'profile',
             blocks: {
-                col0: {
-                    name: 'bx_timeline:get_block_post_profile',
-                    showTitle: false,
-                    showBg: false,
-                },
-                col1: {
-                    name: 'bx_timeline:get_block_view_profile',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
-                col2: {
-                    name: 'bx_persons:entity_info',
-                    showTitle: false,
-                    showBg: true,
-                    sidebar: true,
-                },
-                col4: {
-                    name: 'bx_persons:entity_text_block',
-                    showTitle: false,
-                    showBg: true,
-                    sidebar: true,
-                },
-                col3: {
-                    name: 'bx_posts:browse_public',
-                    showTitle: false,
-                    showBg: false,
-                    sidebar: true,
-                },
-                
+                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
+                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
+                col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
         },
         'persons-profile-friends': {
             layout: 'profile',
             blocks: {
-                col1: {
-                    name: 'system:connections_table',
-                    showTitle: false,
-                    showBg: false,
-                },
-                
-                
+                col1: { name: 'system:connections_table', showTitle: false, showBg: false }, 
             },
         },
         'persons-profile-subscriptions': {
             layout: 'profile',
             blocks: {
-                col1: {
-                    name: 'system:subscriptions_table',
-                    showTitle: false,
-                    showBg: false,
-                },
+                col1: { name: 'system:subscriptions_table', showTitle: false, showBg: false },
             },
         },
         'persons-profile-info': {
             layout: 'profile',
             blocks: {
-                col0: {
-                    name: 'bx_persons:entity_text_block',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
-                col1: {
-                    name: 'bx_persons:entity_info_full',
-                    showTitle: false,
-                    showBg: false,
-                },
+                col0: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
+                col1: { name: 'bx_persons:entity_info_full', showTitle: false, showBg: false },
             },
         },
         'notifications-view': {
             layout: 'notif',
             top:true,
             blocks: {
-                browse: {
-                    name: 'bx_notifications:get_block_view',
-                    showTitle: false,
-                    showBg: false,
-                    perLine: 1,
-                },
+                browse: { name: 'bx_notifications:get_block_view', showTitle: false,showBg: false, perLine: 1 },
             },
             header: [{ icon: 'search', name: 'Search' }],
-            headerSettings: {
-                header:true,
-                backButton: false
-            },
+            headerSettings: { header:true, backButton: false },
             icon: 'Bell',
         },
     },
@@ -885,50 +579,36 @@ export const settingsDefault = {
             bordercolorModal: 'rgba(55,65,81,0.4)',
         },
         button_styles: {
-            'u-btn-default-cnt':
-                ' bg-neutral-500/20 hover:bg-neutral-500/10    border border-neutral-500/20 active:shadow-none    active:opacity-50 shadow-sm    hover:shadow    ',
-            'u-btn-default-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-default-cnt': ' bg-neutral-500/20 hover:bg-neutral-500/10    border border-neutral-500/20 active:shadow-none    active:opacity-50 shadow-sm    hover:shadow    ',
+            'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-default-trans': 'duration-200 ',
 
-            'u-btn-primary-cnt':
-                ' border active:shadow-none border-transparent    shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 dark:active:bg-primary-700',
-            'u-btn-primary-text':
-                ' font-medium text-neutral-50 group-hover:text-white ',
+            'u-btn-primary-cnt': ' border active:shadow-none border-transparent    shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 dark:active:bg-primary-700',
+            'u-btn-primary-text': ' font-medium text-neutral-50 group-hover:text-white ',
             'u-btn-primary-trans': 'duration-200 ',
 
-            'u-btn-danger-cnt':
-                ' border active:shadow-none border-black/10 dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900',
+            'u-btn-danger-cnt': ' border active:shadow-none border-black/10 dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900',
             'u-btn-danger-text': 'font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': 'duration-200',
 
-            'u-btn-text-cnt':
-                ' border border-transparent hover:bg-neutral-500/10 active:opacity-50    ',
-            'u-btn-text-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-text-cnt': ' border border-transparent hover:bg-neutral-500/10 active:opacity-50    ',
+            'u-btn-text-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
             'u-btn-link-cnt': ' border border-transparent ',
-            'u-btn-link-text':
-                ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
+            'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
             'u-btn-link-trans': ' duration-200 ',
 
-            'u-btn-outline-cnt':
-                ' border border-neutral-500/20    active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
-            'u-btn-outline-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-outline-cnt': ' border border-neutral-500/20    active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
+            'u-btn-outline-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-outline-trans': ' duration-200 ',
 
-            'u-btn-group-item-cnt':
-                ' hover:bg-neutral-500/10 active:opacity-50 hover:shadow-lg ',
-            'u-btn-group-item-text':
-                ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-group-item-cnt': ' hover:bg-neutral-500/10 active:opacity-50 hover:shadow-lg ',
+            'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
-            'u-btn-default-cnt':
-                ' border border-bordercolorbutton dark:border-bordercolorbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
-            'u-btn-outline-cnt':
-                ' border border-bordercolorbutton dark:border-bordercolorbutton-dark overflow-hidden ',
+            'u-btn-default-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
+            'u-btn-outline-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark overflow-hidden ',
         },
 
         icons: {
@@ -956,11 +636,7 @@ export const settingsDefault = {
     },
     menu: {
         left: [
-            {
-                title: 'Profile',
-                link: '/view-persons-profile/dr-andrey-yasko-phd',
-                icon: 'user',
-            },
+            { title: 'Profile', link: '/view-persons-profile/dr-andrey-yasko-phd', icon: 'user' },
             { title: 'Explore', link: '/explore', icon: 'Compass' },
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
@@ -976,86 +652,20 @@ export const settingsDefault = {
             { title: 'Contact', link: '/contact', icon: 'AddressBook' },
         ],
         bottom_tabs_logged: [
-            {
-                key: '/tab0',
-                title: 'Home',
-                url: '/home',
-                icon: 'app-home',
-            },
-            {
-                key: '/tab1',
-                title: 'Friends',
-                url: '/friend-suggestions',
-                icon: 'users',
-            },
-            {
-                key: '/tab2',
-                title: 'Posts',
-                url: '/posts-home',
-                icon: 'ChatCenteredText',
-            },
-            {
-                key: '/tab3',
-                title: 'Messages',
-                url: '/messenger',
-                icon: 'ChatsCircle',
-            },
-            /*{
-                key: '/tab3',
-                title: 'Groups',
-                url: '/groups-home', 
-                icon: 'UsersThree',
-            },*/
-            {
-                key: '/tab4',
-                title: 'Notif*s',
-                url: '/notifications-view', 
-                icon: 'app-notifications',
-            },
-            {
-                key: '/tab5',
-                title: 'Menu',
-                url: '/dashboard',
-                icon: 'UserList',
-            },
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
+            {key: '/tab1', title: 'Friends', url: '/friend-suggestions',icon: 'UserPlus'},
+            {key: '/tab2', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
+            {key: '/tab3', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
+            {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'app-notifications'},
+            {key: '/tab5', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
         bottom_tabs_non_logged: [
-            {
-                key: '/tab0',
-                title: 'Home',
-                url: '/home',
-                icon: 'app-home',
-            },
-            {
-                key: '/tab1',
-                title: 'Posts',
-                url: '/posts-home',
-                icon: 'NoteBlank',
-            },
-            {
-                key: '/tab2',
-                title: 'People',
-                url: '/persons-home',
-                icon: 'users',
-            },
-            {
-                key: '/tab3',
-                title: 'About',
-                url: '/about', //'/view-persons-profile/dr-andrey-yasko-phd',
-                icon: 'Info',
-            },
-            {
-                key: '/tab4',
-                title: 'Sign-up',
-                url: '/create-account',
-                icon: 'app-usermenu',
-            },
-            {
-                key: '/tab5',
-                title: 'Login',
-                url: '/login',
-                icon: 'SignIn',
-            },
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
+            {key: '/tab1', title: 'Posts', url: '/posts-home',icon: 'NoteBlank'},
+            {key: '/tab2', title: 'People', url: '/persons-home',icon: 'users'},
+            {key: '/tab3', title: 'About', url: '/about',icon: 'Info'},
+            {key: '/tab4', title: 'Sign-up', url: '/create-account',icon: 'app-usermenu'},
+            {key: '/tab5', title: 'Login', url: '/login',icon: 'SignIn'},
         ],
     },
 }
