@@ -218,7 +218,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         }
     }
 
-    
     const showNewContent = () => {
         cb2(false); 
         handleMoreNew();
@@ -229,7 +228,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
         const current = tosterRef.current;
         if (current) {
             current.setVisible(val);
-            //  current.setNativeProps({ style: { display: val } });
         }
     }
     useEffect(() => {
