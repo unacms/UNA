@@ -13,6 +13,7 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
 from "@phosphor-icons/react";
 
 export const IconSet = {
+	
 	UserPlus: UserPlus,
 	ChatCircle: ChatCircle,
 	Calendar: Calendar,

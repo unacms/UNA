@@ -122,9 +122,9 @@ export const settingsDefault = {
     menu_items: {
         menu_top: [
             { name: 'home',title: 'Home', link: 'home', icon: 'home'},
-            { name: 'friends', title: 'Connections', link: 'friends', icon: 'UserPlus' }, 
+            { name: 'friends', title: 'Connections', link: 'friends', icon: 'Users' }, 
             { name: 'posts-home', title: 'Posts', link: 'posts-home', icon: 'ChatCenteredText' }, 
-            { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'Users' }, 
+            { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'UsersFour' }, 
             { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
             { name: 'apps', title: 'All Apps', link: 'dashboard', icon: 'CirclesFour' }
@@ -158,7 +158,7 @@ export const settingsDefault = {
         ],
         bx_persons_submenu: {
             name: 'People',
-            icon: 'Users',
+            icon: 'UsersFour',
             items: ['persons-home', 'persons-active'],
             add: [
                 {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
@@ -646,7 +646,7 @@ export const settingsDefault = {
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'NoteBlank' },
             { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
-            { title: 'People', link: '/persons-home', icon: 'Users' },
+            { title: 'People', link: '/persons-home', icon: 'UsersFour' },
             { title: 'About', link: '/about', icon: 'Info' },
             { title: 'Terms', link: '/terms', icon: 'Question' },
             { title: 'Contact', link: '/contact', icon: 'AddressBook' },
