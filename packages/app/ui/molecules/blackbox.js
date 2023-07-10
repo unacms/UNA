@@ -153,7 +153,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <Pressable className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
                                 key={`tab-${a.index}`}
                             >
-                            <View >
+                            <View > 
                                 <Button onPress={() => {
                                    setIndex(a.index)
                                 }} fullWidth={false} id="tab" rounded variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title} />
