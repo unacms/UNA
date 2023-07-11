@@ -28,14 +28,16 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
     },
     cache: {
-        page: true,
-        list: true,
+        page: false,
+        list: false,
         compress: true
     },
     feed: {
         show_selector_view: false,
         default_view: '',
         show_html: false,
+        show_multi: true,
+        default_feed: 'public',
     },
     entry: {
         default_view: '',
@@ -302,13 +304,15 @@ export const settingsDefault = {
             layout: 'home',
             top:true,
             blocks: {
-                posts2: {name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
-                feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
+                public_feed_form: {name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
+                public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
+                account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
+                account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
                 home2: { name: 'static:home2', showTitle: false, showBg: false },
                 home: { name: 'static:home', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
-                friends: { name: 'system:browse_recommendations_friends', showTitle: true, showBg: false },
+                friends: { name: 'system:browse_recommendations_friends', showTitle: true, showBg: false, },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: true, showBg: false },
             },
             header: [

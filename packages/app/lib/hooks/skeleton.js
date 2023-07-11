@@ -46,9 +46,34 @@ function getBlackBox(windowWidth){
 }
 
 var blockSkeletons = {
+    'one_column_browse': <>
+    {items.map((item, index) => (<View key={'one_column_browse' + index}>
+                
+                    <View className=" p-2 flex-row  
+                    group duration-200 overflow-hidden rounded-md  
+                    active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                     max-w-5xl self-center w-full  ">  
+                        <View className="w-10 h-10 mr-2 rounded-full flex-none ">
+                            Andrew profile icon
+                        </View>
+                        <View className="flex-auto my-auto ">
+                            <View className='flex-row justify-between'>
+                                <View className="justify-center">
+                                    <Text className='text-base mr-2 font-semibold text-neutral-900 dark:text-neutral-100'>Andrew profile name</Text>
+                                      
+                                </View>
+            
+                                <View className=''></View>
+                            </View>    
+                        </View>
+                    </View>
+             
+            </View>))}
+    </>,
     'browse_item': <>
         {items.map((item, index) => (
-            <View key={'bx_persons' + index} className="flex-row w-full ">
+            <View key={'browse_item' + index} className="flex-row w-full ">
             <View className="mt-4 mx-2 flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-4 border-transparent justify-between">
             <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video overflow-hidden w-full ">
             </View> 
@@ -126,7 +151,7 @@ var blockSkeletons = {
     )
 }
 
-var skeletons = {
+var pageSkeletons = {
     default: (
         <View className={maxWidth + ' mx-auto w-full animate-pulse '}>
         <View className=" rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark m-4 p-4 flex flex-col gap-6">
@@ -201,7 +226,7 @@ var skeletons = {
     ),
     blackbox: getBlackBox(),
     profile: (
-        <View>TODO
+        <View>Andrew profile sceleton
         <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
         <View className="animate-pulse flex gap-3">
         <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
@@ -246,8 +271,7 @@ var skeletons = {
 }
 
 export function getSkeleton (name, view) {
-    console.log('getSkeleton', name, view)
-    if (name != 'feed')
+    if (name != 'feed' && name != 'one_column_browse')
         name = 'browse_item'
     /* let a = blockSkeletons[name + ':' + view]
     if (a)
@@ -281,17 +305,17 @@ export default function useLoadingSkeleton(width) {
 
     const selectSkeleton = useCallback((url) => {
         if (!url || url === '/') {
-            return skeletons.home || skeletons[''];
+            return pageSkeletons.home || pageSkeletons[''];
         }
         const cleanUrl = url.split('/').filter(Boolean)[0];
         const l = appSetting('layouts', cleanUrl);
         let layout = l?.layout;
      
         if (layout == 'blackbox'){
-         return getBlackBox(width);
+            return getBlackBox(width);
         }
 
-        return skeletons[layout] || skeletons.default;
+        return pageSkeletons[layout] || pageSkeletons.default;
     }, [width]);
 
     const skeleton = selectSkeleton(state.url);

@@ -48,7 +48,6 @@ export default function ElementBrowse(props) {
     }
 
     const [browseParams, setbrowseParams] = useState(defParams);
-    
     const exitingFunction = () => {
         if (appSetting('cache', 'list')){
             storageSet('ls-d', storageKeyValue, {data: getCurrentData(), params: getCurrentParams()})
@@ -111,7 +110,7 @@ export default function ElementBrowse(props) {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useInfiniteQuery([data.request_url], fetchData, {
+    } = useInfiniteQuery([data.request_url + browseParams?.type], fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
@@ -145,13 +144,10 @@ export default function ElementBrowse(props) {
             return;
         fetchNextPage();
     };
-
-    const Preload = getSkeleton(data.module? data.module : data.unit, 'browse')
-   
-
-   
-
-    //let dataItems = getCurrentData();
+    let sSkeleton = data.module? data.module : data.unit
+    if (props?.skeleton)
+        sSkeleton = props?.skeleton;
+    const Preload = getSkeleton(sSkeleton, 'browse')
     
     if (status === 'loading' && dataItems.length == 0)
         return Preload 
@@ -166,7 +162,7 @@ export default function ElementBrowse(props) {
                 data={modeItems}
             /></View>}
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-                <UniList 
+            {dataItems.data.length > 0 ? <UniList 
                     numColumns={numColumns} 
                     data={dataItems.data}
                     unit={data.unit}
@@ -178,11 +174,11 @@ export default function ElementBrowse(props) {
                     renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     onEndReached = {handleEndReached} 
                     ListFooterComponent={
-                        ((hasNextPage && isFetchingNextPage) || dataItems.data == 0) ? (
+                        ((hasNextPage && isFetchingNextPage) ) ? (
                             Preload
                         ) : null
                     }
-                />
+                /> : Preload}
             </View>
             }
         </View> 
