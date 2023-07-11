@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useEffect } from 'react'
+import { useEffect, useCallback  } from 'react'
 import { useWindowDimensions } from 'react-native'
 import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
@@ -12,77 +12,56 @@ import { useColorScheme } from 'react-native';
 export const siteTitle = 'NEO';
 
 export default function Layout(props) {  
-    
-    const [loading, skeleton] = useSkeleton();
-    
-    setTimeout(() => {
-        document.title = props.data.title;
-    }, 100);
+    let { width } = useWindowDimensions();
+    const [loading, skeleton] = useSkeleton(width);
 
     useEffect(() => {
+        document.title = props.data.title;
+    }, [props.data.title]);
+
+    const handleScroll = useCallback(() => {
         let lastScrollTop = 0;
-        
-        const handleScroll = () => {
-            let scrollTop = window.scrollY;
-            if ((lastScrollTop <= scrollTop && lastScrollTop > 0) && window.innerWidth < 1024)
-                scroll.value = 0;
-            else
-                scroll.value = 1;
-            lastScrollTop = scrollTop;
-        };
-    
+        let scrollTop = window.scrollY;
+        if ((lastScrollTop <= scrollTop && lastScrollTop > 0) && window.innerWidth < 1024)
+            scroll.value = 0;
+        else
+            scroll.value = 1;
+        lastScrollTop = scrollTop;
+    }, []);
+
+    useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-      }, []); 
+    }, [handleScroll]);
 
-      useEffect(() => {
-        const handlePageShow = (event) => {
-            document.cookie = `pg=${JSON.stringify([])}`;
-            storageClear();
-        };
+    const handlePageShow = useCallback((event) => {
+        document.cookie = `pg=${JSON.stringify([])}`;
+        storageClear();
+    }, []);
 
+    useEffect(() => {
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                //console.log('ServiceWorker registration successful with scope:',  registration.scope);
+                // Service worker registration was successful.
             }).catch(function(error) {
-                //console.log('ServiceWorker registration failed:', error);
+                // Service worker registration failed.
             });
-          }
-    
-        window.addEventListener('beforeunload', handlePageShow);
-            return () => {
-                window.removeEventListener('beforeunload', handlePageShow);
-            };
-    }, []);  
+        }
 
-    let { width } = useWindowDimensions()
+        window.addEventListener('beforeunload', handlePageShow);
+        return () => {
+            window.removeEventListener('beforeunload', handlePageShow);
+        };
+    }, [handlePageShow]);
+
+    
     let headerSettings = getHeaderSettings(props.uri, width);
 
     const scheme = useColorScheme();
     let bg = scheme === 'dark' ? 'rgba(17,24,39,0.8)' : 'rgba(255,255,255,0.8)';
-
-    /*useEffect(() => {
-        const script = document.createElement('script');
     
-        script.src = "https://cdnjs.cloudflare.com/ajax/libs/instantclick/3.1.0/instantclick.min.js";
-        script.async = true;
-        script.dataset.noInstant = '';
-    
-        document.body.appendChild(script);
-
-        script.onload = () => {
-            if (window.InstantClick) {
-              window.InstantClick.init();
-            }
-          };
-    
-        return () => {
-          document.body.removeChild(script);
-        }
-      }, []);*/
-
     return (
         <>
             <Head>

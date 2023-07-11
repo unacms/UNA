@@ -55,7 +55,6 @@ export function Root (props) {
             }
         }}
     }
-
     useEffect(() => {
         if (data?.user){
             if (currentUser?.id != data.user?.id){
@@ -65,8 +64,10 @@ export function Root (props) {
             }
         }
         else{
-            if (currentUser != null)
+            if (currentUser != null){
                 setCurrentUser(null);
+                
+            }
         }
 
     }, [data?.user]);
