@@ -56,7 +56,7 @@ export default function PageLayout(props) {
               <View className="flex-auto w-2/3">
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>
-                <Row className="px-4 mt-4 mr-auto gap-x-2">
+                <Row className="px-4 mt-4 mr-auto gap-x-2 w-full">
                   <Pressable  className=" py-2 items-center" onPress={() => {setFeedType(0)}}>
                     <Button fullWidth={true} id="tab" variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='Public'   />
                   </Pressable>
@@ -64,13 +64,13 @@ export default function PageLayout(props) {
                     <Button fullWidth={true} id="tab" variant={feedType == 1 ? 'outline': "text"} rounded size='sm' title='Account'   />
                   </Pressable>
                 </Row> 
-                <View className={feedType == 0 ? '' : 'hidden'}>
+                <View className={feedType == 0 ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.public_feed_form} />
                     <BlockByName data={props.data} name={props.blocks.public_feed} />
                   </LayoutDataContext>
                 </View>
-                <View className={feedType == 1 ? '' : 'hidden'}>
+                <View className={feedType == 1 ? '' : ' absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.account_feed_form} />
                     <BlockByName data={props.data} name={props.blocks.account_feed} />
@@ -157,7 +157,7 @@ export default function PageLayout(props) {
                     </View>
                   </Pressable>
                 </Row> 
-                { feedType == 0 && <View className={feedType == 0 ? '' : 'hidden h-full'}>
+                { feedType == 0 && <View className={feedType == 0 ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
@@ -166,7 +166,7 @@ export default function PageLayout(props) {
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View>}
-                { feedType == 1 && <View className={feedType == 1 ? '' : 'hidden h-full'}>
+                { feedType == 1 && <View className={feedType == 1 ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 

@@ -83,7 +83,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
-        status,
+        status: rqtStatus,
         data: newData,
         fetchNextPage,
         hasNextPage,
@@ -97,7 +97,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return lastPage?.endpoint;
             },
     });
-
+    console.log('status', rqtStatus)
     const handleEndReached = useCallback(async () => {
         if (isFetchingNextPage) 
             return;
@@ -300,7 +300,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         );
     }, [scroll, index, windowWidth]);
 
-    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth]);  
+    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth, rqtStatus]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
@@ -322,12 +322,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabScene = ({ route, width, status }) => {
 
         const Preload = getSkeleton(data.module? data.module : data.unit);
-
+       
         if (!route.inited){
-            return <View className='m-2 pt-80'><Loading/></View>
+            return <></>
         }
         if (route.inited){
             const dataItems = route.data
+            console.log('---', hasNextPage,  isFetchingNextPage, dataItems.length, rqtStatus)
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <>
@@ -348,7 +349,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                     ) : null}
                                 </View>
                             }
-                        /> : Preload}
+                        /> : rqtStatus != 'success' ? Preload : <></>}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
                         <UniList

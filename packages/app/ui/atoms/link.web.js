@@ -19,9 +19,9 @@ export default function ElementLink(props) {
     if (!href)
         href='non defined';
    
-   /* if ((href == '/home' || href == 'home')){
+    if ((href == '/home' || href == 'home')){
         href ='/'
-    }*/
+    }
 
     if (props.emulate === true)
         return (
