@@ -112,31 +112,19 @@ export default function PageLayout(props) {
   let data = JSON.parse(JSON.stringify(props.data));
   let data2 = JSON.parse(JSON.stringify(props.data));
   if (!isWeb) {
-    /*delete data2.elements.cell_2
-    delete data2.elements.cell_3
-    delete data2.elements.cell_4
-
-    delete data.elements.cell_1
-    delete data.elements.cell_2
-    delete data.elements.cell_3
-    */
     for (let cell in data.elements) {
       if (!data.elements[cell].some(obj => obj.source === 'bx_timeline:get_block_view_home')) {
-        // If it doesn't, remove the whole cell
         delete data.elements[cell];
       }
     }
 
     for (let cell in data2.elements) {
       if (!data2.elements[cell].some(obj => obj.source === 'bx_timeline:get_block_view_account')) {
-        // If it doesn't, remove the whole cell
         delete data2.elements[cell];
       }
     }
     
   }
-  console.log('-----------------------data',data)
-  console.log('-----------------------data2',data2)
 
   let menu = {
     object: 'search',
@@ -147,12 +135,10 @@ export default function PageLayout(props) {
    <BlockByName data={props.data} name={props.blocks.posts2} />
            <BlockByName data={props.data} name={props.blocks.feed} />
 
-
-
     */
   return (
     <View className="w-full ">
-      <LayoutDataContext>
+      
         {!currentUser && renderBlock && (
           <BlockByName name={props.blocks.home} />
         )}
@@ -172,37 +158,36 @@ export default function PageLayout(props) {
                   </Pressable>
                 </Row> 
                 { feedType == 0 && <View className={feedType == 0 ? '' : 'hidden h-full'}>
-                <BlackBox 
+                <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
                 data={data} 
                 blocks={props.blocks}
-            />
+            /></LayoutDataContext>
                 </View>}
                 { feedType == 1 && <View className={feedType == 1 ? '' : 'hidden h-full'}>
-                <BlackBox 
+                <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
                 data={data2} 
                 blocks={props.blocks}
-            />
+            /></LayoutDataContext>
                 </View> }
                 </> 
                 :
-                <BlackBox 
+                <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
                 data={data} 
                 blocks={props.blocks}
-            />
+            /></LayoutDataContext>
                 }
            
           </>
         )}
-      </LayoutDataContext>
     </View>
   )
 }
