@@ -33,7 +33,6 @@ export function Root (props) {
                 storageSet('pg-d', storageKeyValue, props.data)
         }
     };
-    console.log(window.location.href);
     if (appSetting('cache', 'page') && Platform.OS === 'web' && !window.location.href.includes('/api.php')){
         let defParams1 = storageGet('pg-d', storageKeyValue);
         if (defParams1){
@@ -46,7 +45,6 @@ export function Root (props) {
                 let array1 = JSON.parse(a),
                     u = parseUrl(window.location.href),
                     index = array1.indexOf(u.path);
-                console.log(index, u.path, array1)
                 if (index > -1) {
                     array1.splice(index, 1);
                     console.log('rem');
@@ -61,7 +59,7 @@ export function Root (props) {
     useEffect(() => {
         if (data?.user){
             if (currentUser?.id != data.user?.id){
-                let b = data.user
+                let b = Object.assign({}, data.user)
                 b.pusher = connect();
                 setCurrentUser(b);
             }
