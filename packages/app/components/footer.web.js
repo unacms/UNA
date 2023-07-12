@@ -32,7 +32,7 @@ export default function () {
 
  	return (
         <>
-        <View className="fixed bottom-0 z-30 w-full lg:hidden tabbar bg-backgroundtabbar dark:bg-backgroundtabbar-dark">
+        <View className="fixed bottom-0 z-30 w-full sm:hidden tabbar bg-backgroundtabbar dark:bg-backgroundtabbar-dark">
           <View className=" backdrop-blur z-50  bg-backgroundnavbar dark:bg-backgroundnavbar-dark border-t  border-bordercolornavbar dark:border-bordercolornavbar-dark w-full px-2 h-16">
               <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                   {TabList.map((tab, index) => (

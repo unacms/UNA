@@ -39,12 +39,12 @@ export default function Unit(props) {
                         </View>
                         <View className="flex-auto my-auto ">
                             <View className='flex-row justify-between'>
-                                <View className="justify-center">
-                                    <Text className='text-base mr-2 font-semibold text-neutral-900 dark:text-neutral-100'>{data.title}</Text>
+                                <View className="justify-center flex-auto ">
+                                    <Text className='text-sm mr-2 font-semibold truncate text-neutral-900  dark:text-neutral-100'>{data.title}</Text>
                                       
                                 </View>
             
-                                <View className=''>{sMeta}</View>
+                                <View className='flex-none'>{sMeta}</View>
                             </View>    
                         </View>
                     </View>

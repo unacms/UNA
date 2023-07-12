@@ -108,8 +108,8 @@ export default function ElementCover(props) {
 
   return (
     <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
-      <View className={appSetting('layout', 'max_width') + '  mx-auto w-full'}>
-        <View className=" duration-500 bg-primary-200 dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
+      <View className={appSetting('layout', 'max_width') + ' sm:px-4 mx-auto w-full'}>
+        <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
             <Image
               alt={data.group_name}
@@ -119,7 +119,7 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          { bPerson && <View className=" bg-backgrounditem dark:bg-backgrounditem-dark pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
+          { bPerson && <View className=" backdrop-blur bg-backgrounditem/50 dark:bg-backgrounditem-dark/50 pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "

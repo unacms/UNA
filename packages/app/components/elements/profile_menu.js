@@ -22,17 +22,11 @@ export default function ElementProfileMenu(props) {
   return (
     <View
       style={styles}
-      className=" xl:mx-2 p-3  overflow-y-scroll profile-menu flex-col 
-        
-         overflow-hidden rounded-r-lg xl:rounded-lg  
-                bg-backgroundcard dark:bg-backgroundcard-dark  
-                border-y border-r xl:border
-                border-bordercolorcard dark:border-bordercolorcard-dark 
-                
-        
-        
-        "
-    >
+      // className=" xl:mx-2 p-3  overflow-y-scroll profile-menu flex-col overflow-hidden rounded-r-lg xl:rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border-y border-r xl:border border-bordercolorcard dark:border-bordercolorcard-dark "
+      className=" px-4 overflow-y-scroll profile-menu flex-col overflow-hidden  "
+
+  >
+      
       <View className="flex-col gap-y-1">
         {appSetting('menu', 'left').map((item, index) => (
           <Link key={`menu-${index}`} href={item.link.replace('?owner=1', '')}>
