@@ -37,17 +37,19 @@ function CoverMenuSmall(props) {
       }}
       title="Test"
     >
-      <Button variant="text" rounded startDecorator="DotsThreeOutline" />,
-      <Menu
-        {...props}
-        displayType="button"
-        params={{
-          showVertical: true,
-          button_variant: 'default',
-          button_rounded: false,
-          button_full_width: true,
-        }}
-      />
+      {[
+        <Button variant="text" rounded startDecorator="DotsThreeOutline" />,
+        <Menu
+          {...props}
+          displayType="button"
+          params={{
+            showVertical: true,
+            button_variant: 'default',
+            button_rounded: false,
+            button_full_width: true,
+          }}
+        />
+      ]}
     </DropdownPopup>
   )
 }
