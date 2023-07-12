@@ -309,6 +309,7 @@ export const settingsDefault = {
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
+                profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
                 home2: { name: 'static:home2', showTitle: false, showBg: false },
                 home: { name: 'static:home', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },

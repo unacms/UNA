@@ -11,6 +11,7 @@ import EntityInfo from './entity_info';
 import EntityCover from './entity_cover';
 import ProfileMenu from './profile_menu';
 import FeedItem from './feed_item';
+import ProfileSwitcher from './profile_switcher';
 
 import { MessengerPage } from './messenger';
 
@@ -27,7 +28,7 @@ export const componentsMapDefault = {
     entity_info: EntityInfo,
     entity_cover: EntityCover,
     profile_menu: ProfileMenu,
-
+    profile_switcher: ProfileSwitcher,
     feed_item: FeedItem,
 
     messenger_main_page: MessengerPage

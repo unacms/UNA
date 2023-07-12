@@ -178,43 +178,7 @@ export const staticDefault = {
 
     home2: (
       <>
-        <View className=" py-4 px-2 overflow-hidden flex-col  ">
-          <View className="flex-row items-center py-1 justify-between">
-            <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 ">
-                Your Profiles
-              </Text>
-          </View>
-           
-          
-          <View className=" p-2 flex-row  
-                    group duration-200 overflow-hidden rounded-md  
-                    active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                     max-w-5xl self-center w-full gap-x-2  ">
-            <View className="w-10 h-10 bg-blue-500/50 rounded-full flex-none "></View>
-            <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900  dark:text-neutral-100'>Mr. Alter Ego</Text>
-            <View className="text-sm bont-semibold flex-none my-auto   ">
-            <Button id="menu" startDecorator="UserSwitch" variant='outline'  size='sm'   />           
-             </View>
-            
-          </View>
-          <View className=" p-2 flex-row  
-                    group duration-200 overflow-hidden rounded-md  
-                    active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                     max-w-5xl self-center w-full gap-x-2  ">
-            <View className="w-10 h-10 bg-green-500/50 rounded-full flex-none "></View>
-            <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900  dark:text-neutral-100'>Mrs. Alter Ega</Text>
-            <View className="text-sm bont-semibold flex-none my-auto   ">
-            <Button id="menu" startDecorator="UserSwitch" variant='outline'  size='sm'   />           
-             </View>
-            
-          </View>
-          
-         
-        </View>
-
-        <></>
+        <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 "></Text>
       </>
     ),
     footer: (

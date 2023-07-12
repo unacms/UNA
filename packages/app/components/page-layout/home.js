@@ -9,6 +9,7 @@ import { BlackBox } from 'app/ui/molecules/blackbox'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import { Story } from 'app/ui/molecules/stories'
+import Profile from 'app/ui/molecules/profile'
 
 export default function PageLayout(props) {
   const isWeb = Platform.OS == 'web'
@@ -45,7 +46,12 @@ export default function PageLayout(props) {
           <BlockByName name={props.blocks.home} />
         </View>
       )
-    if (currentUser)
+    if (currentUser){
+      let dUser = Object.assign({}, currentUser)
+      dUser.url_avatar = dUser.avatar
+      dUser.url = '/dashboard'
+      const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+
       return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
 
@@ -55,8 +61,8 @@ export default function PageLayout(props) {
                     group duration-200 overflow-hidden rounded-lg  
                     hover:bg-neutral-500/10 active:opacity-50
                      max-w-5xl self-center  gap-x-2  ">
-            <View className="w-8 h-8 translate-x-[1px] bg-blue-500/50 rounded-full flex-none "></View>
-            <Text className='text-base my-auto flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300 animate-pulse dark:text-neutral-100'>John Doe</Text>
+            <View className="w-8 h-8 translate-x-[1px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
+            <Text className='text-base my-auto flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300 animate-pulse dark:text-neutral-100'>{currentUser.display_name}</Text>
             
             
               </View>
@@ -107,6 +113,7 @@ export default function PageLayout(props) {
 
               <View className="hidden xl:block w-1/3 px-2 flex-none duration-200 sticky ">
                 <BlockByName name={props.blocks.home2} />
+                <BlockByName name={props.blocks.profile_switcher} data={props.data} />
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton = 'one_column_browse'/>
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton = 'one_column_browse'/>
                 <BlockByName name={props.blocks.footer} />
@@ -115,6 +122,7 @@ export default function PageLayout(props) {
           </View>
         </View>
       )
+              }
   }
 
   let sect = [{ name: '', title: 'Top' }]
