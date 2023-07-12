@@ -229,11 +229,11 @@ var pageSkeletons = {
   ),
   blackbox: getBlackBox(),
   profile: (
-    <View className='flex-col relative'>
+    <View className='flex-col sm:px-4 relative'>
       
-      <View className="bg-neutral-500/5 w-full aspect-3/1 max-w-screen-2xl mx-auto rounded-b-xl"></View>
+      <View className="bg-neutral-500/5 w-full aspect-video  sm:aspect-3/1 max-w-screen-2xl mx-auto rounded-b-xl"></View>
       <View className="w-full mx-auto px-8 -translate-16 sm:-translate-y-24  max-w-screen-2xl flex-row gap-x-3">
-          <View className="rounded-full absolute right-4 sm:relative bg-neutral-200 dark:bg-neutral-800 border-4 sm:border-8 border-neutral-100 dark:border-neutral-800 h-32 w-32 sm:h-48 sm:w-48"></View>
+          <View className="rounded-full absolute right-4 sm:relative bg-neutral-200 dark:bg-neutral-800 border-4 sm:border-8 border-neutral-100 dark:border-neutral-950 h-32 w-32 sm:h-48 sm:w-48"></View>
           <View className="flex-auto mt-28 sm:mt-auto mb-4 gap-y-4 ">
             
               <View className="h-6 sm:h-8 w-40 sm:w-48 bg-neutral-500/20 rounded-full"></View>
