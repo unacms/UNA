@@ -16,7 +16,7 @@ export default function Layout(props) {
     const [loading, skeleton] = useSkeleton(width);
 
     useEffect(() => {
-        document.title = props.data.title;
+        document.title = props?.data?.title;
     }, [props.data.title]);
 
     const handleScroll = useCallback(() => {

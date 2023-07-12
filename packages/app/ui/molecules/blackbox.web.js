@@ -5,19 +5,15 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, storageSet } from 'app/lib/util';
-import { Icon } from 'app/ui/atoms/icon'
+import { appSetting, getHeaderSettings, storageSet, getBackButtonWeb } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import { useRouter } from 'next/router';
 import  CurRouter from "app/ui/atoms/router";
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/hooks/skeleton';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
-
-    const router = useRouter();
 
     let uniRef = useRef();
    
@@ -38,10 +34,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
     };
     
-    const scroll = useSharedValue(1);
-    const headerHeight = useSharedValue(minHeaderHeight);
-    const headerMaxHeight = useSharedValue(minHeaderHeight);
-    const headerMinHeight = useSharedValue(minHeaderHeight);
+    const scrollValue = useSharedValue(1);
     const { colors } = Theme();
 
     const [index, setIndex] = useState(routes.findIndex(function(item) {
@@ -49,9 +42,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     }));
     const indicatorOffset = useSharedValue(0);
     
-    const isLoading = useRef(false);
-    
-
     const getNumCols = (width) => {
         let currentRoute = routes.find((item) => item.index === index);
         let blocksroutes =  currentRoute?.blocks;
@@ -96,20 +86,24 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return lastPage?.endpoint;
             },
     });
-    console.log('status', rqtStatus)
+
     const handleEndReached = useCallback(async () => {
         if (isFetchingNextPage) 
             return;
         fetchNextPage();
     }, [routes, index]);
 
+    let offset = windowWidth < 1024 ? 200 : 600;
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > headerMinHeight.value)
-                scroll.value = 0;
-            if (window.scrollY == 0)
-                scroll.value = 1;
+            console.log(window.scrollY);
+            if (window.scrollY > offset && scrollValue.value != 0){
+                scrollValue.value = 0;
+            }
+            if (window.scrollY < offset && scrollValue.value != 1){
+                scrollValue.value = 1;
+            }
         };
     
         // Add the event listener when the component mounts
@@ -119,7 +113,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return () => {
           window.removeEventListener('scroll', handleScroll);
         };
-      }, []); 
+    }, []); 
 
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
@@ -159,15 +153,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur border-b items-center justify-center border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
+                <View className="w-full backdrop-blur items-center justify-center bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
-                        { headerSettings.header && <Pressable className="mr-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center" onPress={router.back} >
-                            <Icon icon="left" width={24} height={24} />
-                        </Pressable>
-                        }
+                        { headerSettings.header && getBackButtonWeb() }
                         { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
                         </Row> 
                         <Row className="pr-4">
@@ -200,104 +191,55 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </Row>
                 </View>
             </View>
-
         )}
     };
 
-    const viewRef = useRef(null);
-
-    const renderHeader =  useCallback(() => {
+    const renderHeader =  useCallback((tabBarObj) => {
         const d = 200;
-        let menuHeight = 48;
 
-        const tabBarObj = renderTabBar();
-        if (!tabBarObj)
-            menuHeight = 0; 
-
-        const animatedStyleA = useAnimatedStyle(() => {
-            const opacityValue = withTiming(scroll.value, { duration: d });
-            
-            return {
-                opacity: opacityValue,
-                display: opacityValue === 0 ? 'none' : 'flex',
-                height: withTiming(headerMaxHeight.value * scroll.value, { duration: d }),
-            };
-        });
-
-        const animatedStyleB = useAnimatedStyle(() => {
-            const opacityValue = withTiming(1 - scroll.value, { duration: d });
-            return {
-                opacity: opacityValue,
-                display: opacityValue === 0 ? 'none' : 'flex',
-                height: withTiming(headerMinHeight.value * (1 - scroll.value), { duration: d }),
-            };
-        });
         const animatedStyle5 = useAnimatedStyle(() => {
+            const opacityValue = withTiming(scrollValue.value, { duration: d });
             return {
-                top: withTiming((scroll.value || window.innerWidth >0) > 0 ? (windowWidth > 1024 ? 63: 0): 0, { duration: d }),
-                opacity:1
+                opacity:opacityValue
             };
         });
 
-
-        const contentContainerStyle = useAnimatedStyle(() => {
-            const baseHeight = scroll.value === 1 ? headerMaxHeight.value : headerMinHeight.value;
-            const height = Math.max(baseHeight - 300 + menuHeight, 0);
+        const animatedStyle6 = useAnimatedStyle(() => {
+            const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
-                height,
+                opacity:opacityValue
             };
         });
 
-        const parentAnimatedStyle = useAnimatedStyle(() => {
-            return {
-                height: withTiming(scroll.value == 1 ? headerMaxHeight.value : headerMinHeight.value, { duration: d }),
-            };
-        });
-
-        if (!header){
+       /* if (!header){
             if (tabBarObj)
                 return <>
                     <View className="w-full h-12 lg:h-12"></View>
-                    <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 50  }, animatedStyle5]}>{tabBarObj}</Animated.View>
-
-                    </>
-        }
-
-
-        const handleHeaderMaxLayout = useCallback((event) => {
-            headerMaxHeight.value = event.nativeEvent.layout.height;
-            headerHeight.value = headerMaxHeight.value ;
-           
-        });
-
-        const handleHeaderMinLayout = useCallback((event) => {
-            headerMinHeight.value = event.nativeEvent.layout.height;
-        });
+                    <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
+                </>
+        }*/
 
         return (
             <>
-                <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex:50  }, animatedStyle5]}  ref={viewRef} >
-                    <Animated.View className="w-full" style={parentAnimatedStyle}>
-                        <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'  }, animatedStyleA]}>
-                            <View onLayout={handleHeaderMaxLayout}>
-                                {header}
+                <Animated.View  style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40 }, animatedStyle6]}>
+                    {smallHeader}
+                    {tabBarObj}
+                </Animated.View>
+                <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex:50  }, animatedStyle5]}  >
+                    <View className="w-full" >
+                        <View style={[{ width: '100%',  overflow: 'hidden'  }]}>
+                            <View>
+                                {header}     
                             </View>
-                        </Animated.View>
-                        <Animated.View style={[{ width: '100%', position: 'absolute', overflow: 'hidden'}, animatedStyleB]}>
-                            <View  onLayout={handleHeaderMinLayout}>
-                                {smallHeader}
-                            </View>
-                        </Animated.View>
-                    </Animated.View>
+                        </View>
+                    </View>
                     <View >
                         {tabBarObj}
                     </View>
                 </Animated.View>
-                <Animated.View style={[{ width: '100%'}, contentContainerStyle]}></Animated.View>
-                
             </>
         );
-    }, [scroll, index, windowWidth]);
+    }, [windowWidth]);
 
     const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth, rqtStatus]);  
 
@@ -315,8 +257,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             />
         );
     });
-
-    const headerObj = renderHeader();
+    const tabBarObj = renderTabBar();
+    const headerObj = renderHeader(tabBarObj);
 
     const TabScene = ({ route, width, status }) => {
 
@@ -327,13 +269,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
         if (route.inited){
             const dataItems = route.data
-            console.log('---', hasNextPage,  isFetchingNextPage, dataItems.length, rqtStatus)
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <>
                 <CurRouter route={route} exitingFunction={() => exitingFunction(route.index)}  />
-                <Row style={{ paddingTop: header ? (width > 1024 ? offsetTop : offsetTop - 50) : 0 }} className="mb-4"> 
-                    <View className={isRightCol? 'flex-auto w-2/3': 'w-full'}>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
+                    <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full pt-4'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
                             data={dataItems}
@@ -350,7 +291,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             }
                         /> : rqtStatus != 'success' ? Preload : <></>}
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-1/3 mt-4 ">
+                    {isRightCol && <View className="hidden xl:block w-1/3 ">
                         <UniList
                             no_scroll
                             renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
@@ -368,8 +309,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             setNumColumns(getNumCols(containerWidth));
     };
 
-    const windowHeight = useWindowDimensions().height;
-    //onWheel={handleWheel} 
     return (
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}

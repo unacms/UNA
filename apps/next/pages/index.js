@@ -11,7 +11,7 @@ export default function Path (props) {
 }
 
 export async function getServerSideProps(context) {
-    const cookies = context.req.headers.cookie;
+    /*const cookies = context.req.headers.cookie;
     const data = await getData(
         context.params?.path?.join('/'), 
         env('UNA_API_KEY'), 
@@ -27,5 +27,8 @@ export async function getServerSideProps(context) {
     );
     if (200 !== parseInt(data.props.status))
         context.res.statusCode = parseInt(data.props.status)
-    return data;
+    return data;*/
+    context.res.writeHead(302, { Location: '/home' });
+    context.res.end();
+    return { props: {} }; // props is required by Next.js
 }

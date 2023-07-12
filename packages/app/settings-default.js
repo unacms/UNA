@@ -28,8 +28,8 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
     },
     cache: {
-        page: true,
-        list: true,
+        page: false,
+        list: false,
         compress: true
     },
     feed: {
@@ -124,7 +124,7 @@ export const settingsDefault = {
     menu_items: {
         menu_top: [
             { name: 'home',title: 'Home', link: 'home', icon: 'home'},
-            { name: 'friends', title: 'Connections', link: 'friends', icon: 'Users' }, 
+            { name: 'friends', title: 'Connections', link: 'friends', icon: 'Users', nonlogged:false }, 
             { name: 'posts-home', title: 'Posts', link: 'posts-home', icon: 'ChatCenteredText' }, 
             { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'UsersFour' }, 
             { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
@@ -285,6 +285,7 @@ export const settingsDefault = {
             blocks: {
                 main: { name: 'bx_messenger:get_main_messenger_page', showTitle: false },
             },
+            headerSettings: { offset: false, header: false }
         },
         dashboard: {
             layout: 'dashboard',
@@ -347,6 +348,7 @@ export const settingsDefault = {
                 col2: { name: 'bx_events:entity_info', showTitle: false, showBg: false, perLine: 1, sidebar: true },
                 col3: { name: 'bx_events:get_block_view_profile', showTitle: false, showBg: false, perLine: 1, sidebar: true },
             },
+            
         },
         'event-fans': {
             layout: 'profile',
@@ -361,7 +363,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false },
             },
             icon: 'File',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { offset: false, header: false }
         },
         'posts-popular': {
             layout: 'blackbox',
@@ -550,18 +552,21 @@ export const settingsDefault = {
                 col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
+            headerSettings: { offset: false, header: false }
         },
         'persons-profile-friends': {
             layout: 'profile',
             blocks: {
                 col1: { name: 'system:connections_table', showTitle: false, showBg: false }, 
             },
+            headerSettings: { offset: false, header: false }
         },
         'persons-profile-subscriptions': {
             layout: 'profile',
             blocks: {
                 col1: { name: 'system:subscriptions_table', showTitle: false, showBg: false },
             },
+            headerSettings: { offset: false, header: false }
         },
         'persons-profile-info': {
             layout: 'profile',
@@ -569,6 +574,7 @@ export const settingsDefault = {
                 col0: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
                 col1: { name: 'bx_persons:entity_info_full', showTitle: false, showBg: false },
             },
+            headerSettings: { offset: false, header: false }
         },
         'notifications-view': {
             layout: 'notif',

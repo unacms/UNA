@@ -10,7 +10,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { appSetting, getHeaderSettings, getBackButtonWeb } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 
@@ -190,10 +190,7 @@ export default function (props) {
                 </View>
               </Link>
             }
-              { headerSettings.backButton  && <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => router.back()} >
-              <Icon icon="left" width={24} height={24} />
-              </Pressable>
-              }
+              { headerSettings.backButton  && getBackButtonWeb() }
               { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
         </Row>
 
@@ -312,7 +309,7 @@ export default function (props) {
             <Row className='relative flex-row  mx-auto  '>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
-                  !item.link.includes('javascript') && (
+                (currentUser || (!currentUser && item.nonlogged != false)) && (
                     <Link href={item.link} key={`menu-${index}`}>
                       <Button
                         variant="text"

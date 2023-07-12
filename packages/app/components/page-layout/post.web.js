@@ -2,7 +2,7 @@ import { View, Row, Pressable} from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from 'next/router';
 import { useState, useRef} from 'react';
-import { stripTags } from '../../lib/util';
+import { stripTags, getBackButtonWeb  } from '../../lib/util';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
@@ -83,9 +83,7 @@ export default function PageLayout(props) {
         if(windowWidth < 1024){
             header = (
                 <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark backdrop-blur   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row'>
-                    <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full  justify-center items-center mr-3" onPress={() => router.back()}  >
-                <Icon icon="left" width={24} height={24} />
-                </Pressable>
+                    {getBackButtonWeb()}
                     {aItems[actionsItemIndex].data}
                 </Row></>
             );
