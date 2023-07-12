@@ -8,11 +8,12 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X, UserCirclePlus, RocketLaunch,
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, ChatCenteredText, Clipboard, CirclesFour,FileAudio, 
-	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire
+	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows
 }  
 from "phosphor-react-native";
 
 export const IconSet = {
+	Rows: Rows,
 	Fire: Fire,
 	UserPlus: UserPlus,
 	ChatCircle: ChatCircle,

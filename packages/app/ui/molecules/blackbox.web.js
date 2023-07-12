@@ -8,7 +8,6 @@ import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, storageSet } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
-import Loading from 'app/ui/atoms/loading'
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useRouter } from 'next/router';

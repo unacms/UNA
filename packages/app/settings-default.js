@@ -670,7 +670,7 @@ export const settingsDefault = {
     },
     menu: {
         left: [
-            { title: 'Profile', link: '/view-persons-profile/dr-andrey-yasko-phd', icon: 'user' },
+            { title: 'Profile', link: '/view-persons-profile/dr-andrey-yasko-phd', icon: 'User' },
             { title: 'Explore', link: '/explore', icon: 'Compass' },
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
@@ -687,7 +687,7 @@ export const settingsDefault = {
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
-            {key: '/tab1', title: 'Friends', url: '/friend-suggestions',icon: 'UserPlus'},
+            {key: '/tab1', title: 'Friends', url: '/friend-suggestions', icon: 'Users'},
             {key: '/tab2', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
             {key: '/tab3', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
             {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'app-notifications'},
