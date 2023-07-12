@@ -229,47 +229,18 @@ var pageSkeletons = {
   ),
   blackbox: getBlackBox(),
   profile: (
-    <View>
-      Andrew profile skeleton
-      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-        <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-          <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
-            <View className="gap-y-1">
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-            </View>
+    <View className='flex-col relative'>
+      
+      <View className="bg-neutral-500/5 w-full aspect-3/1 max-w-screen-2xl mx-auto rounded-b-xl"></View>
+      <View className="w-full mx-auto px-8 -translate-16 sm:-translate-y-24  max-w-screen-2xl flex-row gap-x-3">
+          <View className="rounded-full absolute right-4 sm:relative bg-neutral-200 dark:bg-neutral-800 border-4 sm:border-8 border-neutral-100 dark:border-neutral-800 h-32 w-32 sm:h-48 sm:w-48"></View>
+          <View className="flex-auto mt-28 sm:mt-auto mb-4 gap-y-4 ">
+            
+              <View className="h-6 sm:h-8 w-40 sm:w-48 bg-neutral-500/20 rounded-full"></View>
+              <View className="h-4 w-24 bg-neutral-500/10 rounded-full "></View>
+            
           </View>
         </View>
-      </View>
-      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-        <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-          <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
-            <View className="gap-y-1">
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View className="bg-neutral-500/5 @xl/cell:rounded-lg p-4 @xl/cell:mx-4 mt-[1px] @xl/cell:mt-4">
-        <View className="animate-pulse flex gap-3">
-          <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-          <View className="flex-1 gap-y-2 py-1">
-            <View className="h-5 w-1/2 bg-neutral-600/20 rounded"></View>
-            <View className="gap-y-1">
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-              <View className="h-3 bg-neutral-600/20 rounded"></View>
-            </View>
-          </View>
-        </View>
-      </View>
     </View>
   ),
 }
