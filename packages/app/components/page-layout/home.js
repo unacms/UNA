@@ -17,6 +17,7 @@ export default function PageLayout(props) {
   const [renderBlock, setRenderBlock] = useState(false)
   let { currentUser, setCurrentUser } = useCurrentUser()
   const [feedType, setFeedType] = useState(0)
+  const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
 
   useEffect(() => {
     if (isWeb) {
@@ -74,7 +75,6 @@ export default function PageLayout(props) {
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>
                 <Row className="p-4  gap-x-2  w-full">
-                  
                   <Pressable  className=" my-auto items-center" onPress={() => {setFeedType(0)}}>
                     <Button fullWidth={true} id="tab" startDecorator="MagicWand"  variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='For You'   />
                   </Pressable>
@@ -84,22 +84,28 @@ export default function PageLayout(props) {
                   <Pressable  className=" my-auto items-center" onPress={() => {setFeedType(2)}}>
                     <Button fullWidth={true} id="tab" startDecorator="Fire" variant={feedType == 2 ? 'outline': "text"} rounded size='sm' title='Hot'   />
                   </Pressable>
-                  <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                    <Button id="tab" startDecorator="Rows" variant="outline"  size='sm'   />
-                    <Button id="tab" startDecorator="ListBullets" variant="text"  size='sm'   />
-
-                  </Row>
+                  {appSetting('feed', 'show_selector_view') &&
+                    <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                      <Button startDecorator="Rows" variant={unitMode == '' ? 'outline': "text"} size='sm' onPress={() => {setUnitMode('')}}  />
+                      <Button startDecorator="ListBullets" variant={unitMode == 'small' ? 'outline': "text"}  size='sm' onPress={() => {setUnitMode('small')}}  />
+                    </Row>
+                  }
                 </Row> 
                 <View className={feedType == 0 ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.public_feed_form} />
-                    <BlockByName data={props.data} name={props.blocks.public_feed} />
+                    <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
                   </LayoutDataContext>
                 </View>
                 <View className={feedType == 1 ? '' : ' absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.account_feed_form} />
-                    <BlockByName data={props.data} name={props.blocks.account_feed} />
+                    <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
+                  </LayoutDataContext>
+                </View>
+                <View className={feedType == 2 ? '' : ' absolute z-0 invisible top-full'}>
+                  <LayoutDataContext>
+                    <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode}  />
                   </LayoutDataContext>
                 </View>
                 </> 

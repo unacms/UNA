@@ -33,7 +33,7 @@ export const settingsDefault = {
         compress: true
     },
     feed: {
-        show_selector_view: false,
+        show_selector_view: true,
         default_view: '',
         show_html: false,
         show_multi: true,
@@ -309,6 +309,8 @@ export const settingsDefault = {
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
+                hot_feed: {name: 'bx_timeline:get_block_view_hot', showTitle: false, showBg: false },
+
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
                 home2: { name: 'static:home2', showTitle: false, showBg: false },
                 home: { name: 'static:home', showTitle: false, showBg: false },

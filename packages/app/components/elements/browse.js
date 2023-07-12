@@ -13,6 +13,7 @@ import { getSkeleton } from 'app/lib/hooks/skeleton';
 
 export default function ElementBrowse(props) {
 
+    console.log(props)
     let storageKeyValue = storageKey(props.data.request_url)
     const isFirstMount = useRef(true);
     let uniRef = useRef();
@@ -34,7 +35,8 @@ export default function ElementBrowse(props) {
         defParams.moduleName = data.module ? data.module : '';
 
     /* unit mode & change unit mode */
-    const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
+    const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
+    console.log('unitMode', unitMode);
     
     if (isFirstMount?.current){
         if (appSetting('cache', 'list')){
@@ -72,11 +74,6 @@ export default function ElementBrowse(props) {
             setNumColumns(getNumCols(containerWidth));
     };
 
-
-    let modeItems = [
-        {label: 'Full', value: ''},
-        {label: 'Mini', value: 'small'}
-    ];
 
     let hOffset = 0;
 
@@ -154,13 +151,6 @@ export default function ElementBrowse(props) {
 
     return (
         (data.data.length > 0 || true) && <View className='w-full h-full' ><CurRouter exitingFunction={exitingFunction}  />
-            { (data.unit == 'feed' && appSetting('feed', 'show_selector_view')) && <View className='h-12 items-end z-50'><Dropdown 
-                labelField="label"
-                valueField="value"
-                onChange={setUnitMode}
-                value={unitMode}
-                data={modeItems}
-            /></View>}
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <UniList 
                     numColumns={numColumns} 
