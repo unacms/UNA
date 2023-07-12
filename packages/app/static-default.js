@@ -178,15 +178,16 @@ export const staticDefault = {
 
     home2: (
       <>
-        <View className="mx-2  mt-4  overflow-hidden flex-col rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
-          <Text className="text-xl py-3 px-4 font-bold text-neutral-800 dark:text-neutral-200 ">
-                Welcome!
+        <View className=" p-4 overflow-hidden flex-col space-y-2 ">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-xl  font-bold text-neutral-800 dark:text-neutral-200 ">
+                Your Profiles
               </Text>
+              <Button id="menu" startDecorator="DotsThreeOutline" variant='outline' rounded size='sm'   />
+          </View>
            
-          <Text className="text-base px-4 mb-4 text-neutral-800 font-semibold dark:text-neutral-200 ">
-            Neo.so is a community of 12 active members.
-          </Text>
-          <Text className="text-sm px-4 mb-4 text-neutral-600 dark:text-neutral-400 ">
+          
+          <Text className="text-sm text-neutral-600 dark:text-neutral-400 ">
             Powered by NEO - the universal app for UNA platform, built with React, Next, ReactNative and Expo. Open-source. MIT license. Developed by Yasko.Studio.
           </Text>
          

@@ -58,7 +58,7 @@ export function Story(props) {
     });
 
     return (
-        <View className=" 
+        <View className=" hidden
             overflow-hidden sm:rounded-lg  
             bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border 
             border-bordercolorcard dark:border-bordercolorcard-dark 
@@ -85,10 +85,10 @@ export function Story(props) {
                 </View>
             </Modal>
         <ScrollView horizontal={true}>
-            <Row className='gap-x-2 p-2'>
+            <Row className='gap-x-2.5 p-4'>
             {images.map((image, index) => (
                   <Pressable key={'slide' + index} onPress={() => setShowImage(true)}>
-                    <View className="w-28 h-48 rounded bg-primary/20 overflow-hidden">
+                    <View className="w-28 h-48 rounded-md bg-primary/20 overflow-hidden">
                     <View className="w-48 h-48 ">
                         <Image
                                width={192}

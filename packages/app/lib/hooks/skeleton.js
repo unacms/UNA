@@ -49,23 +49,16 @@ var blockSkeletons = {
     'one_column_browse': <>
     {items.map((item, index) => (<View key={'one_column_browse' + index}>
                 
-                    <View className=" p-2 flex-row  
-                    group duration-200 overflow-hidden rounded-md  
-                    active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                     max-w-5xl self-center w-full  ">  
-                        <View className="w-10 h-10 mr-2 rounded-full flex-none ">
-                            Andrew profile icon
+                    <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">  
+                        <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
+                        <View className='h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20'></View>    
+                        <View className='py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  '>
+                                <View className='h-4 my-0.5 w-16  rounded-full   bg-neutral-500/20'></View>    
+
                         </View>
-                        <View className="flex-auto my-auto ">
-                            <View className='flex-row justify-between'>
-                                <View className="justify-center">
-                                    <Text className='text-base mr-2 font-semibold text-neutral-900 dark:text-neutral-100'>Andrew profile name</Text>
-                                      
-                                </View>
-            
-                                <View className=''></View>
-                            </View>    
+                        <View className='py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  '>
+                                <View className='h-4 my-0.5 w-4  rounded-full   bg-neutral-500/20'></View>    
+
                         </View>
                     </View>
              
