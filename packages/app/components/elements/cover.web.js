@@ -38,8 +38,8 @@ function CoverMenuSmall(props) {
       title="Test"
     >
       {[
-        <Button variant="text" rounded startDecorator="DotsThreeOutline" />,
-        <Menu
+        <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutline" />,
+        <Menu key="menu"
           {...props}
           displayType="button"
           params={{

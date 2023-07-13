@@ -30,7 +30,7 @@ export const settingsDefault = {
     cache: {
         page: false,
         list: false,
-        compress: true
+        compress: false
     },
     feed: {
         show_selector_view: true,
@@ -356,7 +356,7 @@ export const settingsDefault = {
         'event-fans': {
             layout: 'profile',
             blocks: {
-                col1: { name: 'bx_events:fans_table', showTitle: false, showBg: false, perLine: 3 },
+                col1: { name: 'bx_events:fans_table', showTitle: false, showBg: false },
             },
         },
         //############ POSTS PAGES ############
@@ -510,7 +510,7 @@ export const settingsDefault = {
         'group-fans': {
             layout: 'profile',
             blocks: {
-                col1: { name: 'bx_groups:fans_table', showTitle: false, showBg: false, perLine: 3 },
+                col1: { name: 'bx_groups:fans_table', showTitle: false, showBg: false },
             },
         },
         //############ CHANNELS PAGES ############
