@@ -97,7 +97,7 @@ function DefaultUnit(data) {
          
           <View className="flex-auto  justify-end flex-row gap-x-2 my-auto">
             <Button title="Follow" size="sm" solid rounded variant="outline" />
-            {aMenuManageItems.length > 0 && 
+            {aMenuManageItems?.length > 0 && 
               <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
                 <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
               </DropdownMenu>
