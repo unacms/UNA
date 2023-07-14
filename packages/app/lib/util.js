@@ -429,7 +429,9 @@ export function genRnd(length) {
 }
 
 export function getURI(url) {
-    
+    if(!url || !url.length || typeof(url) !== 'string')
+        return false;
+
     let questionMarkIndex = url.indexOf("?");
 
     if (questionMarkIndex !== -1) {

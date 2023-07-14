@@ -3,6 +3,7 @@ import Link from '../../ui/atoms/link'
 import Time from '../../ui/atoms/time'
 import Profile from '../../ui/molecules/profile'
 import { useState, useMemo } from 'react'
+import { useCurrentUser } from 'app/context/user'
 import Html from '../../ui/atoms/html'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
@@ -10,11 +11,14 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from '../menu'
-import { truncateHTML, stripTags } from 'app/lib/util'
+import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import React from 'react'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 
 function DefaultUnit(data) {
+  let { currentUser, setCurrentUser } = useCurrentUser();
+
   const [showFull, setShowFull] = useState(false)
   const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
 
@@ -43,6 +47,28 @@ function DefaultUnit(data) {
 
   let bIsLong =
     data?.content?.text && stripTags(sShort.trim()) != stripTags(sLong.trim())
+
+  const handleMenuManageSelect = (oItem, event) => {
+    switch(oItem.name) {
+      case 'item-edit':
+        console.log('TODO: Perfom item edit.');
+        break;
+
+      case 'item-delete':
+        console.log('TODO: Perfom item delete.');
+        break;
+    }
+  }
+
+  const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items).map((aItem) => {
+    return {
+        id: aItem.id ? aItem.id : aItem.name,
+        name: aItem.name,
+        link: aItem.link,
+        title: aItem.title
+    };
+  }) : [];
+
   return (
     <View className="max-w-5xl w-full mx-auto ">
       <View
@@ -70,9 +96,12 @@ function DefaultUnit(data) {
           />
          
           <View className="flex-auto  justify-end flex-row gap-x-2 my-auto">
-          <Button title="Follow" size="sm" solid rounded variant="outline" />
-
-            <Button startDecorator="DotsThreeOutline" size="sm"  rounded variant="outline" />
+            <Button title="Follow" size="sm" solid rounded variant="outline" />
+            {aMenuManageItems.length > 0 && 
+              <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
+                <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
+              </DropdownMenu>
+            }
           </View>
         </View>
 
