@@ -229,8 +229,8 @@ export default function ElementLikes(oProps) {
                 sUsers = getSkeleton();
 
             sCounterButton = (
-                <Animated.View style={indicatorStyle}>
-                    <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
+                <Animated.View key="counter" style={indicatorStyle}>
+                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
                 </Animated.View>
             );
 
