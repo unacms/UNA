@@ -13,7 +13,9 @@ import { useCurrentUser } from 'app/context/user';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import dynamic from 'next/dynamic'
 import React from 'react';
-
+import { fetcher } from '../../lib/fetcher';
+import { useState } from 'react';
+import Form from 'app/components/elements/form';
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -25,6 +27,7 @@ function CarouselMemo({ aImg, b }) {
 
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
+    const [viewState, setViewState] = useState({view: ''});
 
     let level = props.level ? props.level : 0
     let lvls= props.lvls ? props.lvls : []
@@ -45,14 +48,17 @@ export default function UnitComments(props) {
     if (!data)
         return (<View></View>);
                 
-    const handleManageMenuSelect = (oItem, event) => {
+    const  handleManageMenuSelect = async (oItem, event) => {
         switch(oItem.name) {
             case 'item-edit':
-                console.log('TODO: Perfom comment edit.');
+                const result1 = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+props.module+'","object_id":'+props.data.cmt_object_id+',"action":"edit","id":'+props.data.cmt_id+'}');
+                setViewState({view: 'edited', data:result1.data.form});
                 break;
 
             case 'item-delete':
-                console.log('TODO: Perfom comment delete.');
+                console.log(props.data);
+                const result = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+props.module+'","object_id":'+props.data.cmt_object_id+',"action":"remove","id":'+props.data.cmt_id+'}');
+                setViewState({view: 'deleted'});
                 break;
         }
     }
@@ -89,6 +95,16 @@ export default function UnitComments(props) {
         );
     });
 
+    const onFormSubmit = (formData, d) => {
+        setViewState({view: ''});
+        console.log('TODO');
+    }
+
+    if (viewState.view == 'deleted')
+        return (<></>);
+
+
+
     return (
         <View className='w-full'>
            
@@ -115,7 +131,12 @@ export default function UnitComments(props) {
                             </View>
                         }
                         <View>
-                            <Html data={linkify(data.cmt_text)} />
+                            {viewState.view == 'edited' && (
+                                <><Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
+                                <View className='ml-2 mt-4'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
+                                </>
+                            )}
+                            {viewState.view != 'edited' && <Html data={linkify(data.cmt_text)} /> }
                         </View>
                         { aImg.length > 0 && <View className='w-full aspect-video mb-6'>
                                 <CarouselMemo aImg={aImg}/>

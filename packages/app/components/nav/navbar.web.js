@@ -143,7 +143,9 @@ export default function (props) {
     profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
   }
 
-  const menu_top = appSetting('menu_items', 'menu_top')
+  const menu_top = appSetting('menu_items', 'menu_top');
+  const menu_add = appSetting('menu_items', 'menu_add');
+
   const windowWidth = useWindowDimensions().width + 24;
 
   const router = useRouter();
@@ -208,10 +210,10 @@ export default function (props) {
                 </View>
                 <View className="ml-2">
                   <DropdownMenu
-                    items={menuItemsByName('add_menu', props.menu_add.items).map(
+                    items={menuItemsByName('', menu_add).map(
                       (item, index) => {
                         return (
-                          !item.link.includes('javascript') && {
+                         {
                             id: 'menu-' + index,
                             link: item.link,
                             title: item.title,

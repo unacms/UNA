@@ -36,9 +36,9 @@ function Small({ data }) {
 
 function Default({ data }) {
     return (
-        <View className="">
+        <View className="w-full">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" mt-4 u-cover" view="cover"   /></View>}              
-            <View className="mx-auto px-4 ">
+            <View className="mx-auto px-4 w-full">
                 <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>
                 <Html data={data.entry_text} />
             </View>

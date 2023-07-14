@@ -271,6 +271,17 @@ div::-webkit-scrollbar {
     .editor-height .ProseMirror{
         min-height: 150px;
     }
+    
+    .editor-height .ProseMirror P{
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    .editor-height .ProseMirror P:first-child{
+        margin-top: 0em;
+    }
+    .editor-height .ProseMirror P:last-child{
+        margin-bottom: 0em;
+    }
     .form-control-text > div:has(div.ProseMirror-focused) {
         @apply bg-backgroundinput-focus outline-none border-bordercolorinput-focus dark:border-bordercolorinput-darkfocus dark:bg-backgroundinput-darkafocus 
     }

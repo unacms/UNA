@@ -89,7 +89,6 @@ export default function Form(props) {
 
     
     const ElementForm = getFormType(name)
-
     if ('undefined' !== typeof ElementForm)
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>
     return (

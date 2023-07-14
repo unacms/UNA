@@ -28,8 +28,8 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
     },
     cache: {
-        page: false,
-        list: false,
+        page: true,
+        list: true,
         compress: false
     },
     feed: {
@@ -37,7 +37,7 @@ export const settingsDefault = {
         default_view: '',
         show_html: false,
         show_multi: true,
-        default_feed: 'public',
+        default_feed: 'account',
     },
     entry: {
         default_view: '',
@@ -123,17 +123,18 @@ export const settingsDefault = {
     },
     menu_items: {
         menu_top: [
-            { name: 'home',title: 'Home', link: 'home', icon: 'home'},
-            { name: 'friends', title: 'Connections', link: 'friends', icon: 'Users', nonlogged:false }, 
+            { name: 'home', title: 'Home', link: 'home', icon: 'home'},
+            { name: 'friends', title: 'Connections', link: 'friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: 'posts-home', icon: 'ChatCenteredText' }, 
             { name: 'persons-home', title: 'Persons', link: 'persons-home', icon: 'UsersFour' }, 
             { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
             { name: 'apps', title: 'All Apps', link: 'dashboard', icon: 'CirclesFour' }
         ],
-        add_menu: [
-            'create-post', 
-            'create-group-profile'
+        menu_add: [
+            { name: 'create-post',title: 'Create post', link: 'create-post', icon: 'ChatCenteredText'},
+            { name: 'create-group-profile',title: 'Create group', link: 'create-group-profile', icon: 'UsersThree'},
+            { name: 'create-event-profile',title: 'Create event', link: 'create-event-profile', icon: 'Calendar'},
         ],
         profile_menu: [
             'view-persons-profile',

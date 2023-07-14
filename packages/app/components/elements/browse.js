@@ -13,7 +13,6 @@ import { getSkeleton } from 'app/lib/hooks/skeleton';
 
 export default function ElementBrowse(props) {
 
-    console.log(props)
     let storageKeyValue = storageKey(props.data.request_url)
     const isFirstMount = useRef(true);
     let uniRef = useRef();
@@ -36,7 +35,6 @@ export default function ElementBrowse(props) {
 
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
-    console.log('unitMode', unitMode);
     
     if (isFirstMount?.current){
         if (appSetting('cache', 'list')){

@@ -460,3 +460,11 @@ export function menuItemsByName(name, items, url = '') {
     return items;
 }
 
+export function filterContent(dataOrig, needed) {
+    let data = JSON.parse(JSON.stringify(dataOrig));
+    for (let cell in data.elements) {
+        data.elements[cell] = data.elements[cell].filter(obj => needed.includes(obj.source));
+    }
+    return data;
+}
+

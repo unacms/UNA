@@ -77,7 +77,7 @@ export function parseData (browse, dynamicData) {
     return browse;
 }
 
-export function CommentsBrowse({browse, requestUrl, module, handleReply, addData, addItems}) {
+export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems}) {
 
     const flashListRef = useRef(null);
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -279,7 +279,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, addData
                     }
                     return (
                     <View className='mx-4' key={index}>
-                        <UnitComments {...item} view={viewMode}  handleReply={handleReply} />
+                        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} />
                     </View>
                 )}}
                 
@@ -368,7 +368,6 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
     }
 
     const { colors } = useTheme();    
-
     return ( 
         <View className={"w-full bg-neocard dark:bg-neocard-dark  border-t  border-neoborder dark:border-neoborder-dark"} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {

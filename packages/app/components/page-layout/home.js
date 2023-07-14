@@ -2,7 +2,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import { useState, useEffect } from 'react'
-import { appSetting } from 'app/lib/util'
+import { appSetting, filterContent } from 'app/lib/util'
 import LayoutDataContext from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import { BlackBox } from 'app/ui/molecules/blackbox'
@@ -16,7 +16,7 @@ export default function PageLayout(props) {
   const [isDesktop, setIsDesktop] = useState(false)
   const [renderBlock, setRenderBlock] = useState(false)
   let { currentUser, setCurrentUser } = useCurrentUser()
-  const [feedType, setFeedType] = useState(0)
+  const [feedType, setFeedType] = useState(appSetting('feed', 'default_feed'))
   const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
 
   useEffect(() => {
@@ -47,6 +47,7 @@ export default function PageLayout(props) {
           <BlockByName name={props.blocks.home} />
         </View>
       )
+      console.log(feedType);
     if (currentUser){
       let dUser = Object.assign({}, currentUser)
       dUser.url_avatar = dUser.avatar
@@ -75,14 +76,14 @@ export default function PageLayout(props) {
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>
                 <Row className="p-4  gap-x-2  w-full">
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType(0)}}>
-                    <Button fullWidth={true} id="tab" startDecorator="MagicWand"  variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='For You'   />
+                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('account')}}>
+                    <Button fullWidth={true} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
                   </Pressable>
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType(1)}}>
-                    <Button fullWidth={true} id="tab" startDecorator="Users"  variant={feedType == 1 ? 'outline': "text"} rounded size='sm' title='Following'   />
+                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('public')}}>
+                    <Button fullWidth={true} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                   </Pressable>
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType(2)}}>
-                    <Button fullWidth={true} id="tab" startDecorator="Fire" variant={feedType == 2 ? 'outline': "text"} rounded size='sm' title='Hot'   />
+                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('hot')}}>
+                    <Button fullWidth={true} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                   </Pressable>
                   {appSetting('feed', 'show_selector_view') &&
                     <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
@@ -91,19 +92,20 @@ export default function PageLayout(props) {
                     </Row>
                   }
                 </Row> 
-                <View className={feedType == 0 ? '' : 'w-full absolute z-0 invisible top-full'}>
-                  <LayoutDataContext>
-                    <BlockByName data={props.data} name={props.blocks.public_feed_form} />
-                    <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
-                  </LayoutDataContext>
-                </View>
-                <View className={feedType == 1 ? '' : ' absolute z-0 invisible top-full'}>
+                <View className={feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.account_feed_form} />
                     <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
                   </LayoutDataContext>
                 </View>
-                <View className={feedType == 2 ? '' : ' absolute z-0 invisible top-full'}>
+                <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
+                  <LayoutDataContext>
+                    <BlockByName data={props.data} name={props.blocks.public_feed_form} />
+                    <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
+                  </LayoutDataContext>
+                </View>
+               
+                <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode}  />
                   </LayoutDataContext>
@@ -143,22 +145,13 @@ export default function PageLayout(props) {
       icon: '',
     }
   })
-  let data = JSON.parse(JSON.stringify(props.data));
-  let data2 = JSON.parse(JSON.stringify(props.data));
-  if (!isWeb) {
-    for (let cell in data.elements) {
-      if (!data.elements[cell].some(obj => obj.source === 'bx_timeline:get_block_view_home')) {
-        delete data.elements[cell];
-      }
-    }
 
-    for (let cell in data2.elements) {
-      if (!data2.elements[cell].some(obj => obj.source === 'bx_timeline:get_block_view_account')) {
-        delete data2.elements[cell];
-      }
-    }
     
-  }
+    let dataHome = filterContent(props.data, ['bx_timeline:get_block_post_home', 'bx_timeline:get_block_view_home'])
+    let dataAccount = filterContent(props.data, ['bx_timeline:get_block_post_account', 'bx_timeline:get_block_view_account'])
+    let dataHot = filterContent(props.data, ['bx_timeline:get_block_view_hot'])
+    
+
 
   let menu = {
     object: 'search',
@@ -180,32 +173,47 @@ export default function PageLayout(props) {
           <>
           { appSetting('feed', 'show_multi') ? <>
                 <Row className="pl-4 gap-x-1 ">
-                  <Pressable  className=" items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType(0)}}>
-                    <View C>
-                    <Button fullWidth={false} id="tab" variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='Public'   />
+                <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('account')}}>
+                  <View>
+                  <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 1 ? 'outline': "text"} rounded size='sm' title='Following'   />
                     </View>
                   </Pressable>
-                  <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType(1)}}>
+                  <Pressable  className=" items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('public')}}>
+                    <View >
+                    <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='For You'   />
+                    </View>
+                  </Pressable>
+                  
+                  <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('hot')}}>
                   <View>
-                    <Button fullWidth={false} id="tab" variant={feedType == 1 ? 'outline': "text"} rounded size='sm' title='Account'   />
+                  <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 2 ? 'outline': "text"} rounded size='sm' title='Hot'   />
                     </View>
                   </Pressable>
                 </Row> 
-                { feedType == 0 && <View className={feedType == 0 ? '' : ' h-full'}>
+                { feedType == 'public' && <View className={feedType == 0 ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
-                data={data} 
+                data={dataHome} 
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View>}
-                { feedType == 1 && <View className={feedType == 1 ? '' : ' h-full'}>
+                { feedType == 'account' && <View className={feedType == 1 ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
                 menu={menu} 
-                data={data2} 
+                data={dataAccount} 
+                blocks={props.blocks}
+            /></LayoutDataContext>
+                </View> }
+                { feedType == 'hot' && <View className={feedType == 2 ? '' : ' h-full'}>
+                <LayoutDataContext><BlackBox 
+                minHeaderHeight={0} 
+                isHideDefaultHeader={false} 
+                menu={menu} 
+                data={dataHot} 
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View> }
