@@ -19,6 +19,8 @@ export default function Unit(props) {
     switch (module) {
         case 'bx_groups':
             return groupUnit();
+        case 'bx_events':
+            return eventUnit();    
 
         case 'bx_persons':
             return (
@@ -35,6 +37,50 @@ export default function Unit(props) {
     }
 
     function groupUnit() {
+        let sMeta = <></>;
+        if(data?.meta)
+            sMeta = (
+                <View className="pb-2">
+                    <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
+                </View>
+            );
+
+        return (
+            
+                
+            <View className="
+                shadow-sm hover:shadow-lg active:shadow-none 
+                m-4            
+                group duration-200  rounded-lg 
+                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                    overflow-hidden
+               justify-between 
+                active:translate-y-0.5 
+                
+                ">
+                    <Link href={data.url} emulate={true}> 
+                    <View>  
+                    <View className=''>  
+                    {data.cover &&
+                            <View className="w-full bg-neutral-500/20  aspect-video overflow-hidden items-center absolute" >
+                                <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
+                            </View>
+                        } 
+                        {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
+                        <View className=" aspect-video  w-full items-center justify-center">
+                        </View>
+                        </View>
+                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 py-2 text-base font-bold text-neutral-800 dark:text-neutral-100 text-center h-12">{data.group_name}</Text></Link>
+                        {sMeta}
+                    </View>
+                </Link>
+            </View>
+            
+        )
+    }
+
+    function eventUnit() {
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (

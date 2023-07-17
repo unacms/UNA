@@ -97,7 +97,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     useEffect(() => {
         const handleScroll = () => {
-            console.log(window.scrollY);
             if (window.scrollY > offset && scrollValue.value != 0){
                 scrollValue.value = 0;
             }

@@ -243,6 +243,8 @@ export const settingsDefault = {
           'profile-fan-remove',
           'profile-subscribe-add',
           'profile-subscribe-remove',
+          'edit-group-profile',
+          'delete-group-profile',
         ],
         bx_events_view_submenu: [
             'view-event-profile', 
@@ -261,6 +263,8 @@ export const settingsDefault = {
           'profile-fan-remove',
           'profile-subscribe-add',
           'profile-subscribe-remove',
+          'edit-event-profile',
+          'delete-event-profile',
         ],
         bx_channels_submenu: {
             name: 'Channels',
