@@ -112,6 +112,9 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         setCommentData(Object.assign({}, commentData, params));
     } 
 
+    const handleDelete =  () => {
+        addCommentData({ total_count: commentData.total_count - 1 })
+    }
 
     function prepareUrl (params) {
         let def = {'module': commentData.moduleName, 'object_id': commentData.objectId, 'start_from': commentData.startFrom, 'order_way': commentData.orderWay};
@@ -123,7 +126,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             let browse = parseData(commentData.listData, addData);
             
             let i = Object.keys(addData?.data?.browse.data.data[0])[0].replace('i', '');
-            addCommentData({ listData: browse,total_count: commentData.total_count + 1, lastInserted:i })
+            addCommentData({ listData: browse, total_count: commentData.total_count + 1, lastInserted:i })
         }
     }, [addData]);
 
@@ -209,8 +212,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     const dataArrayRef = useRef([]);
 
     const cb = (data) => {
-        if (currentUser && currentUser.id != data.author_id){
-            let k = JSON.parse(data);
+        let k = JSON.parse(data);
+        if (currentUser && currentUser.id != k.author_id){
             if (!dataArrayRef.current.includes(k.id)) {
                 dataArrayRef.current.push(k.id);
             }
@@ -279,7 +282,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
                     }
                     return (
                     <View className='mx-4' key={index}>
-                        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} />
+                        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                     </View>
                 )}}
                 
@@ -292,9 +295,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
                   }
             />
             <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
-           
         </>
-  
     )
 }
 

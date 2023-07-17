@@ -80,6 +80,7 @@ export default function UnitComments(props) {
             case 'item-delete':
                 const result = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+props.module+'","object_id":'+props.data.cmt_object_id+',"action":"remove","id":'+props.data.cmt_id+'}');
                 setViewState({view: 'deleted'});
+                props.handleDelete();
                 break;
         }
     }

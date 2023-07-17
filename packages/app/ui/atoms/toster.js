@@ -31,10 +31,14 @@ const ElementToster = forwardRef((props, ref) => {
     if (Platform.OS === 'web')
         sClassName = 'fixed top-16 left-0 w-full items-center z-50';
 
+    let sClassName2 = 'w-1/2 items-center';
+    if (Platform.OS === 'web')
+        sClassName2 = 'items-center';        
+
     return (
         <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>
             <Animated.View style={indicatorStyle} >
-                <View className='w-1/2 items-center'>
+                <View className={sClassName2}>
                     <Button variant="primary" title={props.title} size={props.size} rounded onPress={props.onPress} />
                 </View>
             </Animated.View>
