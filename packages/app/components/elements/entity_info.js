@@ -41,6 +41,12 @@ export default function ElementEntityInfo({data}) {
             case 'textarea':      
                 return <Html data={(a.values ? a.values[a.value]: a.value)} />  
 
+            case 'datepicker':  
+                var birthDate = new Date( a.value);
+                var ageDifMs = Date.now() - birthDate.getTime();
+                var ageDate = new Date(ageDifMs); 
+                return <Text className=' text-neutral-800 text-base dark:text-neutral-200'>{Math.abs(ageDate.getUTCFullYear() - 1970)}</Text>
+                
             default:
                 return <Text className=' text-neutral-800 text-base dark:text-neutral-200'>{a.value}</Text>
         }

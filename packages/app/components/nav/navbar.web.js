@@ -147,7 +147,6 @@ export default function (props) {
   const menu_add = appSetting('menu_items', 'menu_add');
 
   const windowWidth = useWindowDimensions().width + 17;
-  console.log(useWindowDimensions().width);
 
   const router = useRouter();
 

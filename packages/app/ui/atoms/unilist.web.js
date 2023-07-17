@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { Dimensions } from 'react-native';   
 import { storageSet, storageGet , appSetting} from 'app/lib/util'
 import  CurRouter from "app/ui/atoms/router";
+import { useEffect } from 'react'
 
 export default function UniList(props) {
     
@@ -53,25 +54,30 @@ export default function UniList(props) {
             }
             else{
                 if (window)
-                storageSet('ls', rest.storagekey, window.scrollY);
+                    storageSet('ls', rest.storagekey, window.scrollY);
             }
         }
     };
 
     let parsedRestoreState = {};
-    if (rest.storagekey && appSetting('cache', 'list')){
-        let restoreState =  storageGet('ls', rest.storagekey);
-        if (!isNaN(parseFloat(restoreState))){
-            setTimeout(() => {
-                window.scrollTo({
-                    top: restoreState,
-                }); 
-            }, 100);
+    useEffect(() => {
+        if (rest.storagekey && appSetting('cache', 'list')){
+            let restoreState =  storageGet('ls', rest.storagekey);
+            if (!isNaN(parseFloat(restoreState))){
+                console.log('----');
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: restoreState,
+                    }); 
+                }, 100);
+            }
+            else{
+                console.log('++++', props, restoreState);
+                parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
+            }   
         }
-        else{
-            parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
-        }   
-    }
+    }, [])
+    
 
     if (numColumns > 1){
         const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
