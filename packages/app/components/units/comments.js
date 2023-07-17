@@ -9,13 +9,13 @@ import Profile from 'app/ui/molecules/profile';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
-//import Carousel from '../../ui/molecules/carousel';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import dynamic from 'next/dynamic'
 import React from 'react';
 import { fetcher } from '../../lib/fetcher';
 import { useState } from 'react';
 import Form from 'app/components/elements/form';
+import useSWR from "swr";
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -28,6 +28,7 @@ function CarouselMemo({ aImg, b }) {
 export default function UnitComments(props) {
     let { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({view: ''});
+    const [postData, setPostData] = useState(null);
 
     let level = props.level ? props.level : 0
     let lvls= props.lvls ? props.lvls : []
@@ -48,6 +49,27 @@ export default function UnitComments(props) {
     if (!data)
         return (<View></View>);
                 
+    let { data: dynamicData, error } = useSWR(
+        postData ? ['/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+props.module+'","object_id":'+props.data.cmt_object_id+',"action":"edit","id":'+props.data.cmt_id+'}', '', postData] : null,
+        fetcher,
+        !true ? undefined : {
+            revalidateIfStale: false,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false
+        }
+    );
+
+      
+    if (dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id]){
+        data = dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id].data;
+        files = dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id].files;
+    }
+
+    const onFormSubmit = (formData, d) => {
+        setViewState({view: ''});
+        setPostData(formData);
+    }
+
     const  handleManageMenuSelect = async (oItem, event) => {
         switch(oItem.name) {
             case 'item-edit':
@@ -56,7 +78,6 @@ export default function UnitComments(props) {
                 break;
 
             case 'item-delete':
-                console.log(props.data);
                 const result = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+props.module+'","object_id":'+props.data.cmt_object_id+',"action":"remove","id":'+props.data.cmt_id+'}');
                 setViewState({view: 'deleted'});
                 break;
@@ -95,15 +116,10 @@ export default function UnitComments(props) {
         );
     });
 
-    const onFormSubmit = (formData, d) => {
-        setViewState({view: ''});
-        console.log('TODO');
-    }
+    
 
     if (viewState.view == 'deleted')
         return (<></>);
-
-
 
     return (
         <View className='w-full'>
@@ -131,19 +147,18 @@ export default function UnitComments(props) {
                             </View>
                         }
                         <View>
-                            {viewState.view == 'edited' && (
+                            {viewState.view == 'edited' ? (
                                 <><Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
                                 <View className='ml-2 mt-4'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
                                 </>
-                            )}
-                            {viewState.view != 'edited' && <Html data={linkify(data.cmt_text)} /> }
+                            ) : <Html data={linkify(data.cmt_text)} /> }
                         </View>
-                        { aImg.length > 0 && <View className='w-full aspect-video mb-6'>
+                        { (viewState.view != 'edited'  && aImg.length > 0) && <View className='w-full aspect-video mb-6'>
                                 <CarouselMemo aImg={aImg}/>
                             </View>
                         }
                     </View>
-                    <View className=' mb-1 flex-row w-full justify-between items-center'>
+                    { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser ? <View className='mr-2'>
                             <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                         </View> : <></> }
@@ -165,6 +180,7 @@ export default function UnitComments(props) {
                             }
                         </View>
                     </View>
+                    }
                 </View>
             </View>
         </View>       

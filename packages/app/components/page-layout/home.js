@@ -47,7 +47,6 @@ export default function PageLayout(props) {
           <BlockByName name={props.blocks.home} />
         </View>
       )
-      console.log(feedType);
     if (currentUser){
       let dUser = Object.assign({}, currentUser)
       dUser.url_avatar = dUser.avatar

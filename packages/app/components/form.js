@@ -1,8 +1,8 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import {getFormFieldByData} from 'app/lib/form-helpers'
+import { getFormFieldByData } from 'app/lib/form-helpers'
 
-import {componentsMap} from 'app/components/forms/_map';
+import { componentsMap } from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import {  Platform  } from 'react-native';
 
@@ -40,7 +40,7 @@ export default function Form(props) {
     const onSubmit = async d => {
 
         FeedbackHaptics('Medium')
-            
+        console.log('----------')
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);

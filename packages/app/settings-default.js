@@ -408,7 +408,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'friends': {
             layout: 'blackbox',
@@ -416,7 +416,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'follow-suggestions': {
             layout: 'blackbox',
@@ -424,7 +424,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'followers': {
             layout: 'blackbox',
@@ -432,7 +432,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'following': {
             layout: 'blackbox',
@@ -440,7 +440,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'friend-requests': {
             layout: 'blackbox',
@@ -448,7 +448,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'sent-friend-requests': {
             layout: 'blackbox',
@@ -456,7 +456,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
             },
             icon: '',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         
         //############ DISCUSSION PAGES ############

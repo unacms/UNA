@@ -15,10 +15,14 @@ import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics } from 'app/l
 import dynamic from 'next/dynamic'
 import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { fetcher } from '../../lib/fetcher';
+import Form from 'app/components/elements/form';
+import useSWR from "swr";
 
 function DefaultUnit(data) {
   let { currentUser, setCurrentUser } = useCurrentUser();
-
+  const [viewState, setViewState] = useState({view: ''});
+  const [postData, setPostData] = useState(null);
   const [showFull, setShowFull] = useState(false)
   const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
 
@@ -48,14 +52,38 @@ function DefaultUnit(data) {
   let bIsLong =
     data?.content?.text && stripTags(sShort.trim()) != stripTags(sLong.trim())
 
-  const handleMenuManageSelect = (oItem, event) => {
+    //TODO EDIT TIMELINE
+  let { data: dynamicData, error } = useSWR(
+      postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
+      fetcher,
+      !true ? undefined : {
+          revalidateIfStale: false,
+          revalidateOnFocus: false,
+          revalidateOnReconnect: false
+      }
+  );
+    
+  if (dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id]){
+      data = dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id].data;
+      files = dynamicData?.data?.browse?.data?.data[0]['i'+props.data.cmt_id].files;
+  }
+
+  const onFormSubmit = (formData, d) => {
+      setViewState({view: ''});
+      setPostData(formData);
+  }
+
+  const handleMenuManageSelect = async (oItem, event) => {
     switch(oItem.name) {
       case 'item-edit':
-        console.log('TODO: Perfom item edit.');
+        const result1 = await fetcher('/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id);
+        console.log(result1);
+        setViewState({view: 'edited', data:result1.data.form});
         break;
 
       case 'item-delete':
-        console.log('TODO: Perfom item delete.');
+        const result = await fetcher('/api.php?r=bx_timeline/delete/&params[]=' + data.id);  
+        setViewState({view: 'deleted'});
         break;
     }
   }
@@ -69,8 +97,16 @@ function DefaultUnit(data) {
     };
   }) : [];
 
+  if (viewState.view == 'deleted')
+        return (<></>);
+
   return (
     <View className="max-w-5xl w-full mx-auto ">
+      {viewState.view == 'edited' && (
+                                <><Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
+                                <View className='ml-2 mt-4'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
+                                </>
+                            )  }
       <View
         className=" 
                     mt-2  sm:mx-4 sm:mt-4  group duration-200 overflow-hidden sm:rounded-lg  
