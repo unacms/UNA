@@ -10,6 +10,7 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import { Story } from 'app/ui/molecules/stories'
 import Profile from 'app/ui/molecules/profile'
+import Link from 'app/ui/atoms/link'
 
 export default function PageLayout(props) {
   const isWeb = Platform.OS == 'web'
@@ -52,6 +53,7 @@ export default function PageLayout(props) {
       dUser.url_avatar = dUser.avatar
       dUser.url = '/dashboard'
       const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+      console.log(currentUser);
 
       return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
@@ -63,7 +65,7 @@ export default function PageLayout(props) {
                     hover:bg-neutral-500/10 active:opacity-50
                      max-w-5xl self-center  gap-x-2  ">
             <View className="w-8 h-8 translate-x-[1px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
-            <Text className='text-base my-auto flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300 animate-pulse dark:text-neutral-100'>{currentUser.display_name}</Text>
+            <Text className='text-base my-auto flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300  dark:text-neutral-100'><Link href={currentUser.url}>{currentUser.display_name}</Link></Text>
             
             
               </View>

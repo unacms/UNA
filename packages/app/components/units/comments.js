@@ -149,9 +149,10 @@ export default function UnitComments(props) {
                         }
                         <View>
                             {viewState.view == 'edited' ? (
-                                <><Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
-                                <View className='ml-2 mt-4'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
-                                </>
+                                <View className='-translate-y-6'>
+                                    <View className='ml-auto mb-2'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
+                                    <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
+                                </View>
                             ) : <Html data={linkify(data.cmt_text)} /> }
                         </View>
                         { (viewState.view != 'edited'  && aImg.length > 0) && <View className='w-full aspect-video mb-6'>
