@@ -17,9 +17,7 @@ export default function ElementEntityCover(props) {
               <View className="text-3xl pt-4 font-bold text-neutral-800 dark:text-neutral-100">
                 {data.fullname}
               </View>
-              <View>
-                <Text  className='text-base text-neutral-600 dark:text-neutral-400'>hz what this</Text>
-              </View>     
+               
             </View>
             <View className="flex-none my-auto px-4 pt-4  flex-row gap-x-2 ">
               

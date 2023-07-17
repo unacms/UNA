@@ -38,7 +38,7 @@ export default function Unit(props) {
         let sMeta = <></>;
         if(data?.meta)
             sMeta = (
-                <View className="text-center px-4 mt-4">
+                <View className="pb-2">
                     <Menu {...data.meta} displayType="mixed" params={{showVertical: true}} />
                 </View>
             );
@@ -52,7 +52,7 @@ export default function Unit(props) {
                 group duration-200  rounded-lg 
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                   border-2 border-transparent 
+                    overflow-hidden
                justify-between 
                 active:translate-y-0.5 
                 
@@ -61,16 +61,15 @@ export default function Unit(props) {
                     <View>  
                     <View className=''>  
                     {data.cover &&
-                            <View className="w-full bg-neutral-500/20 rounded-md aspect-video overflow-hidden items-center absolute" >
+                            <View className="w-full bg-neutral-500/20  aspect-video overflow-hidden items-center absolute" >
                                 <Image {...data.cover} alt={data.title} view="cover" className="u-cover" sizes={imageSizes}   />
                             </View>
                         } 
                         {!data.image &&<View className="bg-primary/10 dark:bg-primary-dark/10 absolute w-full rounded aspect-video"></View> }
-                        <View className=" aspect-video mb-4 w-full items-center justify-center">
-                           
+                        <View className=" aspect-video  w-full items-center justify-center">
                         </View>
                         </View>
-                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 text-base font-bold text-neutral-800 sm:h-12 dark:text-neutral-100">{data.group_name}</Text></Link>
+                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 py-2 text-base font-bold text-neutral-800 dark:text-neutral-100 text-center h-12">{data.group_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
