@@ -198,8 +198,8 @@ export function UnitPerson(props) {
                     <View className="w-full rounded aspect-video bg-blue-500/50" >
                     {data.cover && (
                         <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
-                        <View className="sm:mx-auto mr-3 ml-auto translate-y-14    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
-                            <Profile class url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
+                        <View className="sm:mx-auto w-min  absolute  -bottom-16 sm:left-0 sm:right-0 right-2   p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+                            <Profile  url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
                         </View></>
                         )
                     }  

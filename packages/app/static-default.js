@@ -160,18 +160,18 @@ export const staticDefault = {
     ),
     comments_empty: (
       <>
-        <View className='p-8'>
-        <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-        <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
-                                <Icon icon="ChatCircle" width={32} height={32} />
-                            </View>
-        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-        No comments yet
-        </Text>
-        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-        Be the first to share what you think
-        </Text>
-        </View>
+        <View className="p-8">
+          <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+            <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
+              <Icon icon="ChatCircle" width={32} height={32} />
+            </View>
+            <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+              No comments yet
+            </Text>
+            <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+              Be the first to share what you think
+            </Text>
+          </View>
         </View>
       </>
     ),
@@ -224,7 +224,6 @@ export const staticDefault = {
     ),
     home: (
       <View className="flex-col  ">
-       
         <View className=" w-full max-w-screen-xl mx-auto">
           <View className=" flex-col p-8  w-full md:flex-row gap-y-8 gap-x-8 duration-500   mx-auto">
             <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  flex-auto">
@@ -385,28 +384,12 @@ export const staticDefault = {
                   </Text>
                 </View>
 
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
+                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400 text-base ">
                   Work together to achieve common goals as a team.
                 </Text>
               </View>
             </View>
           </Row>
-        </View>
-
-        <View className="flex-row w-full  mb-12   ">
-          <View className="border-b  w-20 border-dashed border-neutral-100 dark:border-neutral-950  bg-gradient-to-r from-neutral-100 to-neutral-300 dark:from-neutral-950 dark:to-neutral-900 ">
-            <View className="h-2 bg-neutral-100 dark:bg-neutral-950"></View>
-          </View>
-          <View className="border-b flex-auto  border-dashed border-neutral-100 dark:border-neutral-950  bg-neutral-300 dark:bg-neutral-900 ">
-            <View className="h-2 bg-neutral-100 dark:bg-neutral-950">
-              <Text className="text-xs  mx-auto px-2 bg-neutral-100 dark:bg-neutral-950 text-neutral-600 dark:text-neutral-400 ">
-                NEO v.0.1.0
-              </Text>
-            </View>
-          </View>
-          <View className="border-b  w-20 border-dashed border-neutral-100 dark:border-neutral-950  bg-gradient-to-l from-neutral-100 to-neutral-300 dark:from-neutral-950 dark:to-neutral-900 ">
-            <View className="h-2 bg-neutral-100 dark:bg-neutral-950"></View>
-          </View>
         </View>
       </View>
     ),
