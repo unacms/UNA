@@ -1,17 +1,22 @@
 import { View, Row } from 'app/design/view';
 import { Text, H2 } from 'app/design/typography';
 import Time from '../../ui/atoms/time';
+import Html from 'app/ui/atoms/html';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function ElementEntityInfo({data}) {
 
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key];
-
-        if (a.type){
-            return <Row key={a.name}><Text className='font-bold  text-neutral-800 dark:text-neutral-200'>{a.caption}: </Text>{getValue(a)}</Row>
-        }
-        else{
-            return <Text key={a.name}>Unsupporded field type: {a.type}</Text>
+        const v = a.values ? a.values[a.value]: a.value;
+        if (v){
+            if (a.type){
+                return <><Row className='items-center ' key={a.name}>{getIcon(a)}<View className='ml-4'><Text className='font-bold text-base text-neutral-800 dark:text-neutral-200'>{a.caption}</Text></View></Row>
+                {getValue(a)}</>
+            }
+            else{
+                return <Text key={a.name}>Unsupporded field type: {a.type}</Text>
+            }
         }
     }); 
 
@@ -29,12 +34,32 @@ export default function ElementEntityInfo({data}) {
         switch (a.type) {
             case 'datetime':
                 return <Time ts={a.value}></Time>
-                break;
+
             case 'select':
-                return <Text className=' text-neutral-800 dark:text-neutral-200'>{a.values ? a.values[a.value]: a.value}</Text>
-                break;
+                return <Text className=' text-neutral-800 text-base dark:text-neutral-200'>{a.values ? a.values[a.value]: a.value}</Text>
+
+            case 'textarea':      
+                return <Html data={(a.values ? a.values[a.value]: a.value)} />  
+
             default:
-                return <Text className=' text-neutral-800 dark:text-neutral-200'>{a.value}</Text>
+                return <Text className=' text-neutral-800 text-base dark:text-neutral-200'>{a.value}</Text>
+        }
+    }
+
+    function getIcon(a)
+    {
+        switch (a.name) {
+            case 'gender':
+                return <Icon icon='plus' />
+
+            case 'birthday':
+                return <Icon icon='Student' />
+
+            case 'fullname':      
+                return <Icon icon='ArrowRight' />
+                
+            default:
+                return <Icon icon='Info' />
         }
     }
 }

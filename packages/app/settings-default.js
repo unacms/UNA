@@ -28,8 +28,8 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
     },
     cache: {
-        page: true,
-        list: true,
+        page: false,
+        list: false,
         compress: false
     },
     feed: {

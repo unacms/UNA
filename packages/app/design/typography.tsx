@@ -3,7 +3,12 @@ import { Text as NativeText, Platform, Linking, TextStyle } from 'react-native'
 import { styled, StyledProps } from 'nativewind'
 import { TextLink as SolitoTextLink, Link as SolitoLink } from 'solito/link'
 
-export const Text = styled(NativeText)
+const Text_ = styled(NativeText)
+
+export const Text = ({ children, ...rest }) => {
+  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  return <Text_ {...rest}>{correctedChildren}</Text_>;
+};
 
 /**
  * You can use this pattern to create components with default styles
@@ -13,20 +18,35 @@ export const P = styled(NativeText, 'text-base text-black my-4')
 /**
  * Components can have defaultProps and styles
  */
-export const H1 = styled(NativeText, 'text-xl lg:text-3xl font-bold my-4')
-H1.defaultProps = {
+const H1_ = styled(NativeText, 'text-xl lg:text-3xl font-bold my-4')
+H1_.defaultProps = {
+  accessibilityRole: 'header',
+}
+export const H1 = ({ children, ...rest }) => {
+  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  return <H1_ {...rest}>{correctedChildren}</H1_>;
+};
+
+const H1C_ = styled(NativeText, 'text-xl lg:text-3xl font-bold')
+H1C_.defaultProps = {
   accessibilityRole: 'header',
 }
 
-export const H1C = styled(NativeText, 'text-xl lg:text-3xl font-bold')
-H1.defaultProps = {
+export const H1C = ({ children, ...rest }) => {
+  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  return <H1C_ {...rest}>{correctedChildren}</H1C_>;
+};
+
+export const H2_ = styled(NativeText, 'text-xl font-extrabold mb-4')
+H1_.defaultProps = {
   accessibilityRole: 'header',
 }
 
-export const H2 = styled(NativeText, 'text-xl font-extrabold mb-4')
-H1.defaultProps = {
-  accessibilityRole: 'header',
-}
+export const H2 = ({ children, ...rest }) => {
+  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  return <H2_ {...rest}>{correctedChildren}</H2_>;
+};
+
 
 /**
  * This is a more advanced component with custom styles and per-platform functionality
