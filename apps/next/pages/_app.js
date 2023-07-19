@@ -27,11 +27,10 @@ function MyApp({ Component, pageProps }) {
           <QueryClientProvider client={queryClient}>
             <CurrentUserProvider>
               <Component {...pageProps} />              
-              {process.env.VERCEL && '1' == process.env.VERCEL ? <Analytics /> : null}
+              {!!process.env.NEXT_PUBLIC_ANALYTICS && <Analytics />}
             </CurrentUserProvider>
           </QueryClientProvider>
         </Provider>
-      
     </>
   )
 }
