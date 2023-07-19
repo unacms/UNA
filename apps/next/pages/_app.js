@@ -21,15 +21,13 @@ import '../../../packages/app/styles/global.css'
 function MyApp({ Component, pageProps }) {
   const queryClient = new QueryClient()
 
-  console.log(process.env);
-
   return (
     <>
         <Provider>
           <QueryClientProvider client={queryClient}>
             <CurrentUserProvider>
               <Component {...pageProps} />              
-              <Analytics />
+              {process.env.VERCEL && '1' == process.env.VERCEL ? <Analytics /> : null}
             </CurrentUserProvider>
           </QueryClientProvider>
         </Provider>
