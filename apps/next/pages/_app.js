@@ -21,6 +21,8 @@ import '../../../packages/app/styles/global.css'
 function MyApp({ Component, pageProps }) {
   const queryClient = new QueryClient()
 
+  console.log(process.env);
+
   return (
     <>
         <Provider>
