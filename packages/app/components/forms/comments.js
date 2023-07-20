@@ -1,5 +1,5 @@
 import { View, Row } from 'app/design/view'
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
@@ -22,16 +22,17 @@ export default function FormComments(props) {
     if(Platform.OS !== 'web') {
         styles = {width: windowWidth-180}
     }
-    
-
+    else{
+        styles = {width: 0}
+    }
     let prevList = Object.values(imageSource).flat();
 
-    return <View className='w-full  my-0.5'>
+    return <View className='w-full  my-0.5' >
     <Row className='w-full'>
         <View className=''>
             {getFormFieldByData(props.data.inputs['cmt_image'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
         </View>
-        <View className='  mr-2 flex-grow ' style={styles}>
+        <View className='mr-2 flex-grow' style={styles}>
             {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
             {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
