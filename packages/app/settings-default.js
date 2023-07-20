@@ -356,7 +356,7 @@ export const settingsDefault = {
                 col2: { name: 'bx_events:entity_info', showTitle: false, showBg: false, perLine: 1, sidebar: true },
                 col3: { name: 'bx_events:get_block_view_profile', showTitle: false, showBg: false, perLine: 1, sidebar: true },
             },
-            
+            headerSettings: { offset: false, header: false }
         },
         'event-fans': {
             layout: 'profile',
@@ -511,6 +511,7 @@ export const settingsDefault = {
                 col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
+            headerSettings: { offset: false, header: false }
         },
         'group-fans': {
             layout: 'profile',
