@@ -98,6 +98,23 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return (<></>);
 
+    if (data.type == "bx_groups" && data.action == "added"){
+        return (
+            <View className="max-w-5xl w-full mx-auto ">
+                <View
+                    className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
+                        bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                        hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                        hover:shadow-sm active:shadow-none 
+                        active:translate-y-0.5 border-y sm:border
+                        border-bordercolorcard dark:border-bordercolorcard-dark 
+                        sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                        active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
+                ><Text>Template for {data.type}{data.action}</Text></View>
+            </View>
+        );
+    }
+
     return (
         <View className="max-w-5xl w-full mx-auto ">
             <View
