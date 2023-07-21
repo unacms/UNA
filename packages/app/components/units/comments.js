@@ -155,7 +155,7 @@ export default function UnitComments(props) {
                                 </View>
                             ) : <Html data={linkify(data.cmt_text)} /> }
                         </View>
-                        { (viewState.view != 'edited'  && aImg.length > 0) && <View className='w-full aspect-video mb-6'>
+                        { (viewState.view != 'edited'  && aImg.length > 0) && <View className='w-full aspect-square  mb-6'>
                                 <CarouselMemo aImg={aImg}/>
                             </View>
                         }

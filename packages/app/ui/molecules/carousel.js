@@ -1,212 +1,92 @@
 
-import { useState, useRef } from 'react';
-import Carousel from "react-native-reanimated-carousel";
-import { View, Pressable } from 'app/design/view'
-
+import { useState } from 'react';
+import { View, Pressable, Row } from 'app/design/view'
 import Image from '../../ui/atoms/image';
-
-import Animated, {
-    Extrapolate,
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-  } from "react-native-reanimated";
-  import { Button } from 'app/design/controls';
-  import { Modal } from 'react-native';
-  import ImageViewer from 'react-native-image-zoom-viewer';
-  
+import { Button } from 'app/design/controls';
+import { Modal } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import { Text } from 'app/design/typography';
 
 export default function ElementCarousel(props) {
-    const carouselRef = useRef();
-
     let data = props.data;
     if (data.length == 0)
-        return <></>
+            return <></>
 
-    const progressValue = useSharedValue(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [showImage, setShowImage] = useState(false);
     const [width, setWidth] = useState(400);
 
     const handleShowImage = (img) => {
-        setShowImage(img);
+            setShowImage(img);
     } 
 
     const handleLayout = (event) => {
-        setWidth(event.nativeEvent.layout.width);
+            setWidth(event.nativeEvent.layout.width);
     };
 
-    const nextSlide = () => {
-        
-        carouselRef.current.next();
-    };
-    
-    const prevSlide = () => {
-        carouselRef.current.prev();
-    };
-
-    const PaginationItem = (props) => {
-        const { animValue, index, length, backgroundColor, isRotate } = props;
-        const width = 10;
-      
-        const animStyle = useAnimatedStyle(() => {
-          let inputRange = [index - 1, index, index + 1];
-          let outputRange = [-width, 0, width];
-      
-          if (index === 0 && animValue?.value > length - 1) {
-            inputRange = [length - 1, length, length + 1];
-            outputRange = [-width, 0, width];
-          }
-      
-          return {
-            transform: [
-              {
-                translateX: interpolate(
-                  animValue?.value,
-                  inputRange,
-                  outputRange,
-                  Extrapolate.CLAMP,
-                ),
-              },
-            ],
-          };
-        }, [animValue, index, length]);
-        return (
-          <View className='bg-backgroundcard dark:bg-backgroundcard-dark'
-            style={{
-              width,
-              height: width,
-              borderRadius: 50,
-              overflow: "hidden",
-              transform: [
-                {
-                  rotateZ: isRotate ? "90deg" : "0deg",
-                },
-              ],
-            }}
-          >
-            <Animated.View
-              style={[
-                {
-                  borderRadius: 50,
-                  backgroundColor: 'blue',
-                  flex: 1,
-                },
-                animStyle,
-              ]}
-            />
-          </View>
-        );
-      };  
-
-    const data2 = data.map(item => ({url: item.src}));  
+    const data2 = data.map(item => ({url: item.src}));    
 
     const ImViewer = () => (
-      <Modal visible={!!showImage} transparent={true}>
-        <ImageViewer 
-          index={currentImageIndex}
-          imageUrls={data2} 
-          renderArrowLeft={() => (
-            currentImageIndex == 0 ? null : <Button
-              variant="text"
-              size='xl'
-              startDecorator="ArrowCircleLeft"
-              onPress={() => setCurrentImageIndex((prevIndex) => prevIndex > 0 ? prevIndex - 1 : prevIndex)}
-            />
-          )}
-          renderArrowRight={() => (
-              currentImageIndex == data2.length - 1 ? null : <Button
-              variant="text"
-              size='xl'
-              startDecorator="ArrowCircleRight"
-              onPress={() => setCurrentImageIndex((prevIndex) => prevIndex < data2.length - 1 ? prevIndex + 1 : prevIndex)}
-            />
-          )}
-          onClick={() => {setShowImage(null)}}
-        />
-      </Modal>
-    );
-
-    if (data.length == 1)
-      return (<>
-        <Modal visible={!!showImage} transparent={true}><ImageViewer imageUrls={data2} onClick={() => {setShowImage(null)}}/></Modal>
-        <View className="w-full mx-auto aspect-video mb-0" onLayout={handleLayout}>
-        <Pressable style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
-        </View>
-        </>);
-    
-    
-    return ( 
-        <View className='bg-backgrounditem dark:bg-backgrounditem-dark pb-4 mb-2'>
-        <ImViewer/>
-        <View className="w-full aspect-video " onLayout={handleLayout}>
-            
-            { data.length > 1 && <>
-                <View className='absolute top-1/2 z-50 -mt-8 left-0'>
-                    <Button onPress={prevSlide} variant="text" size='xl' startDecorator="ArrowCircleLeft" />
-                </View>
-                <View className='absolute top-1/2 right-0 z-50 -mt-8 '>
-                    <Button onPress={nextSlide} variant="text" size='xl' startDecorator="ArrowCircleRight" />
-                </View>
-            </>
-            }
-            <Carousel
-                ref={carouselRef}
-                loop
-                width={width}
-                height={width / 16*9}
-                autoPlay={false}
-                data={data}
-                mode="parallax"
-                modeConfig={{
-                  parallaxScrollingScale: 0.9,
-                  parallaxScrollingOffset: 100,
-                }}
-                customConfig={{viewCount: 2}}
-                scrollAnimationDuration={1000}
-                pagingEnabled={true}
-                onProgressChange={(_, absoluteProgress) =>
-                    (progressValue.value = absoluteProgress)
-                }
-                renderItem={({ item, index }) => (
-                    <Pressable style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                    }} key={index} className=" mt-1 " onPress={() => handleShowImage([item.src, 'image'])} ><Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
-                    
+        <Modal visible={!!showImage} transparent={true}>
+            <ImageViewer 
+                index={currentImageIndex}
+                imageUrls={data2} 
+                renderArrowLeft={() => (
+                    currentImageIndex == 0 ? null : <Button
+                        variant="text"
+                        size='xl'
+                        startDecorator="ArrowCircleLeft"
+                        onPress={() => setCurrentImageIndex((prevIndex) => prevIndex > 0 ? prevIndex - 1 : prevIndex)}
+                    />
                 )}
+                renderArrowRight={() => (
+                        currentImageIndex == data2.length - 1 ? null : <Button
+                        variant="text"
+                        size='xl'
+                        startDecorator="ArrowCircleRight"
+                        onPress={() => setCurrentImageIndex((prevIndex) => prevIndex < data2.length - 1 ? prevIndex + 1 : prevIndex)}
+                    />
+                )}
+                onClick={() => {setShowImage(null)}}
             />
-             
+        </Modal>
+    );
+    data = data.slice(0,3);
+    const len = data.length;
+   
+    let dataR1 = data.slice(0,2);
+    let dataR2 = data.slice(2,4);
+    if (len == 3){
+        dataR1 = data.slice(0,1);
+        dataR2 = data.slice(1,3);
+    }
+    const Image2 = (item) => (
+        <View className='flex-auto h-full'><Pressable style={{
+            flex: 1,
+            justifyContent: 'center',
+            }}    className=" " onPress={() => handleShowImage([item.src, 'image'])} >
+                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"    />
+                {item.row == 1 && item.index== 1 && len > 4 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{len-4}</Text></View>} 
+        </Pressable></View>
+    );
+        
+    return ( 
+        <View >
+            <ImViewer/>
+            <View className="w-full p-2 gap-y-0.5 aspect-square " onLayout={handleLayout}>
+                <Row className={(len > 2 ? 'h-1/2': 'h-full') + ' w-full gap-x-1'}>
+                {dataR1?.map((item, index) => (
+                        <Image2 row ={0}  key={index} src={item.src}/>
+                ))}
+                </Row>
+                <Row className={(len > 2 ? 'h-1/2 ': 'h-full') + 'w-full gap-x-0.5'}>
+                {
+                    dataR2?.map((item, index) => (
+                        <Image2 row ={1} key={index} index={index} src={item.src} />
+                    )) }
+                </Row>
+            </View>
         </View>
-        {!!progressValue && (
-        <View
-          style={
-           {
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: 100,
-                alignSelf: "center",
-              }
-          }
-        >
-          {data.map((backgroundColor, index) => {
-            return (
-              <PaginationItem
-                backgroundColor={backgroundColor}
-                animValue={progressValue}
-                index={index}
-                key={index}
-                isRotate={false}
-                length={data.length}
-              />
-            );
-          })}
-        </View>
-      )}
-        </View>
-  )
+    )
 }

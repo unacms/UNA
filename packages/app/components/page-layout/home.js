@@ -152,21 +152,12 @@ export default function PageLayout(props) {
     let dataHome = filterContent(props.data, ['bx_timeline:get_block_post_home', 'bx_timeline:get_block_view_home'])
     let dataAccount = filterContent(props.data, ['bx_timeline:get_block_post_account', 'bx_timeline:get_block_view_account'])
     let dataHot = filterContent(props.data, ['bx_timeline:get_block_view_hot'])
-    console.log(feedType);
-
 
   let menu = {
     object: 'search',
     items: menuItems,
   }
-  console.log('--------------------------dataAccount', dataAccount);
-  console.log('--------------------------dataHome', dataHome);
-  console.log('--------------------------dataHot', dataHot);
-  /*
-   <BlockByName data={props.data} name={props.blocks.posts2} />
-           <BlockByName data={props.data} name={props.blocks.feed} />
 
-    */
   return (
     <View className="w-full ">
       

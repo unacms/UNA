@@ -118,7 +118,7 @@ const MenuBar = ({ editor }) => {
     aButtonsGroup.push(<Button key="Code" startDecorator="Code" onPress={() => handleAddEmbeds()}/>);
     return (
         <>
-            <Modal title="Add new Post" id={'file-preview'}  onVisible={showModal} >
+            <Modal id={'file-preview'}  onVisible={showModal} >
                     <View className="w-full">
                     
                         <TextTag className='text-lg font-bold'>Insert {modalType}</TextTag>
