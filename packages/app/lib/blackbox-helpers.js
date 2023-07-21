@@ -4,6 +4,19 @@ import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
 import Unit from 'app/components/unit';
 import { Text } from 'app/design/typography'
+import { Icon } from 'app/ui/atoms/icon';
+import { Pressable } from 'app/design/view'
+
+export function getBackButtonWeb() {
+    if (history.length > 2){
+        return (
+            <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => history.back()} >
+                <Icon icon="left" width={24} height={24} />
+            </Pressable>
+        )
+    }
+    return <></>
+}
 
 export function fillTabs(menu, data, blocks, useSectionAsMenu){
     const m = menuItemsByName(menu.object, menu.items, data.url);

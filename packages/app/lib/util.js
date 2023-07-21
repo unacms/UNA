@@ -4,8 +4,6 @@ import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
 import pako from 'pako';
-import { Pressable } from 'app/design/view'
-import { Icon } from 'app/ui/atoms/icon';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -20,18 +18,6 @@ export function getPageWidth(uri) {
         return settings.max_width;
 
     return appSetting('layout', 'max_width');
-}
-
-export function getBackButtonWeb() {
-    if (history.length > 2){
-        return (
-            <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => history.back()} >
-                <Icon icon="left" width={24} height={24} />
-            </Pressable>
-        )
-    }
-
-    return <></>
 }
 
 export function getHeaderSettings(uri, width) {

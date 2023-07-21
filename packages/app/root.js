@@ -71,7 +71,9 @@ export function Root (props) {
         }
 
     }, [data?.user]);
-    console.log('************ Cache settings ************ Page =', appSetting('cache', 'page'), 'Lists =', appSetting('cache', 'list'))
+    if (Platform.OS === 'web')
+        console.log('************ Cache settings ************ Page =', appSetting('cache', 'page'), 'Lists =', appSetting('cache', 'list'));
+        
     return (
         <Layout path={props?.path} data={data} uri={data?.uri}>
             {Platform.OS === 'web' && <CurRouter exitingFunction={exitingFunction}  />}

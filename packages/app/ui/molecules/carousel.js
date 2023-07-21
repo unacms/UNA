@@ -78,7 +78,6 @@ export default function ElementCarousel(props) {
               width,
               height: width,
               borderRadius: 50,
-              
               overflow: "hidden",
               transform: [
                 {

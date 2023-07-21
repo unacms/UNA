@@ -2,7 +2,7 @@ import { View, Row, Pressable} from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from 'next/router';
 import { useState, useRef} from 'react';
-import { stripTags, getBackButtonWeb  } from '../../lib/util';
+import { getBackButtonWeb } from 'app/lib/blackbox-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';

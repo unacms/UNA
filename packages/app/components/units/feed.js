@@ -6,12 +6,12 @@ import { useState, useMemo } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from '../../ui/atoms/html'
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from '../menu'
-import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics } from 'app/lib/util'
+import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
@@ -101,17 +101,153 @@ function DefaultUnit(data) {
     if (data.type == "bx_groups" && data.action == "added"){
         return (
             <View className="max-w-5xl w-full mx-auto ">
-                <View
-                    className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
-                        bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                        hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                        hover:shadow-sm active:shadow-none 
-                        active:translate-y-0.5 border-y sm:border
-                        border-bordercolorcard dark:border-bordercolorcard-dark 
-                        sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                        active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
-                ><Text>Template for {data.type}{data.action}</Text></View>
+               
+            <View
+                className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
+                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
+                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
+                    hover:shadow-sm active:shadow-none 
+                    active:translate-y-0.5 border-y sm:border
+                    border-bordercolorcard dark:border-bordercolorcard-dark 
+                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
+                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
+            ><Text>Custom template for groups</Text>
+            <View className="flex-auto flex-row items-top p-4">
+                <Profile
+                    {...data.author_data}
+                    showLink={true}
+                    displayType="unit"
+                    displaySize="base"
+                    showInfo={
+                        <Row>
+                            <Link href={url}>
+                                <Time className="" ts={data.date}></Time>
+                            </Link>
+                            <View className='ml-2'><Text>{appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                        </Row>
+                    }
+                />
+                
+                <View className="flex-auto    justify-end flex-row gap-x-2 my-auto">
+                    <Button title="Follow" size="sm" solid rounded variant="outline" />
+                    {aMenuManageItems?.length > 0 && 
+                        <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
+                            <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
+                        </DropdownMenu>
+                    }
+                </View>
             </View>
+
+            <View className="flex-col ">
+                {viewState.view == 'edited' && (
+                    <View className='w-full'>
+                        <Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"    onFormSubmit={onFormSubmit} />
+                        <View className='mx-4  mb-4'><Button title="Cancel" fullWidth size ="base" startDecorator="X" variant="outline"    onPress={() =>    setViewState({view: ''})}  /></View>
+                    </View>
+                )}
+                 {viewState.view != 'edited' && (
+                    <>
+                        <View className=" pb-4    flex-col md:flex-row-reverse    ">
+                            {data.mainImage && (
+                                <View className="w-full md:w-1/3 mb-4 md:mb-auto md:pr-4 aspect-video ">
+                                    <View className="w-full aspect-video    " style={styles.card_image}>
+                                        <Image
+                                            {...data.mainImage}
+                                            alt={data.title}
+                                            view="cover"
+                                            className=" u-cover sm:rounded-md"
+                                            sizes="(max-width:768px) 100vw, 500px"
+                                        />
+                                    </View>
+                                </View>
+                            )}
+                            <View className="flex-auto px-4    flex-col    ">
+                                {bIsTitle && (
+                                    <Link href={url} className="">
+                                        <Text
+                                            numberOfLines={2}
+                                            className=" duration-200     text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                                        >
+                                            {data.content.title}
+                                        </Text>
+                                    </Link>
+                                )}
+                                {!showFull ? (
+                                    <View>
+                                        <View className="flex-col gap-y-3 relative">
+                                            {bIsTimelineContent && (
+                                                <View>
+                                                    <Html data={truncateHTML(data.content.text, 380)} />
+                                                    {data.showMore && !showFull && bIsLong && (
+                                                        <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
+                                                            <Button
+                                                                title="More"
+                                                                onPress={(e) => {
+                                                                    setShowFull(true)
+                                                                    e.preventDefault()
+                                                                }}
+                                                                startDecorator="ArrowFatLineDown"
+                                                                size="xs"
+                                                                solid
+                                                                rounded
+                                                                variant="outline"
+                                                            />
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                            {!bIsTimelineContent && (
+                                                <Text
+                                                    className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
+                                                    numberOfLines={3}
+                                                >
+                                                    {data.content.text}
+                                                </Text>
+                                            )}
+                                        </View>
+                                        {!!data.sFirstImg && (
+                                            <View
+                                                className={
+                                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
+                                                }
+                                            >
+                                                <Image
+                                                    src={data.sFirstImg}
+                                                    alt={data.title}
+                                                    view="cover"
+                                                />
+                                            </View>
+                                        )}
+                                    </View>
+                                ) : (
+                                    <View className="flex-col relative">
+                                        <Html data={data.content.text} />
+                                    </View>
+                                )}
+                            </View>
+                        </View>
+                        {bIsTimelineContent && (
+                            <View className="">
+                                <UnitImages images={data.content.images_attach} />
+                            </View>
+                        )}
+                        <View className="flex-col    relative px-0 pb-4">
+                            <View className=" flex-row    px-4 flex-auto">
+                                <Menu
+                                    {...data.menu_actions}
+                                    displayType="button"
+                                    params={{
+                                        show_action: true,
+                                        show_counter: true,
+                                        show_combined: true,
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </>)}
+                </View>
+            </View>
+        </View>
         );
     }
 
@@ -134,9 +270,12 @@ function DefaultUnit(data) {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Link href={url}>
-                            <Time className="" ts={data.date}></Time>
-                        </Link>
+                        <Row>
+                            <Link href={url}>
+                                <Time className="" ts={data.date}></Time>
+                            </Link>
+                            <View className='ml-2'><Text>{appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                        </Row>
                     }
                 />
                 

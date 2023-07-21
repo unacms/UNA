@@ -3,12 +3,12 @@
 import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCircleText, 
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
     NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
-    ChatTeardropDots, Smiley, ShareFat, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
+    ChatTeardropDots, Smiley, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
 	UserSwitch, Gear, SignOut, SignIn, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X, UserCirclePlus, RocketLaunch,
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, ChatCenteredText, Clipboard, CirclesFour,FileAudio, 
-	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows
+	DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, Share, CheckCircle
 }  
 from "phosphor-react-native";
 
@@ -57,11 +57,11 @@ export const IconSet = {
 	ArrowCircleRight: ArrowCircleRight,
 	ChatTeardropDots: ChatTeardropDots,
 	Smiley: Smiley,
-	ShareFat: ShareFat,
+	ShareFat: Share,
 	UserCircle: UserCircle,
 	DotsThreeOutlineVertical: DotsThreeOutlineVertical,
 	File: File,
-	SealCheck: SealCheck,
+	SealCheck: CheckCircle,
 	DotsThreeOutline: DotsThreeOutline,
 	UserSwitch: UserSwitch,
 	Gear: Gear,

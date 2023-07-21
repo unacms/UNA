@@ -11,6 +11,7 @@ import { Button } from 'app/design/controls'
 import { Story } from 'app/ui/molecules/stories'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
+import { ScrollView } from 'dripsy'
 
 export default function PageLayout(props) {
   const isWeb = Platform.OS == 'web'
@@ -151,14 +152,16 @@ export default function PageLayout(props) {
     let dataHome = filterContent(props.data, ['bx_timeline:get_block_post_home', 'bx_timeline:get_block_view_home'])
     let dataAccount = filterContent(props.data, ['bx_timeline:get_block_post_account', 'bx_timeline:get_block_view_account'])
     let dataHot = filterContent(props.data, ['bx_timeline:get_block_view_hot'])
-    
+    console.log(feedType);
 
 
   let menu = {
     object: 'search',
     items: menuItems,
   }
-
+  console.log('--------------------------dataAccount', dataAccount);
+  console.log('--------------------------dataHome', dataHome);
+  console.log('--------------------------dataHot', dataHot);
   /*
    <BlockByName data={props.data} name={props.blocks.posts2} />
            <BlockByName data={props.data} name={props.blocks.feed} />
@@ -168,7 +171,8 @@ export default function PageLayout(props) {
     <View className="w-full ">
       
         {!currentUser && renderBlock && (
-          <BlockByName name={props.blocks.home} />
+          <ScrollView>
+          <BlockByName name={props.blocks.home} /></ScrollView>
         )}
         {!!currentUser && (
           <>
@@ -176,22 +180,21 @@ export default function PageLayout(props) {
                 <Row className="pl-4 gap-x-1 ">
                 <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('account')}}>
                   <View>
-                  <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 1 ? 'outline': "text"} rounded size='sm' title='Following'   />
+                  <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
                     </View>
                   </Pressable>
                   <Pressable  className=" items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('public')}}>
                     <View >
-                    <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 0 ? 'outline': "text"} rounded size='sm' title='For You'   />
+                    <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                     </View>
                   </Pressable>
-                  
                   <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('hot')}}>
                   <View>
-                  <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 2 ? 'outline': "text"} rounded size='sm' title='Hot'   />
+                  <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                     </View>
                   </Pressable>
                 </Row> 
-                { feedType == 'public' && <View className={feedType == 0 ? '' : ' h-full'}>
+                { feedType == 'public' && <View className={feedType == 'public' ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
@@ -200,7 +203,7 @@ export default function PageLayout(props) {
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View>}
-                { feedType == 'account' && <View className={feedType == 1 ? '' : ' h-full'}>
+                { feedType == 'account' && <View className={feedType == 'account' ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
@@ -209,7 +212,7 @@ export default function PageLayout(props) {
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View> }
-                { feedType == 'hot' && <View className={feedType == 2 ? '' : ' h-full'}>
+                { feedType == 'hot' && <View className={feedType == 'hot' ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 

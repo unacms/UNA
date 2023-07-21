@@ -64,7 +64,6 @@ export default function UniList(props) {
         if (rest.storagekey && appSetting('cache', 'list')){
             let restoreState =  storageGet('ls', rest.storagekey);
             if (!isNaN(parseFloat(restoreState))){
-                console.log('----');
                 setTimeout(() => {
                     window.scrollTo({
                         top: restoreState,

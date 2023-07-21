@@ -10,7 +10,8 @@ import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings, getBackButtonWeb } from 'app/lib/util'
+import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { getBackButtonWeb } from 'app/lib/blackbox-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 

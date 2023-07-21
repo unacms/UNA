@@ -26,10 +26,13 @@ export const settingsDefault = {
         ntfs_popup_view_all: 'View all',
         search_popup_title: 'Search',
         search_popup_view_extended: 'Extended',
+        feed_type_bx_posts: 'Post',
+        feed_type_bx_groups: 'Group',
+        feed_action_added: 'added',
     },
     cache: {
         page: true,
-        list: false,
+        list: true,
         compress: true
     },
     feed: {
