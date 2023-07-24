@@ -4,7 +4,7 @@ import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
-import { uploadImage } from '../../lib/util';
+import { uploadImage,linkify2 } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { useState, useEffect } from 'react'
@@ -17,7 +17,7 @@ import { mergeAttributes, Node } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
-
+import Html from '../../ui/atoms/html'
 
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();
@@ -151,6 +151,7 @@ export default function FormFieldFtf(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
+    const [link, setLink] = useState(null);
     const formContext = useFormContext();
 
     const handleChange = (content) => {
@@ -160,6 +161,7 @@ export default function FormFieldFtf(props) {
     };
         
     const { field } = useController({ name, rules, defaultValue });
+
 
     const editor = useEditor({
         extensions: [
@@ -199,10 +201,16 @@ export default function FormFieldFtf(props) {
         ],
         content: field.value,
         onUpdate({ editor }) {
-           formContext.setValue(name, editor.getHTML());
+            if (props.linkify){
+                let l = linkify2(editor.getHTML());
+                console.log('--link', l )
+                setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
+            }
+            formContext.setValue(name, editor.getHTML());
         }
 
     })
+
 
     useEffect(() => {
         if (editor && field.value == '')
@@ -213,16 +221,21 @@ export default function FormFieldFtf(props) {
     
     const isFullHtml = props.html == 2;
 
+    console.log('link', link);
 
     return (
-        <View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
+        <><View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
         <EditorContent 
                 editor={editor} 
                 className={(props?.numLines == 1 ? '' : 'editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}
             />
             <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
-            {isFullHtml  && <MenuBar editor={editor} /> }
+            {isFullHtml && <MenuBar editor={editor} /> }
             </View>
         </View>
+        { !!link && <View className='w-1/3 mt-2'>
+            <Html data={link} />
+        </View>}
+        </>
     )
 }

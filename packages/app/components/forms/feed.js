@@ -9,7 +9,6 @@ import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
 
-
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
     const [imageSource, setImageSource] = useState([]);
@@ -49,7 +48,7 @@ export default function FormFeed(props) {
         {getFormFieldByData(props.data.inputs['type'], props.handleSubmit,  'default')}
         <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
             <View className='w-full flex-col pt-2 px-2'>
-                {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', {placeholder: 'Write your text here...'})}
+                {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', {placeholder: 'Write your text here...', linkify: true})}
                 <Row className='mt-2'>
                     <View className='w-12'>{getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
                     <View className='w-12'>{getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>

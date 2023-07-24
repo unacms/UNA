@@ -11,7 +11,7 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from '../menu'
-import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting } from 'app/lib/util'
+import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
@@ -250,7 +250,16 @@ function DefaultUnit(data) {
         </View>
         );
     }
-
+    let tlContent = '';
+    if (bIsTimelineContent){
+        tlContent = truncateHTML(data.content.text, 380);
+        if (data.content.images_attach.length == 0){
+            let link = linkify2(data.content.text);
+            if (link){
+                tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
+            }
+        }
+    }
     return (
         <View className="max-w-5xl w-full mx-auto ">
             <View
@@ -317,7 +326,7 @@ function DefaultUnit(data) {
                                     <Link href={url} className="">
                                         <Text
                                             numberOfLines={2}
-                                            className=" duration-200     text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                                            className=" duration-200 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
                                         >
                                             {data.content.title}
                                         </Text>
@@ -328,7 +337,7 @@ function DefaultUnit(data) {
                                         <View className="flex-col gap-y-3 relative">
                                             {bIsTimelineContent && (
                                                 <View>
-                                                    <Html data={truncateHTML(data.content.text, 380)} />
+                                                    <Html data={tlContent} />
                                                     {data.showMore && !showFull && bIsLong && (
                                                         <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
                                                             <Button

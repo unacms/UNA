@@ -71,7 +71,6 @@ export default function UniList(props) {
                 }, 100);
             }
             else{
-                console.log('++++', props, restoreState);
                 parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
             }   
         }
