@@ -28,6 +28,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-calendars": "^1.1300.0",
     "react-native-controlled-mentions": "^2.2.5",
     "react-native-document-picker": "^8.2.0",
     "react-native-element-dropdown": "^2.8.1",

@@ -13,8 +13,9 @@ export default function FormFieldSwitcher(props) {
     return (
         <Field {...props}>
             <Switch
-                trackColor={{false: colors.background, true: colors.background}}
-                thumbColor={isEnabled ? colors.primary : colors.background}
+                trackColor={{false: colors.border, true: colors.primary}}
+                thumbColor={'#ffffff'}
+                activeThumbColor={'#ffffff'}
                 ios_backgroundColor={colors.background}
                 onValueChange={toggleSwitch}
                 value={isEnabled}
