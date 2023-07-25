@@ -27,7 +27,7 @@ export default function ElementHtml(props) {
 
             let hash = stringMd5(capture);
             return (
-                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
+                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl aspect-video mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );
           });
     }

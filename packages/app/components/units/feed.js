@@ -86,6 +86,16 @@ function DefaultUnit(data) {
         }
     }
 
+    const ItemInfo = ({data}) => {
+        console.log(data);
+
+        let l = (appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '') + ' ' + (appSetting('lang_keys', 'feed_action_' + data.action) ? appSetting('lang_keys', 'feed_action_' + data.action) : '');
+        if (l != ' ')
+            return <View className='ml-1'><Text className="text-neutral-600 dark:text-neutral-400 text-sm">·  {l}</Text></View>;
+            
+        return <></>
+    }
+
     const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items).map((aItem) => {
         return {
                 id: aItem.id ? aItem.id : aItem.name,
@@ -119,11 +129,11 @@ function DefaultUnit(data) {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row className='justify-center items-center'>
+                        <Row className='items-center'>
                             <Link href={url}>
                                 <Time className="" ts={data.date}></Time>
                             </Link>
-                            <View className='ml-1'><Text className="text-neutral-600 dark:text-neutral-400 text-sm">· {appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                            <ItemInfo data={data}/>
                         </Row>
                     }
                 />
@@ -279,11 +289,11 @@ function DefaultUnit(data) {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row className='justify-center items-center'>
+                        <Row className='items-center'>
                             <Link href={url}>
                                 <Time className="" ts={data.date}></Time>
                             </Link>
-                            <View className='ml-1'><Text className="text-neutral-600 dark:text-neutral-400 text-sm">· {appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                            <ItemInfo data={data}/>
                         </Row>
                     }
                 />
