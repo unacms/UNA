@@ -119,11 +119,11 @@ function DefaultUnit(data) {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row>
+                        <Row className='justify-center items-center'>
                             <Link href={url}>
                                 <Time className="" ts={data.date}></Time>
                             </Link>
-                            <View className='ml-2'><Text>{appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                            <View className='ml-1'><Text className="text-neutral-600 dark:text-neutral-400 text-sm">· {appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
                         </Row>
                     }
                 />
@@ -147,7 +147,7 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" pb-4    flex-col md:flex-row-reverse    ">
+                        <View className=" flex-col md:flex-row-reverse">
                             {data.mainImage && (
                                 <View className="w-full md:w-1/3 mb-4 md:mb-auto md:pr-4 aspect-video ">
                                     <View className="w-full aspect-video    " style={styles.card_image}>
@@ -231,7 +231,7 @@ function DefaultUnit(data) {
                                 <UnitImages images={data.content.images_attach} />
                             </View>
                         )}
-                        <View className="flex-col    relative px-0 pb-4">
+                        <View className="flex-col    relative px-0 pb-4 mt-4">
                             <View className=" flex-row    px-4 flex-auto">
                                 <Menu
                                     {...data.menu_actions}
@@ -252,7 +252,7 @@ function DefaultUnit(data) {
     }
     let tlContent = '';
     if (bIsTimelineContent){
-        tlContent = truncateHTML(data.content.text, 380);
+        tlContent = data.content.text;//truncateHTML(data.content.text, 380);
         if (data.content.images_attach.length == 0){
             let link = linkify2(data.content.text);
             if (link){
@@ -279,11 +279,11 @@ function DefaultUnit(data) {
                     displayType="unit"
                     displaySize="base"
                     showInfo={
-                        <Row>
+                        <Row className='justify-center items-center'>
                             <Link href={url}>
                                 <Time className="" ts={data.date}></Time>
                             </Link>
-                            <View className='ml-2'><Text>{appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
+                            <View className='ml-1'><Text className="text-neutral-600 dark:text-neutral-400 text-sm">· {appSetting('lang_keys', 'feed_type_' + data.type)} {appSetting('lang_keys', 'feed_action_' + data.action)}</Text></View>
                         </Row>
                     }
                 />
@@ -307,7 +307,7 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" pb-4    flex-col md:flex-row-reverse    ">
+                        <View className=" flex-col md:flex-row-reverse ">
                             {data.mainImage && (
                                 <View className="w-full md:w-1/3 mb-4 md:mb-auto md:pr-4 aspect-video ">
                                     <View className="w-full aspect-video    " style={styles.card_image}>
@@ -391,7 +391,7 @@ function DefaultUnit(data) {
                                 <UnitImages images={data.content.images_attach} />
                             </View>
                         )}
-                        <View className="flex-col    relative px-0 pb-4">
+                        <View className="flex-col    relative px-0 pb-4 mt-4">
                             <View className=" flex-row    px-4 flex-auto">
                                 <Menu
                                     {...data.menu_actions}
@@ -480,7 +480,7 @@ function UnitImages(images) {
     })
 
     return (
-        <View className="w-full aspect-square mb-6">
+        <View className="w-full aspect-square">
             <CarouselMemo aImg={aImg} />
         </View>
     )
