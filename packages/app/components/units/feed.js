@@ -19,6 +19,7 @@ import { fetcher } from '../../lib/fetcher';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
 
+
 function DefaultUnit(data) {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({view: ''});
@@ -87,7 +88,6 @@ function DefaultUnit(data) {
     }
 
     const ItemInfo = ({data}) => {
-        console.log(data);
 
         let l = (appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '') + ' ' + (appSetting('lang_keys', 'feed_action_' + data.action) ? appSetting('lang_keys', 'feed_action_' + data.action) : '');
         if (l != ' ')
@@ -347,7 +347,7 @@ function DefaultUnit(data) {
                                         <View className="flex-col gap-y-3 relative">
                                             {bIsTimelineContent && (
                                                 <View>
-                                                    <Html data={tlContent} />
+                                                    <HtmlMemo tlContent={tlContent} />
                                                     {data.showMore && !showFull && bIsLong && (
                                                         <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
                                                             <Button
@@ -476,6 +476,13 @@ function CarouselMemo({ aImg, b }) {
         )
         return <Carousel data={aImg} />
     }, [b])
+    return computedData
+}
+
+function HtmlMemo({ tlContent }) {
+    const computedData = useMemo(() => {
+        return <Html data={tlContent} />
+    }, [])
     return computedData
 }
 
