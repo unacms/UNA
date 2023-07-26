@@ -75,10 +75,14 @@ export default function FormFieldFiles(props) {
     [RestoreGhosts, formContext.formState.isSubmitted, imageSource.images]);
     
     const selectImage = useCallback(async () => {
-        let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp'? true : false;
+        let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
+
+        // TODO: added for case when one storage for different file types and allow to use it for media files temporary.
+        if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
+            bIsMedia = true;
 
         if (bIsMedia){
-           
+
             let mediaTypes = ImagePicker.MediaTypeOptions.All;
             if (props.ext_allow == 'jpg,jpeg,jpe,gif,png,svg,webp' || props.ext_allow == 'jpg,jpeg,jpe,gif,png,webp')
                 mediaTypes = ImagePicker.MediaTypeOptions.Images;

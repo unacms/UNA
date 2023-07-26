@@ -70,7 +70,7 @@ export default function ElementReactions(oProps) {
             }
         };
 
-        return oAliases[sKey][sName][sType];
+        return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
     };
 
     const { actionsData, setActionsData } = useContext(ActionsData);
@@ -356,6 +356,7 @@ export default function ElementReactions(oProps) {
         let sSelected = tabVisibleByCpd;
         const aCounter = Object.keys(oCounter.items).map(function(iKey) {
             const aItem = oCounter.items[iKey];
+
             if(aItem.name == 'default')
                 return;
 
@@ -455,6 +456,7 @@ export default function ElementReactions(oProps) {
         }
 
     let sResult = undefined;
+
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
         if(!!aCounter[0])
