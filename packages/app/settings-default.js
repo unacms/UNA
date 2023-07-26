@@ -26,9 +26,9 @@ export const settingsDefault = {
         ntfs_popup_view_all: 'View all',
         search_popup_title: 'Search',
         search_popup_view_extended: 'Extended',
-        feed_type_bx_posts: 'Post',
-        feed_type_bx_groups: 'Group',
-        feed_action_added: 'added',
+        feed_type_bx_posts: 'published a Post',
+        feed_type_bx_groups: 'created a Group',
+        feed_action_added: '',
     },
     cache: {
         page: true,

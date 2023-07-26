@@ -121,7 +121,7 @@ function DefaultUnit(data) {
                     border-bordercolorcard dark:border-bordercolorcard-dark 
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
-            ><Text>Custom template for groups</Text>
+            >
             <View className="flex-auto flex-row items-top p-4">
                 <Profile
                     {...data.author_data}
@@ -157,26 +157,33 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" flex-col md:flex-row-reverse">
+                        <View className=" flex-col mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
                             {data.mainImage && (
-                                <View className="w-full md:w-1/3 mb-4 md:mb-auto md:pr-4 aspect-video ">
-                                    <View className="w-full aspect-video    " style={styles.card_image}>
+                                <View className="w-full  ">
+                                    <View className="w-full aspect-video   " style={styles.card_image}>
                                         <Image
                                             {...data.mainImage}
                                             alt={data.title}
                                             view="cover"
-                                            className=" u-cover sm:rounded-md"
+                                            className=" rounded u-cover "
                                             sizes="(max-width:768px) 100vw, 500px"
                                         />
                                     </View>
                                 </View>
                             )}
-                            <View className="flex-auto px-4    flex-col    ">
+                            <View className="flex-auto px-3 py-2   flex-col    ">
                                 {bIsTitle && (
+                                    
                                     <Link href={url} className="">
                                         <Text
+                                            numberOfLines={1}
+                                            className="  text-neutral-600 dark:text-neutral-400 text-sm  tracking-tight font-medium"
+                                        >
+                                            PRIVATE GROUP · 898 MEMBERS  <Text className="animate-ping text-red-600 ">⬅ Roman ▚▘</Text> 
+                                        </Text>
+                                        <Text
                                             numberOfLines={2}
-                                            className=" duration-200     text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                                            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
                                         >
                                             {data.content.title}
                                         </Text>
@@ -185,35 +192,15 @@ function DefaultUnit(data) {
                                 {!showFull ? (
                                     <View>
                                         <View className="flex-col gap-y-3 relative">
-                                            {bIsTimelineContent && (
-                                                <View>
-                                                    <Html data={truncateHTML(data.content.text, 380)} />
-                                                    {data.showMore && !showFull && bIsLong && (
-                                                        <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
-                                                            <Button
-                                                                title="More"
-                                                                onPress={(e) => {
-                                                                    setShowFull(true)
-                                                                    e.preventDefault()
-                                                                }}
-                                                                startDecorator="ArrowFatLineDown"
-                                                                size="xs"
-                                                                solid
-                                                                rounded
-                                                                variant="outline"
-                                                            />
-                                                        </View>
-                                                    )}
-                                                </View>
-                                            )}
-                                            {!bIsTimelineContent && (
+                                           
+                                            
                                                 <Text
-                                                    className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
-                                                    numberOfLines={3}
+                                                    className="text-neutral-950 dark:text-neutral-50  text-sm sm:text-base"
+                                                    numberOfLines={2}
                                                 >
                                                     {data.content.text}
                                                 </Text>
-                                            )}
+                                            
                                         </View>
                                         {!!data.sFirstImg && (
                                             <View
