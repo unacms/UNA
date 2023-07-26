@@ -23,6 +23,7 @@ import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownMore from 'app/ui/atoms/dropdown-more';
 
 export default function (props) {
   const redirectdRef = useRef()
@@ -145,6 +146,7 @@ export default function (props) {
   }
 
   const menu_top = appSetting('menu_items', 'menu_top');
+  const menu_top_more = appSetting('menu_items', 'menu_top_more');
   const menu_add = appSetting('menu_items', 'menu_add');
 
   const windowWidth = useWindowDimensions().width + 17;
@@ -329,7 +331,34 @@ export default function (props) {
                     </Link>
                   )
               )}
-              </Row>
+              <View className="relative flex-row">
+                <DropdownMore items={menuItemsByName('', menu_top_more).map(
+                      (item, index) => {
+                        return (
+                         {
+                            id: 'menu-' + index,
+                            link: item.link,
+                            title: item.title,
+                            icon:
+                              item.icon.indexOf(' ') == -1
+                                ? item.icon
+                                : item.icon.split(' ')[0],
+                          }
+                        )
+                      }
+                    )}>
+                  <Button
+                    variant="text"
+                    size="lg"
+                    fullWidth
+                    alt="All Apps"
+                    startDecorator="CirclesFour"
+                    aria-label="All Apps"
+                    onPress={() => {}}
+                  />
+                </DropdownMore>
+              </View>
+            </Row>
           </Row>
       </View>
       <AnimatePresence exitBeforeEnter>

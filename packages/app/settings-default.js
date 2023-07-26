@@ -133,7 +133,11 @@ export const settingsDefault = {
             { name: 'persons-home', title: 'People', link: 'persons-home', icon: 'UsersFour' }, 
             { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
-            { name: 'apps', title: 'All Apps', link: 'dashboard', icon: 'CirclesFour' }
+        ],
+        menu_top_more: [
+            { name: 'persons-home', title: 'People', link: 'persons-home', icon: 'UsersFour' }, 
+            { name: 'groups-home', title: 'Groups', link: 'groups-home', icon: 'UsersThree' },
+            { name: 'events-home', title: 'Events', link: 'events-home', icon: 'Calendar' }, 
         ],
         menu_add: [
             { name: 'create-post',title: 'Create post', link: 'create-post', icon: 'ChatCenteredText'},
