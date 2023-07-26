@@ -18,6 +18,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from '../../lib/fetcher';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
+import {componentsMap} from  'app/ui/molecules/_map';
 
 
 function DefaultUnit(data) {
@@ -147,7 +148,15 @@ function DefaultUnit(data) {
                     }
                 />
                 <View className="flex-auto    justify-end flex-row gap-x-2 my-auto">
-                    <Button title="Follow" size="sm" solid rounded variant="outline" />
+                    {data.author_actions.map((item, index) => {
+                        const Element = componentsMap[item.type];
+                        if(!Element)
+                            return;
+
+                        return (
+                            <Element key={`action-${index}`} {...item} />
+                        ); 
+                    })}
                     {aMenuManageItems?.length > 0 && 
                         <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
                             <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
