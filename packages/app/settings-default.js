@@ -28,6 +28,7 @@ export const settingsDefault = {
         search_popup_view_extended: 'Extended',
         feed_type_bx_posts: 'published a Post',
         feed_type_bx_groups: 'created a Group',
+        feed_type_bx_events: 'created an Event',
         feed_action_added: '',
     },
     cache: {

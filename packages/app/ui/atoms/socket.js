@@ -2,7 +2,6 @@ import Pusher from 'pusher-js';
 import { appSetting } from 'app/lib/util'
 
 export function subscribe(pusher, channel_name, event_name, cb) {
-
     if (pusher){
         var channel = pusher.subscribe(channel_name);
         channel.bind(event_name, function(data) {

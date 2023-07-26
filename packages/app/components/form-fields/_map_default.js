@@ -24,5 +24,6 @@ export const componentsMapDefault = {
     select: Select,
     files: Files,
     location: Location,
-    datetime: Datetime
+    datetime: Datetime,
+    datepicker: Datetime
 };

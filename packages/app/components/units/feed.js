@@ -45,6 +45,7 @@ function DefaultUnit(data) {
 
     let url = '/' + data.url
     let bIsTimelineContent = data?.type?.includes('timeline') ? true : false
+    let bIsGroupContent = (data.type == "bx_groups" || data.type == "bx_events") && data.action == "added";
 
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
     let sShort = truncateHTML(data.content.text, 380)
@@ -108,145 +109,7 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return (<></>);
 
-    if (data.type == "bx_groups" && data.action == "added"){
-        return (
-            <View className="max-w-5xl w-full mx-auto ">
-               
-            <View
-                className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
-                    bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                    hover:shadow-sm active:shadow-none 
-                    active:translate-y-0.5 border-y sm:border
-                    border-bordercolorcard dark:border-bordercolorcard-dark 
-                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive"
-            >
-            <View className="flex-auto flex-row items-top p-4">
-                <Profile
-                    {...data.author_data}
-                    showLink={true}
-                    displayType="unit"
-                    displaySize="base"
-                    showInfo={
-                        <Row className='items-center'>
-                            <Link href={url}>
-                                <Time className="" ts={data.date}></Time>
-                            </Link>
-                            <ItemInfo data={data}/>
-                        </Row>
-                    }
-                />
-                
-                <View className="flex-auto    justify-end flex-row gap-x-2 my-auto">
-                    <Button title="Follow" size="sm" solid rounded variant="outline" />
-                    {aMenuManageItems?.length > 0 && 
-                        <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
-                            <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
-                        </DropdownMenu>
-                    }
-                </View>
-            </View>
-
-            <View className="flex-col ">
-                {viewState.view == 'edited' && (
-                    <View className='w-full'>
-                        <Form {...viewState.data} classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"    onFormSubmit={onFormSubmit} />
-                        <View className='mx-4  mb-4'><Button title="Cancel" fullWidth size ="base" startDecorator="X" variant="outline"    onPress={() =>    setViewState({view: ''})}  /></View>
-                    </View>
-                )}
-                 {viewState.view != 'edited' && (
-                    <>
-                        <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
-                            {data.mainImage && (
-                                <View className="w-full md:w-1/3  ">
-                                    <View className="w-full aspect-video   " style={styles.card_image}>
-                                        <Image
-                                            {...data.mainImage}
-                                            alt={data.title}
-                                            view="cover"
-                                            className=" rounded u-cover "
-                                            sizes="(max-width:768px) 100vw, 500px"
-                                        />
-                                    </View>
-                                </View>
-                            )}
-                            <View className="flex-auto p-2 md:p-4  flex-col    ">
-                                {bIsTitle && (
-                                    
-                                    <Link href={url} className="">
-                                        <Text
-                                            numberOfLines={1}
-                                            className="  text-neutral-600 dark:text-neutral-400 text-xs  tracking-tight"
-                                        >
-                                            PRIVATE GROUP · 898 MEMBERS  <Text className="animate-ping text-red-600 ">⬅ Roman ▚▘</Text> 
-                                        </Text>
-                                        <Text
-                                            numberOfLines={2}
-                                            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
-                                        >
-                                            {data.content.title}
-                                        </Text>
-                                    </Link>
-                                )}
-                                {!showFull ? (
-                                    <View>
-                                        <View className="flex-col gap-y-3 relative">
-                                           
-                                            
-                                                <Text
-                                                    className="text-neutral-950 dark:text-neutral-50  text-sm "
-                                                    numberOfLines={2}
-                                                >
-                                                    {data.content.text}
-                                                </Text>
-                                            
-                                        </View>
-                                        {!!data.sFirstImg && (
-                                            <View
-                                                className={
-                                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
-                                                }
-                                            >
-                                                <Image
-                                                    src={data.sFirstImg}
-                                                    alt={data.title}
-                                                    view="cover"
-                                                />
-                                            </View>
-                                        )}
-                                    </View>
-                                ) : (
-                                    <View className="flex-col relative">
-                                        <Html data={data.content.text} />
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                        {bIsTimelineContent && (
-                            <View className="">
-                                <UnitImages images={data.content.images_attach} />
-                            </View>
-                        )}
-                        <View className="flex-col    relative px-0 pb-4 mt-4">
-                            <View className=" flex-row    px-4 flex-auto">
-                                <Menu
-                                    {...data.menu_actions}
-                                    displayType="button"
-                                    params={{
-                                        show_action: true,
-                                        show_counter: true,
-                                        show_combined: true,
-                                    }}
-                                />
-                            </View>
-                        </View>
-                    </>)}
-                </View>
-            </View>
-        </View>
-        );
-    }
+    
     let tlContent = '';
     if (bIsTimelineContent){
         tlContent = data.content.text;//truncateHTML(data.content.text, 380);
@@ -259,8 +122,7 @@ function DefaultUnit(data) {
     }
     return (
         <View className="max-w-5xl w-full mx-auto ">
-            <View
-                className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
+            <View className="mt-2 sm:mx-4 sm:mt-4 group duration-200 overflow-hidden sm:rounded-lg    
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                     hover:shadow-sm active:shadow-none 
@@ -284,7 +146,6 @@ function DefaultUnit(data) {
                         </Row>
                     }
                 />
-                
                 <View className="flex-auto    justify-end flex-row gap-x-2 my-auto">
                     <Button title="Follow" size="sm" solid rounded variant="outline" />
                     {aMenuManageItems?.length > 0 && 
@@ -302,9 +163,77 @@ function DefaultUnit(data) {
                         <View className='mx-4  mb-4'><Button title="Cancel" fullWidth size ="base" startDecorator="X" variant="outline"    onPress={() =>    setViewState({view: ''})}  /></View>
                     </View>
                 )}
-                 {viewState.view != 'edited' && (
+
+                { bIsGroupContent && (
+                    <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
+                        {data.mainImage && (
+                            <View className="w-full md:w-1/3  ">
+                                <View className="w-full aspect-video   " style={styles.card_image}>
+                                    <Image
+                                        {...data.mainImage}
+                                        alt={data.title}
+                                        view="cover"
+                                        className=" rounded u-cover "
+                                        sizes="(max-width:768px) 100vw, 500px"
+                                    />
+                                </View>
+                            </View>
+                        )}
+                        <View className="flex-auto p-2 md:p-4  flex-col    ">
+                            <Link href={url} className="">
+                                <Text numberOfLines={1} className="  text-neutral-600 dark:text-neutral-400 text-xs  tracking-tight" >
+                                    { data.content.visibility != '3' && <> · PRIVATE GROUP</> }
+                                    { data.content.members > -1 && <> · {data.content.members} MEMBERS  </> }
+                                    { data.content.date_start && <> · <Time className="text-sm flex-none" ts={data.content.date_start}></Time> 
+                                        {data.content.date_end && <>- <Time className="text-sm flex-none" ts={data.content.date_end}></Time></>}
+                                        </>
+                                    }
+                                </Text>
+                                <Text numberOfLines={2} className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold">
+                                    {data.content.title}
+                                </Text>
+                            </Link>
+                            {!showFull ? (
+                                <View>
+                                    <View className="flex-col gap-y-3 relative">
+                                        
+                                        
+                                            <Text
+                                                className="text-neutral-950 dark:text-neutral-50  text-sm "
+                                                numberOfLines={2}
+                                            >
+                                                {data.content.text}
+                                            </Text>
+                                        
+                                    </View>
+                                    {!!data.sFirstImg && (
+                                        <View
+                                            className={
+                                                imageAspect + ' w-full rounded mt-4 overflow-hidden'
+                                            }
+                                        >
+                                            <Image
+                                                src={data.sFirstImg}
+                                                alt={data.title}
+                                                view="cover"
+                                            />
+                                        </View>
+                                    )}
+                                </View>
+                            ) : (
+                                <View className="flex-col relative">
+                                    <Html data={data.content.text} />
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                    ) 
+                }
+
+                 {(viewState.view != 'edited') && (
                     <>
-                        <View className="  flex-col md:flex-row-reverse ">
+                        {(!bIsGroupContent) && (
+                            <><View className="  flex-col md:flex-row-reverse ">
                             {data.mainImage && (
                                 <View className="w-full px-0.5 sm:px-4 md:w-1/3 mb-3  md:mb-auto md:pr-4 ">
                                     <View className="w-full aspect-video    " style={styles.card_image}>
@@ -332,6 +261,7 @@ function DefaultUnit(data) {
                                 {!showFull ? (
                                     <View>
                                         <View className="flex-col gap-y-3 relative">
+                                            
                                             {bIsTimelineContent && (
                                                 <View>
                                                     <HtmlMemo tlContent={tlContent} />
@@ -387,6 +317,7 @@ function DefaultUnit(data) {
                             <View className="">
                                 <UnitImages images={data.content.images_attach} />
                             </View>
+                        )}</>
                         )}
                         <View className="flex-col    relative px-0 pb-4 mt-4">
                             <View className=" flex-row    px-4 flex-auto">

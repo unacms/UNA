@@ -115,7 +115,7 @@ export default function Unit(props) {
                         <View className=" aspect-video  w-full items-center justify-center">
                         </View>
                         </View>
-                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 py-2 text-base font-bold text-neutral-800 dark:text-neutral-100 text-center h-12">{data.group_name}</Text></Link>
+                        <Link href={data.url} ><Text numberOfLines={2}  className=" px-4 py-2 text-base font-bold text-neutral-800 dark:text-neutral-100 text-center h-12">{data.event_name}</Text></Link>
                         {sMeta}
                     </View>
                 </Link>
