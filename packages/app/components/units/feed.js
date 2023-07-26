@@ -157,9 +157,9 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" flex-col mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
+                        <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
                             {data.mainImage && (
-                                <View className="w-full  ">
+                                <View className="w-full md:w-1/3  ">
                                     <View className="w-full aspect-video   " style={styles.card_image}>
                                         <Image
                                             {...data.mainImage}
@@ -171,13 +171,13 @@ function DefaultUnit(data) {
                                     </View>
                                 </View>
                             )}
-                            <View className="flex-auto p-2   flex-col    ">
+                            <View className="flex-auto p-2 md:p-4  flex-col    ">
                                 {bIsTitle && (
                                     
                                     <Link href={url} className="">
                                         <Text
                                             numberOfLines={1}
-                                            className="  text-neutral-600 dark:text-neutral-400 text-sm  tracking-tight font-medium"
+                                            className="  text-neutral-600 dark:text-neutral-400 text-xs  tracking-tight"
                                         >
                                             PRIVATE GROUP · 898 MEMBERS  <Text className="animate-ping text-red-600 ">⬅ Roman ▚▘</Text> 
                                         </Text>
@@ -195,7 +195,7 @@ function DefaultUnit(data) {
                                            
                                             
                                                 <Text
-                                                    className="text-neutral-950 dark:text-neutral-50  text-sm sm:text-base"
+                                                    className="text-neutral-950 dark:text-neutral-50  text-sm "
                                                     numberOfLines={2}
                                                 >
                                                     {data.content.text}
@@ -304,7 +304,7 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" flex-col md:flex-row-reverse ">
+                        <View className="  flex-col md:flex-row-reverse ">
                             {data.mainImage && (
                                 <View className="w-full px-0.5 sm:px-4 md:w-1/3 mb-3  md:mb-auto md:pr-4 ">
                                     <View className="w-full aspect-video    " style={styles.card_image}>
