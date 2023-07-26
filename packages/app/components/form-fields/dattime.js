@@ -1,4 +1,5 @@
 import Field from './_field';
+import { useEffect } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { View, Row } from 'app/design/view'
@@ -12,61 +13,51 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 import { Hidden } from 'app/design/controls'
 
-export default function FormFieldDattime(props) {
-    let formContext = useFormContext();
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    let { field } = useController({ name, rules, defaultValue });
-    
+export default function FormFieldDattime({ name, value = '', type, ...props }) {
+    const formContext = useFormContext();
+    const rules = {};
+    const { field } = useController({ name, rules, defaultValue: value });
 
     const [showModal, setShowModal] = useState(false);
+    const bIsTime = type === 'datetime';
 
-    const bIsTime = props.type == 'datetime' ? true : false;
+    const [date, time] = field.value.split(' ');
+    let [hour = '', minute = ''] = time ? time.split(':') : [];
+    
+    const [dValue, setdValue] = useState({ dt: date, h: hour, m: minute });
 
-    let dateV = field.value.split(' ');
-    
-    let timeV = dateV[1];
-    let valueh = '';
-    let valuem = '';
-    if (timeV){
-        let timeV2 = timeV.split(':');
-        valueh = timeV2[0];
-        valuem = timeV2[1];
-    }
-    
-    let date = dateV[0] + (bIsTime && valueh != '' ? ' ' + valueh + ':' + valuem : '');
-    
-    const [dValue, setdValue] = useState({dt: dateV[0], h: valueh, m: valuem});
+    // Value for dropdowns
+    const [valueh, setValueh] = useState(hour);
+    const [valuem, setValuem] = useState(minute);
+
+    useEffect(() => {
+        setValueh(dValue.h);
+        setValuem(dValue.m);
+    }, [dValue]);
 
     const { colors } = Theme();
 
-    let valuesm = [];
-    for(let i = 0; i < 60; i++) {
-        let c= i.toString().padStart(2, '0');
-        valuesm.push({label: c, value: c});
+    const generateValues = (range) => {
+        let values = [];
+        for(let i = 0; i < range; i++) {
+            let item = i.toString().padStart(2, '0');
+            values.push({ label: item, value: item });
+        }
+        return values;
     }
 
-    let valuesh = [];
-    for(let i = 0; i < 24; i++) {
-        let c= i.toString().padStart(2, '0');
-        valuesh.push({label: c, value: c});
-    }
+    const valuesh = generateValues(24);
+    const valuesm = generateValues(60);
 
     const setValue = () => {
         setTimeout(() => {
-            formContext.setValue(props.name, dValue.dt + ' ' + dValue.h +':' + dValue.m + ':00Z')
+            formContext.setValue(name, `${dValue.dt} ${dValue.h}:${dValue.m}:00Z`);
         }, 100);
         setShowModal(false);
     }
 
-    const setTime1 = (v) => {
-        setdValue({dt:dValue.dt, h:v, m:dValue.m})
-    }
-
-    const setTime2 = (v) => {
-        setdValue({dt:dValue.dt, h:dValue.h, m:v})
-    }
+    const setTime1 = (v) => setdValue(prev => ({ ...prev, h: v }));
+    const setTime2 = (v) => setdValue(prev => ({ ...prev, m: v }));
 
     return (
         <Field {...props}>

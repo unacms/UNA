@@ -12,9 +12,9 @@ const withTM = require('next-transpile-modules')([
   'nativewind',
   'app',
 ]);
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
+/*const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
-})
+})*/
 
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
@@ -49,5 +49,5 @@ const nextConfig = {
   enabled: true,
 })*/
 //module.exports = withBundleAnalyzer({})
-
-module.exports = withPlugins([withTM, withExpo, withImages, withBundleAnalyzer], merge(nextConfig, nextConfigCustom))
+//withBundleAnalyzer
+module.exports = withPlugins([withTM, withExpo, withImages ], merge(nextConfig, nextConfigCustom))
