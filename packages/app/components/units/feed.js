@@ -157,7 +157,7 @@ function DefaultUnit(data) {
                 )}
                  {viewState.view != 'edited' && (
                     <>
-                        <View className=" flex-col mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
+                        <View className=" flex-col mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
                             {data.mainImage && (
                                 <View className="w-full  ">
                                     <View className="w-full aspect-video   " style={styles.card_image}>
@@ -171,7 +171,7 @@ function DefaultUnit(data) {
                                     </View>
                                 </View>
                             )}
-                            <View className="flex-auto px-3 py-2   flex-col    ">
+                            <View className="flex-auto p-2   flex-col    ">
                                 {bIsTitle && (
                                     
                                     <Link href={url} className="">
@@ -306,13 +306,13 @@ function DefaultUnit(data) {
                     <>
                         <View className=" flex-col md:flex-row-reverse ">
                             {data.mainImage && (
-                                <View className="w-full md:w-1/3 mb-4 md:mb-auto md:pr-4 aspect-video ">
+                                <View className="w-full px-0.5 sm:px-4 md:w-1/3 mb-3  md:mb-auto md:pr-4 ">
                                     <View className="w-full aspect-video    " style={styles.card_image}>
                                         <Image
                                             {...data.mainImage}
                                             alt={data.title}
                                             view="cover"
-                                            className=" u-cover sm:rounded-md"
+                                            className=" u-cover rounded"
                                             sizes="(max-width:768px) 100vw, 500px"
                                         />
                                     </View>
@@ -484,7 +484,7 @@ function UnitImages(images) {
     })
 
     return (
-        <View className="w-full aspect-square">
+        <View className="w-full ">
             <CarouselMemo aImg={aImg} />
         </View>
     )

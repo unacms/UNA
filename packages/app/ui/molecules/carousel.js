@@ -66,21 +66,21 @@ export default function ElementCarousel(props) {
             flex: 1,
             justifyContent: 'center',
             }}    className=" " onPress={() => handleShowImage([item.src, 'image'])} >
-                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"    />
+                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover  dark:bg-backgrounditem-dark dark:bg-backgrounditem-dark gap-x-1 "    />
                 {item.row == 1 && item.index== 1 && len > 4 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{len-4}</Text></View>} 
         </Pressable></View>
     );
         
     return ( 
-        <View >
+        <View className='px-0.5 pt-4 sm:px-4 '>
             <ImViewer/>
-            <View className="w-full p-2 gap-y-0.5 aspect-square " onLayout={handleLayout}>
-                <Row className={(len > 2 ? 'h-1/2': 'h-full') + ' w-full gap-x-1'}>
+            <View className="w-full  aspect-square gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
+                <Row className={(len > 2 ? 'h-1/2': 'h-full') + ' gap-x-0.5 w-full '}>
                 {dataR1?.map((item, index) => (
                         <Image2 row ={0}  key={index} src={item.src}/>
                 ))}
                 </Row>
-                <Row className={(len > 2 ? 'h-1/2 ': 'h-full') + 'w-full gap-x-0.5'}>
+                <Row className={(len > 2 ? 'h-1/2 gap-y-0.5 ': 'h-full') + ' gap-x-0.5 w-full '}>
                 {
                     dataR2?.map((item, index) => (
                         <Image2 row ={1} key={index} index={index} src={item.src} />
