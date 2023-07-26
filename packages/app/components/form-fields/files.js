@@ -93,7 +93,6 @@ export default function FormFieldFiles(props) {
                 
                 if (!result.cancelled) {
                     let k = imageSource.images;
-                    console.log('xxxxxxxxxxxx', k, imageSource.images)
                     for (const i of result.assets) {
                         let uri = i.uri;
                         
