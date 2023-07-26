@@ -25,7 +25,8 @@ export default function FormFieldDattime(props) {
     
     return (
         <Field {...props}>
-            <Modal title="Select date" onVisible={!!showImage} onClose={() => {setShowImage(false)}} outerClickClose={true} transparent={true}>
+            <Modal title="Select date" onVisible={!!showImage} onClose={() => {setShowImage(false)}} outerClickClose={false} transparent={true}>
+                    
                     <Calendar className=' bg-backgroundcard dark:bg-backgroundcard-dark'
                         theme={{
                             calendarBackground: colors.card,

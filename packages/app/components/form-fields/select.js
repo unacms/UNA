@@ -7,12 +7,8 @@ export default function FormFieldSelect(props) {
 
     const formContext = useFormContext();
     const { formState } = formContext;
-    let rules = {};
-    let name = props.name;
     let defaultValue = props.value;
     const [value, setValue] = useState(defaultValue)
-    
-    const { field } = useController({ name, rules, defaultValue });
 
     setTimeout(() => {
         formContext.setValue(props.name, value)
