@@ -5,11 +5,12 @@ const StackCustom = () => {
     const { colors } = Theme();
     return <Stack 
         screenOptions={({ navigation, route  }) => ({
-            title: 'Loading...', 
+            title: 'Loading...',
             headerBackVisible: false, 
             headerStyle: {
                 backgroundColor: colors.barsBackground,
             }, 
+            freezeOnBlur: true,
     })}/>;
 };
 export default StackCustom;

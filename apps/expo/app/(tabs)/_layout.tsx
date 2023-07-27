@@ -49,6 +49,7 @@ export default function AppLayout() {
           marginTop: 5,
       },
       tabBarInactiveTintColor: colors.barsColor,
+      freezeOnBlur: true,
       
   })}
     >

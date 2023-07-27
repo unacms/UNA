@@ -18,7 +18,10 @@ export default function Root(props) {
       <Provider>
         <QueryClientProvider client={queryClient}>
           <CurrentUserProvider>
-            <Stack screenOptions={{ headerShown: false }}></Stack>
+            <Stack screenOptions={{ 
+              headerShown: false, 
+              freezeOnBlur: true,
+              }}></Stack>
           </CurrentUserProvider>
         </QueryClientProvider>
       </Provider>    
