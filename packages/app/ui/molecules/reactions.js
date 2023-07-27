@@ -1,14 +1,16 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Platform, StyleSheet, useColorScheme } from 'react-native';
 import { Reaction, ReactionProvider } from 'react-native-reactions';
 
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { View, Pressable } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
+import { subscribe } from 'app/ui/atoms/socket';
 
 export default function ElementReactions(oProps) {
     const bWeb = Platform.OS === 'web';
@@ -218,6 +220,16 @@ export default function ElementReactions(oProps) {
         );
     };
 
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    useEffect(() => {
+        subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+    }, [])
+
+    const cb = (data) => {
+        let aData = JSON.parse(data);
+        //console.log(aData);
+        //setContextVars (aData);
+    }
     
     //--- show action    
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
