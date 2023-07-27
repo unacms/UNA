@@ -227,10 +227,10 @@ export default function ElementReactions(oProps) {
 
     const cb = (data) => {
         let aData = JSON.parse(data);
-        //console.log(aData);
-        //setContextVars (aData);
+        if(!!aData?.api)
+            setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
     }
-    
+
     //--- show action    
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;

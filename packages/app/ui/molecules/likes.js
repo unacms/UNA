@@ -1,12 +1,12 @@
-import { useState, useContext,useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
-import { useCurrentUser } from 'app/context/user';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
 
 
@@ -24,8 +24,6 @@ export default function ElementLikes(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
-
-    
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
@@ -140,6 +138,16 @@ export default function ElementLikes(oProps) {
         );
     };
 
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    useEffect(() => {
+        subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+    }, [])
+
+    const cb = (data) => {
+        let aData = JSON.parse(data);
+        if(!!aData?.api)
+            setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+    }
 
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
@@ -166,17 +174,6 @@ export default function ElementLikes(oProps) {
             <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
         );
     }
-
-    let { currentUser, setCurrentUser } = useCurrentUser();
-    useEffect(() => {
-        subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
-    }, [])
-
-    const cb = (data) => {
-        let a= JSON.parse(data);
-        setContextVars ({counter:{count:a.count, sum:a.count, rate:a.rate}})
-    }
-
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;

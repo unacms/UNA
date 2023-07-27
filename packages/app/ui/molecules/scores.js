@@ -1,14 +1,15 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Platform } from 'react-native';
-
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
+import { subscribe } from 'app/ui/atoms/socket';
 
 export default function ElementScore(oProps) {
     const bWeb = Platform.OS === 'web';
@@ -100,26 +101,28 @@ export default function ElementScore(oProps) {
 
         FeedbackHaptics(oParams.haptics_type);
 
-        performAction('do', {a: sAction}, (oData) => {
-            let iScoreOld = oCounter.score;
-            if(isContextVar('counter'))
+        performAction('do', {a: sAction}, (oData) => onHandleDo(oData));
+    };
+
+    const onHandleDo = (oData) => {
+        let iScoreOld = oCounter.score;
+        if(isContextVar('counter'))
             iScoreOld = getContextVar('counter').score;
 
-            if(oData?.counter != undefined) {
-                oData.counter.score_old = iScoreOld;
-                if(oData.counter.score != iScoreOld) {
-                    let iScore = parseInt(oData.counter.score);
-                    iScoreOld = parseInt(iScoreOld);
+        if(oData?.counter != undefined) {
+            oData.counter.score_old = iScoreOld;
+            if(oData.counter.score != iScoreOld) {
+                let iScore = parseInt(oData.counter.score);
+                iScoreOld = parseInt(iScoreOld);
 
-                    if(iScore > iScoreOld)
-                        setCounterClass('translate-y-1/2');
-                    else 
-                        setCounterClass('-translate-y-1/2');
-                }
+                if(iScore > iScoreOld)
+                    setCounterClass('translate-y-1/2');
+                else 
+                    setCounterClass('-translate-y-1/2');
             }
+        }
 
-            setContextVars(oData);
-        });
+        setContextVars(oData);
     };
 
     const handleGetPerformedBy = (event) => {
@@ -154,6 +157,16 @@ export default function ElementScore(oProps) {
         );
     };
 
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    useEffect(() => {
+        subscribe(currentUser.pusher, oProps.system + '_scores_' + oProps.object_id, 'voted', cb);
+    }, [])
+
+    const cb = (data) => {
+        let aData = JSON.parse(data);
+        if(!!aData?.api)
+            onHandleDo(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
+    }
 
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
