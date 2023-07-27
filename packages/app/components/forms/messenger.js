@@ -7,7 +7,6 @@ import { Platform } from 'react-native'
 export default function FormMessenger(props) {
     const [imageSource, setImageSource] = useState([]);
 
-    //console.log('------ we are in messenger form ------', props);
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource(prevImageSource => ({
@@ -32,14 +31,14 @@ export default function FormMessenger(props) {
                         {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
                     </View>
                     <View className='mr-2 flex-grow ' style={styles}>
-                        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
-                        {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
-                        {getFormFieldByData(props.data.inputs['parent_id'], props.handleSubmit, 'custom')}
+                        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
+                        {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'default')}
+                        {getFormFieldByData(props.data.inputs['parent_id'], props.handleSubmit, 'default')}
                         {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { placeholder: 'Message ...' })}
-                        {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
-                        {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
+                        {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'default')}
+                        {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'default')}
                     </View>
-                    <View className='w-10'>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>
+                    <View className='w-10'>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'default')}</View>
                 </Row>
 
             {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row> }
