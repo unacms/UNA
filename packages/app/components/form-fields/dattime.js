@@ -1,8 +1,10 @@
 import Field from './_field';
+import { useEffect } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { View, Row } from 'app/design/view'
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
+import Dropdown from 'app/ui/atoms/dropdown'
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
 import { Button } from 'app/design/controls';
@@ -11,22 +13,55 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 import { Hidden } from 'app/design/controls'
 
-export default function FormFieldDattime(props) {
-    let formContext = useFormContext();
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    let { field } = useController({ name, rules, defaultValue });
-    const [selected, setSelected] = useState('');
-    const [showImage, setShowImage] = useState(false);
-    let dateV = field.value.split(' ');
-    let date = dateV[0];
-    const { colors } = Theme();
+export default function FormFieldDattime({ name, value = '', type, ...props }) {
+    const formContext = useFormContext();
+    const rules = {};
+    const { field } = useController({ name, rules, defaultValue: value });
+
+    const [showModal, setShowModal] = useState(false);
+    const bIsTime = type === 'datetime';
+
+    const [date, time] = field.value.split(' ');
+    let [hour = '', minute = ''] = time ? time.split(':') : [];
     
+    const [dValue, setdValue] = useState({ dt: date, h: hour, m: minute });
+
+    // Value for dropdowns
+    const [valueh, setValueh] = useState(hour);
+    const [valuem, setValuem] = useState(minute);
+
+    useEffect(() => {
+        setValueh(dValue.h);
+        setValuem(dValue.m);
+    }, [dValue]);
+
+    const { colors } = Theme();
+
+    const generateValues = (range) => {
+        let values = [];
+        for(let i = 0; i < range; i++) {
+            let item = i.toString().padStart(2, '0');
+            values.push({ label: item, value: item });
+        }
+        return values;
+    }
+
+    const valuesh = generateValues(24);
+    const valuesm = generateValues(60);
+
+    const setValue = () => {
+        setTimeout(() => {
+            formContext.setValue(name, `${dValue.dt} ${dValue.h}:${dValue.m}:00Z`);
+        }, 100);
+        setShowModal(false);
+    }
+
+    const setTime1 = (v) => setdValue(prev => ({ ...prev, h: v }));
+    const setTime2 = (v) => setdValue(prev => ({ ...prev, m: v }));
+
     return (
         <Field {...props}>
-            <Modal title="Select date" onVisible={!!showImage} onClose={() => {setShowImage(false)}} outerClickClose={false} transparent={true}>
-                    
+            <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={true}>
                     <Calendar className=' bg-backgroundcard dark:bg-backgroundcard-dark'
                         theme={{
                             calendarBackground: colors.card,
@@ -34,26 +69,50 @@ export default function FormFieldDattime(props) {
                         renderArrow={direction => {return  <Icon icon={direction} width={24} height={24} />}}
                         initialDate = {date}
                         onDayPress={day => {
-                            setTimeout(() => {
-                                formContext.setValue(props.name, day.dateString + ' 00:00:00Z')
-                            }, 100);
-                            setShowImage(false);
+                            setdValue({dt:day.dateString, h:dValue.h, m:dValue.m})
                         }}
                         markedDates={field.value != '' ?{
-                            [date]: {selected: true, selectedColor: colors.primary},
-                            [selected]: {selected: true, selectedColor: colors.primary}
+                            [dValue.dt]: {selected: true, selectedColor: colors.primary}
                         } : {
-                            [selected]: {selected: true}
+                            [dValue.dt]: {selected: true}
                         }}
                     />
-                
+                    <View className='w-full justify-center items-center'>
+                        <Row className='justify-center items-center w-64'>
+                        {
+                            bIsTime && (
+                                <><View>
+                                    <Dropdown 
+                                        labelField="label"
+                                        valueField="value"
+                                        onChange={setTime1}
+                                        value={valueh}
+                                        data={valuesh}
+                                    />
+                                </View>    
+                                <Text className="text-2xl justify-center items-center"> : </Text>
+                                <View>
+                                    <Dropdown
+                                        labelField="label"
+                                        valueField="value"
+                                        onChange={setTime2}
+                                        value={valuem}
+                                        data={valuesm}
+                                    />
+                                </View>
+                                </>
+                            )
+                        } 
+                        <View className='mx-4'><Button title="Appply" onPress={() => { setValue(true) }}/></View>  
+                        </Row>
+                    </View>
             </Modal>
             <Row>
-                <View  className='w-28 mr-2'>
+                <View  className='w-40 mr-2'>
                     <Hidden name={props.name} onBlur={field.onBlur} value={field.value} />
                     <Input value={date} readonly={true} />
                 </View>
-                <Button startDecorator="calendar" onPress={() => { setShowImage(true) }}/>
+                <Button startDecorator="calendar" onPress={() => { setShowModal(true) }}/>
             </Row>
         </Field>
     );

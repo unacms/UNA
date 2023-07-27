@@ -34,7 +34,7 @@ function getSpace(sMode) {
             iSpace = iHeader;
             break;
         case sTablet:
-            iSpace = iFooter + iHeader;
+            iSpace = 0;//iFooter + iHeader;
             break;
         case sTablet2:
             iSpace = iHeader;

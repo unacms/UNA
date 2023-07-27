@@ -2,18 +2,19 @@ import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
-import React, { useMemo } from 'react';
+import React, {memo, useMemo} from 'react';
 import dynamic from "next/dynamic";
 import {useCurrentUser} from "../../context/user";
 import {FeedbackHaptics, linkify} from "../../lib/util";
-import { ActionsData } from 'app/context/actions';
+import ReactionContext, { ActionsData } from 'app/context/actions';
 import Html from "../../ui/atoms/html";
 import {Button} from "../../design/controls";
 import Menu from "../menu";
 import DropdownMenu from "../../ui/atoms/dropdown-menu";
 import Reactions from 'app/ui/molecules/reactions';
+import {fetcher} from "../../lib/fetcher";
 
-export function ListFeed(data) {
+const ListFeed = memo((data)  => {
   const { author_data, message, date, title, count, onPress } = data || {};
 
   return <Pressable onPress={onPress} >
@@ -53,7 +54,7 @@ export function ListFeed(data) {
         </View>
       </View>
     </Pressable>
-}
+});
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -63,30 +64,18 @@ function CarouselMemo({ aImg, b }) {
     return computedData;
 }
 
-export function MsgFeed({ item }) {
+const MsgFeed = memo(({ item, handleMenuSelect }) => {
     const { currentUser } = useCurrentUser();
 
-    const { author_data, created, count, files, message, menu, id } = item,
+    const { author_data, created, count, files, message, menu, id, reactions } = item,
         sCommentClass = " bg-neutral-500/10   rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
 
     if (!created)
         return (<View></View>);
 
-    const handleManageMenuSelect = (oItem, event) => {
-        switch(oItem.name) {
-            case 'item-edit':
-                console.log('TODO: Perfom comment edit.');
-                break;
-
-            case 'item-delete':
-                console.log('TODO: Perfom comment delete.');
-                break;
-        }
-    }
-
-    const aImg = files?.map(obj => {
+    const aImg = files?.map(({src}) => {
         return {
-            src: obj.file,
+            src,
             type: 'image'
         };
     });
@@ -104,14 +93,26 @@ export function MsgFeed({ item }) {
                         <View>
                             <Html data={linkify(message)} />
                         </View>
-                        { aImg && aImg.length > 0 && <View className='w-full aspect-video mb-6'>
+                        { aImg && aImg.length > 0 && <View className='w-full aspect-auto mb-6'>
                             <CarouselMemo aImg={aImg}/>
                         </View>
                         }
                     </View>
                     <View className="flex-row w-full justify-between items-center">
                         { !!currentUser ? <View className='mr-2'>
-                                          { <Reactions { ...{ type: 'icon', system: 'jot-menu', object_id: id, action: { reaction: 'default' } } } /> }
+                                                <Reactions {...{
+                                                    counter: { items: reactions },
+                                                    params: {
+                                                        show_combined: true,
+                                                        show_counter: true,
+                                                        show_action: true,
+                                                        show_counter_style: 'compound',
+                                                    },
+                                                    type: 'icon',
+                                                    system: 'bx_messenger_jot',
+                                                    object_id: id,
+                                                    action: { reaction: 'default' }
+                                                }} />
                                           </View> : <></> }
                         <View className='flex-row'>
                             <Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />
@@ -124,8 +125,8 @@ export function MsgFeed({ item }) {
                                         link: aItem.link,
                                         title: aItem.title
                                     };
-                                })} onSelect={handleManageMenuSelect}>
-                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" onPress={() => {FeedbackHaptics('Medium');}} rounded />
+                                })} onSelect={(oItem, event) => handleMenuSelect(oItem, id)}>
+                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" rounded onPress={() => {FeedbackHaptics('Medium');}} />
                                 </DropdownMenu>
                             </View>
                             }
@@ -138,4 +139,7 @@ export function MsgFeed({ item }) {
             </View>
         </View>
     );
-}
+});
+
+
+export { MsgFeed, ListFeed };

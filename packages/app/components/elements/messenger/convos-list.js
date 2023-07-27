@@ -10,6 +10,9 @@ import {WrappedTopMenu} from "./menu";
 import UniList from 'app/ui/atoms/unilist';
 import { useInfiniteQuery } from  '@tanstack/react-query';
 import { ListFeed } from 'app/components/units/convos-feeds';
+import {FlashList} from "@shopify/flash-list";
+import { useCurrentUser } from 'app/context/user';
+import {sPhone} from "./grid-utils";
 
 const styles = {
     infoText: [
@@ -60,11 +63,13 @@ function UserOnlineStatus(props){
 }
 
 const ConvoListItem = memo(({ item }) => {
-    const { handlerSelectConvo } = useContext(MessengerContext);
+    const { handlerSelectConvo, mode, selectPanel } = useContext(MessengerContext);
+    return <ListFeed { ...item } onPress={() => {
+        handlerSelectConvo(item);
+        if (mode === sPhone)
+            selectPanel('history');
 
-    //console.log('---- log generate list item -----', item );
-
-    return <ListFeed { ...item } onPress={() => handlerSelectConvo(item)} />;
+    }} />;
 });
 
 function SearchBox(props){
@@ -80,7 +85,6 @@ const ConvosListHeader = memo(({menu}) => {
     const [visible, setVisibility] = useState(false),
           handlerVisibility = () => setVisibility(!visible);
 
-    //console.log('---- log generate header top menu ---');
     return <View className="group relative justify-end flex flex-1 w-full whitespace-nowrap min-w-0 overflow-hidden">
              <View className="items-center flex flex-row justify-between text-neutral-800 dark:text-neutral-100 text-ellipsis overflow-hidden">
                <Text className={"ml-2 truncate text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center " + ( visible ? 'hidden' : '' ) }>{menu}</Text>
@@ -90,22 +94,23 @@ const ConvosListHeader = memo(({menu}) => {
          </View>
 });
 
-const Convos = ({ list, onLoadHistory }) => {
-    const { menuItem, height, handlerSetConvoItem, convo } = useContext(MessengerContext),
-          sUrl = '/api.php?r=bx_messenger/get_convos_list_json/&params=';
+const Convos = memo(({ menuItem, onSelectConvo, visible, height, convo }) => {
+    const { currentUser } = useCurrentUser();
+    const sUrl = '/api.php?r=bx_messenger/get_convos_list_json/&params=';
 
     const fetchData = async({ pageParam = 0 }) => {
             const { data } =  await fetcher(sUrl + JSON.stringify({ group: menuItem, count: pageParam }));
 
-            //console.log('---- log -- get talks list ---', data, convo);
-            if (typeof handlerSetConvoItem === 'function' && data && data.length && !convo)
-                handlerSetConvoItem(data[0]);
+        //console.log('----- select first load before -----', pageParam, data, convo);
+            if (typeof onSelectConvo === 'function' && !pageParam && data.length && !convo ) {
+                //console.log('----- select fiorst load -----', pageParam, data[0]);
+                onSelectConvo(data[0]);
+            }
 
             return data || [];
         };
 
         const {
-            status,
             data,
             error,
             fetchNextPage,
@@ -117,19 +122,16 @@ const Convos = ({ list, onLoadHistory }) => {
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             getNextPageParam: (lastPage, allPages) => {
-                //console.log('---- log get next Params -----', lastPage, allPages);
-
                 if (!lastPage || !lastPage.length || allPages[0].length !== lastPage.length)
                     return false;
 
                 return lastPage.length * allPages.length;
-            }
+            },
+            enabled: !!currentUser && visible
         });
 
     const handleEndReached = () => {
-        //console.log('---- log reach ends ----', isFetchingNextPage, data);
         if (!isFetchingNextPage && hasNextPage) {
-            //console.log('---- log get the next page  ----');
             fetchNextPage();
         }
     }
@@ -145,39 +147,35 @@ const Convos = ({ list, onLoadHistory }) => {
 
     const aList = data.pages.flatMap(page => page);
 
-    //console.log(' --- log generate talks list items --- ', convo, menuItem, data, aList, status, isFetchingNextPage);
     return !aList.length ? <Text className="text-2xl text-white text-center">Empty</Text> :
-            <UniList
-                data={ data.pages.flatMap(page => page) }
-                renderItem={ renderListItem }
-                onEndReachedThreshold={ 0.8 }
-                onEndReached = { handleEndReached }
-                keyExtractor={ keyExtractor }
-                height={ height - 48 }
-                ListFooterComponent = {
-                    hasNextPage && isFetchingNextPage && <View className='m-2'><Loading/></View>
-                }
-            />
-};
+            <View className="min-h-[2rem] flex-1">
+                <UniList
+                    data={ data.pages.flatMap(page => page) }
+                    renderItem={ renderListItem }
+                    onEndReachedThreshold={ 0 }
+                    onEndReached = { handleEndReached }
+                    keyExtractor={ keyExtractor }
+                   /* estimatedItemSize={ 64 }*/
+                    height={ height - 48 }
+                    ListFooterComponent = {
+                        hasNextPage && isFetchingNextPage && <View className='m-2'><Loading/></View>
+                    }
+                />
+            </View>
+});
 
-export const ConvosListColumn = ({ list, colWidth }) => {
-   //console.log('------ log generate talks list column  ----', list);
+export const ConvosList = memo((props) => {
+   const { menuItem, viewMenu, handlerMenuView, stylesName, selectConvo, visible, convo, height } = props;
+   console.log('--- render component ConvosList -----', menuItem, viewMenu, handlerMenuView, height);
 
-   return <View className={"h-full max-h-full overflow-hidden " + ( colWidth || 'w-full' ) } >
-            <ConvosList list={list} />
-          </View>;
-}
-
-export default function ConvosList(props) {
-    const { menuItem, viewMenu, handlerMenuView } = useContext(MessengerContext);
-   return <View className={"max-h-full flex w-full h-full flex-col relative" + (props.stylesName || "")}>
+   return <View className={"max-h-full flex w-full h-full flex-col relative" + (stylesName || "")}>
                 <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
                      <View className="xl:hidden ">
                          <Button variant="outline" startDecorator="List" rounded align="start" onPress={ handlerMenuView }/>
                      </View>
-                     <ConvosListHeader menu={menuItem} />
+                     <ConvosListHeader menu={ menuItem } />
                 </View>
-                <Convos {...props} />
+                <Convos convo={convo} height={height} menuItem={ menuItem } onSelectConvo={selectConvo} visible={visible}/>
                 { viewMenu && <WrappedTopMenu /> }
           </View>
-}
+});
