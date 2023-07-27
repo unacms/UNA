@@ -20,7 +20,7 @@ import 'app/styles/navigation.css';
 export default function DropdownMore(oProps) {
     const bWeb = Platform.OS === 'web';
 
-    const aDmItems = oProps.items.map((oItem) => {
+    const aDmItems = oProps.items.map((oItem, iIndex) => {
         let sIcon = undefined;
         if(!!oItem?.icon) {
             if(isEmoji(oItem.icon))
@@ -34,7 +34,7 @@ export default function DropdownMore(oProps) {
         }
 
         return (
-            <NmLink asChild>
+            <NmLink key={`link-${iIndex}`} asChild>
                 <Link href={oItem.link}>
                     <Row className="ListItemLink flex flex-row items-center space-x-2">
                         {!!sIcon && <View className="w-8 h-8">{sIcon}</View>}
