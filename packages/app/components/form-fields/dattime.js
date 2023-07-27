@@ -59,12 +59,17 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
     const setTime1 = (v) => setdValue(prev => ({ ...prev, h: v }));
     const setTime2 = (v) => setdValue(prev => ({ ...prev, m: v }));
 
+    console.log(colors.text_disabled);
+
     return (
         <Field {...props}>
-            <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={true}>
+            <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={false}>
                     <Calendar className=' bg-backgroundcard dark:bg-backgroundcard-dark'
                         theme={{
-                            calendarBackground: colors.card,
+                            calendarBackground: colors.background2,
+                            dayTextColor: colors.text,
+                            textDisabledColor: colors.border,
+                            monthTextColor: colors.text,
                         }}
                         renderArrow={direction => {return  <Icon icon={direction} width={24} height={24} />}}
                         initialDate = {date}
@@ -78,10 +83,11 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                         }}
                     />
                     <View className='w-full justify-center items-center'>
-                        <Row className='justify-center items-center w-64'>
-                        {
-                            bIsTime && (
-                                <><View>
+                    {
+                            bIsTime && (<Row className='justify-center items-center w-64 mt-2'>
+                                <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> Time </Text>
+                                <View>
+                                    
                                     <Dropdown 
                                         labelField="label"
                                         valueField="value"
@@ -90,7 +96,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                                         data={valuesh}
                                     />
                                 </View>    
-                                <Text className="text-2xl justify-center items-center"> : </Text>
+                                <Text className="text-base justify-center items-center text-neutral-900 dark:text-neutral-50"> : </Text>
                                 <View>
                                     <Dropdown
                                         labelField="label"
@@ -100,15 +106,13 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                                         data={valuesm}
                                     />
                                 </View>
-                                </>
-                            )
+                        </Row>)
                         } 
-                        <View className='mx-4'><Button title="Appply" onPress={() => { setValue(true) }}/></View>  
-                        </Row>
+                        <View className='mx-4 mt-2 w-full justify-end items-end'><Button title="Appply" onPress={() => { setValue(true) }}/></View>  
                     </View>
             </Modal>
             <Row>
-                <View  className='w-40 mr-2'>
+                <View className='w-40 mr-2'>
                     <Hidden name={props.name} onBlur={field.onBlur} value={field.value} />
                     <Input value={date} readonly={true} />
                 </View>
