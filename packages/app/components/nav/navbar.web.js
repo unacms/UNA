@@ -205,12 +205,42 @@ export default function (props) {
 
         <Row className="flex-row  flex-none justify-end lg:justify-between ">          
           <Row>
+          
             {!!currentUser && (
-              <Row className="flex-row  ml-2 justify-end   lg:flex">
+              <Row className="flex-row   justify-end ">
                 <View className=" flex-row my-auto ">
-                <View className="xl:hidden">
+                <View className="relative flex-row">
+                <DropdownMore items={menuItemsByName('', menu_top_more).map(
+                      (item, index) => {
+                        return (
+                         {
+                            id: 'menu-' + index,
+                            link: item.link,
+                            title: item.title,
+                            icon:
+                              item.icon.indexOf(' ') == -1
+                                ? item.icon
+                                : item.icon.split(' ')[0],
+                          }
+                        )
+                      }
+                    )}>
+                  <Button
+                    variant="outline"
+                    size="base"
+                    fullWidth
+                    rounded
+                    alt="All Apps"
+                    startDecorator="CirclesFour"
+                    aria-label="All Apps"
+                    onPress={() => {}}
+                  />
+                </DropdownMore>
+              </View>
+                <View className="xl:hidden ml-2">
                   <Search type="small" />
                 </View>
+                
                 <View className="ml-2">
                   <DropdownMenu
                     items={menuItemsByName('', menu_add).map(
@@ -331,33 +361,7 @@ export default function (props) {
                     </Link>
                   )
               )}
-              <View className="relative flex-row">
-                <DropdownMore items={menuItemsByName('', menu_top_more).map(
-                      (item, index) => {
-                        return (
-                         {
-                            id: 'menu-' + index,
-                            link: item.link,
-                            title: item.title,
-                            icon:
-                              item.icon.indexOf(' ') == -1
-                                ? item.icon
-                                : item.icon.split(' ')[0],
-                          }
-                        )
-                      }
-                    )}>
-                  <Button
-                    variant="text"
-                    size="lg"
-                    fullWidth
-                    alt="All Apps"
-                    startDecorator="CirclesFour"
-                    aria-label="All Apps"
-                    onPress={() => {}}
-                  />
-                </DropdownMore>
-              </View>
+             
             </Row>
           </Row>
       </View>
