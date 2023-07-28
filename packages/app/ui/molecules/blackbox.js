@@ -147,16 +147,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             }, 300);
 
             return (
-                <ScrollView  horizontal={true} className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark min-w-full">
+                <ScrollView  horizontal={true} className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  min-w-full">
                     <Row className="pl-4 gap-x-1" >
                         {props.navigationState.routes.map((a) => (
-                            <Pressable className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark"
+                            <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
                             >
                             <View > 
                                 <Button onPress={() => {
                                    setIndex(a.index)
-                                }} fullWidth={false} id="tab" rounded variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title} />
+                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title} />
                             </View>
                             </Pressable>
                         ))}

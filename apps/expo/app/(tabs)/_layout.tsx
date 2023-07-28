@@ -50,7 +50,7 @@ export default function AppLayout() {
       },
       tabBarInactiveTintColor: colors.barsColor,
       freezeOnBlur: true,
-      
+      unmountOnBlur: false,
   })}
     >
       {

@@ -21,6 +21,7 @@ export default function Root(props) {
             <Stack screenOptions={{ 
               headerShown: false, 
               freezeOnBlur: true,
+              unmountOnBlur: false,
               }}></Stack>
           </CurrentUserProvider>
         </QueryClientProvider>

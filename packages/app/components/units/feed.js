@@ -190,11 +190,11 @@ function DefaultUnit(data) {
                         )}
                         <View className="flex-auto p-2 md:p-4  flex-col    ">
                             <Link href={url} className="">
-                                <Text numberOfLines={1} className="  text-neutral-600 dark:text-neutral-400 text-xs  tracking-tight" >
-                                    { data.content.visibility != '3' && <> · PRIVATE GROUP</> }
-                                    { data.content.members > -1 && <> · {data.content.members} MEMBERS  </> }
-                                    { data.content.date_start && <> · <Time className="text-sm flex-none" ts={data.content.date_start}></Time> 
-                                        {data.content.date_end && <>- <Time className="text-sm flex-none" ts={data.content.date_end}></Time></>}
+                                <Text numberOfLines={1} className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight" >
+                                    { data.content.visibility != '3' ? <> · PRIVATE</> : <> · PUBLIC</> }
+                                    { data.content.members > -1 && <> · {data.content.members} MEMBERS </> }
+                                    { data.content.date_start && <> · <Time stylesName="text-xs flex-none" ts={data.content.date_start}></Time> 
+                                        {data.content.date_end && <>- <Time stylesName="text-xs flex-none" ts={data.content.date_end}></Time></>}
                                         </>
                                     }
                                 </Text>
