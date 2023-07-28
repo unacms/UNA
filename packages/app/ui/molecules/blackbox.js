@@ -147,7 +147,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             }, 300);
 
             return (
-                <ScrollView  horizontal={true} className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  min-w-full">
+                <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
                     <Row className="pl-4 gap-x-4" >
                         {props.navigationState.routes.map((a) => (
                             <Pressable className="items-center justify-center py-2.5"

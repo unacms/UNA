@@ -69,7 +69,7 @@ export function CoverSmall(props) {
       </View>
 
       <Pressable
-        className="mr-2 ml-2 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center"
+        className="mx-4 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center"
         onPress={routerExpo.back}
       >
         <Icon
@@ -162,7 +162,7 @@ export default function ElementCover(props) {
 
         </View>
      
-      <View className=" flex-col gap-y-2 p-4 border-b border-bordercolor dark:border-bordercolor-dark  ">
+      <View className=" flex-col gap-y-2 p-4   ">
 
       
           <CoverMenu {...data.actions_menu} />
