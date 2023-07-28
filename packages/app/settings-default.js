@@ -202,11 +202,10 @@ export const settingsDefault = {
         ],
         bx_persons_view_meta: {
             iconset: {
-                membership: 'UserCircle',
                 friends: 'Users',
                 subscribers: 'Users',
             },
-            items: ['membership', 'friends', 'subscribers'],
+            items: [ 'friends', 'subscribers'],
         },
         bx_persons_view_actions_all: [
             'profile-friend-add',

@@ -148,7 +148,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
             return (
                 <ScrollView  horizontal={true} className="bg-backgroundnavbar dark:bg-backgroundnavbar-dark  min-w-full">
-                    <Row className="pl-4 gap-x-1" >
+                    <Row className="pl-4 gap-x-4" >
                         {props.navigationState.routes.map((a) => (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
@@ -156,7 +156,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             <View > 
                                 <Button onPress={() => {
                                    setIndex(a.index)
-                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'outline': "text"}  size='sm' title={a.title} />
+                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={a.title} />
                             </View>
                             </Pressable>
                         ))}
