@@ -147,7 +147,7 @@ function DefaultUnit(data) {
                         </Row>
                     }
                 />
-                <View className="flex-auto    justify-end flex-row gap-x-2 my-auto">
+                <View className="flex-auto    justify-end flex-row my-auto">
                     {data.author_actions.map((item, index) => {
                         const Element = componentsMap[item.type];
                         if(!Element)
@@ -158,9 +158,11 @@ function DefaultUnit(data) {
                         ); 
                     })}
                     {aMenuManageItems?.length > 0 && 
+                        <View className="flex-none ml-2">
                         <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
                             <Button id="mm-button" variant="outline" size="sm" rounded startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
                         </DropdownMenu>
+                        </View>
                     }
                 </View>
             </View>

@@ -173,7 +173,7 @@ export function Button(props) {
         case 'sm':
             sClassContainer += buttonRounded ? 'rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-0.5 ' : '');
-            sClassText += ' text-sm '
+            sClassText += ' text-sm  '
             iIconSize = 20;
             sTitleContainer += buttonTitle !== '' ? 'mx-1.5 ' : '' // Conditionally add 'mx-2' class
 
