@@ -71,6 +71,7 @@ export function Root (props) {
         }
 
     }, [data?.user]);
+
     if (Platform.OS === 'web')
         console.log('************ Cache settings ************ Page =', appSetting('cache', 'page'), 'Lists =', appSetting('cache', 'list'));
         
@@ -78,7 +79,6 @@ export function Root (props) {
         <Layout path={props?.path} data={data} uri={data?.uri}>
             {Platform.OS === 'web' && <CurRouter exitingFunction={exitingFunction}  />}
             <PageLayout path={props?.path} data={data} uri={data?.uri} />
-            {/*200 == parseInt(props.status) ? <PageLayout path={props?.path} data={props?.data} uri={props?.data?.uri} /> : <PageError uri={props.path} {...props} />*/}
         </Layout>
     );
 }

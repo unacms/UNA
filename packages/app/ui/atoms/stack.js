@@ -11,6 +11,7 @@ const StackCustom = () => {
                 backgroundColor: colors.barsBackground,
             }, 
             freezeOnBlur: true,
+            unmountOnBlur: false,
     })}/>;
 };
 export default StackCustom;

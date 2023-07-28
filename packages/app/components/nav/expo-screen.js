@@ -11,6 +11,7 @@ import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
 import * as Linking from 'expo-linking';
+import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
 
 export function Screen(params) {
@@ -24,6 +25,7 @@ export function Screen(params) {
     const { colors } = Theme();
   
     let _path = route?.path;
+
 
     // DEEP LINKING
     const url = Linking.useURL();
@@ -42,12 +44,20 @@ export function Screen(params) {
             const item = tabList.find((item) => item.key === pathname);
             _path = item ? item.url : null;
     }
+    
+   
 
     const backButtonPresented = useNavigationState((state) => {
         return state.routes.length > 1;
     });
 
     const isFocused2 = useIsFocused();
+
+
+    console.log('*** update screen ***--' + _path, params)
+
+    // return <Text>Text</Text>;
+
     useEffect(() => {
         const fetchPageData = async () => {
             
@@ -60,9 +70,20 @@ export function Screen(params) {
                     path2 = b.path;
                     params = JSON.stringify(parseQueryString(b.queryString));
                 }
-                
-                const data = await getData(path2, null, null, null, null, params);
-                
+                const MMKV = new MMKVLoader().withInstanceID("userId" + (currentUser ? currentUser.id : '0')).initialize();
+                    
+                let cacheData = await MMKV.getStringAsync('page-' + path2);
+                let data = null;
+                if (!cacheData){
+                   //console.log('-------------------1')
+                    data = await getData(path2, null, null, null, null, params);
+                    await MMKV.setStringAsync('page-' + path2, JSON.stringify(data));
+                }
+                else{
+                    console.log('------------------- from cache :' + _path)
+                    data = JSON.parse(cacheData);
+                }
+
                 if (data?.props) {
                     setPageData(data.props);
 
@@ -84,8 +105,8 @@ export function Screen(params) {
   
       fetchPageData();
     }, [_path]);
-
+  
     return pageData?.data ? (
-        <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
+       <Text>123</Text>
     ) : <></>;
 }
