@@ -202,11 +202,10 @@ export const settingsDefault = {
         ],
         bx_persons_view_meta: {
             iconset: {
-                membership: 'UserCircle',
                 friends: 'Users',
                 subscribers: 'Users',
             },
-            items: ['membership', 'friends', 'subscribers'],
+            items: [ 'friends', 'subscribers'],
         },
         bx_persons_view_actions_all: [
             'profile-friend-add',
@@ -656,7 +655,7 @@ export const settingsDefault = {
             'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
             'u-btn-link-trans': ' duration-200 ',
 
-            'u-btn-outline-cnt': ' border border-neutral-500/20    active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
+            'u-btn-outline-cnt': ' border border-neutral-200 dark:border-neutral-800   active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
             'u-btn-outline-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-outline-trans': ' duration-200 ',
 
