@@ -1,23 +1,25 @@
 import { Root, getData } from 'app/root'
 import { useState, useEffect } from 'react'
-import { useNavigation, usePathname } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
-import { useIsFocused } from '@react-navigation/native';
+
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
-import * as Linking from 'expo-linking';
+//import * as Linking from 'expo-linking';
 import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
 
 export function Screen(params) {
+
+    const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
-    const pathname = usePathname();
+   
     const route = useRoute();
     const [pageData, setPageData] = useState(null);
 
@@ -25,16 +27,16 @@ export function Screen(params) {
     const { colors } = Theme();
   
     let _path = route?.path;
-
+    //console.log('*** update screen ***--' + _path, params)
 
     // DEEP LINKING
-    const url = Linking.useURL();
+    /*const url = Linking.useURL();
     if (url &&  typeof url !== 'undefined'){
         let a = parseUrl(url);
         _path = '/'+ a.path + (a.queryString ? '?' + a.queryString : '')
         if (_path == '/')
             _path = '/home';
-    }
+    }*/
     // DEEP LINKING
     
     if (!_path || _path.includes('/tab')){
@@ -44,24 +46,15 @@ export function Screen(params) {
             const item = tabList.find((item) => item.key === pathname);
             _path = item ? item.url : null;
     }
-    
-   
 
     const backButtonPresented = useNavigationState((state) => {
         return state.routes.length > 1;
     });
 
-    const isFocused2 = useIsFocused();
-
-
-    console.log('*** update screen ***--' + _path, params)
-
-    // return <Text>Text</Text>;
+    const isFocused2 = true;//useIsFocused();
 
     useEffect(() => {
         const fetchPageData = async () => {
-            
-            // TODO: tmp check for !_path.includes('/?url=') was added to avoid double fething and errors
             if (isFocused2 && _path && _path.startsWith('/') && !_path.includes('/?url=')) {
                 let path2 = _path;
                 let b = parseUrl(_path);
@@ -74,13 +67,13 @@ export function Screen(params) {
                     
                 let cacheData = await MMKV.getStringAsync('page-' + path2);
                 let data = null;
+
                 if (!cacheData){
-                   //console.log('-------------------1')
                     data = await getData(path2, null, null, null, null, params);
                     await MMKV.setStringAsync('page-' + path2, JSON.stringify(data));
                 }
                 else{
-                    console.log('------------------- from cache :' + _path)
+                    //console.log('------------------- from cache :' + _path)
                     data = JSON.parse(cacheData);
                 }
 
@@ -107,6 +100,6 @@ export function Screen(params) {
     }, [_path]);
   
     return pageData?.data ? (
-       <Text>123</Text>
+        <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
     ) : <></>;
 }
