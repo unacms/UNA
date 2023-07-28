@@ -23,7 +23,7 @@ import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import { useRouter } from 'next/router';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import DropdownMore from 'app/ui/atoms/dropdown-more';
+import Tooltip from 'app/ui/atoms/tooltip';
 
 export default function (props) {
   const redirectdRef = useRef()
@@ -225,16 +225,18 @@ export default function (props) {
                         )
                       }
                     )}>
-                  <Button
-                    variant="outline"
-                    size="base"
-                    fullWidth
-                    rounded
-                    alt="All Apps"
-                    startDecorator="CirclesFour"
-                    aria-label="All Apps"
-                    onPress={() => {}}
-                  />
+                  <Tooltip content="Apps">
+                    <Button
+                      variant="outline"
+                      size="base"
+                      fullWidth
+                      rounded
+                      alt="All Apps"
+                      startDecorator="CirclesFour"
+                      aria-label="All Apps"
+                      onPress={() => {}}
+                    />
+                  </Tooltip>
                 </DropdownMenu>
               </View>
                 <View className="xl:hidden ml-2">
@@ -259,14 +261,16 @@ export default function (props) {
                       }
                     )}
                   >
-                    <Button
-                      variant="outline"
-                      rounded
-                      startDecorator="plus"
-                      id="m3"
-                      aria-label="Create"
-                      onPress={() => {}}
-                    />
+                    <Tooltip content="Create content">
+                      <Button
+                        variant="outline"
+                        rounded
+                        startDecorator="plus"
+                        id="m3"
+                        aria-label="Create"
+                        onPress={() => {}}
+                      />
+                    </Tooltip>
                   </DropdownMenu>
                 </View>
                 <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
@@ -289,17 +293,18 @@ export default function (props) {
                       ntfsContent,
                     ]}
                   </DropdownPopup>
-                  <Button
-                    variant="outline"
-                    rounded
-                    startDecorator="ChatTeardropDots"
-                    id="m2"
-                    aria-label="Messages"
-                    onPress={() => {
-                      handleClick('/messenger')
-                    }}
-                  />
-                  
+                  <Tooltip content="Messenger">
+                    <Button
+                      variant="outline"
+                      rounded
+                      startDecorator="ChatTeardropDots"
+                      id="m2"
+                      aria-label="Messages"
+                      onPress={() => {
+                        handleClick('/messenger')
+                      }}
+                    />
+                  </Tooltip>
                 </View>
                 
                 {profile ? (
