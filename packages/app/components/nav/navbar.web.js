@@ -210,7 +210,7 @@ export default function (props) {
               <Row className="flex-row   justify-end ">
                 <View className=" flex-row my-auto ">
                 <View className="relative flex-row">
-                <DropdownMore items={menuItemsByName('', menu_top_more).map(
+                <DropdownMenu items={menuItemsByName('', menu_top_more).map(
                       (item, index) => {
                         return (
                          {
@@ -235,7 +235,7 @@ export default function (props) {
                     aria-label="All Apps"
                     onPress={() => {}}
                   />
-                </DropdownMore>
+                </DropdownMenu>
               </View>
                 <View className="xl:hidden ml-2">
                   <Search type="small" />

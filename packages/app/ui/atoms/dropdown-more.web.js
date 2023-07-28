@@ -36,9 +36,9 @@ export default function DropdownMore(oProps) {
         return (
             <NmLink key={`link-${iIndex}`} asChild>
                 <Link href={oItem.link}>
-                    <Row className="ListItemLink flex flex-row items-center space-x-2">
+                    <Row className="flex flex-row items-center space-x-2 select-none rounded-[4px] px-3 py-2 text-[15px] font-medium leading-none no-underline outline-none hover:bg-backgroundbutton-hover dark:hover:bg-backgroundbutton-darkhover font-medium">
                         {!!sIcon && <View className="w-8 h-8">{sIcon}</View>}
-                        {!!oItem?.title && <View className=""><Text {...(bWeb ? {className: 'ListItemHeading ' + oItem?.class_item_title} : {})}>{oItem.title}</Text></View>}
+                        {!!oItem?.title && <View {...(bWeb ? {className: 'font-medium leading-[1.2] ' + oItem?.class_item_title} : {})}><Text className="text-neutral-700 dark:text-neutral-200 dark:hover:text-white">{oItem.title}</Text></View>}
                     </Row>    
                 </Link>
             </NmLink>
@@ -46,20 +46,20 @@ export default function DropdownMore(oProps) {
     });
 
     return (
-        <NmRoot className="NavigationMenuRoot">
-            <NmList className="NavigationMenuList">
+        <NmRoot className="relative z-[1] flex justify-center">
+            <NmList className="center m-0 flex list-none">
                 <NmItem>
-                    <NmTrigger className="NavigationMenuTrigger">{oProps.children}</NmTrigger>
-                    <NmContent className="NavigationMenuContent">
-                        <View className="List two">{aDmItems}</View>
+                    <NmTrigger className="group flex items-center justify-between font-medium leading-none outline-none select-none">{oProps.children}</NmTrigger>
+                    <NmContent className="NavigationMenuContent absolute top-0 left-0 w-full sm:w-auto">
+                        <View className="grid list-none m-0 gap-x-[10px] p-[22px] sm:w-[320px] sm:grid-flow-col sm:grid-rows-2">{aDmItems}</View>
                     </NmContent>
                 </NmItem>
-                <NmIndicator className="NavigationMenuIndicator">
-                    <View className="Arrow" />
+                <NmIndicator className="data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]">
+                    <View className="relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-backgroundmodal dark:bg-backgroundmodal-dark" />
                 </NmIndicator>
             </NmList>
-            <View className="ViewportPosition">
-                <NmViewport className="NavigationMenuViewport" />
+            <View className="perspective-[2000px] absolute top-full left-0 flex w-full justify-center">
+                <NmViewport className="NavigationMenuViewport data-[state=open]:animate-scaleIn data-[state=closed]:animate-scaleOut relative mt-[10px] h-[var(--radix-navigation-menu-viewport-height)] w-full origin-[top_center] overflow-hidden rounded-[6px] bg-backgroundmodal dark:bg-backgroundmodal-dark transition-[width,_height] duration-300 sm:w-[var(--radix-navigation-menu-viewport-width)]" />
             </View>
         </NmRoot>
     );
