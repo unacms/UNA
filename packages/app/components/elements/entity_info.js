@@ -11,8 +11,8 @@ export default function ElementEntityInfo({data}) {
         const v = a.values ? a.values[a.value]: a.value;
         if (v){
             if (a.type){
-                return <><Row className='items-center ' key={a.name}>{getIcon(a)}<View className='ml-4'><Text className='font-bold text-base text-neutral-800 dark:text-neutral-200'>{a.caption}</Text></View></Row>
-                {getValue(a)}</>
+                return <View key={a.name}><Row className='items-center ' >{getIcon(a)}<View className='ml-4'><Text className='font-bold text-base text-neutral-800 dark:text-neutral-200'>{a.caption}</Text></View></Row>
+                {getValue(a)}</View>
             }
             else{
                 return <Text key={a.name}>Unsupporded field type: {a.type}</Text>

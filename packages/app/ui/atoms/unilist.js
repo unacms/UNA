@@ -3,7 +3,6 @@ import { LayoutData } from 'app/context/layout';
 import { useContext } from 'react';
 
 export default function UniList(props) {
-    
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props

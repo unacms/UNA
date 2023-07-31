@@ -184,12 +184,24 @@ export default function PageLayout(props) {
                   <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                     </View>
                   </Pressable>
+                  {appSetting('feed', 'show_selector_view') &&
+                    <Row className="flex-auto flex-auto justify-end">
+                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitMode('')}} >
+                      <Button startDecorator="Rows"  fullWidth={false}  rounded variant={unitMode == '' ? 'outline': "text"} size='sm'  />
+                      </Pressable>
+                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitMode('small')}} >
+                      <Button startDecorator="ListBullets"  fullWidth={false}  rounded variant={unitMode == 'small' ? 'outline': "text"}  size='sm'   />
+                      </Pressable>
+                    </Row>
+                  }
+
                 </Row> 
                 { feedType == 'public' && <View className={feedType == 'public' ? '' : ' h-full'}>
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
-                menu={menu} 
+                menu={menu}
+                unitMode={unitMode} 
                 data={dataHome} 
                 blocks={props.blocks}
             /></LayoutDataContext>
@@ -198,7 +210,8 @@ export default function PageLayout(props) {
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
-                menu={menu} 
+                menu={menu}
+                unitMode={unitMode} 
                 data={dataAccount} 
                 blocks={props.blocks}
             /></LayoutDataContext>
@@ -209,6 +222,7 @@ export default function PageLayout(props) {
                 isHideDefaultHeader={false} 
                 menu={menu} 
                 data={dataHot} 
+                unitMode={unitMode}
                 blocks={props.blocks}
             /></LayoutDataContext>
                 </View> }
@@ -217,7 +231,8 @@ export default function PageLayout(props) {
                 <LayoutDataContext><BlackBox 
                 minHeaderHeight={0} 
                 isHideDefaultHeader={false} 
-                menu={menu} 
+                menu={menu}
+                unitMode={unitMode} 
                 data={data} 
                 blocks={props.blocks}
             /></LayoutDataContext>

@@ -193,7 +193,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module }) {
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode  }) {
     if (item?.type === 'block') {
         let b = BlockByName2({b:item.data, name:item.block})
         if (!b)
@@ -207,7 +207,7 @@ export function ItemRenderer({ route, numColumns, item, unit, module }) {
     } else {
       return (
         <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
-            <Unit module={module} unit={unit} data={item} mode={appSetting('feed', 'default_view')} />
+            <Unit module={module}  unit={unit} data={item} mode={unitMode} />
         </View>
       );
     }

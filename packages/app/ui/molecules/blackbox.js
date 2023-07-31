@@ -15,8 +15,7 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/hooks/skeleton';
 import { Button } from 'app/design/controls';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false }) {
-
+export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='' }) {
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -55,7 +54,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     });
 
     const handleEndReached = useCallback(async () => {
-        console.log('================')
+       
         if (isFetchingNextPage) 
             return;
         fetchNextPage();
@@ -111,7 +110,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     index={route.index}
                     data={route.data}
                     unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                    renderItem={({ item, index }) => <ItemRenderer unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route.data.length > 0 && route?.endpoint?.finished === false) ? (
                             Preload
@@ -120,7 +119,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 />
     )};
 
-    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, []);
+    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
 
     const renderTabBar = (props) => {
       
