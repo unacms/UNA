@@ -259,7 +259,7 @@ export const staticDefault = {
             <View className=" w-full p-8 md:w-[40%]  hover:scale-110 hover:rotate-[360deg] duration-500 w-full  p-4  ">
               <Svg
                 aria-label="Logo Mark"
-                className=" w-full h-24  "
+                className=" w-full  "
                 viewBox="0 0 2400 2400"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
