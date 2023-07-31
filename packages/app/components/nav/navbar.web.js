@@ -351,18 +351,20 @@ export default function (props) {
                 (item, index) =>
                 (currentUser || (!currentUser && item.nonlogged != false)) && (
                     <Link href={item.link} key={`menu-${index}`}>
-                      <Button
-                        variant="text"
-                        size="lg"
-                        fullWidth
-                        alt={item.title}
-                        startDecorator={
-                          item.icon.indexOf(' ') == -1
-                            ? item.icon
-                            : item.icon.split(' ')[0]
-                        }
-                        align="start"
-                      />
+                      <Tooltip content={item.title}>
+                        <Button
+                          variant="text"
+                          size="lg"
+                          fullWidth
+                          alt={item.title}
+                          startDecorator={
+                            item.icon.indexOf(' ') == -1
+                              ? item.icon
+                              : item.icon.split(' ')[0]
+                          }
+                          align="start"
+                        />
+                      </Tooltip>
                     </Link>
                   )
               )}
