@@ -84,7 +84,7 @@ export default function PageLayout(props) {
                   <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('public')}}>
                     <Button fullWidth={true} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                   </Pressable>
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('hot')}}>
+                  <Pressable  className=" hidden my-auto items-center" onPress={() => {setFeedType('hot')}}>
                     <Button fullWidth={true} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                   </Pressable>
                   {appSetting('feed', 'show_selector_view') &&
@@ -168,18 +168,18 @@ export default function PageLayout(props) {
         {!!currentUser && (
           <>
           { appSetting('feed', 'show_multi') ? <>
-                <Row className="pl-4 gap-x-1 ">
-                <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('account')}}>
-                  <View>
-                  <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
-                    </View>
+                <Row className="px-auto justify-center gap-x-1 ">
+                  <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setFeedType('account')}}>
+                    
+                      <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
+                    
                   </Pressable>
-                  <Pressable  className=" items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('public')}}>
+                  <Pressable  className=" items-center justify-center py-2.5  " onPress={() => {setFeedType('public')}}>
                     <View >
                     <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                     </View>
                   </Pressable>
-                  <Pressable  className="items-center justify-center py-2.5  border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" onPress={() => {setFeedType('hot')}}>
+                  <Pressable  className="items-center hidden justify-center py-2.5 " onPress={() => {setFeedType('hot')}}>
                   <View>
                   <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                     </View>

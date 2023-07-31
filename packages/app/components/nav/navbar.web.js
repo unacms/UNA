@@ -209,39 +209,39 @@ export default function (props) {
             {!!currentUser && (
               <Row className="flex-row   justify-end ">
                 <View className=" flex-row my-auto ">
-                <View className="relative flex-row">
-                <DropdownMenu items={menuItemsByName('', menu_top_more).map(
-                      (item, index) => {
-                        return (
-                         {
-                            id: 'menu-' + index,
-                            link: item.link,
-                            title: item.title,
-                            icon:
-                              item.icon.indexOf(' ') == -1
-                                ? item.icon
-                                : item.icon.split(' ')[0],
-                          }
-                        )
-                      }
-                    )}>
-                  <Tooltip content="Apps">
-                    <Button
-                      variant="outline"
-                      size="base"
-                      fullWidth
-                      rounded
-                      alt="All Apps"
-                      startDecorator="CirclesFour"
-                      aria-label="All Apps"
-                      onPress={() => {}}
-                    />
-                  </Tooltip>
-                </DropdownMenu>
-              </View>
-                <View className="xl:hidden ml-2">
-                  <Search type="small" />
-                </View>
+                  <View className="relative hidden lg:flex flex-row">
+                  <DropdownMenu items={menuItemsByName('', menu_top_more).map(
+                        (item, index) => {
+                          return (
+                          {
+                              id: 'menu-' + index,
+                              link: item.link,
+                              title: item.title,
+                              icon:
+                                item.icon.indexOf(' ') == -1
+                                  ? item.icon
+                                  : item.icon.split(' ')[0],
+                            }
+                          )
+                        }
+                      )}>
+                    <Tooltip content="Apps">
+                      <Button
+                        variant="outline"
+                        size="base"
+                        fullWidth
+                        rounded
+                        alt="All Apps"
+                        startDecorator="CirclesFour"
+                        aria-label="All Apps"
+                        onPress={() => {}}
+                      />
+                    </Tooltip>
+                  </DropdownMenu>
+                  </View>
+                  <View className="xl:hidden ml-2">
+                    <Search type="small" />
+                  </View>
                 
                 <View className="ml-2">
                   <DropdownMenu
