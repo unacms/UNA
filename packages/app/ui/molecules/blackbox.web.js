@@ -152,7 +152,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full backdrop-blur items-center justify-center bg-backgroundnavbar dark:bg-backgroundnavbar-dark"  >
+                <View className="w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
                         <Row className="items-center">
