@@ -290,7 +290,7 @@ export default function (props) {
                         startDecorator="notifications"
                         id="m1"
                       />,
-                      ntfsContent,
+                      ntfsContent
                     ]}
                   </DropdownPopup>
                   <Tooltip content="Messenger">
