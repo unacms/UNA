@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
+import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
