@@ -10,7 +10,6 @@ import {WrappedTopMenu} from "./menu";
 import UniList from 'app/ui/atoms/unilist';
 import { useInfiniteQuery } from  '@tanstack/react-query';
 import { ListFeed } from 'app/components/units/convos-feeds';
-import {FlashList} from "@shopify/flash-list";
 import { useCurrentUser } from 'app/context/user';
 import {sPhone} from "./grid-utils";
 
