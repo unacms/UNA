@@ -3,9 +3,8 @@ import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
-import { appSetting } from 'app/lib/util'
+import { appSetting, md5 } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
-import { stringMd5 } from 'react-native-quick-md5'; 
 import { useState } from 'react';
 
 
@@ -102,7 +101,7 @@ export default function ElementHtml(props) {
             let widthIfr = width-32
             let heightIfr = widthIfr * 9/16 + 4;
 
-            let hash = stringMd5(capture);
+            let hash = md5(capture);
             let item = iframeH[hash];
   
             if (item && !capture.includes('youtube.com')){

@@ -11,7 +11,7 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import  CurRouter from "app/ui/atoms/router";
 import { useInfiniteQuery } from  '@tanstack/react-query'
-import { getSkeleton } from 'app/lib/hooks/skeleton';
+import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
 

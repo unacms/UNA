@@ -11,8 +11,7 @@ import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from '../../lib/fetcher';
 import { useFormContext } from 'react-hook-form';
-import { uploadImage } from '../../lib/util';
-import { stringMd5 } from 'react-native-quick-md5';
+import { uploadImage, md5 } from '../../lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';
@@ -117,7 +116,7 @@ export default function FormFieldFiles(props) {
                             uri = resizedPhoto.uri;
                           }
                           
-                          let hash = stringMd5(uri);
+                          let hash = md5(uri);
                           uploadImage(
                             uri,
                             url + '&a=upload',

@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
+import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
@@ -12,7 +12,7 @@ import { appSetting, deepEqual } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
-import { getSkeleton } from 'app/lib/hooks/skeleton';
+import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='' }) {

@@ -1,4 +1,4 @@
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import { useState, useEffect } from 'react'
@@ -11,7 +11,6 @@ import { Button } from 'app/design/controls'
 import { Story } from 'app/ui/molecules/stories'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
-import { ScrollView } from 'dripsy'
 
 export default function PageLayout(props) {
   const isWeb = Platform.OS == 'web'

@@ -9,7 +9,7 @@ import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
 import  CurRouter from "app/ui/atoms/router";
 import { useInfiniteQuery } from  '@tanstack/react-query'
-import { getSkeleton } from 'app/lib/hooks/skeleton';
+import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export default function ElementBrowse(props) {
 

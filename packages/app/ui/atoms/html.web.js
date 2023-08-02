@@ -1,6 +1,5 @@
-import { appSetting } from 'app/lib/util'
+import { appSetting, md5 } from 'app/lib/util'
 import { useColorScheme } from 'react-native'; 
-import { stringMd5 } from 'react-native-quick-md5'; 
 
 export default function ElementHtml(props) {
     let data = props.data;
@@ -25,7 +24,7 @@ export default function ElementHtml(props) {
         data = data.replace(regex, function (match, capture) {
             // Customize the className based on the captured value
 
-            let hash = stringMd5(capture);
+            let hash = md5(capture);
             return (
                 '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl aspect-video mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );

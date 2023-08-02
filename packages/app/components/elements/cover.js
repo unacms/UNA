@@ -8,13 +8,7 @@ import { useRouter } from 'expo-router'
 import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
-import {
-  Canvas,
-  Fill,
-  Image as Image2,
-  BackdropBlur,
-  useImage,
-} from '@shopify/react-native-skia'
+import { BlurView } from 'expo-blur';
 
 function CoverMenu(props) {
   return (
@@ -34,37 +28,22 @@ export function CoverSmall(props) {
   const routerExpo = useRouter()
   const data = props.data
   const { colors } = Theme()
-  const windowWidth = useWindowDimensions().width
-  let image = null
-  if (data.cover) {
-    image = useImage(data.cover.src)
-
-    if (!image) return <></>
-  }
+  const windowWidth = useWindowDimensions().width;
 
   return (
     <Row
-      className=" justify-left items-center pt-10  w-full h-24"
+      className=" justify-left items-center pt-4 w-full h-24"
       style={{ backgroundColor: colors.barsBackground }}
     >
-      <View className="absolute h-80 w-full">
+      <View className="absolute h-80 w-full 0">
         {!!data.cover && (
-          <Canvas style={{ width: windowWidth, height: 256 }}>
-            <Image2
-              image={image}
-              x={0}
-              y={0}
-              width={windowWidth}
-              height={256}
-              fit="cover"
-            />
-            <BackdropBlur
-              blur={10}
-              clip={{ x: 0, y: 0, width: windowWidth, height: 256 }}
-            >
-              <Fill color="rgba(0, 0, 0, 0.1)" />
-            </BackdropBlur>
-          </Canvas>
+             <><Image  view="cover"
+             sizes="(max-width:1280px) 100vw, 1280px"
+             className="u-cover "
+             src={data.cover.src} />
+            <BlurView intensity={90} tint="dark" style={{width:'100%', height:320}} className='bg-red-500'>
+           </BlurView></>
+         
         )}
       </View>
 

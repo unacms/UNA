@@ -12,6 +12,10 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function md5(str) {
+    return stringMd5(str);
+}
+
 export function getPageWidth(uri) {
     let settings = appSetting('layouts', uri)
     if (settings?.max_width)

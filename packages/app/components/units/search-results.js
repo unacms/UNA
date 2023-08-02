@@ -1,11 +1,10 @@
 import { useState, useRef } from 'react';
 import { stripTags,getImageSizes } from '../../lib/util';
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
-import { Pressable } from 'dripsy';
 import Link from '../../ui/atoms/link';
 
 export default function UnitSearchResults(props) {
