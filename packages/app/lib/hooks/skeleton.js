@@ -14,7 +14,7 @@ export default function useLoadingSkeleton(width) {
         setState((prevState) => ({ ...prevState, loading: false }))
     }, [])
 
-    useEffect(() => {
+    /*useEffect(() => {
         Router.events.on('routeChangeStart', handleRouteChangeStart)
         Router.events.on('routeChangeComplete', handleRouteChangeComplete)
         Router.events.on('routeChangeError', handleRouteChangeComplete)
@@ -26,7 +26,7 @@ export default function useLoadingSkeleton(width) {
             Router.events.off('routeChangeError', handleRouteChangeComplete)
         }
     }, [handleRouteChangeStart, handleRouteChangeComplete])
-
+*/
     const selectSkeleton = useCallback(
         (url) => {
             if (!url || url === '/') {

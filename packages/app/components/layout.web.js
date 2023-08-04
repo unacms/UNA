@@ -4,7 +4,7 @@ import { useWindowDimensions } from 'react-native'
 //import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
-import useSkeleton from '../lib/hooks/skeleton';
+//import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
 import { useColorScheme } from 'react-native';
@@ -25,7 +25,7 @@ function NavbarMemo({ title, menu_add, uri }) {
 export default function Layout(props) {  
 
     let { width } = useWindowDimensions();
-    const [loading, skeleton] = useSkeleton(width);
+    //const [loading, skeleton] = useSkeleton(width);
 
     useEffect(() => {
         document.title = props?.data?.title;
@@ -92,12 +92,13 @@ export default function Layout(props) {
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
-                    {
-                        (loading) ? (props?.data?.cached? <></>: <>{ (headerSettings.offset) && <View className='w-full h-16'/> }{skeleton}</>) : (<View className='w-full mx-auto'>
+                    {/*
+                        (loading) ? (props?.data?.cached? <></>: <>{ (headerSettings.offset) && <View className='w-full h-16'/> }{skeleton}</>) : ()*/
+                    }
+                    <View className='w-full mx-auto'>
                             { (headerSettings.offset) && <View className='w-full h-16' /> }
                             { props.children }
-                        </View>)
-                    }
+                        </View>
                     </View> 
                 </View>
                 <Footer/>
