@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import { View, Row } from 'app/design/view'
-import { Calendar } from 'react-native-calendars';
+//import { Calendar } from 'react-native-calendars';
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
@@ -14,6 +14,14 @@ import { Theme } from 'app/design/theme';
 import { Hidden } from 'app/design/controls'
 
 export default function FormFieldDattime({ name, value = '', type, ...props }) {
+    const [DynamicCalendar, setDynamicCalendar] = useState(null);
+
+    useEffect(() => {
+        import('react-native-calendars').then((Calendars) => {
+            setDynamicCalendar(() => Calendars.Calendar);
+        });
+    }, []);
+
     const formContext = useFormContext();
     const rules = {};
     const { field } = useController({ name, rules, defaultValue: value });
@@ -64,7 +72,8 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
     return (
         <Field {...props}>
             <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={false}>
-                    <Calendar className=' bg-backgroundcard dark:bg-backgroundcard-dark'
+                    {DynamicCalendar && <DynamicCalendar 
+                        className=' bg-backgroundcard dark:bg-backgroundcard-dark'
                         theme={{
                             calendarBackground: colors.background2,
                             dayTextColor: colors.text,
@@ -81,7 +90,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                         } : {
                             [dValue.dt]: {selected: true}
                         }}
-                    />
+                    />}
                     <View className='w-full justify-center items-center'>
                     {
                             bIsTime && (<Row className='justify-center items-center w-64 mt-2'>
