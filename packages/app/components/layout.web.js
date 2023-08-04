@@ -1,17 +1,29 @@
 import Head from 'next/head';
-import { useEffect, useCallback  } from 'react'
+import React, { useEffect, useCallback, useMemo } from 'react'
 import { useWindowDimensions } from 'react-native'
-import Navbar from 'app/components/nav/navbar';
+//import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
 import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
 import { useColorScheme } from 'react-native';
+import dynamic from 'next/dynamic'
 
 export const siteTitle = 'NEO';
 
+function NavbarMemo({ title, menu_add, uri }) {
+    const computedData = useMemo(() => {
+        const Navbar = React.memo(
+            dynamic(() => import('app/components/nav/navbar'))
+        )
+        return <Navbar title={title} menu_add={menu_add} uri = {uri} />
+    }, [title, menu_add, uri])
+    return computedData
+}
+
 export default function Layout(props) {  
+
     let { width } = useWindowDimensions();
     const [loading, skeleton] = useSkeleton(width);
 
@@ -90,7 +102,7 @@ export default function Layout(props) {
                 </View>
                 <Footer/>
             </View>
-            <Navbar title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+            <NavbarMemo title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
         </>
     );
 }
