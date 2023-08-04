@@ -1,4 +1,3 @@
-'use client'
 
 import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCircleText, 
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
