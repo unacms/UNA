@@ -1,3 +1,6 @@
+"use client"
+
+import { Root } from 'app/root'
 import 'raf/polyfill'
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -10,15 +13,14 @@ const fixReanimatedIssue = () => {
     window._frameTimestamp = null
   }
 }
-
 fixReanimatedIssue()
 
 import { Provider } from 'app/provider'
 import { CurrentUserProvider } from 'app/context/user';
 
-import '../../../packages/app/styles/global.css'
+import 'app/styles/global.css'
 
-function MyApp({ Component, pageProps }) {
+export  function Page (props) {
   const queryClient = new QueryClient()
 
   return (
@@ -26,13 +28,13 @@ function MyApp({ Component, pageProps }) {
         <Provider>
           <QueryClientProvider client={queryClient}>
             <CurrentUserProvider>
-              <Component {...pageProps} />              
-              {!!process.env.NEXT_PUBLIC_ANALYTICS && <Analytics />}
+              {!!process.env['VERCEL'] ? <Analytics /> : null}
+              <Root {...props}></Root>
             </CurrentUserProvider>
           </QueryClientProvider>
         </Provider>
+      
     </>
   )
 }
 
-export default MyApp

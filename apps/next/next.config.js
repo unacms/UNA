@@ -1,23 +1,4 @@
 const { withExpo } = require('@expo/next-adapter')
-const withPlugins = require('next-compose-plugins')
-const withImages = require('next-images')
-const withTM = require('next-transpile-modules')([
-  'solito',
-  'zeego',
-  'dripsy',
-  '@dripsy/core',
-  "@shopify/flash-list",
-  "recyclerlistview",
-  'moti',
-  'nativewind',
-  'app',
-]);
-/*const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})*/
-
-const merge = require('deepmerge');
-const nextConfigCustom = require('./next.config.custom.js');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -27,16 +8,48 @@ const nextConfig = {
   // https://github.com/nandorojo/moti/issues/224
   // once that gets fixed, set this back to true
   reactStrictMode: false,
-  webpack5: true,
   poweredByHeader: false,
-  experimental: {
+  /*experimental: {
     forceSwcTransforms: true,
     // scrollRestoration: true,
     swcPlugins: [[require.resolve('./plugins/swc_plugin_reanimated.wasm')]],
-  },
+  },*/
+  transpilePackages: [
+    'react-native',
+    'react-native-web',
+    'solito',
+    'zeego',
+    'dripsy',
+    '@dripsy/core',
+    'moti',
+    'app',
+    'react-native-reanimated',
+    'nativewind',
+    '@expo/html-elements',
+    'react-native-gesture-handler',
+    'react-native-reactions',
+    '@babel/core',
+    '@babel/plugin-proposal-export-namespace-from',
+   // '@react-navigation/native',
+    'react-native-calendars',
+    'react-native-image-zoom-viewer',
+    'react-native-image-pan-zoom',
+    'react-native-swipe-gestures',
+    'expo-haptics',
+    'expo-modules-core',
+    'recyclerlistview',
+    'react-native-quick-md5',
+    '@react-native-picker/picker',
+    '@react-native-clipboard/clipboard',
+    'expo-image-picker',
+    'expo-document-picker',
+    'react-native-svg',
+    'expo-image-manipulator',
+    'expo-constants',
+  ],
   images: {
     domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com', 'hihi.com', 'una.so'],
-    disableStaticImages: true
+    disableStaticImages: false
   },
   modularizeImports: {
     "@phosphor-icons/react": {
@@ -45,9 +58,4 @@ const nextConfig = {
   }  
 }
 
-/*const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: true,
-})*/
-//module.exports = withBundleAnalyzer({})
-//withBundleAnalyzer
-module.exports = withPlugins([withTM, withExpo, withImages ], merge(nextConfig, nextConfigCustom))
+module.exports = withExpo(nextConfig)

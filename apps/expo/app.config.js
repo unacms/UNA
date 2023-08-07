@@ -1,5 +1,4 @@
 const merge = require('deepmerge');
-
 let expoConfigCustom = {};
 try {
     expoConfigCustom = require('./app.config.custom.js');
