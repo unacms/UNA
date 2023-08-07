@@ -1,4 +1,3 @@
-import Router from 'next/router'
 import { useEffect, useState, useCallback } from 'react'
 import { appSetting } from 'app/lib/util'
 import { getPageSkeleton, getBlackBox  } from 'app/lib/skeleton-helpers'

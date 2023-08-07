@@ -196,7 +196,7 @@ export default function ElementLikes(oProps) {
     return {
       opacity: sharedValue.value,
     };
-  });
+  },[sharedValue]);
 
   useEffect(() => {
     sharedValue.value = withSequence(

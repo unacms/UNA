@@ -89,7 +89,7 @@ export default function Layout(props) {
                 <title>{props.data.title}</title>
 
             </Head>
-            <View className="bg-backgroundbody dark:bg-backgroundbody-dark  h-full items-stretch ">
+            <View className="bg-backgroundbody dark:bg-backgroundbody-dark w-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     {/*

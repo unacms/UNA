@@ -129,7 +129,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return {
                 transform: [{ translateX: indicatorOffset.value }],
             };
-        });
+        },[indicatorOffset]);
 
         const styles = StyleSheet.create({
             indicator: {
@@ -201,14 +201,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return {
                 opacity:opacityValue
             };
-        });
+        },[scrollValue]);
 
         const animatedStyle6 = useAnimatedStyle(() => {
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
                 opacity:opacityValue
             };
-        });
+        },[scrollValue]);
 
        /* if (!header){
             if (tabBarObj)

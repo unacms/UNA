@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { TabView, useHeaderTabContext, SceneComponent } from "showtime-tab-view";
+import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
@@ -130,7 +130,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return {
                 transform: [{ translateX: indicatorOffset.value }],
             };
-        });
+        },[indicatorOffset]);
 
         const styles = StyleSheet.create({
             indicator: {
@@ -172,20 +172,20 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return {
                 opacity: withTiming(scroll.value, { duration: 500 }),
             };
-        });
+        },[scroll]);
 
 
         const animatedStyleB = useAnimatedStyle(() => {
             return {
                 opacity: withTiming(1 - scroll.value, { duration: 500 }),
             };
-        });
+        },[scroll]);
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
                 height: headerMaxHeight.value,
             };
-        });
+        },[headerMaxHeight]);
 
         const handleHeaderMaxLayout = useCallback((event) => {
             headerMaxHeight.value = event.nativeEvent.layout.height;

@@ -10,8 +10,7 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Profile from 'app/ui/molecules/profile'
 import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
-import { useRouter } from 'next/router';
-import { Icon } from 'app/ui/atoms/icon'; 
+import { useRouter } from  'next/navigation';
 
 function CoverMenu(props) {
   return (

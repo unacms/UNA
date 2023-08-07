@@ -13,7 +13,7 @@ const ElementToster = forwardRef((props, ref) => {
             transform: [{ translateY: sharedValue.value }],
             opaopacity: sharedValue.value == 25 ? 1 : 0
         };
-    });
+    },[sharedValue]);
 
     useEffect(() => {
         sharedValue.value = withSequence(

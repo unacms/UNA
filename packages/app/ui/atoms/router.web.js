@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from  'next/navigation';
 import { useEffect } from 'react';
 
 export default function CurRouter(props) {
@@ -6,11 +6,11 @@ export default function CurRouter(props) {
 
     useEffect(() => {
        
-        router.events.on("routeChangeStart", props.exitingFunction);
+        /*router.events.on("routeChangeStart", props.exitingFunction);
     
         return () => {
             router.events.off("routeChangeStart", props.exitingFunction);
-        };
+        };*/
         }, [props]);
 
 

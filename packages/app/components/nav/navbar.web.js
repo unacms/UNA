@@ -21,7 +21,7 @@ import Search from 'app/ui/molecules/search'
 import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
-import { useRouter } from 'next/router';
+import { useRouter } from  'next/navigation';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
 

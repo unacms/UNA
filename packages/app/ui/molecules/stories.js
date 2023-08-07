@@ -44,7 +44,7 @@ export function Story(props) {
                 opacity: opacityValue1,
                 display: opacityValue1 === 0 ? 'none' : 'flex',
             };
-        });
+        },[]);
     });
 
     const animatedStyles2 = images.map((_, index) => {
@@ -54,7 +54,7 @@ export function Story(props) {
             return {
                 width: opacityValue1,
             };
-        });
+        },[]);
     });
 
     return (
