@@ -3,7 +3,6 @@ import { createProxyMiddleware } from "http-proxy-middleware"
 import { env } from 'app/lib/env';
 
 export const config = {
-    //runtime: 'edge',
     api: {
         externalResolver: true,
         bodyParser: false

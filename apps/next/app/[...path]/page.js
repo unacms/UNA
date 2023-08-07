@@ -2,8 +2,6 @@ import { cookies } from 'next/headers'
 import { env } from 'app/lib/env';
 import { Page } from './content'
 
-export const runtime = 'edge'; 
-
 export default async function Path (props) {
     
     let path = props.params.path.join('/');
