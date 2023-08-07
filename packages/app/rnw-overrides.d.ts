@@ -20,7 +20,8 @@ declare module 'react-native' {
     }
   }
   interface ViewProps {
-    accessibilityRole?: string
+    accessibilityRole?: string,
+    role: string,
     href?: string
     hrefAttrs?: {
       rel: 'noreferrer'

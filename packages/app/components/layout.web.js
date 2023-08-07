@@ -1,4 +1,4 @@
-import Head from 'next/head';
+//import Head from 'next/head';
 import React, { useEffect, useCallback, useMemo } from 'react'
 import { useWindowDimensions } from 'react-native'
 //import Navbar from 'app/components/nav/navbar';
@@ -10,7 +10,7 @@ import { getHeaderSettings } from 'app/lib/util'
 import { useColorScheme } from 'react-native';
 import dynamic from 'next/dynamic'
 
-export const siteTitle = 'NEO';
+
 
 function NavbarMemo({ title, menu_add, uri }) {
     const computedData = useMemo(() => {
@@ -22,15 +22,16 @@ function NavbarMemo({ title, menu_add, uri }) {
     return computedData
 }
 
+
 export default function Layout(props) {  
 
     let { width } = useWindowDimensions();
     //const [loading, skeleton] = useSkeleton(width);
 
-    useEffect(() => {
+   /* useEffect(() => {
         document.title = props?.data?.title;
     }, [props.data.title]);
-
+*/
     const handleScroll = useCallback(() => {
         let lastScrollTop = 0;
         let scrollTop = window.scrollY;
@@ -76,19 +77,7 @@ export default function Layout(props) {
     
     return (
         <>
-            <Head>
-                <link rel="icon" href="/favicon.ico" />
-                <meta name="description" content={siteTitle} />
-                <meta http-equiv="expires" content="Fri, 18 Jul 2025 1:00:00 GMT" />
-                <meta name="og:title" content={props.data.title} />
-                <meta name="theme-color"  content={bg} />
-                <link rel="manifest" href="/manifest.json" />
-                <meta name="apple-mobile-web-app-capable" content="yes"></meta>
-                <meta name="viewport" content="initial-scale=1, viewport-fit=cover, width=device-width"></meta>
-                <meta http-equiv="cache-control" content="max-age=36000" />
-                <title>{props.data.title}</title>
-
-            </Head>
+         
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark w-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " > 
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>

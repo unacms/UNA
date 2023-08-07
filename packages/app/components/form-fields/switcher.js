@@ -19,7 +19,7 @@ export default function FormFieldSwitcher(props) {
                 ios_backgroundColor={colors.background}
                 onValueChange={toggleSwitch}
                 value={isEnabled}
-                accessibilityLabel={props.caption}
+                ariaLabel={props.caption}
             />
         </Field>
     );

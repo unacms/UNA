@@ -20,7 +20,7 @@ export const P = styled(NativeText, 'text-base text-black my-4')
  */
 const H1_ = styled(NativeText, 'text-xl lg:text-3xl font-bold my-4')
 H1_.defaultProps = {
-  accessibilityRole: 'header',
+  role: 'header',
 }
 export const H1 = ({ children, ...rest }) => {
   const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
@@ -29,7 +29,7 @@ export const H1 = ({ children, ...rest }) => {
 
 const H1C_ = styled(NativeText, 'text-xl lg:text-3xl font-bold')
 H1C_.defaultProps = {
-  accessibilityRole: 'header',
+  role: 'header',
 }
 
 export const H1C = ({ children, ...rest }) => {
@@ -39,7 +39,7 @@ export const H1C = ({ children, ...rest }) => {
 
 export const H2_ = styled(NativeText, 'text-xl font-extrabold mb-4')
 H1_.defaultProps = {
-  accessibilityRole: 'header',
+  role: 'header',
 }
 
 export const H2 = ({ children, ...rest }) => {
@@ -81,7 +81,7 @@ export const A = forwardRef<NativeText, StyledProps<AProps>>(function A(
 
   return (
     <Text
-      accessibilityRole="link"
+      role="link"
       className={className || `text-blue-500 hover:underline`}
       {...props}
       {...nativeAProps}

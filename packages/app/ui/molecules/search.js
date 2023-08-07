@@ -116,7 +116,7 @@ export default function ElementSearch(oProps) {
                             </Link>
                         </View>
                         <View className="flex-row">
-                            <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} accessibilityLabel="Search" />
+                            <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} ariaLabel="Search" />
                         </View>
                         {!!popupContent && popupContent}
                     </View>
@@ -131,7 +131,7 @@ export default function ElementSearch(oProps) {
                 <Row className=''>
                     <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[
                         <View key="ddp-trigger" className="flex-row">
-                            <InputRounded name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." accessibilityLabel="Search" />
+                            <InputRounded name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." ariaLabel="Search" />
                         </View>,
                         <View key="ddp-content" className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />
@@ -163,7 +163,7 @@ export default function ElementSearch(oProps) {
   <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 pt-4 '}>
       <Row className='gap-x-2 justify-center items-center'>
       
-          <Input name="search" placeholder="Search..." defaultValue={inputValue} accessibilityLabel="Search" onChangeText={(value) => setInputValue(value)}  />
+          <Input name="search" placeholder="Search..." defaultValue={inputValue} ariaLabel="Search" onChangeText={(value) => setInputValue(value)}  />
           
           <Link href={'/search-keyword?keyword='+inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
           

@@ -177,7 +177,7 @@ export default function (props) {
         <Row className="flex-row  flex-none items-center">
           {
             headerSettings.menu && (
-              <View className="lg:hidden mr-4"><TouchableOpacity  onPress={showMenu}>
+              <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
                 <Button
                   variant="outline"
                   startDecorator="List"
@@ -185,7 +185,7 @@ export default function (props) {
                   align="start"
                 />
               
-              </TouchableOpacity></View>  )}
+              </Pressable></View>  )}
               { (props.uri == 'home' || windowWidth >= 1024) &&  
 
               <Link href="/home" aria-label="Logo">
@@ -393,10 +393,10 @@ export default function (props) {
                 duration: 0,
               }}
             >
-              <TouchableOpacity
+              <Pressable
                 
                 onPress={showMenu}
-              ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></TouchableOpacity>
+              ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></Pressable>
             </MotiView>
             <MotiView
               style={{ width: 288 }}
@@ -421,9 +421,9 @@ export default function (props) {
           delay: 100,*/
               }}
             >
-              <TouchableOpacity className="w-72 h-screen m-menu" onPress={showMenu}>
+              <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
                 <MainMenu {...props} />
-              </TouchableOpacity>
+              </Pressable>
             </MotiView>
           </View>
         )}
