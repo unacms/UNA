@@ -238,9 +238,9 @@ export function Button(props) {
     let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
 
     let Cnt = onPress !== undefined ? Pressable : View
-
+    console.log('rest.alt', rest.alt);
     return (
-        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { ariaLabel: rest.alt, role: 'button' } : {} )} onPress={onPress}>
+        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button' } : {} )} onPress={onPress}>
             {sButtonIconStart}
             {buttonTitle !== undefined && (
                 <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>

@@ -19,7 +19,7 @@ export default function FormFieldText(props) {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={String(field.value)}
-                ariaLabel={props.caption}
+                aria-label={props.caption}
         />
         </Field>
     );

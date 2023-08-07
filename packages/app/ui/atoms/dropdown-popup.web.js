@@ -13,7 +13,7 @@ export default function DropdownPopup(oProps) {
     return (
         <DmRoot open={open} onOpenChange={(bDmOpen) => {onOpenChange(bDmOpen)}}>
             <Tooltip content={title} asChildTrigger={true} {...restProps}>
-              <DmTrigger asChild={asChildTrigger} aria-label={title}>{oProps.children[0]}</DmTrigger>
+              <DmTrigger asChild={asChildTrigger} role="button" aria-label={title}>{oProps.children[0]}</DmTrigger>
             </Tooltip>
             <DmPortal>
                 <DmContent className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl" {...restProps}>

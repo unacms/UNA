@@ -25,7 +25,7 @@ export default function FormFieldText(props) {
         onChangeText={field.onChange}
         onBlur={field.onBlur}
         value={field.value}
-        ariaLabel={accessibility}
+        aria-label={accessibility}
     />
     if (props.autoheight)
         input = <Input
@@ -39,7 +39,7 @@ export default function FormFieldText(props) {
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
-            ariaLabel={accessibility}
+            aria-label={accessibility}
         />
 
     if (props.html == 2 || props.html == 3){
