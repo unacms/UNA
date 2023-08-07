@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { MotiView, AnimatePresence } from 'moti'
-import { Icon } from 'app/ui/atoms/icon'; 
 import { fetcher } from 'app/lib/fetcher'
-import { TouchableOpacity } from 'app/design/view'
+
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'

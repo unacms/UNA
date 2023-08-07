@@ -4,7 +4,6 @@ import { useNavigation } from "expo-router";
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
-
 import { useRouter } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
@@ -15,7 +14,7 @@ import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
 
 export function Screen(params) {
-
+    console.log(params);
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
@@ -25,8 +24,7 @@ export function Screen(params) {
 
     const routerExpo = useRouter();
     const { colors } = Theme();
-  
-    let _path = route?.path;
+    let _path = route?.params?.path ? '/' + route?.params?.path?.join('/') : null;//route?.path;
     //console.log('*** update screen ***--' + _path, params)
 
     // DEEP LINKING
@@ -68,7 +66,7 @@ export function Screen(params) {
                 let cacheData = await MMKV.getStringAsync('page-' + path2);
                 let data = null;
 
-                if (!cacheData){
+                if (!cacheData || true){
                     data = await getData(path2, null, null, null, null, params);
                     await MMKV.setStringAsync('page-' + path2, JSON.stringify(data));
                 }
