@@ -40,6 +40,7 @@ export default function Layout(props) {
     }, [handleScroll]);
 
     const handlePageShow = useCallback((event) => {
+        console.log('event',event);
         document.cookie = `pg=${JSON.stringify([])}`;
         storageClear();
     }, []);

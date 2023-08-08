@@ -1,19 +1,25 @@
 import Unit from '../unit';
-import { useState,useEffect, useRef } from 'react';
+import { useState,useEffect, useRef, useMemo  } from 'react';
 import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
-import { appSetting, storageKey, storageSet, storageGet } from 'app/lib/util'
+import { appSetting, storageKey, storageGet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
-import  CurRouter from "app/ui/atoms/router";
+
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export default function ElementBrowse(props) {
+    let storageKeyValue = storageKey(props.data.request_url + props.data.params?.type)
+    const getDataFromCache = () => {
+        if (appSetting('cache', 'list')){
+            return storageGet('ul', storageKeyValue);;
+        }
+        return false;
+    };
 
-    let storageKeyValue = storageKey(props.data.request_url)
     const isFirstMount = useRef(true);
     let uniRef = useRef();
 
@@ -22,11 +28,14 @@ export default function ElementBrowse(props) {
             isFirstMount.current = false;
     });
 
+    const cachedData = useMemo(() => getDataFromCache(), []);
+    
     let data = props.data;
     if (data.unit == 'mixed'){
         data.unit = 'general-profile-list';
     }
     let defParams = data.params;
+
     if(props?.params)
         defParams = {...defParams, ...props.params};
 
@@ -36,24 +45,21 @@ export default function ElementBrowse(props) {
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
     
+
     if (isFirstMount?.current){
         if (appSetting('cache', 'list')){
-            let defParams1 = storageGet('ls-d', storageKeyValue);
+            let defParams1 = storageGet('ul', storageKeyValue);
         
             if (defParams1){
-                defParams = defParams1.params;
+                defParams = defParams1.viewParams;
                 data.data = defParams1.data;
             }
         }
     }
 
+  
     const [browseParams, setbrowseParams] = useState(defParams);
-    const exitingFunction = () => {
-        if (appSetting('cache', 'list')){
-            storageSet('ls-d', storageKeyValue, {data: getCurrentData(), params: getCurrentParams()})
-        }
-    };
-
+   
     const getNumCols = (width) => {
         if (data.unit.startsWith('general-') || data.unit.startsWith('search-')){
             return width > 600 ? 3 : 1
@@ -128,11 +134,6 @@ export default function ElementBrowse(props) {
         }
         return browseParams;
     }
-    const getCurrentData = () => {
-        return newData 
-        ? [...data.data, ...newData.pages.flatMap((dataPage) => dataPage.data)]
-        : data.data;
-    }
 
     const handleEndReached = () => { 
         if (isFetchingNextPage) 
@@ -148,11 +149,13 @@ export default function ElementBrowse(props) {
         return Preload 
 
     return (
-        (data.data.length > 0 || true) && <View className='w-full h-full' ><CurRouter exitingFunction={exitingFunction}  />
+        (data.data.length > 0 || true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <UniList 
                     numColumns={numColumns} 
                     data={dataItems.data}
+                    viewParams={getCurrentParams()}
+                    listState = {cachedData?.state}
                     unit={data.unit}
                     storagekey={storageKeyValue}
                     useWindowScroll

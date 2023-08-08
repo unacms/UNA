@@ -6,15 +6,13 @@ import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
 import { Dimensions } from 'react-native';   
-import { storageSet, storageGet , appSetting} from 'app/lib/util'
-import  CurRouter from "app/ui/atoms/router";
-import { useEffect } from 'react'
+import { storageSet } from 'app/lib/util'
 
 export default function UniList(props) {
     
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, useWindowScroll, height, ...rest } = props
+    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, ...rest } = props
    
     if (props.unit == 'feed' && layoutData?.id){
         let insertIndex = data.findIndex(item => item.type !== 'block');
@@ -45,48 +43,27 @@ export default function UniList(props) {
         style={ height: height + 'px' }
     }
 
-    const exitingFunction = () => {
-        if (appSetting('cache', 'list')){
-            if (refer?.current && refer.current.getState && rest.storagekey) {
-                refer.current.getState((state) => {
-                    storageSet('ls', rest.storagekey, state);
-                });
-            }
-            else{
-                if (window)
-                    storageSet('ls', rest.storagekey, window.scrollY);
-            }
+    const isScrolling = (isFinished) => {
+        if (!isFinished && refer?.current && refer.current.getState && rest.storagekey){
+            refer.current.getState((state) => {
+                const ch = {state: state, scroll: window.scrollY, data: data, viewParams: viewParams, endpoint: endpoint, index: index}
+                console.log('SAVE PARAMS', ch);
+                storageSet('ul', rest.storagekey, ch);
+            });
         }
-    };
-
-    let parsedRestoreState = {};
-    useEffect(() => {
-        if (rest.storagekey && appSetting('cache', 'list')){
-            let restoreState =  storageGet('ls', rest.storagekey);
-            if (!isNaN(parseFloat(restoreState))){
-                setTimeout(() => {
-                    window.scrollTo({
-                        top: restoreState,
-                    }); 
-                }, 100);
-            }
-            else{
-                parsedRestoreState = restoreState != null ? { restoreStateFrom: restoreState } : {};
-            }   
-        }
-    }, [])
+    }
     
-
     if (numColumns > 1){
         const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
         const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
 
-        return ( <><CurRouter exitingFunction={exitingFunction} /><VirtuosoGrid 
+        return ( <><VirtuosoGrid 
                 useWindowScroll = {!height ? true : false}
                 data={data}
                 style={style}
                 itemContent={itemContent} 
-                {...parsedRestoreState}
+                isScrolling = {isScrolling}
+                restoreStateFrom={listState}
                 overscan={900}
                 ref = {refer}   
                 endReached={onEndReached}
@@ -103,13 +80,13 @@ export default function UniList(props) {
         )
     }
     else{
-
         return (
-            <><CurRouter exitingFunction={exitingFunction} /><Virtuoso 
+            <><Virtuoso 
                 useWindowScroll = {!height ? true : false}
                 data={data}
+                isScrolling = {isScrolling}
                 style={style}
-                {...parsedRestoreState}
+                restoreStateFrom={listState}
                 itemContent={itemContent}
                 ref = {refer}   
                 endReached={onEndReached}

@@ -82,7 +82,7 @@ export function storageSet(pref, key, data) {
 
 export function storageGet(pref, key) {
     if ( Platform.OS !== 'web')
-    return ;
+        return ;
 
     const s = sessionStorage.getItem(pref + '-' + key);
     if (!s) return;

@@ -6,6 +6,7 @@ import Unit from 'app/components/unit';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
+import { useMemo  } from 'react';
 
 export function getBackButtonWeb() {
     if (history.length > 2){
@@ -17,6 +18,14 @@ export function getBackButtonWeb() {
     }
     return <></>
 }
+
+const getDataFromCache = (storageKeyValue) => {
+    if (appSetting('cache', 'list')){
+        return storageGet('ul', storageKeyValue);;
+    }
+    return false;
+};
+
 
 export function fillTabs(menu, data, blocks, useSectionAsMenu){
     const m = menuItemsByName(menu.object, menu.items, data.url);
@@ -39,10 +48,14 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.blocks = blocks;
 
             if (appSetting('cache', 'list')){
-                let defParams1 = storageGet('ls-d', i.storageKeyValue);
+                
+                const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
+                console.log('defParams1', defParams1)
+               // let defParams1 = storageGet('ls-d', i.storageKeyValue);
                 if (defParams1){
                     i.endpoint = defParams1.endpoint;
                     i.data = defParams1.data;
+                    i.state = defParams1.state
                 }
             }
 
@@ -52,10 +65,12 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.storageKeyValue = storageKey(i.link, false);
             i.data = [];
             if (appSetting('cache', 'list')){
-                let defParams1 = storageGet('ls-d', i.storageKeyValue);
+               // let defParams1 = storageGet('ls-d', i.storageKeyValue);
+               const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
                 if (defParams1){
                     i.endpoint = defParams1.endpoint;
                     i.data = defParams1.data;
+                    i.state = defParams1.state
                     i.inited = true;
                 }
             }

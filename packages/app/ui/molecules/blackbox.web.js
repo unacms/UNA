@@ -9,7 +9,6 @@ import { appSetting, getHeaderSettings, storageSet } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/blackbox-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import  CurRouter from "app/ui/atoms/router";
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
@@ -27,12 +26,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         routesRef.current = routes;
       }, [routes]); // This runs every time `routes` changes
 
-    const exitingFunction = (index) => {
-        const route = routesRef.current.find((item) => item.index === index);
-        if (appSetting('cache', 'list')){
-            storageSet('ls-d', route.storageKeyValue, {index:index, data:route.data, endpoint:route.endpoint})
-        }
-    };
     
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
@@ -271,12 +264,13 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             let isRightCol = route?.sidebar?.content?.length > 0
             return (
                 <>
-                <CurRouter route={route} exitingFunction={() => exitingFunction(route.index)}  />
                 <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full pt-4'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
                             data={dataItems}
+                            endpoint={route.endpoint}
+                            listState = {route?.state}
                             storagekey={route.storageKeyValue}
                             refer={uniRef}
                             unit={route.endpoint?.unit}
