@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from 'react'
+import React, { useEffect, useCallback, lazy } from 'react'
 import { useWindowDimensions } from 'react-native'
 //import Navbar from 'app/components/nav/navbar';
 import Footer from './footer';
@@ -9,16 +9,18 @@ import { getHeaderSettings } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 
 
+const Navbar = lazy(() => import('app/components/nav/navbar'));
+
 function NavbarMemo({ title, menu_add, uri }) {
-    const computedData = useMemo(() => {
-        const Navbar = React.memo(
-            dynamic(() => import('app/components/nav/navbar'))
-        )
-        return <Navbar title={title} menu_add={menu_add} uri = {uri} />
-    }, [title, menu_add, uri])
-    return computedData
+  return (
+      <Navbar title={title} menu_add={menu_add} uri={uri} />
+  );
 }
+
 export default function Layout(props) {  
+
+   
+    console.log('5555');
 
     let { width } = useWindowDimensions();
    
