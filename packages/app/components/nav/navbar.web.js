@@ -224,7 +224,7 @@ export default function (props) {
                           )
                         }
                       )}>
-                    <Tooltip content="Apps">
+                    <Tooltip content="Apps" asChildTrigger={true}>
                       <Button
                         variant="outline"
                         size="base"
@@ -260,7 +260,7 @@ export default function (props) {
                       }
                     )}
                   >
-                    <Tooltip content="Create content">
+                    <Tooltip content="Create content" asChildTrigger={true}>
                       <Button
                         variant="outline"
                         rounded
@@ -292,7 +292,7 @@ export default function (props) {
                       ntfsContent
                     ]}
                   </DropdownPopup>
-                  <Tooltip content="Messenger">
+                  <Tooltip content="Messenger" asChildTrigger={true}>
                     <Button
                       variant="outline"
                       rounded
@@ -350,7 +350,7 @@ export default function (props) {
                 (item, index) =>
                 (currentUser || (!currentUser && item.nonlogged != false)) && (
                     <Link href={item.link} key={`menu-${index}`}>
-                      <Tooltip content={item.title}>
+                      <Tooltip content={item.title} asChildTrigger={true}>
                         <Button
                           variant="text"
                           size="lg"

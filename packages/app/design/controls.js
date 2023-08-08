@@ -1,3 +1,4 @@
+import React from 'react';
 import { TextInput as TextInputDef, Modal as ModalDef, Platform, Switch as SwitchDef} from 'react-native'
 import { Pressable, View , Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
@@ -110,7 +111,7 @@ export function ButtonsGroup({
 
 /* buttons */
 
-export function Button(props) {
+export const Button = React.forwardRef((props, forwardedRef) => {
     let { className, classTextName, classIconName, onPress, ...rest } = props
     let buttonType = props.variant ? props.variant : 'default'
     let buttonSize = props.size ? props.size : 'base'
@@ -240,7 +241,7 @@ export function Button(props) {
     let Cnt = onPress !== undefined ? Pressable : View
     console.log('rest.alt', rest.alt);
     return (
-        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button' } : {} )} onPress={onPress}>
+        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button' } : {} )} onPress={onPress} ref={forwardedRef}>
             {sButtonIconStart}
             {buttonTitle !== undefined && (
                 <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>
@@ -249,7 +250,7 @@ export function Button(props) {
             {props.children}
         </Cnt>
     );
-}
+});
 
 export function ButtonsGroupMenu(props) {
     let { variant, size, rounded, ...rest } = props
