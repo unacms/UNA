@@ -16,12 +16,13 @@ const getData = cache(async (props) => {
     });
     const opts = {
         headers: {
-            cookie: cookieString
+            cookie: cookieString,
+            authorization: 'Bearer ' + env('UNA_API_KEY'),
         },
         next: { revalidate: 3600 } 
     };
 
-    const res = await fetch(env('PROTO') + '//'+ env('HOST') +':'+ env('PORT') +'/api/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path, opts)
+    const res = await fetch(API_PROXY_URL + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path, opts)
     return await res.json()
  });
 

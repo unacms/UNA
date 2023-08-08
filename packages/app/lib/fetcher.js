@@ -26,6 +26,7 @@ export async function fetcher (mixed) {
         else
             prefix = env('API_PROXY_URL');
     }
+    mixed = mixed.replace('/api.php', '')
 
     return await fetcherRaw(prefix, mixed).then(async (r) => {
         // console.log("----------- Response headers ");

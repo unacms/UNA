@@ -6,8 +6,6 @@ import { View } from 'app/design/view'
 //import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
-import dynamic from 'next/dynamic'
-
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -18,9 +16,6 @@ function NavbarMemo({ title, menu_add, uri }) {
 }
 
 export default function Layout(props) {  
-
-   
-    console.log('5555');
 
     let { width } = useWindowDimensions();
    
