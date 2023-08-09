@@ -47,7 +47,6 @@ export default function UniList(props) {
         if (!isFinished && refer?.current && refer.current.getState && rest.storagekey){
             refer.current.getState((state) => {
                 const ch = {state: state, scroll: window.scrollY, data: data, viewParams: viewParams, endpoint: endpoint, index: index}
-                console.log('SAVE PARAMS', ch);
                 storageSet('ul', rest.storagekey, ch);
             });
         }

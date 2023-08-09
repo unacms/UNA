@@ -1,4 +1,4 @@
-import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, storageGet } from 'app/lib/util';
+import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, getDataFromCache } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
@@ -18,15 +18,6 @@ export function getBackButtonWeb() {
     }
     return <></>
 }
-
-const getDataFromCache = (storageKeyValue) => {
-    if (appSetting('cache', 'list')){
-        return storageGet('ul', storageKeyValue);;
-    }
-    return false;
-};
-
-
 export function fillTabs(menu, data, blocks, useSectionAsMenu){
     const m = menuItemsByName(menu.object, menu.items, data.url);
     return m.map((item, index) => {
@@ -50,7 +41,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             if (appSetting('cache', 'list')){
                 
                 const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
-                console.log('defParams1', defParams1)
+                console.log('defParams1', defParams1, i.storageKeyValue)
                // let defParams1 = storageGet('ls-d', i.storageKeyValue);
                 if (defParams1){
                     i.endpoint = defParams1.endpoint;

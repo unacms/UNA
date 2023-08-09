@@ -5,7 +5,7 @@ import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
-import { appSetting, storageKey, storageGet } from 'app/lib/util'
+import { appSetting, storageKey, storageGet, getDataFromCache } from 'app/lib/util'
 import { Dimensions } from 'react-native';
 
 import { useInfiniteQuery } from  '@tanstack/react-query'
@@ -13,12 +13,6 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export default function ElementBrowse(props) {
     let storageKeyValue = storageKey(props.data.request_url + props.data.params?.type)
-    const getDataFromCache = () => {
-        if (appSetting('cache', 'list')){
-            return storageGet('ul', storageKeyValue);;
-        }
-        return false;
-    };
 
     const isFirstMount = useRef(true);
     let uniRef = useRef();
@@ -28,7 +22,7 @@ export default function ElementBrowse(props) {
             isFirstMount.current = false;
     });
 
-    const cachedData = useMemo(() => getDataFromCache(), []);
+    const cachedData = useMemo(() => getDataFromCache(storageKeyValue), []);
     
     let data = props.data;
     if (data.unit == 'mixed'){
@@ -48,11 +42,11 @@ export default function ElementBrowse(props) {
 
     if (isFirstMount?.current){
         if (appSetting('cache', 'list')){
-            let defParams1 = storageGet('ul', storageKeyValue);
+            //let defParams1 = storageGet('ul', storageKeyValue);
         
-            if (defParams1){
-                defParams = defParams1.viewParams;
-                data.data = defParams1.data;
+            if (/*defParams1*/cachedData){
+                defParams = cachedData.viewParams;
+                data.data = cachedData.data;
             }
         }
     }

@@ -17,6 +17,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     let uniRef = useRef();
    
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+    console.log(9999);
     const windowWidth = useWindowDimensions().width;
 
     const [routes, setRoutes] = useState(initedTabs);

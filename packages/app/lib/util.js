@@ -12,6 +12,13 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export const getDataFromCache = (storageKeyValue) => {
+    if (appSetting('cache', 'list')){
+        return storageGet('ul', storageKeyValue);;
+    }
+    return false;
+};
+
 export function md5(str) {
     return stringMd5(str);
 }

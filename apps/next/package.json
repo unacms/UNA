@@ -22,7 +22,6 @@
     "@tiptap/suggestion": "^2.0.4",
     "@vercel/analytics": "^1.0.1",
     "app": "*",
-    "http-proxy-middleware": "^2.0.6",
     "next": "13.4.12",
     "raf": "^3.4.1",
     "react-virtuoso": "^4.4.2",
