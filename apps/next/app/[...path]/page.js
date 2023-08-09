@@ -19,7 +19,7 @@ const getData = cache(async (props) => {
             cookie: cookieString,
             authorization: 'Bearer ' + env('UNA_API_KEY'),
         },
-        next: { revalidate: 3600 } 
+        next: { revalidate: 0 } 
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
