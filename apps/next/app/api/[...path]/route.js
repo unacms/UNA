@@ -7,7 +7,6 @@ async function rqt(request, method) {
     if (typeof EdgeRuntime !== 'string') {
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$!')
     }
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$!')
 
     const url = new URL(request.url);
     const endpoint = env('UNA_URL') + '/api.php' + url.search;
