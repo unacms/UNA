@@ -2,7 +2,7 @@ import { env } from 'app/lib/env';
 
 export const runtime = 'edge'
 
-export async function rqt(request, method) {
+async function rqt(request, method) {
     const url = new URL(request.url);
     const endpoint = env('UNA_URL') + '/api.php' + url.search;
 
