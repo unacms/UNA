@@ -20,10 +20,6 @@ import { CurrentUserProvider } from 'app/context/user';
 
 import 'app/styles/global.css'
 
-export const metadata = {
-  title: 'My Page Title',
-}
-
 export  function Page (props) {
   const queryClient = new QueryClient()
 

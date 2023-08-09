@@ -21,8 +21,10 @@ const getData = cache(async (props) => {
         },
         next: { revalidate: 3600 } 
     };
-
-    const res = await fetch(API_PROXY_URL + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path, opts)
+    
+    let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    //console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@', l);
+    const res = await fetch(l, opts)
     return await res.json()
  });
 
