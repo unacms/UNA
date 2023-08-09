@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback, lazy } from 'react'
 import { useWindowDimensions } from 'react-native'
-//import Navbar from 'app/components/nav/navbar';
+import NavbarMemo from 'app/components/nav/navbar';
 import Footer from './footer';
 import { View } from 'app/design/view'
 //import useSkeleton from '../lib/hooks/skeleton';
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
-
+/*
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
 function NavbarMemo({ title, menu_add, uri }) {
@@ -14,7 +14,7 @@ function NavbarMemo({ title, menu_add, uri }) {
       <Navbar title={title} menu_add={menu_add} uri={uri} />
   );
 }
-
+*/
 export default function Layout(props) {  
 
     let { width } = useWindowDimensions();

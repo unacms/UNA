@@ -29,7 +29,7 @@ export function Root (props) {
         }
 
     }, [data?.user]);
-
+    //console.log('0000')
       return (
         <Layout path={props?.path} data={data} uri={data?.uri}>
             <PageLayout path={props?.path} data={data} uri={data?.uri} />

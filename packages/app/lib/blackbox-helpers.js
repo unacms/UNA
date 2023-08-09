@@ -41,7 +41,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             if (appSetting('cache', 'list')){
                 
                 const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
-                console.log('defParams1', defParams1, i.storageKeyValue)
+                //console.log('defParams1', defParams1, i.storageKeyValue)
                // let defParams1 = storageGet('ls-d', i.storageKeyValue);
                 if (defParams1){
                     i.endpoint = defParams1.endpoint;
@@ -72,6 +72,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
 }
 
 export async function parseData(routes, index, setRoutes, newData) {
+    //console.log(888);
     const currentRoute = routes.find((item) => item.index === index);
     if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
         let params = { ...currentRoute.endpoint.params};
@@ -96,10 +97,11 @@ export async function parseData(routes, index, setRoutes, newData) {
 
 
         if (newData.length > 0 || isFinished) {
-            addMoreData(newData, endpoint, setRoutes, index);
+            addMoreData(newData, endpoint, setRoutes, index,{}, routes);
         }
         return {data:newData, endpoint: endpoint};
     }
+    return {data:[], endpoint: currentRoute.endpoint};
 }
 
 export async function fetchAndUpdateData(routes, index, setRoutes) {
@@ -118,27 +120,27 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
-        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks)
+        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks, routes)
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks) {
-    setRoutes((prevRoutes) => {
-        const updatedRoutes = prevRoutes.map((route) => {
-            if (route.index === index) {
-                route.endpoint = endpoint;
-                if (blocks)
-                    route.blocks = blocks
-                route.inited =true
-                return {
-                    ...route,
-                    data: route.data.concat(newItems),
-                };
-            }
-            return route;
-        });
-        return updatedRoutes;
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes) {
+    const updatedRoutes = routes.map((route) => {
+        if (route.index === index) {
+            route.endpoint = endpoint;
+            if (blocks)
+                route.blocks = blocks
+            route.inited =true
+            return {
+                ...route,
+                data: route.data.concat(newItems),
+            };
+        }
+        return route;
     });
+    if (routes != updatedRoutes)
+        setRoutes(updatedRoutes);
+
 };
 
 export function getContent(data, block) {

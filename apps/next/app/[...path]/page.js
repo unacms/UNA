@@ -4,6 +4,7 @@ import { Page } from './content'
 import { cache } from 'react'
 
 const siteTitle = 'NEO';
+//export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');

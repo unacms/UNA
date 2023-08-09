@@ -22,7 +22,7 @@ import 'app/styles/global.css'
 
 export  function Page (props) {
   const queryClient = new QueryClient()
-
+  //console.log('-25555', props)
   return (
     <>
         <Provider>

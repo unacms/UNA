@@ -15,17 +15,12 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
 
     let uniRef = useRef();
-   
+  
+
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    console.log(9999);
     const windowWidth = useWindowDimensions().width;
 
     const [routes, setRoutes] = useState(initedTabs);
-    const routesRef = useRef();
-
-    useEffect(() => {
-        routesRef.current = routes;
-      }, [routes]); // This runs every time `routes` changes
 
     
     const scrollValue = useSharedValue(1);
@@ -64,6 +59,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return 1;
     };
 
+   
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
         status: rqtStatus,
@@ -71,22 +67,41 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useInfiniteQuery([routes[index]?.endpoint?.request_url, index], 
-        ({ pageParam }) => parseData(routes, index, setRoutes),
-        {
-            getNextPageParam: lastPage => {
-            if (lastPage?.data?.length == 0)
+    } = useInfiniteQuery({
+            queryKey: [routes[index]?.endpoint?.request_url, index], 
+            queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
+            getNextPageParam: (lastPage, pages) => { 
+                if (lastPage?.data?.length > 0){
+                    return lastPage?.endpoint; 
+                }
+
                 return;
-            return lastPage?.endpoint;
-            },
+            }
+
     });
 
     const handleEndReached = useCallback(async () => {
+     //   console.log('isFetchingNextPage----', isFetchingNextPage, hasNextPage, routes[index]?.endpoint.finished)
         if (isFetchingNextPage) 
             return;
+        if (!hasNextPage) 
+            return;
+        if (routes[index]?.endpoint.finished)
+            return;
         fetchNextPage();
-    }, [routes, index]);
+    }, [routes, index, isFetchingNextPage, hasNextPage]);
 
+   /* const handleEndReached = () => { 
+        console.log('isFetchingNextPage', isFetchingNextPage, hasNextPage)
+        if (isFetchingNextPage) 
+            return;
+        
+        if (!hasNextPage) 
+            return;
+
+        fetchNextPage();
+    };
+*/
     let offset = windowWidth < 1024 ? 200 : 600;
 
     useEffect(() => {
