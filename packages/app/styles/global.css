@@ -62,6 +62,7 @@ html, body, #__next {
     padding: 0px;
     /* Allows content to fill the viewport and go beyond the bottom */
     min-height: 100%;
+    @apply bg-backgroundbody dark:bg-backgroundbody-dark
 }
 
 #__next {

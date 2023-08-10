@@ -57,6 +57,11 @@ export default function Layout(props) {
         };
     }, [handlePageShow]);
 
+    useEffect(() =>
+    {        
+        document.body.classList.add("bg-backgroundbody");
+    });
+
     
     let headerSettings = getHeaderSettings(props.uri, width);
     

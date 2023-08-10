@@ -240,7 +240,7 @@ export const Button = React.forwardRef((props, forwardedRef) => {
 
     let Cnt = onPress !== undefined ? Pressable : View
     return (
-        <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button', 'alt': rest.alt } : {} )} onPress={onPress} ref={forwardedRef}>
+        <Cnt className={sClassContainer+ ""} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button', 'alt': rest.alt } : {} )} onPress={onPress} ref={forwardedRef}>
             {sButtonIconStart}
             {buttonTitle !== undefined && (
                 <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>

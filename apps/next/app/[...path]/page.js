@@ -55,7 +55,10 @@ export async function generateMetadata(props) {
 }
 
 export default async function Path (props) {
-
     const data = await getData(props)
-    return <Page path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}>{}</Page>
+    if (data.data)
+        return <Page path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}>{}</Page>
+    else
+        return <div className='bg-red-500'>cxvz</div>
+   
 }
