@@ -30,10 +30,10 @@ export default function PageLayout(props) {
             shadow-sm  active:shadow-none 
             border border-neutral-200 dark:border-neutral-800"
           >
-            
-              
             <View className="flex-auto flex-row my-auto items-center">
-              <View className=" my-auto p-1.5 mr-3 border border-neutral-200 dark:border-neutral-800 rounded-full">{profile}</View>
+              <View className=" my-auto p-1.5 mr-3 border border-neutral-200 dark:border-neutral-800 rounded-full">
+                {profile}
+              </View>
               <Text className="my-auto flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
                 {currentUser.display_name}
               </Text>
@@ -72,18 +72,16 @@ export default function PageLayout(props) {
         </Link>
       </View>
       <Row className="flex-wrap flex-auto mb-auto ">
-        <View className=" w-1/2 lg:w-1/3 p-2 ">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
           <Link href="/friends">
-          <View className="w-full hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">
-              <Button
-                  variant="outline"
-                  startDecorator="Users"
-                  rounded
-                  size="lg"
-                />
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button variant="outline" startDecorator="Users" rounded />
+              </View>
               <View className="flex-auto flex-col my-auto ">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
                   Friends
@@ -92,19 +90,17 @@ export default function PageLayout(props) {
             </View>
           </Link>
         </View>
-  
-        <View className=" w-1/2 lg:w-1/3  p-2 ">
+
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
           <Link href="/posts-home">
-          <View className="w-full  hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">
-              <Button
-                  variant="outline"
-                  startDecorator="Files"
-                  rounded
-                  size="lg"
-                />
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button variant="outline" startDecorator="Files" rounded />
+              </View>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
@@ -115,18 +111,20 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-2">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
           <Link href="/discussions-home">
-          <View className="w-full hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">
-                 <Button
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button
                   variant="outline"
                   startDecorator="ChatsCircle"
                   rounded
-                  size="lg"
                 />
+              </View>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -137,18 +135,16 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-2 ">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
           <Link href="/groups-home">
-          <View className="w-full hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">
-                 <Button
-                  variant="outline"
-                  startDecorator="UsersThree"
-                  rounded
-                  size="lg"
-                />
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button variant="outline" startDecorator="UsersThree" rounded />
+              </View>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -159,18 +155,20 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-2 ">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
           <Link href="/events-home">
-          <View className="w-full  hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">    
-               <Button
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button
                   variant="outline"
                   startDecorator="CalendarCheck"
                   rounded
-                  size="lg"
                 />
+              </View>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -181,20 +179,16 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-
-        <View className=" w-1/2 lg:w-1/3 p-2 ">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
           <Link href="/account-settings-email">
-          <View className="w-full  hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">
-                <Button
-                  variant="outline"
-                  startDecorator="Gear"
-                  rounded
-                  size="lg"
-                />
-
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button variant="outline" startDecorator="Gear" rounded />
+              </View>
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
                   Settings
@@ -204,18 +198,16 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 p-2 ">
+        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
           <Link href="/logout">
-          <View className="w-full  hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group
-                        bg-white dark:bg-neutral-900  active:bg-neutral-100 dark:active:bg-neutral-900
-                        shadow-sm  active:shadow-none hover:-translate-y-0.5 active:translate-y-0.5
-                        border border-neutral-200 dark:border-neutral-800 ">   
-                <Button
-                  variant="outline"
-                  startDecorator="SignOut"
-                  rounded
-                  size="lg"
-                />
+            <View
+              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
+                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
+                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+            >
+              <View className=" my-auto">
+                <Button variant="outline" startDecorator="SignOut" rounded />
+              </View>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
