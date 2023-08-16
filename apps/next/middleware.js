@@ -26,11 +26,11 @@ export function middleware(request) {
         const url = new URL(request.url);
 
 
-        /*return new NextResponse(
+        return new NextResponse(
             JSON.stringify({ success: false, message: JSON.stringify(headers) }),
             { status: 401, headers: { 'content-type': 'application/json' } }
           )
-*/
+
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search, {
             headers: headers,
         })
