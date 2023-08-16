@@ -169,19 +169,13 @@ export default function PageLayout(props) {
           { appSetting('feed', 'show_multi') ? <>
                 <Row className="px-auto justify-center gap-x-1 ">
                   <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setFeedType('account')}}>
-                    
                       <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
-                    
                   </Pressable>
                   <Pressable  className=" items-center justify-center py-2.5  " onPress={() => {setFeedType('public')}}>
-                    <View >
                     <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
-                    </View>
                   </Pressable>
                   <Pressable  className="items-center hidden justify-center py-2.5 " onPress={() => {setFeedType('hot')}}>
-                  <View>
                   <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
-                    </View>
                   </Pressable>
                   {appSetting('feed', 'show_selector_view') &&
                     <Row className="flex-auto flex-auto justify-end">
