@@ -1,14 +1,15 @@
+"use client"
+
 import { useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import Layout from 'app/components/layout';
 import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
-import { appSetting, getURI, parseUrl } from 'app/lib/util';
+import { appSetting, getURI } from 'app/lib/util';
 import { connect } from 'app/ui/atoms/socket'; 
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
-
     /* TODO FIX 404 */
 
     let data = props?.data;
@@ -24,12 +25,10 @@ export function Root (props) {
         else{
             if (currentUser != null){
                 setCurrentUser(null);
-                
             }
         }
 
     }, [data?.user]);
-    //console.log('0000')
       return (
         <Layout path={props?.path} data={data} uri={data?.uri}>
             <PageLayout path={props?.path} data={data} uri={data?.uri} />

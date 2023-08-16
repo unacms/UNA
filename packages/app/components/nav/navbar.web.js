@@ -41,6 +41,7 @@ export default function (props) {
     setMenuPopup(false)
   }
 
+
   const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
   const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
   const sNtfsSkeleton = (

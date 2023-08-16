@@ -1,7 +1,8 @@
-import { cookies } from 'next/headers'
+//import { cookies } from 'next/headers'
 import { env } from 'app/lib/env';
-import { Page } from './content'
 import { cache } from 'react'
+import { Root } from 'app/root'
+import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
 //export const runtime = 'edge'
@@ -9,12 +10,12 @@ const siteTitle = 'NEO';
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
  
-    let c = cookies().getAll();
-    let cookieString = '';
- 
+   // let c = cookies().getAll();
+    let cookieString = props.searchParams.cookieString;
+ /*
     c.map(function (item) {
         cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-    });
+    });*/
     const opts = {
         headers: {
             cookie: cookieString,
@@ -24,7 +25,6 @@ const getData = cache(async (props) => {
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    //console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@', l);
     const res = await fetch(l, opts)
     return await res.json()
  });
@@ -55,9 +55,10 @@ export async function generateMetadata(props) {
 }
 
 export default async function Path (props) {
+    //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',props)
     const data = await getData(props)
     if (data.data)
-        return <Page path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}>{}</Page>
+        return <Root  path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     else
         return <div className='bg-red-500'>cxvz</div>
    

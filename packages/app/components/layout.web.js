@@ -16,7 +16,6 @@ function NavbarMemo({ title, menu_add, uri }) {
 }
 */
 export default function Layout(props) {  
-
     let { width } = useWindowDimensions();
    
     const handleScroll = useCallback(() => {
@@ -56,12 +55,6 @@ export default function Layout(props) {
             window.removeEventListener('beforeunload', handlePageShow);
         };
     }, [handlePageShow]);
-
-    useEffect(() =>
-    {        
-        document.body.classList.add("bg-backgroundbody");
-    });
-
     
     let headerSettings = getHeaderSettings(props.uri, width);
     
