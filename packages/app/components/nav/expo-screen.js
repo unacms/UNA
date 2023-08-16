@@ -9,9 +9,10 @@ import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
-//import * as Linking from 'expo-linking';
+import * as Linking from 'expo-linking';
 import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
+import { Redirect } from "expo-router";
 
 export function Screen(params) {
     console.log(params);
@@ -28,15 +29,18 @@ export function Screen(params) {
     //console.log('*** update screen ***--' + _path, params)
 
     // DEEP LINKING
-    /*const url = Linking.useURL();
+    const url = Linking.useURL();
     if (url &&  typeof url !== 'undefined'){
         let a = parseUrl(url);
         _path = '/'+ a.path + (a.queryString ? '?' + a.queryString : '')
         if (_path == '/')
             _path = '/home';
-    }*/
+    }
     // DEEP LINKING
-    
+   /* console.log('------------', _path);
+if (_path == '/home')
+return <Redirect href="/tab1" />;
+console.log('------------', _path);*/
     if (!_path || _path.includes('/tab')){
         const tabList = currentUser
             ? appSetting('menu', 'bottom_tabs_logged')

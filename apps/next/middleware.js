@@ -13,6 +13,7 @@ export function middleware(request) {
         else
             return NextResponse.next()
     }
+    return NextResponse.next()
    /* else{
         let c = request.cookies.getAll();
         let cookieString = '';
