@@ -124,19 +124,17 @@ export default function FormFeed(props) {
         </KeyboardAvoidingView>
       </Modal>
       <View
-        className="max-w-5xl sm:mx-4  px-4 py-3
-           sm:rounded-lg  
-        bg-backgroundcard dark:bg-backgroundcard-dark  border-y sm:border 
-        border-bordercolorcard dark:border-bordercolorcard-dark 
-        
-    "
+        className="max-w-5xl sm:mx-4 px-4 py-3
+           sm:rounded-xl border-y sm:border
+           bg-backgroundcard dark:bg-backgroundcard-dark  border-bordercolorcard dark:border-bordercolorcard-dark 
+        "
       >
         <View className=" flex-row ">
           <View className='mr-2'>{profile}</View>
           <Button
             size="base"
-            variant="outline"
-            rounded
+            variant="text"
+            
             startDecorator="Pencil"
             fullWidth
             title="Create new Post..."
