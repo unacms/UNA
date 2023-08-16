@@ -79,9 +79,9 @@ export default function PageLayout(props) {
                          sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button variant="outline" startDecorator="Users" rounded />
-              </View>
+              </Row>
               <View className="flex-auto flex-col my-auto ">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
                   Friends
@@ -98,9 +98,9 @@ export default function PageLayout(props) {
                          sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button variant="outline" startDecorator="Files" rounded />
-              </View>
+              </Row>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
@@ -118,13 +118,13 @@ export default function PageLayout(props) {
                          sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button
                   variant="outline"
                   startDecorator="ChatsCircle"
                   rounded
                 />
-              </View>
+              </Row>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -142,9 +142,9 @@ export default function PageLayout(props) {
                          sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button variant="outline" startDecorator="UsersThree" rounded />
-              </View>
+              </Row>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -162,13 +162,13 @@ export default function PageLayout(props) {
                          sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button
                   variant="outline"
                   startDecorator="CalendarCheck"
                   rounded
                 />
-              </View>
+              </Row>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
@@ -186,9 +186,9 @@ export default function PageLayout(props) {
                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto w-auto">
                 <Button variant="outline" startDecorator="Gear" rounded />
-              </View>
+              </Row>
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
                   Settings
@@ -205,9 +205,9 @@ export default function PageLayout(props) {
                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
                         bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <View className=" my-auto">
+              <Row className=" my-auto">
                 <Button variant="outline" startDecorator="SignOut" rounded />
-              </View>
+              </Row>
 
               <View className="flex-col my-auto flex-auto">
                 <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
