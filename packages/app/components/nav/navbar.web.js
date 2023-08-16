@@ -349,7 +349,7 @@ export default function (props) {
             <Row className='relative flex-row  mx-auto  '>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
-               // (currentUser || (!currentUser && item.nonlogged != false)) && (
+                (currentUser || (!currentUser && item.nonlogged != false)) && (
                     <Link href={item.link} key={`menu-${index}`}>
                       <Tooltip content={item.title} asChildTrigger={true}>
                         <Button
@@ -366,7 +366,7 @@ export default function (props) {
                         />
                       </Tooltip>
                     </Link>
-               //   )
+                  )
               )}
              
             </Row>
