@@ -1,4 +1,4 @@
-import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, getDataFromCache } from 'app/lib/util';
+import { appSetting, menuItemsByName, getURI, parseUrl, parseQueryString, storageKey, getDataFromCache, storageSet } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view';
 import { BlockByName2 } from 'app/components/block';
@@ -39,14 +39,14 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.blocks = blocks;
 
             if (appSetting('cache', 'list')){
-                
-                const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
-                //console.log('defParams1', defParams1, i.storageKeyValue)
-               // let defParams1 = storageGet('ls-d', i.storageKeyValue);
-                if (defParams1){
-                    i.endpoint = defParams1.endpoint;
-                    i.data = defParams1.data;
-                    i.state = defParams1.state
+                let stateC = getDataFromCache('ul:state', i.storageKeyValue);
+                if (stateC){
+                    i.endpoint = stateC.endpoint;
+                    i.state = stateC.state
+                }
+                let stateD = getDataFromCache('ul:data', i.storageKeyValue);
+                if (stateD){
+                    i.data = stateD;
                 }
             }
 
@@ -56,13 +56,14 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.storageKeyValue = storageKey(i.link, false);
             i.data = [];
             if (appSetting('cache', 'list')){
-               // let defParams1 = storageGet('ls-d', i.storageKeyValue);
-               const defParams1 = useMemo(() => getDataFromCache(i.storageKeyValue), []);
-                if (defParams1){
-                    i.endpoint = defParams1.endpoint;
-                    i.data = defParams1.data;
-                    i.state = defParams1.state
-                    i.inited = true;
+                let stateC = getDataFromCache('ul:state', i.storageKeyValue);
+                if (stateC){
+                    i.endpoint = stateC.endpoint;
+                    i.state = stateC.state
+                }
+                let stateD = getDataFromCache('ul:data', i.storageKeyValue);
+                if (stateD){
+                    i.data = stateD;
                 }
             }
         }
@@ -72,14 +73,10 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
 }
 
 export async function parseData(routes, index, setRoutes, newData) {
-    //console.log(888);
     const currentRoute = routes.find((item) => item.index === index);
     if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
         let params = { ...currentRoute.endpoint.params};
-       /* if (newData && newData?.pages.length > 0){
-            let ld = newData.pages[newData.pages.length - 1].params;
-            params.start = parseInt(ld.start) + parseInt(ld.per_page);
-        }*/
+
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
@@ -130,12 +127,16 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
             route.endpoint = endpoint;
             if (blocks)
                 route.blocks = blocks
-            route.inited =true
+            route.inited = true;
+            storageSet('ul:data', route.storageKeyValue, route.data.concat(newItems));
             return {
                 ...route,
                 data: route.data.concat(newItems),
             };
+           
+    
         }
+       
         return route;
     });
     if (routes != updatedRoutes)

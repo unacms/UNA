@@ -7,6 +7,7 @@ import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
 import { Dimensions } from 'react-native';   
 import { storageSet } from 'app/lib/util'
+import { useEffect} from 'react';
 
 export default function UniList(props) {
     
@@ -44,14 +45,25 @@ export default function UniList(props) {
     }
 
     const isScrolling = (isFinished) => {
+        
         if (!isFinished && refer?.current && refer.current.getState && rest.storagekey){
+            
             refer.current.getState((state) => {
-                const ch = {state: state, scroll: window.scrollY, data: data, viewParams: viewParams, endpoint: endpoint, index: index}
-                storageSet('ul', rest.storagekey, ch);
+                const ch = {state: state, scroll: window.scrollY, viewParams: viewParams, endpoint: endpoint, index: index}
+                storageSet('ul:state', rest.storagekey, ch);
             });
         }
     }
-    
+
+    const stateChanged = (state) => {
+        const ch = {state: state, scroll: window.scrollY, viewParams: viewParams, endpoint: endpoint, index: index}
+        storageSet('ul:state', rest.storagekey, ch);
+    }
+
+    const restoreStateFrom = (state) => {
+       return state
+    }
+
     if (numColumns > 1){
         const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
         const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
@@ -61,8 +73,8 @@ export default function UniList(props) {
                 data={data}
                 style={style}
                 itemContent={itemContent} 
-                isScrolling = {isScrolling}
-                restoreStateFrom={listState}
+                stateChanged = {stateChanged}
+                {...(listState?.viewport ? { restoreStateFrom: listState } : {})}
                 overscan={900}
                 ref = {refer}   
                 endReached={onEndReached}
@@ -85,7 +97,7 @@ export default function UniList(props) {
                 data={data}
                 isScrolling = {isScrolling}
                 style={style}
-                restoreStateFrom={listState}
+                {...(listState?.ranges ? { restoreStateFrom: listState } : {})}
                 itemContent={itemContent}
                 ref = {refer}   
                 endReached={onEndReached}

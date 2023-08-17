@@ -12,12 +12,29 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
-export const getDataFromCache = (storageKeyValue) => {
+export const getDataFromCache = (pref, storageKeyValue) => {
     if (appSetting('cache', 'list')){
-        return storageGet('ul', storageKeyValue);;
+        return storageGet(pref, storageKeyValue);
     }
     return false;
-};
+}
+
+export function storageSet(pref, key, data) {
+    if ( Platform.OS !== 'web')
+    return ;
+
+    sessionStorage.setItem(pref + '-' + key, appSetting('cache', 'compress') ? Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64') : JSON.stringify(data));    
+}
+
+export function storageGet(pref, key) {
+    if ( Platform.OS !== 'web')
+        return ;
+
+    const s = sessionStorage.getItem(pref + '-' + key);
+    if (!s) return;
+        return appSetting('cache', 'compress') ? JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(s, 'base64')), { to: 'string' })) : JSON.parse(s);
+
+} 
 
 export function md5(str) {
     return stringMd5(str);
@@ -73,28 +90,11 @@ export function storageKey(url, useUrl = true) {
     if ( Platform.OS !== 'web')
         return ;
     
-    let s = window.location.href + '-' + url;
+    let s = url;
     if (!useUrl)
         s = url;
         //stringMd5
     return (s);
-} 
-
-export function storageSet(pref, key, data) {
-    if ( Platform.OS !== 'web')
-    return ;
-
-    sessionStorage.setItem(pref + '-' + key, appSetting('cache', 'compress') ? Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64') : JSON.stringify(data));    
-}
-
-export function storageGet(pref, key) {
-    if ( Platform.OS !== 'web')
-        return ;
-
-    const s = sessionStorage.getItem(pref + '-' + key);
-    if (!s) return;
-    return appSetting('cache', 'compress') ? JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(s, 'base64')), { to: 'string' })) : JSON.parse(s);
-
 } 
 
 export function storageClear(pref, key) {
