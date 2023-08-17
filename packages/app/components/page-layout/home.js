@@ -93,24 +93,27 @@ export default function PageLayout(props) {
                     </Row>
                   }
                 </Row> 
-                <View className={feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full'}>
+                { feedType == 'account'  && <View className={feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.account_feed_form} />
                     <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
                   </LayoutDataContext>
                 </View>
-                <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
+                }
+                { feedType == 'public'  && <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.public_feed_form} />
                     <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
                   </LayoutDataContext>
                 </View>
-               
-                <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full'}>
+                }
+
+                { feedType == 'hot'  && <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full'}>
                   <LayoutDataContext>
                     <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode}  />
                   </LayoutDataContext>
                 </View>
+                }
                 </> 
                 :
                 <LayoutDataContext>

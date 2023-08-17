@@ -32,7 +32,6 @@ export const settingsDefault = {
         feed_action_added: '',
     },
     cache: {
-        page: false,
         list: true,
         compress: true
     },
