@@ -26,7 +26,7 @@ import Tooltip from 'app/ui/atoms/tooltip';
 
 export default function (props) {
   const redirectdRef = useRef()
-  const { currentUser, setCurrentUser } = useCurrentUser()
+  const { currentUser, setCurrentUser } = useCurrentUser();
   const [menuPopup, setMenuPopup] = useState(false)
 
   let { width } = useWindowDimensions()

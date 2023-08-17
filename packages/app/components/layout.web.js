@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, lazy } from 'react'
 import { useWindowDimensions } from 'react-native'
 //import NavbarMemo from 'app/components/nav/navbar';
 import Footer from './footer';
+import Informer from 'app/components/elements/informer';
 import { View } from 'app/design/view'
 import { storageClear } from 'app/lib/util'
 import { getHeaderSettings } from 'app/lib/util'
@@ -64,6 +65,7 @@ export default function Layout(props) {
                     <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     <View className='w-full mx-auto'>
                             { (headerSettings.offset) && <View className='w-full h-16' /> }
+                            <Informer/>
                             { props.children }
                         </View>
                     </View> 
