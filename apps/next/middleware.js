@@ -13,8 +13,8 @@ export function middleware(request) {
         else
             return NextResponse.next()
     }
-    return NextResponse.next()
-   /* else{
+    //return NextResponse.next()
+    else{
         let c = request.cookies.getAll();
         let cookieString = '';
         c.map(function (item) {
@@ -23,17 +23,27 @@ export function middleware(request) {
 
         const headers = {
             authorization: `Bearer ${env('UNA_API_KEY')}`,
+            test: 'test555',
             cookie: cookieString,
         };
         const url = new URL(request.url);
 
-        return new NextResponse(
+        const tmpHeaders = new Headers(request.headers)
+
+        tmpHeaders.set('x-hello-from-middleware1', 'hello')
+        tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
+        tmpHeaders.set('cookie', cookieString)
+
+       /* return new NextResponse(
             JSON.stringify({ success: false, message: JSON.stringify(headers) }),
             { status: 401, headers: { 'content-type': 'application/json' } }
           )
-
-        return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search, {
-            headers: headers,
+*/
+        return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
+        {
+          request: {
+            headers: tmpHeaders,
+          },
         })
-    }*/
+    }
 }
