@@ -121,7 +121,7 @@ export default function ElementBrowse(props) {
             ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
         ]
     };
-    
+
     if (status === 'loading' && dataItems.length == 0)
         return Preload 
 
@@ -152,7 +152,7 @@ export default function ElementBrowse(props) {
                             Preload
                         ) : null
                     }
-                /> : Preload}
+                /> : <></>}
             </View>
             }
         </View> 

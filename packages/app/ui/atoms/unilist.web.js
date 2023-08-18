@@ -60,10 +60,6 @@ export default function UniList(props) {
         storageSet('ul:state', rest.storagekey, ch);
     }
 
-    const restoreStateFrom = (state) => {
-       return state
-    }
-
     if (numColumns > 1){
         const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
         const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')

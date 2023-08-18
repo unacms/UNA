@@ -50,8 +50,7 @@ export default function FormFieldText(props) {
             aria-label={accessibility}
         />
 
-    if (props.html == 2 || props.html == 3){
-       
+    if (props.html == 1 || props.html == 2 || props.html == 3){
         input =  <FormFieldFtf  {...props} />;
     }    
 

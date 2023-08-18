@@ -29,7 +29,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
     const [showModal, setShowModal] = useState(false);
     const bIsTime = type === 'datetime';
 
-    const [date, time] = field.value.split(' ');
+    const [date, time] = field.value.replace('Z', '').split(' ');
     let [hour = '', minute = ''] = time ? time.split(':') : [];
     
     const [dValue, setdValue] = useState({ dt: date, h: hour, m: minute });

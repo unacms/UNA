@@ -210,6 +210,7 @@ export const settingsDefault = {
             'profile-friend-remove',
             'profile-subscribe-add',
             'profile-subscribe-remove',
+            'edit-persons-profile',
             'messenger',
         ],
         bx_groups_submenu: {

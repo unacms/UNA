@@ -11,14 +11,7 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from '../menu'
-import {
-  truncateHTML,
-  stripTags,
-  menuItemsByName,
-  FeedbackHaptics,
-  appSetting,
-  linkify2,
-} from 'app/lib/util'
+import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
@@ -26,8 +19,30 @@ import { fetcher } from '../../lib/fetcher'
 import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { componentsMap } from 'app/ui/molecules/_map'
+import Animated, { Easing, useSharedValue, useAnimatedStyle, withSpring, withTiming, interpolate } from 'react-native-reanimated';
+
 
 function DefaultUnit(data) {
+
+    const opacity = useSharedValue(0);
+    const translateY = useSharedValue(-50); // start position
+    // Start the animations
+    opacity.value = withTiming(1, { duration: 500 });
+
+    translateY.value = withSpring(0);
+
+    const animatedStyles = useAnimatedStyle(() => {
+        return {
+            opacity: opacity.value,
+            transform: [
+                {
+                    translateY: translateY.value
+                }
+            ]
+        };
+    },[opacity, translateY]);
+
+
   let { currentUser, setCurrentUser } = useCurrentUser()
   const [viewState, setViewState] = useState({ view: '' })
   const [postData, setPostData] = useState(null)
@@ -163,7 +178,9 @@ function DefaultUnit(data) {
     }
   }
   return (
-    <View className="max-w-5xl w-full mx-auto ">
+  
+    <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto ">
+
       <View
         className="mt-2 sm:mx-4 sm:mt-4 group duration-300 overflow-hidden sm:rounded-xl    
                     bg-backgroundcard dark:bg-backgroundcard-dark active:opacity-50 
@@ -441,7 +458,8 @@ function DefaultUnit(data) {
           )}
         </View>
       </View>
-    </View>
+    </Animated.View>
+    
   )
 }
 
@@ -485,7 +503,7 @@ function SmallUnit(data) {
               className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
-              {data.plainText}
+              {data.plainText}{stripTags(data.content.text)}
             </Text>
             <View className="flex-none bg-primary dark:bg-primary-dark rounded-full    my-auto h-min px-1.5">
               {data.cmts.count > 0 && (
@@ -575,7 +593,7 @@ export default function UnitFeed(props) {
                 }
 */
   data.showMore = true
-  let unit = props.mode == '' ? DefaultUnit(data) : SmallUnit(data)
+  let unit = props.mode == 'small' ?  SmallUnit(data) : DefaultUnit(data)
 
   return <>{unit}</>
 }

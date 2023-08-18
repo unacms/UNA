@@ -17,6 +17,7 @@ import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';
 
 export default function FormFieldFiles(props) {
+    console.log(props);
     const [imageSource, setImageSource] = useState({ images: null});
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
@@ -214,12 +215,13 @@ export default function FormFieldFiles(props) {
         
         if (!bMultiple){
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
+            let w = props.name == 'picture' ? 'w-48' : 'w-full';
 
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className='w-full h-48 bg-backgroundinput dark:bg-backgroundinput-dark border border-bordercolorinput dark:border-bordercolorinput-dark rounded-lg items-center justify-center'>
+                    <View className={ w + ' h-48 bg-backgroundinput dark:bg-backgroundinput-dark border border-bordercolorinput dark:border-bordercolorinput-dark rounded-lg items-center justify-center'}>
                         {img == null ? 
-                            <Text className='text-neutral-500/50 text-lg font-semibold'>Add a cover image</Text> 
+                            <Text className='text-neutral-500/50 text-lg font-semibold text-center'>{props.caption}</Text> 
                             :( <>{ img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }

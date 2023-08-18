@@ -21,7 +21,7 @@ export default function DropdownMenu(oProps) {
     const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
-        redirectdRef.current.redirect(oItem.link);
+        redirectdRef.current.redirect('/' + oItem.link);
     }
 
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';

@@ -216,7 +216,7 @@ export default function FormFieldFtf(props) {
 
     }, [field.value]);
     
-    const isFullHtml = props.html == 2;
+    const isFullHtml = (props.html == 2 || props.html == 1);
 
     return (
         <><View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >

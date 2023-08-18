@@ -2,7 +2,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import { useState, useEffect } from 'react'
-import { appSetting, filterContent } from 'app/lib/util'
+import { appSetting, filterContent, storageSet, storageGet } from 'app/lib/util'
 import LayoutDataContext from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import { BlackBox } from 'app/ui/molecules/blackbox'
@@ -17,8 +17,21 @@ export default function PageLayout(props) {
   const [isDesktop, setIsDesktop] = useState(false)
   const [renderBlock, setRenderBlock] = useState(false)
   let { currentUser, setCurrentUser } = useCurrentUser()
-  const [feedType, setFeedType] = useState(appSetting('feed', 'default_feed'))
-  const [unitMode, setUnitMode] = useState(appSetting('feed', 'default_view'));
+  const feedMode = storageGet('feed:mode', '', true);
+  const feedTypeD = storageGet('feed:type', '', true);
+  const [feedType, setFeedType] = useState(feedTypeD ? feedTypeD : appSetting('feed', 'default_feed'));
+  const [unitMode, setUnitMode] = useState(feedMode ? feedMode : appSetting('feed', 'default_view'));
+
+  function setUnitModeEx(mode) {
+    storageSet('feed:mode', '', mode, true)
+    setUnitMode(mode)
+  }
+
+  function setFeedTypeEx(mode) {
+    storageSet('feed:type', '', mode, true)
+    setFeedType(mode)
+  }
+  
 
   useEffect(() => {
     if (isWeb) {
@@ -77,19 +90,19 @@ export default function PageLayout(props) {
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>
                 <Row className="p-4  gap-x-2  w-full">
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('account')}}>
+                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedTypeEx('account')}}>
                     <Button fullWidth={true} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
                   </Pressable>
-                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedType('public')}}>
+                  <Pressable  className=" my-auto items-center" onPress={() => {setFeedTypeEx('public')}}>
                     <Button fullWidth={true} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                   </Pressable>
-                  <Pressable  className=" hidden my-auto items-center" onPress={() => {setFeedType('hot')}}>
+                  <Pressable  className=" hidden my-auto items-center" onPress={() => {setFeedTypeEx('hot')}}>
                     <Button fullWidth={true} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                   </Pressable>
                   {appSetting('feed', 'show_selector_view') &&
                     <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                      <Button startDecorator="Rows" variant={unitMode == '' ? 'outline': "text"} size='sm' onPress={() => {setUnitMode('')}}  />
-                      <Button startDecorator="ListBullets" variant={unitMode == 'small' ? 'outline': "text"}  size='sm' onPress={() => {setUnitMode('small')}}  />
+                      <Button startDecorator="Rows" variant={unitMode == '' ? 'outline': "text"} size='sm' onPress={() => {setUnitModeEx('')}}  />
+                      <Button startDecorator="ListBullets" variant={unitMode == 'small' ? 'outline': "text"}  size='sm' onPress={() => {setUnitModeEx('small')}}  />
                     </Row>
                   }
                 </Row> 
@@ -171,21 +184,21 @@ export default function PageLayout(props) {
           <>
           { appSetting('feed', 'show_multi') ? <>
                 <Row className="px-auto justify-center gap-x-1 ">
-                  <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setFeedType('account')}}>
+                  <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setFeedTypeEx('account')}}>
                       <Button fullWidth={false} id="tab" startDecorator="Users"  variant={feedType == 'account' ? 'outline': "text"} rounded size='sm' title='Following'   />
                   </Pressable>
-                  <Pressable  className=" items-center justify-center py-2.5  " onPress={() => {setFeedType('public')}}>
+                  <Pressable  className=" items-center justify-center py-2.5  " onPress={() => {setFeedTypeEx('public')}}>
                     <Button fullWidth={false} id="tab" startDecorator="MagicWand"  variant={feedType == 'public' ? 'outline': "text"} rounded size='sm' title='For You'   />
                   </Pressable>
-                  <Pressable  className="items-center hidden justify-center py-2.5 " onPress={() => {setFeedType('hot')}}>
+                  <Pressable  className="items-center hidden justify-center py-2.5 " onPress={() => {setFeedTypeEx('hot')}}>
                   <Button fullWidth={false} id="tab" startDecorator="Fire" variant={feedType == 'hot' ? 'outline': "text"} rounded size='sm' title='Hot'   />
                   </Pressable>
                   {appSetting('feed', 'show_selector_view') &&
                     <Row className="flex-auto flex-auto justify-end">
-                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitMode('')}} >
+                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitModeEx('')}} >
                       <Button startDecorator="Rows"  fullWidth={false}  rounded variant={unitMode == '' ? 'outline': "text"} size='sm'  />
                       </Pressable>
-                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitMode('small')}} >
+                      <Pressable  className="items-center justify-center py-2.5  " onPress={() => {setUnitModeEx('small')}} >
                       <Button startDecorator="ListBullets"  fullWidth={false}  rounded variant={unitMode == 'small' ? 'outline': "text"}  size='sm'   />
                       </Pressable>
                     </Row>

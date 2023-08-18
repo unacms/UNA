@@ -37,7 +37,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.sidebar = contentAndEndpoint.sidebar;
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
-
+            //console.log(i.blocks);
             if (appSetting('cache', 'list')){
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC){
@@ -125,8 +125,10 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;
-            if (blocks)
+            
+            if (blocks && !route.blocks)
                 route.blocks = blocks
+
             route.inited = true;
             storageSet('ul:data', route.storageKeyValue, route.data.concat(newItems));
             return {

@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, storageSet } from 'app/lib/util';
+import { appSetting, getHeaderSettings } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/blackbox-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -16,7 +16,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     let uniRef = useRef();
   
-
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
     const windowWidth = useWindowDimensions().width;
 
@@ -32,12 +31,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
+        console.log('yyyy');
+
         let currentRoute = routes.find((item) => item.index === index);
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
+        console.log('xxxx', currentRoute);
         if (!blocksroutes)
             return 1;
         const blockKeys = Object.keys(blocksroutes);
+        console.log('xxxx', currentRoute);
 
         for (const key of blockKeys) {
             if (blocksroutes[key].perLine > 0) {
@@ -182,7 +185,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                     <Pressable  className=" py-2 items-center"
                                         key={`tab-${a.index}`}
                                         onPress={() => {
-                                            setIndex(a.index)
+                                            setIndex(a.index);
+                                            getNumCols(windowWidth)
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >

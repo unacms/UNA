@@ -53,7 +53,7 @@ export default function MenuItemButton(oProps) {
                 event.preventDefault();
 
                 if(oProps?.link) {
-                    redirectdRef.current.redirect(oProps?.link);
+                    redirectdRef.current.redirect('/' + oProps?.link);
                 }
 
                 if(oProps.params?.onclick)

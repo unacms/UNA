@@ -19,22 +19,43 @@ export const getDataFromCache = (pref, storageKeyValue) => {
     return false;
 }
 
-export function storageSet(pref, key, data) {
-    if ( Platform.OS !== 'web')
-    return ;
+export function storageSet(pref, key, data, isLocal = true) {
+    if (Platform.OS !== 'web') return;
 
-    sessionStorage.setItem(pref + '-' + key, appSetting('cache', 'compress') ? Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64') : JSON.stringify(data));    
+    const storage = isLocal ? localStorage : sessionStorage;
+    const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
+
+    storage.setItem(`${pref}-${key}`, serializedData);
 }
 
-export function storageGet(pref, key) {
-    if ( Platform.OS !== 'web')
-        return ;
+export function storageGet(pref, key, isLocal = true) {
+    if (Platform.OS !== 'web') return null;
 
-    const s = sessionStorage.getItem(pref + '-' + key);
-    if (!s) return;
-        return appSetting('cache', 'compress') ? JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(s, 'base64')), { to: 'string' })) : JSON.parse(s);
+    const storage = isLocal ? localStorage : sessionStorage;
+    const storedData = storage.getItem(`${pref}-${key}`);
 
-} 
+    if (!storedData) return null;
+
+    return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
+}
+
+function compress(data) {
+    try {
+        return Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64');
+    } catch (error) {
+        console.error('Compression error:', error);
+        return null;
+    }
+}
+
+function decompress(data) {
+    try {
+        return JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(data, 'base64')), { to: 'string' }));
+    } catch (error) {
+        console.error('Decompression error:', error);
+        return null;
+    }
+}
 
 export function md5(str) {
     return stringMd5(str);
@@ -51,27 +72,17 @@ export function getPageWidth(uri) {
 export function getHeaderSettings(uri, width) {
     let settings = appSetting('layouts', uri)
 
-    const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' 
-    ? settings.headerSettings.backButton 
-    : true;
+    const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' ? settings.headerSettings.backButton : true;
 
-    let bHeader = typeof settings?.headerSettings?.header !== 'undefined' 
-    ? settings.headerSettings.header 
-    : true;
+    let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
     if (width > 1024)
         bHeader = true;
 
-    const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' 
-    ? settings.headerSettings.menu 
-    : false;
+    const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' ? settings.headerSettings.menu : false;
 
-    const bTitle = typeof settings?.headerSettings?.title !== 'undefined' 
-    ? settings.headerSettings.title 
-    : true;
+    const bTitle = typeof settings?.headerSettings?.title !== 'undefined' ? settings.headerSettings.title : true;
 
-    let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' 
-    ? settings.headerSettings.offset 
-    : true;
+    let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : true;
     
     if (width > 1024)
         bOffset = true;
