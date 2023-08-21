@@ -7,9 +7,10 @@ export const config = {
 };
 
 export function middleware(request) {
-    return NextResponse.next()
+    
     //console.log(request.nextUrl.pathname);
-    /*if (!request.nextUrl.pathname.includes('api.php')) {
+    if (!request.nextUrl.pathname.includes('api.php')) {
+        return NextResponse.next()
         if (request.nextUrl.pathname == '/')
             return NextResponse.redirect(new URL(request.url + 'home'));    
         
@@ -33,8 +34,8 @@ export function middleware(request) {
         else
             return NextResponse.next()
     }
-    return NextResponse.next()*/
-    /*else{
+
+    else{
         let c = request.cookies.getAll();
         let cookieString = '';
         c.map(function (item) {
@@ -58,5 +59,5 @@ export function middleware(request) {
             headers: tmpHeaders,
           },
         })
-    }*/
+    }
 }
