@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
 
 export const config = {
-    matcher: "/((?!static|.*\\..*|_next).*)",
+    matcher: "/((?!static|_next).*)",
 };
 
 export function middleware(request) {
-    console.log('!!!!!!!!!!!!', request.nextUrl.pathname)
+    //console.log(request.nextUrl.pathname);
     if (!request.nextUrl.pathname.includes('api.php')) {
         if (request.nextUrl.pathname == '/')
             return NextResponse.redirect(new URL(request.url + 'home'));    
@@ -22,6 +22,7 @@ export function middleware(request) {
         else
             return NextResponse.next()
     }
+  //  return NextResponse.next()
     else{
         let c = request.cookies.getAll();
         let cookieString = '';
@@ -41,7 +42,7 @@ export function middleware(request) {
         tmpHeaders.set('x-hello-from-middleware1', 'hello')
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
         tmpHeaders.set('cookie', cookieString)
-
+        //console.log(env('UNA_URL') );
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
         {
           request: {
