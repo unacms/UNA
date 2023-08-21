@@ -40,9 +40,11 @@ export function middleware(request) {
 
         const tmpHeaders = new Headers(request.headers)
 
-        tmpHeaders.set('x-hello-from-middleware1', 'hello')
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
-        tmpHeaders.set('cookie', cookieString)
+        tmpHeaders.set('cookie', cookieString);
+        tmpHeaders.set('cache-control', 'public, s-maxage=1');
+        tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60');
+        tmpHeaders.set('CVercel-CDN-Cache-Control', 'public, s-maxage=3600');
         //console.log(env('UNA_URL') );
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
         {
