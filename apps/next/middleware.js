@@ -3,6 +3,7 @@ import { env } from 'app/lib/env';
 
 export const config = {
     matcher: "/((?!static|_next).*)",
+    runtime: 'edge',
 };
 
 export function middleware(request) {
