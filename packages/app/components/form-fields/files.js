@@ -17,7 +17,7 @@ import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';
 
 export default function FormFieldFiles(props) {
-    console.log(props);
+
     const [imageSource, setImageSource] = useState({ images: null});
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();

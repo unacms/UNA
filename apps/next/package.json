@@ -26,7 +26,8 @@
     "next": "13.4.12",
     "raf": "^3.4.1",
     "react-virtuoso": "^4.4.2",
-    "setimmediate": "^1.0.5"
+    "setimmediate": "^1.0.5",
+    "sharp": "^0.32.5"
   },
   "devDependencies": {
     "@types/node": "17.0.21",

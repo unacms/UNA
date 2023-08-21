@@ -2,6 +2,7 @@ import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user'
 import { stripTags } from 'app/lib/util';
+import { Icon } from 'app/ui/atoms/icon'
 
 export default function ElementInformer({data}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -19,7 +20,6 @@ export default function ElementInformer({data}) {
                     }
                     if (item.id == 'sys-switch-profile-context'){
                         return <></>
-                        
                     }
                     
                     return (                   

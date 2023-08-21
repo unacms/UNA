@@ -31,16 +31,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
-        console.log('yyyy');
 
         let currentRoute = routes.find((item) => item.index === index);
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
-        console.log('xxxx', currentRoute);
+
         if (!blocksroutes)
             return 1;
         const blockKeys = Object.keys(blocksroutes);
-        console.log('xxxx', currentRoute);
+
 
         for (const key of blockKeys) {
             if (blocksroutes[key].perLine > 0) {

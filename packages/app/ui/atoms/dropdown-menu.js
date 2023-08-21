@@ -15,13 +15,15 @@ import {
 } from 'app/design/dropdown';
 import Redirect from 'app/ui/atoms/redirect';
 import { Icon } from 'app/ui/atoms/icon'
+import { connect } from './socket';
 
 export default function DropdownMenu(oProps) {
     const redirectdRef = useRef();
     const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
-        redirectdRef.current.redirect('/' + oItem.link);
+
+        redirectdRef.current.redirect('' + oItem.link);
     }
 
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
