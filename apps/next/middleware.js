@@ -10,7 +10,7 @@ export function middleware(request) {
     
     //console.log(request.nextUrl.pathname);
     if (!request.nextUrl.pathname.includes('api.php')) {
-        return NextResponse.next()
+        
         if (request.nextUrl.pathname == '/')
             return NextResponse.redirect(new URL(request.url + 'home'));    
         
