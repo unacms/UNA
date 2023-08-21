@@ -5,7 +5,7 @@ import { Root } from 'app/root'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
-//export const runtime = 'edge'
+export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
