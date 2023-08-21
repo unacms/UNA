@@ -19,10 +19,9 @@ export function middleware(request) {
         });
         
         const tmpHeaders = new Headers(request.headers)
-        tmpHeaders.set('cache-control', 'public, s-maxage=1');
-        tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60');
-        tmpHeaders.set('CVercel-CDN-Cache-Control', 'public, s-maxage=3600');
-        
+        tmpHeaders.set('cache', 'force-cache');
+
+
         if (cookieString != '')
             return NextResponse.rewrite(
                 new URL(request.url + "?cookieString=" + cookieString),  {
@@ -43,18 +42,14 @@ export function middleware(request) {
 
         const headers = {
             authorization: `Bearer ${env('UNA_API_KEY')}`,
-            test: 'test555',
             cookie: cookieString,
+            cache: 'force-cache'  
         };
         const url = new URL(request.url);
 
         const tmpHeaders = new Headers(request.headers)
 
-        tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
-        tmpHeaders.set('cookie', cookieString);
-        tmpHeaders.set('cache-control', 'public, s-maxage=1');
-        tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60');
-        tmpHeaders.set('CVercel-CDN-Cache-Control', 'public, s-maxage=3600');
+        tmpHeaders.set('cache', 'force-cache');
         //console.log(env('UNA_URL') );
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
         {

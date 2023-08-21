@@ -10,7 +10,7 @@ export const runtime = 'edge'
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
  
-   // let c = cookies().getAll();
+    //let c = cookies().getAll();
    // let cookieString = "";
     let cookieString = props.searchParams.cookieString;
 
@@ -26,7 +26,7 @@ const getData = cache(async (props) => {
             'CDN-Cache-Control': 'public, s-maxage=60',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',*/
         },
-        next: { revalidate: 3600 } 
+        cache: 'force-cache'  
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
