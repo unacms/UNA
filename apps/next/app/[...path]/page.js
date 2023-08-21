@@ -26,7 +26,7 @@ const getData = cache(async (props) => {
             'CDN-Cache-Control': 'public, s-maxage=60',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',*/
         },
-        cache: 'force-cache'  
+        //cache: 'force-cache'  
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;

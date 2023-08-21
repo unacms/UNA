@@ -10,8 +10,8 @@ export function middleware(request) {
     
     //console.log(request.nextUrl.pathname);
     if (!request.nextUrl.pathname.includes('api.php')) {
-        
-        if (request.nextUrl.pathname == '/')
+        return NextResponse.next()
+        /*if (request.nextUrl.pathname == '/')
             return NextResponse.redirect(new URL(request.url + 'home'));    
         
             let c = request.cookies.getAll();
@@ -32,7 +32,7 @@ export function middleware(request) {
                 },
               });
         else
-            return NextResponse.next()
+            return NextResponse.next()*/
     }
 
     else{
@@ -51,7 +51,7 @@ export function middleware(request) {
 
         const tmpHeaders = new Headers(request.headers)
 
-        tmpHeaders.set('cache', 'force-cache');
+        //tmpHeaders.set('cache', 'force-cache');
         //console.log(env('UNA_URL') );
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
         {
