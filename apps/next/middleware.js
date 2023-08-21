@@ -18,8 +18,18 @@ export function middleware(request) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
         });
         
+        const tmpHeaders = new Headers(request.headers)
+        tmpHeaders.set('cache-control', 'public, s-maxage=1');
+        tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60');
+        tmpHeaders.set('CVercel-CDN-Cache-Control', 'public, s-maxage=3600');
+        
         if (cookieString != '')
-            return NextResponse.rewrite(new URL(request.url + "?cookieString=" + cookieString));
+            return NextResponse.rewrite(
+                new URL(request.url + "?cookieString=" + cookieString),  {
+                request: {
+                    headers: tmpHeaders,
+                },
+              });
         else
             return NextResponse.next()
     }

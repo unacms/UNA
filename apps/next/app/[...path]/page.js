@@ -20,11 +20,10 @@ const getData = cache(async (props) => {
         headers: {
             cookie: cookieString,
             authorization: 'Bearer ' + env('UNA_API_KEY'),
-            /*
-              'Cache-Control': 'public, s-maxage=1',
+            
+            'Cache-Control': 'public, s-maxage=1',
             'CDN-Cache-Control': 'public, s-maxage=60',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',
-            */
         },
         next: { revalidate: 3600 } 
     };
