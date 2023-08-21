@@ -3,7 +3,7 @@ import { env } from 'app/lib/env';
 
 export const config = {
     matcher: "/((?!static|_next).*)",
-    runtime: 'edge',
+    runtime: 'experimental-edge',
 };
 
 export function middleware(request) {
@@ -23,7 +23,7 @@ export function middleware(request) {
         else
             return NextResponse.next()
     }
-  //  return NextResponse.next()
+   // return NextResponse.next()
     else{
         let c = request.cookies.getAll();
         let cookieString = '';
