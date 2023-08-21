@@ -5,15 +5,16 @@ import { Root } from 'app/root'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
-export const runtime = 'edge'
+//export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
  
    // let c = cookies().getAll();
+   // let cookieString = "";
     let cookieString = props.searchParams.cookieString;
- /*
-    c.map(function (item) {
+
+   /* c.map(function (item) {
         cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
     });*/
     const opts = {
@@ -21,9 +22,9 @@ const getData = cache(async (props) => {
             cookie: cookieString,
             authorization: 'Bearer ' + env('UNA_API_KEY'),
             
-            'Cache-Control': 'public, s-maxage=1',
+          /*  'Cache-Control': 'public, s-maxage=1',
             'CDN-Cache-Control': 'public, s-maxage=60',
-            'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',
+            'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',*/
         },
         next: { revalidate: 3600 } 
     };
