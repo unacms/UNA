@@ -40,7 +40,6 @@ export default function Form(props) {
     const onSubmit = async d => {
 
         FeedbackHaptics('Medium')
-        console.log('----------')
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);

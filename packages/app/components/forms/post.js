@@ -1,8 +1,27 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
+//import WebView from 'react-native-webview';
+import React from 'react'
+import dynamic from 'next/dynamic'
+import { Platform } from 'react-native'
+import { Dimensions } from 'react-native';
+import { env } from 'app/lib/env';
 
 export default function FormPost(props) {
+    const isWeb = Platform.OS == 'web'
+    if (!isWeb){
+        // LOAD FORMS FROM WEB
+        const WebView = React.memo(
+            dynamic(() => import('react-native-webview'))
+          )
+        let otherH = Dimensions.get('window').height;
+        
+        let u =  env('API_PROXY_URL').replace('/api', '/');
+
+        return <View className='w-full max-w-5xl bg-red-500 ' style={{height:otherH - 150}}><WebView source={{ uri: u + 'create-post?empty=true' }} /></View>
+    }
+
     const [imageSource, setImageSource] = useState([]);
 
     function setPlaceHolder(name, previews) {
