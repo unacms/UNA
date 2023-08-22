@@ -12,9 +12,9 @@ export function middleware(request) {
       //  if (request.nextUrl.pathname == '/')
        //     return NextResponse.redirect(new URL(request.url + 'home'));    
         
-        return NextResponse.next()
+       // return NextResponse.next()
 
-        /*    let c = request.cookies.getAll();
+            let c = request.cookies.getAll();
         let cookieString = '';
         c.map(function (item) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
@@ -30,7 +30,7 @@ export function middleware(request) {
                 },
               });
         else
-            return NextResponse.next()*/
+            return NextResponse.next()
     }
 
     else{
