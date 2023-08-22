@@ -24,11 +24,14 @@ const getData = cache(async (props) => {
             cookie: cookieString,
             authorization: 'Bearer ' + env('UNA_API_KEY'),
         },
-        next: { revalidate: 0 } 
+        cache: 'no-store' 
+        //next: { revalidate: 0 } 
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', l, props.searchParams);
     const res = await fetch(l, opts)
+    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()
  });
 
@@ -58,10 +61,12 @@ export async function generateMetadata(props) {
 }
 
 export default async function Path (props) {
-    //console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',props)
     const data = await getData(props)
-    if (data.data)
-        return <Root  path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
+    if (data.data){
+        if (props?.searchParams?.empty)
+            data.data.empty = true;
+        return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
+    }
     else
         return <div className='bg-red-500'>cxvz</div>
    

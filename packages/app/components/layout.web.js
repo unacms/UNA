@@ -1,53 +1,29 @@
-import React, { useEffect, useCallback, lazy } from 'react'
-import { useWindowDimensions } from 'react-native'
-//import NavbarMemo from 'app/components/nav/navbar';
+import React, { useEffect, useCallback, lazy, useMemo } from 'react';
+import { useWindowDimensions } from 'react-native';
 import Footer from './footer';
 import Informer from 'app/components/elements/informer';
-import { View } from 'app/design/view'
-import { storageClear } from 'app/lib/util'
-import { getHeaderSettings } from 'app/lib/util'
+import { View } from 'app/design/view';
+import { storageClear } from 'app/lib/util';
+import { getHeaderSettings } from 'app/lib/util';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
-function NavbarMemo({ title, menu_add, uri }) {
-  return (
-      <Navbar title={title} menu_add={menu_add} uri={uri} />
-  );
-}
+const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
+    return (
+        <Navbar title={title} menu_add={menu_add} uri={uri} />
+    );
+  });
 
-export default function Layout(props) {  
-    let { width } = useWindowDimensions();
-   
-    const handleScroll = useCallback(() => {
-        let lastScrollTop = 0;
-        let scrollTop = window.scrollY;
-        if ((lastScrollTop <= scrollTop && lastScrollTop > 0) && window.innerWidth < 1024)
-            scroll.value = 0;
-        else
-            scroll.value = 1;
-        lastScrollTop = scrollTop;
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [handleScroll]);
+export default function Layout({ data, uri, children }) {
+    const { width } = useWindowDimensions();
 
     const handlePageShow = useCallback((event) => {
-        console.log('event',event);
-        document.cookie = `pg=${JSON.stringify([])}`;
         storageClear();
     }, []);
 
     useEffect(() => {
         if (navigator.serviceWorker) {
-            navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                // Service worker registration was successful.
-            }).catch(function(error) {
-                // Service worker registration failed.
-            });
+            navigator.serviceWorker.register('/sw.js');
         }
 
         window.addEventListener('beforeunload', handlePageShow);
@@ -55,24 +31,27 @@ export default function Layout(props) {
             window.removeEventListener('beforeunload', handlePageShow);
         };
     }, [handlePageShow]);
-    
-    let headerSettings = getHeaderSettings(props.uri, width);
-    
+
+    const headerSettings = useMemo(() => getHeaderSettings(uri, width), [uri, width]);
+
+    if (data?.empty)
+        return <>{children}</>
+
     return (
         <>
             <View className="bg-backgroundbody dark:bg-backgroundbody-dark w-full items-stretch ">
-                <View className=" w-full mx-auto flex-row -top-[1px] " > 
-                    <View  className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
-                    <View className='w-full mx-auto'>
-                            { (headerSettings.offset) && <View className='w-full h-16' /> }
-                            <Informer/>
-                            { props.children }
+                <View className=" w-full mx-auto flex-row -top-[1px] " >
+                    <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                        <View className='w-full mx-auto'>
+                            {headerSettings.offset && <View className='w-full h-16' />}
+                            <Informer />
+                            {children}
                         </View>
-                    </View> 
+                    </View>
                 </View>
-                <Footer/>
+                <Footer />
             </View>
-            <NavbarMemo title={props.data.title} menu_add={!!props.data.menu_add ? props.data.menu_add : false} uri = {props.uri} />
+            <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} />
         </>
     );
 }

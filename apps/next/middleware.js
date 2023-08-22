@@ -14,7 +14,7 @@ export function middleware(request) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
         });
         if (cookieString != '')
-            return NextResponse.rewrite(new URL(request.url + "?cookieString=" + cookieString));
+            return NextResponse.rewrite(new URL(request.url + (request.url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
         else
             return NextResponse.next()
     }
