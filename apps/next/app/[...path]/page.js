@@ -1,24 +1,24 @@
-import { cookies } from 'next/headers'
+//import { cookies } from 'next/headers'
 import { env } from 'app/lib/env';
 import { cache } from 'react'
 import { Root } from 'app/root'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
-//export const runtime = 'edge'
+export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
  
     
-    //let cookieString = props.searchParams.cookieString;
+    let cookieString = props.searchParams.cookieString;
 
-    let c = cookies().getAll();
+    /*let c = cookies().getAll();
     let cookieString = "";
     c.map(function (item) {
         cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
     });
-
+*/
     const opts = {
         headers: {
             cookie: cookieString,
