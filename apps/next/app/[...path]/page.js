@@ -23,12 +23,8 @@ const getData = cache(async (props) => {
         headers: {
             cookie: cookieString,
             authorization: 'Bearer ' + env('UNA_API_KEY'),
-            
-          /*  'Cache-Control': 'public, s-maxage=1',
-            'CDN-Cache-Control': 'public, s-maxage=60',
-            'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',*/
         },
-        cache: 'force-cache'  
+        next: { revalidate: 0 } 
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
