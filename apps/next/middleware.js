@@ -13,7 +13,7 @@ export function middleware(request) {
        //     return NextResponse.redirect(new URL(request.url + 'home'));    
         
        // return NextResponse.next()
-
+/*
             let c = request.cookies.getAll();
         let cookieString = '';
         c.map(function (item) {
@@ -30,7 +30,7 @@ export function middleware(request) {
                 },
               });
         else
-            return NextResponse.next()
+            return NextResponse.next()*/
     }
 
     else{
