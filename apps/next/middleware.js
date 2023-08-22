@@ -39,11 +39,6 @@ export function middleware(request) {
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
         tmpHeaders.set('cookie', cookieString)
 
-       /* return new NextResponse(
-            JSON.stringify({ success: false, message: JSON.stringify(headers) }),
-            { status: 401, headers: { 'content-type': 'application/json' } }
-          )
-*/
         return NextResponse.rewrite(env('UNA_URL') + '/api.php' + url.search,
         {
           request: {
