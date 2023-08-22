@@ -95,9 +95,9 @@ export default function UniList(props) {
                 style={style}
                 {...(listState?.ranges ? { restoreStateFrom: listState } : {})}
                 itemContent={itemContent}
-                ref = {refer}   
+                ref = {refer}  
                 endReached={onEndReached}
-                increaseViewportBy={windowHeight - 200}
+                increaseViewportBy={windowHeight - 400}
                 components={{
                     Footer: () => {
                         return ListFooterComponent
