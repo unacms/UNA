@@ -9,8 +9,8 @@ export const config = {
 export function middleware(request) {
     if (!request.nextUrl.pathname.includes('api.php')) {
         //return NextResponse.next()
-        if (request.nextUrl.pathname == '/')
-            return NextResponse.redirect(new URL(request.url + 'home'));    
+      //  if (request.nextUrl.pathname == '/')
+       //     return NextResponse.redirect(new URL(request.url + 'home'));    
         
         return NextResponse.next()
 
