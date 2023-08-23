@@ -1,5 +1,5 @@
 import { EditorProps } from "@tiptap/pm/view";
-import { startImageUpload } from "app/ui/editor/ui/editor/plugins/upload-images";
+//import { startImageUpload } from "app/ui/editor/ui/editor/plugins/upload-images";
 
 export const TiptapEditorProps: EditorProps = {
   attributes: {
@@ -16,7 +16,7 @@ export const TiptapEditorProps: EditorProps = {
       }
     },
   },
-  handlePaste: (view, event) => {
+  /*handlePaste: (view, event) => {
     if (
       event.clipboardData &&
       event.clipboardData.files &&
@@ -49,5 +49,5 @@ export const TiptapEditorProps: EditorProps = {
       return true;
     }
     return false;
-  },
+  },*/
 };

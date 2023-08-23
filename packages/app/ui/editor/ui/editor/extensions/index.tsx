@@ -11,7 +11,7 @@ import TaskList from "@tiptap/extension-task-list";
 import Highlight from "@tiptap/extension-highlight";
 import SlashCommand from "./slash-command";
 import { InputRule } from "@tiptap/core";
-import UploadImagesPlugin from "app/ui/editor/ui/editor/plugins/upload-images";
+//import UploadImagesPlugin from "app/ui/editor/ui/editor/plugins/upload-images";
 import UpdatedImage from "./updated-image";
 import Mention from '@tiptap/extension-mention'
 import { Suggestion } from 'app/lib/editor-helpers2'
@@ -20,7 +20,7 @@ import Iframe from 'app/lib/editor-helpers'
 
 const CustomImage = TiptapImage.extend({
   addProseMirrorPlugins() {
-    return [UploadImagesPlugin()];
+    return [/*UploadImagesPlugin()*/];
   },
 });
 

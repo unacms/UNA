@@ -1,5 +1,3 @@
-import { BlobResult } from "@vercel/blob";
-import { toast } from "sonner";
 import { EditorState, Plugin, PluginKey } from "@tiptap/pm/state";
 import { Decoration, DecorationSet, EditorView } from "@tiptap/pm/view";
 
@@ -58,12 +56,12 @@ function findPlaceholder(state: EditorState, id: {}) {
 export function startImageUpload(file: File, view: EditorView, pos: number) {
   // check if the file is an image
   if (!file.type.includes("image/")) {
-    toast.error("File type not supported.");
+    console.log("File type not supported.");
     return;
 
     // check if the file size is less than 20MB
   } else if (file.size / 1024 / 1024 > 20) {
-    toast.error("File size too big (max 20MB).");
+    console.log("File size too big (max 20MB).");
     return;
   }
 
@@ -87,7 +85,7 @@ export function startImageUpload(file: File, view: EditorView, pos: number) {
     view.dispatch(tr);
   };
 
-  handleImageUpload(file).then((src) => {
+ /* handleImageUpload(file).then((src) => {
     const { schema } = view.state;
 
     let pos = findPlaceholder(view.state, id);
@@ -107,10 +105,10 @@ export function startImageUpload(file: File, view: EditorView, pos: number) {
       .replaceWith(pos, pos, node)
       .setMeta(uploadKey, { remove: { id } });
     view.dispatch(transaction);
-  });
+  });*/
 }
 
-export const handleImageUpload = (file: File) => {
+/*export const handleImageUpload = (file: File) => {
   // upload to Vercel Blob
   return new Promise((resolve) => {
     toast.promise(
@@ -150,4 +148,4 @@ export const handleImageUpload = (file: File) => {
       },
     );
   });
-};
+};*/
