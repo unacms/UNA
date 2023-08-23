@@ -10,7 +10,7 @@ import { env } from 'app/lib/env';
 
 export default function FormPost(props) {
     const isWeb = Platform.OS == 'web'
-    if (!isWeb){
+  /*  if (!isWeb){
         // LOAD FORMS FROM WEB
         const WebView = React.memo(
             dynamic(() => import('react-native-webview'))
@@ -21,7 +21,7 @@ export default function FormPost(props) {
 
         return <View className='w-full max-w-5xl bg-red-500 ' style={{height:otherH - 150}}><WebView source={{ uri: u + 'create-post?empty=true' }} /></View>
     }
-
+*/
     const [imageSource, setImageSource] = useState([]);
 
     function setPlaceHolder(name, previews) {

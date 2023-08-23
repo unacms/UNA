@@ -4,41 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { TiptapEditorProps } from "./props";
 import { TiptapExtensions } from "./extensions";
-import useLocalStorage from "app/ui/editor/lib/hooks/use-local-storage";
-import { useDebouncedCallback } from "use-debounce";
 import { useCompletion } from "ai/react";
-import { toast } from "sonner";
-import va from "@vercel/analytics";
-import DEFAULT_EDITOR_CONTENT from "./default-content";
 import { EditorBubbleMenu } from "./components/bubble-menu";
 import { getPrevText } from "app/ui/editor/lib/editor";
 import { ImageResizer } from "./components/image-resizer";
 
-export default function Editor() {
-  const [content, setContent] = useLocalStorage(
-    "content",
-    DEFAULT_EDITOR_CONTENT,
-  );
-  const [saveStatus, setSaveStatus] = useState("Saved");
+export default function Editor({defaultValue, formContext, name}) {
+
+  const [content, setContent] = useState(defaultValue)
 
   const [hydrated, setHydrated] = useState(false);
-
-  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
-    const json = editor.getJSON();
-    console.log(editor.getHTML());
-    setSaveStatus("Saving...");
-    setContent(json);
-    // Simulate a delay in saving.
-    setTimeout(() => {
-      setSaveStatus("Saved");
-    }, 500);
-  }, 750);
 
   const editor = useEditor({
     extensions: TiptapExtensions,
     editorProps: TiptapEditorProps,
     onUpdate: (e) => {
-      setSaveStatus("Unsaved");
       const selection = e.editor.state.selection;
       const lastTwo = getPrevText(e.editor, {
         chars: 2,
@@ -54,9 +34,9 @@ export default function Editor() {
           }),
         );
         // complete(e.editor.storage.markdown.getMarkdown());
-        va.track("Autocomplete Shortcut Used");
       } else {
-        debouncedUpdates(e);
+        formContext.setValue(name, e.editor.getHTML());
+       // debouncedUpdates(e);
       }
     },
     autofocus: "end",
@@ -72,9 +52,8 @@ export default function Editor() {
       });
     },
     onError: (err) => {
-      toast.error(err.message);
+      console.log(err.message);
       if (err.message === "You have reached your request limit for the day.") {
-        va.track("Rate Limit Reached");
       }
     },
   });
@@ -132,16 +111,19 @@ export default function Editor() {
     }
   }, [editor, content, hydrated]);
 
+  /*
+  <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-2 py-1 text-sm text-stone-400">
+        {saveStatus}
+      </div>
+      */
   return (
     <div
       onClick={() => {
         editor?.chain().focus().run();
       }}
-      className="relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8  sm:rounded-lg sm:border sm:px-12 sm:shadow-lg"
+      className="relative min-h-[500px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base"
     >
-      <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-2 py-1 text-sm text-stone-400">
-        {saveStatus}
-      </div>
+      
       {editor && <EditorBubbleMenu editor={editor} />}
       {editor?.isActive("image") && <ImageResizer editor={editor} />}
       <EditorContent editor={editor} />

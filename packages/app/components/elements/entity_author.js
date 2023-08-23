@@ -16,7 +16,7 @@ export default function ElementEntityAuthor(oProps) {
     const aMenuManageItems = !!currentUser ? oProps?.data?.menu_manage && menuItemsByName(oProps.data.menu_manage?.object, oProps.data.menu_manage?.items).map((aItem) => {
         return {
             id: aItem.id ? aItem.id : aItem.name,
-            link: aItem.link,
+            link: '/' + aItem.link,
             title: aItem.title
         };
     }) : [];

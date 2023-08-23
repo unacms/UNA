@@ -1,5 +1,5 @@
 'use client'
-import React, { lazy } from 'react'
+
 import { IconSet as IconSetDedault } from './icons-web.default';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';

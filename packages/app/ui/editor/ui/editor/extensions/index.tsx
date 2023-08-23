@@ -8,18 +8,32 @@ import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
-import { Markdown } from "tiptap-markdown";
 import Highlight from "@tiptap/extension-highlight";
 import SlashCommand from "./slash-command";
 import { InputRule } from "@tiptap/core";
 import UploadImagesPlugin from "app/ui/editor/ui/editor/plugins/upload-images";
 import UpdatedImage from "./updated-image";
+import Mention from '@tiptap/extension-mention'
+import { Suggestion } from 'app/lib/editor-helpers2'
+import { mergeAttributes, Node } from '@tiptap/core'
+import Iframe from 'app/lib/editor-helpers'
 
 const CustomImage = TiptapImage.extend({
   addProseMirrorPlugins() {
     return [UploadImagesPlugin()];
   },
 });
+
+var MentionEx = Mention.extend({
+  renderHTML({ node, HTMLAttributes }) {
+      return [
+          'a',
+          mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
+          node.attrs.id.symbol + ' ' + node.attrs.id.label,
+      ]
+  },
+})
+
 
 export const TiptapExtensions = [
   StarterKit.configure({
@@ -95,6 +109,20 @@ export const TiptapExtensions = [
         "text-stone-400 underline underline-offset-[3px] hover:text-stone-600 transition-colors cursor-pointer",
     },
   }),
+  MentionEx.configure({
+    HTMLAttributes: {
+        class: 'bx-mention-link',
+    },
+    suggestion: Suggestion('@'),
+  }),
+  MentionEx.configure({
+      HTMLAttributes: {
+          class: 'bx-mention-link',
+      },
+      suggestion: Suggestion('#'),
+      
+      
+  }),
   CustomImage.configure({
     allowBase64: true,
     HTMLAttributes: {
@@ -119,6 +147,7 @@ export const TiptapExtensions = [
   TiptapUnderline,
   TextStyle,
   Color,
+  Iframe,
   Highlight.configure({
     multicolor: true,
   }),
@@ -132,9 +161,5 @@ export const TiptapExtensions = [
       class: "flex items-start my-4",
     },
     nested: true,
-  }),
-  Markdown.configure({
-    html: false,
-    transformCopiedText: true,
   }),
 ];

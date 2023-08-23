@@ -13,6 +13,6 @@ module.exports = {
     ...theme,
   },
   important: 'html',
-  plugins: [require('nativewind/tailwind/css')],
+  plugins: [require('nativewind/tailwind/css'), require('@tailwindcss/typography')],
 }
 

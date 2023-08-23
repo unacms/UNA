@@ -10,6 +10,7 @@ import { Editor, Range, Extension } from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
 import { ReactRenderer } from "@tiptap/react";
 import { useCompletion } from "ai/react";
+import { appSetting } from 'app/lib/util'
 import tippy from "tippy.js";
 import {
   Heading1,
@@ -22,13 +23,14 @@ import {
   TextQuote,
   Image as ImageIcon,
   Code,
+  Film,
   CheckSquare,
 } from "lucide-react";
 import LoadingCircle from "app/ui/editor/ui/icons/loading-circle";
-import { toast } from "sonner";
 import Magic from "app/ui/editor/ui/icons/magic";
 import { getPrevText } from "app/ui/editor/lib/editor";
-import { startImageUpload } from "app/ui/editor/ui/editor/plugins/upload-images";
+import * as ImagePicker from 'expo-image-picker';
+import { uploadImage,linkify2 } from 'app/lib/util';
 
 interface CommandItemProps {
   title: string;
@@ -72,6 +74,7 @@ const Command = Extension.create({
 });
 
 const getSuggestionItems = ({ query }: { query: string }) => {
+
   return [
     {
       title: "Continue writing",
@@ -79,7 +82,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
       searchTerms: ["gpt"],
       icon: <Magic className="w-7" />,
     },
-    {
+    /*{
       title: "Send Feedback",
       description: "Let us know how we can improve.",
       icon: <MessageSquarePlus size={18} />,
@@ -87,7 +90,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         editor.chain().focus().deleteRange(range).run();
         window.open("/feedback", "_blank");
       },
-    },
+    },*/
     {
       title: "Text",
       description: "Just start typing with plain text.",
@@ -194,24 +197,46 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
     },
     {
+      title: "Embed",
+      description: "Insert an embed.",
+      searchTerms: ["embed"],
+      icon: <Film size={18} />,
+      command: ({ editor, range }: CommandProps) =>{
+        let inputValue = prompt('Insert Embed URL');
+        let className = "w-full max-w-xl aspect-video mx-auto ";
+        let scheme= '';
+        if (inputValue){
+          
+          const rvUrl = appSetting("urls", "embeds") + inputValue + '&theme=' + scheme;
+          const d = { src: rvUrl, origin: inputValue, class: className };
+          editor.chain().focus().setIframe(d).run()
+        }
+      }
+    },
+    {
       title: "Image",
       description: "Upload an image from your computer.",
       searchTerms: ["photo", "picture", "media"],
       icon: <ImageIcon size={18} />,
-      command: ({ editor, range }: CommandProps) => {
+      command: async ({ editor, range }: CommandProps) => {
         editor.chain().focus().deleteRange(range).run();
-        // upload image
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.onchange = async () => {
-          if (input.files?.length) {
-            const file = input.files[0];
-            const pos = editor.view.state.selection.from;
-            startImageUpload(file, editor.view, pos);
-          }
-        };
-        input.click();
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          quality: 1,
+          allowsMultipleSelection: false,
+        });
+        const pos = editor.view.state.selection.from;
+        if (!result.canceled) {
+          result.assets.forEach(function (i) {
+            uploadImage(
+              i.uri, 
+              '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+              handleInsertImageFinish,
+              {editor: editor, view: editor.view, test:'text', pos:pos}
+            );
+          });
+        }
       },
     },
   ].filter((item) => {
@@ -227,6 +252,18 @@ const getSuggestionItems = ({ query }: { query: string }) => {
     return true;
   });
 };
+
+const handleInsertImageFinish = async (url, extraVar) => {
+  //extraVar.editor.chain().focus().setImage({ src: url }).run()
+ const view = extraVar.view;
+  const pos = extraVar.pos;
+  const { schema } = view.state;
+  const node = schema.nodes.image.create({ src: url });
+    const transaction = view.state.tr
+      .replaceWith(pos, pos, node);
+    view.dispatch(transaction);
+
+}
 
 export const updateScrollView = (container: HTMLElement, item: HTMLElement) => {
   const containerHeight = container.offsetHeight;
@@ -260,7 +297,7 @@ const CommandList = ({
     api: "/api/generate",
     onResponse: (response) => {
       if (response.status === 429) {
-        toast.error("You have reached your request limit for the day.");
+        console.log("You have reached your request limit for the day.");
         return;
       }
       editor.chain().focus().deleteRange(range).run();
@@ -273,7 +310,7 @@ const CommandList = ({
       });
     },
     onError: () => {
-      toast.error("Something went wrong.");
+      console.log("Something went wrong.");
     },
   });
 

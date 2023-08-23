@@ -58,6 +58,7 @@
 ul[data-type="taskList"] li > label {
   margin-right: 0.2rem;
   user-select: none;
+  display: flex;;
 }
 
 @media screen and (max-width: 768px) {

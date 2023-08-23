@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 
@@ -52,7 +52,7 @@ export default function Form(props) {
     }   
     const {...methods} = useForm({defaultValues: defaultValues});  
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (methods.formState.isSubmitSuccessful) {
             methods.reset();
         }
@@ -67,7 +67,7 @@ export default function Form(props) {
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         if(Platform.OS === 'web') {
             window.addEventListener("keyup", handleKeyUp);
                 return () => {

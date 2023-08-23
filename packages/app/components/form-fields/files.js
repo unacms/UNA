@@ -223,7 +223,7 @@ export default function FormFieldFiles(props) {
                         {img == null ? 
                             <Text className='text-neutral-500/50 text-lg font-semibold text-center'>{props.caption}</Text> 
                             :( <>{ img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
-                                { img?.file_type?.includes('image/') && <Image view='cover'  className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                         <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />

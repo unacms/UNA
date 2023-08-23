@@ -18,6 +18,10 @@ import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
 import Html from '../../ui/atoms/html'
+import Editor from "app/ui/editor/ui/editor";
+
+import "app/ui/editor/styles/globals.css";
+import "app/ui/editor/styles/prosemirror.css";
 
 const MenuBar = ({ editor }) => {
     const scheme = useColorScheme();
@@ -154,11 +158,9 @@ export default function FormFieldFtf(props) {
     const [link, setLink] = useState(null);
     const formContext = useFormContext();
 
-   /* const handleChange = (content) => {
-        //setTimeout(() => {
-            formContext.setValue(name, content)
-       // }, 100);
-    };*/
+    if (props.html == 2){
+        return <Editor defaultValue = {defaultValue}  formContext = {formContext} name = {name} />
+    }
 
     const { field } = useController({ name, rules, defaultValue });
 
@@ -215,11 +217,11 @@ export default function FormFieldFtf(props) {
             editor.commands.setContent(field.value)
 
     }, [field.value]);
-    
+
     const isFullHtml = (props.html == 2 || props.html == 1);
 
     return (
-        <><View className='bg-neutral-500/10    border border-neutral-500/10    focus:bg-backgroundinput-focus focus:outline-none    focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus    text-neutral-900 rounded-lg     w-full     dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
+        <><View className='bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
         <EditorContent 
                 editor={editor} 
                 className={(props?.numLines == 1 ? '' : 'editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}

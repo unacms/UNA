@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Field from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'
+import { useEffect } from 'react';
 
 export default function FormFieldSelect(props) {
 
@@ -10,9 +11,9 @@ export default function FormFieldSelect(props) {
     let defaultValue = props.value;
     const [value, setValue] = useState(defaultValue)
 
-    setTimeout(() => {
+    useEffect(() => {
         formContext.setValue(props.name, value)
-    }, 100);
+    }, [props.name, value]);
 
     let values = [];
     if (!Array.isArray(props.values)){

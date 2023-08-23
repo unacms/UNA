@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 .u-vanilla-html {
+    @apply prose dark:prose-invert;
     @apply text-neutral-700 dark:text-neutral-300 ;
     font-size: 1rem;
     line-height: 1.5rem; 
@@ -12,6 +13,7 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+/*
 .u-vanilla-html H1, H2, H3, H4{
     @apply text-neutral-900 dark:text-neutral-100; 
 }
@@ -41,7 +43,7 @@
     margin-top: 1.125em;
     margin-bottom: 0.5em;
     line-height: 1.5rem;
-}
+}*/
 .u-vanilla-html-small {
     font-size: 1rem;
     line-height: 1.5rem; 
