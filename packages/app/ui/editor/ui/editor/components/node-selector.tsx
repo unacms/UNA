@@ -1,5 +1,5 @@
 import { Editor } from "@tiptap/core";
-import {
+/*import {
   Check,
   ChevronDown,
   Heading1,
@@ -10,7 +10,8 @@ import {
   TextIcon,
   Code,
   CheckSquare,
-} from "lucide-react";
+} from "lucide-react";*/
+import { Icon } from 'app/ui/atoms/icon'
 import { Dispatch, FC, SetStateAction } from "react";
 
 import { BubbleMenuItem } from "./bubble-menu";
@@ -29,7 +30,7 @@ export const NodeSelector: FC<NodeSelectorProps> = ({
   const items: BubbleMenuItem[] = [
     {
       name: "Text",
-      icon: TextIcon,
+      icon: <Icon icon="TextAlignLeft"  size={18}  />,
       command: () =>
         editor.chain().focus().toggleNode("paragraph", "paragraph").run(),
       // I feel like there has to be a more efficient way to do this – feel free to PR if you know how!
@@ -40,43 +41,43 @@ export const NodeSelector: FC<NodeSelectorProps> = ({
     },
     {
       name: "Heading 1",
-      icon: Heading1,
+      icon: <Icon icon="TextHOne"  size={18}  />,
       command: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
       isActive: () => editor.isActive("heading", { level: 1 }),
     },
     {
       name: "Heading 2",
-      icon: Heading2,
+      icon: <Icon icon="TextHTwo"  size={18}  />,
       command: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
       isActive: () => editor.isActive("heading", { level: 2 }),
     },
     {
       name: "Heading 3",
-      icon: Heading3,
+      icon: <Icon icon="TextHThree"  size={18}  />,
       command: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       isActive: () => editor.isActive("heading", { level: 3 }),
     },
     {
       name: "To-do List",
-      icon: CheckSquare,
+      icon: <Icon icon="CheckSquare"  size={18}  />,
       command: () => editor.chain().focus().toggleTaskList().run(),
       isActive: () => editor.isActive("taskItem"),
     },
     {
       name: "Bullet List",
-      icon: ListOrdered,
+      icon: <Icon icon="ListBullets"  size={18}  />,
       command: () => editor.chain().focus().toggleBulletList().run(),
       isActive: () => editor.isActive("bulletList"),
     },
     {
       name: "Numbered List",
-      icon: ListOrdered,
+      icon: <Icon icon="ListNumbers"  size={18}  />,
       command: () => editor.chain().focus().toggleOrderedList().run(),
       isActive: () => editor.isActive("orderedList"),
     },
     {
       name: "Quote",
-      icon: TextQuote,
+      icon: <Icon icon="Quotes"  size={18}  />,
       command: () =>
         editor
           .chain()
@@ -88,7 +89,7 @@ export const NodeSelector: FC<NodeSelectorProps> = ({
     },
     {
       name: "Code",
-      icon: Code,
+      icon: <Icon icon="Code"  size={18}  />,
       command: () => editor.chain().focus().toggleCodeBlock().run(),
       isActive: () => editor.isActive("codeBlock"),
     },
@@ -105,7 +106,7 @@ export const NodeSelector: FC<NodeSelectorProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{activeItem?.name}</span>
-        <ChevronDown className="h-4 w-4" />
+        <Icon icon="CaretDown"  className="h-4 w-4"  />
       </button>
 
       {isOpen && (
@@ -121,11 +122,12 @@ export const NodeSelector: FC<NodeSelectorProps> = ({
             >
               <div className="flex items-center space-x-2">
                 <div className="rounded-sm border border-stone-200 p-1">
-                  <item.icon className="h-3 w-3" />
+                  {item.icon}
+                 {/* <item.icon className="h-3 w-3" />*/}
                 </div>
                 <span>{item.name}</span>
               </div>
-              {activeItem.name === item.name && <Check className="h-4 w-4" />}
+              {activeItem.name === item.name && <Icon icon="Check"  className="h-4 w-4"  />}
             </button>
           ))}
         </section>

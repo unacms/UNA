@@ -1,13 +1,9 @@
 import { BubbleMenu, BubbleMenuProps } from "@tiptap/react";
 import { FC, useState } from "react";
-import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  CodeIcon,
-} from "lucide-react";
-
+import { Icon } from 'app/ui/atoms/icon'
+import React, {
+  ReactNode
+} from "react";
 import { NodeSelector } from "./node-selector";
 import { ColorSelector } from "./color-selector";
 import { LinkSelector } from "./link-selector";
@@ -17,7 +13,7 @@ export interface BubbleMenuItem {
   name: string;
   isActive: () => boolean;
   command: () => void;
-  icon: typeof BoldIcon;
+  icon: ReactNode;
 }
 
 type EditorBubbleMenuProps = Omit<BubbleMenuProps, "children">;
@@ -28,31 +24,31 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
       name: "bold",
       isActive: () => props.editor.isActive("bold"),
       command: () => props.editor.chain().focus().toggleBold().run(),
-      icon: BoldIcon,
+      icon: <Icon icon="TextB"  size={18}  />,
     },
     {
       name: "italic",
       isActive: () => props.editor.isActive("italic"),
       command: () => props.editor.chain().focus().toggleItalic().run(),
-      icon: ItalicIcon,
+      icon: <Icon icon="TextItalic"  size={18}  />,
     },
     {
       name: "underline",
       isActive: () => props.editor.isActive("underline"),
       command: () => props.editor.chain().focus().toggleUnderline().run(),
-      icon: UnderlineIcon,
+      icon: <Icon icon="TextUnderline"  size={18}  />,
     },
     {
       name: "strike",
       isActive: () => props.editor.isActive("strike"),
       command: () => props.editor.chain().focus().toggleStrike().run(),
-      icon: StrikethroughIcon,
+      icon: <Icon icon="TextStrikethrough"  size={18}  />,
     },
     {
       name: "code",
       isActive: () => props.editor.isActive("code"),
       command: () => props.editor.chain().focus().toggleCode().run(),
-      icon: CodeIcon,
+      icon: <Icon icon="Code"  size={18}  />,
     },
   ];
 
@@ -109,11 +105,12 @@ export const EditorBubbleMenu: FC<EditorBubbleMenuProps> = (props) => {
             onClick={item.command}
             className="p-2 text-stone-600 hover:bg-stone-100 active:bg-stone-200"
           >
-            <item.icon
+            {/*<item.icon
               className={cn("h-4 w-4", {
                 "text-blue-500": item.isActive(),
               })}
-            />
+            />*/}
+            {item.icon}
           </button>
         ))}
       </div>

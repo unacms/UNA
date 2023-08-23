@@ -1,6 +1,7 @@
 import { cn, getUrlFromString } from "app/ui/editor/lib/utils";
 import { Editor } from "@tiptap/core";
-import { Check, Trash } from "lucide-react";
+//import { Check, Trash } from "lucide-react";
+import { Icon } from 'app/ui/atoms/icon'
 import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
 
 interface LinkSelectorProps {
@@ -64,11 +65,11 @@ export const LinkSelector: FC<LinkSelectorProps> = ({
                 setIsOpen(false);
               }}
             >
-              <Trash className="h-4 w-4" />
+              <Icon icon="Trash" className="h-4 w-4" />
             </button>
           ) : (
             <button className="flex items-center rounded-sm p-1 text-stone-600 transition-all hover:bg-stone-100">
-              <Check className="h-4 w-4" />
+              <Icon icon="Check" className="h-4 w-4" />
             </button>
           )}
         </form>

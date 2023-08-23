@@ -13,10 +13,11 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
-/*
-.u-vanilla-html H1, H2, H3, H4{
+
+.u-vanilla-html H1, H2, H3, H4, H5{
     @apply text-neutral-900 dark:text-neutral-100; 
 }
+/*
 .u-vanilla-html H1{
     font-weight: 800;
     font-size: 1.875rem;

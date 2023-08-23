@@ -1,9 +1,9 @@
 import { EditorProps } from "@tiptap/pm/view";
-//import { startImageUpload } from "app/ui/editor/ui/editor/plugins/upload-images";
+import { uploadImageFile } from 'app/lib/util';
 
 export const TiptapEditorProps: EditorProps = {
   attributes: {
-    class: `prose-base prose-stone dark:prose-invert prose-headings:font-display font-default focus:outline-none max-w-full`,
+    class: `u-vanilla-html  focus:outline-none max-w-full`,
   },
   handleDOMEvents: {
     keydown: (_view, event) => {
@@ -16,7 +16,7 @@ export const TiptapEditorProps: EditorProps = {
       }
     },
   },
-  /*handlePaste: (view, event) => {
+  handlePaste: (view, event) => {
     if (
       event.clipboardData &&
       event.clipboardData.files &&
@@ -25,12 +25,18 @@ export const TiptapEditorProps: EditorProps = {
       event.preventDefault();
       const file = event.clipboardData.files[0];
       const pos = view.state.selection.from;
+      uploadImageFile(
+        file, 
+        '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+        handleInsertImageFinish,
+        {editor: '', view: view, test:'text', pos:pos}
+      );
 
-      startImageUpload(file, view, pos);
       return true;
     }
     return false;
   },
+
   handleDrop: (view, event, _slice, moved) => {
     if (
       !moved &&
@@ -45,9 +51,29 @@ export const TiptapEditorProps: EditorProps = {
         top: event.clientY,
       });
       // here we deduct 1 from the pos or else the image will create an extra node
-      startImageUpload(file, view, coordinates.pos - 1);
+      const pos = coordinates.pos - 1;
+      uploadImageFile(
+        file, 
+        '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+        handleInsertImageFinish,
+        {editor: '', view: view, test:'text', pos:pos}
+      );
+
+
       return true;
     }
     return false;
-  },*/
+  },
 };
+
+const handleInsertImageFinish = async (url, extraVar) => {
+  //extraVar.editor.chain().focus().setImage({ src: url }).run()
+  const view = extraVar.view;
+  const pos = extraVar.pos;
+  const { schema } = view.state;
+  const node = schema.nodes.image.create({ src: url });
+    const transaction = view.state.tr
+      .replaceWith(pos, pos, node);
+    view.dispatch(transaction);
+
+}

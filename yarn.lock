@@ -4945,36 +4945,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/linkify-it@npm:*":
-  version: 3.0.2
-  resolution: "@types/linkify-it@npm:3.0.2"
-  checksum: dff8f10fafb885422474e456596f12d518ec4cdd6c33cca7a08e7c86b912d301ed91cf5a7613e148c45a12600dc9ab3d85ad16d5b48dc1aaeda151a68f16b536
-  languageName: node
-  linkType: hard
-
-"@types/markdown-it@npm:^12.2.3":
-  version: 12.2.3
-  resolution: "@types/markdown-it@npm:12.2.3"
-  dependencies:
-    "@types/linkify-it": "*"
-    "@types/mdurl": "*"
-  checksum: 868824a3e4d00718ba9cd4762cf16694762a670860f4b402e6e9f952b6841a2027488bdc55d05c2b960bf5078df21a9d041270af7e8949514645fe88fdb722ac
-  languageName: node
-  linkType: hard
-
 "@types/mdast@npm:^3.0.0":
   version: 3.0.12
   resolution: "@types/mdast@npm:3.0.12"
   dependencies:
     "@types/unist": ^2
   checksum: 83adb8679b9d139f69f63554d120af921e9f1289e9903a2c99e0554a327c8524a6c0beccdc0721e4fdbccc606e81964fecb0d390d53df0f74360938e22f1a469
-  languageName: node
-  linkType: hard
-
-"@types/mdurl@npm:*":
-  version: 1.0.2
-  resolution: "@types/mdurl@npm:1.0.2"
-  checksum: 79c7e523b377f53cf1f5a240fe23d0c6cae856667692bd21bf1d064eafe5ccc40ae39a2aa0a9a51e8c94d1307228c8f6b121e847124591a9a828c3baf65e86e2
   languageName: node
   linkType: hard
 
@@ -11894,15 +11870,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-react@npm:^0.268.0":
-  version: 0.268.0
-  resolution: "lucide-react@npm:0.268.0"
-  peerDependencies:
-    react: ^16.5.1 || ^17.0.0 || ^18.0.0
-  checksum: cb40a30bb9e0156f81cc2960a4708b948330304e40efeae7043d0414679cd6ae6dfe37c7eb99d56e673863e5862aa408d89669048afaba1b6dd3677e59d0bd96
-  languageName: node
-  linkType: hard
-
 "make-dir@npm:^2.0.0, make-dir@npm:^2.1.0":
   version: 2.1.0
   resolution: "make-dir@npm:2.1.0"
@@ -11970,13 +11937,6 @@ __metadata:
   version: 1.1.1
   resolution: "markdown-extensions@npm:1.1.1"
   checksum: 8a6dd128be1c524049ea6a41a9193715c2835d3d706af4b8b714ff2043a82786dbcd4a8f1fa9ddd28facbc444426c97515aef2d1f3dd11d5e2d63749ba577b1e
-  languageName: node
-  linkType: hard
-
-"markdown-it-task-lists@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "markdown-it-task-lists@npm:2.1.1"
-  checksum: 8fc634bfc28a47ed582ca1f68af306f86289bdca0ca654de835bc28ac2c0a286894285fab34af21ec3a87e86fd19236bb0562b2dcb4d2fd34a9c992e3d3f41c2
   languageName: node
   linkType: hard
 
@@ -13598,7 +13558,6 @@ moti@latest:
     app: "*"
     autoprefixer: ^10.4.14
     eslint-config-next: 13.2.0
-    lucide-react: ^0.268.0
     next: 13.4.12
     openai-edge: ^1.2.2
     postcss: ^8.4.27
@@ -13607,11 +13566,8 @@ moti@latest:
     react-virtuoso: ^4.4.2
     setimmediate: ^1.0.5
     sharp: ^0.32.5
-    sonner: ^0.6.2
     tailwind-merge: ^1.14.0
     tailwindcss: 3.3.2
-    tiptap-markdown: ^0.8.2
-    use-debounce: ^9.0.4
   languageName: unknown
   linkType: soft
 
@@ -15184,7 +15140,7 @@ moti@latest:
   languageName: node
   linkType: hard
 
-"prosemirror-markdown@npm:^1.10.1, prosemirror-markdown@npm:^1.11.1":
+"prosemirror-markdown@npm:^1.10.1":
   version: 1.11.2
   resolution: "prosemirror-markdown@npm:1.11.2"
   dependencies:
@@ -17199,16 +17155,6 @@ react-native-video@alpha:
   languageName: node
   linkType: hard
 
-"sonner@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "sonner@npm:0.6.2"
-  peerDependencies:
-    react: ^18.0.0
-    react-dom: ^18.0.0
-  checksum: 9e43c5182bd2c57d8b0b9989433b87e2a507db87cd0dcf9a835ab448bb3d1bf296cf240b4208e545b48f5f6aabf5ea7875ddb25cd18e9c6da8fd506790491788
-  languageName: node
-  linkType: hard
-
 "sort-keys@npm:^5.0.0":
   version: 5.0.0
   resolution: "sort-keys@npm:5.0.0"
@@ -18140,20 +18086,6 @@ react-native-video@alpha:
   languageName: node
   linkType: hard
 
-"tiptap-markdown@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "tiptap-markdown@npm:0.8.2"
-  dependencies:
-    "@types/markdown-it": ^12.2.3
-    markdown-it: ^13.0.1
-    markdown-it-task-lists: ^2.1.1
-    prosemirror-markdown: ^1.11.1
-  peerDependencies:
-    "@tiptap/core": ^2.0.3
-  checksum: 339475c9c35485465fad35b2079aa6a7099546001556beb7b9d229e2afa77f015b88552df4fda0d6fd15ec056dae0f4163629d9d95469b097d18c052e70062cf
-  languageName: node
-  linkType: hard
-
 "title@npm:^3.5.3":
   version: 3.5.3
   resolution: "title@npm:3.5.3"
@@ -19003,15 +18935,6 @@ react-native-video@alpha:
     "@types/react":
       optional: true
   checksum: 7913df383a5a6fcb399212eedefaac2e0c6f843555202d4e3010bac3848afe38ecaa3d0d6500ad1d936fbeffd637e6c517e68edb024af5e6beca7f27f3ce7b21
-  languageName: node
-  linkType: hard
-
-"use-debounce@npm:^9.0.4":
-  version: 9.0.4
-  resolution: "use-debounce@npm:9.0.4"
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: 37da4ecbe4e10a6230580cac03a8cae1788ea3e417dfdd92fcf654325458cf1b4567fd57bebf888edab62701a6abe47059a585008fd04228784f223f94d66ce4
   languageName: node
   linkType: hard
 

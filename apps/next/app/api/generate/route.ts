@@ -14,7 +14,7 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(
       "Missing OPENAI_API_KEY – make sure to add it to your .env file.",
       {
-        status: 400,
+        //status: 400,
       },
     );
   }
@@ -43,7 +43,6 @@ export async function POST(req: Request): Promise<Response> {
     stream: true,
     n: 1,
   });
-  console.log('---------------------', response.status)
  // return new Response(JSON.stringify(response), {
    
  // });
@@ -59,7 +58,6 @@ export async function POST(req: Request): Promise<Response> {
   }
   // Convert the response into a friendly text-stream
   const stream = OpenAIStream(response);
-console.log(prompt);
   // Respond with the stream
   return new StreamingTextResponse(stream);
 }

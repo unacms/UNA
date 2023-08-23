@@ -390,6 +390,20 @@ function urltoFile(url, filename, mimeType){
     );
 }
 
+export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
+    const isWeb = Platform.OS == 'web'
+    const formData = new FormData();
+
+    formData.append("file", file);
+    const result = await fetcher([fetchUrl, null, formData]);
+    if (result?.data?.link){
+        calback(result?.data?.link, extraVar);
+    }
+    else{
+        calback(result, extraVar)
+    }
+}
+
 export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     const isWeb = Platform.OS == 'web'
     const formData = new FormData();
