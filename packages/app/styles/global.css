@@ -9,10 +9,11 @@
     line-height: 1.5rem; 
     max-width: none;
 }
+/*
 .u-vanilla-html img{
     padding-top: 1rem;
     padding-bottom: 1rem;
-}
+}*/
 
 .u-vanilla-html H1, H2, H3, H4, H5{
     @apply text-neutral-900 dark:text-neutral-100; 
