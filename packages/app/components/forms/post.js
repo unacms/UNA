@@ -36,9 +36,9 @@ export default function FormPost(props) {
     let prevList = Object.values(imageSource).flat();
 
     return <View className='w-full max-w-5xl'>
-        {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle')}
-        {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...'})}
-        {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}
+        {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle', {format:'custom'})}
+        {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...', format:'custom'})}
+        {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...', format:'custom'})}
         <Row>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['pictures'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['videos'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
