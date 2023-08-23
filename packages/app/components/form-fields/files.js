@@ -241,7 +241,7 @@ export default function FormFieldFiles(props) {
     
     return (
         <Field {...props}>
-            <View className="mr-2 mb-2" >
+            <View className={bMultiple ? "mr-2 mb-2" : ""} >
                 {getButton(imageSource.images)}
             </View>
             {!props.previewPlaceHolder && <Row className='flex-wrap gap-2'>{GhostsList(imageSource.images)}</Row>}

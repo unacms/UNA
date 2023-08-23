@@ -9,6 +9,15 @@
     line-height: 1.5rem; 
     max-width: none;
 }
+.u-vanilla-html div > :where(:first-child):not(:where([class~="not-prose"] *)),
+.u-vanilla-html > :where(:first-child):not(:where([class~="not-prose"] *)){
+    margin-top: 0 !important;
+}
+
+.u-vanilla-html div > :where(:last-child):not(:where([class~="not-prose"] *)),
+.u-vanilla-html > :where(:last-child):not(:where([class~="not-prose"] *)) {
+    margin-bottom: 0 !important;
+}
 /*
 .u-vanilla-html img{
     padding-top: 1rem;
