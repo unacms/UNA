@@ -9,7 +9,7 @@ import { EditorBubbleMenu } from "./components/bubble-menu";
 import { getPrevText } from "app/ui/editor/lib/editor";
 import { ImageResizer } from "./components/image-resizer";
 
-export default function Editor({defaultValue, formContext, name}) {
+export default function Editor({defaultValue, formContext, name, viewClasses}) {
 
   const [content, setContent] = useState(defaultValue)
 
@@ -111,17 +111,18 @@ export default function Editor({defaultValue, formContext, name}) {
     }
   }, [editor, content, hydrated]);
 
-  /*
-  <div className="absolute right-5 top-5 mb-5 rounded-lg bg-stone-100 px-2 py-1 text-sm text-stone-400">
-        {saveStatus}
-      </div>
-      */
+  let className = "relative min-h-[250px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base"
+  if (viewClasses){
+    className = "relative min-h-[250px] focus:outline-none " + viewClasses;
+  }
+
   return (
     <div
       onClick={() => {
         editor?.chain().focus().run();
       }}
-      className="relative min-h-[500px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base"
+      
+      className={className}
     >
       
       {editor && <EditorBubbleMenu editor={editor} />}

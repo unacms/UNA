@@ -267,7 +267,7 @@ export default function (props) {
                         rounded
                         startDecorator="plus"
                         id="m3"
-                        aria-label="Create"
+
                         onPress={() => {}}
                       />
                     </Tooltip>
@@ -299,7 +299,6 @@ export default function (props) {
                       rounded
                       startDecorator="ChatTeardropDots"
                       id="m2"
-                      aria-label="Messages"
                       onPress={() => {
                         handleClick('/messenger')
                       }}
@@ -315,7 +314,6 @@ export default function (props) {
                       padding={1}
                       startDecorator={profile}
                       id="m3"
-                      aria-label="Create"
                       onPress={() => {}}
                     />
                   </View>

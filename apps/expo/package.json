@@ -51,7 +51,7 @@
     "react-native-webview": "^13.3.1",
     "set-cookie-parser": "^2.6.0",
     "swr": "^2.2.0",
-    "zeego": "^1.6.2"
+    "zeego": "^1.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

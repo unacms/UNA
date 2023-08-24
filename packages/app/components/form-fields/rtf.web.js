@@ -160,7 +160,7 @@ export default function FormFieldFtf(props) {
     const formContext = useFormContext();
 
     if (props.html == 2){
-        return <Editor defaultValue = {defaultValue}  formContext = {formContext} name = {name} />
+        return <Editor defaultValue = {defaultValue}  formContext = {formContext} name = {name} viewClasses={props.viewClasses} />
     }
 
     const { field } = useController({ name, rules, defaultValue });

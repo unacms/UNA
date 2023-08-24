@@ -27,7 +27,7 @@ export default function ElementEntityAuthor(oProps) {
             <View>
             {aMenuManageItems.length > 0 && 
                 <DropdownMenu items={aMenuManageItems}>
-                    <Button id="mm-button" variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
+                    <Button variant="text" rounded="true" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
                 </DropdownMenu>
             }
             </View>

@@ -4,6 +4,10 @@ import { useController } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
 import { useState, useMemo } from 'react';
 import React from 'react';
+
+import { TextInput as TextInputDef} from 'react-native'
+import { styled } from 'nativewind'
+
 //import FormFieldFtf  from './rtf';
 
 function FormFieldFtf(props) {
@@ -19,9 +23,10 @@ export default function FormFieldText(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-    
+    console.log(props.height);
     const { field } = useController({ name, rules, defaultValue });
-    const [height, setHeight] = useState(null);
+    let h = props.height ? props.height : null;
+    const [height, setHeight] = useState(h);
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
 
     let input = <InputMulti
@@ -42,13 +47,32 @@ export default function FormFieldText(props) {
             style={{height: height}}
             placeholder = {props.placeholder}
             numberOfLines={props.numLines ? props.numLines : 4}
-            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 42 ? 42 : e.nativeEvent.contentSize.height)}
             name={props.name}
             onChangeText={field.onChange}
             onBlur={field.onBlur}
             value={field.value}
             aria-label={accessibility}
         />
+
+    if (props.viewClasses){
+
+        const InputMulti2 = useMemo(() => {
+            return styled(TextInputDef, props.viewClasses)
+        }, []);
+    
+        input = <InputMulti2
+            multiline
+            editable
+            style={{height: height}}
+            placeholder = {props.placeholder}
+            onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? e.nativeEvent.contentSize.height : e.nativeEvent.contentSize.height < 32 ? 32 : e.nativeEvent.contentSize.height)}
+            name={props.name}
+            onChangeText={field.onChange}
+            onBlur={field.onBlur}
+            value={field.value}
+            aria-label={accessibility}
+        />
+    }
 
     if (props.html == 1 || props.html == 2 || props.html == 3){
         input =  <FormFieldFtf  {...props} />;

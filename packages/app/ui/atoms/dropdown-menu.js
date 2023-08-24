@@ -56,8 +56,8 @@ export default function DropdownMenu(oProps) {
     return (
         <View >
             <Redirect ref={redirectdRef} />
-            <DropdownMenuRoot>
-                <DropdownMenuTrigger>{oProps.children}</DropdownMenuTrigger>
+            <DropdownMenuRoot >
+                <DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenuTrigger>
                 <DmContent>{aDmItems}</DmContent>
             </DropdownMenuRoot>
         </View>
