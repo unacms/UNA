@@ -1,4 +1,5 @@
 import { View } from 'app/design/view'
+import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
@@ -115,7 +116,7 @@ const MenuBar = ({ editor }) => {
     aButtonsGroup.push(<Button pressed={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()}/>);
     aButtonsGroup.push(<Button pressed={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()}/>);
     aButtonsGroup.push(<Button pressed={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()}/>);
-    aButtonsGroup.push(<Button    key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
+    aButtonsGroup.push(<Button key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
     aButtonsGroup.push(<Button key="ArrowUUpRight" startDecorator="ArrowUUpRight" onPress={() => editor.chain().focus().redo().run()}/>);
     aButtonsGroup.push(<Button key="Image" startDecorator="Image" onPress={() => handleAddImage()}/>);
     aButtonsGroup.push(<Button key="Link" startDecorator="Link" onPress={() => handleAddLink()}/>);
@@ -204,7 +205,9 @@ export default function FormFieldFtf(props) {
         onUpdate({ editor }) {
             if (props.linkify){
                 let l = linkify2(editor.getHTML());
-                setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
+                if (l != link){
+                    setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
+                }
             }
             formContext.setValue(name, editor.getHTML());
         }
@@ -219,6 +222,17 @@ export default function FormFieldFtf(props) {
     }, [field.value]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
+    console.log('LINK----', link)
+
+    const computedData = useMemo(() => {
+        if (link)
+            return  <View className='w-1/3 mt-2'>
+                <Html data={link} />
+            </View>
+
+        return <></>
+    }, [link]);
+
 
     return (
         <><View className='bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bordercolorinput-focus dark:focus:border-bordercolorinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
@@ -230,9 +244,7 @@ export default function FormFieldFtf(props) {
             {isFullHtml && <MenuBar editor={editor} /> }
             </View>
         </View>
-        { !!link && <View className='w-1/3 mt-2'>
-            <Html data={link} />
-        </View>}
+        { computedData}
         </>
     )
 }

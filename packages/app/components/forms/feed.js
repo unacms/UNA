@@ -39,7 +39,6 @@ export default function FormFeed(props) {
     dUser.url = '/dashboard'
     profile = <Profile {...dUser} displayType="unit_wo_info" />
   }
-
   return (
     <View className="w-full ">
       <Modal

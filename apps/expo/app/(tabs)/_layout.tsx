@@ -40,12 +40,13 @@ export default function AppLayout() {
     screenOptions={({ navigation, route  }) => ({
       tabBarStyle: {
           backgroundColor: colors.barsBackground, 
+          height:60
       },
       headerStyle: {
           backgroundColor: colors.barsBackground,
       },
       tabBarItemStyle: {
-          marginBottom: 5, 
+          marginBottom: 15, 
           marginTop: 5,
       },
       tabBarInactiveTintColor: colors.barsColor,
