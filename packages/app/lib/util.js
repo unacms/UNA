@@ -19,7 +19,7 @@ export const getDataFromCache = (pref, storageKeyValue) => {
     return false;
 }
 
-export function storageSet(pref, key, data, isLocal = true) {
+export function storageSet(pref, key, data, isLocal = false) {
     if (Platform.OS !== 'web') return;
 
     const storage = isLocal ? localStorage : sessionStorage;
@@ -28,7 +28,7 @@ export function storageSet(pref, key, data, isLocal = true) {
     storage.setItem(`${pref}-${key}`, serializedData);
 }
 
-export function storageGet(pref, key, isLocal = true) {
+export function storageGet(pref, key, isLocal = false) {
     if (Platform.OS !== 'web') return null;
 
     const storage = isLocal ? localStorage : sessionStorage;

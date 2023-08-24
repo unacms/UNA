@@ -222,7 +222,6 @@ export default function FormFieldFtf(props) {
     }, [field.value]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
-    console.log('LINK----', link)
 
     const computedData = useMemo(() => {
         if (link)
