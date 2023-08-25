@@ -61,7 +61,8 @@ export async function generateMetadata(props) {
 }
 
 export default async function Path (props) {
-    const data = await getData(props)
+    const data = await getData(props);
+    
     if (data.data){
         if (props?.searchParams?.empty)
             data.data.empty = true;
