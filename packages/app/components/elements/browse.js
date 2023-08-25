@@ -104,8 +104,10 @@ export default function ElementBrowse(props) {
         return browseParams;
     }
 
-    const handleEndReached = () => { 
+    const handleEndReached = (lastItemIndex) => { 
         if (isFetchingNextPage) 
+            return;
+        if (lastItemIndex == false)
             return;
 
         fetchNextPage();

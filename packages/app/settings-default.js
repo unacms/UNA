@@ -1,6 +1,6 @@
 export const settingsDefault = {
     debug: {
-        log_fetch:true
+        log_fetch:false
     },
     sockets: {
         host: 'ci.una.io',

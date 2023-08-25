@@ -61,7 +61,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         return 1;
     };
 
-   
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
         status: rqtStatus,
@@ -69,6 +68,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
+        
     } = useInfiniteQuery({
             queryKey: [routes[index]?.endpoint?.request_url, index], 
             queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
@@ -78,32 +78,24 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                 }
 
                 return;
-            }
-
+            },
+            enabled: routes[index].data.length == 0
     });
+    
 
-    const handleEndReached = useCallback(async () => {
-     //   console.log('isFetchingNextPage----', isFetchingNextPage, hasNextPage, routes[index]?.endpoint.finished)
+
+    const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage) 
             return;
         if (!hasNextPage) 
             return;
         if (routes[index]?.endpoint.finished)
             return;
+        if (lastItemIndex == false)
+            return;
         fetchNextPage();
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
-   /* const handleEndReached = () => { 
-        console.log('isFetchingNextPage', isFetchingNextPage, hasNextPage)
-        if (isFetchingNextPage) 
-            return;
-        
-        if (!hasNextPage) 
-            return;
-
-        fetchNextPage();
-    };
-*/
     let offset = windowWidth < 1024 ? 200 : 600;
 
     useEffect(() => {
