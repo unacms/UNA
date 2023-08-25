@@ -13,7 +13,7 @@ import { styled } from 'nativewind'
 function FormFieldFtf(props) {
     const computedData = useMemo(() => {
         const FormFieldFtf_ = React.memo(dynamic(() => import('./rtf')));
-      return  <FormFieldFtf_ {...props} />
+            return  <FormFieldFtf_ {...props} />
     }, [props.b]); 
     return computedData;
 }
@@ -23,7 +23,6 @@ export default function FormFieldText(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-    console.log(props.height);
     const { field } = useController({ name, rules, defaultValue });
     let h = props.height ? props.height : null;
     const [height, setHeight] = useState(h);

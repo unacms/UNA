@@ -18,7 +18,7 @@ export default function FormFieldText(props) {
     
     let input = <InputMulti
         multiline
-        editable
+        
         numberOfLines={4}
         name={props.name}
         placeholder = {props.placeholder}
@@ -30,7 +30,7 @@ export default function FormFieldText(props) {
     if (props.autoheight)
         input = <Input
             multiline
-            editable
+            
             style={{height: height}}
             numberOfLines={props.numLines ? props.numLines : 4}
             onContentSizeChange={e => setHeight(e.nativeEvent.contentSize.height > 70 ? 70 : e.nativeEvent.contentSize.height < 42 ? 42 : e.nativeEvent.contentSize.height)}

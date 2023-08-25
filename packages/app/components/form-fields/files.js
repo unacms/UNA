@@ -29,14 +29,18 @@ export default function FormFieldFiles(props) {
     }, [props]);
   
     const RestoreGhosts = useCallback(async (data) => { 
-        const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
+      
         let a = [];
         let av = [];
+
+        if (true){
+            const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
         if (result && !!result.data[0]){
             Object.keys(result.data[0]).forEach(function (k) {
                 a.push(result.data[0][k]);
                 av.push(result.data[0][k].file_id)
             });
+        }
         }
         a.forEach(function (k) {
             if (k.file_id){
@@ -52,8 +56,7 @@ export default function FormFieldFiles(props) {
 
         setImageSource({images: [...a, ...filteredArr]});
         
-    }, 
-    [url, formContext, name, imageSource]);
+    }, [url, formContext, name, imageSource]);
 
     useEffect(() => {
         if (props.previewPlaceHolder ){

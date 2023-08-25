@@ -19,7 +19,7 @@ export default function FormField(props) {
             {props.children}
             { !!props.error &&
                 <View className="label" >
-                    <Text className="label-text-alt text-sm ml-1 text-red-600 dark:text-red-400 font-medium">{props.error}</Text>
+                    <Text className="label-text-alt text-sm text-red-600 dark:text-red-400 font-medium">{props.error}</Text>
                 </View>
             }
         </View>

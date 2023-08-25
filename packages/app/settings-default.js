@@ -1,4 +1,7 @@
 export const settingsDefault = {
+    debug: {
+        log_fetch:true
+    },
     sockets: {
         host: 'ci.una.io',
         port: '443',
