@@ -1,24 +1,22 @@
 import { useWindowDimensions } from "react-native";
-import { memo } from "react";
 
 const sTablet = 'tablet',
     sTablet2 = 'tablet2',
     sPhone = 'phone',
+    sPhone2 = 'phone2',
     sDesktop = 'desktop';
 
 function getScreenMode(){
     const { width } = useWindowDimensions(),
-        aModePrefixes = {[sPhone]: { pfx: '', width: 0 }, [sTablet]: { pfx: 'md', width: 768 }, [sTablet2]: { pfx: 'md', width: 1024 }, [sDesktop]: { pfx: 'xl', width: 1280 }};
+        aModePrefixes = {[sPhone]: { pfx: '', width: 0 }, [sPhone2]: { pfx: '', width: 640 },
+                         [sTablet]: { pfx: 'md', width: 768 }, [sTablet2]: { pfx: 'md', width: 1024 },
+                         [sDesktop]: { pfx: 'xl', width: 1280 }};
 
-    let sMode = sDesktop;
-    if (width > aModePrefixes[sPhone].width && width <= aModePrefixes[sTablet].width)
-        sMode = sPhone;
-
-    if (width > aModePrefixes[sTablet].width && width <= aModePrefixes[sTablet2].width)
-        sMode = sTablet;
-
-    if (width > aModePrefixes[sTablet2].width && width <= aModePrefixes[sDesktop].width)
-        sMode = sTablet2;
+    let sMode = sPhone;
+    Object.keys(aModePrefixes).forEach((mode) => {
+        if (width >= aModePrefixes[mode].width)
+            sMode = mode;
+    });
 
     return sMode;
 }
@@ -33,6 +31,7 @@ function getSpace(sMode) {
         case sDesktop:
             iSpace = iHeader;
             break;
+        case sPhone2:
         case sTablet:
             iSpace = 0;//iFooter + iHeader;
             break;
@@ -54,12 +53,14 @@ function getGrid(sMode, sPanel = false) {
             [sTablet]: { view : 'w-8/12', enabled: true },
             [sTablet2]: { view : 'w-8/12', enabled: true },
             [sPhone]: { view : 'w-full', columns: { list: 'hidden' }},
+            [sPhone2]: { view : 'w-full', columns: { list: 'hidden' }}
         },
         list: {
             [sDesktop]: { view: 'w-4/12', enabled: true },
             [sTablet]: { view: 'w-4/12', enabled: true },
             [sTablet2]: { view: 'w-4/12', enabled: true },
             [sPhone]: { view: 'w-full', enabled: true, columns: { history: 'hidden' }},
+            [sPhone2]: { view: 'w-full', enabled: true, columns: { history: 'hidden' }}
         }
     };
 
@@ -73,8 +74,6 @@ function getGrid(sMode, sPanel = false) {
                 sValue = columns && columns[sColumn] !== 'undefined' ? columns[sColumn] : 'hidden';
         }
 
-        //console.log('----- log execute dimension  -----', aMainViewScheme, sMode, sColumn, sPanel, sValue);
-
         return { [sColumn + 'Col'] : sValue };
     };
 
@@ -82,4 +81,16 @@ function getGrid(sMode, sPanel = false) {
     return Object.assign( getStyle('history'), getStyle('list') );
 };
 
-export { getScreenMode, getGrid, getSpace, sTablet, sDesktop, sPhone };
+function isPhone(sMode){
+    return sMode === sPhone || sMode === sPhone2;
+}
+
+function isTablet(sMode){
+    return sMode === sTablet || sMode === sTablet2;
+}
+
+function isDesktop(sMode){
+    return sMode === sDesktop;
+}
+
+export { getScreenMode, getGrid, getSpace, sTablet, sDesktop, sPhone, isPhone, isDesktop };

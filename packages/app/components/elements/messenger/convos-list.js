@@ -1,17 +1,18 @@
-import { View} from 'app/design/view';
+import { View } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import Image from 'app/ui/atoms/image';
 import Loading from 'app/ui/atoms/loading'
 import { Button, InputRounded } from 'app/design/controls';
-import React, { useState, memo, useContext } from 'react';
+import {useState, memo, useContext, useCallback, useMemo, useEffect} from 'react';
 import { fetcher } from "../../../lib/fetcher";
-import MessengerContext from './messenger-сontext';
-import {WrappedTopMenu} from "./menu";
+import {MenuData, PageData} from './context/messenger-сontext';
+import { WrappedTopMenu } from "./menu";
 import UniList from 'app/ui/atoms/unilist';
-import { useInfiniteQuery } from  '@tanstack/react-query';
 import { ListFeed } from 'app/components/units/convos-feeds';
-import { useCurrentUser } from 'app/context/user';
-import {sPhone} from "./grid-utils";
+import {isDesktop, isPhone} from "./grid-utils";
+import useConvos from "./hooks/useConvos";
+import {stripTags} from "../../../lib/util";
+import {getSkeleton} from "../../../lib/skeleton-helpers";
 
 const styles = {
     infoText: [
@@ -62,12 +63,11 @@ function UserOnlineStatus(props){
 }
 
 const ConvoListItem = memo(({ item }) => {
-    const { handlerSelectConvo, mode, selectPanel } = useContext(MessengerContext);
+    const { handlerSelectConvo, mode, selectPanel } = useContext(PageData);
     return <ListFeed { ...item } onPress={() => {
         handlerSelectConvo(item);
-        if (mode === sPhone)
+        if (isPhone(mode))
             selectPanel('history');
-
     }} />;
 });
 
@@ -80,54 +80,22 @@ function SearchBox(props){
            </View>
 }
 
-const ConvosListHeader = memo(({menu}) => {
+const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
     const [visible, setVisibility] = useState(false),
-          handlerVisibility = () => setVisibility(!visible);
+          handlerVisibility = () => setVisibility((visible) => !visible);
 
-    return <View className="group relative justify-end flex flex-1 w-full whitespace-nowrap min-w-0 overflow-hidden">
-             <View className="items-center flex flex-row justify-between text-neutral-800 dark:text-neutral-100 text-ellipsis overflow-hidden">
-               <Text className={"ml-2 truncate text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center " + ( visible ? 'hidden' : '' ) }>{menu}</Text>
-               <SearchBox visible={visible}></SearchBox>
-               <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
-             </View>
-         </View>
+    //console.log('----- convos column header search area -----', menuItem);
+    return <View className="group relative w-full whitespace-nowrap min-w-0 items-center
+                            flex flex-row justify-between text-neutral-800 dark:text-neutral-100 text-ellipsis overflow-hidden">
+            <View className="xl:hidden"><Button variant="outline" startDecorator="List" rounded align="start" onPress={ onClickMenu } /></View>
+            <Text className={"ml-2 truncate text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center " + ( visible ? 'hidden' : '' ) }>{menuItem}</Text>
+            <SearchBox visible={visible} />
+            <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
+           </View>
 });
 
-const Convos = memo(({ menuItem, onSelectConvo, visible, height, convo }) => {
-    const { currentUser } = useCurrentUser();
-    const sUrl = '/api.php?r=bx_messenger/get_convos_list_json/&params=';
-
-    const fetchData = async({ pageParam = 0 }) => {
-            const { data } =  await fetcher(sUrl + JSON.stringify({ group: menuItem, count: pageParam }));
-
-        //console.log('----- select first load before -----', pageParam, data, convo);
-            if (typeof onSelectConvo === 'function' && !pageParam && data.length && !convo ) {
-                //console.log('----- select fiorst load -----', pageParam, data[0]);
-                onSelectConvo(data[0]);
-            }
-
-            return data || [];
-        };
-
-        const {
-            data,
-            error,
-            fetchNextPage,
-            hasNextPage,
-            isFetchingNextPage,
-            isLoading
-        } = useInfiniteQuery(['get_convos_list_json', menuItem], fetchData, {
-            keepPreviousData: true,
-            refetchOnWindowFocus: false,
-            refetchOnMount: false,
-            getNextPageParam: (lastPage, allPages) => {
-                if (!lastPage || !lastPage.length || allPages[0].length !== lastPage.length)
-                    return false;
-
-                return lastPage.length * allPages.length;
-            },
-            enabled: !!currentUser && visible
-        });
+const Convos = memo(({ menuItem, onSelect, height }) => {
+    const { status, isFetchingNextPage, hasNextPage, isLoading, error, fetchNextPage, data: convosList } = useConvos(menuItem);
 
     const handleEndReached = () => {
         if (!isFetchingNextPage && hasNextPage) {
@@ -135,46 +103,56 @@ const Convos = memo(({ menuItem, onSelectConvo, visible, height, convo }) => {
         }
     }
 
+    useEffect(() => {
+        if (status === 'success' && convosList.length) {
+            onSelect(convosList[0], false);
+        }
+
+    }, [status, menuItem]);
+
     if (isLoading)
-        return <View className='m-2'><Loading/></View>;
+        return getSkeleton('feed');
 
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
 
-    const renderListItem = ({ item }) => <ConvoListItem key={ item.id } item={item} />,
+    const renderListItem = ({ item }) => <ListFeed key={item.id} { ...item } onPress={() => onSelect(item)} />,
           keyExtractor = (item) => item.id;
 
-    const aList = data.pages.flatMap(page => page);
-
-    return !aList.length ? <Text className="text-2xl text-white text-center">Empty</Text> :
-            <View className="min-h-[2rem] flex-1">
-                <UniList
-                    data={ data.pages.flatMap(page => page) }
+    return !convosList.length ? <Text className="text-2xl text-white text-center flex-1">Empty</Text> :
+                 <UniList
+                    data={ convosList }
+                    /*firstItemIndex={0}
+                    initialTopMostItemIndex={0}*/
                     renderItem={ renderListItem }
                     onEndReachedThreshold={ 0 }
                     onEndReached = { handleEndReached }
+                    totalCount={ convosList.length }
                     keyExtractor={ keyExtractor }
-                   /* estimatedItemSize={ 64 }*/
+                    defaultItemHeight={ 72 }
                     height={ height - 48 }
                     ListFooterComponent = {
-                        hasNextPage && isFetchingNextPage && <View className='m-2'><Loading/></View>
+                        hasNextPage && isFetchingNextPage && getSkeleton('feed')
                     }
                 />
-            </View>
 });
 
-export const ConvosList = memo((props) => {
-   const { menuItem, viewMenu, handlerMenuView, stylesName, selectConvo, visible, convo, height } = props;
-   console.log('--- render component ConvosList -----', menuItem, viewMenu, handlerMenuView, height);
+export const ConvosList = () => {
+    const { menuItem, menuView, setMenuView } = useContext(MenuData),
+          { screenMode, pageHeight, setConvoItem, convoInfo } = useContext(PageData),
+          //{ refetch } = useConvoItem(menuItem, convoInfo.id),
+          handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
+          handlerSelectConvo = useCallback((convoItem, bManually = true) => {
+                                                                               setConvoItem({ item: convoItem, manually: bManually });
+                                                                            }, []);
 
-   return <View className={"max-h-full flex w-full h-full flex-col relative" + (stylesName || "")}>
+    const bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]);
+
+   return <View className="max-h-full flex w-full h-full flex-col relative">
                 <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
-                     <View className="xl:hidden ">
-                         <Button variant="outline" startDecorator="List" rounded align="start" onPress={ handlerMenuView }/>
-                     </View>
-                     <ConvosListHeader menu={ menuItem } />
+                   <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
                 </View>
-                <Convos convo={convo} height={height} menuItem={ menuItem } onSelectConvo={selectConvo} visible={visible}/>
-                { viewMenu && <WrappedTopMenu /> }
+                <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />
+                { menuView && bAllowViewOnDevice && <WrappedTopMenu /> }
           </View>
-});
+};

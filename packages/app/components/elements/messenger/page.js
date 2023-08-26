@@ -1,86 +1,74 @@
 import { View, Pressable } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import React, { useState, useRef, useMemo, useEffect, useCallback } from 'react';
+import { memo, useRef, useMemo, useEffect, useContext } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosList } from 'app/components/elements/messenger/convos-list';
-import History from 'app/components/elements/messenger/history';
-import { useWindowDimensions } from 'react-native';
-import MessengerContext from './messenger-сontext';
-import { getGrid, getScreenMode, getSpace, sDesktop, sPhone }  from './grid-utils';
-import Loading from "../../../ui/atoms/loading";
+import { HistoryComponent as History }  from 'app/components/elements/messenger/history';
+import { PageContext, PageData, MenuContext, MenuData } from './context/messenger-сontext';
+import { getGrid, getScreenMode, getSpace, isPhone, isDesktop }  from './grid-utils';
+import {fetcher} from "../../../lib/fetcher";
 
-export default function PageLayout({ data }) {
-    const [panel, selectPanel] = useState(false);
-    const [menuItem, selectMenu] = useState('inbox');
-    const [convo, selectConvo] = useState(0);
-    const [convoInfo, setConvoItem] = useState(null);
-    const [viewMenu, setMenuView] = useState(false);
+function PageLayout({ data }) {
+    const { menuView, setMenuView, setMenuItems } = useContext(MenuData);
+    const { panel, setPanel, pageHeight, screenMode, convoInfo } = useContext(PageData);
 
-    const { height } = useWindowDimensions(),
-          sMode = getScreenMode(),
-          iSpace = useMemo(() => getSpace(sMode), [sMode]),
-         { historyCol, listCol } = useMemo(() => getGrid( sMode, panel ), [sMode, panel]);
-
-    const oWindowRef = useRef(),
-          iHeight = height - iSpace;
-
-    const handlerSelectMenu = (sMenu) => {
-        selectMenu(sMenu);
-        if (sMode !== sDesktop)
-            setMenuView((viewMenu) => !viewMenu);
-    };
-
-    const handlerMenuView = useCallback((bView) => {
-        if (typeof bView !== 'undefined')
-            setMenuView(bView);
-        else
-            setMenuView((viewMenu) => !viewMenu);
-    }, [viewMenu]);
-
-    const handlerSelectConvo = (item) => {
-        const { id } = item;
-        selectConvo(id);
-        setConvoItem(item);
-    };
+    const handlerOuterClick = () => menuView && setMenuView(false),
+          oWindowRef = useRef(),
+          iSpace = useMemo(() => getSpace(screenMode), [screenMode]),
+          iHeight = pageHeight - iSpace;
 
     useEffect(() => {
-        if (sMode !== sPhone) {
-            selectPanel(false);
+        const initMenu = async () => {
+            const { data } =  await fetcher('/api.php?r=bx_messenger/get_messenger_menu');
+            setMenuItems(data);
         }
 
-        if (viewMenu)
-            setMenuView(false);
+        initMenu();
+    }, []);
 
-    }, [sMode]);
+    useEffect(() => {
+       const { manually } = convoInfo;
+        if (isPhone(screenMode) && manually)
+            setPanel('history');
+    }, [convoInfo]);
 
-   //console.log('----- log rerender main page ----', sMode, historyCol, listCol, panel, convoInfo );
+    useEffect(() => {
+        if (!isPhone(screenMode) && panel)
+            setPanel(false);
+    }, [screenMode]);
 
-    return <MessengerContext.Provider value={{
-                                                  height: iHeight, handlerSelectMenu,
-                                                  handlerMenuView, menuItems: data.menu,
-                                                  menuItem, convo, handlerSelectConvo,
-                                                  mode: sMode,
-                                                  panel, viewMenu, selectPanel, setConvoItem
-                                              }}>
-                <Pressable onPress={(e) => {
-                    if (viewMenu)
-                        handlerMenuView(false);
-                    }} className={"cursor-default"}>
-                    <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
-                        <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
-                            <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
-                                <MenuColumn { ...data.menu } />
-                            </View>
-                            <View className={ listCol }>
-                                <ConvosList convo={ convo } visible={!panel}
-                                            menuItem={menuItem} viewMenu={viewMenu}
-                                            handlerMenuView={handlerMenuView} selectConvo={handlerSelectConvo} height={iHeight} />
-                            </View>
-                            <View className={ historyCol + " border-l border-bordercolornavbar dark:border-bordercolornavbar-dark h-full"}>
-                                { convoInfo && <History convo={ convoInfo } pressBack={ () => selectPanel(false) } height={iHeight} menuItem={menuItem}/> }
-                            </View>
-                        </View>
-                    </View>
-                </Pressable>
-        </MessengerContext.Provider>
+    return  <Pressable onPress={ handlerOuterClick } className={"cursor-default"}>
+                <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
+                   <Layout mode={ screenMode } panel={ panel } />
+                </View>
+            </Pressable>
 }
+
+const Layout = memo(({ mode, panel }) => {
+    const { historyCol, listCol } = getGrid( mode, panel );
+    const bDesktop = isDesktop(mode);
+    const bPhone = isPhone(mode);
+    const bAllowHistoryView = !bPhone || bPhone &&  panel === 'history';
+
+    return <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
+             <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
+               { bDesktop && <MenuColumn test={"column"}/> }
+             </View>
+             <View className={ listCol }>
+                 <ConvosList />
+             </View>
+             <View className={ historyCol }>
+                <View className="max-h-full flex w-full h-full flex-col relative border-l border-bordercolornavbar dark:border-bordercolornavbar-dark">
+                    <History />
+                </View>
+             </View>
+           </View>
+});
+
+export default (props) => {
+    return <PageContext>
+                <MenuContext>
+                    <PageLayout {...props} />
+                </MenuContext>
+           </PageContext>
+};

@@ -2,17 +2,16 @@ import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
-import React, {memo, useMemo} from 'react';
+import {memo, useMemo, useCallback} from 'react';
 import dynamic from "next/dynamic";
 import {useCurrentUser} from "../../context/user";
 import {FeedbackHaptics, linkify} from "../../lib/util";
-import ReactionContext, { ActionsData } from 'app/context/actions';
 import Html from "../../ui/atoms/html";
 import {Button} from "../../design/controls";
 import Menu from "../menu";
 import DropdownMenu from "../../ui/atoms/dropdown-menu";
 import Reactions from 'app/ui/molecules/reactions';
-import {fetcher} from "../../lib/fetcher";
+import Services from "../elements/messenger/services/history";
 
 const ListFeed = memo((data)  => {
   const { author_data, message, date, title, count, onPress } = data || {};
@@ -58,13 +57,13 @@ const ListFeed = memo((data)  => {
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
-        const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
-        return  <Carousel data={aImg}/>
+        const Carousel = memo(dynamic(() => import('../../ui/molecules/carousel')));
+        return  <Carousel data={aImg} onComplete={() => console.log('----- carusel is complete ------')}/>
     }, [b]);
     return computedData;
 }
 
-const MsgFeed = memo(({ item, handleMenuSelect }) => {
+const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     const { currentUser } = useCurrentUser();
 
     const { author_data, created, count, files, message, menu, id, reactions } = item,
@@ -81,11 +80,11 @@ const MsgFeed = memo(({ item, handleMenuSelect }) => {
     });
 
     return (
-        <View className='w-full mt-3'>
+        <View className='w-full pt-3'>
             <View className="flex-row-reverse ">
                 <View className='flex-1 flex-col gap-y-1 -translate-x-2 translate-y-1 '>
                     <View className={sCommentClass + ' py-2'} >
-                        <View className="flex-row flex-1 items-center mb-0.5">
+                        <View className="flex-row flex-1 items-center pb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <Text className="text-neutral-500 px-1">·</Text>
                             <Time className="" ts={created}></Time>
@@ -93,7 +92,7 @@ const MsgFeed = memo(({ item, handleMenuSelect }) => {
                         <View>
                             <Html data={linkify(message)} />
                         </View>
-                        { aImg && aImg.length > 0 && <View className='w-full aspect-auto mb-6'>
+                        { aImg && aImg.length > 0 && <View className='w-full aspect-auto pb-6'>
                             <CarouselMemo aImg={aImg}/>
                         </View>
                         }
@@ -114,9 +113,8 @@ const MsgFeed = memo(({ item, handleMenuSelect }) => {
                                                     action: { reaction: 'default' }
                                                 }} />
                                           </View> : <></> }
-                        <View className='flex-row'>
+                        { !!currentUser && menu && menu.length && <View className='flex-row'>
                             <Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />
-                            {!!currentUser && !!menu.length &&
                             <View className="ml-2">
                                 <DropdownMenu items={menu.map((aItem) => {
                                     return {
@@ -125,12 +123,11 @@ const MsgFeed = memo(({ item, handleMenuSelect }) => {
                                         link: aItem.link,
                                         title: aItem.title
                                     };
-                                })} onSelect={(oItem, event) => handleMenuSelect(oItem, id)}>
+                                })} onSelect={(oItem, event) => handlerMenuSelect(oItem, item)}>
                                     <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" rounded onPress={() => {FeedbackHaptics('Medium');}} />
                                 </DropdownMenu>
                             </View>
-                            }
-                        </View>
+                        </View> }
                     </View>
                 </View>
                 <View className=" bg-neutral-50 dark:bg-neutral-900 rounded-full mb-auto p-0.5">
