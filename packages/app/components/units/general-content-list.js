@@ -58,8 +58,8 @@ export default function Unit(props) {
                         <View className="w-full  aspect-video bg-primary/50" >
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
                         </View>
-                        <View className=" pt-3 px-4">
-                                <Text numberOfLines={2} className=" text-base font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
+                        <View className=" pt-3 px-4 ">
+                                <Text numberOfLines={2} className="text-center text-base font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
                         </View>
                         
                     </Link>
