@@ -47,30 +47,29 @@ export default function Unit(props) {
                     mb-4 sm:mb-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     sm:hover:bg-backgroundcard-hover sm:dark:hover:bg-backgroundcard-darkhover
-                    sm:hover:shadow-sm 
+                    sm:hover:shadow-sm aspect-square
                     active:opacity-50 border
                     border-bordercolorcard dark:border-bordercolorcard-dark 
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     
                 ">
-                <View className='flex-col pb-4  '>
+                <View className='flex-col pb-3 h-full '>
                     <Link href={data.url} >
-                        <View className="w-full rounded aspect-video bg-primary/50" >
+                        <View className="w-full  aspect-video bg-primary/50" >
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
                         </View>
-                        <View className="h-16">
-                            <View className=" p-3">
-                                <Text numberOfLines={2} className="text-center font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
-                            </View>
+                        <View className=" pt-3 px-4">
+                                <Text numberOfLines={2} className=" text-base font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
                         </View>
+                        
                     </Link>
-                    <View>
+                    
                         {data?.meta &&
-                            <View className="px-3 h-16">
+                            <View className="px-4 mt-auto ">
                                 <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
                             </View>
                         }
-                    </View>
+                    
                 </View>
             </View>
         )
@@ -130,7 +129,7 @@ export function UnitPerson(props) {
     const imageSizes = getImageSizes();
     return (
             <View className="
-                mt-4 sm:mt-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
+                mb-4 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                 hover:shadow-sm active:shadow-none 

@@ -29,7 +29,7 @@ export default function ElementMenu(oProps) {
     //--- show menu as verstical
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
 
-    sClassName += bShowVertical ? 'flex-col items-center web:gap-y-2 ' : 'flex-row items-center gap-x-2 ';
+    sClassName += bShowVertical ? 'flex-col items-center gap-y-3 ' : 'flex-row items-center gap-x-2 ';
 
     //--- horizontal menu items alignment
     const sAlignItems = oProps?.alignItems ? oProps?.alignItems : (oProps?.params && oProps.params?.align_items ? oProps.params.align_items : 'left');
@@ -75,7 +75,7 @@ export default function ElementMenu(oProps) {
 
         const ItemType = componentsMap[sDisplayTypeItem];
         return (
-            <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full items-center ios:mb-2 android:mb-2' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
+            <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
                 <ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} />
             </View>
         );
