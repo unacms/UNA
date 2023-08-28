@@ -137,6 +137,7 @@ export default function ElementBrowse(props) {
         (true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <UniList 
+            
                     numColumns={numColumns} 
                     data={dataItems.data}
                     viewParams={getCurrentParams()}

@@ -68,6 +68,24 @@ export function getBlackBox(windowWidth) {
         ))}
       </>
     ),
+    notifications: (
+      <>
+        {items.map((item, index) => (
+          <View key={'notifications' + index}>
+            <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">
+              <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
+              <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20"></View>
+              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
+                <View className="h-4 my-0.5 w-16  rounded-full   bg-neutral-500/20"></View>
+              </View>
+              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
+                <View className="h-4 my-0.5 w-4  rounded-full   bg-neutral-500/20"></View>
+              </View>
+            </View>
+          </View>
+        ))}
+      </>
+    ),
     browse_item: (
       <>
         {items.map((item, index) => (
@@ -243,8 +261,8 @@ export function getBlackBox(windowWidth) {
   }
   
 export function getSkeleton(name, view) {
-    if (name != 'feed' && name != 'one_column_browse') name = 'browse_item'
-    return blockSkeletons[name]
+    if (name != 'feed' && name != 'one_column_browse' && name != 'notifications') name = 'browse_item'
+      return blockSkeletons[name];
 }
 
 export function getPageSkeleton(name) {
