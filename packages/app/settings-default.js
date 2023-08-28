@@ -304,7 +304,9 @@ export const settingsDefault = {
         dashboard: {
             layout: 'dashboard',
             top:true,
-            blocks: {},
+            blocks: {
+                profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
+            },
             headerSettings: { header: true, backButton: false, menu: false, title: true },
         },
         'search-keyword': {
