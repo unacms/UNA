@@ -13,7 +13,8 @@ export default function UniList(props) {
     
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
-    let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, ...rest } = props
+    let { data, renderItem, onEndReached, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, ...rest } = props
    
     if (props.unit == 'feed' && layoutData?.id){
         let insertIndex = data.findIndex(item => item.type !== 'block');
@@ -101,6 +102,9 @@ export default function UniList(props) {
                 components={{
                     Footer: () => {
                         return ListFooterComponent
+                    },
+                    Header: () => {
+                        return ListHeaderComponent
                     },
                 }}
                 {...rest}
