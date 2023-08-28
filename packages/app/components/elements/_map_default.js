@@ -12,7 +12,7 @@ import EntityCover from './entity_cover';
 import ProfileMenu from './profile_menu';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
-
+import DashboardStat from './dashboard_stat';
 import { MessengerPage } from './messenger';
 
 export const componentsMapDefault = {
@@ -30,6 +30,7 @@ export const componentsMapDefault = {
     profile_menu: ProfileMenu,
     profile_switcher: ProfileSwitcher,
     feed_item: FeedItem,
+    dashboard_stat: DashboardStat,
 
     messenger_main_page: MessengerPage
 };

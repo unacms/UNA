@@ -18,16 +18,17 @@ export default function ElementProfileSwitcher(props) {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
         redirectdRef.current.redirect('/home');
     };
-
+    console.log(props);
     return (
         <>  
             <Redirect ref={redirectdRef} />
             <View className=" pb-4 overflow-hidden flex-col">
-                <View className="flex-row items-center py-1 justify-between">
+                { !props.hideTitle && <View className="flex-row items-center py-1 justify-between">
                     <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 ">
                         Your Profiles
                     </Text>
                 </View>
+                }
                 {props.data.profiles.filter((item) => (item.id != currentUser.id)).map((item, index) => {
                     let dUser = {...item}
                     dUser.url_avatar = dUser.avatar
