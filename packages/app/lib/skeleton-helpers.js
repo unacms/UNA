@@ -2,7 +2,7 @@ import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 
-const items = ['', '', '', '', '']
+const items = ['', '', '', '', '','']
 const maxWidth = appSetting('layout', 'max_width')
 
 export function getBlackBox(windowWidth) {
@@ -71,18 +71,21 @@ export function getBlackBox(windowWidth) {
     notifications: (
       <>
         {items.map((item, index) => (
-          <View key={'notifications' + index}>
-            <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">
-              <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
-              <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20"></View>
-              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
-                <View className="h-4 my-0.5 w-16  rounded-full   bg-neutral-500/20"></View>
-              </View>
-              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
-                <View className="h-4 my-0.5 w-4  rounded-full   bg-neutral-500/20"></View>
-              </View>
-            </View>
-          </View>
+           <View
+           key={index}
+           className="flex-col p-2 my-[2px] bg-backgroundcard dark:bg-backgroundcard-dark rounded-md"
+         >
+           <View className="animate-pulse flex-row items-center gap-2">
+             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
+             <View className="flex-1 gap-1.5">
+               <View className="flex-row justify-between">
+                 <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
+                 <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+               </View>
+               <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
+             </View>
+           </View>
+         </View>
         ))}
       </>
     ),

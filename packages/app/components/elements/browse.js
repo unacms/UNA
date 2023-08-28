@@ -155,7 +155,7 @@ export default function ElementBrowse(props) {
                             Preload
                         ) : null
                     }
-                /> : <></>}
+                /> : <>{Preload}</>}
             </View>
             }
         </View> 

@@ -26,7 +26,7 @@ export default function UnitFeed({data}) {
     const handleClick = (sUrl) => {
         redirectdRef.current.redirect(sUrl);
     }
-
+    data.content_parsed = data.content_parsed.replace('&#8230;', '...')
     return (
         <View className=" ">
             <Redirect ref={redirectdRef} />

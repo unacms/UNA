@@ -41,10 +41,11 @@ export default function (props) {
    // setMenuPopup(false)
   }
 
-
   const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
   const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
-  const sNtfsSkeleton = (
+  const [ntfsOpen, setNtfsOpen] = useState(false)
+  let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
+  const ntfsContent = (
     <View key="ddp-content" className="px-1.5 pb-1.5">
       <View className="flex-row items-center mb-1">
         <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
@@ -62,76 +63,13 @@ export default function (props) {
           }}
         />
       </View>
-      {[...Array(1, 2, 3)].map((i) => (
-        <View
-          key={i}
-          className="flex-col p-2 my-[1px] bg-backgroundcard dark:bg-backgroundcard-dark rounded-md"
-        >
-          <View className="animate-pulse flex-row items-center gap-2">
-            <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
-            <View className="flex-1 gap-1.5">
-              <View className="flex-row justify-between">
-                <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
-                <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
-              </View>
-              <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
-            </View>
-          </View>
-        </View>
-      ))}
+      {true ? (
+        <Browse height={400}  data={data} />
+      ) : (
+        oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
+      )}
     </View>
   )
-
-  const [ntfsOpen, setNtfsOpen] = useState(false)
-  const [ntfsContent, setNtfsContent] = useState(sNtfsSkeleton)
-  const handleClickNotifications = async () => {
-    const bInfinite = true
-    const aParams = {
-      params: {
-        type: 'obj_own_and_con',
-        start: 0,
-        per_page: 12,
-        modules: '',
-      },
-    }
-
-    const sResponse = await fetcher(
-      '/api.php?r=bx_notifications/get_data/Module&params=' +
-        JSON.stringify(aParams)
-    )
-    if (!sResponse?.data) return
-
-    const oBlock = sResponse.data.shift()
-    if (oBlock.data?.unit != 'notifications' || !oBlock.data?.data) return
-
-    const sContent = (
-      <View key="ddp-content" className="px-1.5 pb-1.5">
-        <View className="flex-row items-center mb-1">
-          <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
-            {sTxtNtfsTitle}
-          </Text>
-          <Button
-            variant="text"
-            size="sm"
-            rounded
-            endDecorator="CaretDoubleRight"
-            title={sTxtNtfsViewAll}
-            onPress={() => {
-              setNtfsOpen(false)
-              handleClick('/notifications-view')
-            }}
-          />
-        </View>
-        {bInfinite ? (
-          <Browse type={oBlock.type} height={400} {...oBlock} />
-        ) : (
-          oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
-        )}
-      </View>
-    )
-
-    setNtfsContent(sContent)
-  }
 
   const handleClick = (sUrl) => {
     redirectdRef.current.redirect(sUrl)
@@ -150,8 +88,6 @@ export default function (props) {
   const menu_add = appSetting('menu_items', 'menu_add');
 
   const windowWidth = useWindowDimensions().width + 17;
-
-  const router = useRouter();
 
   let headerSettings = getHeaderSettings(props.uri, width);
   
@@ -277,7 +213,7 @@ export default function (props) {
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
-                      bOpen && handleClickNotifications()
+                      bOpen
                       setNtfsOpen(bOpen)
                     }}
                     title={sTxtNtfsTitle}
