@@ -498,7 +498,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: { backButton: false, header: false },
+            headerSettings: { backButton: false, header: false, offset: false },
             icon: 'UsersThree',
         },
         'groups-joined': {
