@@ -44,29 +44,29 @@ export default function Unit(props) {
 
         return (
                 <View className="
-                    mt-4 sm:mt-2 mx-2 group duration-200 overflow-hidden rounded-lg 
+                    mb-4 sm:mb-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-                    hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                    hover:shadow-sm active:shadow-none 
-                    active:translate-y-0.5 border
+                    sm:hover:bg-backgroundcard-hover sm:dark:hover:bg-backgroundcard-darkhover
+                    sm:hover:shadow-sm 
+                    active:opacity-50 border
                     border-bordercolorcard dark:border-bordercolorcard-dark 
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                    active:border-bordercolorcard-active dark:active:border-bordercolorcard-darkactive
+                    
                 ">
                 <View className='flex-col pb-4  '>
                     <Link href={data.url} >
-                        <View className="w-full rounded aspect-video bg-primary/10 dark:bg-primary-dark/10" >
+                        <View className="w-full rounded aspect-video bg-primary/50" >
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
                         </View>
-                        <View className="">
-                            <View className="sm:mx-auto w-fit mr-auto bg-backgroundcard/80 dark:bg-backgroundcard-dark/80 backdrop-blur rounded-lg p-2 my-3 ml-2">
-                                <Text numberOfLines={2} className=" text-xl sm:text-lg font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
+                        <View className="h-16">
+                            <View className=" p-3">
+                                <Text numberOfLines={2} className="text-center font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
                             </View>
                         </View>
                     </Link>
                     <View>
                         {data?.meta &&
-                            <View className="px-3">
+                            <View className="px-3 h-16">
                                 <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
                             </View>
                         }
