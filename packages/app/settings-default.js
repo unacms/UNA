@@ -306,6 +306,7 @@ export const settingsDefault = {
             top:true,
             blocks: {
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
+                stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: true },
             },
             headerSettings: { header: true, backButton: false, menu: false, title: true },
         },

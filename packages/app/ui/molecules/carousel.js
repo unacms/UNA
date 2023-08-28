@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from '../../ui/atoms/image';
