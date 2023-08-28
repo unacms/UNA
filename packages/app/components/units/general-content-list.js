@@ -53,7 +53,7 @@ export default function Unit(props) {
                     sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
                     
                 ">
-                <View className='flex-col pb-3 h-full '>
+                <View className='flex-col pb-4 h-full '>
                     <Link href={data.url} >
                         <View className="w-full  aspect-video bg-primary/50" >
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
