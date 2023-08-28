@@ -297,7 +297,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="Graph" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
@@ -313,7 +313,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="ChatsTeardrop" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
@@ -329,7 +329,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark ">
+                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="ShareFat" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
@@ -345,7 +345,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="MagicWand" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
@@ -360,7 +360,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="Student" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
@@ -376,7 +376,7 @@ export const staticDefault = {
             <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
               <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
                 <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark">
+                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
                     <Icon icon="Handshake" width={32} height={32} />
                   </View>
                   <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
