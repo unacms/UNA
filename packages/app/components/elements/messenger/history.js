@@ -76,11 +76,9 @@ export function HistoryComponent(){
     return <View className="h-full">
             <ConvoHeader title={title} onPress={handlerClickBackButton}/>
               <View className="px-3 max-h-full flex w-full h-full flex-col relative flex-1">
-                { item && <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} /> }
+                <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />
               </View>
-              <SendForm convoId={id} menuItem={menuItem} onSubmit={() => {
-                  handlerUpdateSelectedConvo();
-               }}/>
+            { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/>}
            </View>
 }
 

@@ -5,12 +5,14 @@ import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosList } from 'app/components/elements/messenger/convos-list';
 import { HistoryComponent as History }  from 'app/components/elements/messenger/history';
 import { PageContext, PageData, MenuContext, MenuData } from './context/messenger-сontext';
-import { getGrid, getScreenMode, getSpace, isPhone, isDesktop }  from './grid-utils';
-import {fetcher} from "../../../lib/fetcher";
+import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
+import {fetcher} from "app/lib/fetcher";
+import Redirect from "app/ui/atoms/redirect";
 
 function PageLayout({ data }) {
     const { menuView, setMenuView, setMenuItems } = useContext(MenuData);
     const { panel, setPanel, pageHeight, screenMode, convoInfo } = useContext(PageData);
+    const redirectRef = useRef();
 
     const handlerOuterClick = () => menuView && setMenuView(false),
           oWindowRef = useRef(),
@@ -37,9 +39,13 @@ function PageLayout({ data }) {
             setPanel(false);
     }, [screenMode]);
 
-    return  <Pressable onPress={ handlerOuterClick } className={"cursor-default"}>
-                <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
-                   <Layout mode={ screenMode } panel={ panel } />
+    return  <Pressable onPress={(e) => {
+                e.preventDefault();
+                return handlerOuterClick(e);
+              }} className={"cursor-default"}>
+                <Redirect ref={redirectRef} />
+                <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden" onPress={ handlerOuterClick } className={"cursor-default"}>
+                    <Layout mode={ screenMode } panel={ panel } />
                 </View>
             </Pressable>
 }
@@ -52,14 +58,14 @@ const Layout = memo(({ mode, panel }) => {
 
     return <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
              <View className={"xl:w-2/12 hidden xl:block border-r border-bordercolornavbar dark:border-bordercolornavbar-dark" }>
-               { bDesktop && <MenuColumn test={"column"}/> }
+                { bDesktop && <MenuColumn test={"column"}/> }
              </View>
              <View className={ listCol }>
-                 { listCol !== 'hidden' && <ConvosList /> }
+                { listCol !== 'hidden' && <ConvosList /> }
              </View>
              <View className={ historyCol }>
                 <View className="max-h-full flex w-full h-full flex-col relative border-l border-bordercolornavbar dark:border-bordercolornavbar-dark">
-                    { historyCol !== 'hidden' && <History /> }
+                   { historyCol !== 'hidden' && <History /> }
                 </View>
              </View>
            </View>
