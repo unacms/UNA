@@ -76,9 +76,9 @@ export default function PageLayout(props) {
               <View className="mx-4 mb-1 p-2  flex-row  
                     group duration-200 overflow-hidden rounded-lg  
                     hover:bg-neutral-500/10 active:opacity-50
-                     max-w-5xl self-center  gap-x-2  ">
+                     max-w-5xl self-center items-center gap-x-2  ">
             <View className="w-8 h-8 translate-x-[1px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
-            <Link href={currentUser.url}><Text className='text-base my-auto flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300  dark:text-neutral-100'>{currentUser.display_name}</Text></Link>
+            <Link href={currentUser.url}><Text className='text-base flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300  dark:text-neutral-100'>{currentUser.display_name}</Text></Link>
             
             
               </View>
