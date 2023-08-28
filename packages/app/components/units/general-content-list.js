@@ -130,7 +130,7 @@ export function UnitPerson(props) {
     const imageSizes = getImageSizes();
     return (
             <View className="
-                mt-4 sm:mt-2 mx-2 group duration-200 overflow-hidden rounded-lg 
+                mt-4 sm:mt-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
                 bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                 hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
                 hover:shadow-sm active:shadow-none 
@@ -144,14 +144,14 @@ export function UnitPerson(props) {
                     <View className="w-full rounded aspect-video bg-blue-500/50" >
                     {data.cover && (
                         <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
-                        <View className="sm:mx-auto w-min  absolute  -bottom-16 sm:left-0 sm:right-0 right-2   p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+                        <View className="mx-auto o w-min  absolute -bottom-16 left-0 right-0    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
                             <Profile  url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
                         </View></>
                         )
                     }  
                     </View>
-                    <View className="sm:mt-12">
-                        <View className="sm:mx-auto w-fit mr-auto bg-backgroundcard/80 dark:bg-backgroundcard-dark/80 backdrop-blur rounded-lg p-2 my-3 ml-2">
+                    <View className="mt-12">
+                        <View className="mx-auto w-fit  p-2 my-3 ">
                             <Text className=" text-xl sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
                         </View>
                     </View>
