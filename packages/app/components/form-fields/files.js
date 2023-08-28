@@ -19,6 +19,7 @@ import { Image as ImageNative } from 'react-native';
 export default function FormFieldFiles(props) {
 
     const [imageSource, setImageSource] = useState({ images: null});
+
     const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
     const bMultiple = props.multiple;
@@ -96,10 +97,17 @@ export default function FormFieldFiles(props) {
                 mediaTypes: mediaTypes,
                 quality: 1,
                 allowsMultipleSelection: bMultiple,
-                });
+            });
                 
                 if (!result.cancelled) {
                     let k = imageSource.images;
+                   
+                    let objectsToAdd = Array(result.assets.length).fill({ preload: true });
+                    k = [
+                        ...k,
+                        ...objectsToAdd
+                    ];
+                    setImageSource({ images: k });
                     for (const i of result.assets) {
                         let uri = i.uri;
                         
@@ -183,9 +191,9 @@ export default function FormFieldFiles(props) {
         
             return (
             imagesList?.map((img, index) => (
-                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center' >
-                    { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
-                    { !img?.file_type?.includes('image/') && <Icon icon="File" className="w-20 h-20" size={80} /> }
+                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg' >
+                    { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="u-cover  rounded-lg" alt=''  src={img.file_url} /> }
+                    { (!img?.file_type?.includes('image/') && !img?.preload) && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                     { img !='' && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                         <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
@@ -230,7 +238,7 @@ export default function FormFieldFiles(props) {
                     <View className={ w + ' h-48 rounded-lg items-center justify-center border'}>
                         {img == null ? 
                             <Text className='text-neutral-500/50 text-xl text-center'>{props.caption}</Text> 
-                            :( <>{ img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
+                            :( <>
                                 { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className="dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
