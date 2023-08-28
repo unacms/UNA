@@ -5,7 +5,7 @@ import { useRef, useContext, useEffect, useState, useCallback, memo, useMemo } f
 import { PageData, MenuData } from "./context/messenger-сontext";
 import { Text } from 'app/design/typography';
 import Loading from "../../../ui/atoms/loading";
-import { MsgFeed } from 'app/components/units/convos-feeds';
+import {ListFeed, MsgFeed} from 'app/components/units/convos-feeds';
 import Form from "../form";
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "../../../context/actions";
@@ -125,7 +125,8 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
     }, [messages, refList.current]);
 
 
-    const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>;
+    const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>,
+        keyExtractor = (item) => item.id;
 
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
@@ -144,26 +145,25 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                         data={ messages }
                         renderItem={ renderItem }
                         startReached={ handleTopReached }
-                        maintainVisibleContentPosition={{
+                       /* maintainVisibleContentPosition={{
                             minIndexForVisible: 0,
-                        }}
+                        }}*/
                         overscan={ 400 }
                         height={ height }
                         totalCount={ messages.length }
                         followOutput={"smooth"}
-                        ListHeaderComponent={ () =>
-                            isFetchingPreviousPage && getSkeleton('feed')
-                        }
-                        contentContainerStyle={{ paddingBottom: 20 }}
-                        defaultItemHeight={100}
-                        estimatedItemSize={100}
+                        ListHeaderComponent={ isFetchingPreviousPage && <View><Loading/></View> }
+                        /*contentContainerStyle={{ paddingBottom: 20 }}*/
+                        defaultItemHeight={ 100 }
+                       /* estimatedItemSize={ 100 }*/
+                       /* keyExtractor={ keyExtractor }*/
                         /*showsVerticalScrollIndicator={false}*/
                     />
                 </ReactionContext>
            </View>
 });
 
-const HistoryList = memo(({ startIndex, messages, height, handleTopReached, handlerMenuSelect }) => {
+/*const HistoryList = memo(({ startIndex, messages, height, handleTopReached, handlerMenuSelect }) => {
     const [update, setUpdate] = useState(false);
 
     const refList = useRef();
@@ -173,7 +173,7 @@ const HistoryList = memo(({ startIndex, messages, height, handleTopReached, hand
                 <UniList
                     firstItemIndex={ +startIndex }
                     initialTopMostItemIndex={ messages.length - 1 }
-                    /* listState={ `convo-history-${convoId}` }*/
+                    /!* listState={ `convo-history-${convoId}` }*!/
                     refer={ refList }
                     style={{ marginBottom: 20 }}
                     data={ messages }
@@ -183,10 +183,10 @@ const HistoryList = memo(({ startIndex, messages, height, handleTopReached, hand
                         minIndexForVisible: 0,
                     }}
                     overscan={ 400 }
-                    /* rangeChanged={{
+                    /!* rangeChanged={{
                          startIndex: firstItemIndex.index,
                          endIndex: messages.length - 1,
-                     }}*/
+                     }}*!/
                     height={ height }
                     totalCount={ messages.length }
                     followOutput={"smooth"}
@@ -196,9 +196,9 @@ const HistoryList = memo(({ startIndex, messages, height, handleTopReached, hand
                     contentContainerStyle={{ paddingBottom: 20 }}
                     defaultItemHeight={100}
                     estimatedItemSize={100}
-                    /*showsVerticalScrollIndicator={false}*/
+                    /!*showsVerticalScrollIndicator={false}*!/
                 />
             </ReactionContext>
 }, (prev, next) => {
     return prev.startIndex === next.startIndex && prev.messages.length === next.messages.length && prev.handleTopReached === next.handleTopReached;
-});
+});*/

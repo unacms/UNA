@@ -92,25 +92,20 @@ export function getBlackBox(windowWidth) {
     browse_item: (
       <>
         {items.map((item, index) => (
-          <View key={'browse_item' + index} className="flex-row w-full ">
-            <View className="mt-4 mx-2 flex-auto aspect-square rounded-lg overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
+          <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
+            <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
               <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="mt-4 mx-2 hidden sm:block flex-auto aspect-square rounded-lg overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark  ">
+            <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark  ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="mt-4 mx-2 hidden md:block flex-auto aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark overflow-hidden">
+            <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="hidden lg:block flex-auto mt-4 mx-2 aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark overflow-hidden">
+            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="hidden xl:block flex-auto mt-4 mx-2 aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark overflow-hidden">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
-            <View className="hidden xl:block flex-auto mt-4 mx-2 aspect-square rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark overflow-hidden">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
+         
           </View>
         ))}
       </>

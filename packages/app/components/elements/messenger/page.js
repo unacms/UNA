@@ -55,11 +55,11 @@ const Layout = memo(({ mode, panel }) => {
                { bDesktop && <MenuColumn test={"column"}/> }
              </View>
              <View className={ listCol }>
-                 <ConvosList />
+                 { listCol !== 'hidden' && <ConvosList /> }
              </View>
              <View className={ historyCol }>
                 <View className="max-h-full flex w-full h-full flex-col relative border-l border-bordercolornavbar dark:border-bordercolornavbar-dark">
-                    <History />
+                    { historyCol !== 'hidden' && <History /> }
                 </View>
              </View>
            </View>

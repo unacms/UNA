@@ -30,8 +30,7 @@ export default function PageLayout(props) {
       <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
     </Modal>
     <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
-      <View className=" w-full xl:w-1/4 p-2 xl:pr-3">
-       
+       <View className=" w-full xl:w-1/4 p-2">
           <View
             className="w-full p-3 flex-col xl:flex-col gap-x-1 duration-300 rounded-xl group
             border 
@@ -82,7 +81,7 @@ export default function PageLayout(props) {
           </View>
       </View>
       <Row className="flex-wrap flex-auto mb-auto ">
-      <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
+      <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/friends">
             <View
               className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
@@ -91,10 +90,10 @@ export default function PageLayout(props) {
               <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                 1,290 
               </Text>
-              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-800 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
-                <Icon icon="ArrowFatUp" width={16} height={16} />
-              <Text className=" flex-none  text-xs  ">
-                21%
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+                <Icon className="text-green-600 dark:text-green-400" icon="ArrowFatUp" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">
+                55
               </Text>
               </Row>
              
@@ -111,7 +110,7 @@ export default function PageLayout(props) {
           </Link>
         </View>
 
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
+        <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/followers">
             <View
               className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
@@ -120,10 +119,10 @@ export default function PageLayout(props) {
               <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                 67,5K 
               </Text>
-              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-800 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
-                <Icon icon="ArrowFatUp" width={16} height={16} />
-              <Text className=" flex-none  text-xs  ">
-                6%
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="ArrowFatUp" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">
+                3.1K 
               </Text>
               </Row>
              
@@ -139,210 +138,136 @@ export default function PageLayout(props) {
             </View>
           </Link>
         </View>
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
-          <Link href="/engagements">
-            <View
-              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
-              >
-              <Row className=''>
-              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                721
-              </Text>
-              <Row className='my-auto  text-red-800 bg-red-200 dark:bg-red-800  gap-x-1 py-1 px-2  rounded-full dark:text-red-200 '>
-                <Icon icon="ArrowFatDown" width={16} height={16} />
-              <Text className="flex-none  text-xs  ">
-                2%
-              </Text>
-              </Row>
-             
-              </Row>
-              <Row className="w-full my-auto gap-x-2 ">
-                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                  <Icon icon="Heart" width={24} height={24} />
-                </View>
-                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
-                  Engagements
-                </Text>
-              </Row>
-            </View>
-          </Link>
-        </View>
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
-          <Link href="/engagements">
-            <View
-              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
-              >
-              <Row className=''>
-              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                45,8K 
-              </Text>
-              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-800 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
-                <Icon icon="ArrowFatUp" width={16} height={16} />
-              <Text className=" flex-none  text-xs  ">
-                15%
-              </Text>
-              </Row>
-             
-              </Row>
-              <Row className="w-full my-auto gap-x-2 ">
-                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                  <Icon icon="ChartBar" width={24} height={24} />
-                </View>
-                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
-                  Content Views
-                </Text>
-              </Row>
-            </View>
-          </Link>
-        </View>
-
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
-          <Link href="/friends">
-            <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white 
-              active:opacity-50 sm:hover:-translate-y-0.5 active:translate-y-1 
-              border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-            >
-              <Row className=" my-auto">
-                <Button variant="outline" startDecorator="Users" rounded />
-              </Row>
-              <View className="flex-auto flex-col my-auto ">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
-                  Friends
-                </Text>
-              </View>
-            </View>
-          </Link>
-        </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
+        <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/posts-home">
             <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <Row className=" my-auto">
-                <Button variant="outline" startDecorator="Files" rounded />
+              <Row className='space-x-1'>
+              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                142
+              </Text>
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="ChartBar" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs">17.1M  
+              </Text>
               </Row>
-
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="ThumbsUp" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">114,6K 
+              </Text>
+              </Row>
+             
+              </Row>
+              <Row className="w-full my-auto gap-x-2 ">
+                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                  <Icon icon="Files" width={24} height={24} />
+                </View>
+                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                   Posts
                 </Text>
-              </View>
+              </Row>
             </View>
           </Link>
         </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5">
+        <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/discussions-home">
             <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <Row className=" my-auto">
-                <Button
-                  variant="outline"
-                  startDecorator="ChatsCircle"
-                  rounded
-                />
+              <Row className='space-x-1'>
+              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                6
+              </Text>
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="ChartBar" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">98  
+              </Text>
               </Row>
-
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="Smiley" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">4 
+              </Text>
+              </Row>
+             
+              </Row>
+              <Row className="w-full my-auto gap-x-2 ">
+                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                  <Icon icon="ChatsCircle" width={24} height={24} />
+                </View>
+                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                   Discussions
                 </Text>
-              </View>
+              </Row>
             </View>
           </Link>
         </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
+        <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/groups-home">
             <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <Row className=" my-auto">
-                <Button variant="outline" startDecorator="UsersThree" rounded />
+              <Row className='space-x-1'>
+              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                0
+              </Text>
+             
+             
               </Row>
-
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
+              <Row className="w-full my-auto gap-x-2 ">
+                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                  <Icon icon="UsersThree" width={24} height={24} />
+                </View>
+                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                   Groups
                 </Text>
-              </View>
+              </Row>
             </View>
           </Link>
         </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
+        <View className=" w-1/2 lg:w-1/3 p-2">
           <Link href="/events-home">
             <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                         sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
+              className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
             >
-              <Row className=" my-auto">
-                <Button
-                  variant="outline"
-                  startDecorator="CalendarCheck"
-                  rounded
-                />
+              <Row className='space-x-1'>
+              <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                2
+              </Text>
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="ChartBar" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">9,876  
+              </Text>
               </Row>
-
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
+              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
+              <Icon className="text-green-600 dark:text-green-400" icon="User" width={16} height={16} />
+              <Text className=" flex-none text-green-800 dark:text-green-200 text-xs  ">689
+              </Text>
+              </Row>
+             
+              </Row>
+              <Row className="w-full my-auto gap-x-2 ">
+                <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                  <Icon icon="CalendarCheck" width={24} height={24} />
+                </View>
+                <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                   Events
                 </Text>
-              </View>
-            </View>
-          </Link>
-        </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
-          <Link href="/account-settings-email">
-            <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-            >
-              <Row className=" my-auto w-auto">
-                <Button variant="outline" startDecorator="Gear" rounded />
               </Row>
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
-                  Settings
-                </Text>
-              </View>
             </View>
           </Link>
         </View>
+    
 
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
-          <Link href="/logout">
-            <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-            >
-              <Row className=" my-auto">
-                <Button variant="outline" startDecorator="SignOut" rounded />
-              </Row>
 
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
-                  Sign out
-                </Text>
-              </View>
-            </View>
-          </Link>
-        </View>
+  
+
+
+
+    
+
+
+
       </Row>
     </View>
     </>

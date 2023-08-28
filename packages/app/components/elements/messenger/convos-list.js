@@ -116,7 +116,7 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
 
-    const renderListItem = ({ item }) => <ListFeed key={item.id} { ...item } onPress={() => onSelect(item)} />,
+    const renderItem = ({ item, index }) => <ListFeed key={item.id} { ...item } onPress={() => onSelect(item)} />,
           keyExtractor = (item) => item.id;
 
     return !convosList.length ? <Text className="text-2xl text-white text-center flex-1">Empty</Text> :
@@ -124,8 +124,8 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
                     data={ convosList }
                     /*firstItemIndex={0}
                     initialTopMostItemIndex={0}*/
-                    renderItem={ renderListItem }
-                    onEndReachedThreshold={ 0 }
+                    renderItem={ renderItem }
+                    /*onEndReachedThreshold={ 0 }*/
                     onEndReached = { handleEndReached }
                     totalCount={ convosList.length }
                     keyExtractor={ keyExtractor }
