@@ -60,14 +60,14 @@ export const settingsDefault = {
     browse: {
         per_line: [
             
-            { width: 1280, count: 6 },
+            
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
                 
-            { width: 1280, count: 6 },
+            
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },

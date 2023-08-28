@@ -44,7 +44,7 @@ export default function Unit(props) {
 
         return (
                 <View className="
-                    mt-4 sm:mt-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
+                    mb-4 sm:mb-2 mx-4 sm:mx-2 group duration-200 overflow-hidden rounded-xl 
                     bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
                     sm:hover:bg-backgroundcard-hover sm:dark:hover:bg-backgroundcard-darkhover
                     sm:hover:shadow-sm 
@@ -59,7 +59,7 @@ export default function Unit(props) {
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
                         </View>
                         <View className="h-16">
-                            <View className="mx-auto w-fit  bg-backgroundcard dark:bg-backgroundcard-dark rounded-lg p-3">
+                            <View className=" p-3">
                                 <Text numberOfLines={2} className="text-center font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
                             </View>
                         </View>
