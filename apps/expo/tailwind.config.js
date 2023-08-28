@@ -12,5 +12,6 @@ module.exports = {
     ...theme,
   },
   plugins: [],
+  future: {hoverOnlyWhenSupported: true}
 }
 
