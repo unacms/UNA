@@ -84,7 +84,6 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
     const [visible, setVisibility] = useState(false),
           handlerVisibility = () => setVisibility((visible) => !visible);
 
-    //console.log('----- convos column header search area -----', menuItem);
     return <View className="group relative w-full whitespace-nowrap min-w-0 items-center
                             flex flex-row justify-between text-neutral-800 dark:text-neutral-100 text-ellipsis overflow-hidden">
             <View className="xl:hidden"><Button variant="outline" startDecorator="List" rounded align="start" onPress={ onClickMenu } /></View>
@@ -119,7 +118,7 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
     const renderItem = ({ item, index }) => <ListFeed key={item.id} { ...item } onPress={() => onSelect(item)} />,
           keyExtractor = (item) => item.id;
 
-    return !convosList.length ? <Text className="text-2xl text-white text-center flex-1">Empty</Text> :
+    return !convosList.length ? <Text className="text-2xl font-bold text-neutral-900 dark:text-neutral-50 capitalize p-4 w-full text-center">Empty</Text> :
                  <UniList
                     data={ convosList }
                     /*firstItemIndex={0}
