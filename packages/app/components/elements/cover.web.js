@@ -103,7 +103,6 @@ export function CoverSmall(props) {
 
 export default function ElementCover(props) {
   const data = props.data
-  const router = useRouter();
   let { width } = useWindowDimensions()
   let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 

@@ -49,7 +49,29 @@ export  function Page (props) {
     );
 
 }
-// <PageCustomHome {...props} blocks={layoutBlocks}></PageCustomHome>
+
+function getCounter(num, icon='') {
+  if (!num) num = 0;
+  let sColor = 'gray'
+
+  if (num > 0){
+      sColor = 'green'
+      if (icon == '')
+          icon = 'ArrowFatUp';
+  }
+  if (num < 0){
+      sColor = 'red'
+      if (icon == '')
+          icon = 'ArrowFatDown';
+  }
+
+  return <Row className={'my-auto  text-'+sColor+'-800 bg-'+sColor+'-200 dark:bg-'+sColor+'-950 gap-x-1 py-1 px-2 rounded-full dark:text-'+sColor+'-200 '}>
+  <Icon className={"text-"+sColor+"-600 dark:text-"+sColor+"-400"} icon={icon} width={16} height={16} />
+  <Text className={"flex-none text-"+sColor+"-800 dark:text-"+sColor+"-200 text-xs"}>{num}
+  </Text>
+  </Row>
+}
+
   return (
     <>
         <Provider>
@@ -57,7 +79,7 @@ export  function Page (props) {
             <CurrentUserProvider>
               {!!process.env['VERCEL'] ? <Analytics /> : null}
               <Layout path={props?.path} data={props.data} uri={props?.uri}>
-                <StaticBlock  name='static:home'></StaticBlock>
+                <StaticBlock  name='static:dummy'></StaticBlock>
               </Layout>
             </CurrentUserProvider>
           </QueryClientProvider>

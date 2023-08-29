@@ -32,7 +32,7 @@ export default function () {
                           <View key={"fl" + index} className={'w-1/6 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>
                              <Link  href={tab.url} >
                              <View className='flex-col gap-1 items-center'>
-                              {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
+                              {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24}  />}
                                <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>{tab.title}</Text>
                                {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
                               </View>

@@ -59,16 +59,12 @@ export const settingsDefault = {
     },
     browse: {
         per_line: [
-            
-            
-            { width: 1024, count: 4 },
+            { width: 1024, count: 5 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-                
-            
-            { width: 1024, count: 4 },
+            { width: 1024, count: 5 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
@@ -174,7 +170,6 @@ export const settingsDefault = {
             items: ['persons-home', 'persons-active'],
             add: [
                 {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
-                { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
         bx_events_submenu: {
@@ -184,7 +179,6 @@ export const settingsDefault = {
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-event-profile' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_events' },
-                { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
         sys_con_submenu: {
@@ -223,7 +217,6 @@ export const settingsDefault = {
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-group-profile' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_groups'},
-                { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
         bx_forum_submenu: {
@@ -693,6 +686,9 @@ export const settingsDefault = {
             contact: 'PaperPlaneRight',
             reply: 'ArrowBenDownRight',
             hashtag: 'Hash',
+            Posts:'NoteBlank',
+            Events:'CalendarCheck',
+            Groups:'UsersThree',
         },
     },
     menu: {
@@ -711,6 +707,14 @@ export const settingsDefault = {
             { title: 'About', link: '/about', icon: 'Info' },
             { title: 'Terms', link: '/terms', icon: 'Question' },
             { title: 'Contact', link: '/contact', icon: 'AddressBook' },
+        ],
+        dashboard: [
+            { key: 'friends', title: 'Friends',icon: 'Users' , link: '/friends' },
+            { key: 'followers', title: 'Followers', icon: 'Users', link: '/followers' },
+            { key: 'bx_posts', title: 'Posts', icon: 'NoteBlank', link: '/posts-home', link2: '/create-post', action: 'score', action_icon: 'ThumbsUp' },
+            { key: 'bx_forum', title: 'Discussions', icon: 'Chats', link: '/discussions-home', link2: '/create-discussion', action: 'views', action_icon: 'ChartBar' },
+            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'Users' },
+            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'Users' },
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
