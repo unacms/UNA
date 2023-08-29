@@ -1,4 +1,4 @@
-import { View, Pressable } from 'app/design/view';
+import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
 import { memo, useRef, useMemo, useEffect, useContext } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
@@ -12,10 +12,8 @@ import Redirect from "app/ui/atoms/redirect";
 function PageLayout({ data }) {
     const { menuView, setMenuView, setMenuItems } = useContext(MenuData);
     const { panel, setPanel, pageHeight, screenMode, convoInfo } = useContext(PageData);
-    const redirectRef = useRef();
 
-    const handlerOuterClick = () => menuView && setMenuView(false),
-          oWindowRef = useRef(),
+    const oWindowRef = useRef(),
           iSpace = useMemo(() => getSpace(screenMode), [screenMode]),
           iHeight = pageHeight - iSpace;
 
@@ -39,15 +37,9 @@ function PageLayout({ data }) {
             setPanel(false);
     }, [screenMode]);
 
-    return  <Pressable onPress={(e) => {
-                e.preventDefault();
-                return handlerOuterClick(e);
-              }} className={"cursor-default"}>
-                <Redirect ref={redirectRef} />
-                <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden" onPress={ handlerOuterClick } className={"cursor-default"}>
-                    <Layout mode={ screenMode } panel={ panel } />
-                </View>
-            </Pressable>
+    return  <View ref={oWindowRef} style={{ height: iHeight }} className="w-full h-full overflow-hidden">
+                <Layout mode={ screenMode } panel={ panel } />
+            </View>
 }
 
 const Layout = memo(({ mode, panel }) => {
