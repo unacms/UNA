@@ -4,17 +4,30 @@ import {
     Portal as DmPortal, 
     Content as DmContent 
 }  from '@radix-ui/react-dropdown-menu'
+import { Button } from 'app/design/controls';
 import Tooltip from 'app/ui/atoms/tooltip';
 import 'app/styles/dropdown.css';
 
 export default function DropdownPopup(oProps) {
     let { open, onOpenChange, asChildTrigger, title, ...restProps } = oProps;
 
+    let bModal = true;
+    let sTrigger = (
+        <Tooltip content={title} asChildTrigger={true} {...restProps}>
+            <DmTrigger asChild={asChildTrigger} role="button" aria-label={title}>{oProps.children[0]}</DmTrigger>
+        </Tooltip>
+    );
+
+    if(oProps.children[0].type !== Button) {
+        bModal = false;
+        sTrigger = (
+            <DmTrigger asChild={asChildTrigger}>{oProps.children[0]}</DmTrigger>
+        );
+    }
+
     return (
-        <DmRoot open={open} onOpenChange={(bDmOpen) => {onOpenChange(bDmOpen)}}>
-            <Tooltip content={title} asChildTrigger={true} {...restProps}>
-              <DmTrigger asChild={asChildTrigger} role="button" aria-label={title}>{oProps.children[0]}</DmTrigger>
-            </Tooltip>
+        <DmRoot modal={bModal} open={open} onOpenChange={(bDmOpen) => {onOpenChange(bDmOpen)}}>
+            {sTrigger}
             <DmPortal>
                 <DmContent className="DropdownMenuContent border border-bordercolormodal dark:border-bordercolormodal-dark backdrop-blur m-1 bg-backgroundmodal dark:bg-backgroundmodal-dark shadow-xl" {...restProps}>
                     {oProps.children[1]}
