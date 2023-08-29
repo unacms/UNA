@@ -50,6 +50,7 @@ export function HistoryComponent(){
           { menuItem } = useContext(MenuData),
           { title, id } = item || {},
            client = useQueryClient(),
+           [isSubmitted, setIsSubmitted] = useState(false),
            handlerClickBackButton = useCallback(() => setPanel(false), []),
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
@@ -71,7 +72,16 @@ export function HistoryComponent(){
                         return true;
                     }
                 });
-            }, [menuItem, item]);
+            }, [menuItem, item])/*,
+        handlerSetIsSubmitted = useCallback(() => setIsSubmitted(true), [])*/;
+
+   /* useEffect(() =>{
+        if (isSubmitted) {
+            handlerUpdateSelectedConvo();
+            setIsSubmitted(false);
+        }
+
+    }, [isSubmitted]);*/
 
     return <View className="h-full">
             <ConvoHeader title={title} onPress={handlerClickBackButton}/>
@@ -97,31 +107,48 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
 
               return iIndex;
           }, [total]),
-         [firstItemIndex, setFirstItemIndex] = useState({ index: 0, id: convoId });
 
-    const handleTopReached = useCallback(() => {
-        if (!isFetchingPreviousPage && hasPreviousPage)
-            fetchPreviousPage();
+        [firstItemIndex, setFirstItemIndex] = useState({ index: 0, id: convoId }),
+        [topReached, setTopReached] = useState(false),
 
-    }, [isFetchingPreviousPage, hasPreviousPage, fetchPreviousPage]);
+        handleTopReached = useCallback(() => {
+            if (!isFetchingPreviousPage && hasPreviousPage)
+                fetchPreviousPage();
 
-    const handlerMenuSelect = useCallback(async ({ name }, item) => {
-        const { id: messageId, lot_id: convoId } = item;
+        }, [isFetchingPreviousPage, hasPreviousPage, fetchPreviousPage]),
+        /*handleTopPositionReached = useCallback(() => {
+            const newReachedPos = topReached && false;
+            setTopReached(newReachedPos);
+            console.log('--------- top reached execute ---------', messages.length, newReachedPos);
+        }, [messages?.length]),*/
+        handlerMenuSelect = useCallback(async ({ name }, item) => {
+            const { id: messageId, lot_id: convoId } = item;
+            switch(name) {
+                case 'edit':
+                case 'remove':
+                case 'save':
+                   await executeAction({ action: name, messageId }, { onSuccess: ( data ) => {
+                       if (data?.code === 0) {
+                           onHistoryUpdate();
+                       }
+                    }});
+                case 'share':
+            }
 
-        switch(name) {
-            case 'edit':
-            case 'remove':
-            case 'save':
-               await executeAction({ action: name, messageId }, { onSuccess: ( data ) => {
-                   if (data?.code === 0) {
-                       onHistoryUpdate();
-                   }
-                }});
-            case 'share':
+        }, [messages, refList.current]);
+
+    useEffect(() => {
+        if (topReached) {
+            handleTopReached();
+            setTimeout(() => {
+                refList.current.scrollToIndex({ index: messages.length - iPerPage, animated: true });
+/*
+                console.log('--------- top reached ---------', messages.length);*/
+               /* handleTopPositionReached();*/
+
+            }, 500);
         }
-
-    }, [messages, refList.current]);
-
+    }, [topReached]);
 
     const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>,
         keyExtractor = (item) => item.id;
@@ -137,12 +164,20 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                     <UniList
                         firstItemIndex={ +firstItemIndex.index }
                         initialTopMostItemIndex={ messages.length - 1 }
+                        initialScrollIndex={ messages.length - 1 }
                         /* listState={ `convo-history-${convoId}` }*/
                         refer={ refList }
-                        /*style={{ marginBottom: 20 }}*/
                         data={ messages }
                         renderItem={ renderItem }
                         startReached={ handleTopReached }
+                        onScroll={({ nativeEvent }) => {
+                            const { contentOffset } = nativeEvent;
+                            if (contentOffset) {
+                                const { y } = contentOffset;
+                                if (y <= 0)
+                                    setTopReached(true);
+                            }
+                        }}
                        /* maintainVisibleContentPosition={{
                             minIndexForVisible: 0,
                         }}*/
@@ -151,10 +186,10 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                         totalCount={ messages.length }
                         followOutput={"smooth"}
                         ListHeaderComponent={ isFetchingPreviousPage && <View><Loading/></View> }
-                        /*contentContainerStyle={{ paddingBottom: 20 }}*/
+                        contentContainerStyle={{ paddingBottom: 20 }}
                         defaultItemHeight={ 100 }
                        /* estimatedItemSize={ 100 }*/
-                       /* keyExtractor={ keyExtractor }*/
+                        /*keyExtractor={ keyExtractor }*/
                         /*showsVerticalScrollIndicator={false}*/
                     />
                 </ReactionContext>
