@@ -314,6 +314,6 @@ div::-webkit-scrollbar {
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left);
     }
 
-    @media(hover: hover) { 
+    /*@media(hover: hover) { 
         a:hover {color: white;} 
-    }
+    }*/

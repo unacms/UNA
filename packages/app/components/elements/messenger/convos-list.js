@@ -140,19 +140,18 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
 export const ConvosList = () => {
     const { menuItem, menuView, setMenuView } = useContext(MenuData),
           { screenMode, pageHeight, setConvoItem, convoInfo } = useContext(PageData),
-          //{ refetch } = useConvoItem(menuItem, convoInfo.id),
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
           handlerSelectConvo = useCallback((convoItem, bManually = true) => {
                                                                                setConvoItem({ item: convoItem, manually: bManually });
-                                                                            }, []);
-
-    const bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]);
+                                                                            }, []),
+         bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
+         handlerOuterClick = () => menuView && setMenuView(false);
 
    return <View className="max-h-full flex w-full h-full flex-col relative">
                 <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark h-14">
                    <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
                 </View>
                 <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />
-                { menuView && bAllowViewOnDevice && <WrappedTopMenu /> }
+                { menuView && bAllowViewOnDevice && <WrappedTopMenu onClick={ handlerOuterClick }/> }
           </View>
 };

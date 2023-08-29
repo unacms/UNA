@@ -33,7 +33,8 @@ export default function ElementProfileSwitcher(props) {
                     let dUser = {...item}
                     dUser.url_avatar = dUser.avatar
                     let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-                    return (                   
+                    return (     
+                        <Link href={dUser.url} emulate={true}>              
                         <View key = {'index' + index} className=" p-2 flex-row  
                             group duration-200 overflow-hidden rounded-md  
                             active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
@@ -45,6 +46,7 @@ export default function ElementProfileSwitcher(props) {
                                 <Button id="menu" startDecorator="UserSwitch" variant='outline'  size='sm'  onPress={() => handleSwitch(item.id)} />           
                             </View>
                         </View>
+                        </Link>
                     )
                 })}
             </View>

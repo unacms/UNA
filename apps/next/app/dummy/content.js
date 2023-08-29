@@ -49,7 +49,7 @@ export  function Page (props) {
     );
 
 }
-// <PageCustomHome {...props} blocks={layoutBlocks}></PageCustomHome>
+
   return (
     <>
         <Provider>
@@ -57,7 +57,7 @@ export  function Page (props) {
             <CurrentUserProvider>
               {!!process.env['VERCEL'] ? <Analytics /> : null}
               <Layout path={props?.path} data={props.data} uri={props?.uri}>
-                <StaticBlock  name='static:home'></StaticBlock>
+                <StaticBlock  name='static:dummy'></StaticBlock>
               </Layout>
             </CurrentUserProvider>
           </QueryClientProvider>

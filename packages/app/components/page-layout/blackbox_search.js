@@ -9,9 +9,9 @@ import Redirect from 'app/ui/atoms/redirect';
 import {SearchPanel} from 'app/ui/molecules/search';
 
 export default function PageLayout(props) {
-    
     const searchData = DataByName(props.data, props.blocks.browse);
-    let header = <SearchPanel value={searchData.content[0].data.params.keyword}/>;
+    let keyword = searchData.content[0].data.params.keyword ? searchData.content[0].data.params.keyword : ''
+    let header = <SearchPanel value={keyword}/>;
     let smallHeader = header
     let sect = searchData.content[0].data.params.sections;
     sect =[{"name":"", "title":"Top"}, ...sect];
@@ -23,7 +23,7 @@ export default function PageLayout(props) {
             id: index + 1,
             name: obj.name,
             title: obj.title,
-            link: 'search-keyword?keyword='+ searchData.content[0].data.params.keyword.replace(' ','') + (obj.name != '' ? '&section=' +obj.name : ''),
+            link: 'search-keyword?keyword=' + keyword.replace(' ','') + (obj.name != '' ? '&section=' +obj.name : ''),
             icon: ''
         }
     });  
@@ -31,6 +31,8 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
+
+    console.log('menu', menu)
 
 
 

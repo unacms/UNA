@@ -245,9 +245,9 @@ export function parseQueryString(queryString) {
 export function getImageSizes(){
     const perLineSettings = appSetting('browse', 'per_line');
     let str ="";
-    for (let i = perLineSettings.length-1; i >= 0; i--) {
+    for (let i = perLineSettings.length - 1; i >= 0; i--) {
 
-        if (i == perLineSettings.length-1)
+        if (i == perLineSettings.length - 1)
             str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
         else{
 

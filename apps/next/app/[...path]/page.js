@@ -9,7 +9,6 @@ export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
- 
     
     let cookieString = props.searchParams.cookieString;
 
@@ -29,9 +28,18 @@ const getData = cache(async (props) => {
     };
     
     let l = env('UNA_URL') + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', l, props.searchParams);
+    let searchParams = JSON.parse(JSON.stringify(props.searchParams));
+
+    delete searchParams.cookieString;
+    delete searchParams.path;
+    
+    if (Object.keys(searchParams).length > 0) {
+        l = l + '&params[]=&params[]=' + JSON.stringify(searchParams);
+    }
+
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', l);
     const res = await fetch(l, opts)
-    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()
  });
 
