@@ -18,7 +18,7 @@ export default function ElementProfileSwitcher(props) {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
         redirectdRef.current.redirect('/home');
     };
-    console.log(props);
+
     return (
         <>  
             <Redirect ref={redirectdRef} />
@@ -34,7 +34,7 @@ export default function ElementProfileSwitcher(props) {
                     dUser.url_avatar = dUser.avatar
                     let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
                     return (     
-                        <Link href={dUser.url} emulate={true}>              
+                        <Link href={dUser.url} emulate={true} key={index}>              
                         <View key = {'index' + index} className=" p-2 flex-row  
                             group duration-200 overflow-hidden rounded-md  
                             active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 

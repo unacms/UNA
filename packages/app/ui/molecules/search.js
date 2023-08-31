@@ -127,7 +127,6 @@ export default function ElementSearch(oProps) {
 
         case 'default':
         default:
-            console.log('rer', inputValue)
             sResult = (
                 <Row className=''>
                     <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[

@@ -1,6 +1,5 @@
 import { Platform } from 'react-native';
 import { env } from 'app/lib/env';
-import { appSetting } from 'app/lib/util'
 
 const USE_PROXY = true; // TODO: move to some setting 
 
@@ -51,7 +50,7 @@ export async function fetcher (mixed) {
 }
 
 export async function fetcherRaw (host, mixed) {
-    if (appSetting("debug", "log_fetch"))
+    if (env('DEBUG'))
         console.log("fetcherRaw: ", host + mixed);
     let path, token, data, origin, headers, callback;
 
