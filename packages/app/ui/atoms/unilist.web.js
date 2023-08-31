@@ -13,7 +13,7 @@ export default function UniList(props) {
     
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
-    let { data, renderItem, onEndReached, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
+    let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
           numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, ...rest } = props
    
     if (props.unit == 'feed' && layoutData?.id){

@@ -16,6 +16,7 @@ export default function ElementSearch(oProps) {
     const sType = oProps?.type ? oProps.type : 'default';
 
     const [popupOpen, setPopupOpen] = useState(false);
+    const [popupOpenHandle, setPopupOpenHandle] = useState(true);
     const [popupContent, setPopupContent] = useState('');
     const [inputValue, setInputValue] = useState("");
     
@@ -44,7 +45,7 @@ export default function ElementSearch(oProps) {
         if(!sValue || sValue.length < 3)
             return;
 
-        setPopupContent(getSkeleton());
+        handleSetPopupContent(getSkeleton());
 
         const aParams = {params: {
                 keyword: sValue,
@@ -83,8 +84,15 @@ export default function ElementSearch(oProps) {
 
     const handleSetPopupContent = (sContent) => {
         setPopupContent(sContent);
-        if(sType == 'default')
+        if(sType == 'default') {
             setPopupOpen(!!sContent);
+
+            if(!!sContent) {
+                setPopupOpenHandle(false);
+
+                inputRef.current && inputRef.current.focus();
+            }
+        }
     }
 
     const sTxtTitle = appSetting('lang_keys', 'search_popup_title');
@@ -95,7 +103,7 @@ export default function ElementSearch(oProps) {
     let sResult = undefined;
     switch(sType) {
         case 'small':
-            const handleOpenPopup = (bOpen) => {
+            const handleOpenPopupSmall = (bOpen) => {
                 if(bOpen)
                     setTimeout(() => {inputRef.current && inputRef.current.focus()}, 100);
                 else
@@ -105,7 +113,7 @@ export default function ElementSearch(oProps) {
             }
 
             sResult = (
-                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {handleOpenPopup(bOpen)}} title={sTxtTitle}>{[
+                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {handleOpenPopupSmall(bOpen)}} title={sTxtTitle}>{[
                     <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
                     <View key="ddp-content" className="px-1.5 pb-1.5">
                         <Redirect ref={redirectdRef} />
@@ -127,11 +135,25 @@ export default function ElementSearch(oProps) {
 
         case 'default':
         default:
+            const handleOpenPopupDefault = (bOpen) => {
+                if(bOpen)
+                    inputRef.current && inputRef.current.focus();
+                else {
+                    if(popupOpenHandle) {
+                        setPopupContent('');
+                        setPopupOpen(bOpen);
+                    }
+
+                    setPopupOpenHandle(true);
+                }
+            };
+
+
             sResult = (
                 <Row className=''>
-                    <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {!bOpen && setInputValue('') && setPopupContent(''); setPopupOpen(bOpen)}} title={sTxtTitle} asChildTrigger>{[
+                    <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => handleOpenPopupDefault(bOpen)} title={sTxtTitle} asChildTrigger>{[
                         <View key="ddp-trigger" className="flex-row">
-                            <InputRounded name="search" onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." role="textbox" aria-label="Search" />
+                            <InputRounded name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." role="textbox" aria-label="Search" />
                         </View>,
                         <View key="ddp-content" className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />

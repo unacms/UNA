@@ -20,6 +20,7 @@ function useConvoItem(menuItem, convoId) {
 }
 
 export { useConvoItem, ConvoKeys };
+
 export default function useConvos(menuItem, onSelect) {
     const { currentUser } = useCurrentUser();
     const queryClient = useQueryClient();
@@ -30,7 +31,10 @@ export default function useConvos(menuItem, onSelect) {
         refetchOnMount: false,
         select: (data) => data?.pages.flatMap(page => page),
         getNextPageParam: (lastPage, allPages) => {
-            if (!lastPage || !lastPage.length || allPages[0].length !== lastPage.length)
+            if (!lastPage)
+                throw new Error('No data!');
+
+            if (Services.iPerPage > lastPage.length)
                 return false;
 
             return lastPage.length * allPages.length;
