@@ -33,7 +33,6 @@ const getData = cache(async (props) => {
     delete searchParams.cookieString;
     delete searchParams.path;
     
-    return {path: path, searchParams: searchParams}
     if (Object.keys(searchParams).length > 0) {
         l = l + '&params[]=&params[]=' + JSON.stringify(searchParams);
     }
@@ -70,12 +69,12 @@ const getData = cache(async (props) => {
 export default async function Path (props) {
     const data = await getData(props);
     
-   /* if (data.data){
+    if (data.data){
         if (props?.searchParams?.empty)
             data.data.empty = true;
         return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     }
-    else*/
-        return <Root2  {...data} ></Root2>
+    /*else*/
+    //    return <Root2  {...data} ></Root2>
    
 }
