@@ -34,6 +34,7 @@ export function Modal({
     animation = 'fade',
     presentation = 'overFullScreen',
     transparent = true,
+    position = 'center',
     onClose,
     outerClickClose = true,
     onVisible,
@@ -43,16 +44,32 @@ export function Modal({
 {
     const Wrapper = onClose && outerClickClose !== false ? Pressable : View;
 
+    let sClassPosition = '';
+    switch(position) {
+        case 'top':
+            sClassPosition = 'items-start py-8 px-4';
+            break;
+
+        case 'bottom':
+            sClassPosition = 'items-end py-8 px-4';
+            break;
+
+        case 'center':
+        default:
+            sClassPosition = 'items-center p-4';
+            break;
+    }
+
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
-            <Wrapper className="flex justify-end w-full h-full pb-4 bg-neutral-100/80 dark:bg-neutral-900/80" {...(onClose && { onPress: onClose })}>
-                <View className="flex-row justify-center items-center left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+            <Wrapper className="flex justify-end w-full h-full bg-neutral-100/80 dark:bg-neutral-900/80" {...(onClose && { onPress: onClose })}>
+                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
                         <Pressable onPress={() => {}} className="relative bg-backgroundmodal dark:bg-backgroundmodal-dark border border-bordercolormodal dark:border-bordercolormodal-dark rounded-lg shadow-2xl">
                             <View className="p-2">
                                 <Row className={'items-center ' + (title ? 'justify-between' : 'justify-end') + ' ml-2'}>
                                     { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-lg font-bold'>{title}</Text></View>}
-                                    { onClose && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose}/></View>}
+                                    { (title && onClose) && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose}/></View>}
                                 </Row>
                             <View className="gap-y-0 overflow-y-auto text-neutral-700 dark:text-neutral-200">{children}</View>
                         </View>

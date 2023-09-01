@@ -3,8 +3,8 @@ import { useState, useRef, useEffect } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded } from 'app/design/controls';
+import { Pressable, View, Row } from 'app/design/view'
+import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
@@ -102,8 +102,8 @@ export default function ElementSearch(oProps) {
 
     let sResult = undefined;
     switch(sType) {
-        case 'small':
-            const handleOpenPopupSmall = (bOpen) => {
+        case 'rdx_button':
+            const handleOpenPopupRdxButton = (bOpen) => {
                 if(bOpen)
                     setTimeout(() => {inputRef.current && inputRef.current.focus()}, 100);
                 else
@@ -113,7 +113,7 @@ export default function ElementSearch(oProps) {
             }
 
             sResult = (
-                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {handleOpenPopupSmall(bOpen)}} title={sTxtTitle}>{[
+                <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => {handleOpenPopupRdxButton(bOpen)}} title={sTxtTitle}>{[
                     <Button key="ddp-trigger" variant="outline" fullWidth startDecorator="search" rounded />, 
                     <View key="ddp-content" className="px-1.5 pb-1.5">
                         <Redirect ref={redirectdRef} />
@@ -133,9 +133,8 @@ export default function ElementSearch(oProps) {
             );
             break;
 
-        case 'default':
-        default:
-            const handleOpenPopupDefault = (bOpen) => {
+        case 'rdx_input':
+            const handleOpenPopupRdxInput = (bOpen) => {
                 if(bOpen)
                     inputRef.current && inputRef.current.focus();
                 else {
@@ -148,10 +147,9 @@ export default function ElementSearch(oProps) {
                 }
             };
 
-
             sResult = (
                 <Row className=''>
-                    <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => handleOpenPopupDefault(bOpen)} title={sTxtTitle} asChildTrigger>{[
+                    <DropdownPopup open={popupOpen} onOpenChange={(bOpen) => handleOpenPopupRdxInput(bOpen)} title={sTxtTitle} asChildTrigger>{[
                         <View key="ddp-trigger" className="flex-row">
                             <InputRounded name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} value={inputValue} placeholder="Search..." role="textbox" aria-label="Search" />
                         </View>,
@@ -169,6 +167,55 @@ export default function ElementSearch(oProps) {
                     </DropdownPopup>
                 </Row>
             );
+            break;
+
+        case 'input':
+        case 'button':
+        case 'default':
+        default:
+            const handleOpenPopupDefault = () => {
+                setTimeout(() => {
+                    inputRef.current && inputRef.current.focus()
+                }, 100);
+
+                setPopupOpen(true); 
+            }
+
+            const handleClosePopupDefault = () => {
+                setPopupContent(''); 
+
+                setPopupOpen(false); 
+            }
+
+            const sTrigger = sType == 'input' ? (
+                <Pressable onPress={() => handleOpenPopupDefault()}>
+                    <InputRounded name="search" placeholder="Search..." role="textbox" aria-label="Search" />
+                </Pressable>
+            ) : (
+                <Button variant="outline" fullWidth startDecorator="search" rounded onPress={() => handleOpenPopupDefault()} />
+            );
+
+            sResult = (
+                <Row>
+                    <View key="ddp-trigger" className="flex-row">{sTrigger}</View>
+                    <Modal key="ddp-content" onVisible={popupOpen} onClose={() => handleClosePopupDefault()} position="top">
+                        <View className="px-1.5 pb-1.5">
+                            <Redirect ref={redirectdRef} />
+                            <View className="flex-row items-center mb-1">
+                                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5"></Text>
+                                <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                                </Link>
+                            </View>
+                            <View className="flex-row">
+                                <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                            </View>
+                            {!!popupContent && popupContent}
+                        </View>
+                    </Modal>
+                </Row>
+            );
+
             break;
     }
 

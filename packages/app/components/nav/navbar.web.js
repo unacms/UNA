@@ -135,7 +135,7 @@ export default function (props) {
         </Row>
 
         <View className="flex-row flex-auto justify-end lg:justify-start ml-2">
-          <View className="hidden xl:flex"><Search /></View>
+          <View className="hidden xl:flex"><Search type="input" /></View>
         </View>
 
         <Row className="flex-row  flex-none justify-end lg:justify-between ">          
@@ -175,7 +175,7 @@ export default function (props) {
                   </DropdownMenu>
                   </View>
                   <View className="xl:hidden ml-2">
-                    <Search type="small" />
+                    <Search />
                   </View>
                 
                 <View className="ml-2">
