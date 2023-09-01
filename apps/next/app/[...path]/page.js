@@ -1,7 +1,7 @@
 //import { cookies } from 'next/headers'
 import { env } from 'app/lib/env';
 import { cache } from 'react'
-import { Root } from 'app/root'
+import { Root,Root2} from 'app/root'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
@@ -33,6 +33,7 @@ const getData = cache(async (props) => {
     delete searchParams.cookieString;
     delete searchParams.path;
     
+    return {path: path, searchParams: searchParams}
     if (Object.keys(searchParams).length > 0) {
         l = l + '&params[]=&params[]=' + JSON.stringify(searchParams);
     }
@@ -43,10 +44,8 @@ const getData = cache(async (props) => {
     return await res.json()
  });
 
-export async function generateMetadata(props) {
-    const data = await getData(props)
+ export async function generateMetadata(props) {
     return {
-        title: data?.data?.title,
         description: siteTitle,
         viewport: {
             width: 'device-width',
@@ -59,7 +58,7 @@ export async function generateMetadata(props) {
         },
         other: {
             'apple-mobile-web-app-capable': 'yes',
-            'og:title': data?.data?.title
+           // 'og:title': data?.data?.title
         },
         themeColor: [
             { media: '(prefers-color-scheme: light)', color: 'rgba(255,255,255,0.8)' },
@@ -71,12 +70,12 @@ export async function generateMetadata(props) {
 export default async function Path (props) {
     const data = await getData(props);
     
-    if (data.data){
+   /* if (data.data){
         if (props?.searchParams?.empty)
             data.data.empty = true;
         return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     }
-    else
-        return <div className='bg-red-500'>cxvz</div>
+    else*/
+        return <Root2  {...data} ></Root2>
    
 }

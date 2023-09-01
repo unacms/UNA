@@ -45,7 +45,8 @@ export function Modal({
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
-            <Wrapper className="flex justify-end w-full h-full pb-4 bg-neutral-100/80 dark:bg-neutral-900/80" {...(onClose && { onPress: onClose })}>
+            <Wrapper className=" flex justify-end w-full h-full pb-4 bg-neutral-100/80 dark:bg-neutral-900/80 bg-red-500" {...(onClose && { onPress: onClose })}>
+                <Pressable onPress={() => {FeedbackHaptics('Medium');}} >
                 <View className="flex-row justify-center items-center left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
                         <View className="relative bg-backgroundmodal dark:bg-backgroundmodal-dark border border-bordercolormodal dark:border-bordercolormodal-dark rounded-lg shadow-2xl">
@@ -59,6 +60,7 @@ export function Modal({
                     </View>
                 </View>
             </View>
+            </Pressable>
             </Wrapper>
         </ModalDef>
     );

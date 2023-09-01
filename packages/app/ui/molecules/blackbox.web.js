@@ -24,7 +24,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
-    console.log('data.url', data.url)
     const [index, setIndex] = useState(routes.findIndex(function(item) {
         return item.key === data.url.replace('+', '');
     }));
@@ -123,7 +122,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const renderTabBar = (props) => {
         const currentRoute = routes.find((item) => item.index === index);
-        console.log('currentRoute', currentRoute, index, routes)
         let headerSettings = getHeaderSettings(currentRoute.key, windowWidth);
 
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;

@@ -7,8 +7,6 @@ export default function PageLayout(props) {
     console.log(b);
     console.log('props', props);*/
 
-    console.log('menu', props.data.menu)
-
     return (<BlackBox 
         minHeaderHeight={0} 
         isHideDefaultHeader={false} 

@@ -1,14 +1,8 @@
 import { View, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
-import { Dimensions, Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import Profile from 'app/ui/molecules/profile'
-import { useCurrentUser } from 'app/context/user'
-import { fetcher } from '../../lib/fetcher';
-import Redirect from 'app/ui/atoms/redirect';
-import { useRef } from 'react';
 import { Icon } from 'app/ui/atoms/icon'
 
 function getCounter(num, icon='', add='') {

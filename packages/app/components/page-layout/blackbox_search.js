@@ -31,11 +31,7 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
-
-    console.log('menu', menu)
-
-
-
+    
     return (<BlackBox 
         header={header} 
         minHeaderHeight={0} 
