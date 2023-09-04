@@ -30,7 +30,23 @@ export default function Layout({ data, uri, children }) {
         return () => {
             window.removeEventListener('beforeunload', handlePageShow);
         };
+        
     }, [handlePageShow]);
+
+    useEffect(() => {
+       
+       /* var elementsToRemove = document.querySelectorAll('.loader');
+        elementsToRemove.forEach(function(element) {
+            element.remove();
+        });
+*/
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+
+      
+        
+    }, []);
 
     const headerSettings = useMemo(() => getHeaderSettings(uri, width), [uri, width]);
 

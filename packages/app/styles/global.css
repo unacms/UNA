@@ -314,6 +314,40 @@ div::-webkit-scrollbar {
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left);
     }
 
+    .loader{
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 30px;
+        background-color: rgba(0,0,0,0.2);
+        position: absolute;
+        
+      }
+      
+      .loader::before {
+        content: "";
+        position: absolute;
+        background: #0071e2;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        border-radius: 30px;
+        animation: moving 1s ease-in-out infinite;
+        ;
+      }
+      
+      @keyframes moving {
+        50% {
+          width: 100%;
+        }
+      
+        100% {
+          width: 0;
+          right: 0;
+          left: unset;
+        }
+      }
     /*@media(hover: hover) { 
         a:hover {color: white;} 
     }*/
