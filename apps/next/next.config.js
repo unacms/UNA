@@ -1,4 +1,6 @@
 const { withExpo } = require('@expo/next-adapter')
+const merge = require('deepmerge');
+const nextConfigCustom = require('./next.config.custom.js');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -58,4 +60,4 @@ const nextConfig = {
   }  
 }
 
-module.exports = withExpo(nextConfig)
+module.exports = withExpo(merge(nextConfig, nextConfigCustom))
