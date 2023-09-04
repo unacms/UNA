@@ -80,14 +80,19 @@ export default function ElementBrowse(props) {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
+        refetch,
     } = useInfiniteQuery([data.request_url + browseParams?.type], fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
             return lastPage.params;
         },
-        enabled: cachedData.data == null ,
+        enabled: false,
     });
+
+    useEffect(() => {
+        refetch();
+    }, []);
    
     function prepareUrl () {
         return data.request_url + JSON.stringify({'params': getCurrentParams()});
