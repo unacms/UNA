@@ -21,10 +21,10 @@ export default function FormPost(props) {
     }
 
     let prevList = Object.values(imageSource).flat();
-    
-    props.data.inputs['covers'].viewClasses = 'border-dashed border-bordercolorinput dark:border-bordercolorinput-dark';
-    props.data.inputs['covers'].caption = "Add header image"
-
+    if ( props.data.inputs['covers']){
+        props.data.inputs['covers'].viewClasses = 'border-dashed border-bordercolorinput dark:border-bordercolorinput-dark';
+        props.data.inputs['covers'].caption = "Add header image"
+    }
     props.data.inputs['title'].type = 'textarea';
     props.data.inputs['title'].height = 38;
     props.data.inputs['title'].viewClasses = ' text-xl lg:text-3xl font-bold my-4 font-bold tracking-tight placeholder-neutral-600 text-neutral-900 dark:text-neutral-50  focus:outline-none'

@@ -1,4 +1,4 @@
-import { View, Row, Pressable} from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from  'next/navigation';
 import { useState, useRef} from 'react';
@@ -7,7 +7,7 @@ import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
-import { Icon } from 'app/ui/atoms/icon'; 
+import { stripTags } from '../../lib/util';
 import { useWindowDimensions } from 'react-native'
 
 export default function PageLayout(props) {
