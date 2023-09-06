@@ -1,14 +1,11 @@
-import { View, Row, ScrollView} from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
-import { Text } from 'app/design/typography'
-
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { useState, useRef } from 'react';
 import { stripTags } from '../../lib/util';
-import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform, Keyboard } from 'react-native'
-
+import Card from 'app/components/card'
 
 export default function PageLayout(props) {
 
@@ -86,7 +83,7 @@ export default function PageLayout(props) {
 
     return ( 
         <View className="lg:py-4">
-            <View className=" justify-between w-full bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
+            <Card>
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                 TODO:
                 </View>
@@ -95,7 +92,7 @@ export default function PageLayout(props) {
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                     </KeyboardAvoidingView>
                 </View>
-            </View>
+            </Card>
         </View> 
     )
 

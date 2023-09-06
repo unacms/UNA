@@ -1,6 +1,7 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
+import Card from 'app/components/card'
 
 const items = ['', '', '', '', '','']
 const maxWidth = appSetting('layout', 'max_width')
@@ -105,7 +106,9 @@ export function getBlackBox(windowWidth) {
             <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-         
+            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
+            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+            </View>
           </View>
         ))}
       </>
@@ -215,7 +218,7 @@ export function getBlackBox(windowWidth) {
     ),
     post: (
       <View className="flex w-full justify-center sm:p-4 flex-row gap-4">
-        <View className="max-w-5xl w-full bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border border-bordercolorcard dark:border-bordercolorcard-dark sm:rounded-lg p-4 flex flex-col animate-pulse sm:m-0">
+        <Card addClassName="max-w-5xl w-full p-4">
           <View className="flex-row gap-x-2 mb-2">
             <View className="relative flex-row">
               <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
@@ -237,7 +240,7 @@ export function getBlackBox(windowWidth) {
           <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
           <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
           <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
-        </View>
+        </Card>
       </View>
     ),
     blackbox: getBlackBox(),

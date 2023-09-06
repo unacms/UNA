@@ -20,7 +20,7 @@ import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Animated, { Easing, useSharedValue, useAnimatedStyle, withSpring, withTiming, interpolate } from 'react-native-reanimated';
-
+import Card from 'app/components/card'
 
 function DefaultUnit(data) {
 
@@ -180,16 +180,7 @@ function DefaultUnit(data) {
   return (
   
     <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto ">
-
-      <View
-        className="mt-2 sm:mx-4 sm:mt-4 group duration-300 overflow-hidden sm:rounded-xl    
-                    bg-backgroundcard dark:bg-backgroundcard-dark active:opacity-50 
-                    sm:hover:shadow-sm  
-                    active:translate-y-0.5 border-y sm:border
-                    border-bordercolorcard dark:border-bordercolorcard-dark 
-                    sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover 
-                    "
-      >
+      <Card margin='mt-2 sm:mx-4 sm:mt-4'>
         <View className="flex-auto flex-row items-top p-4">
           <Profile
             {...data.author_data}
@@ -456,7 +447,7 @@ function DefaultUnit(data) {
             </>
           )}
         </View>
-      </View>
+        </Card>
     </Animated.View>
     
   )
@@ -467,16 +458,7 @@ function SmallUnit(data) {
 
   return (
     <Link href={url} className="w-full" emulate={true}>
-      <View
-        className=" flex-row p-2 sm:p-3 sm:mx-4 sm:mt-2 group duration-200 overflow-hidden sm:rounded-lg     
-                bg-backgroundcard dark:bg-backgroundcard-dark 
-                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive
-                mt-[1px] 
-                active:translate-y-0.5
-                border-bordercolorcard dark:border-bordercolorcard-dark 
-                sm:hover:border-bordercolorcard-hover sm:dark:hover:border-bordercolorcard-darkhover"
-      >
+      <Card addClassName='flex-row p-2 sm:p-3' margin="sm:mx-4 sm:mt-2 mt-[1px]">
         <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
           <Profile
             {...data.author_data}
@@ -513,7 +495,7 @@ function SmallUnit(data) {
             </View>
           </View>
         </View>
-      </View>
+      </Card>
     </Link>
   )
 }

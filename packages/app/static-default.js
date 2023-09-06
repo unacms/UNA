@@ -4,6 +4,8 @@ import { Button } from 'app/design/controls'
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
+import Card from 'app/components/card'
+
 export const staticDefault = {
   logo: {
     text: (
@@ -206,7 +208,7 @@ export const staticDefault = {
     footer: (
       <>
         <View className=" w-full px-2 mt-4">
-          <View className=" justify-center w-full p-4 flex-row rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark border  border-bordercolorcard dark:border-bordercolorcard-dark ">
+          <Card addClassName="w-full p-4 flex-row justify-center ">
             <Link href="/about">
               <Button
                 variant="text"
@@ -240,7 +242,7 @@ export const staticDefault = {
                 size="sm"
               />
             </Link>
-          </View>
+          </Card>
         </View>
       </>
     ),

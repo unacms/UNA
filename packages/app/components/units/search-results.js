@@ -6,20 +6,13 @@ import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import Link from '../../ui/atoms/link';
+import Card from 'app/components/card'
 
 export default function UnitSearchResults(props) {
     let data = props.data;
     const imageSizes = getImageSizes();
     return (     
-        <View className="
-            shadow-sm hover:shadow-lg active:shadow-none 
-            mt-4 mx-2             
-            group duration-200  rounded-lg 
-            bg-backgroundcard dark:bg-backgroundcard-dark active:bg-backgroundcard-active dark:active:bg-backgroundcard-darkactive 
-            hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-               border-4 border-transparent 
-           justify-between 
-            active:translate-y-0.5 ">
+        <Card margin="mt-4 mx-2">
             <Link href={data.url}>  
                 <View className='flex-col    '>   
                     <View className="flex flex-col h-28 gap-1 p-3 ">
@@ -30,7 +23,7 @@ export default function UnitSearchResults(props) {
                     </View>          
                 </View>      
             </Link>
-        </View>  
+        </Card>  
     )
 }
 
@@ -57,14 +50,7 @@ export function UnitSearchResultsSmall({data, onPress}) {
         <View className=" ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
-                <View className=" my-[1px] p-2 flex-row  
-                 group duration-200 overflow-hidden rounded-md shadow-sm 
-                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover 
-                
-                active:translate-y-0.5 
-                border-bordercolorcard dark:border-bordercolorcard-dark
-                ">    
+                <Card addClassName="p-2 flex-row" margin="my-[1px]">    
                     <View className="w-12 h-12 mr-2 rounded-full flex-none ">
                         {data?.author_data && <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />}
                     </View>
@@ -76,7 +62,7 @@ export function UnitSearchResultsSmall({data, onPress}) {
                             <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
                         </View>         
                     </View>
-                </View>
+                </Card>
             </Pressable>
         </View>
     );

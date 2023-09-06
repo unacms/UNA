@@ -9,7 +9,7 @@ import Profile from 'app/ui/molecules/profile'
 import { BlockByName } from 'app/components/block'
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
-
+import Card from 'app/components/card'
 
 export default function PageLayout(props) {
   let { currentUser, setCurrentUser } = useCurrentUser()
@@ -32,9 +32,8 @@ export default function PageLayout(props) {
     
     <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
        <View className=" w-full xl:w-1/4 p-2">
-          <View className="w-full p-3 flex-row xl:flex-col gap-x-1 duration-300 rounded-xl  border bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark">
+          <Card addClassName="w-full p-3 flex-row xl:flex-col">
             <View className="justify-between w-full gap-x-2 flex-row my-auto">
-
               <View className="flex-row gap-x-2 my-auto  items-center">
               {profile}
               <Link href={currentUser.url}>
@@ -76,7 +75,7 @@ export default function PageLayout(props) {
                 /></Link>
               </View>
             </View>
-          </View>
+          </Card>
       </View>
       <View  className=" w-full xl:w-3/4">
       <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />

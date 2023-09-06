@@ -9,6 +9,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { stripTags } from '../../lib/util';
 import { useWindowDimensions } from 'react-native'
+import Card from 'app/components/card'
 
 export default function PageLayout(props) {
 
@@ -102,7 +103,7 @@ export default function PageLayout(props) {
         <>{header}
  
         <View className="lg:py-4">
-            <View className=" justify-between w-full  bg-backgroundcard dark:bg-backgroundcard-dark max-w-5xl mx-auto w-full sm:rounded-lg overflow-hidden sm:border border-t border-bordercolorcard dark:border-bordercolorcard-dark ">
+            <Card addClassName="max-w-5xl mx-auto w-full" margin="none">
                 <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
@@ -112,7 +113,7 @@ export default function PageLayout(props) {
                         <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
                     </KeyboardAvoidingView>
                 </View>
-            </View>
+            </Card>
         </View> </>
     )
 

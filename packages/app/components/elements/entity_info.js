@@ -30,16 +30,10 @@ export default function ElementEntityInfo({ data }) {
   })
 
   return (
-    <View
-      className="  text-neutral-800 dark:text-neutral-200 duration-200 overflow-hidden sm:rounded-lg    
-                    bg-backgroundcard dark:bg-backgroundcard-dark a border-y sm:border
-                    border-bordercolorcard dark:border-bordercolorcard-dark
-                    px-4 py-3
-            "
-    >
+    <Card addClassName="px-4 py-3" margn="none">
       <H2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">Info</H2>
       <View className='flex-col gap-y-4 '>{inputs}</View>
-    </View>
+    </Card>
   )
 
   function getValue(a) {

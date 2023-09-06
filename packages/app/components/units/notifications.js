@@ -6,6 +6,7 @@ import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
+import Card from 'app/components/card'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
@@ -31,15 +32,8 @@ export default function UnitFeed({data}) {
         <View className=" ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
-                <View className=" p-2 flex-row  
-                 group duration-200 overflow-hidden rounded-md  
-                bg-backgroundcard dark:bg-backgroundcard-dark active:bg-neocard-active dark:active:bg-neocard-darkactive 
-                hover:bg-backgroundcard-hover dark:hover:bg-backgroundcard-darkhover
-                  mt-[1px] max-w-5xl self-center w-full sm:border
-                active:translate-y-0.5 
-                border-bordercolorcard dark:border-bordercolorcard-dark
-                ">    
-                    <View className="w-12 h-12 mr-2 rounded-full flex-none ">
+                <Card addClassName=" p-2 flex-row max-w-5xl self-center w-full" margin="mt-[1px]"> 
+                    <View className="w-12 h-12 mr-2 rounded-full flex-none " >
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>
                     <View className="flex-auto my-auto ">
@@ -51,7 +45,7 @@ export default function UnitFeed({data}) {
                             <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(data.content_parsed)}</Text>    
                         </View>         
                     </View>
-                </View>
+                </Card>
             </Pressable>
         </View>
     );

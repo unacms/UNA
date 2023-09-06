@@ -8,7 +8,7 @@ import { KeyboardAvoidingView } from 'react-native'
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-
+import Card from 'app/components/card'
 
 export default function FormFeed(props) {
   const [showImage, setShowImage] = useState(false)
@@ -123,12 +123,7 @@ export default function FormFeed(props) {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-      <View
-        className="max-w-5xl sm:mx-4 px-4 py-3
-           sm:rounded-xl border-y sm:border
-           bg-backgroundcard dark:bg-backgroundcard-dark  border-bordercolorcard dark:border-bordercolorcard-dark 
-        "
-      >
+      <Card margin="sm:mx-4" addClassName="px-4 py-3">
         <View className=" flex-row ">
           <View className='mr-2'>{profile}</View>
           <Button
@@ -145,7 +140,7 @@ export default function FormFeed(props) {
             }}
           />
         </View>
-      </View>
+      </Card>
     </View>
   )
 }

@@ -3,7 +3,7 @@ import { Modal } from 'app/design/controls'
 import { useState, useEffect } from 'react';
 import Image from '../../ui/atoms/image';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-
+import Card from 'app/components/card'
 
 export function Story(props) {
     const [showImage, setShowImage] = useState(false);
@@ -58,11 +58,7 @@ export function Story(props) {
     });
 
     return (
-        <View className=" hidden
-            overflow-hidden sm:rounded-lg  
-            bg-backgroundcard dark:bg-backgroundcard-dark border-y sm:border 
-            border-bordercolorcard dark:border-bordercolorcard-dark 
-            sm:mx-4 mt-2 sm:mt-4">
+        <Card addClassName="hidden">
             <Modal onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                 <View className='h-4 w-full  flex-row gap-x-2'>
                     {images.map((image, index) => (
@@ -103,5 +99,5 @@ export function Story(props) {
             ))}
             </Row>
         </ScrollView>
-    </View>);
+    </Card>);
 }

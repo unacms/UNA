@@ -4,6 +4,7 @@ import { Button } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
+import Card from 'app/components/card'
 
 function getCounter(num, icon='', add='') {
     if (!num) num = 0;
@@ -38,9 +39,7 @@ export default function ElementDashboardStat(props) {
             if (item.type != 'growth') {
                 return <View className=" w-1/2 lg:w-1/3 p-2">
                 <Link href={item2.link}>
-                  <View
-                    className="w-full p-4 flex-col gap-y-3 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
-                  >
+                  <Card addClassName="w-full p-4 gap-y-3" margin="a">
                     <Row className='space-x-1 w-full justify-between'>
                       {
                         item.count > 0 ? <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
@@ -57,16 +56,14 @@ export default function ElementDashboardStat(props) {
                       {item2.title}
                       </Text>
                     </Row>
-                  </View>
+                  </Card>
                 </Link>
               </View>;
             }
             return <View className=" w-1/2 lg:w-1/3 p-2">
           
             <Link href={item2.link} key={index}>
-              <View
-                className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
-              >
+              <Card addClassName="w-full p-4 gap-y-3" margin="a">
                 <Row className=''>
                 <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                 {item.current} 
@@ -82,7 +79,7 @@ export default function ElementDashboardStat(props) {
                    {item2.title}
                   </Text>
                 </Row>
-              </View>
+              </Card>
             </Link>
           </View>;
         })}
@@ -90,44 +87,4 @@ export default function ElementDashboardStat(props) {
             
         </Row>   
     ) 
-    /*
-    <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
-          <Link href="/account-settings-email">
-            <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-            >
-              <Row className=" my-auto w-auto">
-                <Button variant="outline" startDecorator="Gear" rounded />
-              </Row>
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto  text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
-                  Settings
-                </Text>
-              </View>
-            </View>
-          </Link>
-        </View>
-
-        <View className=" w-1/2 lg:w-1/3 px-2 py-1.5 ">
-          <Link href="/logout">
-            <View
-              className="w-full sm:hover:scale-105  p-3 flex-col sm:flex-row gap-x-1 duration-300 rounded-xl group bg-white active:opacity-50
-                        sm:hover:-translate-y-0.5 active:translate-y-1 border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-            >
-              <Row className=" my-auto">
-                <Button variant="outline" startDecorator="SignOut" rounded />
-              </Row>
-
-              <View className="flex-col my-auto flex-auto">
-                <Text className="pt-2 sm:py-2 sm:pl-2 my-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white text-lg font-semibold ">
-                  Sign out
-                </Text>
-              </View>
-            </View>
-          </Link>
-        </View>
-        */
 }
