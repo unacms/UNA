@@ -32,7 +32,7 @@ export default function Form(props) {
     const defaultValues = {}
 
     Object.keys(data.inputs).forEach(function (key) {  
-        if (data.inputs[key].type == "switcher" && data.inputs[key].checked == false)
+        if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
             data.inputs[key].value = 0;
 
         if (data.inputs[key].value || data.inputs[key].value == 0)      
