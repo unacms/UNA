@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Field from './_field';
-import { useController, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'
-import { useEffect } from 'react';
 
 export default function FormFieldSelect(props) {
 

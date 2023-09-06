@@ -67,8 +67,6 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
     const setTime1 = (v) => setdValue(prev => ({ ...prev, h: v }));
     const setTime2 = (v) => setdValue(prev => ({ ...prev, m: v }));
 
-    console.log(colors.text_disabled);
-
     return (
         <Field {...props}>
             <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={false}>

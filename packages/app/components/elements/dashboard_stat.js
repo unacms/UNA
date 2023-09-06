@@ -35,7 +35,6 @@ export default function ElementDashboardStat(props) {
 
         {menu.map((item2, index) => {
             let item = props.data[item2.key];
-            console.log(item, item2.action, item[item2.action]);
             if (item.type != 'growth') {
                 return <View className=" w-1/2 lg:w-1/3 p-2">
                 <Link href={item2.link}>

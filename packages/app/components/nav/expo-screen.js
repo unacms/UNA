@@ -15,7 +15,6 @@ import { Text } from 'app/design/typography';
 import { Redirect } from "expo-router";
 
 export function Screen(params) {
-    console.log(params);
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
