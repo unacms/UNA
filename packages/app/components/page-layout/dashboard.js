@@ -32,27 +32,24 @@ export default function PageLayout(props) {
     
     <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
        <View className=" w-full xl:w-1/4 p-2">
-          <View
-            className="w-full p-3 flex-col xl:flex-col gap-x-1 duration-300 rounded-xl group
-            border 
-                        bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark"
-          >
-            <View className="flex-auto flex-row my-auto items-center">
-              <View className=" my-auto p-1.5 mr-3 border border-neutral-200 dark:border-neutral-800 rounded-full">
-                {profile}
-              </View>
+          <View className="w-full p-3 flex-row xl:flex-col gap-x-1 duration-300 rounded-xl  border bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark">
+            <View className="justify-between w-full gap-x-2 flex-row my-auto">
+
+              <View className="flex-row gap-x-2 my-auto  items-center">
+              {profile}
               <Link href={currentUser.url}>
-              <Text className="my-auto flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-neutral-50 text-lg font-semibold ">
+              <Text className="my-auto text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
                 {currentUser.display_name}
               </Text>
               </Link>
-              <View className="flex-row gap-x-2 my-auto xl:hidden">
+              </View>
+              <View className="flex-row gap-x-2 my-auto  xl:hidden">
                 <Button variant="outline" startDecorator="UserSwitch" rounded onClick = {() => setShowImage(true)} />
                 <Link href="/account-settings-password"><Button variant="outline" startDecorator="Gear" rounded /></Link>
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
             </View>
-            <View className="flex-auto mt-4  flex-col my-auto hidden xl:flex ">
+            <View className="mt-4  flex-col my-auto hidden xl:flex ">
               <View className="flex-col gap-y-0.5">
                 <Button
                   variant="text"
