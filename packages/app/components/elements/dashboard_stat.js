@@ -40,13 +40,13 @@ export default function ElementDashboardStat(props) {
                 return <View className=" w-1/2 lg:w-1/3 p-2">
                 <Link href={item2.link}>
                   <View
-                    className="w-full p-4 flex-col gap-y-2 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
+                    className="w-full p-4 flex-col gap-y-3 active:opacity-50 sm:hover:-translate-y-0.5 hover:shadow-xl  hover:border-transparent sm:hover:scale-105 duration-200  bg-backgroundcard dark:bg-backgroundcard-dark rounded-xl group border border-bordercolorcard dark:border-bordercolorcard-dark"
                   >
                     <Row className='space-x-1 w-full justify-between'>
                       {
                         item.count > 0 ? <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                         {item.count}
-                        </Text> : <View><Link href={item2.link2} emulate={true}><Button title="Add new" size="sm" rounded/></Link></View>
+                        </Text> : <View><Link href={item2.link2} emulate={true}><Button startDecorator="plus" size="sm" rounded/></Link></View>
                       }
                       {getCounter(item[item2.action], item2.action_icon)}
                     </Row>

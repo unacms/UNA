@@ -81,8 +81,10 @@ export default function PageLayout(props) {
             </View>
           </View>
       </View>
-      
+      <View  className=" w-full xl:w-3/4">
       <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
+      </View>
+      
       
     </View>
     </>
