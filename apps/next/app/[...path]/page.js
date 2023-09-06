@@ -37,9 +37,9 @@ const getData = cache(async (props) => {
         l = l + '&params[]=&params[]=' + JSON.stringify(searchParams);
     }
 
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', l);
+    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', l);
     const res = await fetch(l, opts)
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
+    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()
  });
 
