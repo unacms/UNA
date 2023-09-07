@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { getFormFieldByData } from 'app/lib/form-helpers'
-
+import { View } from 'app/design/view'
 import { componentsMap } from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import {  Platform  } from 'react-native';
@@ -87,16 +87,21 @@ export default function Form(props) {
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
     let name = props.data.params.display.includes('_delete') ? '' : props.name
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true) 
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true).filter(item => item.key !== null && item.key.toString() !== '');
 
     
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm)
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>
+
+    console.log(inputs);
+
     return (
-        <FormProvider {...methods}> 
-            {inputs}
-        </FormProvider>
+        <View className='p-4 w-full'>
+            <FormProvider {...methods}> 
+                {inputs}
+            </FormProvider>
+        </View>
         
     );
 }
