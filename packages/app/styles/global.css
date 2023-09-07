@@ -359,9 +359,11 @@ div::-webkit-scrollbar {
     @keyframes fadeOut {
         from {
             opacity: 1;
+            transform: translateY(0);
         }
         to {
             opacity: 0;
+            transform: translateY(-50px);
         }
     }
 
@@ -372,8 +374,10 @@ div::-webkit-scrollbar {
     @keyframes fadeIn {
         from {
             opacity: 0;
+            transform: translateY(-50px);
         }
         to {
             opacity: 1;
+            transform: translateY(0);
         }
     }

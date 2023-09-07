@@ -87,12 +87,19 @@ export default function Form(props) {
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
     let name = props.data.params.display.includes('_delete') ? '' : props.name
-    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true).filter(item => item.key !== null && item.key.toString() !== '');
-
+    let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true);
+    if (inputs?.length > 0)
+        inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
     
     const ElementForm = getFormType(name)
-    if ('undefined' !== typeof ElementForm)
+    if ('undefined' !== typeof ElementForm){
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>
+        return (
+            <FormProvider {...methods}> 
+                {inputs}
+            </FormProvider>
+        )
+    }
 
     return (
         <View className='p-4 w-full'>

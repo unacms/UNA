@@ -48,5 +48,5 @@ function Wrapper(p){
 
     const isWeb = Platform.OS == 'web'
 
-    return <View className='flex-1 mx-auto w-full h-full '>{p}</View>
+    return <View className='flex-1 mx-auto w-full h-full animated'>{p}</View>
 }

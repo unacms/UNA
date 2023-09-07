@@ -23,12 +23,14 @@ export default function ElementLink(props) {
           //  var tag = document.createElement("div");
             //tag.className = 'loader';
             //document.body.appendChild(tag);
-            document.body.classList.remove('fade-in');
-            document.body.classList.add('fade-out');
+            let element = document.querySelector('.animated');
+
+            element.classList.remove('fade-in');
+            element.classList.add('fade-out');
             
             setTimeout(() => {
-                document.body.classList.remove('fade-out');
-                document.body.classList.add('fade-in');
+                element.classList.remove('fade-out');
+                element.classList.add('fade-in');
             }, 200);
         }
     }, []);
