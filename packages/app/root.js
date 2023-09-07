@@ -7,7 +7,8 @@ import { useCurrentUser } from 'app/context/user';
 import PageLayout from 'app/components/page-layout';
 import { appSetting, getURI } from 'app/lib/util';
 import { connect } from 'app/ui/atoms/socket'; 
-
+import { Platform } from 'react-native'
+import { storageClear } from 'app/lib/util';
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -24,9 +25,13 @@ export function Root (props) {
 
     let data = props?.data;
 
+    const isWeb = Platform.OS == 'web'
+
     useEffect(() => {
-        document.title = data?.title;  
-        metaAdder('property="og:title"', data?.title)
+        if (isWeb){
+            document.title = data?.title;  
+            metaAdder('property="og:title"', data?.title)
+        }
       }, []);
 
     useEffect(() => {
@@ -35,11 +40,13 @@ export function Root (props) {
                 let b = Object.assign({}, data.user)
                 b.pusher = connect();
                 setCurrentUser(b);
+                storageClear();
             }
         }
         else{
             if (currentUser != null){
                 setCurrentUser(null);
+                storageClear();
             }
         }
 

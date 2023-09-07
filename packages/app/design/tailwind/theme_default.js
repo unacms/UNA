@@ -30,14 +30,10 @@ export const colors = {
     950: 'rgba(65,16,14,1)',
   },
 
-
-
   accent: {
     DEFAULT: 'rgba(246 208 25,1)',
     dark: 'rgba(249,115,22,1)',
   },
-
-
 
   backgroundbody: {
     DEFAULT: 'rgba(243,244,246,1)',

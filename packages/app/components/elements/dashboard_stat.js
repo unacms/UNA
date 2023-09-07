@@ -37,7 +37,7 @@ export default function ElementDashboardStat(props) {
         {menu.map((item2, index) => {
             let item = props.data[item2.key];
             if (item.type != 'growth') {
-                return <View className=" w-1/2 lg:w-1/3 p-2">
+                return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
                 <Link href={item2.link}>
                   <Card addClassName="w-full p-4 gap-y-3" margin="a">
                     <Row className='space-x-1 w-full justify-between'>
@@ -60,7 +60,7 @@ export default function ElementDashboardStat(props) {
                 </Link>
               </View>;
             }
-            return <View className=" w-1/2 lg:w-1/3 p-2">
+            return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
           
             <Link href={item2.link} key={index}>
               <Card addClassName="w-full p-4 gap-y-3" margin="a">

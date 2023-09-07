@@ -29,7 +29,7 @@ export default function ElementLink(props) {
             setTimeout(() => {
                 document.body.classList.remove('fade-out');
                 document.body.classList.add('fade-in');
-            }, 300);
+            }, 200);
         }
     }, []);
 

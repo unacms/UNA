@@ -353,7 +353,7 @@ div::-webkit-scrollbar {
     }*/
 
     .fade-out {
-        animation: fadeOut 0.3s forwards;
+        animation: fadeOut 0.2s forwards;
     }
     
     @keyframes fadeOut {
@@ -361,17 +361,17 @@ div::-webkit-scrollbar {
             opacity: 1;
         }
         to {
-            opacity: 0.2;
+            opacity: 0;
         }
     }
 
     .fade-in {
-        animation: fadeIn 0.3s forwards;
+        animation: fadeIn 0.2s forwards;
     }
     
     @keyframes fadeIn {
         from {
-            opacity: 0.2;
+            opacity: 0;
         }
         to {
             opacity: 1;
