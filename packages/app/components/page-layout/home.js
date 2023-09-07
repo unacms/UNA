@@ -167,6 +167,13 @@ export default function PageLayout(props) {
     let dataHome = filterContent(props.data, ['bx_timeline:get_block_post_home', 'bx_timeline:get_block_view_home'])
     let dataAccount = filterContent(props.data, ['bx_timeline:get_block_post_account', 'bx_timeline:get_block_view_account'])
     let dataHot = filterContent(props.data, ['bx_timeline:get_block_view_hot'])
+    let dataSingle = dataHome;
+    if (appSetting('feed', 'default_feed') == 'account'){
+      dataSingle = dataAccount;
+    }
+    if (appSetting('feed', 'default_feed') == 'hot'){
+      dataSingle = dataHot;
+    }
 
   let menu = {
     object: 'search',
@@ -242,7 +249,7 @@ export default function PageLayout(props) {
                 isHideDefaultHeader={false} 
                 menu={menu}
                 unitMode={unitMode} 
-                data={data} 
+                data={dataSingle} 
                 blocks={props.blocks}
             /></LayoutDataContext>
                 }

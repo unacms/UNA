@@ -109,6 +109,9 @@ export function storageKey(url, useUrl = true) {
 } 
 
 export function storageClear(pref, key) {
+    if ( Platform.OS !== 'web')
+        return ;
+    
     sessionStorage.clear();
 } 
 
