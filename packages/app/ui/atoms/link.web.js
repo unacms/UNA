@@ -20,9 +20,16 @@ export default function ElementLink(props) {
 
     const handleLinkClick = useCallback((event, href) => {
         if (href != window.location.pathname + window.location.search){
-            var tag = document.createElement("div");
-            tag.className = 'loader';
-            document.body.appendChild(tag);
+          //  var tag = document.createElement("div");
+            //tag.className = 'loader';
+            //document.body.appendChild(tag);
+            document.body.classList.remove('fade-in');
+            document.body.classList.add('fade-out');
+            
+            setTimeout(() => {
+                document.body.classList.remove('fade-out');
+                document.body.classList.add('fade-in');
+            }, 300);
         }
     }, []);
 

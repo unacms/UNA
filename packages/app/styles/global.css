@@ -351,3 +351,29 @@ div::-webkit-scrollbar {
     /*@media(hover: hover) { 
         a:hover {color: white;} 
     }*/
+
+    .fade-out {
+        animation: fadeOut 0.3s forwards;
+    }
+    
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0.2;
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s forwards;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0.2;
+        }
+        to {
+            opacity: 1;
+        }
+    }
