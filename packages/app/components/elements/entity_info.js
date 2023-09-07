@@ -3,6 +3,7 @@ import { Text, H2 } from 'app/design/typography'
 import Time from '../../ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
+import Card from 'app/components/card'
 
 export default function ElementEntityInfo({ data }) {
   const inputs = Object.keys(data.inputs).map(function (key) {
