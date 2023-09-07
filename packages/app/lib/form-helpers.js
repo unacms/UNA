@@ -1,4 +1,5 @@
 import { componentsMap } from 'app/components/form-fields/_map';
+import { Text } from 'app/design/typography'
 
 export function getFormFieldByData(inputData, handleSubmit, format, externalProps){
    

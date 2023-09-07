@@ -94,8 +94,6 @@ export default function Form(props) {
     if ('undefined' !== typeof ElementForm)
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>
 
-    console.log(inputs);
-
     return (
         <View className='p-4 w-full'>
             <FormProvider {...methods}> 
