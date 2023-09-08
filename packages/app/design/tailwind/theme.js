@@ -40,10 +40,7 @@
     dark: 'rgba(3,7,18,1)',
   },
 
-  backgroundbackdrop: {
-    DEFAULT: 'rgba(255 255 255 / 0.5)',
-    dark: 'rgba(55 55 55 / 0.5)',
-  },
+
 
   backgroundcard: {
     DEFAULT: 'rgba(255,255,255,1)',
@@ -54,12 +51,11 @@
     darkactive: 'rgba(17,24,39,0.5)',
   },
   bordercolorcard: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    hover: 'rgba(209,213,219,0.8)',
-    active: 'rgba(229,231,235,0.8)',
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    hover: 'rgba(209,213,219,1)',
     dark: 'rgba(31,41,55,0.6)',
     darkhover: 'rgba(55,65,81,0.6)',
-    darkactive: 'rgba(31,41,55,0.6)',
+
   },
 
   backgroundinput: {

@@ -55,6 +55,7 @@ export default function Unit(props) {
                         
                     </Link>
                     
+                    
                         {data?.meta &&
                             <View className="px-4 mt-auto ">
                                 <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
