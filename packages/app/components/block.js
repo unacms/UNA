@@ -126,9 +126,9 @@ export function BlockWrapper(props) {
     }
 
     return (
-        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth ? " max-w-screen-2xl " : "" )}>
+        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth ? " pb-4 max-w-screen-2xl " : "" )}>
             <View key={block.id} className={bIsShowBg ? '    ' : ''}>
-                {bIsShowTitle && <View className="px-1.5 pb-2 ">
+                {bIsShowTitle && <View className="px-1.5 py-2 ">
               <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(block.title)}</Text></View>}
                 <View>{props.children}</View>
             </View>
