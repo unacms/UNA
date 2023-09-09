@@ -42,18 +42,18 @@ export const colors = {
 
 
   backgroundcard: {
-    DEFAULT: 'rgba(255,255,255,1)',
-    hover: 'rgba(255,255,255,0.8)',
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    hover: 'rgba(255,255,255,1)',
     active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,1)',
-    darkhover: 'rgba(17,24,39,0.8)',
+    dark: 'rgba(17,24,39,0.8)',
+    darkhover: 'rgba(17,24,39,1)',
     darkactive: 'rgba(17,24,39,0.5)',
   },
   bordercolorcard: {
-    DEFAULT: 'rgba(rgba(209,213,219,0.8)',
-    hover: 'rgba(209,213,219,1)',
-    dark: 'rgba(31,41,55,0.6)',
-    darkhover: 'rgba(55,65,81,0.6)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    hover: 'rgba(229,231,235,1)',
+    dark: 'rgba(31,41,55,0.8)',
+    darkhover: 'rgba(31,41,55,1)',
   },
 
   backgroundinput: {

@@ -348,12 +348,10 @@ div::-webkit-scrollbar {
           left: unset;
         }
       }
-    /*@media(hover: hover) { 
-        a:hover {color: white;} 
-    }*/
+  
 
     .fade-out {
-        animation: fadeOut 0.2s forwards;
+        animation: fadeOut 0.3s forwards;
     }
     
     @keyframes fadeOut {
@@ -368,7 +366,7 @@ div::-webkit-scrollbar {
     }
 
     .fade-in {
-        animation: fadeIn 0.2s forwards;
+        animation: fadeIn 0.3s forwards;
     }
     
     @keyframes fadeIn {

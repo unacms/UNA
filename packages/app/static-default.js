@@ -185,24 +185,43 @@ export const staticDefault = {
     ),
     dummy: (
       <>
-              <Row className='my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 '>
-  <Icon className="text-green-600 dark:text-green-400" icon='ArrowFatUp' width={16} height={16} />
-  <Text className="flex-none text-green-800 dark:text-green-200 text-xs">123
-  </Text>
-  </Row>
+        <Row className="my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
+          <Icon
+            className="text-green-600 dark:text-green-400"
+            icon="ArrowFatUp"
+            width={16}
+            height={16}
+          />
+          <Text className="flex-none text-green-800 dark:text-green-200 text-xs">
+            123
+          </Text>
+        </Row>
 
+        <Row className="my-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
+          <Icon
+            className="text-red-600 dark:text-red-400"
+            icon="ArrowFatUp"
+            width={16}
+            height={16}
+          />
+          <Text className={'flex-none text-red-800 dark:text-red-200 text-xs'}>
+            456
+          </Text>
+        </Row>
 
-  <Row className='my-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 '>
-  <Icon className="text-red-600 dark:text-red-400" icon='ArrowFatUp' width={16} height={16} />
-  <Text className={"flex-none text-red-800 dark:text-red-200 text-xs"}>456
-  </Text>
-  </Row>
-
-  <Row className='w-1/5 my-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 '>
-  <Icon className="text-gray-600 dark:text-gray-400" icon='ArrowFatUp' width={16} height={16} />
-  <Text className={"flex-none text-gray-800 dark:text-gray-200 text-xs"}>123
-  </Text>
-  </Row>
+        <Row className="w-1/5 my-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+          <Icon
+            className="text-gray-600 dark:text-gray-400"
+            icon="ArrowFatUp"
+            width={16}
+            height={16}
+          />
+          <Text
+            className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
+          >
+            123
+          </Text>
+        </Row>
       </>
     ),
     footer: (
@@ -247,21 +266,20 @@ export const staticDefault = {
       </>
     ),
     home: (
-      <View className="flex-col  ">
-        <View className=" w-full max-w-screen-xl mx-auto">
-          <View className=" flex-col p-8  w-full md:flex-row gap-y-8  duration-500   mx-auto">
-            <View className="flex-col items-center md:items-start md:text-start gap-y-8 my-auto  lg:flex-auto">
+      
+        <View className="flex-col  w-full max-w-screen-2xl mx-auto">
+          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 m-6 p-4 duration-300 border border-dashed rounded-3xl border-bordercolor dark:border-bordercolor-dark">
+            <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
               <View>
-                <Text className="text-4xl sm:text-5xl  xl:text-6xl  font-bold text-primary dark:text-primary-dark text-center md:text-start">
+                <Text className="text-5xl font-extrabold text-primary dark:text-primary-dark text-center lg:text-start">
                   Welcome
                 </Text>
-                <Text className="text-4xl sm:text-5xl   xl:text-6xl  font-bold text-neutral-800 dark:text-neutral-200 text-center md:text-start">
+                <Text className="text-5xl font-extrabold text-neutral-800 dark:text-neutral-200 text-center lg:text-start">
                   to your network!
                 </Text>
               </View>
-              <Text className="text-xl  text-neutral-700 dark:text-neutral-300 text-center md:text-start">
-                Connect, create, discover, learn, share and grow together with
-                your community. Powered by UNA platform.
+              <Text className="text-lg xl:text-xl font-medium max-w-2xl text-neutral-700 dark:text-neutral-300 text-center lg:text-start">
+              Connect and create with like-minded individuals. Discover new perspectives, share knowledge, and grow together, all within your community. 
               </Text>
               <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
                 <Link href="/create-account">
@@ -280,141 +298,165 @@ export const staticDefault = {
                 </Link>
               </View>
             </View>
-            <View className=" w-full p-8 md:w-[40%]  hover:scale-110 hover:rotate-[360deg] duration-500 w-full  p-4  ">
-              <Svg
-                aria-label="Logo Mark"
-                className=" w-full  "
-                viewBox="0 0 2400 2400"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-                  className="  text-accent-400 dark:text-accent-600 opacity-80"
-                  fill="#E2554F"
-                />
-                <Path
-                  d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-                  className="text-accent-400 dark:text-accent-600 opacity-80"
-                  fill="#E2554F"
-                />
-                <Path
-                  d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-                  className="text-accent dark:text-accent-dark"
-                  fill="#E2554F"
-                />
-                <Path
-                  d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-                  className="text-neutral-400 dark:text-neutral-600 "
-                  fill="#9ca3af"
-                />
-                <Path
-                  d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-                  className="text-neutral-400 dark:text-neutral-600 "
-                  fill="#9ca3af"
-                />
-              </Svg>
+            <View className="mx-auto w-full lg:w-1/2 p-2    ">
+              <Card addClassName="w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
+              </Card>
             </View>
           </View>
 
-          <Row className="flex-wrap p-4  flex-auto  ">
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark shadow-sm">
-                <View className=" gap-y-3 ">
-                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="Graph" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Connect
+          <View className="flex-col sm:flex-row flex-wrap p-4 w-full duration-300">
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button variant="outline" startDecorator="Users" rounded />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Meet People
                   </Text>
                 </View>
-
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                  Make friends and create lasting connections.
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Make new friends and create lasting connections.
                 </Text>
-              </View>
+              </Card>
             </View>
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-                <View className=" gap-y-3 ">
-                  <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="ChatsTeardrop" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Discuss
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button
+                    variant="outline"
+                    startDecorator="UsersThree"
+                    rounded
+                  />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Join Groups
                   </Text>
                 </View>
-
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                  Ask questions and talk about your interests.{' '}
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Find your tribe in groups that match your interests.
                 </Text>
-              </View>
+              </Card>
             </View>
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-                <View className=" gap-y-3 ">
-                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="ShareFat" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Share
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button
+                    variant="outline"
+                    startDecorator="ChatCenteredText"
+                    rounded
+                  />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Share Ideas
                   </Text>
                 </View>
-
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                  Share your thoughts, ideas and experiences.
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Spitball ideas and get feedback from folks who get it.
                 </Text>
-              </View>
+              </Card>
             </View>
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-                <View className=" gap-y-3 ">
-                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="MagicWand" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Create
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button
+                    variant="outline"
+                    startDecorator="CalendarCheck"
+                    rounded
+                  />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Discover Events
                   </Text>
                 </View>
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                  Publish your own content and grow your audience.
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Find out what's happening and catch events you care about.
                 </Text>
-              </View>
+              </Card>
             </View>
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-                <View className=" gap-y-3 ">
-                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="Student" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Learn
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button
+                    variant="outline"
+                    startDecorator="ChatTeardropDots"
+                    rounded
+                  />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Message Friends
                   </Text>
                 </View>
-
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400  text-base ">
-                  Explore new ideas and learn from experts and peers.
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Chat on the go with your friends, wherever, whenever.
                 </Text>
-              </View>
+              </Card>
             </View>
-            <View className="w-full sm:w-1/2 lg:w-1/3  p-3 ">
-              <View className="p-4 gap-y-2 rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark  shadow-sm">
-                <View className=" gap-y-3 ">
-                <View className="p-2 rounded-full mr-auto bg-backgrounditem dark:bg-backgrounditem-dark text-neutral-800  dark:text-neutral-200">
-                    <Icon icon="Handshake" width={32} height={32} />
-                  </View>
-                  <Text className="flex-auto my-auto text-neutral-950  dark:text-neutral-50  text-2xl font-semibold ">
-                    Collaborate
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button variant="outline" startDecorator="Chats" rounded />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Discuss Topics
                   </Text>
                 </View>
-                <Text className=" my-auto text-neutral-600 whitespace-normal dark:text-neutral-400 text-base ">
-                  Work together to achieve common goals as a team.
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Ask questions, jump into debates or chat casually, your call.
                 </Text>
-              </View>
+              </Card>
             </View>
-          </Row>
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button
+                    variant="outline"
+                    startDecorator="Storefront"
+                    rounded
+                  />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Buy & Sell
+                  </Text>
+                </View>
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Grab deals or sell your own stuff on a marketplace you can
+                  trust.
+                </Text>
+              </Card>
+            </View>
+            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
+                <View className="flex-row gap-x-2 ">
+                  <Button variant="outline" startDecorator="Video" rounded />
+                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+                    Watch Videos
+                  </Text>
+                </View>
+                <Text
+                  numberOfLines={2}
+                  className="text-base text-neutral-600 dark:text-neutral-400"
+                >
+                  Explore, learn, and get entertained with the latest videos.
+                </Text>
+              </Card>
+            </View>
+          </View>
         </View>
-      </View>
+      
     ),
   },
 }

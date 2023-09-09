@@ -2,8 +2,7 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
-import { Row } from 'app/design/view'
-import { Icon } from 'app/ui/atoms/icon'
+
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { BlockByName } from 'app/components/block'
@@ -30,10 +29,10 @@ export default function PageLayout(props) {
       <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
     </Modal>
     
-    <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col xl:flex-row ">
-       <View className=" w-full xl:w-1/4 p-2">
-          <Card addClassName="w-full p-3 flex-row xl:flex-col">
-            <View className="justify-between w-full gap-x-2 flex-row my-auto">
+    <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col  ">
+       <View className=" w-full p-2">
+          <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
+            <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
               <View className="flex-row gap-x-2 my-auto  items-center">
               {profile}
               <Link href={currentUser.url}>
@@ -42,14 +41,12 @@ export default function PageLayout(props) {
               </Text>
               </Link>
               </View>
-              <View className="flex-row gap-x-2 my-auto  xl:hidden">
+              <View className="flex-row gap-x-2 my-auto  lg:hidden">
                 <Button variant="outline" startDecorator="UserSwitch" rounded onClick = {() => setShowImage(true)} />
                 <Link href="/account-settings-password"><Button variant="outline" startDecorator="Gear" rounded /></Link>
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
-            </View>
-            <View className="mt-4  flex-col my-auto hidden xl:flex ">
-              <View className="flex-col gap-y-0.5">
+              <View className="flex-row gap-x-2 hidden lg:flex">
                 <Button
                   variant="text"
                   title="Switch Profile"
@@ -75,9 +72,10 @@ export default function PageLayout(props) {
                 /></Link>
               </View>
             </View>
+            
           </Card>
       </View>
-      <View  className=" w-full xl:w-3/4">
+      <View  className=" w-full ">
       <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
       </View>
       

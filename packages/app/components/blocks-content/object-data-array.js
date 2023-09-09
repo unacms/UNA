@@ -45,7 +45,7 @@ export default function BlockContentObjectDataArray(props) {
 
     // display each block element from static data or from dynamic data
     return (
-        <View className="grid relative">
+        <View className=" relative">
             {realData?.map(a => <Element key={a.id} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );

@@ -43,13 +43,13 @@ export default function Unit(props) {
             );
 
         return (
-                <Card>
+            <Card margin=' mb-2  sm:mx-2 mx-4 ' rounded=" rounded-2xl ">
                 <View className='flex-col pb-4 h-full '>
                     <Link href={data.url} >
                         <View className="w-full  aspect-video bg-primary/50" >
                         {data.cover && ( <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   /></>)}  
                         </View>
-                        <View className=" pt-3 px-4 ">
+                        <View className=" sm:h-20 pt-3 px-4 ">
                                 <Text numberOfLines={2} className="text-center text-base font-bold text-neutral-800 dark:text-neutral-200 ">{data.title}</Text>
                         </View>
                         
@@ -71,7 +71,7 @@ export default function Unit(props) {
         let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
         return (
-            <Card>
+            <Card margin=' mb-2  sm:mx-2 mx-4 ' rounded=" rounded-2xl ">
                 <View className='flex-col'> 
                     <Link href={data.url} >  
                     {data.image && (
@@ -111,7 +111,7 @@ export function UnitPerson(props) {
 
     const imageSizes = getImageSizes();
     return (
-            <Card>
+        <Card margin=' mb-2  sm:mx-2 mx-4 ' rounded=" rounded-2xl ">
                 <View className='flex-col pb-4  '>
                     <Link href={data.url} >
                         <View className="w-full rounded aspect-video bg-blue-500/50" >
@@ -123,8 +123,8 @@ export function UnitPerson(props) {
                             )
                         }  
                         </View>
-                        <View className="mt-12">
-                            <View className="mx-auto w-fit  p-2 my-3 ">
+                        <View className="mt-14">
+                            <View className="mx-auto w-fit sm:h-12  p-2 my-3 ">
                                 <Text className=" text-xl sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
                             </View>
                         </View>

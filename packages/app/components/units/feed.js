@@ -180,7 +180,7 @@ function DefaultUnit(data) {
   return (
   
     <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto ">
-      <Card margin='mt-2 sm:mx-4 sm:mt-4'>
+      <Card margin=' mb-2 sm:mb-4 sm:mx-2 sm:mx-4 '>
         <View className="flex-auto flex-row items-top p-4">
           <Profile
             {...data.author_data}
@@ -343,7 +343,7 @@ function DefaultUnit(data) {
                 <>
                   <View className="  flex-col md:flex-row-reverse ">
                     {data.mainImage && (
-                      <View className="w-full px-0.5 sm:px-4 md:w-1/3 mb-3  md:mb-auto md:pr-4 ">
+                      <View className="w-full px-0.5 sm:px-4 md:w-2/5 mb-3  md:mb-auto md:pr-4 ">
                         <View
                           className="w-full aspect-video    "
                           style={styles.card_image}
@@ -352,18 +352,18 @@ function DefaultUnit(data) {
                             {...data.mainImage}
                             alt={data.title}
                             view="cover"
-                            className=" u-cover rounded"
+                            className=" u-cover rounded-xl "
                             sizes="(max-width:768px) 100vw, 500px"
                           />
                         </View>
                       </View>
                     )}
-                    <View className="flex-auto px-4    flex-col    ">
+                    <View className="flex-auto px-4 my-auto flex-col    ">
                       {bIsTitle && (
                         <Link href={url} className="">
                           <Text
                             numberOfLines={2}
-                            className=" duration-200 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                            className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
                           >
                             {data.content.title}
                           </Text>
