@@ -180,13 +180,13 @@ function DefaultUnit(data) {
   return (
   
     <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto ">
-      <Card margin=' mb-2 sm:mb-4 sm:mx-2 sm:mx-4 '>
+      <Card rounded=' rounded-2xl ' margin=' mb-2 mx-0.5 sm:mx-4 '>
         <View className="flex-auto flex-row items-top p-4">
           <Profile
             {...data.author_data}
             showLink={true}
             displayType="unit"
-            displaySize="base"
+            displaySize="lg"
             showInfo={
               <Row className="items-center">
                 <Link href={url}>
@@ -196,7 +196,7 @@ function DefaultUnit(data) {
               </Row>
             }
           />
-          <View className="flex-auto    justify-end flex-row my-auto">
+          <View className="flex-auto justify-end flex-row my-auto">
             {data.author_actions.map((item, index) => {
               const Element = componentsMap[item.type]
               if (!Element) return
@@ -376,7 +376,7 @@ function DefaultUnit(data) {
                               <View>
                                 <HtmlMemo tlContent={tlContent} />
                                 {data.showMore && !showFull && bIsLong && (
-                                  <View className=" items-start w-full border-b py-2 border-bordercolor dark:border-bordercolor-dark ">
+                                  <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-dark ">
                                     <Button
                                       title="More"
                                       onPress={(e) => {
@@ -458,7 +458,7 @@ function SmallUnit(data) {
 
   return (
     <Link href={url} className="w-full" emulate={true}>
-      <Card addClassName='flex-row p-2 sm:p-3' margin="sm:mx-4 sm:mt-2 mt-[1px]">
+      <Card addClassName='flex-row p-3 sm:p-4 ' margin=" -mx-[1px] -mt-[1px] sm:mx-4 sm:mb-2 ">
         <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
           <Profile
             {...data.author_data}
@@ -474,7 +474,7 @@ function SmallUnit(data) {
             <Time className="text-sm flex-none" ts={data.date}></Time>
           </View>
           <Text
-            className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+            className="flex-auto text-base sm:text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
             numberOfLines={1}
           >
             {data.content.title}

@@ -156,7 +156,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <View className="w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
-                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
+                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-dark">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
                         { headerSettings.header && getBackButtonWeb() }

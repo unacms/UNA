@@ -296,7 +296,7 @@ div::-webkit-scrollbar {
         margin-bottom: 0em;
     }
     .form-control-text > div:has(div.ProseMirror-focused) {
-     /*   @apply bg-backgroundinput-focus outline-none border-bordercolorinput-focus dark:border-bordercolorinput-darkfocus dark:bg-backgroundinput-darkafocus */
+     /*   @apply bg-backgroundinput-focus outline-none border-bdrinput-focus dark:border-bdrinput-darkfocus dark:bg-backgroundinput-darkafocus */
     }
     .ProseMirror:focus {
         outline: none;

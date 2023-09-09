@@ -268,7 +268,7 @@ export const staticDefault = {
     home: (
       
         <View className="flex-col  w-full max-w-screen-2xl mx-auto">
-          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 m-6 p-4 duration-300 border border-dashed rounded-3xl border-bordercolor dark:border-bordercolor-dark">
+          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 m-6 p-4 duration-300 border border-dashed rounded-3xl border-bdr dark:border-bdr-dark">
             <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
               <View>
                 <Text className="text-5xl font-extrabold text-primary dark:text-primary-dark text-center lg:text-start">

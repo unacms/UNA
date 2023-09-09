@@ -71,7 +71,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
         <Field {...props}>
             <Modal title={"Select date" + (bIsTime ? '/time' : '')} onVisible={!!showModal} onClose={() => {setShowModal(false)}} outerClickClose={false} transparent={false}>
                     {DynamicCalendar && <DynamicCalendar 
-                        className=' bg-backgroundcard dark:bg-backgroundcard-dark'
+                        className=' bg-bgrcard dark:bg-bgrcard-d'
                         theme={{
                             calendarBackground: colors.background2,
                             dayTextColor: colors.text,

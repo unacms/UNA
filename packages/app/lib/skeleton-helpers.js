@@ -16,11 +16,11 @@ export function getBlackBox(windowWidth) {
             { top: windowWidth > 1024 ? 63 : 0 },
           ]}
         >
-          <View className="w-full backdrop-blur border-b items-center justify-center border-bordercolornavbar dark:border-bordercolornavbar-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark">
+          <View className="w-full backdrop-blur border-b items-center justify-center border-bdrnavbar dark:border-bdrnavbar-dark bg-bgrnavbar dark:bg-bgrnavbar-dark">
             <View
               className={appSetting('layout', 'max_width') + ' mx-auto w-full'}
             >
-              <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bordercolornavbar dark:border-bordercolornavbar-dark">
+              <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-dark">
                 <Row className="items-center">
                   <View className="ml-4 "></View>
                   <Text className="text-2xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">
@@ -74,7 +74,7 @@ export function getBlackBox(windowWidth) {
         {items.map((item, index) => (
            <View
            key={index}
-           className="flex-col p-2 my-[2px] bg-backgroundcard dark:bg-backgroundcard-dark rounded-md"
+           className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
          >
            <View className="animate-pulse flex-row items-center gap-2">
              <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
@@ -94,19 +94,19 @@ export function getBlackBox(windowWidth) {
       <>
         {items.map((item, index) => (
           <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
-            <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
+            <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
               <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark  ">
+            <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d  ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark">
+            <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
+            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
-            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-backgroundcard dark:bg-backgroundcard-dark ">
+            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
             <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
             </View>
           </View>
@@ -119,7 +119,7 @@ export function getBlackBox(windowWidth) {
           items.map((item, index) => (
             <View
               key={'home2' + index}
-              className="bg-backgroundcard dark:bg-backgroundcard-dark mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse"
+              className="bg-bgrcard dark:bg-bgrcard-d mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse"
             >
               <View className="flex-row gap-2">
                 <View className="relative flex-row">
@@ -143,7 +143,7 @@ export function getBlackBox(windowWidth) {
           items.map((item, index) => (
             <View
               key={'home3' + index}
-              className="bg-backgroundcard dark:bg-backgroundcard-dark sm:rounded-lg p-4 flex flex-col animate-pulse mt-2 sm:m-0"
+              className="bg-bgrcard dark:bg-bgrcard-d sm:rounded-lg p-4 flex flex-col animate-pulse mt-2 sm:m-0"
             >
               <View className="flex-row gap-x-2 mb-2">
                 <View className="relative flex-row">
@@ -175,7 +175,7 @@ export function getBlackBox(windowWidth) {
   var pageSkeletons = {
     default: (
       <View className={maxWidth + ' mx-auto w-full animate-pulse '}>
-        <View className=" rounded-lg bg-backgroundcard dark:bg-backgroundcard-dark m-4 p-4 flex flex-col gap-6">
+        <View className=" rounded-lg bg-bgrcard dark:bg-bgrcard-d m-4 p-4 flex flex-col gap-6">
           <View className="flex-col gap-y-4 ">
             <View className="h-6 w-2/3 bg-neutral-500/20 rounded-lg"></View>
             <View className="flex-col gap-y-2">

@@ -48,7 +48,7 @@ export function CoverSmall(props) {
       </View>
 
       <Pressable
-        className="mx-4 bg-backgroundcard dark:bg-backgroundcard-dark w-10 h-10 rounded-full justify-center items-center"
+        className="mx-4 bg-bgrcard dark:bg-bgrcard-d w-10 h-10 rounded-full justify-center items-center"
         onPress={routerExpo.back}
       >
         <Icon
@@ -99,7 +99,7 @@ export default function ElementCover(props) {
       </View>
       <Row className=" justify-left w-full h-24 pt-12">
         <Pressable
-          className="mr-2 ml-2 bg-backgroundnavbar dark:bg-backgroundnavbar-dark  w-10 h-10 rounded-full justify-center items-center"
+          className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-dark  w-10 h-10 rounded-full justify-center items-center"
           onPress={routerExpo.back}
         >
           <Icon icon="left" width={24} height={24} color={colors.barsColor} />
@@ -108,7 +108,7 @@ export default function ElementCover(props) {
       <View className="px-4 mt-40 bg-black/0 ">
         <View className="relative  ">
           {bPerson && (
-            <View className=" w-min p-1  absolute bottom-10 rounded-full  flex-none bg-backgroundcard dark:bg-backgroundcard-dark ">
+            <View className=" w-min p-1  absolute bottom-10 rounded-full  flex-none bg-bgrcard dark:bg-bgrcard-d ">
               <Profile
                 {...data.profile}
                 displayType="unit_wo_info"

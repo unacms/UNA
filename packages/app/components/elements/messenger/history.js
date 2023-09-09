@@ -27,13 +27,13 @@ const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
         })();
     }, []);
 
-    return formData && <View className={"flex-0 relative max-h-auto pt-2 bg-backgroundcard dark:bg-backgroundcard-dark border-t border-bordercolorcard dark:border-bordercolorcard-dark w-full "} >
+    return formData && <View className={"flex-0 relative max-h-auto pt-2 bg-bgrcard dark:bg-bgrcard-d border-t border-bdrcard dark:border-bdrcard-d w-full "} >
         <Form data={ formData } name={'bx_messenger'} classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between" onFormSubmit={ (oFormData) => sendMessage(oFormData , { onSuccess: ( data )=> onSubmit(data)}) } />
     </View>
 });
 
 const ConvoHeader = memo(({ title, onPress }) => {
-    return <View className="flex flex-0 w-full px-3.5 py-2 flex-row h-14 relative border-b border-bordercolornavbar dark:border-bordercolornavbar-dark" >
+    return <View className="flex flex-0 w-full px-3.5 py-2 flex-row h-14 relative border-b border-bdrnavbar dark:border-bdrnavbar-dark" >
              <View className="md:hidden">
                  <Button variant="outline" startDecorator="ArrowLeft" rounded align="start" onPress={onPress} />
              </View>
@@ -224,7 +224,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                     totalCount={ messages.length }
                     followOutput={"smooth"}
                     ListHeaderComponent={ () =>
-                        isFetchingPreviousPage && <View className='m-2 absolute w-full bg-backgroundcard dark:bg-backgroundcard-dark'><Loading/></View>
+                        isFetchingPreviousPage && <View className='m-2 absolute w-full bg-bgrcard dark:bg-bgrcard-d'><Loading/></View>
                     }
                     contentContainerStyle={{ paddingBottom: 20 }}
                     defaultItemHeight={100}

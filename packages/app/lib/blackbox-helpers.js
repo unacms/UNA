@@ -11,7 +11,7 @@ import { useMemo  } from 'react';
 export function getBackButtonWeb() {
     if (history.length > 2){
         return (
-            <Pressable className=" lg:hidden bg-backgroundnavbar dark:bg-backgroundnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => history.back()} >
+            <Pressable className=" lg:hidden bg-bgrnavbar dark:bg-bgrnavbar-dark mr-4 w-10 h-10 border border border-neutral-500/20 rounded-full justify-center items-center" onPress={() => history.back()} >
                 <Icon icon="left" width={24} height={24} />
             </Pressable>
         )

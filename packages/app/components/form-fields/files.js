@@ -228,7 +228,7 @@ export default function FormFieldFiles(props) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
             let w = props.name == 'picture' ? 'w-48' : 'w-full';
             if (! props.viewClasses){
-                w += ' bg-backgroundinput dark:bg-backgroundinput-dark border-bordercolorinput dark:border-bordercolorinput-dark '
+                w += ' bg-backgroundinput dark:bg-backgroundinput-dark border-bdrinput dark:border-bdrinput-dark '
             }
             else{
                 w += ' ' + props.viewClasses

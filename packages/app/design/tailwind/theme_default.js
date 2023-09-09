@@ -1,4 +1,4 @@
-export const colors = {
+const colors = {
   neutral: {
     DEFAULT: 'rgba(75,85,99,1)',
     dark: 'rgba(156,163,175,1)',
@@ -41,19 +41,18 @@ export const colors = {
   },
 
 
-  backgroundcard: {
+
+  bgrcard: {
     DEFAULT: 'rgba(255,255,255,0.8)',
     hover: 'rgba(255,255,255,1)',
-    active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,0.8)',
-    darkhover: 'rgba(17,24,39,1)',
-    darkactive: 'rgba(17,24,39,0.5)',
+    d: 'rgba(17,24,39,0.8)',
+    dh: 'rgba(17,24,39,1)',
   },
-  bordercolorcard: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    hover: 'rgba(229,231,235,1)',
-    dark: 'rgba(31,41,55,0.8)',
-    darkhover: 'rgba(31,41,55,1)',
+  bdrcard: {
+    DEFAULT: 'rgba(229,231,235,1)',
+    h: 'rgba(209,213,219,1)',
+    d: 'rgba(31,41,55,1)',
+    dh: 'rgba(55,65,81,1)',
   },
 
   backgroundinput: {
@@ -62,7 +61,7 @@ export const colors = {
     dark: 'rgba(55,65,81,0.5)',
     darkafocus: 'rgba(17,24,39,1)',
   },
-  bordercolorinput: {
+  bdrinput: {
     DEFAULT: 'rgba(209,213,219,1)',
     focus: 'rgba(2,132,199,1)',
     dark: 'rgba(17,24,39,1)',
@@ -73,7 +72,7 @@ export const colors = {
     DEFAULT: 'rgba(255,255,255,0.8)',
     dark: 'rgba(17,24,39,0.8)',
   },
-  bordercolorcell: {
+  bdrcell: {
     DEFAULT: 'rgba(229,231,235,0.8)',
     dark: 'rgba(31,41,55,0.6)',
   },
@@ -82,18 +81,18 @@ export const colors = {
     DEFAULT: 'rgba(255,255,255,0.9)',
     dark: 'rgba(17,24,39,0.9)',
   },
-  bordercolormodal: {
+  bdrmodal: {
     DEFAULT: 'rgba(229,231,235,0.8)',
     dark: 'rgba(31,41,55,0.6)',
   },
 
-  backgroundnavbar: {
+  bgrnavbar: {
     DEFAULT: 'rgba(255,255,255,0.8)',
     dark: 'rgba(17,24,39,0.8)',
   },
-  bordercolornavbar: {
+  bdrnavbar: {
     DEFAULT: 'rgba(229,231,235,0.8)',
-    dark: 'rgba(31,41,55,0.6)',
+    d: 'rgba(31,41,55,0.8)',
   },
 
   backgroundtabbar: {
@@ -101,7 +100,7 @@ export const colors = {
     dark: 'rgba(17,24,39,1)',
   },
 
-  bordercolortabbar: {
+  bdrtabbar: {
     DEFAULT: 'rgba(229,231,235,0.8)',
     dark: 'rgba(31,41,55,0.6)',
   },
@@ -110,7 +109,7 @@ export const colors = {
     DEFAULT: 'rgba(229,231,235,0.9)',
     dark: 'rgba(31,41,55,0.9)',
   },
-  bordercoloritem: {
+  bdritem: {
     DEFAULT: 'rgba(229,231,235,1)',
     dark: 'rgba(31,41,55,1)',
   },
@@ -121,14 +120,14 @@ export const colors = {
     dark: 'rgba(107,114,128,0.5)',
     darkhover: 'rgba(107,114,128,0.2)',
   },
-  bordercolorbutton: {
+  bdrbutton: {
     DEFAULT: 'rgba(107,114,128,0.2)',
     dark: 'rgba(107,114,128,0.2)',
   },
 
-  bordercolor: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    dark: 'rgba(31,41,55,0.6)',
+  bdr: {
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    dark: 'rgba(55,65,81,0.8)',
   },
 
   screen: {
@@ -175,7 +174,7 @@ export const colors = {
   },
 }
 
-export const theme = {
+const theme = {
   extend: {
     colors: colors,
 
@@ -185,4 +184,10 @@ export const theme = {
       '5/1': '5 / 1',
     },
   },
+}
+
+
+module.exports = {
+  theme,
+  colors,
 }

@@ -71,7 +71,7 @@ export default function PageLayout(props) {
     let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
-            <View className=' border-b  border-bordercolor dark:border-bordercolor-dark'>
+            <View className=' border-b  border-bdr dark:border-bdr-dark'>
                 {aItems[actionsItemIndex].data}
             </View>
         );
@@ -82,7 +82,7 @@ export default function PageLayout(props) {
     if (actionsItemIndex !== -1) {
         if(windowWidth < 1024){
             header = (
-                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark backdrop-blur   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row'>
+                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-dark backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-dark flex-row'>
                     {getBackButtonWeb()}
                     {aItems[actionsItemIndex].data}
                 </Row></>
@@ -108,7 +108,7 @@ export default function PageLayout(props) {
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
                 </Row>
-                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-backgroundcard dark:bg-backgroundcard-dark border-bordercolorcard dark:border-bordercolorcard-dark fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
+                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
                     </KeyboardAvoidingView>

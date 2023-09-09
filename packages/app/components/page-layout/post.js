@@ -42,7 +42,7 @@ export default function PageLayout(props) {
     let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
-            <View className='border-b border-bordercolorcard dark:border-bordercolorcard-dark'>
+            <View className='border-b border-bdrcard dark:border-bdrcard-d'>
                 {aItems[actionsItemIndex].data}
             </View>
         );
@@ -85,7 +85,7 @@ export default function PageLayout(props) {
 
     return (//style ={{marginBottom: sizes.formHeight}}
         <View className='flex-1 w-full h-full'>
-            <View ref={viewCntRef} className="w-full h-full flex-1 bg-backgroundcard dark:bg-backgroundcard-dark" >
+            <View ref={viewCntRef} className="w-full h-full flex-1 bg-bgrcard dark:bg-bgrcard-d" >
                 <View  className='overflow-hidden h-full w-full' >
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData.module} requestUrl={commentsData.content[0].url} />
                 </View>

@@ -73,7 +73,7 @@ export default function ElementCarousel(props) {
           };
         }, [animValue, index, length]);
         return (
-          <View className='bg-backgroundcard dark:bg-backgroundcard-dark'
+          <View className='bg-bgrcard dark:bg-bgrcard-d'
             style={{
               width,
               height: width,

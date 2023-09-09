@@ -107,7 +107,7 @@ export default function (props) {
     <>
     <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
-      <View className="  backdrop-blur h-16 px-4  items-center w-full border-b  bg-backgroundnavbar   dark:bg-backgroundnavbar-dark   border-bordercolornavbar dark:border-bordercolornavbar-dark flex-row  ">
+      <View className="  backdrop-blur-xl h-16 px-4  items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
         
         <Row className="flex-row  flex-none items-center">
           {

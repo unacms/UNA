@@ -22,7 +22,7 @@ export default function FormPost(props) {
 
     let prevList = Object.values(imageSource).flat();
     if ( props.data.inputs['covers']){
-        props.data.inputs['covers'].viewClasses = 'border-dashed border-bordercolorinput dark:border-bordercolorinput-dark';
+        props.data.inputs['covers'].viewClasses = 'border-dashed border-bdrinput dark:border-bdrinput-dark';
         props.data.inputs['covers'].caption = "Add header image"
     }
     props.data.inputs['title'].type = 'textarea';

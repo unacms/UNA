@@ -111,13 +111,13 @@ export function UnitPerson(props) {
 
     const imageSizes = getImageSizes();
     return (
-        <Card margin=' mb-2  sm:mx-2 mx-4 ' rounded=" rounded-2xl ">
+        <Card margin=' mx-1 sm:mx-2 sm:mb-2 ' rounded=" rounded-2xl ">
                 <View className='flex-col pb-4  '>
                     <Link href={data.url} >
                         <View className="w-full rounded aspect-video bg-blue-500/50" >
                         {data.cover && (
                             <><Image {...data.cover} alt={data.title} view="cover" className="absolute u-cover" sizes={imageSizes}   />
-                            <View className="mx-auto o w-min  absolute -bottom-16 left-0 right-0    p-1 bg-backgroundcard dark:bg-backgroundcard-dark rounded-full ">
+                            <View className="mx-auto w-min  absolute -bottom-16 left-0 right-0 bg-white   p-1  dark:bg-bgrcard-d rounded-full ">
                                 <Profile  url_avatar={data?.image?.src} displayType="unit_wo_info" displaySize="3xl" />
                             </View></>
                             )
@@ -125,14 +125,14 @@ export function UnitPerson(props) {
                         </View>
                         <View className="mt-14">
                             <View className="mx-auto w-fit sm:h-12  p-2 my-3 ">
-                                <Text className=" text-xl sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
+                                <Text className=" text-base sm:text-lg  font-bold text-neutral-800  sm:text-center dark:text-neutral-100 ">{data.title}</Text>
                             </View>
                         </View>
                     </Link>
                     <View>
                         {data?.meta &&
-                            <View className="px-3">
-                                <Menu {...data.meta} displayType="mixed" params={{showVertical: true, button_size:'base', button_full_width: true, button_rounded: false}} />
+                            <View className="px-4 items-center">
+                                <Menu {...data.meta} displayType="mixed" params={{showVertical: false, button_size:'sm', button_full_width: true, button_rounded: false}} />
                             </View>
                         }
                     </View>

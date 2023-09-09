@@ -288,7 +288,7 @@ export default function ElementReactions(oProps) {
                     backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'backgroundModal'),
                     shadowOpacity: 0.1,
                     shadowRadius: 5,
-                    borderColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bordercolorModal'),
+                    bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
                     borderWidth: 1,
                 },
             });
@@ -447,7 +447,7 @@ export default function ElementReactions(oProps) {
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row  border-b border-bordercolor dark:border-bordercolor-dark ">{aPerformedByMenu}</View>
+                    <View className="relative flex-row  border-b border-bdr dark:border-bdr-dark ">{aPerformedByMenu}</View>
                     <View className="p-2">{aPerformedByUsers}</View>
                 </Modal>
             ]

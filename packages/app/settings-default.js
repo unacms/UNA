@@ -59,14 +59,17 @@ export const settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1024, count: 5 },
+            { width: 1280, count: 5 },
+            { width: 1024, count: 4 },
             { width: 768, count: 3 },
-            { width: 640, count: 2 },
+            { width: 320, count: 2 },
         ],
         per_line_profile: [
-            { width: 1024, count: 5 },
+            { width: 1280, count: 5 },
+            { width: 1024, count: 4 },
             { width: 768, count: 3 },
-            { width: 640, count: 2 },
+            { width: 320, count: 2 },
+
         ],
     },
     social_actions: {
@@ -615,7 +618,7 @@ export const settingsDefault = {
             activeTabText: 'rgba(3,7,18,1)',
             screenBackground: '#E5E7EB',
             backgroundModal: 'rgba(255,255,255,1)',
-            bordercolorModal: 'rgba(229,231,235,1)',
+            bdrModal: 'rgba(229,231,235,1)',
         },
         dark: {
             default: '#D1D5DB', //fix for icons color in iOS
@@ -630,7 +633,7 @@ export const settingsDefault = {
             activeTabText: 'rgba(249,250,251,1)',
             screenBackground: '#030407',
             backgroundModal: 'rgba(31,41,55,1)',
-            bordercolorModal: 'rgba(55,65,81,0.4)',
+            bdrModal: 'rgba(55,65,81,0.4)',
         },
         button_styles: {
             'u-btn-default-cnt': ' bg-neutral-500/20 hover:bg-neutral-500/10    border border-neutral-500/20 active:shadow-none    active:opacity-50 shadow-sm    hover:shadow    ',
@@ -661,8 +664,8 @@ export const settingsDefault = {
             'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
-            'u-btn-default-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
-            'u-btn-outline-cnt': ' border border-bordercolorbutton dark:border-bordercolorbutton-dark overflow-hidden ',
+            'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
+            'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-dark overflow-hidden ',
         },
 
         icons: {

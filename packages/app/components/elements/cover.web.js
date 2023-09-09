@@ -64,7 +64,7 @@ export function CoverSmall(props) {
   const router = useRouter();
   const data = props.data
   return (
-    <View className=" backdrop-blur bg-backgroundtabbar  border-b border-bordercolornavbar dark:border-bordercolor-dark dark:bg-backgroundtabbar-dark  w-full ">
+    <View className=" backdrop-blur bg-backgroundtabbar  border-b border-bdrnavbar dark:border-bdr-dark dark:bg-backgroundtabbar-dark  w-full ">
       <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
         <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">
@@ -107,7 +107,7 @@ export default function ElementCover(props) {
   let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 
   return (
-    <View className=" backdrop-blur border-b border-bordercolornavbar dark:border-bordercolor-dark bg-backgroundnavbar dark:bg-backgroundnavbar-dark ">
+    <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-dark bg-bgrnavbar dark:bg-bgrnavbar-dark ">
       <View className={appSetting('layout', 'max_width') + ' sm:px-4 mx-auto w-full'}>
         <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
@@ -136,7 +136,7 @@ export default function ElementCover(props) {
         <View className="relative  flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
           
         {bPerson && <View className=" flex-col  w-full md:w-52 ">
-            <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-backgroundcard dark:bg-backgroundcard-dark '>
+            <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d '>
               <Profile
                 {...data.profile}
                 displayType="unit_wo_info"
