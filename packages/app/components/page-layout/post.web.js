@@ -82,7 +82,7 @@ export default function PageLayout(props) {
     if (actionsItemIndex !== -1) {
         if(windowWidth < 1024){
             header = (
-                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-dark backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-dark flex-row'>
+                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-d backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-d flex-row'>
                     {getBackButtonWeb()}
                     {aItems[actionsItemIndex].data}
                 </Row></>

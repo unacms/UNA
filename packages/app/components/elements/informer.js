@@ -20,7 +20,7 @@ export default function ElementInformer({data}) {
     };
 
     return (
-        <View className="w-full mx-auto bg-bgrnavbar dark:bg-bgrnavbar-dark">
+        <View className="w-full mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d">
             <View className="w-3/4 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){

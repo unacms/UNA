@@ -33,7 +33,7 @@ const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
 });
 
 const ConvoHeader = memo(({ title, onPress }) => {
-    return <View className="flex flex-0 w-full px-3.5 py-2 flex-row h-14 relative border-b border-bdrnavbar dark:border-bdrnavbar-dark" >
+    return <View className="flex flex-0 w-full px-3.5 py-2 flex-row h-14 relative border-b border-bdrnavbar dark:border-bdrnavbar-d" >
              <View className="md:hidden">
                  <Button variant="outline" startDecorator="ArrowLeft" rounded align="start" onPress={onPress} />
              </View>

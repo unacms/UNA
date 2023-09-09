@@ -227,7 +227,7 @@ export default function ElementSearch(oProps) {
     const [inputValue, setInputValue] = useState(props.value);
 
 
-    return (<View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-dark ' >
+    return (<View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
 
   <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 pt-4 '}>
       <Row className='gap-x-2 justify-center items-center'>

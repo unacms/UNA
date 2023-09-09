@@ -107,7 +107,7 @@ export default function ElementCover(props) {
   let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 
   return (
-    <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-dark bg-bgrnavbar dark:bg-bgrnavbar-dark ">
+    <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-dark bg-bgrnavbar dark:bg-bgrnavbar-d ">
       <View className={appSetting('layout', 'max_width') + ' sm:px-4 mx-auto w-full'}>
         <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
@@ -119,7 +119,7 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          { bPerson && <View className=" backdrop-blur bg-backgrounditem/50 dark:bg-backgrounditem-dark/50 pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
+          { bPerson && <View className=" backdrop-blur bg-backgrounditem/50 dark:bg-bgrnavbar-d pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
@@ -128,7 +128,7 @@ export default function ElementCover(props) {
               </Text>
             </View>
           }
-          <View className='absolute lg:hidden top-4 left-8 z-50'>
+          <View className='absolute lg:hidden top-4 left-4 z-50'>
             {getBackButtonWeb()}
           </View>
         </View>

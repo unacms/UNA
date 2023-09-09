@@ -26,7 +26,7 @@ export default function () {
  	return (
         <>
         <View className="fixed bottom-0 z-30 w-full sm:hidden tabbar bg-backgroundtabbar dark:bg-backgroundtabbar-dark">
-          <View className=" backdrop-blur z-50  bg-bgrnavbar dark:bg-bgrnavbar-dark border-t  border-bdrnavbar dark:border-bdrnavbar-dark w-full px-2 h-16">
+          <View className=" backdrop-blur z-50  bg-bgrnavbar dark:bg-bgrnavbar-d border-t  border-bdrnavbar dark:border-bdrnavbar-d w-full px-2 h-16">
               <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                   {TabList.map((tab, index) => (
                           <View key={"fl" + index} className={'w-1/6 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>

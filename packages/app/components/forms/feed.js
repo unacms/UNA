@@ -123,7 +123,7 @@ export default function FormFeed(props) {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-      <Card rounded=" rounded-2xl " margin=" mx-0.5  sm:mx-4 " addClassName=" p-3 sm:p-4 ">
+      <Card margin=" -mx-[1px]  sm:mx-4 mb-2 sm:mb-4 " addClassName=" p-3 sm:p-4 ">
         <View className=" flex-row ">
           <View className='mr-2'>{profile}</View>
           <Button

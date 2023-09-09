@@ -44,7 +44,7 @@ const colors = {
 
   bgrcard: {
     DEFAULT: 'rgba(255,255,255,0.8)',
-    hover: 'rgba(255,255,255,1)',
+    h: 'rgba(255,255,255,1)',
     d: 'rgba(17,24,39,0.8)',
     dh: 'rgba(17,24,39,1)',
   },
@@ -88,7 +88,7 @@ const colors = {
 
   bgrnavbar: {
     DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(17,24,39,0.8)',
+    d: 'rgba(17,24,39,0.8)',
   },
   bdrnavbar: {
     DEFAULT: 'rgba(229,231,235,0.8)',

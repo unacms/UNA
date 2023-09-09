@@ -99,7 +99,7 @@ export default function ElementCover(props) {
       </View>
       <Row className=" justify-left w-full h-24 pt-12">
         <Pressable
-          className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-dark  w-10 h-10 rounded-full justify-center items-center"
+          className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-d  w-10 h-10 rounded-full justify-center items-center"
           onPress={routerExpo.back}
         >
           <Icon icon="left" width={24} height={24} color={colors.barsColor} />

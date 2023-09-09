@@ -44,11 +44,9 @@
 
   bgrcard: {
     DEFAULT: 'rgba(255,255,255,0.8)',
-    hover: 'rgba(255,255,255,1)',
-    active: 'rgba(255,255,255,0.5)',
-    dark: 'rgba(17,24,39,0.8)',
-    darkhover: 'rgba(17,24,39,1)',
-    darkactive: 'rgba(17,24,39,0.5)',
+    h: 'rgba(255,255,255,1)',
+    d: 'rgba(17,24,39,0.8)',
+    dh: 'rgba(17,24,39,1)',
   },
   bdrcard: {
     DEFAULT: 'rgba(229,231,235,1)',
@@ -90,7 +88,7 @@
 
   bgrnavbar: {
     DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(17,24,39,0.8)',
+    d: 'rgba(17,24,39,0.8)',
   },
   bdrnavbar: {
     DEFAULT: 'rgba(229,231,235,0.8)',

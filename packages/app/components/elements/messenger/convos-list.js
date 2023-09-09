@@ -147,7 +147,7 @@ export const ConvosList = () => {
          handlerOuterClick = () => menuView && setMenuView(false);
 
    return <View className="max-h-full flex w-full h-full flex-col relative">
-                <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-dark h-14">
+                <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-d h-14">
                    <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
                 </View>
                 <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />

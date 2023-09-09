@@ -49,14 +49,14 @@ const Layout = memo(({ mode, panel }) => {
     const bAllowHistoryView = !bPhone || bPhone &&  panel === 'history';
 
     return <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
-             <View className={"xl:w-2/12 hidden xl:block border-r border-bdrnavbar dark:border-bdrnavbar-dark" }>
+             <View className={"xl:w-2/12 hidden xl:block border-r border-bdrnavbar dark:border-bdrnavbar-d" }>
                 { bDesktop && <MenuColumn test={"column"}/> }
              </View>
              <View className={ listCol }>
                 { listCol !== 'hidden' && <ConvosList /> }
              </View>
              <View className={ historyCol }>
-                <View className="max-h-full flex w-full h-full flex-col relative border-l border-bdrnavbar dark:border-bdrnavbar-dark">
+                <View className="max-h-full flex w-full h-full flex-col relative border-l border-bdrnavbar dark:border-bdrnavbar-d">
                    { historyCol !== 'hidden' && <History /> }
                 </View>
              </View>

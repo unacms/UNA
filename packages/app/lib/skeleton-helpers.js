@@ -16,11 +16,11 @@ export function getBlackBox(windowWidth) {
             { top: windowWidth > 1024 ? 63 : 0 },
           ]}
         >
-          <View className="w-full backdrop-blur border-b items-center justify-center border-bdrnavbar dark:border-bdrnavbar-dark bg-bgrnavbar dark:bg-bgrnavbar-dark">
+          <View className="w-full backdrop-blur border-b items-center justify-center border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d">
             <View
               className={appSetting('layout', 'max_width') + ' mx-auto w-full'}
             >
-              <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-dark">
+              <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                 <Row className="items-center">
                   <View className="ml-4 "></View>
                   <Text className="text-2xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">
