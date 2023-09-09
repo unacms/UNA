@@ -36,7 +36,7 @@
   },
 
   backgroundbody: {
-    DEFAULT: 'rgba(243,244,246,1)',
+    DEFAULT: 'rgba(229,231,235,1)',
     dark: 'rgba(3,7,18,1)',
   },
 
