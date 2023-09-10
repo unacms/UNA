@@ -39,7 +39,7 @@ export default function ElementEntityAttachments(props) {
                     {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}
                 </View>
             </Modal>
-            <Row className="relative gap-4 flex-wrap p-4 sm:my-0 bg-neocard dark:bg-neocard-dark border-b border-neoborder dark:border-neoborder-dark w-full mx-auto max-w-5xl">
+            <Row className="relative gap-4 flex-wrap p-4 sm:my-0 bg-bgrcard dark:bg-bgrcard-d border-b border-neoborder dark:border-neoborder-dark w-full mx-auto max-w-5xl">
                 {aImages}
             </Row>
         </>

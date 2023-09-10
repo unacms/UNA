@@ -62,13 +62,13 @@ export const settingsDefault = {
             { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
-            { width: 320, count: 2 },
+            { width: 640, count: 2 },
         ],
         per_line_profile: [
             { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
-            { width: 320, count: 2 },
+            { width: 640, count: 2 },
 
         ],
     },
@@ -656,15 +656,15 @@ export const settingsDefault = {
             'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-hover:text-primary-500 dark:group-hover:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
             'u-btn-link-trans': ' duration-200 ',
 
-            'u-btn-outline-cnt': ' border border-neutral-200 dark:border-neutral-800   active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
-            'u-btn-outline-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+            'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh   active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
+            'u-btn-outline-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-outline-trans': ' duration-200 ',
 
             'u-btn-group-item-cnt': ' hover:bg-neutral-500/10 active:opacity-50 hover:shadow-lg ',
             'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
-            'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-dark bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
+            'u-btn-default-cnt': ' border border-bdr dark:border-bdr-d bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-dark overflow-hidden ',
         },
 

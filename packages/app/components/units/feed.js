@@ -180,7 +180,7 @@ function DefaultUnit(data) {
   return (
   
     <Animated.View style={[animatedStyles]} className="max-w-5xl w-full mx-auto ">
-      <Card rounded=' rounded-2xl ' margin=' mb-2 mx-0.5 sm:mx-4 '>
+      <Card rounded=' rounded-2xl ' margin=' mb-2 mx-1 sm:mx-4 '>
         <View className="flex-auto flex-row items-top p-4">
           <Profile
             {...data.author_data}

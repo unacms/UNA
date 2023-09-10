@@ -135,7 +135,7 @@ export default function ElementCarousel(props) {
         <Pressable style={{
                         flex: 1,
                         justifyContent: 'center',
-                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
+                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
         </View>
         </>);
     
@@ -176,7 +176,7 @@ export default function ElementCarousel(props) {
                     <Pressable style={{
                         flex: 1,
                         justifyContent: 'center',
-                    }} key={index} className=" mt-1 " onPress={() => handleShowImage([item.src, 'image'])} ><Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-neocard-dark border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
+                    }} key={index} className=" mt-1 " onPress={() => handleShowImage([item.src, 'image'])} ><Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-neoborder dark:border-neoborder-dark border rounded-lg"  /></Pressable>
                     
                 )}
             />

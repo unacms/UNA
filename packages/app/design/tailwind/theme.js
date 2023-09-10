@@ -121,8 +121,10 @@
     darkhover: 'rgba(107,114,128,0.2)',
   },
   bdrbutton: {
-    DEFAULT: 'rgba(107,114,128,0.2)',
-    dark: 'rgba(107,114,128,0.2)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    h: 'rgba(209,213,219,1)',
+    d: 'rgba(31,41,55,1)',
+    dh: 'rgba(55,65,81,1)',
   },
 
   bdr: {
@@ -151,9 +153,9 @@
     dark: '#111827',
   },
 
-  neoitem: {
+  bgritem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',
-    dark: 'rgba(30, 41, 59, 0.8)',
+    d: 'rgba(30, 41, 59, 0.8)',
   },
   neobutton: {
     DEFAULT: '#6B7280',

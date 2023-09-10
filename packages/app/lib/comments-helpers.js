@@ -370,9 +370,9 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
 
     const { colors } = useTheme();    
     return ( 
-        <View className={"w-full bg-neocard dark:bg-neocard-dark  border-t  border-neoborder dark:border-neoborder-dark"} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
+        <View className={"w-full bg-bgrcard dark:bg-bgrcard-d  border-t  border-neoborder dark:border-neoborder-dark"} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
             {
-                form.data.inputs.cmt_parent_id.value >0 && (<View className='bg-neocard dark:bg-neocard-dark rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
+                form.data.inputs.cmt_parent_id.value >0 && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>

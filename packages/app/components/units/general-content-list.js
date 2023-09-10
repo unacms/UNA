@@ -71,30 +71,43 @@ export default function Unit(props) {
         let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
 
         return (
-            <Card margin=' mb-2  sm:mx-2 mx-4 ' rounded=" rounded-2xl ">
+            <Card margin=' mb-4 mx-4 ' rounded=" rounded-2xl ">
                 <View className='flex-col'> 
                     <Link href={data.url} >  
+                    <View className="flex-row-reverse sm:flex-col  w-full">
                     {data.image && (
                         <>
-                            <View className="relative  aspect-video  overflow-hidden w-full ">
+                            <View className="relative shadow aspect-video rounded-xl overflow-hidden w-1/3 sm:w-full  ">
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
                             </View>
+                            <View className="flex-auto flex-col h-36  gap-y-1 p-3 ">
+                            <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark leading-5 text-base font-bold'>
+                                {data.title}
+                            </Text>
+                            <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                            <View className=" mt-auto ">{sMeta}</View>  
+                        </View>
                         </>
                         ) 
                     } 
                     {!data.image && 
                         <>
-                            <View className="relative bg-primary-100 dark:bg-primary-900 rounded aspect-video  overflow-hidden w-full "></View> 
+                            
+                            <View className="relative shadow aspect-video bg-primary dark:bg-primary-dark rounded-xl overflow-hidden w-1/3 sm:w-full p-4 ">
+                                <Text numberOfLines={4} className=' text-neutral-50 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark text-center my-auto  text-xl font-bold'>
+                                    {data.title}
+                                </Text>                            
+                            </View>
+                            <View className="flex-auto flex-col h-36  gap-y-2 p-3 ">
+                            
+                            <Text numberOfLines={4} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                            <View className=" mt-auto ">{sMeta}</View>  
+                        </View>
                         </>
                     }
-                    <View className="flex flex-col sm:h-28 gap-1 p-3 ">
-                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark sm:leading-5  text-lg sm:text-base  font-bold'>
-                            {data.title}
-                        </Text>
-                        <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                        
                     </View>
                     </Link>
-                    <View className=" px-3 pb-3  ">{sMeta}</View>          
                 </View>      
             </Card>  
         )

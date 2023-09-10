@@ -27,7 +27,7 @@ export const H1 = ({ children, ...rest }) => {
   return <H1_ {...rest}>{correctedChildren}</H1_>;
 };
 
-const H1C_ = styled(NativeText, 'text-xl lg:text-3xl font-bold')
+const H1C_ = styled(NativeText, ' text-xl lg:text-3xl font-bold ')
 H1C_.defaultProps = {
   role: 'header',
 }
