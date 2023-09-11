@@ -71,8 +71,8 @@ export default function PageLayout(props) {
       return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
 
-          <View className="flex-auto relative w-full xl:gap-x-4 flex-row mx-auto  ">
-            <View className="hidden lg:block border-r border-dashed border-neutral-500/10 w-1/4 pt-4  sticky duration-200  ">
+          <View className="flex-auto relative w-full  flex-row mx-auto  ">
+            <View className="hidden lg:block  w-1/4 pt-4  sticky duration-200  ">
               
             <Link href={currentUser.url}>
             <View className="mx-4 mb-1 p-2  flex-row  rounded-lg  hover:bg-neutral-500/10 active:opacity-50
@@ -88,9 +88,9 @@ export default function PageLayout(props) {
 
               <BlockByName data={props.data} name={props.blocks.menu} />
             </View>
-            <View className="flex-auto  w-3/4  flex-row xl:gap-x-4 duration-200">
-              <View className="flex-auto w-2/3">
-                <Story></Story>
+            <View className="flex-auto w-2/4  flex-row  duration-200">
+              <View className="flex-auto xl:px-4  border-x border-dashed border-neutral-500/10 w-2/3">
+               
                 { appSetting('feed', 'show_multi') ? <>
                 <Row className="p-4  gap-x-2  w-full">
                   <Pressable  className=" my-auto items-center" onPress={() => {setFeedTypeEx('account')}}>
@@ -141,14 +141,15 @@ export default function PageLayout(props) {
                 }
               </View>
 
-              <View className="hidden xl:block border-l border-dashed border-neutral-500/10 w-1/3 px-4 flex-col space-y-4  duration-200 ">
+              
+            </View>
+            <View className="hidden xl:block w-1/4 px-4 flex-col space-y-4  duration-200 ">
                 <BlockByName name={props.blocks.home2} />
                 <BlockByName name={props.blocks.profile_switcher} data={props.data} />
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton = 'one_column_browse'/>
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton = 'one_column_browse'/>
                 <BlockByName name={props.blocks.footer} />
               </View>
-            </View>
           </View>
         </View>
       )

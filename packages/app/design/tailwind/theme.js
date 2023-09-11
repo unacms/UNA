@@ -97,10 +97,15 @@ const colors = {
   bgritem: {
     DEFAULT: 'rgba(229,231,235,0.9)',
     d: 'rgba(31,41,55,0.9)',
+    h: 'rgba(229,231,235,0.5)',
+    dh: 'rgba(31,41,55,0.5)',
+    
+
   },
   bdritem: {
     DEFAULT: 'rgba(229,231,235,1)',
     d: 'rgba(31,41,55,1)',
+
   },
 
   bgrbutton: {
