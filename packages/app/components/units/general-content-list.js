@@ -68,45 +68,51 @@ export default function Unit(props) {
     }
 
     function defaultUnit(){
-        let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="xs" showInfo="false" />
+        let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="sm" showInfo="false" />
 
         return (
-            <Card margin=' mb-4 mx-4 ' rounded=" rounded-2xl ">
+            <Card margin=' mb-2 mx-2 ' rounded=" rounded-2xl ">
                 <View className='flex-col'> 
                     <Link href={data.url} >  
-                    <View className="flex-row-reverse sm:flex-col  w-full">
+                    
                     {data.image && (
-                        <>
-                            <View className="relative shadow aspect-video rounded-xl overflow-hidden w-1/3 sm:w-full  ">
+                        <>  <View className="flex-row-reverse sm:flex-col w-full p-1">
+                            <View className="relative  aspect-video rounded-xl p-2 overflow-hidden w-2/5 sm:w-full  ">
                                 <Image {...data.image} alt={data.title} view="cover" className="u-cover" sizes={imageSizes} />
+
                             </View>
-                            <View className="flex-auto flex-col h-36  gap-y-1 p-3 ">
+                            <View className="flex-auto flex-col h-40 gap-y-3 p-3 ">
+                            {sMeta}
+
                             <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark leading-5 text-base font-bold'>
                                 {data.title}
                             </Text>
-                            <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                            <View className=" mt-auto ">{sMeta}</View>  
+                            <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300  mb-auto  text-sm   ">{data.summary_plain}</Text>
+                              
+                        </View>
                         </View>
                         </>
                         ) 
                     } 
                     {!data.image && 
-                        <>
+                        <> <View className="flex-col w-full p-1 ">
                             
-                            <View className="relative shadow aspect-video bg-primary dark:bg-primary-dark rounded-xl overflow-hidden w-1/3 sm:w-full p-4 ">
-                                <Text numberOfLines={4} className=' text-neutral-50 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark text-center my-auto  text-xl font-bold'>
+                            <View className="relative px-3 pt-3 rounded-xl sm:aspect-video   overflow-hidden text-center justify-center sm:w-full gap-y-2  ">
+                                <View className=" w-min mb-auto  ">{sMeta}</View>  
+                                <Text numberOfLines={4} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark leading-5 text-base font-bold'>
                                     {data.title}
-                                </Text>                            
+                                </Text>                          
                             </View>
-                            <View className="flex-auto flex-col h-36  gap-y-2 p-3 ">
+                            <View className="flex-auto flex-col sm:h-40 mb-auto p-3 ">
                             
-                            <Text numberOfLines={4} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
-                            <View className=" mt-auto ">{sMeta}</View>  
+                            <Text numberOfLines={6} className="text-neutral-700 dark:text-neutral-300   text-sm   ">{data.summary_plain}</Text>
+                            
+                            </View>
                         </View>
                         </>
                     }
                         
-                    </View>
+                    
                     </Link>
                 </View>      
             </Card>  

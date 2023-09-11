@@ -41,10 +41,10 @@ const colors = {
   },
 
   bgrcard: {
-    DEFAULT: 'rgba(255,255,255,0.8)',
-    h: 'rgba(255,255,255,1)',
-    d: 'rgba(17,24,39,0.8)',
-    dh: 'rgba(17,24,39,1)',
+    DEFAULT: 'rgba(255,255,255,1)',
+    h: 'rgba(255,255,255,0.8)',
+    d: 'rgba(17,24,39,1)',
+    dh: 'rgba(17,24,39,0.8)',
   },
   bdrcard: {
     DEFAULT: 'rgba(229,231,235,1)',
