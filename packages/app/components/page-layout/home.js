@@ -139,7 +139,7 @@ export default function PageLayout(props) {
                 }
               </View>
 
-              <View className="hidden xl:block border-l border-dashed border-neutral-500/10 w-1/3 px-4 flex-col space-y-4 flex-none duration-200 sticky ">
+              <View className="hidden xl:block border-l border-dashed border-neutral-500/10 w-1/3 px-4 flex-col space-y-4  duration-200 ">
                 <BlockByName name={props.blocks.home2} />
                 <BlockByName name={props.blocks.profile_switcher} data={props.data} />
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton = 'one_column_browse'/>
