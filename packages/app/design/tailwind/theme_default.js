@@ -117,8 +117,8 @@ const colors = {
   },
 
   bdr: {
-    DEFAULT: 'rgba(209,213,219,0.8)',
-    d: 'rgba(55,65,81,0.8)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    d: 'rgba(31,41,55,1)',
   },
 
   screen: {

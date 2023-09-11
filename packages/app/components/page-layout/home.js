@@ -71,21 +71,24 @@ export default function PageLayout(props) {
       return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
 
-          <View className="flex-auto relative w-full flex-row mx-auto  ">
-            <View className="hidden lg:block border-r border-bdr dark:border-bdr-d w-1/4 pt-4 sticky duration-200  ">
-              <View className="mx-4 mb-1 p-2  flex-row  
-                    group duration-200 overflow-hidden rounded-lg  
-                    hover:bg-neutral-500/10 active:opacity-50
-                     max-w-5xl self-center items-center gap-x-2  ">
+          <View className="flex-auto relative w-full xl:gap-x-4 flex-row mx-auto  ">
+            <View className="hidden lg:block border-r border-dashed border-neutral-500/10 w-1/4 pt-4  sticky duration-200  ">
+              
+            <Link href={currentUser.url}>
+            <View className="mx-4 mb-1 p-2  flex-row  rounded-lg  hover:bg-neutral-500/10 active:opacity-50
+                      items-center gap-x-2  ">
             <View className="w-8 h-8 translate-x-[1px] bg-blue-500/50 rounded-full flex-none ">{profile}</View>
-            <Link href={currentUser.url}><Text className='text-base flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300  dark:text-neutral-100'>{currentUser.display_name}</Text></Link>
-            
-            
+              <Text className='text-base flex-auto font-medium truncate text-neutral-700 dark:text-neutral-300  dark:text-neutral-100'>{currentUser.display_name}</Text>
               </View>
+              
+           </Link>
+            
+            
+             
 
               <BlockByName data={props.data} name={props.blocks.menu} />
             </View>
-            <View className="flex-auto  w-3/4  flex-row duration-200">
+            <View className="flex-auto  w-3/4  flex-row xl:gap-x-4 duration-200">
               <View className="flex-auto w-2/3">
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>
@@ -136,7 +139,7 @@ export default function PageLayout(props) {
                 }
               </View>
 
-              <View className="hidden xl:block w-1/3 px-2 flex-none duration-200 sticky ">
+              <View className="hidden xl:block border-l border-dashed border-neutral-500/10 w-1/3 px-4 flex-col space-y-4 flex-none duration-200 sticky ">
                 <BlockByName name={props.blocks.home2} />
                 <BlockByName name={props.blocks.profile_switcher} data={props.data} />
                 <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton = 'one_column_browse'/>
