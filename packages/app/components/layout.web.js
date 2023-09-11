@@ -56,7 +56,6 @@ export default function Layout({ data, uri, children }) {
     if (data?.empty)
         return <>{children}</>
 
-    console.log(headerSettings);
     return (
         <>
             <View className="bg-bgrbody dark:bg-bgrbody-d w-full items-stretch ">

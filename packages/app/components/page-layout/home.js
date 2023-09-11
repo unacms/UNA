@@ -132,10 +132,12 @@ export default function PageLayout(props) {
                 }
                 </> 
                 :
-                <LayoutDataContext>
-                    <BlockByName data={props.data} name={props.blocks[appSetting('feed', 'default_feed') + '_feed_form']} />
-                    <BlockByName data={props.data} name={props.blocks[appSetting('feed', 'default_feed') + '_feed']} />
-                </LayoutDataContext>
+                <View className="pt-4">
+                  <LayoutDataContext>
+                      <BlockByName data={props.data} name={props.blocks[appSetting('feed', 'default_feed') + '_feed_form']} />
+                      <BlockByName data={props.data} name={props.blocks[appSetting('feed', 'default_feed') + '_feed']} />
+                  </LayoutDataContext>
+                </View>
                 }
               </View>
 

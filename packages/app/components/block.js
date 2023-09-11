@@ -61,7 +61,7 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    let c = Block({key:b.id, uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg})
+    let c = Block({/*key:b.id,*/ uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg})
     return c;
 }
 

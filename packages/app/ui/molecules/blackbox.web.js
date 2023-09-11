@@ -294,7 +294,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             }
                         /> : rqtStatus != 'success' ? Preload : <></>}
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-1/3 ">
+                    {isRightCol && <View className="hidden xl:block w-1/3 pt-4">
                         <UniList
                             no_scroll
                             renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
