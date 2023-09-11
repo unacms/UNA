@@ -23,8 +23,8 @@ export default function ElementProfileSwitcher(props) {
         <>  
             <Redirect ref={redirectdRef} />
             <View className="  overflow-hidden flex-col">
-                { !props.hideTitle && <View className="flex-row items-center py-1 justify-between">
-                    <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 ">
+                { !props.hideTitle && <View className="flex-row items-center  justify-between">
+                    <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
                         Your Profiles
                     </Text>
                 </View>
