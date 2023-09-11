@@ -111,7 +111,7 @@ export default function Editor({defaultValue, formContext, name, viewClasses}) {
     }
   }, [editor, content, hydrated]);
 
-  let className = "relative min-h-[250px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-backgroundinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base"
+  let className = "relative min-h-[250px] p-4 bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base"
   if (viewClasses){
     className = "relative min-h-[250px] focus:outline-none " + viewClasses;
   }

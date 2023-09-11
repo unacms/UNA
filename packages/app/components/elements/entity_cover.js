@@ -7,7 +7,7 @@ import EntityAuthor from './entity_author';
 export default function ElementEntityCover(props) {
    const data = props.data;
     return (
-        <View className="flex-col  w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d border hover:shadow-lg border-neoborder dark:border-neoborder-dark overflow-hidden rounded-lg">  
+        <View className="flex-col  w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d border hover:shadow-lg border-bdr dark:border-bdr-dark overflow-hidden rounded-lg">  
       <View className="w-28 h-28 mt-4 mx-4 overflow-hidden bg-neutral-100 dark:bg-neutral-700  rounded-full  ">
         { !!data.image ? <Image alt={data.fullname} className="rounded-full" view="cover" src={data.image} /> : <View><View className="w-[50%] z-20 aspect-square bg-neutral-200  dark:bg-neutral-600 border-4 border-neutral-100 dark:border-neutral-700  mx-auto rounded-full mt-[15%] "></View>
         <View className="w-[80%] -translate-y-[5%] aspect-square  bg-neutral-200  dark:bg-neutral-600  mx-auto rounded-t-full  "></View></View>}

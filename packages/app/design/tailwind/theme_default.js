@@ -35,12 +35,10 @@ const colors = {
     dark: 'rgba(249,115,22,1)',
   },
 
-  backgroundbody: {
-    DEFAULT: 'rgba(243,244,246,1)',
-    dark: 'rgba(3,7,18,1)',
+  bgrbody: {
+    DEFAULT: 'rgb(243,244,246)',
+    dark: 'rgb(0,0,0)',
   },
-
-
 
   bgrcard: {
     DEFAULT: 'rgba(255,255,255,0.8)',
@@ -55,7 +53,7 @@ const colors = {
     dh: 'rgba(55,65,81,1)',
   },
 
-  backgroundinput: {
+  bgrinput: {
     DEFAULT: 'rgba(209,213,219,0.5)',
     focus: 'rgba(255,255,255,1)',
     dark: 'rgba(55,65,81,0.5)',
@@ -68,16 +66,7 @@ const colors = {
     darkfocus: 'rgba(14,165,233,1)',
   },
 
-  backgroundcell: {
-    DEFAULT: 'rgba(255,255,255,0.8)',
-    dark: 'rgba(17,24,39,0.8)',
-  },
-  bdrcell: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    dark: 'rgba(31,41,55,0.6)',
-  },
-
-  backgroundmodal: {
+  bgrmodal: {
     DEFAULT: 'rgba(255,255,255,0.9)',
     dark: 'rgba(17,24,39,0.9)',
   },
@@ -95,7 +84,7 @@ const colors = {
     d: 'rgba(31,41,55,0.8)',
   },
 
-  backgroundtabbar: {
+  bgrtabbar: {
     DEFAULT: 'rgba(255,255,255,1)',
     dark: 'rgba(17,24,39,1)',
   },
@@ -105,7 +94,7 @@ const colors = {
     dark: 'rgba(31,41,55,0.6)',
   },
 
-  backgrounditem: {
+  bgritem: {
     DEFAULT: 'rgba(229,231,235,0.9)',
     dark: 'rgba(31,41,55,0.9)',
   },
@@ -114,7 +103,7 @@ const colors = {
     dark: 'rgba(31,41,55,1)',
   },
 
-  backgroundbutton: {
+  bgrbutton: {
     DEFAULT: 'rgba(209,213,219,0.6)',
     hover: 'rgba(209,213,219,0.2)',
     dark: 'rgba(107,114,128,0.5)',
@@ -136,43 +125,9 @@ const colors = {
     DEFAULT: '#f3f4f6',
     dark: '#030712',
   },
-  navbar: {
-    DEFAULT: '#FFFFFF',
-    dark: '#111827',
-  },
-  sidebar: {
-    DEFAULT: '#FFFFFF',
-    dark: '#111827',
-  },
-  tabbar: {
-    DEFAULT: '#FFFFFF',
-    dark: '#111827',
-  },
-  block: {
-    DEFAULT: '#FFFFFF',
-    dark: '#111827',
-  },
-
   bgritem: {
     DEFAULT: 'rgba(226, 232, 240, 0.8)',
     d: 'rgba(30, 41, 59, 0.8)',
-  },
-  neobutton: {
-    DEFAULT: '#6B7280',
-    dark: '#6B7280',
-  },
-  neoborder: {
-    DEFAULT: 'rgba(209, 213, 219, 0.5)',
-    dark: 'rgba(55, 65, 81, 0.3)',
-  },
-
-  neolink: {
-    DEFAULT: '#3B82F6',
-    dark: '#3B82F6',
-  },
-  neoinput: {
-    DEFAULT: 'rgba(241, 245, 249, 0.5)',
-    dark: 'rgba(30, 41, 59, 0.5)',
   },
 }
 
@@ -187,7 +142,6 @@ const theme = {
     },
   },
 }
-
 
 module.exports = {
   theme,

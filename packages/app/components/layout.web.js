@@ -55,7 +55,7 @@ export default function Layout({ data, uri, children }) {
 
     return (
         <>
-            <View className="bg-backgroundbody dark:bg-backgroundbody-dark w-full items-stretch ">
+            <View className="bg-bgrbody dark:bg-bgrbody-dark w-full items-stretch ">
                 <View className=" w-full mx-auto flex-row -top-[1px] " >
                     <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                         <View className='w-full mx-auto'>

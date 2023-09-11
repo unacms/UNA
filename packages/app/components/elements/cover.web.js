@@ -64,7 +64,7 @@ export function CoverSmall(props) {
   const router = useRouter();
   const data = props.data
   return (
-    <View className=" backdrop-blur bg-backgroundtabbar  border-b border-bdrnavbar dark:border-bdr-dark dark:bg-backgroundtabbar-dark  w-full ">
+    <View className=" backdrop-blur bg-bgrtabbar  border-b border-bdrnavbar dark:border-bdr-dark dark:bg-bgrtabbar-dark  w-full ">
       <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
         <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">
@@ -119,7 +119,7 @@ export default function ElementCover(props) {
               src={data.cover.src}
             />
           )}
-          { bPerson && <View className=" backdrop-blur bg-backgrounditem/50 dark:bg-bgrnavbar-d pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
+          { bPerson && <View className=" backdrop-blur bg-bgritem/50 dark:bg-bgrnavbar-d pl-4 md:pl-6 pr-6 lg:px-8 lg:py-4 py-3 duration-300  rounded-2xl mb-2 ml-2  mr-32 sm:mr-48 md:ml-44 lg:ml-52 md:mr-4   mt-auto  flex-none flex-row items-center  ">
               <Text
                 numberOfLines={3}
                 className=" w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "

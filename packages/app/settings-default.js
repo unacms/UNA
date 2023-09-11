@@ -617,7 +617,7 @@ export const settingsDefault = {
             tabText: 'rgba(75,85,99,1)',
             activeTabText: 'rgba(3,7,18,1)',
             screenBackground: '#E5E7EB',
-            backgroundModal: 'rgba(255,255,255,1)',
+            bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(229,231,235,1)',
         },
         dark: {
@@ -632,7 +632,7 @@ export const settingsDefault = {
             tabText: 'rgba(156,163,175,1)',
             activeTabText: 'rgba(249,250,251,1)',
             screenBackground: '#030407',
-            backgroundModal: 'rgba(31,41,55,1)',
+            bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(55,65,81,0.4)',
         },
         button_styles: {
@@ -664,7 +664,7 @@ export const settingsDefault = {
             'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
-            'u-btn-default-cnt': ' border border-bdr dark:border-bdr-d bg-backgroundbutton dark:bg-backgroundbutton-dark shadow-sm overflow-hidden ',
+            'u-btn-default-cnt': ' border border-bdr dark:border-bdr-d bg-bgrbutton dark:bg-bgrbutton-dark shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-dark overflow-hidden ',
         },
 

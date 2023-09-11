@@ -8,8 +8,8 @@ import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
 import { styled } from 'nativewind'
 
-const MentionInput = styled(MentionInputDef, ' bg-backgroundinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
-const MentionInputMulti = styled(MentionInputDef, ' bg-backgroundinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-backgroundinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-backgroundinput-dark dark:focus:bg-backgroundinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
+const MentionInput = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-dark dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
+const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-dark dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
 
 export default function FormFieldText({ name, value = '', numLines = 4, ...props }) {
     const { field } = useController({ name, rules: {}, defaultValue: value });

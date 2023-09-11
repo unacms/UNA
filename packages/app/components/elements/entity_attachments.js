@@ -39,7 +39,7 @@ export default function ElementEntityAttachments(props) {
                     {showImage && showImage[1] == 'video' && <Video className="w-full h-full" src={showImage[0]}  ></Video>}
                 </View>
             </Modal>
-            <Row className="relative gap-4 flex-wrap p-4 sm:my-0 bg-bgrcard dark:bg-bgrcard-d border-b border-neoborder dark:border-neoborder-dark w-full mx-auto max-w-5xl">
+            <Row className="relative gap-4 flex-wrap p-4 sm:my-0 bg-bgrcard dark:bg-bgrcard-d border-b border-bdr dark:border-bdr-dark w-full mx-auto max-w-5xl">
                 {aImages}
             </Row>
         </>
@@ -58,7 +58,7 @@ export default function ElementEntityAttachments(props) {
     }
 
     function getContainer(obj, index){
-        return (<View key={index} className="aspect-video w-36 lg:w-64 rounded overflow-hidden border border-neoborder dark:border-neoborder-dark items-center justify-center" >
+        return (<View key={index} className="aspect-video w-36 lg:w-64 rounded overflow-hidden border border-bdr dark:border-bdr-dark items-center justify-center" >
             {obj}
         </View>);
     }

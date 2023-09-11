@@ -246,7 +246,7 @@ function DefaultUnit(data) {
           )}
 
           {bIsGroupContent && (
-            <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-backgrounditem dark:bg-backgrounditem-dark p-1">
+            <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-dark p-1">
               {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                   <View

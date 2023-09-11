@@ -32,7 +32,7 @@ export default function FormPost(props) {
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500';
 
     return <View className='w-full max-w-5xl'>
-        <View className='bg-white dark:bg-backgroundbody-dark border border-neutral-500/10 p-4 pb-0 rounded-lg mb-2'>
+        <View className='bg-white dark:bg-bgrbody-dark border border-neutral-500/10 p-4 pb-0 rounded-lg mb-2'>
             {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle', {format:'custom'})}
             {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...', format:'custom'})}
             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}

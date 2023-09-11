@@ -285,7 +285,7 @@ export default function ElementReactions(oProps) {
         else {
             const oReactionStyles = StyleSheet.create({
                 cardStyle: {
-                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'backgroundModal'),
+                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal'),
                     shadowOpacity: 0.1,
                     shadowRadius: 5,
                     bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
