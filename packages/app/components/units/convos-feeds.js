@@ -30,19 +30,19 @@ const ListFeed = memo((data)  => {
         <View className="flex-auto flex-col my-auto ">
           <View className="flex-row gap-2">
             <Text
-                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
                 numberOfLines={1}
             > { title } </Text>
             <Time className="text-sm flex-none" ts={ date }></Time>
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
               numberOfLines={1}
             >
               { message }
             </Text>
-            <View className="flex-none bg-primary dark:bg-primary-dark rounded-full my-auto h-min px-1.5">
+            <View className="flex-none bg-primary dark:bg-primary-d rounded-full my-auto h-min px-1.5">
               { count > 0 && (
                 <Text className="text-xs text-white dark:text-black font-medium">
                   { count }

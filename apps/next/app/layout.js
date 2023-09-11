@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
   const queryClient = new QueryClient()
   return (
     <html lang="en" >
-      <body className='bg-bgrbody dark:bg-bgrbody-dark'>
+      <body className='bg-bgrbody dark:bg-bgrbody-d'>
         <Provider>
             <QueryClientProvider client={queryClient}>
               <CurrentUserProvider>

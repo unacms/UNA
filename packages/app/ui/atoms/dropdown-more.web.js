@@ -36,7 +36,7 @@ export default function DropdownMore(oProps) {
         return (
             <NmLink key={`link-${iIndex}`} asChild>
                 <Link href={oItem.link}>
-                    <Row className="flex flex-row items-center space-x-2 select-none rounded-[4px] px-3 py-2 text-[15px] font-medium leading-none no-underline outline-none hover:bg-bgrbutton-hover dark:hover:bg-bgrbutton-darkhover font-medium">
+                    <Row className="flex flex-row items-center space-x-2 select-none rounded-[4px] px-3 py-2 text-[15px] font-medium leading-none no-underline outline-none hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh font-medium">
                         {!!sIcon && <View className="w-8 h-8">{sIcon}</View>}
                         {!!oItem?.title && <View {...(bWeb ? {className: 'font-medium leading-[1.2] ' + oItem?.class_item_title} : {})}><Text className="text-neutral-700 dark:text-neutral-200 dark:hover:text-white">{oItem.title}</Text></View>}
                     </Row>    
@@ -55,11 +55,11 @@ export default function DropdownMore(oProps) {
                     </NmContent>
                 </NmItem>
                 <NmIndicator className="data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]">
-                    <View className="relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-bgrmodal dark:bg-bgrmodal-dark" />
+                    <View className="relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-bgrmodal dark:bg-bgrmodal-d" />
                 </NmIndicator>
             </NmList>
             <View className="perspective-[2000px] absolute top-full left-0 flex w-full justify-center">
-                <NmViewport className="NavigationMenuViewport data-[state=open]:animate-scaleIn data-[state=closed]:animate-scaleOut relative mt-[10px] h-[var(--radix-navigation-menu-viewport-height)] w-full origin-[top_center] overflow-hidden rounded-[6px] bg-bgrmodal dark:bg-bgrmodal-dark transition-[width,_height] duration-300 sm:w-[var(--radix-navigation-menu-viewport-width)]" />
+                <NmViewport className="NavigationMenuViewport data-[state=open]:animate-scaleIn data-[state=closed]:animate-scaleOut relative mt-[10px] h-[var(--radix-navigation-menu-viewport-height)] w-full origin-[top_center] overflow-hidden rounded-[6px] bg-bgrmodal dark:bg-bgrmodal-d transition-[width,_height] duration-300 sm:w-[var(--radix-navigation-menu-viewport-width)]" />
             </View>
         </NmRoot>
     );

@@ -139,7 +139,7 @@ export default function UnitComments(props) {
                             <Time className="" ts={data.cmt_time}></Time>
                         </View>
                         {
-                            (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-bdr dark:border-bdr-dark  rounded-md p-2 my-1'>
+                            (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
                                 <View  className="flex-row items-baseline" >
                                     <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
                                     <View className=" "><Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" /></View>

@@ -246,7 +246,7 @@ function DefaultUnit(data) {
           )}
 
           {bIsGroupContent && (
-            <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-dark p-1">
+            <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1">
               {data.mainImage && (
                 <View className="w-full md:w-1/3  ">
                   <View
@@ -299,7 +299,7 @@ function DefaultUnit(data) {
                   </Text>
                   <Text
                     numberOfLines={2}
-                    className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                    className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
                   >
                     {data.content.title}
                   </Text>
@@ -363,7 +363,7 @@ function DefaultUnit(data) {
                         <Link href={url} className="">
                           <Text
                             numberOfLines={2}
-                            className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-dark text-xl tracking-tight font-bold"
+                            className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
                           >
                             {data.content.title}
                           </Text>
@@ -376,7 +376,7 @@ function DefaultUnit(data) {
                               <View>
                                 <HtmlMemo tlContent={tlContent} />
                                 {data.showMore && !showFull && bIsLong && (
-                                  <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-dark ">
+                                  <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d ">
                                     <Button
                                       title="More"
                                       onPress={(e) => {
@@ -474,19 +474,19 @@ function SmallUnit(data) {
             <Time className="text-sm flex-none" ts={data.date}></Time>
           </View>
           <Text
-            className="flex-auto text-base sm:text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+            className="flex-auto text-base sm:text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
             numberOfLines={1}
           >
             {data.content.title}
           </Text>
           <View className="flex-row    w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
               numberOfLines={1}
             >
               {data.plainText}{stripTags(data.content.text)}
             </Text>
-            <View className="flex-none bg-primary dark:bg-primary-dark rounded-full    my-auto h-min px-1.5">
+            <View className="flex-none bg-primary dark:bg-primary-d rounded-full    my-auto h-min px-1.5">
               {data.cmts.count > 0 && (
                 <Text className="text-xs text-white dark:text-black font-medium">
                   {data.cmts.count}

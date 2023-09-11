@@ -191,7 +191,7 @@ export default function FormFieldFiles(props) {
         
             return (
             imagesList?.map((img, index) => (
-                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-dark border rounded-lg' >
+                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg' >
                     { img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="u-cover  rounded-lg" alt=''  src={img.file_url} /> }
                     { (!img?.file_type?.includes('image/') && !img?.preload) && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
@@ -228,7 +228,7 @@ export default function FormFieldFiles(props) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
             let w = props.name == 'picture' ? 'w-48' : 'w-full';
             if (! props.viewClasses){
-                w += ' bg-bgrinput dark:bg-bgrinput-dark border-bdrinput dark:border-bdrinput-dark '
+                w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d '
             }
             else{
                 w += ' ' + props.viewClasses
@@ -239,7 +239,7 @@ export default function FormFieldFiles(props) {
                         {img == null ? 
                             <Text className='text-neutral-500/50 text-xl text-center'>{props.caption}</Text> 
                             :( <>
-                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className="dark:bg-bgrcard-d border-bdr dark:border-bdr-dark border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className="dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                         <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />

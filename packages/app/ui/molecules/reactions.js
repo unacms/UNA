@@ -404,7 +404,7 @@ export default function ElementReactions(oProps) {
 
             let sClass = 'flex-0 flex mx-1  flex-row w-min top-px';
             if(aItem.name == sSelected)
-                sClass += ' border-b-2 border-primary dark:border-primary-dark ';
+                sClass += ' border-b-2 border-primary dark:border-primary-d ';
 
             return (
                 <View key={aItem.name} className={sClass}>
@@ -447,7 +447,7 @@ export default function ElementReactions(oProps) {
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
-                    <View className="relative flex-row  border-b border-bdr dark:border-bdr-dark ">{aPerformedByMenu}</View>
+                    <View className="relative flex-row  border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
                     <View className="p-2">{aPerformedByUsers}</View>
                 </Modal>
             ]

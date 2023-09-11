@@ -135,13 +135,13 @@ export default function ElementCarousel(props) {
         <Pressable style={{
                         flex: 1,
                         justifyContent: 'center',
-                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-bdr dark:border-bdr-dark border rounded-lg"  /></Pressable>
+                    }} className=" mt-1 " onPress={() => handleShowImage([data[0].src, 'image'])} ><Image sizes="384px" src={data[0].src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg"  /></Pressable>
         </View>
         </>);
     
     
     return ( 
-        <View className='bg-bgritem dark:bg-bgritem-dark pb-4 mb-2'>
+        <View className='bg-bgritem dark:bg-bgritem-d pb-4 mb-2'>
         <ImViewer/>
         <View className="w-full aspect-video " onLayout={handleLayout}>
             
@@ -176,7 +176,7 @@ export default function ElementCarousel(props) {
                     <Pressable style={{
                         flex: 1,
                         justifyContent: 'center',
-                    }} key={index} className=" mt-1 " onPress={() => handleShowImage([item.src, 'image'])} ><Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-bdr dark:border-bdr-dark border rounded-lg"  /></Pressable>
+                    }} key={index} className=" mt-1 " onPress={() => handleShowImage([item.src, 'image'])} ><Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover rounded-lg dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg"  /></Pressable>
                     
                 )}
             />

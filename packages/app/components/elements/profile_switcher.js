@@ -38,7 +38,7 @@ export default function ElementProfileSwitcher(props) {
                         <View key = {'index' + index} className=" p-2 flex-row  
                             group duration-200 overflow-hidden rounded-md  
                             active:bg-bgrcard-active dark:active:bg-bgrcard-dactive 
-                            hover:bg-bgrcard-h dark:hover:bg-bgrcard-dhover
+                            hover:bg-bgrcard-h dark:hover:bg-bgrcard-dh
                             max-w-5xl self-center w-full gap-x-2">
                                 <View className="w-10 h-10 bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                 <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900  dark:text-neutral-100'>{item.display_name}</Text>

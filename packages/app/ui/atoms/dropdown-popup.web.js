@@ -29,7 +29,7 @@ export default function DropdownPopup(oProps) {
         <DmRoot modal={bModal} open={open} onOpenChange={(bDmOpen) => {onOpenChange(bDmOpen)}}>
             {sTrigger}
             <DmPortal>
-                <DmContent className="DropdownMenuContent border border-bdrmodal dark:border-bdrmodal-dark backdrop-blur m-1 bg-bgrmodal dark:bg-bgrmodal-dark shadow-xl" {...restProps}>
+                <DmContent className="DropdownMenuContent border border-bdrmodal dark:border-bdrmodal-d backdrop-blur m-1 bg-bgrmodal dark:bg-bgrmodal-d shadow-xl" {...restProps}>
                     {oProps.children[1]}
                 </DmContent>
             </DmPortal>

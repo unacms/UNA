@@ -65,7 +65,7 @@ export default function ElementCarousel(props) {
             flex: 1,
             justifyContent: 'center',
             }}    className=" " onPress={() => handleShowImage([item.src, 'image'])} >
-                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover  dark:bg-bgritem-dark dark:bg-bgritem-dark gap-x-1 "    />
+                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 "    />
                 {item.row == 1 && item.index== 1 && len > 4 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{len-4}</Text></View>} 
         </Pressable></View>
     );

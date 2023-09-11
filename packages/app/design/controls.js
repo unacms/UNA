@@ -16,15 +16,15 @@ if(Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full  px-3 dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
-export const InputMulti = styled(TextInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-dark dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
-export const InputRounded = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-full   w-full  px-4 dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const Input = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full  px-3 dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const InputMulti = styled(TextInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
+export const InputRounded = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-full   w-full  px-4 dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
 
 export const Switch = SwitchDef
 export const Hidden = styled(TextInputDef, 'hidden')
-//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-dark dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
+//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
 
-const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-dark focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-darkfocus  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-dark dark:focus:bg-bgrinput-darkafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 '
+const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 
@@ -65,7 +65,7 @@ export function Modal({
             <Wrapper className="flex justify-end w-full h-full bg-neutral-100/80 dark:bg-neutral-900/80" {...(onClose && { onPress: onClose })}>
                 <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
-                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-dark border border-bdrmodal dark:border-bdrmodal-dark rounded-lg shadow-2xl">
+                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-lg shadow-2xl">
                             <View className="p-2">
                                 <Row className={'items-center ' + (title ? 'justify-between' : 'justify-end') + ' ml-2'}>
                                     { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-lg font-bold'>{title}</Text></View>}
@@ -107,7 +107,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
     const { variant, size, fullWidth, ...restChild } = child.props;
     const isLastChild = iIndex < children.length - 1;
-    const childClass = isLastChild ? 'border-r border-bdrbutton dark:border-bdrbutton-dark' : '';
+    const childClass = isLastChild ? 'border-r border-bdrbutton dark:border-bdrbutton-d' : '';
 
     let childItem;
     if (child.type === Button) {

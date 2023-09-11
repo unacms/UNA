@@ -25,7 +25,7 @@ export default function () {
 
  	return (
         <>
-        <View className="fixed bottom-0 z-30 w-full sm:hidden tabbar bg-bgrtabbar dark:bg-bgrtabbar-dark">
+        <View className="fixed bottom-0 z-30 w-full sm:hidden tabbar bg-bgrtabbar dark:bg-bgrtabbar-d">
           <View className=" backdrop-blur z-50  bg-bgrnavbar dark:bg-bgrnavbar-d border-t  border-bdrnavbar dark:border-bdrnavbar-d w-full px-2 h-16">
               <Row className="flex-auto items-center flex-row justify-around my-2 w-full">
                   {TabList.map((tab, index) => (
@@ -33,7 +33,7 @@ export default function () {
                              <Link  href={tab.url} >
                              <View className='flex-col gap-1 items-center'>
                               {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24}  />}
-                               <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>{tab.title}</Text>
+                               <Text className={'group-h:text-primary dark:group-h:text-primary  text-[10px] whitespace-nowrap '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>{tab.title}</Text>
                                {(tab.url == '/notifications-view' && notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
                               </View>
                               </Link>

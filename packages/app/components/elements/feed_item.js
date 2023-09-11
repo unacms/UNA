@@ -18,7 +18,7 @@ export default function ElementFeedItem({data}) {
     }
 
     return (
-    <View className="relative sm:my-0 bg-bgrcard dark:bg-bgrcard-d border-b border-bdr dark:border-bdr-dark w-full mx-auto max-w-5xl">             
+    <View className="relative sm:my-0 bg-bgrcard dark:bg-bgrcard-d border-b border-bdr dark:border-bdr-d w-full mx-auto max-w-5xl">             
         <View className="m-4">
             <Html data={tlContent} />
         </View>

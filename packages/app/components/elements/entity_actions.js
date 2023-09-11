@@ -2,7 +2,7 @@ import { View } from 'app/design/view';
 import Menu from '../menu';
 
 export default function ElementEntityActions(props) {
-    //relative  sm:my-0 bg-bgrcard dark:bg-bgrcard-d  border-bdr dark:border-bdr-dark sm:border-x w-full mx-auto max-w-5xl
+    //relative  sm:my-0 bg-bgrcard dark:bg-bgrcard-d  border-bdr dark:border-bdr-d sm:border-x w-full mx-auto max-w-5xl
 
     return (
         <View className="">

@@ -72,7 +72,7 @@ export default function PageLayout(props) {
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
 
           <View className="flex-auto relative w-full flex-row mx-auto  ">
-            <View className="hidden md:block   w-1/4 xl:w-1/5 mt-4 sticky duration-200  ">
+            <View className="hidden lg:block border-r border-bdr dark:border-bdr-d w-1/4 pt-4 sticky duration-200  ">
               <View className="mx-4 mb-1 p-2  flex-row  
                     group duration-200 overflow-hidden rounded-lg  
                     hover:bg-neutral-500/10 active:opacity-50
@@ -85,7 +85,7 @@ export default function PageLayout(props) {
 
               <BlockByName data={props.data} name={props.blocks.menu} />
             </View>
-            <View className="flex-auto  w-3/4 xl:w-4/5 flex-row duration-200">
+            <View className="flex-auto  w-3/4  flex-row duration-200">
               <View className="flex-auto w-2/3">
                 <Story></Story>
                 { appSetting('feed', 'show_multi') ? <>

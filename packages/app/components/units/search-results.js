@@ -16,7 +16,7 @@ export default function UnitSearchResults(props) {
             <Link href={data.url}>  
                 <View className='flex-col    '>   
                     <View className="flex flex-col h-28 gap-1 p-3 ">
-                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-dark sm:leading-5  text-lg sm:text-base  font-bold'>
+                        <Text numberOfLines={2} className=' text-neutral-950 dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d sm:leading-5  text-lg sm:text-base  font-bold'>
                             {data.title}
                         </Text>
                         <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 text-sm ">{data.summary_plain}</Text>

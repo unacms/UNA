@@ -99,7 +99,7 @@ export default function AtomProfile(oProps) {
 
     function DisplayNameLink(oProps) {
         return (
-            <Text className={'text-neutral-900 hover:text-primary dark:text-neutral-100 dark:hover:text-primary-dark ' + sSizeFont + ' truncate'}>
+            <Text className={'text-neutral-900 hover:text-primary dark:text-neutral-100 dark:hover:text-primary-d ' + sSizeFont + ' truncate'}>
                 {oProps.title}
             </Text>
         )

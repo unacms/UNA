@@ -42,17 +42,17 @@ export default function ElementDashboardStat(props) {
                   <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-3" margin="a">
                     <Row className='space-x-1 w-full justify-between'>
                       {
-                        item.count > 0 ? <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                        item.count > 0 ? <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
                         {item.count}
                         </Text> : <View><Link href={item2.link2} emulate={true}><Button startDecorator="plus" size="sm" rounded/></Link></View>
                       }
                       {getCounter(item[item2.action], item2.action_icon)}
                     </Row>
                     <Row className="w-full my-auto gap-x-2 ">
-                      <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                      <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
                         <Icon icon={item2.icon} width={24} height={24} />
                       </View>
-                      <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                      <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                       {item2.title}
                       </Text>
                     </Row>
@@ -65,17 +65,17 @@ export default function ElementDashboardStat(props) {
             <Link href={item2.link} key={index}>
               <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-3" margin="a">
                 <Row className=''>
-                <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
                 {item.current} 
                 </Text>
                 {getCounter(item.growth, '', '%')}
                
                 </Row>
                 <Row className="w-full my-auto gap-x-2 ">
-                  <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                  <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
                     <Icon icon={item2.icon} width={24} height={24} />
                   </View>
-                  <Text className=" flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                  <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                    {item2.title}
                   </Text>
                 </Row>
