@@ -75,6 +75,8 @@ export function getHeaderSettings(uri, width) {
     const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' ? settings.headerSettings.backButton : true;
 
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
+
+    let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.header: true;
     if (width > 1024)
         bHeader = true;
 
@@ -92,7 +94,8 @@ export function getHeaderSettings(uri, width) {
         header: bHeader,
         menu: bMenu,
         title: bTitle,
-        offset: bOffset
+        offset: bOffset,
+        footer: bFooter
     }
 }
 

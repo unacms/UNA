@@ -27,11 +27,6 @@ export default function ElementLink(props) {
 
             element.classList.remove('fade-in');
             element.classList.add('fade-out');
-            
-            setTimeout(() => {
-                element.classList.remove('fade-out');
-                
-            }, 1000);
         }
     }, []);
 

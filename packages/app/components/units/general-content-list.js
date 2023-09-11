@@ -68,7 +68,7 @@ export default function Unit(props) {
     }
 
     function defaultUnit(){
-        let sMeta = <Profile showLink={true} {...data.author_data} displayType="unit" displaySize="sm" showInfo="false" />
+        let sMeta = <Profile  {...data.author_data} displayType="unit" displaySize="sm" showInfo="false" />
 
         return (
             <Card margin=' mb-2 mx-2 ' rounded=" rounded-2xl ">

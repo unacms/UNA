@@ -348,7 +348,7 @@ export const settingsDefault = {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
             icon: 'Calendar',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'events-top': {
             layout: 'blackbox',
@@ -400,7 +400,7 @@ export const settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_posts:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false },
+            headerSettings: { header: false, footer: false },
         },
         item: {
             layout: 'post',

@@ -34,7 +34,10 @@ export default function Layout({ data, uri, children }) {
     }, [handlePageShow]);
 
     useEffect(() => {
-       
+
+        let element = document.querySelector('.animated');
+        element.classList.remove('fade-out');
+        element.classList.add('fade-in');
        /* var elementsToRemove = document.querySelectorAll('.loader');
         elementsToRemove.forEach(function(element) {
             element.remove();
@@ -53,6 +56,7 @@ export default function Layout({ data, uri, children }) {
     if (data?.empty)
         return <>{children}</>
 
+    console.log(headerSettings);
     return (
         <>
             <View className="bg-bgrbody dark:bg-bgrbody-d w-full items-stretch ">
@@ -65,7 +69,7 @@ export default function Layout({ data, uri, children }) {
                         </View>
                     </View>
                 </View>
-                <Footer />
+                {headerSettings?.footer !== false && <Footer /> }
             </View>
             <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} />
         </>

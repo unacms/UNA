@@ -103,17 +103,17 @@ export default function PageLayout(props) {
         <>{header}
  
         <View className="lg:py-4">
-            <Card addClassName="max-w-5xl mx-auto w-full" margin="none">
-                <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+            <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
+                <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                 </View>
                 </Row>
-                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-16 lg:bottom-0 w-full' : ' w-full'} > 
+                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
                     </KeyboardAvoidingView>
                 </View>
-            </Card>
+            </View>
         </View> </>
     )
 
