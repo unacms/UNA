@@ -6,7 +6,7 @@ import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();

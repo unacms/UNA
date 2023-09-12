@@ -8,7 +8,8 @@ import Profile from 'app/ui/molecules/profile'
 import { BlockByName } from 'app/components/block'
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
+import { appSetting } from 'app/lib/util'
 
 export default function PageLayout(props) {
   let { currentUser, setCurrentUser } = useCurrentUser()
@@ -47,14 +48,14 @@ export default function PageLayout(props) {
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
               <View className="flex-row gap-x-2 hidden lg:flex">
-                <Button
+                {appSetting('account', 'allow_switch_profile') && <Button
                   variant="text"
                   title="Switch Profile"
                   startDecorator="UserSwitch"
                   fullWidth
                   onClick = {() => setShowImage(true)}
                   align="left"
-                />
+                />}
                 <Link href="/account-settings-password">
                 <Button
                   variant="text"

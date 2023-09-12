@@ -1,7 +1,7 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 const items = ['', '', '', '', '','']
 const maxWidth = appSetting('layout', 'max_width')

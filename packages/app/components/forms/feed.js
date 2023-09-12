@@ -8,7 +8,7 @@ import { KeyboardAvoidingView } from 'react-native'
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 export default function FormFeed(props) {
   const [showImage, setShowImage] = useState(false)

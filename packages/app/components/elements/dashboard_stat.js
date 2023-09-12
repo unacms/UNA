@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 function getCounter(num, icon='', add='') {
     if (!num) num = 0;

@@ -6,7 +6,7 @@ import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import Link from '../../ui/atoms/link';
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 export default function UnitSearchResults(props) {
     let data = props.data;

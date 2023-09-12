@@ -36,13 +36,11 @@ export default function Layout({ data, uri, children }) {
     useEffect(() => {
 
         let element = document.querySelector('.animated');
-        element.classList.remove('fade-out');
-        element.classList.add('fade-in');
-       /* var elementsToRemove = document.querySelectorAll('.loader');
-        elementsToRemove.forEach(function(element) {
-            element.remove();
-        });
-*/
+        if(element){
+            element.classList.remove('fade-out');
+            element.classList.add('fade-in');
+        }
+
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }

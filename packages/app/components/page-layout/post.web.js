@@ -9,7 +9,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { stripTags } from '../../lib/util';
 import { useWindowDimensions } from 'react-native'
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 export default function PageLayout(props) {
 

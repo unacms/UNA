@@ -38,6 +38,12 @@ export const settingsDefault = {
         list: true,
         compress: true
     },
+    account: {
+        allow_switch_profile: true
+    },
+    splash: {
+        block: 'login'
+    },
     feed: {
         show_selector_view: true,
         default_view: '',

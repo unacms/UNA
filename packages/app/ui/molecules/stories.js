@@ -3,7 +3,7 @@ import { Modal } from 'app/design/controls'
 import { useState, useEffect } from 'react';
 import Image from '../../ui/atoms/image';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import Card from 'app/components/card'
+import Card from 'app/ui/molecules/card'
 
 export function Story(props) {
     const [showImage, setShowImage] = useState(false);

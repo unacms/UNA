@@ -33,9 +33,9 @@ export default function ElementTime(props) {
     
     if (diffDays < 1) {
         s = formatDistance(d, date, { addSuffix: false }).trim();
-        s = s.replace(/\s+/g, '').replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm').replace('lessthanam', 'Now');
+        s = s.replace(/\s+/g, '').replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm').replace('lessthanam', 'Now').trim();
     } else {
-        s = formatDate(d);
+        s = formatDate(d).trim();
     }
   }
 
