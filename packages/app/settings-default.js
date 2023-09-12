@@ -69,6 +69,7 @@ export const settingsDefault = {
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
+            
 
         ],
     },
