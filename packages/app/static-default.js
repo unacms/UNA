@@ -1,462 +1,149 @@
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { Button } from 'app/design/controls'
-import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
-import Link from 'app/ui/atoms/link'
-import { Icon } from 'app/ui/atoms/icon'
-import Card from 'app/components/card'
-
-export const staticDefault = {
-  logo: {
-    text: (
-      <Svg
-        aria-label="Logo Text"
-        className="h-8   group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-h:text-neutral-900 dark:group-h:text-neutral-100 duration-500"
-        viewBox="0 0 6400 2400"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <Path
-          d="M2362.09 2000L1297.63 1064.15L1303.83 1939.62H1000V400H1012.4L2074.79 1349.94L2068.59 458.365H2370.36V2000H2362.09Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M2762.11 458.365H3799.7V740.126H3061.81V1056.1H3714.95V1337.86H3061.81V1657.86H3828.63V1939.62H2762.11V458.365Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M4045.69 1201.01C4045.69 1099.04 4065.67 1002.43 4105.63 911.195C4145.59 819.958 4200.71 739.455 4270.98 669.686C4342.64 598.574 4425.31 542.893 4519.01 502.641C4612.71 462.39 4713.3 442.264 4820.78 442.264C4926.88 442.264 5026.78 462.39 5120.48 502.641C5214.18 542.893 5296.85 598.574 5368.51 669.686C5441.54 739.455 5498.03 819.958 5537.99 911.195C5579.33 1002.43 5600 1099.04 5600 1201.01C5600 1305.66 5579.33 1403.61 5537.99 1494.84C5498.03 1586.08 5441.54 1666.58 5368.51 1736.35C5296.85 1804.78 5214.18 1858.45 5120.48 1897.36C5026.78 1936.27 4926.88 1955.72 4820.78 1955.72C4713.3 1955.72 4612.71 1936.27 4519.01 1897.36C4425.31 1858.45 4342.64 1804.78 4270.98 1736.35C4200.71 1666.58 4145.59 1586.08 4105.63 1494.84C4065.67 1403.61 4045.69 1305.66 4045.69 1201.01ZM4355.73 1201.01C4355.73 1288.22 4376.39 1368.05 4417.73 1440.5C4460.45 1511.61 4517.63 1568.64 4589.29 1611.57C4660.94 1653.17 4741.55 1673.96 4831.11 1673.96C4917.92 1673.96 4995.78 1653.17 5064.67 1611.57C5134.95 1568.64 5190.06 1511.61 5230.02 1440.5C5269.98 1368.05 5289.96 1288.22 5289.96 1201.01C5289.96 1111.11 5269.3 1030.61 5227.96 959.497C5186.62 887.044 5130.81 830.021 5060.54 788.428C4990.26 745.493 4911.03 724.025 4822.85 724.025C4734.66 724.025 4655.43 745.493 4585.15 788.428C4514.88 830.021 4459.07 887.044 4417.73 959.497C4376.39 1030.61 4355.73 1111.11 4355.73 1201.01Z"
-          fill="currentColor"
-        />
-      </Svg>
-    ),
-
-    mark: (
-      <Svg
-        aria-label="Logo Mark"
-        className="p-[1px] group-h:rotate-[180deg] group-h:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
-        viewBox="0 0 2400 2400"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <Path
-          d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-          className="opacity-80 "
-          fill="#E2554F"
-        />
-        <Path
-          d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-          className="opacity-80 "
-          fill="#E2554F"
-        />
-        <Path
-          d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-          className="text-neutral-950 dark:text-neutral-50   group-h:text-accent dark:group-h:text-accent-d"
-          fill="#E2554F"
-        />
-        <Path
-          d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-          className="group-h:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-h:text-accent dark:group-h:text-accent-d"
-          fill="currentColor"
-        />
-        <Path
-          d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-          className="group-h:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-h:text-accent dark:group-h:text-accent-d"
-          fill="currentColor"
-        />
-      </Svg>
-    ),
-
-    native: (
-      <Svg
-        className="w-20 h-6 text-primary"
-        viewBox="0 0 8000 2400"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <Path
-          d="M4762.09 2000L3697.63 1064.15L3703.83 1939.62H3400V400H3412.4L4474.79 1349.94L4468.59 458.365H4770.35V2000H4762.09Z"
-          fill="#E2554F"
-        />
-        <Path
-          d="M5162.11 458.365H6199.7V740.126H5461.81V1056.1H6114.95V1337.86H5461.81V1657.86H6228.63V1939.62H5162.11V458.365Z"
-          fill="#E2554F"
-        />
-        <Path
-          d="M6445.69 1201.01C6445.69 1099.04 6465.67 1002.43 6505.63 911.195C6545.59 819.958 6600.71 739.455 6670.98 669.686C6742.64 598.574 6825.31 542.893 6919.01 502.641C7012.71 462.39 7113.3 442.264 7220.78 442.264C7326.88 442.264 7426.78 462.39 7520.48 502.641C7614.18 542.893 7696.85 598.574 7768.51 669.686C7841.54 739.455 7898.03 819.958 7937.99 911.195C7979.33 1002.43 8000 1099.04 8000 1201.01C8000 1305.66 7979.33 1403.61 7937.99 1494.84C7898.03 1586.08 7841.54 1666.58 7768.51 1736.35C7696.85 1804.78 7614.18 1858.45 7520.48 1897.36C7426.78 1936.27 7326.88 1955.72 7220.78 1955.72C7113.3 1955.72 7012.71 1936.27 6919.01 1897.36C6825.31 1858.45 6742.64 1804.78 6670.98 1736.35C6600.71 1666.58 6545.59 1586.08 6505.63 1494.84C6465.67 1403.61 6445.69 1305.66 6445.69 1201.01ZM6755.73 1201.01C6755.73 1288.22 6776.39 1368.05 6817.73 1440.5C6860.45 1511.61 6917.63 1568.64 6989.29 1611.57C7060.94 1653.17 7141.55 1673.96 7231.11 1673.96C7317.92 1673.96 7395.78 1653.17 7464.67 1611.57C7534.95 1568.64 7590.06 1511.61 7630.02 1440.5C7669.98 1368.05 7689.96 1288.22 7689.96 1201.01C7689.96 1111.11 7669.3 1030.61 7627.96 959.497C7586.62 887.044 7530.81 830.021 7460.54 788.428C7390.26 745.493 7311.03 724.025 7222.85 724.025C7134.66 724.025 7055.43 745.493 6985.15 788.428C6914.88 830.021 6859.07 887.044 6817.73 959.497C6776.39 1030.61 6755.73 1111.11 6755.73 1201.01Z"
-          fill="#E2554F"
-        />
-        <Path
-          d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-          fill="currentColor"
-        />
-
-        <Path
-          d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-          fill="currentColor"
-        />
-      </Svg>
-    ),
-    nativedark: (
-      <Svg
-        className="w-20 h-6 text-primary"
-        viewBox="0 0 8000 2400"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <Path
-          d="M4762.09 2000L3697.63 1064.15L3703.83 1939.62H3400V400H3412.4L4474.79 1349.94L4468.59 458.365H4770.35V2000H4762.09Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M5162.11 458.365H6199.7V740.126H5461.81V1056.1H6114.95V1337.86H5461.81V1657.86H6228.63V1939.62H5162.11V458.365Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M6445.69 1201.01C6445.69 1099.04 6465.67 1002.43 6505.63 911.195C6545.59 819.958 6600.71 739.455 6670.98 669.686C6742.64 598.574 6825.31 542.893 6919.01 502.641C7012.71 462.39 7113.3 442.264 7220.78 442.264C7326.88 442.264 7426.78 462.39 7520.48 502.641C7614.18 542.893 7696.85 598.574 7768.51 669.686C7841.54 739.455 7898.03 819.958 7937.99 911.195C7979.33 1002.43 8000 1099.04 8000 1201.01C8000 1305.66 7979.33 1403.61 7937.99 1494.84C7898.03 1586.08 7841.54 1666.58 7768.51 1736.35C7696.85 1804.78 7614.18 1858.45 7520.48 1897.36C7426.78 1936.27 7326.88 1955.72 7220.78 1955.72C7113.3 1955.72 7012.71 1936.27 6919.01 1897.36C6825.31 1858.45 6742.64 1804.78 6670.98 1736.35C6600.71 1666.58 6545.59 1586.08 6505.63 1494.84C6465.67 1403.61 6445.69 1305.66 6445.69 1201.01ZM6755.73 1201.01C6755.73 1288.22 6776.39 1368.05 6817.73 1440.5C6860.45 1511.61 6917.63 1568.64 6989.29 1611.57C7060.94 1653.17 7141.55 1673.96 7231.11 1673.96C7317.92 1673.96 7395.78 1653.17 7464.67 1611.57C7534.95 1568.64 7590.06 1511.61 7630.02 1440.5C7669.98 1368.05 7689.96 1288.22 7689.96 1201.01C7689.96 1111.11 7669.3 1030.61 7627.96 959.497C7586.62 887.044 7530.81 830.021 7460.54 788.428C7390.26 745.493 7311.03 724.025 7222.85 724.025C7134.66 724.025 7055.43 745.493 6985.15 788.428C6914.88 830.021 6859.07 887.044 6817.73 959.497C6776.39 1030.61 6755.73 1111.11 6755.73 1201.01Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-          fill="#E2554F"
-        />
-        <Path d="M987.5 1502L740 921.75L120 2000L987.5 1502Z" fill="#E2554F" />
-
-        <Path
-          d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-          fill="#E2554F"
-        />
-        <Path
-          d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-          fill="currentColor"
-        />
-        <Path
-          d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-          fill="currentColor"
-        />
-      </Svg>
-    ),
+const colors = {
+  neutral: {
+    DEFAULT: 'rgba(75,85,99,1)',
+    d: 'rgba(156,163,175,1)',
+    50: 'rgba(249,250,251,1)',
+    100: 'rgba(243,244,246,1)',
+    200: 'rgba(229,231,235,1)',
+    300: 'rgba(209,213,219,1)',
+    400: 'rgba(156,163,175,1)',
+    500: 'rgba(107,114,128,1)',
+    600: 'rgba(75,85,99,1)',
+    700: 'rgba(55,65,81,1)',
+    800: 'rgba(31,41,55,1)',
+    900: 'rgba(17,24,39,1)',
+    950: 'rgba(3,7,18,1)',
   },
-  components: {
-    about: (
-      <>
-        <Text className="text-3xl lg:text-4xl xl:text-5xl  font-bold text-neutral-800 dark:text-neutral-200">
-          About
-        </Text>
-        <Text className="text-lg lg:text-xl xl:text-2xl  text-neutral-600 dark:text-neutral-400">
-          The place to connect, share and grow with the community.
-        </Text>
-      </>
-    ),
-    comments_empty: (
-      <>
-        <View className="p-8">
-          <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-            <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
-              <Icon icon="ChatCircle" width={32} height={32} />
-            </View>
-            <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-              No comments yet
-            </Text>
-            <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-              Be the first to share what you think
-            </Text>
-          </View>
-        </View>
-      </>
-    ),
-
-    home2: (
-      <>
-        <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 "></Text>
-      </>
-    ),
-    dummy: (
-      <>
-        <Row className="my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
-          <Icon
-            className="text-green-600 dark:text-green-400"
-            icon="ArrowFatUp"
-            width={16}
-            height={16}
-          />
-          <Text className="flex-none text-green-800 dark:text-green-200 text-xs">
-            123
-          </Text>
-        </Row>
-
-        <Row className="my-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
-          <Icon
-            className="text-red-600 dark:text-red-400"
-            icon="ArrowFatUp"
-            width={16}
-            height={16}
-          />
-          <Text className={'flex-none text-red-800 dark:text-red-200 text-xs'}>
-            456
-          </Text>
-        </Row>
-
-        <Row className="w-1/5 my-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
-          <Icon
-            className="text-gray-600 dark:text-gray-400"
-            icon="ArrowFatUp"
-            width={16}
-            height={16}
-          />
-          <Text
-            className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
-          >
-            123
-          </Text>
-        </Row>
-      </>
-    ),
-    footer: (
-      <>
-        <View className=" w-full px-2 mt-4">
-          <Card addClassName="w-full p-4 flex-row justify-center ">
-            <Link href="/about">
-              <Button
-                variant="text"
-                title="About"
-                className="mt-auto"
-                size="sm"
-              />
-            </Link>
-
-            <Link href="/contact">
-              <Button
-                variant="text"
-                title="Contact"
-                className="mt-auto"
-                size="sm"
-              />
-            </Link>
-            <Link href="/privacy">
-              <Button
-                variant="text"
-                title="Privacy"
-                className="mt-auto"
-                size="sm"
-              />
-            </Link>
-            <Link href="/terms">
-              <Button
-                variant="text"
-                title="Terms"
-                className="mt-auto"
-                size="sm"
-              />
-            </Link>
-          </Card>
-        </View>
-      </>
-    ),
-    home: (
-      
-        <View className="flex-col  w-full max-w-screen-2xl mx-auto">
-          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 m-6 p-4 duration-300 border border-dashed rounded-3xl border-bdr dark:border-bdr-d">
-            <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
-              <View>
-                <Text className="text-5xl font-extrabold text-primary dark:text-primary-d text-center lg:text-start">
-                  Welcome
-                </Text>
-                <Text className="text-5xl font-extrabold text-neutral-800 dark:text-neutral-200 text-center lg:text-start">
-                  to your network!
-                </Text>
-              </View>
-              <Text className="text-lg xl:text-xl font-medium max-w-2xl text-neutral-700 dark:text-neutral-300 text-center lg:text-start">
-              Connect and create with like-minded individuals. Discover new perspectives, share knowledge, and grow together, all within your community. 
-              </Text>
-              <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
-                <Link href="/create-account">
-                  <Button
-                    title="Create account"
-                    variant="primary"
-                    startDecorator="UserCirclePlus"
-                  />
-                </Link>
-                <Link href="/login">
-                  <Button
-                    title="Log in"
-                    variant="default"
-                    startDecorator="SignIn"
-                  />
-                </Link>
-              </View>
-            </View>
-            <View className="mx-auto w-full lg:w-1/2 p-2    ">
-              <Card addClassName="w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
-              </Card>
-            </View>
-          </View>
-
-          <View className="flex-col sm:flex-row flex-wrap p-4 w-full duration-300">
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Users" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Meet People
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Make new friends and create lasting connections.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="UsersThree"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Join Groups
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Find your tribe in groups that match your interests.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="ChatCenteredText"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Share Ideas
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Spitball ideas and get feedback from folks who get it.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="CalendarCheck"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Discover Events
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Find out what's happening and catch events you care about.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="ChatTeardropDots"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Message Friends
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Chat on the go with your friends, wherever, whenever.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Chats" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Discuss Topics
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Ask questions, jump into debates or chat casually, your call.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="Storefront"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Buy & Sell
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Grab deals or sell your own stuff on a marketplace you can
-                  trust.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName="w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Video" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Watch Videos
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Explore, learn, and get entertained with the latest videos.
-                </Text>
-              </Card>
-            </View>
-          </View>
-        </View>
-      
-    ),
+  primary: {
+    DEFAULT: 'rgba(206,58,52,1)',
+    d: 'rgba(226,85,79,1)',
+    50: 'rgba(253,243,243,1)',
+    100: 'rgba(252,229,228,1)',
+    200: 'rgba(250,208,206,1)',
+    300: 'rgba(246,174,171,1)',
+    400: 'rgba(238,128,123,1)',
+    500: 'rgba(226,85,79,1)',
+    600: 'rgba(206,58,52,1)',
+    700: 'rgba(173,45,40,1)',
+    800: 'rgba(144,40,36,1)',
+    900: 'rgba(120,39,36,1)',
+    950: 'rgba(65,16,14,1)',
   },
+
+  accent: {
+    DEFAULT: 'rgba(246 208 25,1)',
+    d: 'rgba(249,115,22,1)',
+  },
+
+  bgrbody: {
+    DEFAULT: 'rgb(243,244,246)',
+    d: 'rgb(0,0,0)',
+  },
+
+  bgrcard: {
+    DEFAULT: 'rgba(255,255,255,1)',
+    h: 'rgba(255,255,255,0.8)',
+    d: 'rgba(17,24,39,1)',
+    dh: 'rgba(17,24,39,0.8)',
+  },
+  bdrcard: {
+    DEFAULT: 'rgba(229,231,235,1)',
+    h: 'rgba(209,213,219,1)',
+    d: 'rgba(31,41,55,1)',
+    dh: 'rgba(55,65,81,1)',
+  },
+
+  bgrinput: {
+    DEFAULT: 'rgba(209,213,219,0.5)',
+    f: 'rgba(255,255,255,1)',
+    d: 'rgba(55,65,81,0.5)',
+    df: 'rgba(17,24,39,1)',
+  },
+  bdrinput: {
+    DEFAULT: 'rgba(209,213,219,1)',
+    f: 'rgba(2,132,199,1)',
+    d: 'rgba(17,24,39,1)',
+    df: 'rgba(14,165,233,1)',
+  },
+
+  bgrmodal: {
+    DEFAULT: 'rgba(255,255,255,0.9)',
+    d: 'rgba(17,24,39,0.9)',
+  },
+  bdrmodal: {
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    d: 'rgba(31,41,55,0.6)',
+  },
+
+  bgrnavbar: {
+    DEFAULT: 'rgba(255,255,255,0.8)',
+    d: 'rgba(17,24,39,0.8)',
+  },
+  bdrnavbar: {
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    d: 'rgba(31,41,55,0.8)',
+  },
+
+  bgrtabbar: {
+    DEFAULT: 'rgba(255,255,255,1)',
+    d: 'rgba(17,24,39,1)',
+  },
+
+  bdrtabbar: {
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    d: 'rgba(31,41,55,0.6)',
+  },
+
+  bgritem: {
+    DEFAULT: 'rgba(229,231,235,0.6)',
+    d: 'rgba(31,41,55,0.8)',
+    h: 'rgba(229,231,235,0.8)',
+    dh: 'rgba(31,41,55,0.6)',
+
+  },
+  bdritem: {
+    DEFAULT: 'rgba(229,231,235,1)',
+    d: 'rgba(31,41,55,1)',
+
+  },
+
+  bgrbutton: {
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    h: 'rgba(209,213,219,0.5)',
+    d: 'rgba(31,41,55,0.8)',
+    dh: 'rgba(31,41,55,0.5)',
+  },
+  bdrbutton: {
+    DEFAULT: 'rgba(209,213,219,0.8)',
+    h: 'rgba(209,213,219,1)',
+    d: 'rgba(31,41,55,1)',
+    dh: 'rgba(31,41,55,0.8)',
+  },
+
+  bdr: {
+    DEFAULT: 'rgba(229,231,235,1)',
+    d: 'rgba(31,41,55,1)',
+  },
+
+  screen: {
+    DEFAULT: '#f3f4f6',
+    d: '#030712',
+  },
+}
+
+const theme = {
+  extend: {
+    colors: colors,
+
+    aspectRatio: {
+      '3/1': '3 / 1',
+      '4/1': '4 / 1',
+      '5/1': '5 / 1',
+    },
+  },
+}
+
+module.exports = {
+  theme,
+  colors,
 }
