@@ -20,8 +20,8 @@ export default function ElementProfileMenu(props) {
   }
 
   return (
-    <View style={styles} className=" px-4 overflow-y-scroll profile-menu flex-col overflow-hidden  ">
-      <View className="flex-col gap-y-1">
+    <View style={styles} className=" px-4 overflow-y-scroll profile-menu  overflow-hidden  ">
+      <View className="flex-col ">
         {appSetting('menu', 'left').map((item, index) => (
           <Link key={`menu-${index}`} href={item.link.replace('?owner=1', '')}>
             <Button
@@ -31,6 +31,7 @@ export default function ElementProfileMenu(props) {
               solid
               align="start"
               title={item.title}
+              size="lg"
             />
           </Link>
         ))}

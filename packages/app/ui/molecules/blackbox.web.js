@@ -275,7 +275,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return (
                 <>
                 <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
-                    <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full pt-4'}>
+                    <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full p-2'}>
                         {dataItems.length > 0 ? <TabFlashList
                             index={route.index}
                             data={dataItems}

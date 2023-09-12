@@ -42,9 +42,9 @@ const colors = {
 
   bgrcard: {
     DEFAULT: 'rgba(255,255,255,1)',
-    h: 'rgba(249,250,251,1)',
+    h: 'rgba(255,255,255,0.8)',
     d: 'rgba(17,24,39,1)',
-    dh: 'rgba(31,41,55,1)',
+    dh: 'rgba(17,24,39,0.8)',
   },
   bdrcard: {
     DEFAULT: 'rgba(229,231,235,1)',
@@ -95,11 +95,10 @@ const colors = {
   },
 
   bgritem: {
-    DEFAULT: 'rgba(229,231,235,0.9)',
-    d: 'rgba(31,41,55,0.9)',
-    h: 'rgba(229,231,235,0.5)',
-    dh: 'rgba(31,41,55,0.5)',
-    
+    DEFAULT: 'rgba(229,231,235,0.6)',
+    d: 'rgba(31,41,55,0.8)',
+    h: 'rgba(229,231,235,0.8)',
+    dh: 'rgba(31,41,55,0.6)',
 
   },
   bdritem: {
@@ -109,16 +108,16 @@ const colors = {
   },
 
   bgrbutton: {
-    DEFAULT: 'rgba(209,213,219,0.6)',
-    h: 'rgba(209,213,219,0.2)',
-    d: 'rgba(107,114,128,0.5)',
-    dh: 'rgba(107,114,128,0.2)',
+    DEFAULT: 'rgba(229,231,235,0.8)',
+    h: 'rgba(209,213,219,0.5)',
+    d: 'rgba(31,41,55,0.8)',
+    dh: 'rgba(31,41,55,0.5)',
   },
   bdrbutton: {
-    DEFAULT: 'rgba(229,231,235,1)',
+    DEFAULT: 'rgba(209,213,219,0.8)',
     h: 'rgba(209,213,219,1)',
     d: 'rgba(31,41,55,1)',
-    dh: 'rgba(55,65,81,1)',
+    dh: 'rgba(31,41,55,0.8)',
   },
 
   bdr: {
@@ -129,10 +128,6 @@ const colors = {
   screen: {
     DEFAULT: '#f3f4f6',
     d: '#030712',
-  },
-  bgritem: {
-    DEFAULT: 'rgba(226, 232, 240, 0.8)',
-    d: 'rgba(30, 41, 59, 0.8)',
   },
 }
 

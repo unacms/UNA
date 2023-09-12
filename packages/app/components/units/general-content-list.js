@@ -156,61 +156,48 @@ export function UnitPerson(props) {
 
   const imageSizes = getImageSizes()
   return (
-    <Card margin=" mx-2 mb-2 p-1 " rounded=" rounded-2xl ">
-      
-        <Link className=" text-center flex-none " href={data.url}>
-        <View className="flex-col  text-center">
-          <View className=" w-full p-4 ">
-            {data.cover && (
-              <>
-                <Image
-                  {...data.cover}
-                  alt={data.title}
-                  view="cover"
-                  className=" rounded-xl absolute u-cover"
-                  
-                />
-               
-              </>
-            )}
-            <View className="w-full justify-center sm:aspect-video">
-                <View className="mx-auto w-min   bg-white  r p-1  dark:bg-bgrcard-d rounded-full ">
-                    <Profile
-                        url_avatar={data?.image?.src}
-                        displayType="unit_wo_info"
-                        displaySize="3xl"
-                    />
-                </View>
-                
-            
-            </View>
-          
-          </View>
-          <Text numberOfLines={1} className=" text-center  p-3 w-full text-lg sm:text-base font-bold text-neutral-800  dark:text-neutral-100 ">
-                {data.title}
-          </Text>
-        </View>
-        </Link>
-        
-        
-        
-          {data?.meta && (
-            <View className="p-3  items-center">
-              <Menu
-                {...data.meta}
-                displayType="mixed"
-                params={{
-                  showVertical: true,
-                  button_size: 'base',
-                  button_full_width: true,
-                  button_rounded: false,
-                }}
+    <Card margin="mx-2 mb-2 p-1" rounded="rounded-2xl">
+    <Link className="text-center" href={data.url}>
+      <View className="flex-col text-center">
+        <View className="w-full p-4 relative">
+          {data.cover && (
+            <Image
+              {...data.cover}
+              alt={data.title}
+              view="cover"
+              className="rounded-xl absolute u-cover"
+            />
+          )}
+          <View className="w-full justify-center sm:aspect-video">
+            <View className="mx-auto w-min bg-white p-1 dark:bg-bgrcard-d rounded-full">
+              <Profile
+                url_avatar={data?.image?.src}
+                displayType="unit_wo_info"
+                displaySize="3xl"
               />
             </View>
-          )}
-        
-        
-      
-    </Card>
+          </View>
+        </View>
+        <Text numberOfLines={1} className="text-center p-3 w-full text-lg sm:text-base font-bold text-neutral-800 dark:text-neutral-100">
+          {data.title}
+        </Text>
+      </View>
+    </Link>
+    {data?.meta && (
+      <View className="p-3 items-center">
+        <Menu
+          {...data.meta}
+          displayType="mixed"
+          params={{
+            showVertical: true,
+            button_size: 'base',
+            button_full_width: true,
+            button_rounded: false,
+          }}
+        />
+      </View>
+    )}
+  </Card>
+  
   )
 }

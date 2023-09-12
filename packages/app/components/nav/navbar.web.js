@@ -279,7 +279,7 @@ export default function (props) {
  
         </Row>
         <Row className="hidden left-1/2 -translate-x-1/2 absolute  lg:flex flex-auto">
-            <Row className='relative flex-row  mx-auto  '>
+            <Row className='mx-auto gap-x-1'>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                 (currentUser || (!currentUser && item.nonlogged != false)) && (

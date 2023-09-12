@@ -292,7 +292,7 @@ export const staticDefault = {
                 <Link href="/login">
                   <Button
                     title="Log in"
-                    variant="outline"
+                    variant="default"
                     startDecorator="SignIn"
                   />
                 </Link>

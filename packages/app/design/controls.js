@@ -203,22 +203,15 @@ export const Button = React.forwardRef((props, forwardedRef) => {
         break
 
         case 'lg':
-            sClassContainer += buttonRounded ? 'rounded-full p-3 ' : sClassDefaultRounding + ' px-6 py-3 ';
-            sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+            sClassContainer += buttonRounded ? 'rounded-full p-2.5 ' : ' rounded-xl p-2.5 ';
+            sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? ' mx-1 ' : ' mx-2 ');
             sClassText += ' text-lg '
-            iIconSize = 28;
-            sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
+            iIconSize = 32;
+            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' // Conditionally add 'mx-2' class
 
         break
 
-        case 'xl':
-            sClassContainer += buttonRounded ? 'rounded-full p-4 ' : sClassDefaultRounding + ' px-6 py-4 ';
-            sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? 'mx-4 ' : '');
-            sClassText += ' text-xl '
-            iIconSize = 32;
-            sTitleContainer += buttonTitle !== '' ? 'mx-3 ' : '' // Conditionally add 'mx-2' class
-
-        break 
+        
     }
     const { colors } = Theme()
     let colorIcon = props.variant == 'link' ? colors.primary: '';

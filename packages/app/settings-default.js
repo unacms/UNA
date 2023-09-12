@@ -637,35 +637,35 @@ export const settingsDefault = {
             bdrModal: 'rgba(55,65,81,0.4)',
         },
         button_styles: {
-            'u-btn-default-cnt': ' bg-neutral-500/20 hover:bg-neutral-500/10    border border-neutral-500/20 active:shadow-none    active:opacity-50 shadow-sm    hover:shadow    ',
-            'u-btn-default-text': ' font-medium text-neutral-700 group-h:text-neutral-950 dark:text-neutral-300 dark:group-h:text-neutral-50',
+            'u-btn-default-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm hover:shadow active:shadow-none ',
+            'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': 'duration-200 ',
 
-            'u-btn-primary-cnt': ' border active:shadow-none border-transparent    shadow-sm hover:shadow bg-primary-600 hover:bg-primary-500 active:bg-primary-700 dark:bg-primary-600 dark:hover:bg-primary-500 dark:active:bg-primary-700',
-            'u-btn-primary-text': ' font-medium text-neutral-50 group-h:text-white ',
+            'u-btn-primary-cnt': ' bg-primary hover:opacity-90 border border-primary  shadow-sm hover:shadow active:opacity-50 active:shadow-none',
+            'u-btn-primary-text': ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-primary-trans': 'duration-200 ',
 
-            'u-btn-danger-cnt': ' border active:shadow-none border-black/10 dark:border-white/10 shadow bg-red-600 hover:bg-red-500 active:bg-red-700 dark:bg-red-800 dark:hover:bg-red-700 dark:active:bg-red-900',
-            'u-btn-danger-text': 'font-medium text-neutral-100 group-h:text-white ',
+            'u-btn-danger-cnt': ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none ',
+            'u-btn-danger-text': 'font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': 'duration-200',
 
-            'u-btn-text-cnt': ' border border-transparent hover:bg-neutral-500/10 active:opacity-50    ',
-            'u-btn-text-text': ' font-medium text-neutral-700 group-h:text-neutral-900 dark:text-neutral-300 dark:group-h:text-neutral-50',
+            'u-btn-text-cnt': ' border border-transparent hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+            'u-btn-text-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-text-trans': ' duration-200 ',
 
             'u-btn-link-cnt': ' border border-transparent ',
-            'u-btn-link-text': ' group-active:text-primary-700 dark:group-active:text-primary-600 group-h:text-primary-500 dark:group-h:text-primary-400 font-semibold text-primary-600 dark:text-primary-500 ',
+            'u-btn-link-text': ' font-semibold text-primary dark:text-primary-d group-hover:opacity-90 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
 
-            'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh   active:shadow-none     active:opacity-50    hover:bg-neutral-500/10 hover:shadow-sm    ',
-            'u-btn-outline-text': ' font-medium text-neutral-700 group-h:text-neutral-950 dark:text-neutral-300 dark:group-h:text-neutral-50',
+            'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',
+            'u-btn-outline-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
             'u-btn-outline-trans': ' duration-200 ',
 
-            'u-btn-group-item-cnt': ' hover:bg-neutral-500/10 active:opacity-50 hover:shadow-lg ',
-            'u-btn-group-item-text': ' font-medium text-neutral-700 group-h:text-neutral-900 dark:text-neutral-300 dark:group-h:text-neutral-50',
+            'u-btn-group-item-cnt': ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 hover:shadow-sm active:shadow-none ',
+            'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
-            'u-btn-default-cnt': ' border border-bdr dark:border-bdr-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
+            'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
         },
 
