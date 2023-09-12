@@ -22,20 +22,22 @@ export default function FormPost(props) {
 
     let prevList = Object.values(imageSource).flat();
     if ( props.data.inputs['covers']){
-        props.data.inputs['covers'].viewClasses = 'border-dashed border-bdrinput dark:border-bdrinput-d';
+        props.data.inputs['covers'].viewClasses = 'border-dashed border-bdrcard dark:border-bdrcard-d';
         props.data.inputs['covers'].caption = "Add header image"
     }
     props.data.inputs['title'].type = 'textarea';
     props.data.inputs['title'].height = 38;
-    props.data.inputs['title'].viewClasses = ' text-xl lg:text-3xl font-bold my-4 font-bold tracking-tight placeholder-neutral-600 text-neutral-900 dark:text-neutral-50  focus:outline-none'
+    props.data.inputs['title'].viewClasses = ' text-xl lg:text-3xl font-bold my-4  tracking-tight placeholder-neutral-600 text-neutral-900 dark:text-neutral-50  focus:outline-none'
 
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500';
 
-    return <View className='w-full max-w-5xl'>
-        <View className='bg-white dark:bg-bgrbody-d border border-neutral-500/10 p-4 pb-0 rounded-lg mb-2'>
+    return <View className='w-full max-w-5xl flex-col gap-y-1'>
+        <View className=' bg-bgrcard dark:bg-bgrcard-d border border-bdrcard dark:border-bdrcard-d p-4 flex-col gap-y-2 pb-0 rounded-2xl '>
             {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle', {format:'custom'})}
+            <View className='xl:px-2'>
             {getFormFieldByData(props.data.inputs['title'], props.handleSubmit, 'notitle', {placeholder: 'Title...', format:'custom'})}
             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'notitle', {placeholder: 'Write your text here...'})}
+            </View>
         </View>
         <Row>
             <View className='w-12'>{getFormFieldByData(props.data.inputs['pictures'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
@@ -44,7 +46,7 @@ export default function FormPost(props) {
             <View className='w-12'>{getFormFieldByData(props.data.inputs['sounds'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}</View>
            
         </Row>
-        { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mb-4'>{prevList}</Row>}
+        { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap'>{prevList}</Row>}
         {getFormFieldByData(props.data.inputs['cat'], props.handleSubmit, 'notitle')}
         {getFormFieldByData(props.data.inputs['allow_view_to'], props.handleSubmit,  'notitle')}
         {getFormFieldByData(props.data.inputs['do_publish'], props.handleSubmit,  'default')}

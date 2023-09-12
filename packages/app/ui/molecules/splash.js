@@ -35,11 +35,11 @@ export default function SplashPage(props) {
 
     return (<View className="flex-col  w-full max-w-screen-2xl mx-auto">
           <View className="flex-col lg:flex-row gap-y-4 gap-x-4 sm:m-6 p-4 duration-300 sm:border border-dashed rounded-3xl border-bdrcard dark:border-bdrcard-d">
-            <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
+            <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center  lg:text-start p-8 my-auto lg:flex-auto">
                 <BlockByName name={props.blocks.home_intro} />
             </View>
-            <View className="mx-auto w-full lg:w-1/2 p-2    ">
-              <Card addClassName=" rounded-2xl w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
+            <View className="mx-auto w-full lg:w-1/2 p-2 my-auto   ">
+              <Card addClassName="items-center rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
                 <SplashBlock {...props}/>
               </Card>
             </View>
