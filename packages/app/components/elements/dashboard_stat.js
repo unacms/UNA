@@ -5,6 +5,8 @@ import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
+import { fetcher } from '../../lib/fetcher';
+import { useEffect, useState } from 'react';
 
 function getCounter(num, icon='', add='') {
     if (!num) num = 0;
@@ -28,14 +30,28 @@ function getCounter(num, icon='', add='') {
     </Row>
 }
 
-export default function ElementDashboardStat(props) {
-    let menu = appSetting('menu', 'dashboard') 
+export default  function ElementDashboardStat(props) {
 
+    const [data, setData] = useState(props.data);
+    useEffect(() => {
+        // Define an async function inside the useEffect
+        const fetchData = async () => {
+            const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices&demo=1');
+            // Assuming fetcher returns the data you want or you might need to extract it from the response.
+            setData(sResponse.data[0].data);
+        };
+
+        // Call the async function
+        fetchData();
+    }, []);
+    
+    let menu = appSetting('menu', 'dashboard') 
+  
     return (
         <Row className="flex-wrap flex-auto mb-auto "> 
 
         {menu.map((item2, index) => {
-            let item = props.data[item2.key];
+            let item = data[item2.key];
             if (item.type != 'growth') {
                 return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
                 <Link href={item2.link}>
