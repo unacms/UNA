@@ -118,7 +118,7 @@ export function getBlackBox(windowWidth) {
         {appSetting('feed', 'default_view') == 'small' &&
           items.map((item, index) => (
             <View
-              key={'home2' + index}
+              key={'intro' + index}
               className="bg-bgrcard dark:bg-bgrcard-d mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse"
             >
               <View className="flex-row gap-2">

@@ -178,9 +178,32 @@ export const staticDefault = {
       </>
     ),
 
-    home2: (
+    intro: (
       <>
-        <Text className="text-lg px-2  font-bold text-neutral-800 dark:text-neutral-200 "></Text>
+        <Card addClassName="  flex-col gap-y-2 p-4 mt-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              size="sm"
+              startDecorator="RocketLaunch"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Upgrade to Pro!
+            </Text>
+          </View>
+          <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
+            Supercharge your experience with premium features and access to
+            exclusive content.
+          </Text>
+          <Button
+            variant="primary"
+            size="sm"
+            startDecorator="RocketLaunch"
+            title="Upgrade to Pro"
+            
+          />
+        </Card>
       </>
     ),
     dummy: (
@@ -265,6 +288,7 @@ export const staticDefault = {
         </View>
       </>
     ),
+<<<<<<< HEAD
     home_intro:(<View className="flex-col mx-auto w-full items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
     <View>
       <Text className="text-5xl font-extrabold text-primary dark:text-primary-d text-center lg:text-start">
@@ -442,7 +466,6 @@ home_footer: (
         </Card>
       </View>
     </View>
-      
     ),
   },
 }

@@ -42,7 +42,7 @@ export const settingsDefault = {
         allow_switch_profile: true
     },
     splash: {
-        block: 'image'
+        block: 'login'
     },
     feed: {
         show_selector_view: true,
@@ -335,7 +335,7 @@ export const settingsDefault = {
                 signup: {name: 'system:create_account_form', showTitle: false, showBg: false },
 
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
-                home2: { name: 'static:home2', showTitle: false, showBg: false },
+                intro: { name: 'static:intro', showTitle: false, showBg: false },
                 home_intro: { name: 'static:home_intro', showTitle: false, showBg: false },
                 home_footer: { name: 'static:home_footer', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
