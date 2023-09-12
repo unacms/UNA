@@ -332,7 +332,7 @@ export const settingsDefault = {
                 hot_feed: {name: 'bx_timeline:get_block_view_hot', showTitle: false, showBg: false },
 
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
-                home2: { name: 'static:home2', showTitle: false, showBg: false },
+                intro: { name: 'static:intro', showTitle: false, showBg: false },
                 home: { name: 'static:home', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },

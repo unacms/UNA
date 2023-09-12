@@ -205,10 +205,10 @@ export const Button = React.forwardRef((props, forwardedRef) => {
         break
 
         case 'lg':
-            sClassContainer += buttonRounded ? 'rounded-full p-2.5 ' : ' rounded-xl p-2.5 ';
-            sIconContainer = 'h-8 w-8 ' + (buttonTitle !== '' ? ' mx-1 ' : ' mx-2 ');
+            sClassContainer += buttonRounded ? 'rounded-full px-3 py-2 ' : ' rounded-xl px-3 py-2 ';
+            sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? ' mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' text-lg '
-            iIconSize = 32;
+            iIconSize = 28;
             sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' // Conditionally add 'mx-2' class
 
         break

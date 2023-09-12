@@ -78,21 +78,22 @@ export default function PageLayout(props) {
                 <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
-                <View className="flex-auto relative w-full  flex-row mx-auto  ">
-                    <View className="hidden lg:block  w-1/4 pt-4  sticky duration-200  ">
-                        <Row className="items-center justify-between mx-4 p-2 rounded-xl border border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                <View className="flex-auto relative w-full flex-row mx-auto  ">
+                    <View className="hidden lg:block  w-1/4 pt-4 top-0 sticky duration-200  ">
+                        <Row className="items-center justify-between mx-4 px-3 py-2 rounded-xl border border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                             <Link href={currentUser.url}>
                                 <Row>
                                     <View className="mx-1 mr-4 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                         {profile}
                                     </View>
-                                    <Text className="text-lg flex-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                    <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                         {currentUser.display_name}
                                     </Text>
                                 </Row>
                             </Link>
                             {appSetting('account', 'allow_switch_profile') && <View><Button
-                            variant="text"
+                            variant="outline"
+                            size="sm"
                             startDecorator="UserSwitch"
                             fullWidth
                             onClick = {() => setShowImage(true)}
@@ -191,15 +192,15 @@ export default function PageLayout(props) {
                     )}
                     </View>
                 </View>
-                <View className="hidden xl:block w-1/4 px-4 flex-col space-y-4  duration-200 ">
-                    <BlockByName name={props.blocks.home2} />
-                    <BlockByName name={props.blocks.profile_switcher} data={props.data} />
+                <View className="hidden xl:block w-1/4 px-4 flex-col space-y-4 sticky top-0 duration-200 ">
+                    <BlockByName name={props.blocks.intro} />
                     <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
                     <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" />
                     <BlockByName name={props.blocks.footer} />
                 </View>
             </View>
         </View>
+        
     )}
     }
 

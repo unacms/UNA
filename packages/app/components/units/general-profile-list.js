@@ -53,11 +53,11 @@ export function UnitPerson(props) {
     <View className="">
       <Link href={data.url} emulate={true}>
         <View
-          className=" p-2 flex-row  
-                group duration-200 overflow-hidden rounded-md  
+          className=" px-3 py-2 flex-row  
+                group duration-200 rounded-xl  
                 active:opacity-50 active:translate-y-1 
-                hover:bg-bgrcard-h dark:hover:bg-bgrcard-dh
-                 max-w-5xl self-center w-full  "
+                hover:bg-bgritem-h dark:hover:bg-bgritem-dh
+                max-w-5xl self-center w-full  "
         >
           <View className="w-10 h-10 mr-2 rounded-full flex-none ">
             <Profile
