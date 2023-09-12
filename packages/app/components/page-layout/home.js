@@ -11,6 +11,8 @@ import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
 import { Modal } from 'app/design/controls'
+import Splash from 'app/ui/molecules/splash'
+import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
 
@@ -59,12 +61,13 @@ export default function PageLayout(props) {
 
         return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
     }, [])
+   
 
     if (isWeb) {
         if (currentUser === null && renderBlock)
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
-                    <BlockByName name={props.blocks.home} />
+                    <Splash {...props}/>
                 </View>
             )
         if (currentUser) {

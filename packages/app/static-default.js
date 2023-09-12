@@ -265,191 +265,183 @@ export const staticDefault = {
         </View>
       </>
     ),
-    home: (
-      
-        <View className="flex-col  w-full max-w-screen-2xl mx-auto">
-          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 sm:m-6 p-4 duration-300 sm:border border-dashed rounded-3xl border-bdrcard dark:border-bdrcard-d">
-            <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
-              <View>
-                <Text className="text-5xl font-extrabold text-primary dark:text-primary-d text-center lg:text-start">
-                  Welcome
-                </Text>
-                <Text className="text-5xl font-extrabold text-neutral-800 dark:text-neutral-200 text-center lg:text-start">
-                  to your network!
-                </Text>
-              </View>
-              <Text className="text-lg xl:text-xl  max-w-2xl text-neutral-700 dark:text-neutral-300 text-center lg:text-start">
-              Connect and create with like-minded individuals. Discover new perspectives, share knowledge, and grow together, all within your community. 
-              </Text>
-              <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
-                <Link href="/create-account">
-                  <Button
-                    title="Create account"
-                    variant="primary"
-                    startDecorator="UserCirclePlus"
-                    size="lg"
-                  />
-                </Link>
-              </View>
-            </View>
-            <View className="mx-auto w-full lg:w-1/2 p-2    ">
-              <Card addClassName=" rounded-2xl w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
-              </Card>
-            </View>
-          </View>
+    home_intro:(<View className="flex-col mx-auto w-full items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
+    <View>
+      <Text className="text-5xl font-extrabold text-primary dark:text-primary-d text-center lg:text-start">
+        Welcome
+      </Text>
+      <Text className="text-5xl font-extrabold text-neutral-800 dark:text-neutral-200 text-center lg:text-start">
+        to your network!
+      </Text>
+    </View>
+    <Text className="text-lg xl:text-xl  max-w-2xl text-neutral-700 dark:text-neutral-300 text-center lg:text-start">
+    Connect and create with like-minded individuals. Discover new perspectives, share knowledge, and grow together, all within your community. 
+    </Text>
+    <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
+      <Link href="/create-account">
+        <Button
+          title="Create account"
+          variant="primary"
+          startDecorator="UserCirclePlus"
+          size="lg"
+        />
+      </Link>
+    </View>
+  </View>),
 
-          <View className="flex-col sm:flex-row flex-wrap p-4 w-full duration-300">
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Users" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Meet People
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Make new friends and create lasting connections.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="UsersThree"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Join Groups
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Find your tribe in groups that match your interests.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="ChatCenteredText"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Share Ideas
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Spitball ideas and get feedback from folks who get it.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="CalendarCheck"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Discover Events
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Find out what's happening and catch events you care about.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="ChatTeardropDots"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Message Friends
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Chat on the go with your friends, wherever, whenever.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Chats" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Discuss Topics
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Ask questions, jump into debates or chat casually, your call.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button
-                    variant="outline"
-                    startDecorator="Storefront"
-                    rounded
-                  />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Buy & Sell
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Grab deals or sell your own stuff on a marketplace you can
-                  trust.
-                </Text>
-              </Card>
-            </View>
-            <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
-              <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-                <View className="flex-row gap-x-2 ">
-                  <Button variant="outline" startDecorator="Video" rounded />
-                  <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                    Watch Videos
-                  </Text>
-                </View>
-                <Text
-                  numberOfLines={2}
-                  className="text-base text-neutral-600 dark:text-neutral-400"
-                >
-                  Explore, learn, and get entertained with the latest videos.
-                </Text>
-              </Card>
-            </View>
+home_footer: (
+      
+      <View className="flex-col sm:flex-row flex-wrap p-4 w-full duration-300">
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button variant="outline" startDecorator="Users" rounded />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Meet People
+            </Text>
           </View>
-        </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Make new friends and create lasting connections.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              startDecorator="UsersThree"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Join Groups
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Find your tribe in groups that match your interests.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              startDecorator="ChatCenteredText"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Share Ideas
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Spitball ideas and get feedback from folks who get it.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              startDecorator="CalendarCheck"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Discover Events
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Find out what's happening and catch events you care about.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              startDecorator="ChatTeardropDots"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Message Friends
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Chat on the go with your friends, wherever, whenever.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button variant="outline" startDecorator="Chats" rounded />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Discuss Topics
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Ask questions, jump into debates or chat casually, your call.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button
+              variant="outline"
+              startDecorator="Storefront"
+              rounded
+            />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Buy & Sell
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Grab deals or sell your own stuff on a marketplace you can
+            trust.
+          </Text>
+        </Card>
+      </View>
+      <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+          <View className="flex-row gap-x-2 ">
+            <Button variant="outline" startDecorator="Video" rounded />
+            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+              Watch Videos
+            </Text>
+          </View>
+          <Text
+            numberOfLines={2}
+            className="text-base text-neutral-600 dark:text-neutral-400"
+          >
+            Explore, learn, and get entertained with the latest videos.
+          </Text>
+        </Card>
+      </View>
+    </View>
       
     ),
   },

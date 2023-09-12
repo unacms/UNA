@@ -42,7 +42,7 @@ export const settingsDefault = {
         allow_switch_profile: true
     },
     splash: {
-        block: 'login'
+        block: 'image'
     },
     feed: {
         show_selector_view: true,
@@ -331,9 +331,13 @@ export const settingsDefault = {
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
                 hot_feed: {name: 'bx_timeline:get_block_view_hot', showTitle: false, showBg: false },
 
+                login: {name: 'system:login_form', showTitle: false, showBg: false },
+                signup: {name: 'system:create_account_form', showTitle: false, showBg: false },
+
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
                 home2: { name: 'static:home2', showTitle: false, showBg: false },
-                home: { name: 'static:home', showTitle: false, showBg: false },
+                home_intro: { name: 'static:home_intro', showTitle: false, showBg: false },
+                home_footer: { name: 'static:home_footer', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
                 friends: { name: 'system:browse_recommendations_friends', showTitle: true, showBg: false, },
