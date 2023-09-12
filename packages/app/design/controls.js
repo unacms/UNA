@@ -62,16 +62,16 @@ export function Modal({
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
-            <Wrapper className="flex justify-end w-full h-full bg-neutral-100/80 dark:bg-neutral-900/80" {...(onClose && { onPress: onClose })}>
+            <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
                 <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
-                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-lg shadow-2xl">
-                            <View className="p-2">
-                                <Row className={'items-center ' + (title ? 'justify-between' : 'justify-end') + ' ml-2'}>
-                                    { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-lg font-bold'>{title}</Text></View>}
-                                    { (title && onClose) && <View className=''><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose}/></View>}
+                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-3xl">
+                            <View className="p-4">
+                                <Row className={'items-center pb-4 ' + (title ? 'justify-between' : 'justify-end') + ' ml-1  '}>
+                                    { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold'>{title}</Text></View>}
+                                    { (title && onClose) && <View className=''><Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose}/></View>}
                                 </Row>
-                            <View className="gap-y-0 overflow-y-auto text-neutral-700 dark:text-neutral-200">{children}</View>
+                            <View className="gap-y-0 overflow-y-auto ">{children}</View>
                         </View>
                     </Pressable>
                 </View>

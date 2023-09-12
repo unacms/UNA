@@ -66,13 +66,14 @@ const colors = {
     df: 'rgba(14,165,233,1)',
   },
 
+
   bgrmodal: {
-    DEFAULT: 'rgba(255,255,255,0.9)',
-    d: 'rgba(17,24,39,0.9)',
+    DEFAULT: 'rgba(255,255,255,1)',
+    d: 'rgba(17,24,39,1)',
   },
   bdrmodal: {
-    DEFAULT: 'rgba(229,231,235,0.8)',
-    d: 'rgba(31,41,55,0.6)',
+    DEFAULT: 'rgba(229,231,235,1)',
+    d: 'rgba(31,41,55,1)',
   },
 
   bgrnavbar: {
