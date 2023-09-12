@@ -135,7 +135,7 @@ export const settingsDefault = {
     },
     menu_items: {
         menu_top: [
-            { name: 'home', title: 'Home', link: '/home', icon: 'home'},
+            { name: 'home', title: 'Home', link: '/', icon: 'home'},
             { name: 'friends', title: 'Connections', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },

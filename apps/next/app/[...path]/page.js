@@ -12,12 +12,6 @@ const getData = cache(async (props) => {
     
     let cookieString = props.searchParams.cookieString;
 
-    /*let c = cookies().getAll();
-    let cookieString = "";
-    c.map(function (item) {
-        cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-    });
-*/
     const opts = {
         headers: {
             cookie: cookieString,
@@ -74,7 +68,4 @@ export default async function Path (props) {
             data.data.empty = true;
         return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     }
-    /*else*/
-    //    return <Root2  {...data} ></Root2>
-   
 }
