@@ -78,7 +78,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
                 return;
             },
-            enabled: routes[index]?.data?.length == 0
+            enabled: routes[index]?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
     
 

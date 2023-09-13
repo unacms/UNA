@@ -23,7 +23,7 @@ export default function ElementLink(props) {
           //  var tag = document.createElement("div");
             //tag.className = 'loader';
             //document.body.appendChild(tag);
-            let element = document.querySelector('.animated');
+            let element = document.querySelector('.animated1');
 
             element.classList.remove('fade-in');
             element.classList.add('fade-out');

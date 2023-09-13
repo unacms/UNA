@@ -11,7 +11,6 @@ export default function ElementInformer({data}) {
     const [ state, setState ] = useState(0);
     const { currentUser, setCurrentUser } = useCurrentUser();
 
-
     const pressBack = async () => {
         const sRequest = '/api.php?r=system/email_confirmation/TemplServiceAccount&resend[]=1';
         const sResponse = await fetcher(sRequest);
@@ -35,7 +34,7 @@ export default function ElementInformer({data}) {
                         )
                     }
                     if (item.id == 'sys-switch-profile-context'){
-                        return <></>
+                        return <View key={'informer' + index}></View>
                     }
                     
                     return (                   

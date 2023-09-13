@@ -35,7 +35,7 @@ export default function Layout({ data, uri, children }) {
 
     useEffect(() => {
 
-        let element = document.querySelector('.animated');
+        let element = document.querySelector('.animated-view');
         if(element){
             element.classList.remove('fade-out');
             element.classList.add('fade-in');
