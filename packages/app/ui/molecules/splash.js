@@ -34,7 +34,7 @@ function SplashBlock (props) {
 export default function SplashPage(props) {
 
     return (<View className="flex-col  w-full max-w-screen-2xl mx-auto">
-          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 sm:m-6 p-4 duration-300 sm:border border-dashed rounded-3xl border-bdrcard dark:border-bdrcard-d">
+          <View className="flex-col lg:flex-row gap-y-4 gap-x-4 sm:m-6 p-4 duration-300 sm:border-2 border-dashed rounded-3xl border-bdrcard dark:border-bdrcard-d">
             <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center  lg:text-start p-8 my-auto lg:flex-auto">
                 <BlockByName name={props.blocks.home_intro} />
             </View>
