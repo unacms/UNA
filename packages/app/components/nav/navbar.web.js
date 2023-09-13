@@ -133,9 +133,7 @@ export default function (props) {
                   { headerSettings.backButton  && getBackButtonWeb() }
                   { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
             </Row>
-
-            
-              <View className="hidden lg:flex"><Search type="input" /></View>
+            <View className="hidden lg:flex"><Search type="input" /></View>
             
         </View>
         <Row className="hidden w-1/2 lg:flex flex-auto">
@@ -143,13 +141,12 @@ export default function (props) {
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                 (currentUser || (!currentUser && item.nonlogged != false)) && (
-                    <Link href={item.link} key={`menu-${index}`}>
+                    <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                       <Tooltip content={item.title} asChildTrigger={true}>
                         <Button
                           variant="text"
                           size="lg"
                           fullWidth
-                          alt={item.title}
                           startDecorator={
                             item.icon.indexOf(' ') == -1
                               ? item.icon
