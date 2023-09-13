@@ -119,7 +119,7 @@ export default function ElementSearch(oProps) {
                         <Redirect ref={redirectdRef} />
                         <View className="flex-row items-center mb-1">
                             <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                            <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                            <Link href={'/search-keyword?keyword=' + inputValue}>
                                 <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                             </Link>
                         </View>
@@ -157,7 +157,7 @@ export default function ElementSearch(oProps) {
                             <Redirect ref={redirectdRef} />
                             <View className="flex-row items-center">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                                <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                                <Link href={'/search-keyword?keyword=' + inputValue}>
                                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                 </Link>
                             </View>
@@ -203,7 +203,7 @@ export default function ElementSearch(oProps) {
                             <Redirect ref={redirectdRef} />
                             <View className="flex-row items-center mb-1">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5"></Text>
-                                <Link href={'/search-keyword' + (inputValue ? '?keyword=' + inputValue: '')}>
+                                <Link href={'/search-keyword?keyword=' + inputValue}>
                                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                 </Link>
                             </View>
@@ -234,7 +234,7 @@ export default function ElementSearch(oProps) {
       
           <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" onChangeText={(value) => setInputValue(value)}  />
           
-          <Link href={'/search-keyword?keyword='+inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+          <Link href={'/search-keyword?keyword=' + inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
           
       </Row>
   </View>
