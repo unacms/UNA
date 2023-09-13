@@ -107,39 +107,65 @@ export default function (props) {
     <>
     <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
-      <View className="  backdrop-blur-xl h-16 px-4  items-center w-full border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-        
-        <Row className="flex-row  flex-none items-center">
-          {
-            headerSettings.menu && (
-              <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
-                <Button
-                  variant="outline"
-                  startDecorator="List"
-                  rounded
-                  align="start"
-                />
-              
-              </Pressable></View>  )}
-              { (props.uri == 'home' || windowWidth >= 1024) &&  
+      <View className="  backdrop-blur h-16 px-4 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
+        <View className="flex-row flex-auto lg:w-1/4 gap-x-2 my-auto">
+            <Row className="flex-row  flex-none items-center">
+              {
+                headerSettings.menu && (
+                  <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
+                    <Button
+                      variant="outline"
+                      startDecorator="List"
+                      rounded
+                      align="start"
+                    />
+                  
+                  </Pressable></View>  )}
+                  { (props.uri == 'home' || windowWidth >= 1024) &&  
 
-              <Link href="/home" aria-label="Logo">
-                <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                  {appStatic('logo', 'mark')}
-                  {appStatic('logo', 'text')}
-                </View>
-              </Link>
-            }
-              { headerSettings.backButton  && getBackButtonWeb() }
-              { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden  mr-8 font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
-        </Row>
+                  <Link href="/home" aria-label="Logo">
+                    <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
+                      {appStatic('logo', 'mark')}
+                      {appStatic('logo', 'text')}
+                    </View>
+                  </Link>
+                }
+                  { headerSettings.backButton  && getBackButtonWeb() }
+                  { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+            </Row>
 
-        <View className="flex-row flex-auto justify-end lg:justify-start ml-2">
-          <View className="hidden xl:flex"><Search type="input" /></View>
+            
+              <View className="hidden lg:flex"><Search type="input" /></View>
+            
         </View>
-
-        <Row className="flex-row  flex-none justify-end lg:justify-between ">          
-          <Row>
+        <Row className="hidden w-1/2 lg:flex flex-auto">
+            <Row className='mx-auto gap-x-1'>
+              {menuItemsByName('main_menu', menu_top).map(
+                (item, index) =>
+                (currentUser || (!currentUser && item.nonlogged != false)) && (
+                    <Link href={item.link} key={`menu-${index}`}>
+                      <Tooltip content={item.title} asChildTrigger={true}>
+                        <Button
+                          variant="text"
+                          size="lg"
+                          fullWidth
+                          alt={item.title}
+                          startDecorator={
+                            item.icon.indexOf(' ') == -1
+                              ? item.icon
+                              : item.icon.split(' ')[0]
+                          }
+                          align="start"
+                        />
+                      </Tooltip>
+                    </Link>
+                  )
+              )}
+             
+            </Row>
+        </Row>
+        <Row className="flex-row lg:w-1/4  flex-none justify-end  ">          
+          
           
             {!!currentUser && (
               <Row className="flex-row   justify-end ">
@@ -275,35 +301,10 @@ export default function (props) {
                 />
               </Row>
             )}
-          </Row>
+          
  
         </Row>
-        <Row className="hidden left-1/2 -translate-x-1/2 absolute  lg:flex flex-auto">
-            <Row className='mx-auto gap-x-1'>
-              {menuItemsByName('main_menu', menu_top).map(
-                (item, index) =>
-                (currentUser || (!currentUser && item.nonlogged != false)) && (
-                    <Link href={item.link} key={`menu-${index}`}>
-                      <Tooltip content={item.title} asChildTrigger={true}>
-                        <Button
-                          variant="text"
-                          size="lg"
-                          fullWidth
-                          alt={item.title}
-                          startDecorator={
-                            item.icon.indexOf(' ') == -1
-                              ? item.icon
-                              : item.icon.split(' ')[0]
-                          }
-                          align="start"
-                        />
-                      </Tooltip>
-                    </Link>
-                  )
-              )}
-             
-            </Row>
-          </Row>
+        
       </View>
       <AnimatePresence exitBeforeEnter>
         {menuPopup && (
