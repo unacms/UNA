@@ -16,9 +16,9 @@ if(Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full  px-3 dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
-export const InputMulti = styled(TextInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5')
-export const InputRounded = styled(TextInputDef, ' bg-neutral-500/10  border border-neutral-500/10  focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-full   w-full  px-4 dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg   w-full  px-3   placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full  px-3 dark:focus:bg-bgrinput-df placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
+export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full   w-full  px-3 dark:focus:bg-bgrinput-df placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
 
 export const Switch = SwitchDef
 export const Hidden = styled(TextInputDef, 'hidden')
@@ -65,7 +65,7 @@ export function Modal({
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
                 <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
-                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-3xl">
+                        <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
                             <View className="p-4">
                                 <Row className={'items-center pb-4 ' + (title ? 'justify-between' : 'justify-end') + ' ml-1  '}>
                                     { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold'>{title}</Text></View>}

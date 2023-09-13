@@ -249,8 +249,8 @@ export const staticDefault = {
     ),
     footer: (
       <>
-        <View className=" w-full px-2 mt-4">
-          <Card addClassName="w-full p-4 flex-row justify-center ">
+        
+          <Card addClassName="w-full p-3 flex-row justify-center ">
             <Link href="/about">
               <Button
                 variant="text"
@@ -285,22 +285,22 @@ export const staticDefault = {
               />
             </Link>
           </Card>
-        </View>
+        
       </>
     ),
-    home_intro:(<View className="flex-col mx-auto w-full items-center lg:items-start lg:text-start p-8 gap-y-8 my-auto lg:flex-auto">
-    <View>
-      <Text className="text-5xl font-extrabold text-primary dark:text-primary-d text-center lg:text-start">
+    home_intro:(<View className="flex-col mx-auto w-full p-4 lg:p-8 gap-y-8 my-auto lg:flex-auto">
+    <View className='w-full'>
+      <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-primary dark:text-primary-d  ">
         Welcome
       </Text>
-      <Text className="text-5xl font-extrabold text-neutral-800 dark:text-neutral-200 text-center lg:text-start">
+      <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
         to your network!
       </Text>
     </View>
-    <Text className="text-lg xl:text-xl  max-w-2xl text-neutral-700 dark:text-neutral-300 text-center lg:text-start">
-    Connect and create with like-minded individuals. Discover new perspectives, share knowledge, and grow together, all within your community. 
+    <Text className="text-base lg:text-lg xl:text-xl  max-w-2xl text-neutral-700 dark:text-neutral-300  ">
+    Connect and create with like-minded people, discover new perspectives, share knowledge and grow together - all within your community. 
     </Text>
-    <View className="flex-row gap-y-2 justify-center md:justify-start flex-wrap gap-x-2">
+    
       <Link href="/create-account">
         <Button
           title="Create account"
@@ -309,7 +309,7 @@ export const staticDefault = {
           size="lg"
         />
       </Link>
-    </View>
+    
   </View>),
 
 home_footer: (
