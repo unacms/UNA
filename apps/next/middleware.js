@@ -28,7 +28,7 @@ export function middleware(request) {
 
         const headers = {
             authorization: `Bearer ${env('UNA_API_KEY')}`,
-            'Cache-Control': 'public, s-maxage=1',
+            'cache-control1': 'public, s-maxage=1',
             'CDN-Cache-Control': 'public, s-maxage=60',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',
             cookie: cookieString,
@@ -40,7 +40,7 @@ export function middleware(request) {
         tmpHeaders.set('x-hello-from-middleware1', 'hello')
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
         tmpHeaders.set('cookie', cookieString)
-        tmpHeaders.set('Cache-Control', 'public, s-maxage=1')
+        tmpHeaders.set('cache-control2', 'public, s-maxage=1')
         tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60')
         tmpHeaders.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
         return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + url.search,
