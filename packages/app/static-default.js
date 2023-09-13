@@ -288,7 +288,7 @@ export const staticDefault = {
         
       </>
     ),
-    home_intro:(<View className="flex-col mx-auto w-full p-4 lg:p-8 gap-y-8 my-auto lg:flex-auto">
+    home_intro:(<View className="flex-col mx-auto w-full  lg:p-8 gap-y-8 my-auto lg:flex-auto">
     <View className='w-full'>
       <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-primary dark:text-primary-d  ">
         Welcome
