@@ -14,10 +14,23 @@ export function middleware(request) {
         c.map(function (item) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
         });
-        if (cookieString != '')
-            return NextResponse.rewrite(new URL(request.url + (request.url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-        else
-            return NextResponse.next()
+        if (cookieString != ''){
+            const response =  NextResponse.rewrite(new URL(request.url + (request.url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
+            response.headers.set('lalalx', 'lalal2')
+            response.headers.set('Cache-Control', 'public, s-maxage=1')
+            response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
+            response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
+            return response
+        }
+        else{
+            const response = NextResponse.next()
+            response.headers.set('lalaly', 'lalal2')
+            response.headers.set('Cache-Control', 'public, s-maxage=1')
+            response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
+            response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
+            return response
+        }
+            
     }
     else{
         let c = request.cookies.getAll();
@@ -28,7 +41,7 @@ export function middleware(request) {
 
         const headers = {
             authorization: `Bearer ${env('UNA_API_KEY')}`,
-            'cache-control1': 'public, s-maxage=1',
+            'cache-ontrol': 'public, s-maxage=1',
             'CDN-Cache-Control': 'public, s-maxage=60',
             'Vercel-CDN-Cache-Control': 'public, s-maxage=3600',
             cookie: cookieString,
@@ -40,7 +53,7 @@ export function middleware(request) {
         tmpHeaders.set('x-hello-from-middleware1', 'hello')
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
         tmpHeaders.set('cookie', cookieString)
-        tmpHeaders.set('cache-control2', 'public, s-maxage=1')
+        tmpHeaders.set('Cache-Control', 'public, s-maxage=1')
         tmpHeaders.set('CDN-Cache-Control', 'public, s-maxage=60')
         tmpHeaders.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
         return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + url.search,
