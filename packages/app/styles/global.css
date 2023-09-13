@@ -350,7 +350,7 @@ div::-webkit-scrollbar {
       }
   
 
-    .fade-out {
+    .page-fade-out {
         animation: fadeOut 0.3s forwards;
     }
     
@@ -365,7 +365,7 @@ div::-webkit-scrollbar {
         }
     }
 
-    .fade-in {
+    .page-fade-in {
         animation: fadeIn 0.3s forwards;
     }
     

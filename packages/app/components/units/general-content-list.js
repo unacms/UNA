@@ -10,6 +10,7 @@ import { View } from 'app/design/view'
 import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
+import Time from '../../ui/atoms/time'
 
 export default function Unit(props) {
     let data = props.data
@@ -74,6 +75,34 @@ export default function Unit(props) {
                             </Text>
                         </View>
                     </Link>
+                    <Text>MEMBERS: {data.members_count}</Text>
+                    <Text>
+                        {data.visibility != '3' ? (
+                        <>PRIVATE</>
+                        ) : (
+                        <>PUBLIC</>
+                        )}
+                    </Text>
+                    <Text>
+                    {data.date_start && (
+                        <>
+                        <Time
+                          stylesName="text-xs flex-none"
+                          ts={data.date_start}
+                        ></Time>
+                        {data.date_end && (
+                          <>
+                            -
+                            <Time
+                              stylesName="text-xs flex-none"
+                              ts={data.date_end}
+                            ></Time>
+                          </>
+                        )}
+                      </>
+                    )}
+
+                    </Text>
                     {data?.meta && (
                         <View className="px-4 mt-auto ">
                             <Menu
@@ -182,6 +211,7 @@ export function UnitPerson(props) {
                         </Text>
                     </View>
                 </Link>
+                <Text>FRIENDS: {data.friends_count}</Text>
                 {data?.meta && (
                     <View className="p-3 items-center">
                         <Menu
