@@ -143,7 +143,7 @@ export const Button = React.forwardRef((props, forwardedRef) => {
     let buttonTitle = props.title ? props.title : ''
     let buttonRounded = props.rounded ? true : false
     let buttonSolid = props.solid ? true : false
-    let sTitleContainer = hideTitleOnSmall ? ' hidden sm:block ' : '';
+    let sTitleContainer = (hideTitleOnSmall && isNaN(buttonTitle)) ? ' hidden sm:block ' : '';
     let iIconSize = 24
 
     let sClassContainer = ' group relative flex-row items-center '
@@ -271,7 +271,7 @@ export function ButtonsGroupMenu(props) {
 export function ButtonMenuGroupItem(props) {
     let { size, title, startDecorator, endDecorator, onPress, ...rest } = props
     return (
-        <Button variant='group-item' size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress}>
+        <Button variant='group-item' hideTitleOnSmall={true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress}>
             {props.children}
         </Button>
     );

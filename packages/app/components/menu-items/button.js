@@ -72,8 +72,7 @@ export default function MenuItemButton(oProps) {
 
             sContent = (
                 <View className="flex-auto">
-                    <Redirect ref={redirectdRef} />
-                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={sButtonIcon} onPress={handleClick} {...oButtonProps} />
+                  
                 </View>
             );
     }

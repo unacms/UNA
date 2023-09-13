@@ -411,7 +411,7 @@ export const settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_posts:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false },
+            headerSettings: { header: false, footer: false, offset: false },
         },
         item: {
             layout: 'post',
@@ -422,7 +422,7 @@ export const settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false },
+            headerSettings: { header: false, footer: false, offset: false },
         },
         //############ POSTS PAGES ############
         'friend-suggestions': {
