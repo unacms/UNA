@@ -51,60 +51,91 @@ export default function Unit(props) {
 
     return (
       <AnimatedBlock>
-        <Card margin=" mb-2  sm:mx-2 mx-4 " rounded=" rounded-2xl ">
-          <View className="flex-col pb-4 h-full ">
-            <Link href={data.url}>
-              <View className="w-full  aspect-video bg-primary/50">
-                {data.cover && (
-                  <>
-                    <Image
-                      {...data.cover}
-                      alt={data.title}
-                      view="cover"
-                      className="absolute u-cover"
-                      sizes={imageSizes}
-                    />
-                  </>
-                )}
-              </View>
-              <View className=" sm:h-20 pt-3 px-4 ">
-                <Text
-                  numberOfLines={2}
-                  className="text-center text-base font-bold text-neutral-800 dark:text-neutral-200 "
-                >
-                  {data.title}
-                </Text>
-              </View>
-            </Link>
-            <Text>MEMBERS: {data.members_count}</Text>
-            <Text>{data.visibility != '3' ? <>PRIVATE</> : <>PUBLIC</>}</Text>
-            <Text>
-              {data.date_start && (
-                <>
-                  <Time
-                    stylesName="text-xs flex-none"
-                    ts={data.date_start}
-                  ></Time>
-                  {data.date_end && (
+        <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
+          <View className="flex-col gap-y-4 ">
+            <Link className="" href={data.url}>
+              <View className="flex-col w-full ">
+              <View className=" w-full p-1 aspect-video ">
+                <View className="w-full aspect-square mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
+                  {data.cover && (
                     <>
-                      -
-                      <Time
-                        stylesName="text-xs flex-none"
-                        ts={data.date_end}
-                      ></Time>
+                      <Image
+                        {...data.cover}
+                        alt={data.title}
+                        view="cover"
+                        className="absolute u-cover"
+                        sizes={imageSizes}
+                      />
                     </>
                   )}
-                </>
-              )}
-            </Text>
+                </View>
+              </View>
+              <View className="flex-col flex-auto gap-y-2 p-4  ">
+              
+                  <View className=" flex-row flex-wrap gap-x-2 gap-y-2   ">
+                  {data?.date_start && (
+                    <Text  className=" bg-bgritem dark:bg-bgritem-d rounded-lg  px-2 py-1 flex-none flex-auto text-neutral-600 dark:text-neutral-400">
+                  
+                      {data.date_start && (
+                        <>
+                          <Time stylesName="text-sm flex-none" ts={data.date_start}></Time>
+                          {data.date_end && (<> 
+                          <Text className="text-sm flex-none"> - </Text>
+                          <Time stylesName="text-sm flex-none" ts={data.date_end} ></Time>
+                            </>
+                          )}
+                                                  </>
+                      )}
+
+                      
+                    </Text>
+                  )}
+                    <Text  className="my-auto text-sm flex-auto font-semibold text-neutral-600 dark:text-neutral-400">{data.visibility != '3' ? <>Private</> : <>Public</>}</Text>
+                  
+                  </View>
+                  <View className=" sm:h-12  ">
+                    <Text
+                      numberOfLines={2}
+                      className=" tracking-tight leading-tight text-base font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d "
+                    >
+                      {data.title}
+                    </Text>
+                  </View>
+                  <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
+                  {data.members_count} members
+                  </Text>
+                  <View className="flex-row w-full gap-x-2 ">                
+                      <Button
+                              variant="primary"
+                              size="sm"
+                              title="Join"
+                              className=" my-auto "
+                              
+                              fullWidth={true}
+                              />                  
+                      <Button
+                              variant="outline"
+                              size="sm"
+                              
+                              className=" my-auto "
+                              startDecorator="DotsThreeOutline"
+                              
+                              />
+                    </View>
+              </View>
+              </View>
+            </Link>
+           
+
+
             {data?.meta && (
-              <View className="px-4 mt-auto ">
+              <View className="px-4 pb-4 mt-auto ">
                 <Menu
                   {...data.meta}
                   displayType="mixed"
                   params={{
                     showVertical: true,
-                    button_size: 'sm',
+                    button_size: 'base',
                     button_full_width: true,
                     button_rounded: false,
                   }}
@@ -207,8 +238,8 @@ export function UnitPerson(props) {
   return (
     <AnimatedBlock>
       <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
-        <Link className="group text-center" href={data.url}>
-          <View className="flex-row sm:flex-col  text-center">
+        <Link className="group " href={data.url}>
+          <View className="flex-row sm:flex-col">
             <View className="sm:aspect-square p-1 w-1/3 sm:w-full rounded-xl  ">
               <Profile
                 url_avatar={data?.image?.src}
@@ -219,8 +250,8 @@ export function UnitPerson(props) {
             <View className="flex-col p-4 gap-y-4 flex-auto ">
                 
                     <Text
-                    
-                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-primary group-hover:dark:text-primary-d"
+                    numberOfLines={1}
+                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
                     >
                     {data.title}
                     </Text>
@@ -230,14 +261,14 @@ export function UnitPerson(props) {
                     <Text>FRIENDS: {data.mutual_friends_count}</Text>
                     )}
 
-                    
+
                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">18 mutual friends</Text>
 
 
                     <View className="flex-row w-full gap-x-2 ">                
                       <Button
                               variant="primary"
-                              size="base"
+                              size="sm"
                               title="Message"
                               className=" my-auto "
                               startDecorator="ChatTeardropDots"
@@ -245,7 +276,7 @@ export function UnitPerson(props) {
                               />                  
                       <Button
                               variant="outline"
-                              size="base"
+                              size="sm"
                               
                               className=" my-auto "
                               startDecorator="DotsThreeOutline"
