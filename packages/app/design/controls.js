@@ -143,7 +143,8 @@ export const Button = React.forwardRef((props, forwardedRef) => {
     let buttonTitle = props.title ? props.title : ''
     let buttonRounded = props.rounded ? true : false
     let buttonSolid = props.solid ? true : false
-    let sTitleContainer = (hideTitleOnSmall && isNaN(buttonTitle)) ? ' hidden sm:block ' : '';
+    let isIcon = buttonIconStart || buttonIconEnd;
+    let sTitleContainer = (hideTitleOnSmall && isIcon && isNaN(buttonTitle)) ? ' hidden sm:block ' : '';
     let iIconSize = 24
 
     let sClassContainer = ' group relative flex-row items-center '
