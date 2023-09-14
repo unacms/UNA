@@ -206,42 +206,61 @@ export function UnitPerson(props) {
 
   return (
     <AnimatedBlock>
-      <Card margin="mx-2 mb-2 p-1" rounded="rounded-2xl">
+      <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
         <Link className="group text-center" href={data.url}>
           <View className="flex-row sm:flex-col  text-center">
-            <View className="sm:aspect-square w-1/3 sm:w-full rounded-xl bg-gradient-to-b from-bgritem to-bgrcard dark:from-bgritem-d dark:to-transparent ">
+            <View className="sm:aspect-square p-1 w-1/3 sm:w-full rounded-xl  ">
               <Profile
                 url_avatar={data?.image?.src}
                 displayType="unit_wo_info"
                 displaySize="full"
               />
             </View>
-            <View className="flex-col flex-auto ">
-                <View className="flex-row w-full gap-x-2 justify-between px-3 py-2">
+            <View className="flex-col p-3 gap-y-3 flex-auto ">
+                
                     <Text
                     
-                    className="my-auto flex-auto text-lg leading-title tracking-tight font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-primary group-hover:dark:text-primary-d"
+                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-primary group-hover:dark:text-primary-d"
                     >
                     {data.title}
                     </Text>
-                    <View className="my-auto">
-                    <Button
-                            variant="outline"
-                            size="sm"
-                            rounded
-                            className=" my-auto "
-                            startDecorator="DotsThreeOutline"
-                            
-                            />
-                    </View>
-                </View>
+                    
+                
                 {data?.mutual_friends_count && (
                     <Text>FRIENDS: {data.mutual_friends_count}</Text>
                     )}
-                    <Text className="px-3   text-neutral-600 dark:text-neutral-400">18 mutual friends</Text>
 
-                    {data?.meta && (
-          <View className="p-3 pt-6 ">
+
+                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">18 mutual friends</Text>
+                    <View className="flex-row w-full gap-x-2 ">                
+                      <Button
+                              variant="primary"
+                              size="base"
+                              title="Message"
+                              className=" my-auto "
+                              startDecorator="ChatTeardropDots"
+                              fullWidth={true}
+                              />                  
+                      <Button
+                              variant="outline"
+                              size="base"
+                              
+                              className=" my-auto "
+                              startDecorator="DotsThreeOutline"
+                              
+                              />
+                    </View>
+
+            </View>
+          </View>
+        </Link>
+                
+
+        
+        
+      </Card>
+      {data?.meta && (
+          <View className="p-3 pt-6 opacity-20 animate-pulse ">
             <Menu
               {...data.meta}
               displayType="mixed"
@@ -254,13 +273,6 @@ export function UnitPerson(props) {
             />
           </View>
         )}
-            </View>
-          </View>
-        </Link>
-                
-
-        
-      </Card>
     </AnimatedBlock>
     /*
      * TODO "Friends" card - Add "mutual friends" count, remove "remove friend" and UNfollow. Add "MORE" button (icon only) that shows all actions 
