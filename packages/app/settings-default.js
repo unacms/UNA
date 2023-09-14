@@ -733,7 +733,7 @@ export const settingsDefault = {
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
             {key: '/tab1', title: 'Friends', url: '/friends', icon: 'Users'},
-            {key: '/tab2', title: 'Posts', url: '/persons-home',icon: 'ChatCenteredText'},
+            {key: '/tab2', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
             {key: '/tab3', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
             {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'app-notifications'},
             {key: '/tab5', title: 'Menu', url: '/dashboard',icon: 'UserList'},
