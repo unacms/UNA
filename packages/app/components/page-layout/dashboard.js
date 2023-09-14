@@ -23,7 +23,7 @@ export default function PageLayout(props) {
   }
 
   if (!currentUser) return <></>
-
+  console.log('showImage', showImage)
   return (
     <>
     <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
@@ -43,7 +43,7 @@ export default function PageLayout(props) {
               </Link>
               </View>
               <View className="flex-row gap-x-2 my-auto  lg:hidden">
-                <Button variant="outline" startDecorator="UserSwitch" rounded onClick = {() => setShowImage(true)} />
+                {appSetting('account', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
                 <Link href="/account-settings-password"><Button variant="outline" startDecorator="Gear" rounded /></Link>
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
@@ -53,7 +53,7 @@ export default function PageLayout(props) {
                   title="Switch Profile"
                   startDecorator="UserSwitch"
                   fullWidth
-                  onClick = {() => setShowImage(true)}
+                  onPress = {() => setShowImage(true)}
                   align="left"
                 />}
                 <Link href="/account-settings-password">

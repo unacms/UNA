@@ -240,12 +240,15 @@ export function UnitPerson(props) {
       <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
         <Link className="group " href={data.url}>
           <View className="flex-row sm:flex-col">
-            <View className="sm:aspect-square p-1 w-1/3 sm:w-full rounded-xl  ">
-              <Profile
-                url_avatar={data?.image?.src}
-                displayType="unit_wo_info"
-                displaySize="full"
-              />
+            <View className="sm:aspect-square p-1 w-1/3 sm:w-full rounded-xl ">
+
+              <Image
+                src={data?.image?.src}
+                  alt={data.title}
+                  view="cover"
+                  className="absolute u-cover rounded-xl"
+                  sizes={imageSizes}
+                />
             </View>
             <View className="flex-col p-4 gap-y-4 flex-auto ">
                 
