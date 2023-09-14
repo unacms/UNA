@@ -113,13 +113,13 @@ export function getUnitModeBySource(source){
         return 'browse_friend_requests';
 
     if (source.includes('system/browse_recommendations_subscriptions'))
-        return 'person_subscriptions_recommendations';
+        return 'person_following_recommendations';
 
     if (source.includes('system/browse_subscribed_me'))
-        return 'person_subscribed_me';
+        return 'person_followers';
 
     if (source.includes('browse_subscriptions'))
-        return 'person_subscriptions';
+        return 'person_following';
     
     if (source.includes('r=bx_events'))
         return 'event';    

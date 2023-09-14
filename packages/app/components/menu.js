@@ -85,6 +85,6 @@ export default function ElementMenu(oProps) {
         return sItems;
 
     return (
-        <View className={sClassName}>{sItems}</View>
+        <View className={sClassName}>{oProps.unitType}{sItems}</View>
     );
 }

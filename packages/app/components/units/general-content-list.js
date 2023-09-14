@@ -326,10 +326,11 @@ export default function Unit(props) {
                                 <Text numberOfLines={1} className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
-                                {data?.mutual_friends_count && (
-                                    <Text>FRIENDS: {data.mutual_friends_count}</Text>
-                                )}
-                                <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">18 mutual friends</Text>
+                                {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
+                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text>
+                                    :
+                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + ' friends'}</Text>
+                                }
                                 <View className="flex-row w-full gap-x-2 ">                
                                     <Button
                                         variant="primary"
