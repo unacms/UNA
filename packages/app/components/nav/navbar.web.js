@@ -133,7 +133,7 @@ export default function (props) {
                   { headerSettings.backButton  && getBackButtonWeb() }
                   { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
             </Row>
-            <View className="hidden lg:flex"><Search type="input" /></View>
+            <View className="hidden xl:flex"><Search type="input" /></View>
             
         </View>
         <Row className="hidden w-1/2 lg:flex flex-auto">
