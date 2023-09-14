@@ -37,7 +37,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.sidebar = contentAndEndpoint.sidebar;
             i.storageKeyValue = storageKey(i.link, false)
             i.blocks = blocks;
-            //console.log(i.blocks);
+            
             if (appSetting('cache', 'list')){
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC){
@@ -204,7 +204,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode  }) {
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType }) {
     if (item?.type === 'block') {
         let b = BlockByName2({b:item.data, name:item.block})
         if (!b)
@@ -215,11 +215,12 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode  
             {b}
             </View>
         );
-    } else {
+    } 
+    else {
       return (
         <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
-            <Unit module={module}  unit={unit} data={item} mode={unitMode} />
+            <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
         </View>
-      );
+        );
     }
 }

@@ -8,7 +8,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
-import { appSetting, deepEqual } from 'app/lib/util';
+import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
@@ -104,13 +104,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             return Preload
         }
 
+        const unitType = getUnitModeBySource(route.endpoint.request_url);
         if (route.inited)
             return (
                 <TabFlashList
                     index={route.index}
                     data={route.data}
                     unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
+                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={data.module ? data.module : ''}/>}
                     ListFooterComponent={
                         (route.data.length > 0 && route?.endpoint?.finished === false) ? (
                             Preload

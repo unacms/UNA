@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/blackbox-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -265,13 +265,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabScene = ({ route, width, status }) => {
 
         const Preload = getSkeleton(data.module? data.module : data.unit);
-       
+        
         if (!route.inited){
             return <></>
         }
         if (route.inited){
             const dataItems = route.data
             let isRightCol = route?.sidebar?.content?.length > 0
+            const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             return (
                 <>
                 <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
@@ -284,7 +285,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                             storagekey={route.storageKeyValue}
                             refer={uniRef}
                             unit={route.endpoint?.unit}
-                            renderItem={({ item, index }) => <ItemRenderer  route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
+                            renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                             ListFooterComponent = {
                                 <View className='m-4'>
                                     {(hasNextPage && isFetchingNextPage) ? (

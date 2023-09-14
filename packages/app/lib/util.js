@@ -99,6 +99,37 @@ export function getHeaderSettings(uri, width) {
     }
 }
 
+export function getUnitModeBySource(source){
+    if (source.includes('system/browse_friends'))
+        return 'person_friends';
+
+    if (source.includes('system/browse_recommendations_friends'))
+        return 'person_friends_recommendations';
+        
+    if (source.includes('system/browse_friend_requested'))
+        return 'person_friend_requested';
+    
+    if (source.includes('system/browse_friend_requests'))
+        return 'browse_friend_requests';
+
+    if (source.includes('system/browse_recommendations_subscriptions'))
+        return 'person_subscriptions_recommendations';
+
+    if (source.includes('system/browse_subscribed_me'))
+        return 'person_subscribed_me';
+
+    if (source.includes('browse_subscriptions'))
+        return 'person_subscriptions';
+    
+    if (source.includes('r=bx_events'))
+        return 'event';    
+    
+    if (source.includes('r=bx_groups'))
+        return 'group';       
+        
+    return 'default';
+}
+
 export function storageKey(url, useUrl = true) {
     //stringMd5
     if ( Platform.OS !== 'web')
