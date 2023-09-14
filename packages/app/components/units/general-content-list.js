@@ -216,7 +216,7 @@ export function UnitPerson(props) {
                 displaySize="full"
               />
             </View>
-            <View className="flex-col p-3 gap-y-3 flex-auto ">
+            <View className="flex-col p-4 gap-y-4 flex-auto ">
                 
                     <Text
                     
@@ -230,8 +230,10 @@ export function UnitPerson(props) {
                     <Text>FRIENDS: {data.mutual_friends_count}</Text>
                     )}
 
-
+                    
                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">18 mutual friends</Text>
+
+
                     <View className="flex-row w-full gap-x-2 ">                
                       <Button
                               variant="primary"
