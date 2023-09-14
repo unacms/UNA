@@ -89,6 +89,13 @@ export default function AtomProfile(oProps) {
                 iSizeHeight = 192
                 sSizeFont = 'text-xl font-semibold';
                 break
+        
+        case 'full':
+                sSize = ' w-fit aspect-square rounded-xl '
+                iSizeWidth = 400
+                iSizeHeight = 400
+                sSizeFont = 'text-xl font-semibold';
+                break
     }
     sSize += ' rounded-full '
 

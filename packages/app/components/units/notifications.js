@@ -29,10 +29,10 @@ export default function UnitFeed({data}) {
     }
     data.content_parsed = data.content_parsed.replace('&#8230;', '...')
     return (
-        <View className=" ">
+        <View className=" mt-2 ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
-                <Card addClassName=" p-2 flex-row max-w-5xl self-center w-full" margin="mt-[1px]"> 
+                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg ">  
                     <View className="w-12 h-12 mr-2 rounded-full flex-none " >
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>
@@ -45,7 +45,7 @@ export default function UnitFeed({data}) {
                             <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(data.content_parsed)}</Text>    
                         </View>         
                     </View>
-                </Card>
+               </View>
             </Pressable>
         </View>
     );

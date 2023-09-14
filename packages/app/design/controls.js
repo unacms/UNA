@@ -67,9 +67,9 @@ export function Modal({
                     <View className="relative w-full h-full max-w-2xl md:h-auto">
                         <Pressable onPress={() => {}} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
                             <View className="p-4">
-                                <Row className={'items-center pb-4 ' + (title ? 'justify-between' : 'justify-end') + ' ml-1  '}>
-                                    { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold'>{title}</Text></View>}
-                                    { (title && onClose) && <View className=''><Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose}/></View>}
+                                <Row className={'items-center ' + (title ? 'justify-between' : 'justify-end') + ' ml-1  '}>
+                                    { title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold mb-4 '>{title}</Text></View>}
+                                    { (title && onClose) && <View className='mb-auto -translate-y-2 translate-x-2'><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose}/></View>}
                                 </Row>
                             <View className="gap-y-0 overflow-y-auto ">{children}</View>
                         </View>

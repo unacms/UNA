@@ -47,22 +47,25 @@ export function UnitSearchResultsSmall({data, onPress}) {
     const sText = data?.title ? data.title : stripTags(data.text);
 
     return (
-        <View className=" ">
+        <View className=" mt-2  ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
-                <Card addClassName="p-2 flex-row" margin="my-[1px]">    
-                    <View className="w-12 h-12 mr-2 rounded-full flex-none ">
-                        {data?.author_data && <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />}
+                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg "> 
+                {data?.author_data &&   
+                    <View className="w-12 h-12 rounded-full flex-none ">
+                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>
-                    <View className="flex-auto my-auto ">
-                        <View className='flex-row '>
-                            <Text className='text-sm flex-none text-neutral-500'><Time ts={data.added}></Time></Text>
-                        </View>
+                    }
+                    <View className="flex-auto mx-2 my-auto ">
+                        
                         <View className='flex-row  w-full items-end content-end'>
-                            <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
-                        </View>         
+                            <Text className='flex-auto  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
+                        </View>  
+                        <View className='flex-row '>
+                            <Text className=' text-xs flex-none text-neutral-500'><Time ts={data.added}></Time></Text>
+                        </View>       
                     </View>
-                </Card>
+                </View>
             </Pressable>
         </View>
     );

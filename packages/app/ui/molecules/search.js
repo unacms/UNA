@@ -201,8 +201,8 @@ export default function ElementSearch(oProps) {
                     <Modal key="ddp-content" onVisible={popupOpen} onClose={() => handleClosePopupDefault()} position="top">
                         <View className="px-1.5 pb-1.5">
                             <Redirect ref={redirectdRef} />
-                            <View className="flex-row items-center mb-1">
-                                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5"></Text>
+                            <View className="flex-row items-center mb-2">
+                                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                                 <Link href={'/search-keyword?keyword=' + inputValue}>
                                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                 </Link>
