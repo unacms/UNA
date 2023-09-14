@@ -189,20 +189,13 @@ export const staticDefault = {
               rounded
             />
             <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-              Upgrade to Pro!
+              Welcome to NEO!
             </Text>
           </View>
           <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
-            Supercharge your experience with premium features and access to
-            exclusive content.
+            This is a demo social network. User interface is powered by NEO Universal App and backend is powered by UNA CMS.
           </Text>
-          <Button
-            variant="primary"
-            size="sm"
-            startDecorator="RocketLaunch"
-            title="Upgrade to Pro"
-            
-          />
+          
         </Card>
       </>
     ),

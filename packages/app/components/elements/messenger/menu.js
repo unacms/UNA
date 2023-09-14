@@ -64,13 +64,12 @@ function MenuColumn() {
 };
 
 const WrappedTopMenu = ({ onClick }) => {
-    return <View className="absolute h-full xl:hidden bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50">
+    return <View className="absolute backdrop-blur h-full xl:hidden bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50">
             <Pressable onPress={ onClick } className={"cursor-default w-full h-full"} >
               <MotiView style={{width: 480}} from={{opacity: 1}} animate={{opacity: 1}} exit={{opacity: 0}} transition={{duration: 0}}/>
                 <MotiView style={{width: 288, height: '100%'}} from={{translateX: -300, overshootClamping: false}} animate={{translateX: 0, overshootClamping: false}} exit={{height: 0, translateX: -300, overshootClamping: false}} transition={{overshootClamping: true}}>
                     <View className="backdrop-blur h-full xl:flex shadow-xl p-4
-                                                    2xl:bg-transparent 2xl:dark:bg-transparent bg-navbar/80
-                                                    dark:bg-navbar-d/50 border-r 2xl:border-none border-bdr
+                                                    bg-bgrnavbar dark:bg-bgrnavbar-d border-r 2xl:border-none border-bdr
                                                     dark:border-bdr-d flex-col gap-y-2"><MenuColumn test={"popup"} />
                     </View>
               </MotiView>

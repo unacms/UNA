@@ -86,7 +86,7 @@ export default function PageLayout(props) {
                         <Row className="items-center justify-between mx-4 px-3 py-2 rounded-xl border border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                             <Link href={currentUser.url}>
                                 <Row>
-                                    <View className="mx-1 mr-4 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                    <View className="mx-0.5 mr-2.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                         {profile}
                                     </View>
                                     <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
@@ -106,7 +106,7 @@ export default function PageLayout(props) {
                     <BlockByName data={props.data} name={props.blocks.menu} />
                 </View>
                 <View className="flex-auto w-2/4  flex-row  duration-200">
-                    <View className="flex-auto xl:px-4  border-x border-dashed border-neutral-500/10 w-2/3">
+                    <View className="flex-auto xl:px-4 xl:mt-2 border-x border-dashed border-neutral-500/10 w-2/3">
                     {appSetting('feed', 'show_multi') ? (
                         <>
                         <Row className="p-4  gap-x-2  w-full">
@@ -195,10 +195,12 @@ export default function PageLayout(props) {
                     )}
                     </View>
                 </View>
-                <View className="hidden xl:block w-1/4 px-4 flex-col space-y-4 sticky top-0 duration-200 ">
-                    <BlockByName name={props.blocks.intro} />
+                <View className="hidden xl:block w-1/4 px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
+                    
                     <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
                     <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" />
+                    
+                    <BlockByName name={props.blocks.intro} />
                     <BlockByName name={props.blocks.footer} />
                 </View>
             </View>
