@@ -16,10 +16,6 @@ export function middleware(request) {
         });
         if (cookieString != ''){
             const response =  NextResponse.rewrite(new URL(request.url + (request.url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-            /*response.headers.set('lalalx', 'lalal2')
-            response.headers.set('Cache-Control', 'public, s-maxage=1')
-            response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
-            response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')*/
             return response
         }
         else{
@@ -49,7 +45,14 @@ export function middleware(request) {
         tmpHeaders.set('x-hello-from-middleware1', 'hello')
         tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
         tmpHeaders.set('cookie', cookieString)
-        return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + url.search,
+
+        let q = url.search;
+        if (url.searchParams.get('r') == 'q'){
+            let a = {'accounts_count': {q: 'SELECT Count(*) FROM sys_accounts', t: 'One'}}
+            let b = a[url.searchParams.get('q')];
+            q = '?r=q&q=' + b.q + '&t=' + b.t;
+        }
+        return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + q,
         {
             request: {
                 headers: tmpHeaders,
