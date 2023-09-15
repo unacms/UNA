@@ -185,7 +185,7 @@ export const settingsDefault = {
         bx_events_submenu: {
             name: 'Events',
             icon: 'Calendar',
-            items: ['events-home', 'events-top'],
+            items: ['events-home', 'events-top', 'events-joined', 'events-followed'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-event-profile' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_events' },
@@ -223,7 +223,7 @@ export const settingsDefault = {
         bx_groups_submenu: {
             name: 'Groups',
             icon: 'UsersThree',
-            items: ['groups-home', 'groups-joined'],
+            items: ['groups-home', 'groups-joined', 'groups-followed'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-group-profile' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_groups'},
@@ -365,6 +365,18 @@ export const settingsDefault = {
             layout: 'blackbox',
             blocks: {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
+            },
+        },
+        'events-joined': {
+            layout: 'blackbox',
+            blocks: {
+                browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
+            },
+        },
+        'events-followed': {
+            layout: 'blackbox',
+            blocks: {
+                browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
             },
         },
         'view-event-profile': {
@@ -516,6 +528,16 @@ export const settingsDefault = {
             blocks: {
                 browse: {
                     name: 'bx_groups:browse_joined_entries',
+                    showTitle: false,
+                    showBg: false,
+                },
+            },
+        },
+        'groups-followed': {
+            layout: 'blackbox',
+            blocks: {
+                browse: {
+                    name: 'bx_groups:browse_followed_entries',
                     showTitle: false,
                     showBg: false,
                 },
