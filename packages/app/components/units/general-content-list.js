@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import CardDataContext from 'app/context/card'
 import { CardData } from 'app/context/card'
 import Image from '../../ui/atoms/image'
@@ -12,6 +12,8 @@ import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Time from '../../ui/atoms/time'
 import { Button } from 'app/design/controls'
+import Redirect from 'app/ui/atoms/redirect';
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function Unit(props) {
     let data = props.data
@@ -303,13 +305,81 @@ export default function Unit(props) {
     }
 
     function UnitPerson(props) {
+        const redirectdRef = useRef();
+
         let data = props.data
         const { cardData, setCardData } = useContext(CardData)
         if (!!cardData?.hidden) return
             const imageSizes = getImageSizes()
-    
+
+        const handleClick = (event, sUrl) => {
+            event.preventDefault();
+
+            redirectdRef.current.redirect(sUrl)
+        }
+
+        let oMenuItemPrimary = undefined;
+        let aMenuItemsMore = [];
+        if( data?.meta) {
+            let sPrimary = '', sSecondary = '', sExclude = '';
+
+            switch(props.unitType) {
+                case 'person_friends':
+                    oMenuItemPrimary = {
+                        title: 'Message',
+                        onPress: (event) => {
+                            handleClick(event, '/messenger')
+                        }
+                    };
+                    break;
+
+                case 'person_friends_recommendations':
+                    sPrimary = 'befriend';
+                    break;
+
+                case 'browse_friend_requests':
+                    sPrimary = 'befriend';
+                    break;
+
+                case 'person_friend_requested':
+                    sPrimary = 'unfriend';
+                    break;
+
+                case 'person_following_recommendations':
+                    sPrimary = 'subscribe';
+                    break;
+
+                case 'person_followers':
+                    sPrimary = 'subscribe';
+                    sSecondary = 'unsubscribe';
+                    break;
+
+                case 'person_following':
+                    sPrimary = 'unsubscribe';
+                    break;
+            }
+
+            if(!oMenuItemPrimary) {
+                sExclude = sPrimary;
+                oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sPrimary).shift();
+                if(!oMenuItemPrimary) {
+                    sExclude = sSecondary;
+                    oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sSecondary).shift();
+                }
+            }
+
+            aMenuItemsMore =  data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    link: '/' + aItem.link,
+                    title: aItem.title
+                };
+            });
+        }
+
         return (
             <AnimatedBlock>
+                <Redirect ref={redirectdRef} />
                 <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                     <Link className="group " href={data.url}>
                         <View className="flex-row sm:flex-col">
@@ -331,43 +401,26 @@ export default function Unit(props) {
                                     :
                                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + ' friends'}</Text>
                                 }
-                                <View className="flex-row w-full gap-x-2 ">                
-                                    <Button
+                                <View className="flex-row w-full gap-x-2 ">
+                                    {!!oMenuItemPrimary && <Button
                                         variant="primary"
                                         size="sm"
-                                        title="Message"
+                                        title={oMenuItemPrimary.title}
                                         className=" my-auto "
                                         startDecorator="ChatTeardropDots"
                                         fullWidth={true}
-                                    />                  
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        
-                                        className=" my-auto "
-                                        startDecorator="DotsThreeOutline"
-                                        
-                                    />
+                                        onPress={oMenuItemPrimary?.onPress}
+                                    />}
+                                    {aMenuItemsMore.length > 0 && 
+                                        <DropdownMenu items={aMenuItemsMore}>
+                                            <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
+                                        </DropdownMenu>
+                                    }
                                 </View>
                             </View>
                         </View>
                     </Link>  
                 </Card>
-                {data?.meta && (
-                    <View className="p-3 pt-6 opacity-20 animate-pulse ">
-                        <Menu
-                            {...data.meta}
-                            unitType={props.unitType}
-                            displayType="mixed"
-                            params={{
-                                showVertical: true,
-                                button_size: 'base',
-                                button_full_width: true,
-                                button_rounded: false,
-                            }}
-                        />
-                    </View>
-                )}
             </AnimatedBlock>
         )
     }
