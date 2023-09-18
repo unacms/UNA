@@ -34,14 +34,10 @@ export default  function ElementDashboardStat(props) {
 
     const [data, setData] = useState(props.data);
     useEffect(() => {
-        // Define an async function inside the useEffect
         const fetchData = async () => {
             const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices&demo=1');
-            // Assuming fetcher returns the data you want or you might need to extract it from the response.
             setData(sResponse.data[0].data);
         };
-
-        // Call the async function
         fetchData();
     }, []);
     

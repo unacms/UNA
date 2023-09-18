@@ -9,10 +9,10 @@ import { appStatic } from 'app/lib/app-static';
 export function SvgLogoNative() {
     const scheme = useColorScheme();
     if (scheme === 'dark'){
-        return appStatic('logo', 'native')
+        return appStatic('logo_native')
     }
     else{
-        return appStatic('logo', 'nativedark')
+        return appStatic('logo_nativedark')
     }
 };
 

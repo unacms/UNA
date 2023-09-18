@@ -44,7 +44,7 @@ export  function Page (props) {
 
     return (
         <> 
-            {appStatic('components', props.name.replace('static:', ''))}
+            {appStatic('components_' + props.name.replace('static:', ''))}
         </>
     );
 

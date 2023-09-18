@@ -125,8 +125,8 @@ export default function (props) {
 
                   <Link href="/home" aria-label="Logo">
                     <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                      {appStatic('logo', 'mark')}
-                      {appStatic('logo', 'text')}
+                      {appStatic('logo_mark')}
+                      {appStatic('logo_text')}
                     </View>
                   </Link>
                 }

@@ -11,8 +11,7 @@ import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
 import { Modal } from 'app/design/controls'
-import Splash from 'app/ui/molecules/splash'
-import Image from 'app/ui/atoms/image'
+import { appStatic } from 'app/lib/app-static'
 
 export default function PageLayout(props) {
 
@@ -62,14 +61,32 @@ export default function PageLayout(props) {
         return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
     }, [])
    
+    function SplashBlock (props) {
+        if (appSetting('splash', 'block') == 'image'){
+            let url = '/splash.webp';
+            return <Image sizes="1024px" view="cover" className="u-cover" src={url} />
+        }
+    
+        if (appSetting('splash', 'block') == 'login'){
+            return <BlockByName name={props.blocks.login} data={props.data}/>
+        }
+    
+        if (appSetting('splash', 'block') == 'signup'){
+            return <BlockByName name={props.blocks.signup} data={props.data}/>
+        }
+    
+        return <></>
+    } 
 
     if (isWeb) {
-        if (currentUser === null && renderBlock)
+        if (currentUser === null && renderBlock){
+            let p = {blocks : props.blocks, data : props.data, block: SplashBlock(props)}
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
-                    <Splash {...props}/>
+                    {appStatic('components_splash', p)}
                 </View>
             )
+        }
         if (currentUser) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
@@ -244,11 +261,15 @@ export default function PageLayout(props) {
         items: menuItems,
     }
 
+    let p = {blocks : props.blocks, data : props.data, block: SplashBlock(props)}
+           
     return (
         <View className="w-full ">
             {!currentUser && renderBlock && (
                 <ScrollView>
-                    <BlockByName name={props.blocks.home} />
+                    <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
+                        {appStatic('components_splash', p)}
+                    </View>
                 </ScrollView>
             )}
             {!!currentUser && (

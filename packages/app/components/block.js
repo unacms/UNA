@@ -70,7 +70,7 @@ export function StaticBlock(props) {
 
     return (
         <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle}> 
-            {appStatic('components', props.name.replace('static:', ''))}
+            {appStatic('components_' + props.name.replace('static:', ''))}
         </BlockWrapper>
     );
 

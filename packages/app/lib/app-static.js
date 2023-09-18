@@ -1,8 +1,9 @@
 import { staticComponents } from 'app/static';
 
-export function appStatic(section, name, path) {
-    if (path)
-        return staticComponents[section] && staticComponents[section][name] ? staticComponents[section][name][path] : '';
+export function appStatic(section, props) {
+    let Component = staticComponents[section];
+    if (Component && Component.$$typeof === Symbol.for('react.element'))
+        return Component;
 
-    return staticComponents[section] ? staticComponents[section][name] : '';
+    return <Component {...props}/>
 }
