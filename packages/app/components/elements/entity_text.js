@@ -4,6 +4,7 @@ import Html from '../../ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
 import { appSetting  } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
+import EntityAttachments from './entity_attachments';
 
 export default function ElementEntityText({data}) {
     const view = appSetting('entry', 'default_view');
@@ -34,7 +35,24 @@ function Small({ data }) {
     );
 }
 
+
+const getImagesData = (data) => {
+    if (!data["bx_if:show_screenshots"] || !data["bx_if:show_screenshots"].condition) {
+        return [];
+    }
+
+    const screenshots = data["bx_if:show_screenshots"].content.screenshots;
+
+    const att = screenshots.map(screenshot => ({
+        type: 'image',
+        data: { 'src': screenshot.url_bg }
+    }));
+
+    return att;
+};
+
 function Default({ data }) {
+    let att = getImagesData(data);
 
     return (
         <View className="w-full">
@@ -43,6 +61,7 @@ function Default({ data }) {
                 <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>
                 <Html data={data.entry_text} />
             </View>
+            <EntityAttachments data={att}/>
         </View>
     );
 }

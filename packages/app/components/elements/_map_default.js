@@ -10,6 +10,7 @@ import EntityActions from './entity_actions';
 import EntityInfo from './entity_info';
 import EntityCover from './entity_cover';
 import ProfileMenu from './profile_menu';
+import CategoriesList from './categories_list';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
@@ -31,7 +32,7 @@ export const componentsMapDefault = {
     profile_switcher: ProfileSwitcher,
     feed_item: FeedItem,
     dashboard_stat: DashboardStat,
-
+    categories_list: CategoriesList,
     messenger_main_page: MessengerPage
 };
 
