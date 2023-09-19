@@ -71,6 +71,9 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
         styles = {...styles, minHeight: 100}
     }
 
+    if (typeof props.styles === 'object')
+        styles = {...styles, ...props.styles};
+
     return (
         <Field {...props}>
             <MentionInputMulti style={styles}

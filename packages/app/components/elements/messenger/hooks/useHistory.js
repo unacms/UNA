@@ -1,7 +1,6 @@
 import Services from "../services/history";
 import { useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from 'app/context/user';
-import {useCallback, useState} from 'react';
 import { stripTags } from 'app/lib/util';
 import { ConvoKeys } from './useConvos';
 
@@ -78,7 +77,7 @@ export const useHistoryMessageAction = function(convoId, menuItem){
                 const { lot_id, message, created } = oLastMessage,
                       prevConvoData = client.getQueryData(ConvoKeys.convoByMenuWithId(menuItem, lot_id));
 
-                const iItemsCount = prevConvoData.total_messages && (prevConvoData.total_messages - 1);
+                const iItemsCount = prevConvoData?.total_messages && (prevConvoData?.total_messages - 1);
 
                 client.setQueryData(ConvoKeys.convoByMenuWithId(menuItem, lot_id), Object.assign({}, prevConvoData, {
                     total_messages: +iItemsCount,
@@ -127,11 +126,12 @@ export const useHistoryMessageAction = function(convoId, menuItem){
 export const useSendData = function(convoId, menuItem){
     const client = useQueryClient();
     const { currentUser } = useCurrentUser();
-    const { mutateAsync: sendMessage } = useMutation({
-        mutationFn: (formData) => Services.sendMessage(convoId, formData),
-        onMutate: async (oFormData) => {
-            const iTime = parseInt((new Date()).getTime()/1000),
-                  message = oFormData.get('message');
+    const { mutate: sendMessage } = useMutation({
+        mutationFn: ({ oFormData }) => Services.sendMessage(convoId, oFormData),
+        onMutate: async ( { oData: { message } }) => {
+            //console.log('--------- on mutation entiers ---------', message );
+
+            const iTime = parseInt((new Date()).getTime()/1000);
 
             await client.cancelQueries(HistoryKeys.messagesByConvo(convoId));
             await client.cancelQueries(ConvoKeys.convoByMenu(menuItem));
@@ -139,15 +139,17 @@ export const useSendData = function(convoId, menuItem){
             // Convos History
             const prevHistoryData = client.getQueryData(HistoryKeys.messagesByConvo(convoId));
             client.setQueryData(HistoryKeys.messagesByConvo(convoId), (oldData) => {
-                const { pages } = oldData;
+                const { pages } = oldData || {};
                 pages[pages.length - 1] = [...pages[pages.length - 1], { id: iTime, created:iTime, lot_id: convoId, message, author_data: currentUser }];
                 return {...oldData, pages };
             });
 
+            //console.log('--------- history has been changed ---------', prevHistoryData);
+
             // Convos List
             const prevConvoListData = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
             client.setQueryData(ConvoKeys.convoByMenu(menuItem), (oldData) => {
-                const { pages } = oldData;
+                const { pages } = oldData || {};
 
                 let oModifiedItem = Object.create({});
                 const oNewList = pages.map((page) => {
@@ -176,7 +178,7 @@ export const useSendData = function(convoId, menuItem){
             client.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
         },
         onSettled: (data) => {
-            client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId)});
+            //client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId)});
             //client.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)});
         }
     });
