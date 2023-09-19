@@ -183,16 +183,16 @@ export function ComponentsIntro(props) {
             <Button
                 variant="outline"
                 size="sm"
-                startDecorator="RocketLaunch"
+                startDecorator="UsersFour"
                 rounded
             />
             <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                Welcome to NEO!
+                We are <Text className="font-bold text-neutral-950 dark:text-neutral-50">{data}</Text>. 
             </Text>
-            <Text className="text-red-500 text-lg">{data}</Text>
             </View>
             <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
-            This is a demo social network. User interface is powered by NEO Universal App and backend is powered by UNA CMS.
+               Welcome to the community! 
+            This is a demo social network, powered by NEO and UNA.
             </Text>
         </Card>
     );

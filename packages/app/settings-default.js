@@ -136,7 +136,7 @@ export const settingsDefault = {
     menu_items: {
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'home'},
-            { name: 'friends', title: 'Connections', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
@@ -777,7 +777,7 @@ export const settingsDefault = {
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
             { title: 'Bookmarks', link: '/bookmarks', icon: 'Bookmarks' },
-            { title: 'Connections', link: '/connections', icon: 'Link' },
+            { title: 'Friends', link: '/connections', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'NoteBlank' },
