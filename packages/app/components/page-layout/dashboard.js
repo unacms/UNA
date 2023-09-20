@@ -43,12 +43,12 @@ export default function PageLayout(props) {
               </Link>
               </View>
               <View className="flex-row gap-x-2 my-auto  lg:hidden">
-                {appSetting('account', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
+                {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
                 <Link href="/account-settings-password"><Button variant="outline" startDecorator="Gear" rounded /></Link>
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
               <View className="flex-row gap-x-2 hidden lg:flex">
-                {appSetting('account', 'allow_switch_profile') && <Button
+                {appSetting('layout', 'allow_switch_profile') && <Button
                   variant="text"
                   title="Switch Profile"
                   startDecorator="UserSwitch"

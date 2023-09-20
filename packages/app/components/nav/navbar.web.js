@@ -40,6 +40,10 @@ export default function (props) {
    // setMenuPopup(false)
   }
 
+  const bSearch = appSetting('layout', 'search') == true;
+  const bMessenger = appSetting('layout', 'messenger') == true;
+  const bApps = appSetting('layout', 'apps') == true;
+
   const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
   const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
   const [ntfsOpen, setNtfsOpen] = useState(false)
@@ -133,7 +137,7 @@ export default function (props) {
                   { headerSettings.backButton  && getBackButtonWeb() }
                   { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
             </Row>
-            <View className="hidden xl:flex"><Search type="input" /></View>
+            {bSearch && <View className="hidden xl:flex"><Search type="input" /></View>}
             
         </View>
         <Row className="hidden w-1/2 lg:flex flex-auto">
@@ -165,7 +169,7 @@ export default function (props) {
             {!!currentUser && (
               <Row className="flex-row   justify-end ">
                 <View className=" flex-row my-auto ">
-                  <View className="relative hidden lg:flex flex-row">
+                  {bApps && <View className="relative hidden lg:flex flex-row">
                   <DropdownMenu items={menuItemsByName('', menu_top_more).map(
                         (item, index) => {
                           return (
@@ -194,12 +198,12 @@ export default function (props) {
                       />
                     </Tooltip>
                   </DropdownMenu>
-                  </View>
-                  <View className="xl:hidden ml-2">
+                  </View>}
+                  {bSearch && <View className="xl:hidden ml-2">
                     <Search />
-                  </View>
-                
-                <View className="ml-2">
+                  </View>}
+               
+                { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">
                   <DropdownMenu
                     items={menuItemsByName('', menu_add).map(
                       (item, index) => {
@@ -228,8 +232,8 @@ export default function (props) {
                       />
                     </Tooltip>
                   </DropdownMenu>
-                </View>
-                <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
+                </View>}
+                {bMessenger && <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
                   <DropdownPopup
                     open={ntfsOpen}
                     onOpenChange={(bOpen) => {
@@ -260,7 +264,7 @@ export default function (props) {
                       }}
                     />
                   </Tooltip>
-                </View>
+                </View>}
                 
                 {profile ? (
                   <View className="hidden sm:flex ml-2 flex-row justify-center">

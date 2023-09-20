@@ -1,6 +1,14 @@
 export const settingsDefault = {
-    debug: {
-        log_fetch:false
+    layout: {
+        max_width: 'max-w-screen-2xl',
+        cell_gap: 4,
+        cell_style: '',
+        show_user_icon: true,
+        search: true,
+        messenger: true,
+        apps: true,
+        block: 'login',
+        allow_switch_profile: true
     },
     sockets: {
         host: 'ci.una.io',
@@ -38,12 +46,6 @@ export const settingsDefault = {
         list: true,
         compress: true
     },
-    account: {
-        allow_switch_profile: true
-    },
-    splash: {
-        block: 'login'
-    },
     feed: {
         show_selector_view: true,
         default_view: '',
@@ -53,15 +55,6 @@ export const settingsDefault = {
     },
     entry: {
         default_view: '',
-    },
-    layout: {
-        max_width: 'max-w-screen-2xl',
-        cell_gap: 4,
-        cell_style: '',
-        show_user_icon: true,
-    },
-    comments: {
-        show_header: false,
     },
     browse: {
         per_line: [
@@ -128,10 +121,6 @@ export const settingsDefault = {
         recommendation: {
             show_action_as_button: true,
         },
-    },
-    static_pages: {
-        home: 'Home',
-        about: 'About'
     },
     menu_items: {
         menu_top: [

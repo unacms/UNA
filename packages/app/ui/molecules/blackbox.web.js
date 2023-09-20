@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef  } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo  } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable, ScrollView  } from 'app/design/view';
@@ -13,7 +13,7 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
-
+    
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
@@ -21,12 +21,16 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const [routes, setRoutes] = useState(initedTabs);
 
-    
+   
+
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
     const [index, setIndex] = useState(routes.findIndex(function(item) {
         return item.key === data.url.replace('+', '');
     }));
+
+    console.log('----', routes[index]?.endpoint?.params?.start)
+
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
@@ -263,14 +267,15 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const headerObj = renderHeader(tabBarObj);
 
     const TabScene = ({ route, width, status }) => {
-
+        const dataItems = route.data
+        let b = useMemo(() => {
         const Preload = getSkeleton(data.module? data.module : data.unit);
         
         if (!route.inited){
             return <></>
         }
         if (route.inited){
-            const dataItems = route.data
+            
             let isRightCol = route?.sidebar?.content?.length > 0
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             return (
@@ -304,7 +309,12 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     </View>}
                 </Row></>
         
-    )}};
+    )}
+    // can be the problem (freeze data im lists)
+                        }, [dataItems.length, route.index]);
+                        return b;
+                        
+};
     const currentRoute = routes.find((item) => item.index === index);
 
     const handleLayoutTop = (event) => {

@@ -62,16 +62,16 @@ export default function PageLayout(props) {
     }, [])
    
     function SplashBlock (props) {
-        if (appSetting('splash', 'block') == 'image'){
+        if (appSetting('layout', 'block') == 'image'){
             let url = '/splash.webp';
             return <Image sizes="1024px" view="cover" className="u-cover" src={url} />
         }
     
-        if (appSetting('splash', 'block') == 'login'){
+        if (appSetting('layout', 'block') == 'login'){
             return <BlockByName name={props.blocks.login} data={props.data}/>
         }
     
-        if (appSetting('splash', 'block') == 'signup'){
+        if (appSetting('layout', 'block') == 'signup'){
             return <BlockByName name={props.blocks.signup} data={props.data}/>
         }
     
@@ -111,7 +111,7 @@ export default function PageLayout(props) {
                                     </Text>
                                 </Row>
                             </Link>
-                            {appSetting('account', 'allow_switch_profile') && <View><Button
+                            {appSetting('layout', 'allow_switch_profile') && <View><Button
                             variant="outline"
                             size="sm"
                             startDecorator="UserSwitch"
