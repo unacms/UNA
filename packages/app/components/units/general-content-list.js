@@ -327,8 +327,9 @@ export default function Unit(props) {
                 case 'person_friends':
                     oMenuItemPrimary = {
                         title: 'Message',
+                        icon: 'ChatTeardropDots',
                         onPress: (event) => {
-                            handleClick(event, '/messenger')
+                            handleClick(event, '/messenger');
                         }
                     };
                     break;
@@ -357,6 +358,14 @@ export default function Unit(props) {
                 case 'person_following':
                     sPrimary = 'unsubscribe';
                     break;
+
+                default:
+                    oMenuItemPrimary = {
+                        title: 'View',
+                        onPress: (event) => {
+                            handleClick(event, data.url);
+                        }
+                    };
             }
 
             if(!oMenuItemPrimary) {
@@ -407,7 +416,7 @@ export default function Unit(props) {
                                         size="sm"
                                         title={oMenuItemPrimary.title}
                                         className=" my-auto "
-                                        startDecorator="ChatTeardropDots"
+                                        startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
                                         fullWidth={true}
                                         onPress={oMenuItemPrimary?.onPress}
                                     />}
