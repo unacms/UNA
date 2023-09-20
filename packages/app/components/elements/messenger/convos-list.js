@@ -110,7 +110,7 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
     }, [status, menuItem]);
 
     if (isLoading)
-        return getSkeleton('feed');
+        return getSkeleton('notifications');
 
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
@@ -138,19 +138,21 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
 
 export const ConvosList = () => {
     const { menuItem, menuView, setMenuView } = useContext(MenuData),
+          //route = useRouter(),
           { screenMode, pageHeight, setConvoItem, convoInfo } = useContext(PageData),
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
           handlerSelectConvo = useCallback((convoItem, bManually = true) => {
                                                                                setConvoItem({ item: convoItem, manually: bManually });
+
                                                                             }, []),
          bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
          handlerOuterClick = () => menuView && setMenuView(false);
 
    return <View className="max-h-full flex w-full h-full flex-col relative">
-                <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-d h-14">
-                   <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
-                </View>
-                <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />
-                { menuView && bAllowViewOnDevice && <WrappedTopMenu onClick={ handlerOuterClick }/> }
+            <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-d h-14">
+               <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
+            </View>
+            <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />
+            { menuView && bAllowViewOnDevice && <WrappedTopMenu onClick={ handlerOuterClick }/> }
           </View>
 };

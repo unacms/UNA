@@ -14,7 +14,7 @@ import CategoriesList from './categories_list';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
-import { MessengerPage } from './messenger';
+import MessengerPage from './messenger';
 
 export const componentsMapDefault = {
     browse: Browse,

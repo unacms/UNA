@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view'
-import {useRef, useState} from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import {KeyboardAvoidingView, useWindowDimensions} from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 
 export default function FormMessenger(props) {
@@ -18,7 +18,7 @@ export default function FormMessenger(props) {
 
     const windowWidth = useWindowDimensions().width;
 
-    let styles ={};
+    let styles = { };
     if(Platform.OS !== 'web') {
         styles = { width: windowWidth - 110 }
     }
@@ -29,33 +29,25 @@ export default function FormMessenger(props) {
     const viewFormRef = useRef();
     const handleLayout = () => {
         viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-            setSizes({formHeight: height})
+            setSizes({ formHeight: height })
         });
     };
 
-    /*<KeyboardAvoidingView
-                    keyboardHoOffset={192}
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    onLayout={handleLayout}
-           >*/
-
-    return   <View className='w-full my-0.5' ref={viewFormRef}>
-                <Row className='w-full'>
-                    <View className=''>
-                        {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', {previewPlaceHolder: setPlaceHolder})}
-                    </View>
-                    <View className='mr-2 flex-grow ' style={styles}>
-                        {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
-                        {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'default')}
-                        {getFormFieldByData(props.data.inputs['parent_id'], props.handleSubmit, 'default')}
-                        {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { placeholder: 'Message ...' })}
-                        {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'default')}
-                        {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'default')}
-                    </View>
-                    <View className='w-10'>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'default')}</View>
+    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? 54 : 0 ) }}>
+                <Row className="w-full flex flex-row items-center">
+                  <View className="flex-0">
+                      { getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder }) }
+                  </View>
+                  <View className="mr-2 mb-2 flex-1 w-full " style={styles}>
+                      { getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom') }
+                      { getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom') }
+                      { getFormFieldByData(props.data.inputs['parent_id'], props.handleSubmit, 'custom') }
+                      { getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { styles: { minHeight: "auto" }, placeholder: 'Message ...' }) }
+                      { getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom') }
+                      { getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom') }
+                  </View>
+                  <View className="flex-0 mb-2 w-10">{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>
                 </Row>
-
-            {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row> }
-           </View>
-    /*</KeyboardAvoidingView>*/
+                {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row> }
+            </View>
 }

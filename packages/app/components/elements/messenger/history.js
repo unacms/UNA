@@ -10,14 +10,16 @@ import Form from "../form";
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "../../../context/actions";
 import useHistory, { useSendData, useHistoryMessageAction } from "./hooks/useHistory";
+import useKeyboard from "./hooks/useKeyboard";
 import { ConvoKeys } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
 import Services from "./services/history";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
-    const [formData, setFormData] = useState();
-    const { sendMessage } = useSendData(convoId, menuItem);
+    const [formData, setFormData] = useState(),
+          { sendMessage } = useSendData(convoId, menuItem),
+          keyboardHeight = useKeyboard();
 
     useEffect(() => {
         (async() => {
@@ -27,9 +29,16 @@ const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
         })();
     }, []);
 
-    return formData && <View className={"flex-0 relative max-h-auto pt-2 bg-bgrcard dark:bg-bgrcard-d border-t border-bdrcard dark:border-bdrcard-d w-full "} >
-        <Form data={ formData } name={'bx_messenger'} classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between" onFormSubmit={ (oFormData) => sendMessage(oFormData , { onSuccess: ( data )=> onSubmit(data)}) } />
-    </View>
+    return formData &&  <View style={{ paddingBottom: keyboardHeight }}>
+                                <Form data={ formData } name={'bx_messenger'}
+                                  classContainerName="flex-row flex-wrap px-2 w-full"
+                                  onFormSubmit={ (oFormData, oData) => {
+                                                                    //console.log('------ before mutation ------', oFormData, oData);
+                                                                    return sendMessage({ oFormData, oData }, {
+                                                                        onSuccess: ( data )=> onSubmit(data)
+                                                                    })
+                                                                }} />
+                          </View>
 });
 
 const ConvoHeader = memo(({ title, onPress }) => {
@@ -54,7 +63,6 @@ export function HistoryComponent(){
            handlerClickBackButton = useCallback(() => setPanel(false), []),
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
-
                         pages?.flatMap(page => page).some((oItem) => {
                         if (+oItem.id === +item.id) {
                             setConvoItem((prev) => ({ item: oItem, manually: prev.manually }));
@@ -83,12 +91,15 @@ export function HistoryComponent(){
 
     }, [isSubmitted]);*/
 
-    return <View className="h-full">
-            <ConvoHeader title={title} onPress={handlerClickBackButton}/>
-              <View className="px-3 max-h-full flex w-full h-full flex-col relative flex-1">
+    //
+    return <View className="w-full h-full flex flex-col">
+             <ConvoHeader title={title} onPress={handlerClickBackButton}/>
+             <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
                 <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />
-              </View>
-            { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/>}
+             </View>
+             <View className={"w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d"} >
+               { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/> }
+             </View>
            </View>
 }
 
@@ -138,6 +149,15 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         }, [messages, refList.current]);
 
     useEffect(() => {
+        const { current } = refList;
+        if (messages && current && typeof current.scrollToEnd === 'function') {
+            setTimeout(() => {
+                refList.current.scrollToEnd();
+            }, 100);
+        }
+    }, [messages]);
+
+    useEffect(() => {
         if (topReached) {
             handleTopReached();
             setTimeout(() => {
@@ -150,6 +170,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         }
     }, [topReached]);
 
+
     const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>,
         keyExtractor = (item) => item.id;
 
@@ -157,7 +178,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         return <View className='m-2'><Text>{error}</Text></View>;
 
     if (isLoading || !messages.length || firstItemIndex.id !== convoId)
-        return getSkeleton('feed');
+        return getSkeleton('notifications');
 
     return <View className="w-full h-full flex-1">
                 <ReactionContext>
@@ -178,12 +199,12 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                                     setTopReached(true);
                             }
                         }}
-                       /* maintainVisibleContentPosition={{
+                        /*maintainVisibleContentPosition={{
                             minIndexForVisible: 0,
                         }}*/
-                        overscan={ 400 }
-                        height={ height }
-                        totalCount={ messages.length }
+                        overscan = { 400 }
+                        height = { height }
+                        totalCount = { messages.length }
                         followOutput={"smooth"}
                         ListHeaderComponent={ isFetchingPreviousPage && <View><Loading/></View> }
                         contentContainerStyle={{ paddingBottom: 20 }}
