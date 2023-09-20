@@ -463,7 +463,7 @@ export default function Unit(props) {
     const imageSizes = getImageSizes()
     const module = !!data?.module ? data.module : props.module
 
-    const moduleComponentMap = {
+    /*const moduleComponentMap = {
         'bx_groups': eventUnit,
         'bx_events': eventUnit,
         'bx_channels': groupUnit,
@@ -476,8 +476,28 @@ export default function Unit(props) {
     };
 
     const Component = moduleComponentMap[module] || defaultUnit;
-
     return <Component />;
+    */
+    
+    switch (module) {
+        case 'bx_groups':
+        case 'bx_events':
+            return eventUnit()
+        case 'bx_channels':
+            return groupUnit()
+        case 'bx_market':
+                return marketUnit()
+        case 'bx_persons':
+            return (
+                <CardDataContext>
+                    <UnitPerson {...props} />
+                </CardDataContext>
+            )
+
+        default:
+            return defaultUnit()
+    }
+    
 }
 
 /*

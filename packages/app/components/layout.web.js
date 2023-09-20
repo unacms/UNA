@@ -5,15 +5,16 @@ import Informer from 'app/components/elements/informer';
 import { View } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
+import Navbar from 'app/components/nav/navbar'
 
-const Navbar = lazy(() => import('app/components/nav/navbar'));
+/*const Navbar = lazy(() => import('app/components/nav/navbar'));
 
 const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
     return (
         <Navbar title={title} menu_add={menu_add} uri={uri} />
     );
   });
-
+*/
 export default function Layout({ data, uri, children }) {
     const { width } = useWindowDimensions();
 
@@ -68,7 +69,12 @@ export default function Layout({ data, uri, children }) {
                 </View>
                 {headerSettings?.footer !== false && <Footer /> }
             </View>
-            <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} />
+           { <Navbar title={data.title} menu_add={data.menu_add} uri={uri} />}
+
         </>
     );
 }
+/*
+disable to avoid rerenders
+<NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> 
+*/
