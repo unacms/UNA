@@ -10,7 +10,7 @@ export default function (props) {
             rounded = props.rounded;
 
  	return (
-        <View className = {props.addClassName + " " + margin + " " + rounded + "  shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh  active:opacity-50 active:translate-y-1   "}>
+        <View className = {props.addClassName + " " + margin + " " + rounded + " backgrop-blur  shadow-sm border-bdrcard dark:border-bdrcard-d group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh   "}>
             {props.children}
         </View>
     );

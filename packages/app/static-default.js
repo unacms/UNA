@@ -6,7 +6,9 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/components/card'
 import { fetcher } from 'app/lib/fetcher';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef  } from 'react';
+import React from 'react';
+import { Animated } from 'react-native';
 
 const LogoText = <Svg
     aria-label="Logo Text"
@@ -168,6 +170,34 @@ const ComponentsCommentsEmpty = <>
     </>
 
 export function ComponentsIntro(props) {
+
+    const AnimatedCounter = ({ value, duration }) => {
+        const animatedValue = useState(new Animated.Value(0))[0];
+        const [displayValue, setDisplayValue] = useState(0);
+    
+        useEffect(() => {
+            Animated.timing(
+                animatedValue,
+                {
+                    toValue: value,
+                    duration: duration,
+                    useNativeDriver: false,
+                }
+            ).start();
+    
+            const listener = animatedValue.addListener(({ value }) => {
+                setDisplayValue(Math.round(value));
+            });
+    
+            return () => {
+                animatedValue.removeListener(listener);
+            };
+        }, [value]);
+    
+        return (
+            <Animated.Text>{displayValue}</Animated.Text>
+        );
+    };
     const [data, setData] = useState('0');
     useEffect(() => {
         const fetchData = async () => {
@@ -183,16 +213,17 @@ export function ComponentsIntro(props) {
             <Button
                 variant="outline"
                 size="sm"
-                startDecorator="RocketLaunch"
+                startDecorator="UsersFour"
                 rounded
             />
             <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-                Welcome to NEO!
+                We are <Text className="font-bold text-neutral-950 dark:text-neutral-50"><AnimatedCounter value={data} duration={5000} /></Text>. 
+                
             </Text>
-            <Text className="text-red-500 text-lg">{data}</Text>
             </View>
             <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
-            This is a demo social network. User interface is powered by NEO Universal App and backend is powered by UNA CMS.
+               Welcome to the community! 
+            This is a demo social network, powered by NEO and UNA.
             </Text>
         </Card>
     );

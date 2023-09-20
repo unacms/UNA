@@ -162,8 +162,6 @@ export default function (props) {
             </Row>
         </Row>
         <Row className="flex-row lg:w-1/4  flex-none justify-end  ">          
-          
-          
             {!!currentUser && (
               <Row className="flex-row   justify-end ">
                 <View className=" flex-row my-auto ">

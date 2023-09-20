@@ -51,6 +51,9 @@ function DefaultUnit(data) {
   let bIsGroupContent =
     (data.type == 'bx_groups' || data.type == 'bx_events') &&
     data.action == 'added'
+  
+  let bIsMarketContent =
+    (data.type == 'bx_market') &&  data.action == 'added'
 
   let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
   let sShort = truncateHTML(data.content.text, 380)
@@ -225,7 +228,10 @@ function DefaultUnit(data) {
               </View>
             </View>
           )}
+          { bIsMarketContent && <>44555</>
 
+
+          }
           {bIsGroupContent && (
             <View className=" flex-col md:flex-row mx-0.5 sm:mx-4 overflow-hidden rounded-lg bg-bgritem dark:bg-bgritem-d p-1">
               {data.mainImage && (
@@ -441,7 +447,7 @@ function SmallUnit(data) {
   return (
     <AnimatedBlock>	
     <Link href={url} className="w-full" emulate={true}>
-      <Card addClassName=' flex-row p-3 sm:p-4 ' margin=" mb-[1px] sm:mx-4 sm:mb-2 ">
+      <Card addClassName='  active:opacity-50 active:translate-y-1  flex-row p-3 sm:p-4 ' margin=" mb-[1px] sm:mx-4 sm:mb-2 ">
         <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
           <Profile
             {...data.author_data}

@@ -136,10 +136,11 @@ export const settingsDefault = {
     menu_items: {
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'home'},
-            { name: 'friends', title: 'Connections', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
+            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'ShoppingCart' }, 
         ],
         menu_top_more: [
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
@@ -168,6 +169,15 @@ export const settingsDefault = {
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-post' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_posts'},
+            ],
+        },
+        bx_market_submenu: {
+            name: 'Market',
+            icon: 'ShoppingCart',
+            items: ['products-home', 'products-popular'],
+            add: [
+                { icon: 'plus', name: 'Add', link: '/create-product' },
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_market'},
             ],
         },
         bx_posts_view_actions: [
@@ -433,6 +443,39 @@ export const settingsDefault = {
                 text: { name: 'bx_timeline:get_block_item', showTitle: false, showBg: false, forList: true },
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: {name: 'bx_timeline:get_block_item_comments', showTitle: false, showBg: false },
+            },
+            headerSettings: { header: false, footer: false, offset: false },
+        },
+        //############ POSTS PAGES ############
+        'products-home': {
+            layout: 'blackbox',
+            blocks: {
+                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 3 },
+                col2: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+                col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+            },
+            icon: 'ShoppingCart',
+            headerSettings: { offset: false, header: false }
+        },
+
+        'products-popular': {
+            layout: 'blackbox',
+            blocks: {
+                browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
+            },
+            icon: 'ShoppingCart',
+            headerSettings: { backButton: false, header: false }
+        },
+        'view-product': {
+            layout: 'post',
+            top:true,
+            blocks: {
+                author: { name: 'bx_market:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },
+                text: { name: 'bx_market:entity_text_block', showTitle: false, showBg: false, forList: true },
+                attachments: { name: 'bx_market:entity_attachments', showTitle: false, showBg: false, forList: true },
+                actions: { name: 'bx_market:entity_all_actions', showTitle: false, showBg: false, forList: true },
+                'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
+                comments: { name: 'bx_market:entity_comments', showTitle: false, showBg: false },
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
@@ -734,7 +777,7 @@ export const settingsDefault = {
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
             { title: 'Bookmarks', link: '/bookmarks', icon: 'Bookmarks' },
-            { title: 'Connections', link: '/connections', icon: 'Link' },
+            { title: 'Friends', link: '/connections', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'NoteBlank' },

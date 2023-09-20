@@ -16,28 +16,6 @@ import Redirect from 'app/ui/atoms/redirect';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function Unit(props) {
-    let data = props.data
-
-    const imageSizes = getImageSizes()
-    const module = !!data?.module ? data.module : props.module
-
-    switch (module) {
-        case 'bx_groups':
-        case 'bx_events':
-            return eventUnit()
-        case 'bx_channels':
-            return groupUnit()
-
-        case 'bx_persons':
-            return (
-                <CardDataContext>
-                    <UnitPerson {...props} />
-                </CardDataContext>
-            )
-
-        default:
-            return defaultUnit()
-    }
 
     function groupUnit() {
         let sMeta = <></>
@@ -155,8 +133,8 @@ export default function Unit(props) {
                     <View className="flex-col gap-y-4 ">
                         <Link className="" href={data.url}>
                             <View className="flex-col w-full ">
-                                <View className=" w-full p-1 aspect-video ">
-                                    <View className="w-full aspect-square mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
+                                <View className=" w-full p-1  ">
+                                    <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
                                         {data.cover && ( <Image
                                                 {...data.cover}
                                                 alt={data.title}
@@ -304,6 +282,61 @@ export default function Unit(props) {
         )
     }
 
+    function marketUnit() {
+        let sMeta = (
+            <Profile
+                {...data.author_data}
+                displayType="unit"
+                displaySize="sm"
+                showInfo="false"
+            />
+        )
+
+        return (
+            <AnimatedBlock>
+                <Card margin="mb-2 mx-2" rounded="rounded-2xl">
+                    <View className="flex-col gapy-y-4">
+                        <View className="flex-col w-full">
+                            <Link href={data.url}>
+                                <View className="w-full p-1">
+                                   
+                                        <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
+                                            <Image
+                                                {...data.image}
+                                                alt={data.title}
+                                                view="cover"
+                                                className="u-cover"
+                                                sizes={imageSizes}
+                                            />
+                                        </View>
+                                    
+                                    
+                                        <View  className="flex-auto flex-col p-3 gap-y-2 ">
+                                             <Text  className="mr-auto bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                                {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : data.price_single + '$'}
+                                            </Text>
+                                           
+                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
+                                                    {data.title}
+                                                </Text>
+                                            
+                                            <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
+                                                {data.summary_plain}
+                                            </Text>
+                                           
+                                        </View>
+                                    
+                                </View>
+                            </Link>
+                        <View className=" mb-auto px-4 pb-3 sm:pt-0">{sMeta}</View>
+                        </View>
+                </View>
+            </Card>
+        
+        </AnimatedBlock>
+        )
+    }
+
     function UnitPerson(props) {
         const redirectdRef = useRef();
 
@@ -433,6 +466,47 @@ export default function Unit(props) {
             </AnimatedBlock>
         )
     }
+
+    let data = props.data
+
+    const imageSizes = getImageSizes()
+    const module = !!data?.module ? data.module : props.module
+
+    /*const moduleComponentMap = {
+        'bx_groups': eventUnit,
+        'bx_events': eventUnit,
+        'bx_channels': groupUnit,
+        'bx_market': marketUnit,
+        'bx_persons': () => (
+            <CardDataContext>
+                <UnitPerson {...props} />
+            </CardDataContext>
+        ),
+    };
+
+    const Component = moduleComponentMap[module] || defaultUnit;
+    return <Component />;
+    */
+    
+    switch (module) {
+        case 'bx_groups':
+        case 'bx_events':
+            return eventUnit()
+        case 'bx_channels':
+            return groupUnit()
+        case 'bx_market':
+                return marketUnit()
+        case 'bx_persons':
+            return (
+                <CardDataContext>
+                    <UnitPerson {...props} />
+                </CardDataContext>
+            )
+
+        default:
+            return defaultUnit()
+    }
+    
 }
 
 /*

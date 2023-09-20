@@ -8,6 +8,7 @@ import { PageContext, PageData, MenuContext, MenuData } from './context/messenge
 import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
 import {fetcher} from "app/lib/fetcher";
 import Redirect from "app/ui/atoms/redirect";
+import {KeyboardAvoidingView, Platform} from "react-native";
 
 function PageLayout({ data }) {
     const { menuView, setMenuView, setMenuItems } = useContext(MenuData);
@@ -57,7 +58,7 @@ const Layout = memo(({ mode, panel }) => {
              </View>
              <View className={ historyCol }>
                 <View className="max-h-full flex w-full h-full flex-col relative border-l border-bdrnavbar dark:border-bdrnavbar-d">
-                   { historyCol !== 'hidden' && <History /> }
+                  { historyCol !== 'hidden' && <History /> }
                 </View>
              </View>
            </View>

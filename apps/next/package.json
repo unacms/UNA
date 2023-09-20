@@ -31,7 +31,7 @@
     "@vercel/analytics": "^1.0.1",
     "ai": "^2.2.7",
     "app": "*",
-    "next": "13.4.12",
+    "next": "13.5.1",
     "openai-edge": "^1.2.2",
     "raf": "^3.4.1",
     "react-moveable": "^0.54.1",
