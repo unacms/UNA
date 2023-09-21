@@ -50,14 +50,14 @@ export default function UniList(props) {
         if (!isFinished && refer?.current && refer.current.getState && rest.storagekey){
             
             refer.current.getState((state) => {
-                const ch = {state: state, scroll: window.scrollY, viewParams: viewParams, endpoint: endpoint, index: index}
+                const ch = {state: state}
                 storageSet('ul:state', rest.storagekey, ch);
             });
         }
     }
 
     const stateChanged = (state) => {
-        const ch = {state: state, scroll: window.scrollY, viewParams: viewParams, endpoint: endpoint, index: index}
+        const ch = {state: state}
         storageSet('ul:state', rest.storagekey, ch);
     }
 

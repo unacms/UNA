@@ -21,7 +21,6 @@ export const getDataFromCache = (pref, storageKeyValue) => {
 
 export function storageSet(pref, key, data, isLocal = false) {
     if (Platform.OS !== 'web') return;
-
     const storage = isLocal ? localStorage : sessionStorage;
     const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
 

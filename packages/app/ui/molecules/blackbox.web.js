@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo  } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo, memo   } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable, ScrollView  } from 'app/design/view';
@@ -28,8 +28,6 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const [index, setIndex] = useState(routes.findIndex(function(item) {
         return item.key === data.url.replace('+', '');
     }));
-
-    console.log('----', routes[index]?.endpoint?.params?.start)
 
     const indicatorOffset = useSharedValue(0);
     
@@ -268,7 +266,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route.data
-        let b = useMemo(() => {
+        //let b = useMemo(() => {
         const Preload = getSkeleton(data.module? data.module : data.unit);
         
         if (!route.inited){
@@ -278,11 +276,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             
             let isRightCol = route?.sidebar?.content?.length > 0
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
-            return (
-                <>
-                <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
-                    <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full p-2'}>
-                        {dataItems.length > 0 ? <TabFlashList
+            let TabFlashListM = useMemo(() => {
+                return <TabFlashList
                             index={route.index}
                             data={dataItems}
                             endpoint={route.endpoint}
@@ -298,7 +293,14 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                     ) : null}
                                 </View>
                             }
-                        /> : rqtStatus != 'success' ? Preload : <></>}
+                        />
+            }, [dataItems.length]);
+
+            return (
+                <>
+                <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
+                    <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full p-2'}>
+                        {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload : <></>}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 pt-4">
                         <UniList
@@ -311,8 +313,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         
     )}
     // can be the problem (freeze data im lists)
-                        }, [dataItems.length, route.index]);
-                        return b;
+                    //    }, [dataItems.length, route.index]);
+                      //  return b;
                         
 };
     const currentRoute = routes.find((item) => item.index === index);

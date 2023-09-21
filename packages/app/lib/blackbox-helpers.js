@@ -42,12 +42,13 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             if (appSetting('cache', 'list')){
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC){
-                    i.endpoint = stateC.endpoint;
+                   // i.endpoint = stateC.endpoint;
                     i.state = stateC.state
                 }
                 let stateD = getDataFromCache('ul:data', i.storageKeyValue);
                 if (stateD){
-                    i.data = stateD;
+                    i.endpoint = stateD.endpoint;
+                    i.data = stateD.data;
                 }
             }
 
@@ -59,12 +60,13 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             if (appSetting('cache', 'list')){
                 let stateC = getDataFromCache('ul:state', i.storageKeyValue);
                 if (stateC){
-                    i.endpoint = stateC.endpoint;
+                    //i.endpoint = stateC.endpoint;
                     i.state = stateC.state
                 }
                 let stateD = getDataFromCache('ul:data', i.storageKeyValue);
                 if (stateD){
-                    i.data = stateD;
+                    i.endpoint = stateD.endpoint;
+                    i.data = stateD.data;
                 }
             }
         }
@@ -131,7 +133,7 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
                 route.blocks = blocks
 
             route.inited = true;
-            storageSet('ul:data', route.storageKeyValue, route.data.concat(newItems));
+            storageSet('ul:data', route.storageKeyValue, {data: route.data.concat(newItems), endpoint: route.endpoint});
             return {
                 ...route,
                 data: route.data.concat(newItems),
