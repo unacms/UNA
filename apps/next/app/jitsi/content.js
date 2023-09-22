@@ -9,6 +9,7 @@ import Layout from 'app/components/layout';
 import { appSetting } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static';
 import JitSi from 'app/ui/molecules/jitsi'
+import { View } from 'app/design/view'
 
 const fixReanimatedIssue = () => {
   // FIXME remove this once this reanimated fix gets released
@@ -56,10 +57,9 @@ export  function Page (props) {
         <Provider>
           <QueryClientProvider client={queryClient}>
             <CurrentUserProvider>
-              {!!process.env['VERCEL'] ? <Analytics /> : null}
-              <Layout path={props?.path} data={props.data} uri={props?.uri}>
+              <View className="w-96 bg-red-500 h-96">
                 <JitSi roomName={'dash_room'} />
-              </Layout>
+              </View>
             </CurrentUserProvider>
           </QueryClientProvider>
         </Provider>
