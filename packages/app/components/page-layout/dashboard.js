@@ -10,10 +10,12 @@ import { useState } from 'react';
 import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
+import JitSi from 'app/ui/molecules/jitsi'
 
 export default function PageLayout(props) {
   let { currentUser, setCurrentUser } = useCurrentUser()
   const [showImage, setShowImage] = useState(false);
+  const [showImage2, setShowImage2] = useState(false);
 
   let profile = null
   if (currentUser) {
@@ -29,8 +31,18 @@ export default function PageLayout(props) {
     <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
       <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
     </Modal>
-    
+    <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
+      <JitSi roomName={'dash_room'} />
+    </Modal>
     <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col  ">
+    <Button
+        variant="text"
+        title="Jitsi"
+        startDecorator="UserSwitch"
+        fullWidth
+        onPress = {() => setShowImage2(true)}
+        align="left"
+    />
        <View className=" w-full p-2">
           <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
             <View className="justify-between flex-auto gap-x-2 flex-row my-auto">

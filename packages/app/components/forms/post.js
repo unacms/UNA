@@ -1,6 +1,9 @@
 import { env } from 'app/lib/env';
 import { View, Row } from 'app/design/view'
 import React from 'react'
+import dynamic from 'next/dynamic'
+import { Dimensions } from 'react-native';
+
 
 export default function FormPost(props) {
     const WebView = React.memo(

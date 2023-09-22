@@ -15,6 +15,10 @@ export const settingsDefault = {
         port: '443',
         key: 'app-key',
     },
+    jitsi: {
+        prefix: 'prefix_',
+        domain: 'https://meet.jit.si/',
+    },
     urls: {
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',

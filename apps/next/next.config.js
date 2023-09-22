@@ -47,6 +47,7 @@ const nextConfig = {
     'expo-document-picker',
     'react-native-svg',
     'expo-image-manipulator',
+    'react-native-svg-transformer',
     'expo-constants',
   ],
   images: {
