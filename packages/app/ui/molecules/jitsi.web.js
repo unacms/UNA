@@ -5,10 +5,10 @@ import { useCurrentUser } from 'app/context/user'
 
 export default function (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
-
+    console.log(currentUser);
     let userInfo = {
-        email: currentUser.email,
-        displayName: currentUser.display_name
+        email: currentUser?.email,
+        displayName: currentUser?.display_name
     }
 
  	return (
