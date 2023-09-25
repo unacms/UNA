@@ -10,7 +10,8 @@ export default function RootLayout({ children }) {
   const queryClient = new QueryClient()
   return (
     <html lang="en" >
-      <body className='bg-bgrbody dark:bg-bgrbody-d' style={{backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}}>
+      <body className='bg-bgrbody dark:bg-bgrbody-d'>
+        <div className='w-full h-full' style={{backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}}>
         <Provider>
             <QueryClientProvider client={queryClient}>
               <CurrentUserProvider>
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
               </CurrentUserProvider>
             </QueryClientProvider>
           </Provider>
+          </div>
         </body>
     </html>
   )

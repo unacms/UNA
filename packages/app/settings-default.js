@@ -9,7 +9,7 @@ export const settingsDefault = {
         apps: true,
         block: 'login',
         allow_switch_profile: true,
-        background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`
+        background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%236b7280' fill-opacity='0.4' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`
     },
     sockets: {
         host: 'ci.una.io',
@@ -444,9 +444,9 @@ export const settingsDefault = {
         'products-home': {
             layout: 'blackbox',
             blocks: {
-                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 3 },
+                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 1 },
                 col2: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
-                col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'ShoppingCart',
             headerSettings: { offset: false, header: false }
