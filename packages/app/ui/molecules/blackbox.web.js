@@ -18,7 +18,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
     const windowWidth = useWindowDimensions().width;
-
+    console.log('initedTabs', initedTabs, data.url)
     const [routes, setRoutes] = useState(initedTabs);
 
    
@@ -26,7 +26,8 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
     const [index, setIndex] = useState(routes.findIndex(function(item) {
-        return item.key === data.url.replace('+', '');
+        return data.url.includes(item.key);
+        //return item.key === data.url.replace('+', '');
     }));
 
     const indicatorOffset = useSharedValue(0);

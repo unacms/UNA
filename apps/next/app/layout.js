@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" >
       <body className='bg-bgrbody dark:bg-bgrbody-d'>
-        <div className='w-full h-full' style={{backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}}>
+        <div className='w-full h-full' style={{minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}}>
         <Provider>
             <QueryClientProvider client={queryClient}>
               <CurrentUserProvider>

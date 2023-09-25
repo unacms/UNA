@@ -159,7 +159,7 @@ export const settingsDefault = {
         bx_posts_submenu: {
             name: 'Posts',
             icon: 'File',
-            items: ['posts-home', 'posts-popular'],
+            items: ['posts-home', 'posts-popular',],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-post' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_posts'},
@@ -168,7 +168,7 @@ export const settingsDefault = {
         bx_market_submenu: {
             name: 'Market',
             icon: 'ShoppingCart',
-            items: ['products-home', 'products-popular'],
+            items: ['products-home', 'products-popular', 'products-category'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-product' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_market'},
@@ -451,7 +451,17 @@ export const settingsDefault = {
             icon: 'ShoppingCart',
             headerSettings: { offset: false, header: false }
         },
-
+        'products-category': {
+            layout: 'blackbox',
+            blocks: {
+                browse: { name: 'bx_market:browse_category', showTitle: false, showBg: false, perLine: 1 },
+                col2: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+            },
+            icon: 'ShoppingCart',
+            headerSettings: { offset: false, header: false }
+        },
+        
         'products-popular': {
             layout: 'blackbox',
             blocks: {
