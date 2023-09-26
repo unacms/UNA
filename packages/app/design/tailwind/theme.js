@@ -37,8 +37,8 @@ const colors = {
   },
 
   bgrbody: {
-    DEFAULT: 'rgba(243,244,246,0.8)',
-    d: 'rgba(0,0,0,0.8)',
+    DEFAULT: 'rgba(243,244,246,1)',
+    d: 'rgba(0,0,0,1)',
   },
 
   bgrcard: {
