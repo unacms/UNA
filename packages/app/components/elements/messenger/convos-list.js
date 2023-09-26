@@ -138,7 +138,7 @@ const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConv
                     defaultItemHeight={ 72 }
                     height={ height - 48 }
                     ListFooterComponent = {
-                        hasNextPage && isFetchingNextPage && getSkeleton('feed')
+                        hasNextPage && isFetchingNextPage && getSkeleton('notifications')
                     }
                 />
 });
