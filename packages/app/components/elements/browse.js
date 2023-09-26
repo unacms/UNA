@@ -138,6 +138,7 @@ export default function ElementBrowse(props) {
         }
     },[dataItems]);    
 
+    console.log(props?.contentContainerStyle);
     return (
         (true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
@@ -151,6 +152,7 @@ export default function ElementBrowse(props) {
                     storagekey={storageKeyValue}
                     useWindowScroll
                     height={props?.height}
+                    contentContainerStyle={props?.contentContainerStyle}
                     refer={uniRef}
                     no_scroll={props.no_scroll}
                     renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full mb-2 pr-2 pl-2' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}

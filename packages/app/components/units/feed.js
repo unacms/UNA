@@ -228,7 +228,7 @@ function DefaultUnit(data) {
               </View>
             </View>
           )}
-          { bIsMarketContent && <>44555</>
+          { bIsMarketContent && <><Text>44555</Text></>
 
 
           }

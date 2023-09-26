@@ -5,6 +5,7 @@ import PageCustomPostWithoutComments from './post-without-comments';
 import PageCustomMessenger from './messenger';
 import PageCustomDashboard from './dashboard';
 import PageCustomBlackBox from './blackbox';
+import PageCustomNavigator from './navigator';
 import PageCustomBlackBoxSearch from './blackbox_search';
 import PageCustomProfile from './profile';
 import PageCustomHome from './home';
@@ -20,6 +21,7 @@ export const componentsMapDefault = {
     'post': PageCustomPost,
     'post-without-comments': PageCustomPostWithoutComments,
     'blackbox': PageCustomBlackBox,
+    'navigator': PageCustomNavigator,
     'blackbox_search': PageCustomBlackBoxSearch,
     'messenger': PageCustomMessenger,
     'dashboard': PageCustomDashboard,

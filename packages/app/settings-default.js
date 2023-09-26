@@ -174,7 +174,7 @@ export const settingsDefault = {
         bx_market_submenu: {
             name: 'Market',
             icon: 'ShoppingCart',
-            items: ['products-home', 'products-popular', 'products-category'],
+            items: ['products-home', 'products-popular', 'products-categories'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-product' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_market'},
@@ -448,33 +448,42 @@ export const settingsDefault = {
         },
         //############ POSTS PAGES ############
         'products-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 1 },
-                col2: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
-               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 2 },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'ShoppingCart',
-            headerSettings: { offset: false, header: false }
+            headerSettings: { offset: false, header: true, backButton: false }
         },
         'products-category': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_market:browse_category', showTitle: false, showBg: false, perLine: 1 },
-                col2: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'ShoppingCart',
-            headerSettings: { offset: false, header: false }
+            headerSettings: { offset: false, header: false, backButton: false }
         },
-        
-        'products-popular': {
-            layout: 'blackbox',
+        'products-categories': {
+            layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
+                browse: { name: 'system:categories_list', showTitle: false, showBg: false, perLine: 1 },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'ShoppingCart',
-            headerSettings: { backButton: false, header: false }
+            headerSettings: { offset: false, header: false, backButton: false }
+        },
+        'products-popular': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+            },
+            icon: 'ShoppingCart',
+            headerSettings: { offset: false, backButton: false, header: false, backButton: false }
         },
         'view-product': {
             layout: 'post',
@@ -809,7 +818,7 @@ export const settingsDefault = {
             {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
             {key: '/tab1', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab2', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
-            {key: '/tab3', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
+            {key: '/tab3', title: 'Messages1', url: '/products-home',icon: 'ChatsCircle'},
             {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'app-notifications'},
             {key: '/tab5', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
@@ -817,7 +826,7 @@ export const settingsDefault = {
             {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
             {key: '/tab1', title: 'Posts', url: '/posts-home',icon: 'NoteBlank'},
             {key: '/tab2', title: 'People', url: '/persons-home',icon: 'users'},
-            {key: '/tab3', title: 'About', url: '/about',icon: 'Info'},
+            {key: '/tab3', title: 'About', url: '/products-home',icon: 'Info'},
             {key: '/tab4', title: 'Sign-up', url: '/create-account',icon: 'app-usermenu'},
             {key: '/tab5', title: 'Login', url: '/login',icon: 'SignIn'},
         ],

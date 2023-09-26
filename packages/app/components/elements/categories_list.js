@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 
 export default function CategoriesList(props) {
     return (
-        <View className="flex-col ">
+        <View className="flex-col mx-4">
             {props.data.map((item, index) => (
                 <Link key={`menu-${index}`} href={item.url}>
                 <Text>{item.name} {item.num > 0 ? '(' + item.num + ')' : ''}</Text>
