@@ -26,8 +26,8 @@ export default function ElementLink(props) {
             let element = document.querySelector('.animated-view');
             if (element){
                 //!!! TO RESTORE
-                //element.classList.remove('page-fade-in');
-                //element.classList.add('page-fade-out');
+                element.classList.remove('page-fade-in');
+                element.classList.add('page-fade-out');
             }
         }
     }, []);
