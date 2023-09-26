@@ -54,7 +54,6 @@ export default function Layout({ data, uri, children }) {
       
         
     }, [data.url]);
-    console.log('uriuri', data);
     const headerSettings = useMemo(() => getHeaderSettings(uri, width), [uri, width]);
 
     if (data?.empty)

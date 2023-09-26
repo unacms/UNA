@@ -180,6 +180,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                         onPress={() => {
                                             setIndex(a.index);
                                             getNumCols(windowWidth)
+                                            console.log(a.key);
                                             window.history.pushState({ }, '', '/' + a.key);
                                         }}
                                     >

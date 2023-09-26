@@ -138,7 +138,6 @@ export default function ElementBrowse(props) {
         }
     },[dataItems]);    
 
-    console.log(props?.contentContainerStyle);
     return (
         (true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>

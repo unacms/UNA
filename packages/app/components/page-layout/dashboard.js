@@ -32,7 +32,7 @@ export default function PageLayout(props) {
       <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
     </Modal>
     <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
-      <JitSi roomName={'dash_room'} />
+      
     </Modal>
     <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col  ">
     <Button
