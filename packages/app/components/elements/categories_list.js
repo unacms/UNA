@@ -6,8 +6,8 @@ export default function CategoriesList(props) {
     return (
         <View className="flex-col ">
             {props.data.map((item, index) => (
-                <Link key={`menu-${index}`} href={'/search-keyword?keyword=' + item.value + '&cat=bx_market_cats&section=' + props.block.module}>
-                <Text>{item.name} ({item.num})</Text>
+                <Link key={`menu-${index}`} href={item.url}>
+                <Text>{item.name} {item.num > 0 ? '(' + item.num + ')' : ''}</Text>
                 </Link>
             ))}
         </View>

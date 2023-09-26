@@ -6,7 +6,8 @@ import { View } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
 import Navbar from 'app/components/nav/navbar'
-
+import { useColorScheme } from 'react-native';
+import { appSetting } from 'app/lib/util'
 /*const Navbar = lazy(() => import('app/components/nav/navbar'));
 
 const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
@@ -15,6 +16,9 @@ const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
     );
   });
 */
+
+
+
 export default function Layout({ data, uri, children }) {
     const { width } = useWindowDimensions();
 
@@ -56,9 +60,19 @@ export default function Layout({ data, uri, children }) {
     if (data?.empty)
         return <>{children}</>
 
+    const scheme = useColorScheme();
+    let stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}
+    let stylesBg={ backgroundColor: appSetting('layout', 'background_color')}
+    if(scheme === 'dark'){
+        console.log(scheme);
+        stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image_dark')}
+        stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
+        console.log(stylesBg);
+    }
+
     return (
         <>
-            <View className="w-full items-stretch ">
+            <View className="w-full items-stretch " style={stylesBgImage}>
                 <View className=" w-full mx-auto flex-row -top-[1px] " >
                     <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                         <View className='w-full mx-auto'>
@@ -70,8 +84,7 @@ export default function Layout({ data, uri, children }) {
                 </View>
                 {headerSettings?.footer !== false && <Footer /> }
             </View>
-           { <Navbar title={data.title} menu_add={data.menu_add} uri={uri} />}
-
+            { <Navbar title={data.title} menu_add={data.menu_add} uri={uri} />}
         </>
     );
 }
