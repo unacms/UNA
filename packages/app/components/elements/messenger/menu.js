@@ -70,7 +70,8 @@ const WrappedTopMenu = ({ onClick }) => {
                 <MotiView style={{width: 288, height: '100%'}} from={{translateX: -300, overshootClamping: false}} animate={{translateX: 0, overshootClamping: false}} exit={{height: 0, translateX: -300, overshootClamping: false}} transition={{overshootClamping: true}}>
                     <View className="backdrop-blur h-full xl:flex shadow-xl p-4
                                                     bg-bgrnavbar dark:bg-bgrnavbar-d border-r 2xl:border-none border-bdr
-                                                    dark:border-bdr-d flex-col gap-y-2"><MenuColumn test={"popup"} />
+                                                    dark:border-bdr-d flex-col gap-y-2">
+                        <MenuColumn />
                     </View>
               </MotiView>
             </Pressable>

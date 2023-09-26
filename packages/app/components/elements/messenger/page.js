@@ -1,18 +1,49 @@
 import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import { memo, useRef, useMemo, useEffect, useContext } from 'react';
+import {memo, useRef, useMemo, useEffect, useContext, useCallback,} from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosList } from 'app/components/elements/messenger/convos-list';
 import { HistoryComponent as History }  from 'app/components/elements/messenger/history';
 import { PageContext, PageData, MenuContext, MenuData } from './context/messenger-сontext';
 import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
-import {fetcher} from "app/lib/fetcher";
-import Redirect from "app/ui/atoms/redirect";
-import {KeyboardAvoidingView, Platform} from "react-native";
+import { fetcher } from "app/lib/fetcher";
+import useBrowserHistory from './hooks/useBrowserHistory';
 
-function PageLayout({ data }) {
-    const { menuView, setMenuView, setMenuItems } = useContext(MenuData);
-    const { panel, setPanel, pageHeight, screenMode, convoInfo } = useContext(PageData);
+function PageLayout() {
+    const { setMenuItems, menuItem, setMenuItem } = useContext(MenuData),
+          { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId } = useContext(PageData);
+
+    /* Web Routing begin */
+    const handlerOnPopState = useCallback(() => {
+        const bIsPhone = isPhone(screenMode);
+        if (bIsPhone)
+            setPanel(false);
+
+        return !bIsPhone;
+    }, [screenMode]),
+
+    { convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState);
+
+    useEffect(() => {
+         if (iConvoIdUri) {
+             setConvoId(iConvoIdUri);
+             if (!convoId && isPhone(screenMode)) {
+                 setPanel('history');
+             }
+         }
+
+         if (sMenuUri) {
+             setMenuItem(sMenuUri);
+         }
+
+     }, [iConvoIdUri, sMenuUri]);
+
+
+    useEffect(() => {
+        if (convoId && +convoId !== +iConvoIdUri)
+            setConvoId();
+    }, [menuItem]);
+    /* Web Routing end */
 
     const oWindowRef = useRef(),
           iSpace = useMemo(() => getSpace(screenMode), [screenMode]),
@@ -25,12 +56,21 @@ function PageLayout({ data }) {
         }
 
         initMenu();
+
     }, []);
 
     useEffect(() => {
-       const { manually } = convoInfo;
-        if (isPhone(screenMode) && manually)
-            setPanel('history');
+       const { item, manually } = convoInfo;
+
+       if (isPhone(screenMode))
+            setPanel((manually || +convoId === +iConvoIdUri) && 'history');
+
+        // Web Routing
+        const { id, title } = item || {};
+        if (item && typeof updateState === 'function') {
+            updateState({ id, title, menu: menuItem });
+        }
+
     }, [convoInfo]);
 
     useEffect(() => {
@@ -51,15 +91,15 @@ const Layout = memo(({ mode, panel }) => {
 
     return <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
              <View className={"xl:w-2/12 hidden xl:block border-r border-bdrnavbar dark:border-bdrnavbar-d" }>
-                { bDesktop && <MenuColumn test={"column"}/> }
+                { bDesktop && <MenuColumn /> }
              </View>
              <View className={ listCol }>
                 { listCol !== 'hidden' && <ConvosList /> }
              </View>
              <View className={ historyCol }>
-                <View className="max-h-full flex w-full h-full flex-col relative border-l border-bdrnavbar dark:border-bdrnavbar-d">
-                  { historyCol !== 'hidden' && <History /> }
-                </View>
+             <View className="max-h-full flex w-full h-full flex-col relative border-l border-bdrnavbar dark:border-bdrnavbar-d">
+                 { historyCol !== 'hidden' && <History /> }
+             </View>
              </View>
            </View>
 });

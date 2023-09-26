@@ -1,7 +1,6 @@
 import Services from "../services/convos";
-import { useInfiniteQuery, useQuery, useQueryClient, useMutation } from  '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from  '@tanstack/react-query';
 import { useCurrentUser } from 'app/context/user';
-
 
 const ConvoKeys = {
     all: ['get_convos_list'],
@@ -19,14 +18,31 @@ function useConvoItem(menuItem, convoId) {
     });
 }
 
-export { useConvoItem, ConvoKeys };
+const getConvoItems  = (menuItem)  => {
+    const queryClient = useQueryClient();
+
+    let oData = queryClient.getQueryData(ConvoKeys.convoByMenu(menuItem));
+    return {
+       getConvoItem: (iConvoId) => {
+           if (!iConvoId)
+               return ;
+
+           if (!oData)
+               oData = queryClient.getQueryData(ConvoKeys.convoByMenu(menuItem));
+
+           return oData?.pages.flatMap(page => page).find((oItem) => +oItem.id === +iConvoId)
+       }
+    };
+}
+
+export { useConvoItem, ConvoKeys, getConvoItems };
 
 export default function useConvos(menuItem, onSelect) {
     const { currentUser } = useCurrentUser();
     const queryClient = useQueryClient();
 
     return useInfiniteQuery(ConvoKeys.convoByMenu(menuItem), ({ pageParam = 0}) => Services.getList(menuItem, pageParam), {
-        keepPreviousData: true,
+        //keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         select: (data) => data?.pages.flatMap(page => page),

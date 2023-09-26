@@ -33,10 +33,9 @@ const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
                                 <Form data={ formData } name={'bx_messenger'}
                                   classContainerName="flex-row flex-wrap px-2 w-full"
                                   onFormSubmit={ (oFormData, oData) => {
-                                                                    //console.log('------ before mutation ------', oFormData, oData);
-                                                                    return sendMessage({ oFormData, oData }, {
-                                                                        onSuccess: ( data )=> onSubmit(data)
-                                                                    })
+                                                                        return sendMessage({ oFormData, oData }, {
+                                                                            onSuccess: ( data )=> onSubmit(data)
+                                                                        })
                                                                 }} />
                           </View>
 });
@@ -59,7 +58,6 @@ export function HistoryComponent(){
           { menuItem } = useContext(MenuData),
           { title, id } = item || {},
            client = useQueryClient(),
-           [isSubmitted, setIsSubmitted] = useState(false),
            handlerClickBackButton = useCallback(() => setPanel(false), []),
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
@@ -80,18 +78,8 @@ export function HistoryComponent(){
                         return true;
                     }
                 });
-            }, [menuItem, item])/*,
-        handlerSetIsSubmitted = useCallback(() => setIsSubmitted(true), [])*/;
+            }, [menuItem, item]);
 
-   /* useEffect(() =>{
-        if (isSubmitted) {
-            handlerUpdateSelectedConvo();
-            setIsSubmitted(false);
-        }
-
-    }, [isSubmitted]);*/
-
-    //
     return <View className="w-full h-full flex flex-col">
              <ConvoHeader title={title} onPress={handlerClickBackButton}/>
              <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
@@ -162,10 +150,6 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
             handleTopReached();
             setTimeout(() => {
                 refList.current.scrollToIndex({ index: messages.length - iPerPage, animated: true });
-/*
-                console.log('--------- top reached ---------', messages.length);*/
-               /* handleTopPositionReached();*/
-
             }, 500);
         }
     }, [topReached]);
@@ -216,43 +200,3 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                 </ReactionContext>
            </View>
 });
-
-/*const HistoryList = memo(({ startIndex, messages, height, handleTopReached, handlerMenuSelect }) => {
-    const [update, setUpdate] = useState(false);
-
-    const refList = useRef();
-    const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>;
-
-    return  <ReactionContext>
-                <UniList
-                    firstItemIndex={ +startIndex }
-                    initialTopMostItemIndex={ messages.length - 1 }
-                    /!* listState={ `convo-history-${convoId}` }*!/
-                    refer={ refList }
-                    style={{ marginBottom: 20 }}
-                    data={ messages }
-                    renderItem={ renderItem }
-                    startReached={ handleTopReached }
-                    maintainVisibleContentPosition={{
-                        minIndexForVisible: 0,
-                    }}
-                    overscan={ 400 }
-                    /!* rangeChanged={{
-                         startIndex: firstItemIndex.index,
-                         endIndex: messages.length - 1,
-                     }}*!/
-                    height={ height }
-                    totalCount={ messages.length }
-                    followOutput={"smooth"}
-                    ListHeaderComponent={ () =>
-                        isFetchingPreviousPage && <View className='m-2 absolute w-full bg-bgrcard dark:bg-bgrcard-d'><Loading/></View>
-                    }
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    defaultItemHeight={100}
-                    estimatedItemSize={100}
-                    /!*showsVerticalScrollIndicator={false}*!/
-                />
-            </ReactionContext>
-}, (prev, next) => {
-    return prev.startIndex === next.startIndex && prev.messages.length === next.messages.length && prev.handleTopReached === next.handleTopReached;
-});*/

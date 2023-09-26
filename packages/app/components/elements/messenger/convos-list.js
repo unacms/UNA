@@ -1,27 +1,16 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import Image from 'app/ui/atoms/image';
-import Loading from 'app/ui/atoms/loading'
 import { Button, InputRounded } from 'app/design/controls';
-import {useState, memo, useContext, useCallback, useMemo, useEffect} from 'react';
-import { fetcher } from "../../../lib/fetcher";
-import {MenuData, PageData} from './context/messenger-сontext';
+import { useState, memo, useContext, useCallback, useMemo, useEffect } from 'react';
+import { MenuData, PageData } from './context/messenger-сontext';
 import { WrappedTopMenu } from "./menu";
 import UniList from 'app/ui/atoms/unilist';
 import { ListFeed } from 'app/components/units/convos-feeds';
-import {isDesktop, isPhone} from "./grid-utils";
+import {getGrid, isDesktop, isPhone} from "./grid-utils";
+import useBrowserHistory from "./hooks/useBrowserHistory";
 import useConvos from "./hooks/useConvos";
-import {stripTags} from "../../../lib/util";
-import {getSkeleton} from "../../../lib/skeleton-helpers";
-
-const styles = {
-    infoText: [
-       "text-neutral-600 dark:text-neutral-400"
-    ],
-    infoActiveText: [
-        "text-white"
-    ]
-};
+import { getSkeleton } from "../../../lib/skeleton-helpers";
 
 function UserAvatar({ avatars }) {
     const { thumb, title, color, letter } = Object.assign(avatars['bx_if:avatars'].content, avatars['bx_if:letters'].content);
@@ -93,8 +82,12 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
            </View>
 });
 
-const Convos = memo(({ menuItem, onSelect, height }) => {
+const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConvoId }) => {
     const { status, isFetchingNextPage, hasNextPage, isLoading, error, fetchNextPage, data: convosList } = useConvos(menuItem);
+
+    const handlerGetSelectedConvo = useCallback(() => convosList.find((oItem) => +oItem.id === +selectedConvoId), [convosList, selectedConvoId]);
+
+    let iActiveItem = item && item.id;
 
     const handleEndReached = () => {
         if (!isFetchingNextPage && hasNextPage) {
@@ -103,11 +96,23 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
     }
 
     useEffect(() => {
-        if (status === 'success' && convosList.length) {
-            onSelect(convosList[0], false);
+        let aData;
+        if (convosList && convosList.length && status === 'success') {
+            aData = selectedConvoId ? handlerGetSelectedConvo() : convosList[0];
+            onSelect(aData, false);
+            if (aData)
+                iActiveItem = aData.id;
         }
-
     }, [status, menuItem]);
+
+    useEffect(() => {
+        if (item && convosList && convosList.length) {
+            const aData = handlerGetSelectedConvo();
+            onSelect(aData, false);
+            if (aData)
+                iActiveItem = aData.id;
+        }
+    }, [selectedConvoId]);
 
     if (isLoading)
         return getSkeleton('notifications');
@@ -115,7 +120,9 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
 
-    const renderItem = ({ item, index }) => <ListFeed key={item.id} { ...item } onPress={() => onSelect(item)} />,
+    const handlerConvoSelect = (e, data) => onSelect(data);
+
+    const renderItem = ({ item, index }) => <ListFeed key={item.id} { ...item } isActive={ iActiveItem === item.id } onPress={handlerConvoSelect} />,
           keyExtractor = (item) => item.id;
 
     return !convosList.length ? <Text className="text-2xl font-bold text-neutral-900 dark:text-neutral-50 capitalize p-4 w-full text-center">Empty</Text> :
@@ -138,21 +145,17 @@ const Convos = memo(({ menuItem, onSelect, height }) => {
 
 export const ConvosList = () => {
     const { menuItem, menuView, setMenuView } = useContext(MenuData),
-          //route = useRouter(),
-          { screenMode, pageHeight, setConvoItem, convoInfo } = useContext(PageData),
+          { screenMode, pageHeight, setConvoItem, convoInfo, convoId } = useContext(PageData),
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
-          handlerSelectConvo = useCallback((convoItem, bManually = true) => {
-                                                                               setConvoItem({ item: convoItem, manually: bManually });
-
-                                                                            }, []),
-         bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
-         handlerOuterClick = () => menuView && setMenuView(false);
+          handlerSelectConvo = useCallback((convoItem, bManually = true) => setConvoItem({ item: convoItem, manually: bManually }), [menuItem]),
+          bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
+          handlerOuterClick = () => menuView && setMenuView(false);
 
    return <View className="max-h-full flex w-full h-full flex-col relative">
             <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-d h-14">
                <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
             </View>
-            <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} />
+             <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} selectedConvoId={convoId} convo={convoInfo}/>
             { menuView && bAllowViewOnDevice && <WrappedTopMenu onClick={ handlerOuterClick }/> }
           </View>
 };
