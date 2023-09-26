@@ -31,7 +31,7 @@ const ListFeed = memo((data)  => {
                 className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
                 numberOfLines={1}
             > { title } </Text>
-            <Time className="text-sm flex-none" ts={ date }></Time>
+            <Time stylesName="text-neutral-600 dark:text-neutral-400 text-sm whitespace-nowrap truncate min-w-[3rem] text-right" ts={ date }></Time>
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text
