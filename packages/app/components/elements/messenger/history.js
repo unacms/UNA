@@ -191,7 +191,8 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                         totalCount = { messages.length }
                         followOutput={"smooth"}
                         ListHeaderComponent={ isFetchingPreviousPage && <View><Loading/></View> }
-                        contentContainerStyle={{ paddingBottom: 20 }}
+                        ListFooterComponent={ <View className="pb-4"></View> }
+                        /*contentContainerStyle={{ paddingBottom: 20 }}*/
                         defaultItemHeight={ 100 }
                        /* estimatedItemSize={ 100 }*/
                         /*keyExtractor={ keyExtractor }*/
