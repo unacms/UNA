@@ -2,7 +2,7 @@ import Time from '../../ui/atoms/time';
 import Profile from '../../ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
-import {memo, useMemo, useCallback} from 'react';
+import { memo, useMemo } from 'react';
 import dynamic from "next/dynamic";
 import {useCurrentUser} from "../../context/user";
 import {FeedbackHaptics, linkify} from "../../lib/util";
@@ -11,14 +11,12 @@ import {Button} from "../../design/controls";
 import Menu from "../menu";
 import DropdownMenu from "../../ui/atoms/dropdown-menu";
 import Reactions from 'app/ui/molecules/reactions';
-import Services from "../elements/messenger/services/history";
 
 const ListFeed = memo((data)  => {
-  const { author_data, message, date, title, count, onPress } = data || {};
+  const { author_data, message, date, title, count, onPress, isActive } = data || {};
 
-  return <Pressable onPress={onPress} >
-            <View className="flex-row p-2 sm:px-3 group duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg
-                         hover:bg-neutral-500/10 active:opacity-50 active:translate-y-0.5">
+  return <Pressable onPress={(e) => onPress(e, data)} className={ isActive ? ' bg-neutral-500/10' : '' }>
+            <View className="flex-row p-2 sm:px-3 group duration-200 overflow-hidden m-1 sm:mx-2 rounded-lg hover:bg-neutral-500/10 active:opacity-50 active:translate-y-0.5">
 
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
             <Profile
@@ -33,7 +31,7 @@ const ListFeed = memo((data)  => {
                 className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
                 numberOfLines={1}
             > { title } </Text>
-            <Time className="text-sm flex-none" ts={ date }></Time>
+            <Time stylesName="text-neutral-600 dark:text-neutral-400 text-sm whitespace-nowrap truncate min-w-[3rem] text-right" ts={ date }></Time>
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text

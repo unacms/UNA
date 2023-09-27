@@ -25,15 +25,16 @@ export default function FormMessenger(props) {
 
     let prevList = Object.values(imageSource).flat();
 
-    const [sizes, setSizes] = useState({formHeight:0});
+    const [sizes, setSizes] = useState({ formHeight: 0 });
     const viewFormRef = useRef();
     const handleLayout = () => {
         viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
             setSizes({ formHeight: height })
+            console.log({ formHeight: height });
         });
     };
 
-    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? 54 : 0 ) }}>
+    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 0 ) }}>
                 <Row className="w-full flex flex-row items-center">
                   <View className="flex-0">
                       { getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder }) }
