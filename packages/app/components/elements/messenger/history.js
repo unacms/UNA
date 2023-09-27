@@ -1,11 +1,11 @@
 import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
 import { Button } from 'app/design/controls';
-import { useRef, useContext, useEffect, useState, useCallback, memo, useMemo } from 'react';
+import { useRef, useContext, useEffect, useState, useCallback, memo, Clipboard } from 'react';
 import { PageData, MenuData } from "./context/messenger-сontext";
 import { Text } from 'app/design/typography';
 import Loading from "../../../ui/atoms/loading";
-import {ListFeed, MsgFeed} from 'app/components/units/convos-feeds';
+import {MsgFeed} from 'app/components/units/convos-feeds';
 import Form from "../form";
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "../../../context/actions";
@@ -132,6 +132,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                        }
                     }});
                 case 'share':
+
             }
 
         }, [messages, refList.current]);
