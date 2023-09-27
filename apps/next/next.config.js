@@ -42,7 +42,7 @@ const nextConfig = {
     'recyclerlistview',
     'react-native-quick-md5',
     '@react-native-picker/picker',
-    '@react-native-clipboard/clipboard',
+    '@react-native-community/clipboard',
     'expo-image-picker',
     'expo-document-picker',
     'react-native-svg',

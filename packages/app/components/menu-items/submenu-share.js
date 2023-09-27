@@ -4,7 +4,7 @@ import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/contro
 import { Pressable } from 'app/design/view'
 import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import Clipboard from '@react-native-clipboard/clipboard';
+import Clipboard from '@react-native-community/clipboard';
 
 export default function MenuItemSubmenuShare(oProps) {
 

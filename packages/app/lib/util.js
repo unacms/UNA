@@ -3,6 +3,7 @@ import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
+import { MMKVLoader } from "react-native-mmkv-storage";
 import pako from 'pako';
 
 export function appSetting(section, name, path) {
@@ -20,22 +21,34 @@ export const getDataFromCache = (pref, storageKeyValue) => {
 }
 
 export function storageSet(pref, key, data, isLocal = false) {
-    if (Platform.OS !== 'web') return;
-    const storage = isLocal ? localStorage : sessionStorage;
-    const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
+    if (Platform.OS !== 'web') {
+        /*const MMKV = new MMKVLoader().initialize(); 
+        await MMKV.setStringAsync(`${pref}-${key}`, JSON.stringify(data));*/
+    }
+    else{
+        const storage = isLocal ? localStorage : sessionStorage;
+        const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
 
-    storage.setItem(`${pref}-${key}`, serializedData);
+        storage.setItem(`${pref}-${key}`, serializedData);
+    }
 }
 
 export function storageGet(pref, key, isLocal = false) {
-    if (Platform.OS !== 'web') return null;
-
-    const storage = isLocal ? localStorage : sessionStorage;
-    const storedData = storage.getItem(`${pref}-${key}`);
-
-    if (!storedData) return null;
-
-    return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
+    if (Platform.OS !== 'web'){
+      /*  const MMKV = new MMKVLoader().initialize(); 
+        let storedData = await MMKV.getStringAsync(`${pref}-${key}`);
+        console.log(storedData);
+        console.log('----------------------------');
+        console.log(JSON.parse(storedData));
+        if (!storedData) return null;
+        return JSON.parse(storedData);*/
+    }
+    else{
+        const storage = isLocal ? localStorage : sessionStorage;
+        const storedData = storage.getItem(`${pref}-${key}`);
+        if (!storedData) return null;
+        return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
+    }
 }
 
 function compress(data) {

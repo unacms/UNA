@@ -1,4 +1,5 @@
-//import { JitsiMeeting } from '@jitsi/react-native-sdk';
+//import {JitsiMeeting} from '@jitsi/react-native-sdk/index';
+//import {JitsiMeeting} from '@jitsi/react-native-sdk/index';
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 

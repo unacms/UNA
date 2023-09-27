@@ -1,13 +1,13 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
-import { Text } from 'app/design/typography'
 import Card from 'app/ui/molecules/card'
 
-const items = ['', '', '', '', '','']
+const items = Array(5).fill('');
 const maxWidth = appSetting('layout', 'max_width')
 
 export function getBlackBox(windowWidth) {
-    return (
+    return <></>
+   /* return (
       <>
         <View className="w-full h-12 lg:h-12"></View>
         <View
@@ -47,131 +47,132 @@ export function getBlackBox(windowWidth) {
           {blockSkeletons['browse_item']}
         </View>
       </>
-    )
+    )*/
   }
   
-  var blockSkeletons = {
-    one_column_browse: (
-      <>
-        {items.map((item, index) => (
-          <View key={'one_column_browse' + index}>
-            <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">
-              <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
-              <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20"></View>
-              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
-                <View className="h-4 my-0.5 w-16  rounded-full   bg-neutral-500/20"></View>
-              </View>
-              <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
-                <View className="h-4 my-0.5 w-4  rounded-full   bg-neutral-500/20"></View>
-              </View>
-            </View>
+  const one_column_browse = <>
+    {items.map((item, index) => (
+      <View key={'one_column_browse' + index}>
+        <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">
+          <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
+          <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20"></View>
+          <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
+            <View className="h-4 my-0.5 w-16  rounded-full   bg-neutral-500/20"></View>
           </View>
-        ))}
-      </>
-    ),
-    notifications: (
-      <>
-        {items.map((item, index) => (
-           <View
-           key={index}
-           className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
-         >
-           <View className="animate-pulse flex-row items-center gap-2">
-             <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
-             <View className="flex-1 gap-1.5">
-               <View className="flex-row justify-between">
-                 <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
-                 <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
-               </View>
-               <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
-             </View>
-           </View>
-         </View>
-        ))}
-      </>
-    ),
-    browse_item: (
-      <>
-        {items.map((item, index) => (
-          <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
-            <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-              <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
-            <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d  ">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
-            <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
-            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
-            <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-            <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-            </View>
+          <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
+            <View className="h-4 my-0.5 w-4  rounded-full   bg-neutral-500/20"></View>
           </View>
-        ))}
-      </>
-    ),
-    feed: (
-      <View className="sm:px-4 sm:py-2 sm:gap-2">
-        {appSetting('feed', 'default_view') == 'small' &&
-          items.map((item, index) => (
-            <View
-              key={'intro' + index}
-              className="bg-bgrcard dark:bg-bgrcard-d mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse"
-            >
-              <View className="flex-row gap-2">
-                <View className="relative flex-row">
-                  <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
-                    <View className="w-[50%] z-20 aspect-square bg-neutral-200 dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-200 dark:bg-neutral-600 mx-auto rounded-t-full "></View>
-                  </View>
-                </View>
-                <View className="flex-col flex-auto my-auto">
-                  <View className="w-full flex-row justify-between">
-                    <View className="h-3 my-1 w-1/4 bg-neutral-500/20 rounded-full"></View>
-                    <View className="h-3 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
-                  </View>
-                  <View className="h-5 my-1 w-full bg-neutral-500/30 rounded-full"></View>
-                  <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
-                </View>
+        </View>
+      </View>
+    ))}
+  </>
+
+  const notifications = <>
+    {items.map((item, index) => (
+      <View
+      key={index}
+      className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
+    >
+      <View className="animate-pulse flex-row items-center gap-2">
+        <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
+        <View className="flex-1 gap-1.5">
+          <View className="flex-row justify-between">
+            <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
+            <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+          </View>
+          <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
+        </View>
+      </View>
+    </View>
+    ))}
+  </>
+
+function browse_item(num) {
+  return ( <>{items.map((item, index) => (
+      <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
+        <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+          <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        </View>
+        { num > 1 && 
+        <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d  ">
+        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        </View>
+        }
+        { num > 2 && 
+        <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        </View>
+        }
+        { num > 3 && <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        </View>
+        }
+        { num > 4 && <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        </View>
+        }
+      </View>
+    ))}
+  </>
+  )
+  }
+
+  const feed = <View className="sm:px-4 sm:py-2 sm:gap-2">
+    {appSetting('feed', 'default_view') == 'small' &&
+      items.map((item, index) => (
+        <View
+          key={'intro' + index}
+          className="bg-bgrcard dark:bg-bgrcard-d mt-[1px] sm:rounded-lg p-2 flex flex-col gap-4 animate-pulse"
+        >
+          <View className="flex-row gap-2">
+            <View className="relative flex-row">
+              <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                <View className="w-[50%] z-20 aspect-square bg-neutral-200 dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
+                <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-200 dark:bg-neutral-600 mx-auto rounded-t-full "></View>
               </View>
             </View>
-          ))}
-        {appSetting('feed', 'default_view') != 'small' &&
-          items.map((item, index) => (
-            <View
-              key={'home3' + index}
-              className="bg-bgrcard dark:bg-bgrcard-d sm:rounded-lg p-4 flex flex-col animate-pulse mt-2 sm:m-0"
-            >
-              <View className="flex-row gap-x-2 mb-2">
-                <View className="relative flex-row">
-                  <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
-                    <View className="w-[50%] z-20 aspect-square bg-neutral-200 dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
-                    <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-200 dark:bg-neutral-600 mx-auto rounded-t-full "></View>
-                  </View>
-                </View>
-                <View className="flex-col flex-auto my-auto">
-                  <View className="w-full flex-row justify-between">
-                    <View className="h-4 my-1 w-1/3 bg-neutral-500/20 rounded-full"></View>
-                    <View className="h-4 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
-                  </View>
-                  <View className="h-3 my-1 w-1/4 bg-neutral-500/30 rounded-full"></View>
-                </View>
+            <View className="flex-col flex-auto my-auto">
+              <View className="w-full flex-row justify-between">
+                <View className="h-3 my-1 w-1/4 bg-neutral-500/20 rounded-full"></View>
+                <View className="h-3 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
               </View>
-              <View className="h-4 my-1 w-full bg-neutral-500/30 rounded-full"></View>
-              <View className="h-4 my-1 w-3/4 bg-neutral-500/30 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
-              <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+              <View className="h-5 my-1 w-full bg-neutral-500/30 rounded-full"></View>
               <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
             </View>
-          ))}
-      </View>
-    ),
-  }
-  
+          </View>
+        </View>
+      ))}
+    {appSetting('feed', 'default_view') != 'small' &&
+      items.map((item, index) => (
+        <View
+          key={'home3' + index}
+          className="bg-bgrcard dark:bg-bgrcard-d sm:rounded-lg p-4 flex flex-col animate-pulse mt-2 sm:m-0"
+        >
+          <View className="flex-row gap-x-2 mb-2">
+            <View className="relative flex-row">
+              <View className="h-12 w-12 aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-700 mx-auto rounded-full">
+                <View className="w-[50%] z-20 aspect-square bg-neutral-200 dark:bg-neutral-600 border-2 border-neutral-100 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
+                <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-200 dark:bg-neutral-600 mx-auto rounded-t-full "></View>
+              </View>
+            </View>
+            <View className="flex-col flex-auto my-auto">
+              <View className="w-full flex-row justify-between">
+                <View className="h-4 my-1 w-1/3 bg-neutral-500/20 rounded-full"></View>
+                <View className="h-4 my-1 w-6 bg-neutral-500/20 rounded-full"></View>
+              </View>
+              <View className="h-3 my-1 w-1/4 bg-neutral-500/30 rounded-full"></View>
+            </View>
+          </View>
+          <View className="h-4 my-1 w-full bg-neutral-500/30 rounded-full"></View>
+          <View className="h-4 my-1 w-3/4 bg-neutral-500/30 rounded-full"></View>
+          <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+          <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+          <View className="h-3 my-1 w-full bg-neutral-500/20 rounded-full"></View>
+          <View className="h-3 my-1 w-3/4 bg-neutral-500/20 rounded-full"></View>
+        </View>
+      ))}
+  </View>
+
   var pageSkeletons = {
     default: (
       <View className={maxWidth + ' mx-auto w-full animate-pulse '}>
@@ -208,9 +209,9 @@ export function getBlackBox(windowWidth) {
           </View>
   
           <View className="flex-auto w-3/4 xl:w-4/5 flex-row">
-            <View className="flex-auto w-2/3">{blockSkeletons.feed}</View>
+            <View className="flex-auto w-2/3">{getSkeleton('feed')}</View>
             <View className="hidden xl:flex flex-col top-0 flex-none w-1/3 ">
-              {blockSkeletons['bx_posts:browse']}
+              {getSkeleton('bx_posts:browse')}
             </View>
           </View>
         </View>
@@ -261,9 +262,17 @@ export function getBlackBox(windowWidth) {
     ),
   }
   
-export function getSkeleton(name, view) {
-    if (name != 'feed' && name != 'one_column_browse' && name != 'notifications') name = 'browse_item'
-      return blockSkeletons[name];
+export function getSkeleton(name, num = 5) {
+    if (name == 'feed')
+      return feed;
+    
+    if (name == 'one_column_browse')
+      return one_column_browse;
+    
+    if (name == 'notifications')
+      return notifications;
+
+    return browse_item(num)
 }
 
 export function getPageSkeleton(name) {

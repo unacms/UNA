@@ -6,7 +6,7 @@ import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
-import Card from 'app/ui/molecules/card'
+import AnimatedBlock from 'app/ui/molecules/animated-block'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
@@ -29,6 +29,7 @@ export default function UnitFeed({data}) {
     }
     data.content_parsed = data.content_parsed.replace('&#8230;', '...')
     return (
+        <AnimatedBlock>
         <View className=" mt-2 ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
@@ -48,5 +49,6 @@ export default function UnitFeed({data}) {
                </View>
             </Pressable>
         </View>
+        </AnimatedBlock>
     );
 }

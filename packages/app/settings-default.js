@@ -140,7 +140,7 @@ export const settingsDefault = {
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
-            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'ShoppingCart' }, 
+            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
         ],
         menu_top_more: [
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
@@ -173,7 +173,7 @@ export const settingsDefault = {
         },
         bx_market_submenu: {
             name: 'Market',
-            icon: 'ShoppingCart',
+            icon: 'Storefront',
             items: ['products-home', 'products-popular', 'products-categories'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-product' },
@@ -453,7 +453,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 2 },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
             },
-            icon: 'ShoppingCart',
+            icon: 'Storefront',
             headerSettings: { offset: false, header: true, backButton: false }
         },
         'products-category': {
@@ -463,7 +463,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
-            icon: 'ShoppingCart',
+            icon: 'Storefront',
             headerSettings: { offset: false, header: false, backButton: false }
         },
         'products-categories': {
@@ -473,7 +473,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
-            icon: 'ShoppingCart',
+            icon: 'Storefront',
             headerSettings: { offset: false, header: false, backButton: false }
         },
         'products-popular': {
@@ -482,7 +482,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
             },
-            icon: 'ShoppingCart',
+            icon: 'Storefront',
             headerSettings: { offset: false, backButton: false, header: false, backButton: false }
         },
         'view-product': {

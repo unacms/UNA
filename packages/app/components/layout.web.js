@@ -42,6 +42,7 @@ export default function Layout({ data, uri, children }) {
 
         let element = document.querySelector('.animated-view');
         if(element){
+            console.log('page-fade-out')
             element.classList.remove('page-fade-out');
             // disbled: header not sticky issue
             //element.classList.add('page-fade-in');
