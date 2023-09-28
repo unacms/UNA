@@ -372,7 +372,7 @@ export const settingsDefault = {
             blocks: {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            icon: 'Calendar',
+            icon: 'Egg',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'events-top': {
@@ -380,18 +380,24 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
             },
+            icon: 'ChatCircle',
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'events-joined': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
             },
+            icon: 'LinkSimple',
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'events-followed': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
             },
+            icon: 'Binoculars',
+            headerSettings: { backButton: false, header: false, offset: false }
         },
         'view-event-profile': {
             layout: 'profile',
@@ -415,7 +421,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false },
             },
-            icon: 'File',
+            icon: 'Egg',
             headerSettings: { offset: false, header: false }
         },
         'posts-popular': {
@@ -423,7 +429,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
             },
-            icon: 'File',
+            icon: 'ChatCircle',
             headerSettings: { backButton: false, header: false }
         },
         'view-post': {
@@ -508,7 +514,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UserCircle',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'friends': {
@@ -516,7 +522,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UserList',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'follow-suggestions': {
@@ -524,7 +530,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UserFocus',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'followers': {
@@ -532,7 +538,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UsersFour',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'following': {
@@ -540,7 +546,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UserSquare',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'friend-requests': {
@@ -548,7 +554,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
             },
-            icon: '',
+            icon: 'UserCirclePlus',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'sent-friend-requests': {
@@ -556,7 +562,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
             },
-            icon: '',
+            icon: 'UserCircleGear',
             headerSettings: { backButton: false, header: false, offset: false }
         },
         
@@ -587,7 +593,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
             headerSettings: { backButton: false, header: false, offset: false },
-            icon: 'UsersThree',
+            icon: 'Egg',
         },
         'groups-joined': {
             layout: 'navigator',
@@ -598,6 +604,8 @@ export const settingsDefault = {
                     showBg: false,
                 },
             },
+            headerSettings: { backButton: false, header: false, offset: false },
+            icon: 'Egg',
         },
         'groups-followed': {
             layout: 'navigator',
@@ -608,6 +616,8 @@ export const settingsDefault = {
                     showBg: false,
                 },
             },
+            headerSettings: { backButton: false, header: false, offset: false },
+            icon: 'Binoculars',
         },
         'view-group-profile': {
             layout: 'profile',
