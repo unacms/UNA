@@ -370,6 +370,7 @@ export default function PageLayout(props) {
                                         unitMode={unitMode}
                                         data={dataHome}
                                         blocks={props.blocks}
+                                        skeleton='feed'
                                     />
                                 </LayoutDataContext>
                             </View>
@@ -384,6 +385,7 @@ export default function PageLayout(props) {
                                         unitMode={unitMode}
                                         data={dataAccount}
                                         blocks={props.blocks}
+                                        skeleton='feed'
                                     />
                                 </LayoutDataContext>
                             </View>
@@ -398,6 +400,7 @@ export default function PageLayout(props) {
                                     data={dataHot}
                                     unitMode={unitMode}
                                     blocks={props.blocks}
+                                    skeleton='feed'
                                 />
                             </LayoutDataContext>
                         </View>
@@ -412,6 +415,7 @@ export default function PageLayout(props) {
                         unitMode={unitMode}
                         data={dataSingle}
                         blocks={props.blocks}
+                        skeleton='feed'
                     />
                 </LayoutDataContext>
             )}

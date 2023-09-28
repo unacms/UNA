@@ -43,7 +43,7 @@ const maxWidth = appSetting('layout', 'max_width')
   </>
 
 function browse_item(num) {
-  return ( <>{items.map((item, index) => (
+  return ( <View className='mt-16'>{items.map((item, index) => (
       <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
         <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
           <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
@@ -68,7 +68,7 @@ function browse_item(num) {
         }
       </View>
     ))}
-  </>
+  </View>
   )
   }
 

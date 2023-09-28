@@ -1,16 +1,4 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
-import { appSetting, deepEqual, getUnitModeBySource, parseUrl, parseQueryString, getURI  } from 'app/lib/util';
-import { menuItemsByName } from 'app/lib/util'
-import Link from 'app/ui/atoms/link'
-import { Button } from 'app/design/controls'
-import { BlockByName, DataByName } from 'app/components/block'
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
-import { Text } from 'app/design/typography'
-
-import { Platform } from 'react-native'
-import { updateRightHeader } from 'app/lib/native-handlers';
-import { useNavigation } from '@react-navigation/native';
-import { fetcher } from 'app/lib/fetcher';
+import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
 
 export default function PageLayout(props) {

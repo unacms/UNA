@@ -1,11 +1,9 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Text } from 'app/design/typography';
+import React, { useCallback, useState, useEffect } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
@@ -15,7 +13,7 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='' }) {
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='' }) {
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
 
     const [routes, setRoutes] = useState(initedTabs);
@@ -27,15 +25,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
-    const { colors } = Theme();
 
     const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
-
-    const isLoading = useRef(false);
 
     const {
         status,
@@ -74,8 +69,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         <SceneComponent
         {...props}
         useExternalScrollView
-        forwardedRef={ref}
-        ContainerView={Animated.ScrollView}
+        forwardedRef = {ref}
+        ContainerView = {Animated.ScrollView}
         />
     ));
 
@@ -84,11 +79,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         return (
             <UniList
                 {...props}
-                renderScrollComponent={TabFlashListScrollView}
-                contentContainerStyle={{ paddingTop: scrollViewPaddingTop, paddingBottom:20 }}
-                refer ={ref}
-                onScroll={handleLayout}
-                onEndReached={handleEndReached}
+                renderScrollComponent = {TabFlashListScrollView}
+                contentContainerStyle = {{ paddingTop: scrollViewPaddingTop + 4, paddingBottom:20 }}
+                refer = {ref}
+                onScroll = {handleLayout}
+                onEndReached = {handleEndReached}
             />
         );
     });
@@ -98,13 +93,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     }, [index]);
 
 
-    const TabScene = ({ route,index }) => {
-        const Preload = getSkeleton(data.module? data.module : data.unit);
+    const TabScene = ({ route, index }) => {
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
         if (!route.inited){
             return Preload
         }
 
-        const unitType = getUnitModeBySource(route.endpoint.request_url);
+        const unitType = getUnitModeBySource(route?.endpoint?.request_url);
         if (route.inited)
             return (
                 <TabFlashList
@@ -149,7 +144,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return (
                 <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
                     <Row className="pl-4 gap-x-4" >
-                        {props.navigationState.routes.map((a) => (
+                        {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
                             >
