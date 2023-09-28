@@ -12,6 +12,13 @@ const HistoryKeys = {
 
 export { HistoryKeys };
 
+const updateMessage = async(iConvoId, iMessageId) => {
+    const queryClient = useQueryClient();
+    const oData = await queryClient.fetchQuery(HistoryKeys.messagesByConvoWithId(iConvoId, iMessageId), Services.getMessage(iMessageId));
+
+    console.log('----- data message -----', oData);
+}
+
 export default function useHistory(convoId, onSuccess) {
    const { currentUser } = useCurrentUser(),
          { iPerPage } = Services;
@@ -144,9 +151,6 @@ export const useSendData = function(convoId, menuItem){
                 return {...oldData, pages };
             });
 
-            //console.log('--------- history has been changed ---------', prevHistoryData);
-
-            // Convos List
             const prevConvoListData = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
             client.setQueryData(ConvoKeys.convoByMenu(menuItem), (oldData) => {
                 const { pages } = oldData || {};
@@ -167,7 +171,6 @@ export const useSendData = function(convoId, menuItem){
                 });
 
                 oNewList[0] = [oModifiedItem, ...oNewList[0]];
-
                 return {...oldData, pages: [...oNewList] };
             });
 
@@ -178,8 +181,26 @@ export const useSendData = function(convoId, menuItem){
             client.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
         },
         onSettled: (data) => {
-            //client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId)});
+            client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId)});
             //client.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)});
+        },
+        onSuccess: (oData) => {
+            //const { jot_id } = oData;
+           /// console.log('----- on sucess data -----', jot_id);
+            //if (jot_id) {
+                //const oData = updateMessage(convoId, jot_id);
+                //client.setQueryData(HistoryKeys.messagesByConvoWithId(convoId, jot_id));
+                /*client.setQueryData(HistoryKeys.messagesByConvo(convoId), (data) => {
+                    const { pages } = oldData || {};
+                    pages[pages.length - 1] = [...pages[pages.length - 1], { id: iTime, created:iTime, lot_id: convoId, message, author_data: currentUser }];
+                    return {...oldData, pages };
+                });*/
+
+              //  const oMessage = async () => await client.fetchQuery(HistoryKeys.messagesByConvoWithId(convoId, jot_id), Services.getMessage(jot_id));
+                //client.setQueryData(HistoryKeys.messagesByConvoWithId(convoId, jot_id), prevHistoryData);
+                //console.log('----- data message -----', oMessage());
+
+           // }
         }
     });
 
