@@ -14,6 +14,7 @@ import Time from '../../ui/atoms/time'
 import { Button } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import {componentsMap} from  'app/ui/molecules/_map';
 
 export default function Unit(props) {
     function channelUnit() {
@@ -148,6 +149,29 @@ export default function Unit(props) {
                 }
             }
 
+            if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
+                const Element = componentsMap[oMenuItemPrimary.data.type];
+                if(!!Element) {
+                    const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+
+                    oMenuItemPrimary = (
+                        <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
+                    );
+                }
+            }
+            else
+                oMenuItemPrimary = (
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        title={oMenuItemPrimary.title}
+                        className=" my-auto "
+                        startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
+                        fullWidth={true}
+                        onPress={oMenuItemPrimary?.onPress}
+                    />
+                );
+
             aMenuItemsMore = data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
                 return {
                     id: aItem.id ? aItem.id : aItem.name,
@@ -156,7 +180,6 @@ export default function Unit(props) {
                 };
             });
         }
-
 
         return (
             <AnimatedBlock>
@@ -204,15 +227,7 @@ export default function Unit(props) {
                                         {data.members_count} members
                                     </Text>
                                     <View className="flex-row w-full gap-x-2 ">                
-                                        {!!oMenuItemPrimary && <Button
-                                            variant="primary"
-                                            size="sm"
-                                            title={oMenuItemPrimary.title}
-                                            className=" my-auto "
-                                            startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
-                                            fullWidth={true}
-                                            onPress={oMenuItemPrimary?.onPress}
-                                        />}
+                                        {oMenuItemPrimary}
                                         {aMenuItemsMore.length > 0 && 
                                             <DropdownMenu items={aMenuItemsMore}>
                                                 <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
@@ -427,6 +442,31 @@ export default function Unit(props) {
                 }
             }
 
+            if(!!oMenuItemPrimary) {
+                if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
+                    const Element = componentsMap[oMenuItemPrimary.data.type];
+                    if(!!Element) {
+                        const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+
+                        oMenuItemPrimary = (
+                            <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
+                        );
+                    }
+                }
+                else
+                    oMenuItemPrimary = (
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            title={oMenuItemPrimary.title}
+                            className=" my-auto "
+                            startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
+                            fullWidth={true}
+                            onPress={oMenuItemPrimary?.onPress}
+                        />
+                    );
+            }
+
             aMenuItemsMore =  data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
                 return {
                     id: aItem.id ? aItem.id : aItem.name,
@@ -461,15 +501,7 @@ export default function Unit(props) {
                                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + ' friends'}</Text>
                                 }
                                 <View className="flex-row w-full gap-x-2 ">
-                                    {!!oMenuItemPrimary && <Button
-                                        variant="primary"
-                                        size="sm"
-                                        title={oMenuItemPrimary.title}
-                                        className=" my-auto "
-                                        startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
-                                        fullWidth={true}
-                                        onPress={oMenuItemPrimary?.onPress}
-                                    />}
+                                    {oMenuItemPrimary}
                                     {aMenuItemsMore.length > 0 && 
                                         <DropdownMenu items={aMenuItemsMore}>
                                             <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
