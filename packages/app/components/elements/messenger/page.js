@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
 import { Link } from 'app/ui/atoms/link';
-import {memo, useRef, useMemo, useEffect, useContext, useCallback,} from 'react';
+import { memo, useRef, useMemo, useEffect, useContext, useCallback } from 'react';
 import { MenuColumn } from 'app/components/elements/messenger/menu';
 import { ConvosList } from 'app/components/elements/messenger/convos-list';
 import { HistoryComponent as History }  from 'app/components/elements/messenger/history';
