@@ -15,25 +15,25 @@ const CreateConvo = memo(({ onClose }) => {
 
     return <View className="w-full h-full flex flex-col">
                 <View className="max-w-full h-full mt-4 flex flex-col relative">
-                    <View className="text-center p-4">
-                        <View className="w-full flex flex-row justify-between">
+                    <View className="text-center py-4">
+                        <View className="w-full flex flex-row justify-between pb-4">
                             <Button variant="outline" startDecorator="CaretLeft" rounded align="start" onPress={ onClose } />
                             <View className={"relative flex items-center flex-1"}>
                                 <Icon className={"absolute"} icon={"users"} width={48} height={48} color={colors.barsColor}/>
                             </View>
                             <Button variant="outline" startDecorator="X" rounded align="start" onPress={ onClose } />
                         </View>
-                        <View className="w-full">
-                            <Text className="text-center text-2xl lg:text-xl font-bold text-neutral-900 dark:text-neutral-50">Add users to start messaging</Text>
+                        <View className="w-full p-2">
+                            <Text className="text-center text-xl lg:text-2xl font-bold text-neutral-900 dark:text-neutral-50">Add users to start messaging</Text>
                         </View>
                     </View>
-                    <View className="flex flex-col flex-0 h-full">
-                        <View className="mt-5 mx-4 text-sm items-center gap-1 flex flex-col flex-stat">
+                    <View className="flex flex-col flex-0 h-full w-full">
+                        <View className="mt-5 text-sm items-center flex flex-col flex-0 w-full">
                             <View className="min-h-[2.5rem] max-h-[12rem] w-full overflow-y-auto flex-1 items-center">
                                {/* <Text>Existed users list</Text>*/}
                             </View>
-                            <View className="flex w-full min-w-[8rem] flex-row">
-                                <View className={"flex flex-row flex-1 px-2 overflow-hidden"}>
+                            <View className="flex w-full flex-row space-x-2">
+                                <View className={"flex flex-row flex-1 overflow-hidden"}>
                                     <InputRounded placeholder={"Select users..."} className="px-2 w-full" />
                                 </View>
                                 <Button variant="outline" startDecorator="Check" rounded align="start" onPress={ () => {} } />
