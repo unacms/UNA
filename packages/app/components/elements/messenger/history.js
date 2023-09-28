@@ -88,7 +88,7 @@ export function HistoryComponent(){
                 });
             }, [menuItem, item]);
 
-    let Component = () => {
+    /*let Component = () => {
         let oComponent = null;
         switch(historyArea){
             case 'create-convo':
@@ -98,13 +98,16 @@ export function HistoryComponent(){
                 oComponent = <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />;
         };
 
+        console.log('--------- switch history -----', historyArea);
+
         return oComponent;
-    }
+    }*/
 
     return <View className="w-full h-full flex flex-col">
              <ConvoHeader title={title} onPress={handlerClickBackButton}/>
              <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
-                <Component />
+                 { !historyArea && <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />}
+                 { historyArea === 'create-convo' && <CreateConvo onClose={handlerCloseArea}/> }
              </View>
              <View className={"w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d"} >
                { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/> }
