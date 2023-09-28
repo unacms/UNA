@@ -67,7 +67,7 @@ function SearchBox(props){
            </View>
 }
 
-const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
+const ConvosListHeader = memo(({ menuItem, onClickMenu, onCreateConvo }) => {
     const [visible, setVisibility] = useState(false),
           handlerVisibility = () => setVisibility((visible) => !visible),
           handlerCreate = () => {};
@@ -79,7 +79,7 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
             <SearchBox visible={visible} />
             <View className="flex flex-row space-x-2">
               <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
-                { !visible && <Button variant="outline" startDecorator="plus" rounded align="start" onPress={handlerCreate}/> }
+                { !visible && <Button variant="outline" startDecorator="plus" rounded align="start" onPress={onCreateConvo}/> }
             </View>
            </View>
 });
@@ -147,17 +147,22 @@ const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConv
 
 export const ConvosList = () => {
     const { menuItem, menuView, setMenuView } = useContext(MenuData),
-          { screenMode, pageHeight, setConvoItem, convoInfo, convoId } = useContext(PageData),
+          { screenMode, pageHeight, setConvoItem, convoInfo, convoId, setHistoryArea, setPanel } = useContext(PageData),
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
-          handlerSelectConvo = useCallback((convoItem, bManually = true) => setConvoItem({ item: convoItem, manually: bManually }), [menuItem]),
+          handlerCreate = useCallback(() => {
+              setHistoryArea((prev) => prev ? false : 'create-convo');
+              if (isPhone(screenMode))
+                  setPanel('history');
+          }, [screenMode, setHistoryArea]),
+          handlerSelect = useCallback((convoItem, bManually = true) => setConvoItem({ item: convoItem, manually: bManually }), [menuItem]),
           bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
           handlerOuterClick = () => menuView && setMenuView(false);
 
    return <View className="max-h-full flex w-full h-full flex-col relative">
             <View className="w-full px-4 flex items-center flex flex-row gap-x-2 border-b border-bdrnavbar dark:border-bdrnavbar-d h-14">
-               <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick }/>
+               <ConvosListHeader menuItem={ menuItem } onClickMenu={ handlerMenuClick } onCreateConvo={handlerCreate}/>
             </View>
-             <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelectConvo} selectedConvoId={convoId} convo={convoInfo}/>
+            <Convos menuItem={ menuItem } height={pageHeight} onSelect={handlerSelect} selectedConvoId={convoId} convo={convoInfo}/>
             { menuView && bAllowViewOnDevice && <WrappedTopMenu onClick={ handlerOuterClick }/> }
           </View>
 };

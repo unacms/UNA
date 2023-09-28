@@ -1,20 +1,21 @@
-import {createContext, useCallback, useEffect, useState} from 'react';
+import {createContext, useState} from 'react';
 import { useWindowDimensions } from "react-native";
 import { getScreenMode } from '../grid-utils';
-//import useBrowserHistory from '../hooks/useBrowserHistory';
 
 const PageData = createContext({});
 const MenuData = createContext({});
 
 function PageContext({ children }) {
-    const [panel, setPanel] = useState(false);
-    const [convoInfo, setConvoItem] = useState({});
-    const [convoId, setConvoId] = useState();
+    const [panel, setPanel] = useState(false),
+          [convoInfo, setConvoItem] = useState({}),
+          [historyArea, setHistoryArea] = useState(),
+          [convoId, setConvoId] = useState();
 
     const { height } = useWindowDimensions();
     return <PageData.Provider value={{
                                         pageHeight: height,
                                         screenMode: getScreenMode(),
+                                        historyArea, setHistoryArea,
                                         convoId, setConvoId,
                                         panel, setPanel,
                                         convoInfo, setConvoItem,

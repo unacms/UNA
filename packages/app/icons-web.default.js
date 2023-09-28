@@ -8,7 +8,7 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
 	ImageSquare, PaperPlaneRight, ArrowFatUp, ArrowFatDown, SortAscending, ArrowBendLeftUp, ThumbsUp, FilePlus,	MonitorPlay, X, UserCirclePlus, RocketLaunch,
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, Note,  ChatCenteredText, Clipboard, 
 	CirclesFour,FileAudio, DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, IntersectThree, Cake, 
-	IdentificationBadge, TextAlignLeft, FilmStrip, CheckSquare, TextUnderline, Heart, ChartBar, Storefront, Video, ShoppingCart
+	IdentificationBadge, TextAlignLeft, FilmStrip, CheckSquare, TextUnderline, Heart, ChartBar, Storefront, Video, ShoppingCart, Check
 }  
 from "@phosphor-icons/react";
 
@@ -112,5 +112,6 @@ export const IconSet = {
 	CaretUp: CaretUp,
 	CaretDown: CaretDown,
 	CaretLeft: CaretLeft,
-	ShoppingCart: ShoppingCart
+	ShoppingCart: ShoppingCart,
+	Check: Check
 }

@@ -15,6 +15,8 @@ import { ConvoKeys } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
 import Services from "./services/history";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
+import CreateConvo from './create-convo';
+import { isPhone } from "./grid-utils";
 
 const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
     const [formData, setFormData] = useState(),
@@ -54,11 +56,17 @@ const ConvoHeader = memo(({ title, onPress }) => {
 });
 
 export function HistoryComponent(){
-    const { convoInfo: { item }, setPanel, pageHeight, setConvoItem } = useContext(PageData),
+    const { convoInfo: { item }, setPanel, pageHeight, setConvoItem, historyArea, setHistoryArea, screenMode } = useContext(PageData),
           { menuItem } = useContext(MenuData),
           { title, id } = item || {},
            client = useQueryClient(),
            handlerClickBackButton = useCallback(() => setPanel(false), []),
+           handlerCloseArea = useCallback(() => {
+               if (isPhone(screenMode))
+                   setPanel(false);
+
+               setHistoryArea(false);
+           }, [screenMode]),
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
                         pages?.flatMap(page => page).some((oItem) => {
@@ -80,10 +88,23 @@ export function HistoryComponent(){
                 });
             }, [menuItem, item]);
 
+    let Component = () => {
+        let oComponent = null;
+        switch(historyArea){
+            case 'create-convo':
+                    oComponent = <CreateConvo onClose={handlerCloseArea}/>;
+                break;
+            default:
+                oComponent = <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />;
+        };
+
+        return oComponent;
+    }
+
     return <View className="w-full h-full flex flex-col">
              <ConvoHeader title={title} onPress={handlerClickBackButton}/>
              <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
-                <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />
+                <Component />
              </View>
              <View className={"w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d"} >
                { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/> }
