@@ -142,6 +142,7 @@ export const settingsDefault = {
             { name: 'home', title: 'Home', link: '/', icon: 'home'},
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'comments' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
@@ -187,6 +188,10 @@ export const settingsDefault = {
         bx_posts_view_actions: [
             'edit-post', 
             'delete-post'
+        ],
+        bx_market_view_actions: [
+            'edit-product', 
+            'delete-product'
         ],
         bx_persons_submenu: {
             name: 'People',
@@ -246,7 +251,7 @@ export const settingsDefault = {
         bx_forum_submenu: {
             name: 'Discussions',
             icon: 'comments',
-            items: ['discussions-home', 'discussions-search'],
+            items: ['discussions-home', 'discussions-categories'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-discussion' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_forum'},
@@ -508,7 +513,7 @@ export const settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
-        //############ POSTS PAGES ############
+        //############ CONNECTION PAGES ############
         'friend-suggestions': {
             layout: 'navigator',
             blocks: {
@@ -571,8 +576,29 @@ export const settingsDefault = {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Comments',
+            icon: 'Egg',
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+        },
+        'discussions-category': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_forum:browse_category', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
+            },
+            icon: 'Folders',
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+        },
+        'discussions-categories': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'system:categories_list', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
+               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+            },
+            icon: 'Folders',
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'view-discussion': {
             layout: 'post',
