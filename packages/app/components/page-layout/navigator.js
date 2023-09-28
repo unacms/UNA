@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
-import { appSetting, deepEqual, getUnitModeBySource, parseUrl, parseQueryString  } from 'app/lib/util';
+import React, { useCallback, useState, useEffect, useMemo } from "react";
+import { appSetting, deepEqual, getUnitModeBySource, parseUrl, parseQueryString, getURI  } from 'app/lib/util';
 import { menuItemsByName } from 'app/lib/util'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
@@ -13,37 +13,38 @@ import { useNavigation } from '@react-navigation/native';
 import { fetcher } from 'app/lib/fetcher';
 
 async function parseData(link) {
-   /* const url = parseUrl(pageUrl); 
-    console.log(url);
-    const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageUrl);
-    console.log(sResponse);*/
+    let path = link;
     if (link.includes('?')){
         const urlObj = parseUrl(link); // Base URL is required if your URL is relative
         const queryString = urlObj.queryString;
 
         let obj= parseQueryString(urlObj.queryString)
-        link  = urlObj.path.replace('/', '') + '&params[]=&params[]='+JSON.stringify(obj);
+        path = urlObj.path.replace('/', '');
+        link = path + '&params[]=&params[]='+JSON.stringify(obj);
 
     }
-    console.log(sResponse, link);
-    const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
-    return sResponse.data;
     
-    //let settings = appSetting('layouts', getURI(currentRoute.link));
-    //let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
+    const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
+    let settings = appSetting('layouts', path);
+    return {data: sResponse.data, blocks : settings.blocks}
 }
 
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
-    const menuSettings = appSetting('menu_items', props.data.menu.object);
+    const [pageData, setPageData] = useState({data: props.data, blocks: props.blocks});
+    const [pageUrl, setPageUrl] = useState(props.data.url);
 
-    const [pageData, setPageData] = useState(props.data);
-    const [pageUrl, setPageUrl] = useState(props.url);
+    const menuSettings = appSetting('menu_items', pageData.data.menu.object);
 
     useEffect(() => {
-        let b = parseData(pageUrl);
-        console.log(b);
-       //setPageData();
+        async function fetchData() {
+            if (pageUrl){
+                const data = await parseData(pageUrl);
+                setPageData(data);
+            }
+        }
+
+        fetchData();
     }, [pageUrl]);     
 
     console.log('props.data', props.data, pageData);
@@ -167,12 +168,50 @@ export default function PageLayout(props) {
                     </View>
                 </View>
             </View>
-        )
+        </View>
+        }, [pageData]); 
+
+        return Content;
     }
     else{
-        return (
-            <View className='w-full flex-1'>
-                <BlockByName contentContainerStyle={{ paddingTop: 60, paddingBottom:20 }} data={props.data} name={props.blocks.browse} />
+
+        const MenuNative = () => {
+            const navigation = useNavigation();
+            useEffect(() => {
+                if (!isWeb){   
+                    updateRightHeader(menuSettings?.add, navigation);
+                }
+            }, []);
+    
+    
+            return ( <Row className='lg:hidden w-full'>
+                {menuItemsByName(pageData.data.menu.object, pageData.data.menu.items, '').map((item, index) =>
+                    <View key={index} className='py-2 items-center'> 
+                            <Pressable onPress={(event) => {
+                                setPageUrl(item.link);
+                                event.preventDefault()
+                            }}>
+                                <Button  variant={pageUrl == item.link ? 'primary': "text"} rounded size='sm' title={item.title}   />
+                            </Pressable>
+                    </View>
+                )}
+            </Row>)
+        }
+
+        const Content = useCallback(({ pageData }) => <View className='w-full flex-1'>
+        <BlockByName contentContainerStyle={{ paddingTop: 60, paddingBottom:20 }} data={pageData.data} name={pageData.blocks.browse} />
+        <View className='absolute  h-14 top-0 w-full z-50'>
+            <View className='w-full h-14 bg-white dark:bg-neutral-900 pt-1'>
+                <ScrollView  horizontal={true} className=" ml-4">
+                    <MenuNative {...props}/>
+                </ScrollView>
+            </View>
+        </View>
+    </View>, [pageData]);
+
+        /*const Content = useMemo(() => {
+            return  <View className='w-full flex-1'>
+                <BlockByName contentContainerStyle={{ paddingTop: 60, paddingBottom:20 }} data={pageData.data} name={pageData.blocks.browse} />
                 <View className='absolute  h-14 top-0 w-full z-50'>
                     <View className='w-full h-14 bg-white dark:bg-neutral-900 pt-1'>
                         <ScrollView  horizontal={true} className=" ml-4">
@@ -181,6 +220,8 @@ export default function PageLayout(props) {
                     </View>
                 </View>
             </View>
-        )
+        }, [pageData]);*/
+
+        return <Content pageData={pageData}/>;
     }
 }

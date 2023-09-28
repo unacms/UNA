@@ -13,7 +13,7 @@ const expoConfig = {
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "contentFit": "contain",
       "backgroundColor": "#000000"
     },
     "platforms": [
@@ -23,10 +23,26 @@ const expoConfig = {
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.una.neo",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#000000",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
+        "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
+      }
     },
     "android": {
       "package": "com.una.neo",
+      "permissions":  [
+        "android.permission.ACCESS_NETWORK_STATE", 
+        "android.permission.BLUETOOTH", 
+        "android.permission.CAMERA", 
+        "android.permission.INTERNET", 
+        "android.permission.MANAGE_OWN_CALLS", 
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.WAKE_LOCK",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.FOREGROUND_SERVICE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

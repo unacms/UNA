@@ -12,8 +12,8 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export default function ElementBrowse(props) {
-    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type)
-
+    
+    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
     const [cachedData, setCachedData] = useState({state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
@@ -30,15 +30,14 @@ export default function ElementBrowse(props) {
 
     if (defParams)
         defParams.moduleName = data.module ? data.module : '';
-    
-        const [browseParams, setbrowseParams] = useState(defParams);
-
+    //const [browseParams, setbrowseParams] = useState(defParams);
+    const browseParams = defParams;
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
 
     const getNumCols = (width) => {
         if (data.unit.startsWith('general-') || data.unit.startsWith('search-')){
-            return width > 600 ? 3 : 1
+            return width > 600 ? 4 : 1
         }
         return 1
     };
@@ -73,7 +72,6 @@ export default function ElementBrowse(props) {
         let sResponse =  await fetcher(prepareUrl());
         return sResponse.data[0].data
     };
-
     const {
         status,
         data: newData,
@@ -81,18 +79,14 @@ export default function ElementBrowse(props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-    } = useInfiniteQuery([data.request_url + browseParams?.type], fetchData, {
+    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category], fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
             return lastPage.params;
         },
-        enabled: false,
+        enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
-
-    useEffect(() => {
-        refetch();
-    }, []);
    
     function prepareUrl () {
         return data.request_url + JSON.stringify({'params': getCurrentParams()});
@@ -120,7 +114,7 @@ export default function ElementBrowse(props) {
     let sSkeleton = data.module? data.module : data.unit
     if (props?.skeleton)
         sSkeleton = props?.skeleton;
-    const Preload = getSkeleton(sSkeleton, 'browse')
+    const Preload = getSkeleton(sSkeleton, numColumns)
     
     let dataItems = {
         data: [
@@ -129,14 +123,19 @@ export default function ElementBrowse(props) {
         ]
     };
 
-    if (status === 'loading' && dataItems.length == 0)
-        return Preload 
-
     useEffect(() => {
         if (dataItems.data.length > 0){
             storageSet('ul:data', storageKeyValue, dataItems);
         }
-    },[dataItems]);    
+    },[dataItems]);
+
+    useEffect(() => {
+        if (dataItems.data.length == 0)
+            refetch();
+    }, [storageKeyValue]);
+
+    if (status === 'loading' && dataItems.data.length == 0)
+        return Preload 
 
     return (
         (true) && <View className='w-full h-full' >

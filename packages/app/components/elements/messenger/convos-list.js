@@ -7,8 +7,7 @@ import { MenuData, PageData } from './context/messenger-сontext';
 import { WrappedTopMenu } from "./menu";
 import UniList from 'app/ui/atoms/unilist';
 import { ListFeed } from 'app/components/units/convos-feeds';
-import {getGrid, isDesktop, isPhone} from "./grid-utils";
-import useBrowserHistory from "./hooks/useBrowserHistory";
+import { isDesktop, isPhone } from "./grid-utils";
 import useConvos from "./hooks/useConvos";
 import { getSkeleton } from "../../../lib/skeleton-helpers";
 
@@ -61,24 +60,27 @@ const ConvoListItem = memo(({ item }) => {
 });
 
 function SearchBox(props){
-    const { visible } = props,
-          sHidden = !visible ? 'hidden' : '';
+    const { visible } = props;
 
-    return <View className={"flex flex-row flex-1 px-2 " + sHidden}>
-                <InputRounded placeholder={"Search messages..."} className="px-2" />
+    return <View className={"flex flex-row flex-1 px-2 overflow-hidden" + (!visible ? ' hidden' : '') }>
+                <InputRounded placeholder={"Search messages..."} className="px-2 w-full" />
            </View>
 }
 
 const ConvosListHeader = memo(({ menuItem, onClickMenu }) => {
     const [visible, setVisibility] = useState(false),
-          handlerVisibility = () => setVisibility((visible) => !visible);
+          handlerVisibility = () => setVisibility((visible) => !visible),
+          handlerCreate = () => {};
 
     return <View className="group relative w-full whitespace-nowrap min-w-0 items-center
                             flex flex-row justify-between text-neutral-800 dark:text-neutral-100 text-ellipsis overflow-hidden">
             <View className="xl:hidden"><Button variant="outline" startDecorator="List" rounded align="start" onPress={ onClickMenu } /></View>
             <Text className={"ml-2 truncate text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center " + ( visible ? 'hidden' : '' ) }>{menuItem}</Text>
             <SearchBox visible={visible} />
-            <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
+            <View className="flex flex-row space-x-2">
+              <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
+                { !visible && <Button variant="outline" startDecorator="plus" rounded align="start" onPress={handlerCreate}/> }
+            </View>
            </View>
 });
 
