@@ -1,6 +1,6 @@
 export const settingsDefault = {
     layout: {
-        max_width: 'max-w-screen-2xl',
+        max_width: 'full',
         cell_gap: 4,
         cell_style: '',
         show_user_icon: true,

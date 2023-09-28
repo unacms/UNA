@@ -99,128 +99,130 @@ export default function PageLayout(props) {
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    <View className="hidden lg:block  w-1/4 pt-4 top-0 sticky duration-200  ">
-                        <Row className="items-center justify-between mx-4 px-3 py-2 rounded-xl border border-transparent cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                            <Link href={currentUser.url}>
-                                <Row>
-                                    <View className="mx-0.5 mr-2.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                        {profile}
-                                    </View>
-                                    <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                        {currentUser.display_name}
-                                    </Text>
-                                </Row>
-                            </Link>
-                            {appSetting('layout', 'allow_switch_profile') && <View><Button
-                            variant="outline"
-                            size="sm"
-                            startDecorator="UserSwitch"
-                            fullWidth
-                            onClick = {() => setShowImage(true)}
-                            align="right"
-                        /></View>}
-                    </Row>
-                    <BlockByName data={props.data} name={props.blocks.menu} />
-                </View>
-                <View className="flex-auto w-2/4  flex-row  duration-200">
-                    <View className="flex-auto xl:px-4 xl:mt-2 border-x border-dashed border-neutral-500/10 w-2/3">
-                    {appSetting('feed', 'show_multi') ? (
-                        <>
-                        <Row className="p-4  gap-x-2  w-full">
-                            <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                <Button fullWidth={true} id="tab" startDecorator="Users" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title="Following"/>
-                            </Pressable>
-                            <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
-                                <Button
-                                    fullWidth={true}
-                                    id="tab"
-                                    startDecorator="MagicWand"
-                                    variant={feedType == 'public' ? 'outline' : 'text'}
-                                    rounded
-                                    size="sm"
-                                    title="For You"
-                                />
-                            </Pressable>
-                            <Pressable
-                                className=" hidden my-auto items-center"
-                                onPress={() => {
-                                    setFeedTypeEx('hot')
-                                }}
-                            >
-                                <Button
-                                    fullWidth={true}
-                                    id="tab"
-                                    startDecorator="Fire"
-                                    variant={feedType == 'hot' ? 'outline' : 'text'}
-                                    rounded
-                                    size="sm"
-                                    title="Hot"
-                                />
-                            </Pressable>
-                            {appSetting('feed', 'show_selector_view') && (
-                                <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                                    <Button
-                                        startDecorator="Rows"
-                                        variant={unitMode == '' ? 'outline' : 'text'}
-                                        size="sm"
-                                        onPress={() => {
-                                            setUnitModeEx('')
-                                        }}
-                                    />
-                                    <Button
-                                        startDecorator="ListBullets"
-                                        variant={unitMode == 'small' ? 'outline' : 'text'}
-                                        size="sm"
-                                        onPress={() => {
-                                            setUnitModeEx('small')
-                                        }}
-                                    />
-                                </Row>
-                            )}
+                    <View className="hidden lg:block w-1/3 xl:w-1/4 max-w-sm  pt-4 top-0 sticky duration-200  ">
+                        <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                <Link href={currentUser.url} className="flex-auto">
+                                    <Row className='flex-row gap-x-2 items-center'>
+                                        <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                            {profile}
+                                        </View>
+                                        <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                            {currentUser.display_name}
+                                        </Text>
+                                    </Row>
+                                </Link>
+                                {appSetting('layout', 'allow_switch_profile') && <View className='flex-none'><Button
+                                variant="text"
+                                size="sm"
+                                startDecorator="UserSwitch"
+                                fullWidth
+                                onClick = {() => setShowImage(true)}
+                                align="right"
+                            /></View>}
                         </Row>
-                        {feedType == 'account' && (
-                            <View className={ feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full' } >
+                        <BlockByName data={props.data} name={props.blocks.menu} />
+                    </View>
+                    <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
+                        <View className="flex-auto   border-x border-dashed border-neutral-500/10 w-2/3">
+                            <View className="flex-auto max-w-4xl w-full mx-auto">
+                        {appSetting('feed', 'show_multi') ? (
+                            <>
+                            <Row className="p-4  gap-x-2  w-full">
+                                <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
+                                    <Button fullWidth={true} id="tab" startDecorator="Users" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title="Following"/>
+                                </Pressable>
+                                <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
+                                    <Button
+                                        fullWidth={true}
+                                        id="tab"
+                                        startDecorator="MagicWand"
+                                        variant={feedType == 'public' ? 'outline' : 'text'}
+                                        rounded
+                                        size="sm"
+                                        title="For You"
+                                    />
+                                </Pressable>
+                                <Pressable
+                                    className=" hidden my-auto items-center"
+                                    onPress={() => {
+                                        setFeedTypeEx('hot')
+                                    }}
+                                >
+                                    <Button
+                                        fullWidth={true}
+                                        id="tab"
+                                        startDecorator="Fire"
+                                        variant={feedType == 'hot' ? 'outline' : 'text'}
+                                        rounded
+                                        size="sm"
+                                        title="Hot"
+                                    />
+                                </Pressable>
+                                {appSetting('feed', 'show_selector_view') && (
+                                    <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                        <Button
+                                            startDecorator="Rows"
+                                            variant={unitMode == '' ? 'outline' : 'text'}
+                                            size="sm"
+                                            onPress={() => {
+                                                setUnitModeEx('')
+                                            }}
+                                        />
+                                        <Button
+                                            startDecorator="ListBullets"
+                                            variant={unitMode == 'small' ? 'outline' : 'text'}
+                                            size="sm"
+                                            onPress={() => {
+                                                setUnitModeEx('small')
+                                            }}
+                                        />
+                                    </Row>
+                                )}
+                            </Row>
+                            {feedType == 'account' && (
+                                <View className={ feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full' } >
+                                    <LayoutDataContext>
+                                        <BlockByName data={props.data} name={props.blocks.account_feed_form} />
+                                        <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
+                                    </LayoutDataContext>
+                                </View>
+                            )}
+                            {feedType == 'public' && (
+                                <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
+                                    <LayoutDataContext>
+                                        <BlockByName data={props.data} name={props.blocks.public_feed_form} />
+                                        <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
+                                    </LayoutDataContext>
+                                </View>
+                            )}
+                            {feedType == 'hot' && (
+                                <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full' } >
+                                    <LayoutDataContext>
+                                        <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode} />
+                                    </LayoutDataContext>
+                                </View>
+                            )}
+                            </>
+                        ) : (
+                            <View className="pt-4">
                                 <LayoutDataContext>
-                                    <BlockByName data={props.data} name={props.blocks.account_feed_form} />
-                                    <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
+                                    <BlockByName data={props.data} name={ props.blocks[appSetting('feed', 'default_feed') + '_feed_form'] }/>
+                                    <BlockByName data={props.data} name={ props.blocks[ appSetting('feed', 'default_feed') + '_feed' ] } />
                                 </LayoutDataContext>
                             </View>
                         )}
-                        {feedType == 'public' && (
-                            <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
-                                <LayoutDataContext>
-                                    <BlockByName data={props.data} name={props.blocks.public_feed_form} />
-                                    <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
-                                </LayoutDataContext>
                             </View>
-                        )}
-                        {feedType == 'hot' && (
-                            <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full' } >
-                                <LayoutDataContext>
-                                    <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode} />
-                                </LayoutDataContext>
-                            </View>
-                        )}
-                        </>
-                    ) : (
-                        <View className="pt-4">
-                            <LayoutDataContext>
-                                <BlockByName data={props.data} name={ props.blocks[appSetting('feed', 'default_feed') + '_feed_form'] }/>
-                                <BlockByName data={props.data} name={ props.blocks[ appSetting('feed', 'default_feed') + '_feed' ] } />
-                            </LayoutDataContext>
                         </View>
-                    )}
+                    </View>
+                    <View className="hidden xl:block  xl:w-3/12 max-w-sm  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
+                        
+                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
+                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" />
+                        
+                        <BlockByName name={props.blocks.intro} />
+                        <BlockByName name={props.blocks.footer} />
                     </View>
                 </View>
-                <View className="hidden xl:block w-1/4 px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
-                    
-                    <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
-                    <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" />
-                    
-                    <BlockByName name={props.blocks.intro} />
-                    <BlockByName name={props.blocks.footer} />
-                </View>
-            </View>
         </View>
         
     )}

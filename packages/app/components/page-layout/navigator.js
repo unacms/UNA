@@ -87,23 +87,35 @@ export default function PageLayout(props) {
             let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
             return (
-                <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+                <View className=" ml-2 " key={`add-${button.icon}`} >{btn}</View>
         )});
 
         return (
-            <View className='bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950 lg:bg-transparent lg:border-0'>
-                <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d ">
+            <View className='bg-white  dark:bg-neutral-900 border-b border-bdrnavbar dark:border-bdrnavbar-d lg:bg-transparent lg:border-0'>
+                <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16  ">
                     <Row className="items-center">
-                    <View className="ml-4 "></View>
-                        <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>
+                    <View className=" "></View>
                     </Row> 
                     <Row className="pr-4">
                         {addButtons}
                     </Row>
                 </Row>
-                <View className="flex-row lg:flex-col ml-4 gap-x-2 lg:max-h-screen lg:overflow-scroll lg:fixed lg:top-24">
+                <View className="flex-row  lg:w-1/4 px-4 lg:pt-4 lg:flex-auto lg:flex-col gap-y-2 gap-x-2 lg:max-h-screen lg:overflow-scroll lg:fixed lg:top-16">
+                                    
+                        <Text className="text-xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-300 hidden lg:flex flex-row items-center gap-x-2 ">
+                                    <Button
+                                        variant="outline"
+                                        size="base"
+                                        rounded
+                                        align="start"
+                                        startDecorator="Storefront"
+                                    />
+                        {menuSettings?.name}
+                        
+                        </Text>
+                        
 
-                    <Text className="text-2xl my-auto mx-5 font-bold text-neutral-800 dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text>
+
                     <Menu {...props}/>
                     <View className='hidden lg:block'>
                         {menuItemsByName(props.data.menu.object, props.data.menu.items, '').map((item, index) =>
@@ -114,11 +126,12 @@ export default function PageLayout(props) {
                                         fullWidth
                                         title = {item.title}
                                         align="start"
+                                        startDecorator="CirclesFour"
                                     />
                                 </Link>
                         )}
                     </View>
-                    <View className='ml-4 hidden lg:block'>
+                    <View className='ml-10 hidden lg:block'>
                         {categories?.content[0]?.data && categories.content[0].data.map((item, index) =>
                             <Link href={item.url} key={`menu-${index}`} alt={item.name}>
                                 <Pressable onPress={(event) => {
@@ -128,10 +141,11 @@ export default function PageLayout(props) {
                                 }}>
                                     <Button
                                         variant="text"
-                                        size="lg"
+                                        size="base"
                                         fullWidth
                                         title = {item.name+ ' (' + item.num + ')'}
                                         align="start"
+                                        
                                     />
                                 </Pressable>
                             </Link>
@@ -143,12 +157,12 @@ export default function PageLayout(props) {
     }
     if (isWeb){
         return (
-            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full '}>
                 <View className="lg:flex-row">
-                    <View className='w-full lg:w-1/6 lg:my-4 fixed lg:relative top-0 z-50 '>
+                    <View className='w-full lg:w-1/3 xl:w-1/5 lg:border-r border-dashed border-neutral-500/10 lg:flex-none   fixed lg:relative top-0 z-50 '>
                         <Header {...props}/>
                     </View>
-                    <View className='w-full lg:w-5/6 my-4 mt-32 lg:mt-4'>
+                    <View className='w-full px-2 lg:flex-auto lg:flex-auto mt-32 lg:mt-4'>
                         <BlockByName data={props.data} name={props.blocks.browse} />
                     </View>
                 </View>

@@ -295,7 +295,7 @@ export default function Unit(props) {
         return (
             <AnimatedBlock>
                 <Card margin="mb-2 mx-2" rounded="rounded-2xl">
-                    <View className="flex-col gapy-y-4">
+                    <View className="flex-col gap-y-4">
                         <View className="flex-col w-full">
                             <Link href={data.url}>
                                 <View className="w-full p-1">

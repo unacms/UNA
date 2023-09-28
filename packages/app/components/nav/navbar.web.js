@@ -111,8 +111,8 @@ export default function (props) {
     <>
     <View className="fixed -top-[1px]  w-full">
       <Redirect ref={redirectdRef} />
-      <View className="  backdrop-blur h-16 px-4 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-        <View className="flex-row flex-auto lg:w-1/4 gap-x-2 my-auto">
+      <View className="  backdrop-blur h-16 px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
+        <View className="flex-row flex-auto lg:w-1/4 gap-x-3 my-auto">
             <Row className="flex-row  flex-none items-center">
               {
                 headerSettings.menu && (
@@ -141,7 +141,7 @@ export default function (props) {
             
         </View>
         <Row className="hidden w-1/2 lg:flex flex-auto">
-            <Row className='mx-auto gap-x-1'>
+            <Row className='mx-auto gap-x-0'>
               {menuItemsByName('main_menu', menu_top).map(
                 (item, index) =>
                 (currentUser || (!currentUser && item.nonlogged != false)) && (

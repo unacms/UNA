@@ -206,7 +206,7 @@ export const Button = React.forwardRef((props, forwardedRef) => {
         break
 
         case 'lg':
-            sClassContainer += buttonRounded ? 'rounded-full px-3 py-2 ' : ' rounded-xl px-3 py-2 ';
+            sClassContainer += buttonRounded ? 'rounded-full px-2.5 py-2 ' : ' rounded-xl px-2.5 py-2 ';
             sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? ' mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' mt-[1px] text-lg '
             iIconSize = 28;
