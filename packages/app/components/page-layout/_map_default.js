@@ -4,9 +4,8 @@ import PageCustomPost from './post';
 import PageCustomPostWithoutComments from './post-without-comments';
 import PageCustomMessenger from './messenger';
 import PageCustomDashboard from './dashboard';
-import PageCustomBlackBox from './blackbox';
 import PageCustomNavigator from './navigator';
-import PageCustomBlackBoxSearch from './blackbox_search';
+import PageCustomNavigatorSearch from './navigator_search';
 import PageCustomProfile from './profile';
 import PageCustomHome from './home';
 import PageCustomNotif from './notif';
@@ -20,9 +19,8 @@ export const componentsMapDefault = {
     'default': PageLayoutDefault,
     'post': PageCustomPost,
     'post-without-comments': PageCustomPostWithoutComments,
-    'blackbox': PageCustomBlackBox,
     'navigator': PageCustomNavigator,
-    'blackbox_search': PageCustomBlackBoxSearch,
+    'navigator_search': PageCustomNavigatorSearch,
     'messenger': PageCustomMessenger,
     'dashboard': PageCustomDashboard,
     'profile': PageCustomProfile,

@@ -79,8 +79,12 @@ export const settingsDefault = {
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
-            
-
+        ],
+        per_line_left_side_bar: [
+            { width: 1280, count: 5 },
+            { width: 1024, count: 4 },
+            { width: 768, count: 3 },
+            { width: 640, count: 2 },
         ],
     },
     social_actions: {
@@ -174,7 +178,7 @@ export const settingsDefault = {
         bx_market_submenu: {
             name: 'Market',
             icon: 'Storefront',
-            items: ['products-home', 'products-popular', 'products-categories'],
+            items: ['products-home', 'products-popular', 'products-categories', 'products-category'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-product' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_market'},
@@ -324,7 +328,7 @@ export const settingsDefault = {
             headerSettings: { header: true, backButton: false, menu: false, title: true },
         },
         'search-keyword': {
-            layout: 'blackbox_search',
+            layout: 'navigator_search',
             blocks: {
                 browse: { name: 'system:search_keyword_result', showTitle: false, showBg: false },
             },
@@ -364,7 +368,7 @@ export const settingsDefault = {
         },
         //############ EVENTS PAGES ############
         'events-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
@@ -372,19 +376,19 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'events-top': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
             },
         },
         'events-joined': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
             },
         },
         'events-followed': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
             },
@@ -407,7 +411,7 @@ export const settingsDefault = {
         },
         //############ POSTS PAGES ############
         'posts-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false },
             },
@@ -415,7 +419,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false }
         },
         'posts-popular': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
             },
@@ -446,44 +450,44 @@ export const settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
-        //############ POSTS PAGES ############
+
+        //############ MARKET PAGES ############
         'products-home': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false, perLine: 2 },
-                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false},
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'Storefront',
-            headerSettings: { offset: false, header: true, backButton: false }
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'products-category': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_market:browse_category', showTitle: false, showBg: false, perLine: 1 },
-                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
-               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
+                browse: { name: 'bx_market:browse_category', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Storefront',
-            headerSettings: { offset: false, header: false, backButton: false }
+            icon: 'CirclesFour',
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'products-categories': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'system:categories_list', showTitle: false, showBg: false, perLine: 1 },
-                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+                browse: { name: 'system:categories_list', showTitle: false, showBg: false },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'Storefront',
-            headerSettings: { offset: false, header: false, backButton: false }
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'products-popular': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
-                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: true },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Storefront',
-            headerSettings: { offset: false, backButton: false, header: false, backButton: false }
+            icon: 'CirclesFour',
+            headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'view-product': {
             layout: 'post',
@@ -500,7 +504,7 @@ export const settingsDefault = {
         },
         //############ POSTS PAGES ############
         'friend-suggestions': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
             },
@@ -508,7 +512,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'friends': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
             },
@@ -516,7 +520,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'follow-suggestions': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
@@ -524,7 +528,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'followers': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
             },
@@ -532,7 +536,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'following': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
             },
@@ -540,7 +544,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'friend-requests': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
             },
@@ -548,7 +552,7 @@ export const settingsDefault = {
             headerSettings: { backButton: false, header: false, offset: false }
         },
         'sent-friend-requests': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
             },
@@ -558,7 +562,7 @@ export const settingsDefault = {
         
         //############ DISCUSSION PAGES ############
         'discussions-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false },
             },
@@ -578,7 +582,7 @@ export const settingsDefault = {
         },
         //############ GROUPS PAGES ############
         'groups-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
@@ -586,7 +590,7 @@ export const settingsDefault = {
             icon: 'UsersThree',
         },
         'groups-joined': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: {
                     name: 'bx_groups:browse_joined_entries',
@@ -596,7 +600,7 @@ export const settingsDefault = {
             },
         },
         'groups-followed': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: {
                     name: 'bx_groups:browse_followed_entries',
@@ -624,13 +628,13 @@ export const settingsDefault = {
         },
         //############ CHANNELS PAGES ############
         'channels-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false },
             },
         },
         'channels-top': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false },
             },
@@ -643,7 +647,7 @@ export const settingsDefault = {
         },
         //############ PERSONS PAGES ############
         'persons-home': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false },
             },
@@ -651,7 +655,7 @@ export const settingsDefault = {
             icon: 'Users',
         },
         'persons-active': {
-            layout: 'blackbox',
+            layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
             },

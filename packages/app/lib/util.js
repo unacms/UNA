@@ -112,6 +112,9 @@ export function getHeaderSettings(uri, width) {
 }
 
 export function getUnitModeBySource(source){
+    if (!source)
+        return 'default';
+
     if (source.includes('system/browse_friends'))
         return 'person_friends';
 

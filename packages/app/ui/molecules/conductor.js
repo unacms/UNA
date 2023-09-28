@@ -9,13 +9,13 @@ import { Theme } from 'app/design/theme';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/blackbox-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='' }) {
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='' }) {
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
 
     const [routes, setRoutes] = useState(initedTabs);

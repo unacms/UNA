@@ -6,21 +6,19 @@ import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/blackbox-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
-export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop}) {
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar}) {
     
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
     const windowWidth = useWindowDimensions().width;
     const [routes, setRoutes] = useState(initedTabs);
-
-   
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
@@ -49,8 +47,11 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
         }
 
         let perLineSettings = appSetting('browse', 'per_line');
-        if (currentRoute.endpoint.unit.includes('-profile-') || currentRoute.endpoint.unit.includes('-context-')){
+        if (currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')){
             perLineSettings = appSetting('browse', 'per_line_profile');
+        }
+        if (leftSideBar){
+            perLineSettings = appSetting('browse', 'per_line_left_side_bar');
         }
 
         for (let i = 0; i < perLineSettings.length; i++) {
@@ -156,7 +157,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className="w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"  >
+                <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"}  >
                     <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
@@ -173,7 +174,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                         {menuSettings?.name ? <Text  className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0 " >
                             <Row className="mr-auto ml-4 gap-x-2" >
-                                {routes.map((a) => (
+                                {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                                     <Pressable  className=" py-2 items-center"
                                         key={`tab-${a.index}`}
                                         onPress={() => {
@@ -186,8 +187,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
-                            </Row>
-                            
+                            </Row> 
                         </ScrollView>
                         <Row className="hidden lg:flex px-4">
                             {addButtons}
@@ -267,7 +267,7 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const TabScene = ({ route, width, status }) => {
         const dataItems = route.data
         //let b = useMemo(() => {
-        const Preload = getSkeleton(data.module? data.module : data.unit);
+        const Preload = getSkeleton(data.module? data.module : data.unit, numColumns);
         
         if (!route.inited){
             return <></>
@@ -278,22 +278,22 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             let TabFlashListM = useMemo(() => {
                 return <TabFlashList
-                            index={route.index}
-                            data={dataItems}
-                            endpoint={route.endpoint}
-                            listState = {route?.state}
-                            storagekey={route.storageKeyValue}
-                            refer={uniRef}
-                            unit={route.endpoint?.unit}
-                            renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
-                            ListFooterComponent = {
-                                <View className='m-4'>
-                                    {(hasNextPage && isFetchingNextPage) ? (
-                                        Preload
-                                    ) : null}
-                                </View>
-                            }
-                        />
+                    index={route.index}
+                    data={dataItems}
+                    endpoint={route.endpoint}
+                    listState = {route?.state}
+                    storagekey={route.storageKeyValue}
+                    refer={uniRef}
+                    unit={route.endpoint?.unit}
+                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
+                    ListFooterComponent = {
+                        <View className='m-4'>
+                            {(hasNextPage && isFetchingNextPage) ? (
+                                Preload
+                            ) : null}
+                        </View>
+                    }
+                />
             }, [dataItems.length]);
 
             return (
@@ -322,9 +322,74 @@ export function BlackBox({ header, smallHeader, minHeaderHeight = 100, isHideDef
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         if (getNumCols(containerWidth) != numColumns)
-            setNumColumns(getNumCols(containerWidth));
+        setNumColumns(getNumCols(containerWidth));
     };
 
+    const leftSideBarObj = useCallback(() => {
+        const menuSettings = appSetting('menu_items', menu.object);
+        const addButtons = menuSettings?.add?.map((button) => {
+            let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
+            btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+            return (
+                <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+        )});
+        return <>
+            <Row className="justify-between items-center mb-4">
+                <Text className="text-xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-300 hidden lg:flex flex-row items-center gap-x-2 ">
+                    <Button
+                        variant="outline"
+                        size="base"
+                        rounded
+                        align="start"
+                        startDecorator={menuSettings.icon}
+                    />
+                    {menuSettings?.name}
+                </Text>
+                <Row className="pr-4">
+                    {addButtons}
+                </Row>
+            </Row>
+                <View className='hidden lg:block '>
+                    {routes.map((a) => {
+                        let settings = appSetting('layouts', a.key)
+                        return (
+                        <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
+                            <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
+                                setIndex(a.index);
+                                window.history.pushState({ }, '', a.key);
+                                event.preventDefault()
+                            }}>
+                                <Button
+                                    variant={a.index == index ? 'link': "text"}
+                                    size={!a.ident ? "lg" : "base"}
+                                    fullWidth
+                                    title = {a.title}
+                                    align="start"
+                                    startDecorator={!a.ident ? settings.icon : undefined}
+                                />
+                            </Pressable>
+                        </Link>
+                    )})}
+                </View>
+        </>
+    }, [routes, index]);
+
+    if (leftSideBar){
+        return (
+            <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+                {headerObj}
+                <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'} >
+                    <Row>
+                        <View className="hidden lg:block w-full lg:w-1/6 lg:my-4 fixed lg:relative top-0 z-50">{leftSideBarObj()}</View>
+                        <View className="w-full lg:w-5/6 ">
+                            <RenderScene route={currentRoute}/>
+                        </View>
+                    </Row>
+                 </View>
+            </View>
+         );
+
+    }
     return (
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}

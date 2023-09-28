@@ -1,6 +1,6 @@
-import {BlackBox} from 'app/ui/molecules/blackbox';
+import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useRef } from 'react';
-import {BlockByName, DataByName} from 'app/components/block';
+import { BlockByName, DataByName } from 'app/components/block';
 import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
@@ -33,7 +33,7 @@ export default function PageLayout(props) {
         items:menuItems
     }
     
-    return (<BlackBox 
+    return (<Conductor 
         header={header} 
         minHeaderHeight={0} 
         offsetTop={120}

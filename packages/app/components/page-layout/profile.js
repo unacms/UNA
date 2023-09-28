@@ -1,4 +1,4 @@
-import {BlackBox} from 'app/ui/molecules/blackbox';
+import {Conductor} from 'app/ui/molecules/conductor';
 import Cover, {CoverSmall} from 'app/components/elements/cover';
 import  LayoutDataContext from 'app/context/layout';
 export default function PageLayout(props) {
@@ -6,7 +6,7 @@ export default function PageLayout(props) {
     let header = <Cover data={props.data.cover_block}/>
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
-    return (<LayoutDataContext><BlackBox 
+    return (<LayoutDataContext><Conductor 
         header={header} 
         smallHeader={smallHeader} 
         minHeaderHeight={104} 

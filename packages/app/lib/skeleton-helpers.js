@@ -5,51 +5,6 @@ import Card from 'app/ui/molecules/card'
 const items = Array(5).fill('');
 const maxWidth = appSetting('layout', 'max_width')
 
-export function getBlackBox(windowWidth) {
-    return <></>
-   /* return (
-      <>
-        <View className="w-full h-12 lg:h-12"></View>
-        <View
-          style={[
-            { width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 50 },
-            { top: windowWidth > 1024 ? 63 : 0 },
-          ]}
-        >
-          <View className="w-full backdrop-blur border-b items-center justify-center border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d">
-            <View
-              className={appSetting('layout', 'max_width') + ' mx-auto w-full'}
-            >
-              <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
-                <Row className="items-center">
-                  <View className="ml-4 "></View>
-                  <Text className="text-2xl mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">
-                    Page Name
-                  </Text>
-                </Row>
-                <Row className="pr-4"></Row>
-              </Row>
-              <Row className="items-center ">
-                <View className="   hidden lg:flex ">
-                  <View className='h-6 w-36 my-auto mx-4 bg-neutral-500/20 rounded-full animate-pulse'></View>
-                </View>
-                <ScrollView horizontal={true} className="items-center gap-0 ">
-                  <Row className="mr-auto ml-4 gap-x-2">
-                      <View className="h-[34px] w-24 my-2 border border-neutral-500/10 rounded-full animate-pulse"></View>
-                  </Row>
-                </ScrollView>
-                <Row className="hidden lg:flex px-4"></Row>
-              </Row>
-            </View>
-          </View>
-        </View>
-        <View className="flex mx-auto w-full justify-center flex-col animate-pulse max-w-screen-2xl">
-          {blockSkeletons['browse_item']}
-        </View>
-      </>
-    )*/
-  }
-  
   const one_column_browse = <>
     {items.map((item, index) => (
       <View key={'one_column_browse' + index}>
@@ -244,7 +199,6 @@ function browse_item(num) {
         </Card>
       </View>
     ),
-    blackbox: getBlackBox(),
     profile: (
       <View className='flex-col sm:px-4 relative'>
         

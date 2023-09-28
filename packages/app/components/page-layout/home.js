@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { appSetting, filterContent, storageSet, storageGet } from 'app/lib/util'
 import LayoutDataContext from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
-import { BlackBox } from 'app/ui/molecules/blackbox'
+import { Conductor } from 'app/ui/molecules/conductor'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
@@ -363,7 +363,7 @@ export default function PageLayout(props) {
                         {feedType == 'public' && (
                             <View className={feedType == 'public' ? '' : ' h-full'}>
                                 <LayoutDataContext>
-                                    <BlackBox
+                                    <Conductor
                                         minHeaderHeight={0}
                                         isHideDefaultHeader={false}
                                         menu={menu}
@@ -377,7 +377,7 @@ export default function PageLayout(props) {
                         {feedType == 'account' && (
                             <View className={feedType == 'account' ? '' : ' h-full'}>
                                 <LayoutDataContext>
-                                    <BlackBox
+                                    <Conductor
                                         minHeaderHeight={0}
                                         isHideDefaultHeader={false}
                                         menu={menu}
@@ -391,7 +391,7 @@ export default function PageLayout(props) {
                         {feedType == 'hot' && (
                         <View className={feedType == 'hot' ? '' : ' h-full'}>
                             <LayoutDataContext>
-                                <BlackBox
+                                <Conductor
                                     minHeaderHeight={0}
                                     isHideDefaultHeader={false}
                                     menu={menu}
@@ -405,7 +405,7 @@ export default function PageLayout(props) {
                 </>
             ) : (
                 <LayoutDataContext>
-                    <BlackBox
+                    <Conductor
                         minHeaderHeight={0}
                         isHideDefaultHeader={false}
                         menu={menu}

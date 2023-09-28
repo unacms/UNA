@@ -25,7 +25,6 @@ export default function ElementLink(props) {
             //document.body.appendChild(tag);
             let element = document.querySelector('.animated-view');
             if (element){
-                console.log('page-fade-in')
                 element.classList.remove('page-fade-in');
                 element.classList.add('page-fade-out');
             }

@@ -3,7 +3,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import Image from '../../ui/atoms/image'
 import { Text } from 'app/design/typography'
 import { stripTags } from '../../lib/util'
-import { getBackButtonWeb } from 'app/lib/blackbox-helpers';
+import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'

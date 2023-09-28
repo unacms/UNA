@@ -34,6 +34,8 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.data = contentAndEndpoint.content;
             i.inited = true;
             i.link = item.link;
+            i.hideInTop = item.hideInTop;
+            i.ident = item.ident;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
             i.storageKeyValue = storageKey(i.link, false)
@@ -54,6 +56,8 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
 
         } else {
             i.link = item.link;
+            i.hideInTop = item.hideInTop;
+            i.ident = item.ident;
             i.inited = false;
             i.storageKeyValue = storageKey(i.link, false);
             i.data = [];
@@ -198,7 +202,8 @@ export function processUrl(data, blocks) {
             if (block.sidebar) {
                 acc.sidebar.content = processContent(acc.sidebar, b);
             } else {
-                acc.content = processContent(acc, b);
+                if (!block.hidden)
+                    acc.content = processContent(acc, b);
             }
         }
         return acc;
