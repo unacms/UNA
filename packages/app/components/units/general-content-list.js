@@ -16,8 +16,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 
 export default function Unit(props) {
-
-    function groupUnit() {
+    function channelUnit() {
         let sMeta = <></>
         if (data?.meta)
         sMeta = (
@@ -115,20 +114,53 @@ export default function Unit(props) {
     }
 
     function eventUnit() {
-        let sMeta = <></>
-        if (data?.meta)
-        sMeta = (
-            <View className="pb-2">
-                <Menu
-                    {...data.meta}
-                    displayType="mixed"
-                    params={{ showVertical: true }}
-                />
-            </View>
-        )
+        const redirectdRef = useRef();
+
+        const handleClick = (event, sUrl) => {
+            event.preventDefault();
+
+            redirectdRef.current.redirect(sUrl)
+        }
+
+        let oMenuItemPrimary = undefined;
+        let aMenuItemsMore = [];
+        if( data?.meta) {
+            let sPrimary = '', sSecondary = '', sExclude = '';
+
+            switch(props.unitType) {
+                default:
+                    sPrimary = 'join';
+            }
+
+            if(!oMenuItemPrimary) {
+                sExclude = sPrimary;
+                oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sPrimary).shift();
+                if(!oMenuItemPrimary) {
+                    sExclude = sSecondary;
+                    oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sSecondary).shift();
+                    if(!oMenuItemPrimary)
+                        oMenuItemPrimary = {
+                            title: 'View',
+                            onPress: (event) => {
+                                handleClick(event, data.url);
+                            }
+                        };
+                }
+            }
+
+            aMenuItemsMore = data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    link: '/' + aItem.link,
+                    title: aItem.title
+                };
+            });
+        }
+
 
         return (
             <AnimatedBlock>
+                <Redirect ref={redirectdRef} />
                 <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
                     <View className="flex-col gap-y-4 ">
                         <Link className="" href={data.url}>
@@ -172,39 +204,24 @@ export default function Unit(props) {
                                         {data.members_count} members
                                     </Text>
                                     <View className="flex-row w-full gap-x-2 ">                
-                                        <Button
+                                        {!!oMenuItemPrimary && <Button
                                             variant="primary"
                                             size="sm"
-                                            title="Join"
+                                            title={oMenuItemPrimary.title}
                                             className=" my-auto "
+                                            startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
                                             fullWidth={true}
-                                        />                  
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            
-                                            className=" my-auto "
-                                            startDecorator="DotsThreeOutline"
-                                            
-                                        />
+                                            onPress={oMenuItemPrimary?.onPress}
+                                        />}
+                                        {aMenuItemsMore.length > 0 && 
+                                            <DropdownMenu items={aMenuItemsMore}>
+                                                <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
+                                            </DropdownMenu>
+                                        }
                                     </View>
                                 </View>
                             </View>
                         </Link>
-                        {data?.meta && (
-                            <View className="px-4 pb-4 mt-auto ">
-                                <Menu
-                                    {...data.meta}
-                                    displayType="mixed"
-                                    params={{
-                                        showVertical: true,
-                                        button_size: 'base',
-                                        button_full_width: true,
-                                        button_rounded: false,
-                                    }}
-                                />
-                            </View>
-                        )}
                     </View>
                 </Card>
             </AnimatedBlock>
@@ -493,7 +510,7 @@ export default function Unit(props) {
         case 'bx_events':
             return eventUnit()
         case 'bx_channels':
-            return groupUnit()
+            return channelUnit()
         case 'bx_market':
                 return marketUnit()
         case 'bx_persons':
