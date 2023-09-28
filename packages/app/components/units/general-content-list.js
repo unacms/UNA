@@ -1,19 +1,20 @@
-import { useContext, useRef } from 'react'
+import { useState, useContext, useRef } from 'react'
 import CardDataContext from 'app/context/card'
 import { CardData } from 'app/context/card'
 import Image from '../../ui/atoms/image'
 import Link from '../../ui/atoms/link'
 import Profile from '../../ui/molecules/profile'
-import { getImageSizes } from 'app/lib/util'
+import { getImageSizes, FeedbackHaptics } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
 import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Time from '../../ui/atoms/time'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import {componentsMap} from  'app/ui/molecules/_map';
 
 export default function Unit(props) {
     function channelUnit() {
@@ -115,6 +116,7 @@ export default function Unit(props) {
 
     function eventUnit() {
         const redirectdRef = useRef();
+        const [ popupVisible, setPopupVisible ] = useState(false);
 
         const handleClick = (event, sUrl) => {
             event.preventDefault();
@@ -122,41 +124,54 @@ export default function Unit(props) {
             redirectdRef.current.redirect(sUrl)
         }
 
-        let oMenuItemPrimary = undefined;
-        let aMenuItemsMore = [];
-        if( data?.meta) {
-            let sPrimary = '', sSecondary = '', sExclude = '';
+        const handleClickMore = (event) => {
+            event.preventDefault();
 
-            switch(props.unitType) {
-                default:
-                    sPrimary = 'join';
-            }
-
-            if(!oMenuItemPrimary) {
-                sExclude = sPrimary;
-                oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sPrimary).shift();
-                if(!oMenuItemPrimary) {
-                    sExclude = sSecondary;
-                    oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sSecondary).shift();
-                    if(!oMenuItemPrimary)
-                        oMenuItemPrimary = {
-                            title: 'View',
-                            onPress: (event) => {
-                                handleClick(event, data.url);
-                            }
-                        };
-                }
-            }
-
-            aMenuItemsMore = data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
-                return {
-                    id: aItem.id ? aItem.id : aItem.name,
-                    link: '/' + aItem.link,
-                    title: aItem.title
-                };
-            });
+            FeedbackHaptics('Medium');
+            setPopupVisible(true); 
         }
 
+        let oMenuItemPrimary = undefined;
+        let oMenuItemsMore = undefined;
+        if( data?.meta) {
+            //--- Primary button
+            const sPrimary = 'join';
+            oMenuItemPrimary = data.meta.items.filter((aItem) => aItem.name == sPrimary).shift();
+            if(!oMenuItemPrimary) {
+                oMenuItemPrimary = {
+                    title: 'View',
+                    onPress: (event) => {
+                        handleClick(event, data.url);
+                    }
+                };
+            }
+
+            if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
+                const Element = componentsMap[oMenuItemPrimary.data.type];
+                if(!!Element) {
+                    const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+
+                    oMenuItemPrimary = (
+                        <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
+                    );
+                }
+            }
+            else
+                oMenuItemPrimary = (
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        title={oMenuItemPrimary.title}
+                        className=" my-auto "
+                        startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
+                        fullWidth={true}
+                        onPress={oMenuItemPrimary?.onPress}
+                    />
+                );
+
+            //--- More menu
+            oMenuItemsMore = {...data.meta, ...{items: data.meta.items.filter((aItem) => aItem.name != sPrimary)}};
+        }
 
         return (
             <AnimatedBlock>
@@ -204,20 +219,24 @@ export default function Unit(props) {
                                         {data.members_count} members
                                     </Text>
                                     <View className="flex-row w-full gap-x-2 ">                
-                                        {!!oMenuItemPrimary && <Button
-                                            variant="primary"
-                                            size="sm"
-                                            title={oMenuItemPrimary.title}
-                                            className=" my-auto "
-                                            startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
-                                            fullWidth={true}
-                                            onPress={oMenuItemPrimary?.onPress}
-                                        />}
-                                        {aMenuItemsMore.length > 0 && 
-                                            <DropdownMenu items={aMenuItemsMore}>
-                                                <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
-                                            </DropdownMenu>
-                                        }
+                                        {oMenuItemPrimary}
+                                        {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (
+                                            <>
+                                                <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
+                                                <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                                                    <Menu
+                                                        {...oMenuItemsMore}
+                                                        displayType="mixed"
+                                                        params={{
+                                                            showVertical: true,
+                                                            button_size: 'base',
+                                                            button_full_width: true,
+                                                            button_rounded: false,
+                                                        }}
+                                                    />
+                                                </Modal>
+                                            </>
+                                        )}
                                     </View>
                                 </View>
                             </View>
@@ -356,6 +375,7 @@ export default function Unit(props) {
 
     function UnitPerson(props) {
         const redirectdRef = useRef();
+        const [ popupVisible, setPopupVisible ] = useState(false);
 
         let data = props.data
         const { cardData, setCardData } = useContext(CardData)
@@ -368,8 +388,15 @@ export default function Unit(props) {
             redirectdRef.current.redirect(sUrl)
         }
 
+        const handleClickMore = (event) => {
+            event.preventDefault();
+
+            FeedbackHaptics('Medium');
+            setPopupVisible(true); 
+        }
+
         let oMenuItemPrimary = undefined;
-        let aMenuItemsMore = [];
+        let oMenuItemsMore = undefined;
         if( data?.meta) {
             let sPrimary = '', sSecondary = '', sExclude = '';
 
@@ -427,13 +454,33 @@ export default function Unit(props) {
                 }
             }
 
-            aMenuItemsMore =  data.meta.items.filter((aItem) => aItem.name != sExclude).map((aItem) => {
-                return {
-                    id: aItem.id ? aItem.id : aItem.name,
-                    link: '/' + aItem.link,
-                    title: aItem.title
-                };
-            });
+            if(!!oMenuItemPrimary) {
+                if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
+                    const Element = componentsMap[oMenuItemPrimary.data.type];
+                    if(!!Element) {
+                        const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+
+                        oMenuItemPrimary = (
+                            <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
+                        );
+                    }
+                }
+                else
+                    oMenuItemPrimary = (
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            title={oMenuItemPrimary.title}
+                            className=" my-auto "
+                            startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
+                            fullWidth={true}
+                            onPress={oMenuItemPrimary?.onPress}
+                        />
+                    );
+            }
+
+            //--- More menu
+            oMenuItemsMore = {...data.meta, ...{items: data.meta.items.filter((aItem) => aItem.name != sPrimary)}};
         }
 
         return (
@@ -461,20 +508,24 @@ export default function Unit(props) {
                                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + ' friends'}</Text>
                                 }
                                 <View className="flex-row w-full gap-x-2 ">
-                                    {!!oMenuItemPrimary && <Button
-                                        variant="primary"
-                                        size="sm"
-                                        title={oMenuItemPrimary.title}
-                                        className=" my-auto "
-                                        startDecorator={oMenuItemPrimary?.icon ? oMenuItemPrimary.icon : false}
-                                        fullWidth={true}
-                                        onPress={oMenuItemPrimary?.onPress}
-                                    />}
-                                    {aMenuItemsMore.length > 0 && 
-                                        <DropdownMenu items={aMenuItemsMore}>
-                                            <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} />
-                                        </DropdownMenu>
-                                    }
+                                    {oMenuItemPrimary}
+                                    {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (
+                                        <>
+                                            <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
+                                            <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                                                <Menu
+                                                    {...oMenuItemsMore}
+                                                    displayType="mixed"
+                                                    params={{
+                                                        showVertical: true,
+                                                        button_size: 'base',
+                                                        button_full_width: true,
+                                                        button_rounded: false,
+                                                    }}
+                                                />
+                                            </Modal>
+                                        </>
+                                    )}
                                 </View>
                             </View>
                         </View>
