@@ -458,7 +458,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false},
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Storefront',
+            icon: 'HouseSimple',
             headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'products-category': {
@@ -477,7 +477,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
-            icon: 'Storefront',
+            icon: 'Folders',
             headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'products-popular': {
@@ -486,7 +486,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'CirclesFour',
+            icon: 'FireSimple',
             headerSettings: { offset: false, header: true, backButton: false, menu: true }
         },
         'view-product': {
