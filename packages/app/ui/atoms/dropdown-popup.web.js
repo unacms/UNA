@@ -4,7 +4,7 @@ import {
     Portal as DmPortal, 
     Content as DmContent 
 }  from '@radix-ui/react-dropdown-menu'
-import { Button } from 'app/design/controls';
+import { ButtonRef } from 'app/design/controls';
 import Tooltip from 'app/ui/atoms/tooltip';
 import 'app/styles/dropdown.css';
 
@@ -18,7 +18,7 @@ export default function DropdownPopup(oProps) {
         </Tooltip>
     );
 
-    if(oProps.children[0].type !== Button) {
+    if(oProps.children[0].type !== ButtonRef) {
         bModal = false;
         sTrigger = (
             <DmTrigger asChild={asChildTrigger}>{oProps.children[0]}</DmTrigger>

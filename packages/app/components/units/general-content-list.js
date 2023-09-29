@@ -146,7 +146,9 @@ export default function Unit(props) {
             if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
                 const Element = componentsMap[oMenuItemPrimary.data.type];
                 if(!!Element) {
-                    const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+                    const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true, on_done: (sAction, oData) => {
+                        //--- Do something after the primary action was performed.
+                    }}}};
 
                     oMenuItemPrimary = (
                         <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
@@ -167,7 +169,18 @@ export default function Unit(props) {
                 );
 
             //--- More menu
-            oMenuItemsMore = {...data.meta, ...{items: data.meta.items.filter((aItem) => aItem.name != sPrimary)}};
+            oMenuItemsMore = {...data.meta, ...{
+                items: data.meta.items.filter((aItem) => aItem.name != sPrimary),
+                params: {
+                    showVertical: true,
+                    button_size: 'base',
+                    button_full_width: true,
+                    button_rounded: false,
+                    on_do: (sAction) => {
+                        setPopupVisible(false);
+                    }
+                }
+            }};
         }
 
         return (
@@ -222,14 +235,8 @@ export default function Unit(props) {
                                                 <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
                                                 <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                                                     <Menu
-                                                        {...oMenuItemsMore}
                                                         displayType="mixed"
-                                                        params={{
-                                                            showVertical: true,
-                                                            button_size: 'base',
-                                                            button_full_width: true,
-                                                            button_rounded: false,
-                                                        }}
+                                                        {...oMenuItemsMore}
                                                     />
                                                 </Modal>
                                             </>
@@ -515,7 +522,9 @@ export default function Unit(props) {
                 if(oMenuItemPrimary?.data && oMenuItemPrimary.data?.type) {
                     const Element = componentsMap[oMenuItemPrimary.data.type];
                     if(!!Element) {
-                        const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true}}};
+                        const oElementParams = {...oMenuItemPrimary.data, ...{primary: true, params: {button_rounded: false, button_full_width: true, on_done: (sAction, oData) => {
+                            //--- Do something after the primary action was performed.
+                        }}}};
 
                         oMenuItemPrimary = (
                             <Element key={oMenuItemPrimary.id ? oMenuItemPrimary.id : oMenuItemPrimary.name} {...oElementParams} />
@@ -537,7 +546,18 @@ export default function Unit(props) {
             }
 
             //--- More menu
-            oMenuItemsMore = {...data.meta, ...{items: data.meta.items.filter((aItem) => aItem.name != sPrimary)}};
+            oMenuItemsMore = {...data.meta, ...{
+                items: data.meta.items.filter((aItem) => aItem.name != sPrimary),
+                params: {
+                    showVertical: true,
+                    button_size: 'base',
+                    button_full_width: true,
+                    button_rounded: false,
+                    on_do: (sAction) => {
+                        setPopupVisible(false);
+                    }
+                }
+            }};
         }
 
         return (
@@ -571,14 +591,8 @@ export default function Unit(props) {
                                             <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
                                             <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                                                 <Menu
-                                                    {...oMenuItemsMore}
                                                     displayType="mixed"
-                                                    params={{
-                                                        showVertical: true,
-                                                        button_size: 'base',
-                                                        button_full_width: true,
-                                                        button_rounded: false,
-                                                    }}
+                                                    {...oMenuItemsMore}
                                                 />
                                             </Modal>
                                         </>

@@ -127,9 +127,8 @@ export function ButtonsGroup({
 }
 
 /* buttons */
-
-export const Button = React.forwardRef((props, forwardedRef) => {
-    let { className, classTextName, classIconName, onPress, ...rest } = props
+export function Button (props) {
+    let { className, classTextName, classIconName, onPress, forwardedRef, ...rest } = props
     let buttonType = props.variant ? props.variant : 'default'
     let buttonSize = props.size ? props.size : 'base'
     let hideTitleOnSmall = props.hideTitleOnSmall ? props.hideTitleOnSmall : false
@@ -261,6 +260,12 @@ export const Button = React.forwardRef((props, forwardedRef) => {
             {sButtonIconEnd}
             {props.children}
         </Cnt>
+    );
+}
+
+export const ButtonRef = React.forwardRef((props, forwardedRef) => {
+    return (
+        <Button {...props} forwardedRef={forwardedRef} />
     );
 });
 
