@@ -7,7 +7,7 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
-import { Button } from 'app/design/controls'
+import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
@@ -147,7 +147,7 @@ export default function (props) {
                 (currentUser || (!currentUser && item.nonlogged != false)) && (
                     <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                       <Tooltip content={item.title} asChildTrigger={true}>
-                        <Button
+                        <ButtonRef
                           variant="text"
                           size="lg"
                           fullWidth
@@ -186,7 +186,7 @@ export default function (props) {
                         }
                       )}>
                     <Tooltip content="Apps" asChildTrigger={true}>
-                      <Button
+                      <ButtonRef
                         variant="outline"
                         size="base"
                         fullWidth
@@ -222,7 +222,7 @@ export default function (props) {
                     )}
                   >
                     <Tooltip content="Create content" asChildTrigger={true}>
-                      <Button
+                      <ButtonRef
                         variant="outline"
                         rounded
                         startDecorator="plus"
@@ -243,7 +243,7 @@ export default function (props) {
                     title={sTxtNtfsTitle}
                   >
                     {[
-                      <Button
+                      <ButtonRef
                         key="ddp-trigger"
                         variant="outline"
                         rounded
@@ -254,7 +254,7 @@ export default function (props) {
                     ]}
                   </DropdownPopup>
                   <Tooltip content="Messenger" asChildTrigger={true}>
-                    <Button
+                    <ButtonRef
                       variant="outline"
                       rounded
                       startDecorator="ChatTeardropDots"
