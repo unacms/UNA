@@ -412,6 +412,7 @@ export default function Unit(props) {
                                                         {...data.image}
                                                         alt={data.title}
                                                         view="cover"
+                                                        noBg={true}
                                                     
                                                         sizes={imageSizes}
                                                     />

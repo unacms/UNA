@@ -139,7 +139,6 @@ export default function ElementBrowse(props) {
         if (dataItems.data.length == 0)
             refetch();
     }, [storageKeyValue]);
-
     if (status === 'loading' && dataItems.data.length == 0)
         return Preload 
 
@@ -166,7 +165,7 @@ export default function ElementBrowse(props) {
                             Preload
                         ) : null
                     }
-                /> : <>{Preload}</>}
+                /> : <></>}
             </View>
             }
         </View> 

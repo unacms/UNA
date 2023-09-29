@@ -576,7 +576,7 @@ export const settingsDefault = {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
-                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                 
             },
@@ -586,8 +586,8 @@ export const settingsDefault = {
         'discussions-category': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_forum:browse_category', showTitle: false, showBg: false, perLine: 1 },
-                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
+                browse: { name: 'bx_forum:browse_category', showTitle: false, showBg: false, perLine: 1, skeleton:'notifications' },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'Folders',
@@ -597,9 +597,8 @@ export const settingsDefault = {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'system:categories_list', showTitle: false, showBg: false  },
-                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-               // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'Folders',
             headerSettings: { offset: false, header: true, backButton: false, menu: true }

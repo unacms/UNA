@@ -93,6 +93,7 @@ export default function ElementImage(props) {
 
     const rgbDataURL = (r, g, b) =>  `data:image/gif;base64,R0lGODlhAQABAPAA${triplet(0, r, g) + triplet(b, 255, 255)}/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`
 */
+    
     style={
         backgroundImage: `
         linear-gradient(
@@ -106,6 +107,10 @@ export default function ElementImage(props) {
             rgba(255, 41, 128, 0.8) 100%
           )
     ` }
+
+    if (props.noBg == true){
+        style={}
+    }
 
     return (
         <SolitoImageStyled 

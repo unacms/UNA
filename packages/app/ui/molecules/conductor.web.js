@@ -13,12 +13,11 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar}) {
-    
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar, skeleton=''}) {
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    
+    console.log(initedTabs);
     const windowWidth = useWindowDimensions().width;
     const [routes, setRoutes] = useState(initedTabs);
 
@@ -267,7 +266,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const TabScene = ({ route, width, status }) => {
         const dataItems = route.data
         //let b = useMemo(() => {
-        const Preload = getSkeleton(data.module? data.module : data.unit, numColumns);
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
         
         if (!route.inited){
             return <></>

@@ -43,6 +43,26 @@ const maxWidth = appSetting('layout', 'max_width')
     ))}
   </>
 
+const bx_forum = <>
+{items.map((item, index) => (
+  <View
+  key={index}
+  className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
+>
+  <View className="animate-pulse flex-row items-center gap-2">
+    <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
+    <View className="flex-1 gap-1.5">
+      <View className="flex-row justify-between">
+        <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
+        <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+      </View>
+      <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
+    </View>
+  </View>
+</View>
+))}
+</>
+
 function browse_item(num) {
   return ( <View className={Platform.OS === 'web' ? 'mt-0': 'mt-16'}>{items.map((item, index) => (
       <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
@@ -226,6 +246,9 @@ export function getSkeleton(name, num = 5) {
     
     if (name == 'notifications')
       return notifications;
+
+    if (name == 'bx_forum')
+      return bx_forum;
 
     return browse_item(num)
 }
