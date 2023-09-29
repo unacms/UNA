@@ -344,7 +344,8 @@ export const settingsDefault = {
             layout: 'home',
             top:true,
             blocks: {
-                public_feed_form: {name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
+                public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
+                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: true, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
