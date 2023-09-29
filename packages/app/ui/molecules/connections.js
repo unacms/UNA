@@ -51,8 +51,14 @@ export default function ElementConnections(oProps) {
     const handleDo = (event, sAction) => {
         event.preventDefault();
 
+        if(oProps.params?.on_do && typeof oProps.params.on_do === 'function')
+            oProps.params.on_do(sAction);
+
         performAction('perform', {a:sAction}, (oData) => {
             setElementVars(oData);
+
+            if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
+                oProps.params.on_done(sAction, oData);
         });
     };
 
