@@ -251,7 +251,7 @@ export const settingsDefault = {
         bx_forum_submenu: {
             name: 'Discussions',
             icon: 'comments',
-            items: ['discussions-home', 'discussions-categories'],
+            items: ['discussions-home', 'discussions-categories', 'discussions-category'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-discussion' },
                 { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_forum'},
@@ -575,8 +575,10 @@ export const settingsDefault = {
         'discussions-home': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false },
+                browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
+                
             },
             icon: 'Egg',
             headerSettings: { offset: false, header: true, backButton: false, menu: true }
@@ -584,7 +586,8 @@ export const settingsDefault = {
         'discussions-category': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_forum:browse_category', showTitle: false, showBg: false },
+                browse: { name: 'bx_forum:browse_category', showTitle: false, showBg: false, perLine: 1 },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'Folders',
@@ -593,7 +596,8 @@ export const settingsDefault = {
         'discussions-categories': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'system:categories_list', showTitle: false, showBg: false },
+                browse: { name: 'system:categories_list', showTitle: false, showBg: false  },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },

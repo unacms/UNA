@@ -2,11 +2,9 @@ import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
 
 export default function PageLayout(props) {
-
     let menu = props.data.menu;
     let categories = DataByName(props.data, props.blocks.categories);
     let menuItems = [];
-
     if (categories){
         menuItems  = categories?.content[0]?.data
             .map((obj, index) => {
@@ -22,7 +20,6 @@ export default function PageLayout(props) {
             }
         }); 
     } 
-
     menu.items = [...menu.items, ...menuItems];
     return (<Conductor 
         minHeaderHeight={0} 

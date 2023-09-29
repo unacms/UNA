@@ -50,7 +50,7 @@ export async function fetcher (mixed) {
 }
 
 export async function fetcherRaw (host, mixed) {
-    if (env('DEBUG'))
+    if (true)
         console.log("fetcherRaw: ", host + mixed);
     let path, token, data, origin, headers, callback;
 

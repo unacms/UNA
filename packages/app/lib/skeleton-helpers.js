@@ -1,6 +1,7 @@
 import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting } from 'app/lib/util'
 import Card from 'app/ui/molecules/card'
+import { Platform } from 'react-native'
 
 const items = Array(5).fill('');
 const maxWidth = appSetting('layout', 'max_width')
@@ -43,7 +44,7 @@ const maxWidth = appSetting('layout', 'max_width')
   </>
 
 function browse_item(num) {
-  return ( <View className='mt-16'>{items.map((item, index) => (
+  return ( <View className={Platform.OS === 'web' ? 'mt-0': 'mt-16'}>{items.map((item, index) => (
       <View key={'browse_item' + index} className="flex-row w-full animate-pulse">
         <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
           <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>

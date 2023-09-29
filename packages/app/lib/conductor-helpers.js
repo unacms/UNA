@@ -83,7 +83,6 @@ export async function parseData(routes, index, setRoutes, newData) {
     const currentRoute = routes.find((item) => item.index === index);
     if (currentRoute && currentRoute.endpoint && !currentRoute.endpoint.finished) {
         let params = { ...currentRoute.endpoint.params};
-
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
@@ -94,6 +93,7 @@ export async function parseData(routes, index, setRoutes, newData) {
         endpoint.finished = finished;
 
         let ld = sResponse.data[0]?.data.params;
+
         if (ld){
             params.start = parseInt(ld.start) + parseInt(ld.per_page);
         }
@@ -183,7 +183,6 @@ function processContent(acc, b) {
 }
 
 function processBrowse(acc, b) {
-
     acc.endpoint = processEndpoint(acc, b);
     acc.content = [...acc.content, ...b.data.data];
     return acc;
@@ -192,6 +191,7 @@ function processBrowse(acc, b) {
 export function processUrl(data, blocks) {
     const contentAndEndpoint = Object.values(blocks).reduce((acc, block) => {
         const b = getContent(data, block);
+        
         if (b.type === 'browse') {
             if (block.sidebar) {
                 acc.sidebar = processBrowse(acc.sidebar, b);

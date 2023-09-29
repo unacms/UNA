@@ -12,7 +12,6 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
 export default function ElementBrowse(props) {
-    
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
@@ -36,6 +35,9 @@ export default function ElementBrowse(props) {
     const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
 
     const getNumCols = (width) => {
+        if (props.perLine)
+            return props.perLine;
+        
         if (data.unit.startsWith('general-') || data.unit.startsWith('search-')){
             return width > 600 ? 4 : 1
         }
@@ -83,13 +85,17 @@ export default function ElementBrowse(props) {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
+            if (props?.maxItems && lastPage.data.length >= props?.maxItems)
+                return;
+
             return lastPage.params;
         },
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
    
     function prepareUrl () {
-        return data.request_url + JSON.stringify({'params': getCurrentParams()});
+        const params = getCurrentParams();
+        return data.request_url + JSON.stringify({'params': params});
     } 
 
     const getCurrentParams = () => { 

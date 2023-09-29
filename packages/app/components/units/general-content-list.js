@@ -6,14 +6,13 @@ import Link from '../../ui/atoms/link'
 import Profile from '../../ui/molecules/profile'
 import { getImageSizes, FeedbackHaptics } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import Menu from 'app/components/menu'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Time from '../../ui/atoms/time'
 import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import {componentsMap} from  'app/ui/molecules/_map';
 
 export default function Unit(props) {
@@ -31,7 +30,6 @@ export default function Unit(props) {
         )
 
         return (
-            <AnimatedBlock>
                 <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
                     <View className="flex-col gap-y-4 ">
                         <Link className="" href={data.url}>
@@ -110,7 +108,6 @@ export default function Unit(props) {
                         )}
                     </View>
                 </Card>
-            </AnimatedBlock>
         )
     }
 
@@ -174,7 +171,7 @@ export default function Unit(props) {
         }
 
         return (
-            <AnimatedBlock>
+            <>
                 <Redirect ref={redirectdRef} />
                 <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
                     <View className="flex-col gap-y-4 ">
@@ -243,7 +240,7 @@ export default function Unit(props) {
                         </Link>
                     </View>
                 </Card>
-            </AnimatedBlock>
+            </>
         )
     }
 
@@ -258,7 +255,7 @@ export default function Unit(props) {
         )
 
         return (
-            <AnimatedBlock>
+            <>
                 <Card margin="mb-2 mx-2" rounded="rounded-2xl">
                     <View className="flex-col">
                         <View className="flex-col w-full">
@@ -314,7 +311,55 @@ export default function Unit(props) {
                     </View>
                 </View>
             </Card>
-        </AnimatedBlock>
+        </>
+        )
+    }
+
+    function forumUnit() {
+        let sMeta = (
+            <Profile
+                {...data.author_data}
+                displayType="unit"
+                displaySize="sm"
+                showInfo="false"
+            />
+        )
+
+        return (
+            <>
+                <Card margin="mb-2 mx-2" rounded="rounded-2xl">
+                    <View className="flex-col">
+                        <View className="flex-col w-full">
+                            <Link href={data.url}>
+                                <View
+                                    className={
+                                    data.image
+                                        ? 'flex-row-reverse sm:flex-col w-full p-1'
+                                        : 'flex-col w-full p-1'
+                                    }
+                                >
+                                    
+                                    <View className="flex-auto flex-col mb-auto">
+                                        <View
+                                            className={`flex-auto flex-col gap-y-2 p-3`}
+                                        >
+                                            {data.image && (
+                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
+                                                    {data.title}
+                                                </Text>
+                                            )}
+                                            <Text numberOfLines={data.image ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
+                                                {data.summary_plain}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Link>
+                        <View className=" mb-auto px-4 pb-3 sm:pt-0">{sMeta}</View>
+                    </View>
+                </View>
+            </Card>
+        </>
         )
     }
 
@@ -327,35 +372,47 @@ export default function Unit(props) {
                 showInfo="false"
             />
         )
-
+        let cover_raw = data.cover_raw.replace(/\\u([\d\w]{4})/gi, function (match, grp) {
+            return String.fromCharCode(parseInt(grp, 16));
+        });
         return (
-            <AnimatedBlock>
+            <>
                 <Card margin="mb-2 mx-2" rounded="rounded-2xl">
                     <View className="flex-col gap-y-4">
                         <View className="flex-col w-full">
                             <Link href={data.url}>
                                 <View className="w-full p-1">
-                                   
                                         <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                                            <Image
-                                                {...data.image}
+                                            { cover_raw != '' &&  <div dangerouslySetInnerHTML={{__html:cover_raw}}></div> } 
+                                            { cover_raw == '' && <Image
+                                                {...data.cover}
                                                 alt={data.title}
                                                 view="cover"
                                                 className="u-cover"
                                                 sizes={imageSizes}
-                                            />
+                                            /> }
                                         </View>
-                                    
-                                    
                                         <View  className="flex-auto flex-col p-3 gap-y-2 ">
-                                             <Text  className="mr-auto bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                                                {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : data.price_single + '$'}
+                                             
+                                            <Row className='justify-between'>
+                                                <View>
+                                                    <Text  className="mr-auto bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                                        {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
+                                                    </Text>
+                                                </View>
+                                                <View className='h-8 w-8'>
+                                                    <Image
+                                                        {...data.image}
+                                                        alt={data.title}
+                                                        view="cover"
+                                                    
+                                                        sizes={imageSizes}
+                                                    />
+                                                </View>
+                                            </Row>
+                                            <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
+                                                {data.title}
                                             </Text>
-                                           
-                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
-                                                    {data.title}
-                                                </Text>
-                                            
                                             <Text numberOfLines={2} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
                                                 {data.summary_plain}
                                             </Text>
@@ -369,7 +426,7 @@ export default function Unit(props) {
                 </View>
             </Card>
         
-        </AnimatedBlock>
+        </>
         )
     }
 
@@ -484,7 +541,7 @@ export default function Unit(props) {
         }
 
         return (
-            <AnimatedBlock>
+            <>
                 <Redirect ref={redirectdRef} />
                 <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                     <Link className="group " href={data.url}>
@@ -531,7 +588,7 @@ export default function Unit(props) {
                         </View>
                     </Link>  
                 </Card>
-            </AnimatedBlock>
+            </>
         )
     }
 
@@ -539,22 +596,6 @@ export default function Unit(props) {
 
     const imageSizes = getImageSizes()
     const module = !!data?.module ? data.module : props.module
-
-    /*const moduleComponentMap = {
-        'bx_groups': eventUnit,
-        'bx_events': eventUnit,
-        'bx_channels': groupUnit,
-        'bx_market': marketUnit,
-        'bx_persons': () => (
-            <CardDataContext>
-                <UnitPerson {...props} />
-            </CardDataContext>
-        ),
-    };
-
-    const Component = moduleComponentMap[module] || defaultUnit;
-    return <Component />;
-    */
     
     switch (module) {
         case 'bx_groups':
@@ -563,7 +604,9 @@ export default function Unit(props) {
         case 'bx_channels':
             return channelUnit()
         case 'bx_market':
-                return marketUnit()
+               return marketUnit()
+        case 'bx_forum':
+            return forumUnit()
         case 'bx_persons':
             return (
                 <CardDataContext>

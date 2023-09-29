@@ -11,12 +11,14 @@ import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
+import { BlockByName } from 'app/components/block';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar}) {
     
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+    
     const windowWidth = useWindowDimensions().width;
     const [routes, setRoutes] = useState(initedTabs);
 
@@ -26,7 +28,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         return data.url.includes(item.key);
         //return item.key === data.url.replace('+', '');
     }));
-
+    //console.log('initedTabs', initedTabs, index, data.url);
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
@@ -83,8 +85,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             },
             enabled: routes[index]?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
-    
-
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage) 
@@ -245,7 +245,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         );
     }, [windowWidth]);
 
-    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth, rqtStatus]);  
+    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth, rqtStatus, index]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
@@ -273,8 +273,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return <></>
         }
         if (route.inited){
-            
-            let isRightCol = route?.sidebar?.content?.length > 0
+            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             let TabFlashListM = useMemo(() => {
                 return <TabFlashList
@@ -295,7 +294,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                     }
                 />
             }, [dataItems.length]);
-
             return (
                 <>
                 <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
@@ -303,11 +301,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload : <></>}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 pt-4">
-                        <UniList
-                            no_scroll
-                            renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
-                            data={route?.sidebar?.content}
-                        />
+                        { route?.sidebar?.content?.length > 0 && <UniList
+                                no_scroll
+                                renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
+                                data={route?.sidebar?.content}
+                            />
+                        }
+                        <BlockByName data={data} name={route.blocks.browse_sidebar} perLine={1} maxItems={1}/>
                     </View>}
                 </Row></>
         
@@ -324,7 +324,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (getNumCols(containerWidth) != numColumns)
         setNumColumns(getNumCols(containerWidth));
     };
-
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
@@ -334,7 +333,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
         )});
         return <>
-            <Row className="justify-between items-center mb-4">
+            <Row className="justify-between items-center mb-4 ml-4">
                 <Text className="text-xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-300 hidden lg:flex flex-row items-center gap-x-2 ">
                     <Button
                         variant="outline"
@@ -349,28 +348,28 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                     {addButtons}
                 </Row>
             </Row>
-                <View className='hidden lg:block '>
-                    {routes.map((a) => {
-                        let settings = appSetting('layouts', a.key)
-                        return (
-                        <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                            <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
-                                setIndex(a.index);
-                                window.history.pushState({ }, '', a.key);
-                                event.preventDefault()
-                            }}>
-                                <Button
-                                    variant={a.index == index ? 'link': "text"}
-                                    size={!a.ident ? "lg" : "base"}
-                                    fullWidth
-                                    title = {a.title}
-                                    align="start"
-                                    startDecorator={!a.ident ? settings.icon : undefined}
-                                />
-                            </Pressable>
-                        </Link>
-                    )})}
-                </View>
+            <View className='hidden lg:block ml-4'>
+                {routes.map((a) => {
+                    let settings = appSetting('layouts', a.key)
+                    return (
+                    <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
+                        <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
+                            setIndex(a.index);
+                            window.history.pushState({ }, '', a.key);
+                            event.preventDefault()
+                        }}>
+                            <Button
+                                variant={a.index == index ? 'link': "text"}
+                                size={!a.ident ? "lg" : "base"}
+                                fullWidth
+                                title = {a.title}
+                                align="start"
+                                startDecorator={!a.ident ? settings.icon : undefined}
+                            />
+                        </Pressable>
+                    </Link>
+                )})}
+            </View>
         </>
     }, [routes, index]);
 
