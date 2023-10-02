@@ -390,8 +390,8 @@ export default function Unit(props) {
                             <Link href={data.url}>
                                 <View className="w-full p-1">
                                         <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                                            { cover_raw != '' &&  <div dangerouslySetInnerHTML={{__html:cover_raw}}></div> } 
-                                            { cover_raw == '' && <Image
+                                            { cover_raw.trim() != '' &&  <div dangerouslySetInnerHTML={{__html:cover_raw}}></div> } 
+                                            { cover_raw.trim() == '' && <Image
                                                 {...data.cover}
                                                 alt={data.title}
                                                 view="cover"
@@ -412,7 +412,7 @@ export default function Unit(props) {
                                                         {...data.image}
                                                         alt={data.title}
                                                         view="cover"
-                                                        noBg={true}
+                                                        nobg={true}
                                                     
                                                         sizes={imageSizes}
                                                     />

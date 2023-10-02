@@ -45,7 +45,7 @@ function normalizeWidth(width) {
 }
 
 export default function ElementImage(props) {
-    let {width, height, alt, src, style, source, ...rest} = props; // remove width & height
+    let {width, height, alt, src, style, source, nobg, ...rest} = props; // remove width & height
 
     if (!src)
             return null;
@@ -108,7 +108,7 @@ export default function ElementImage(props) {
           )
     ` }
 
-    if (props.noBg == true){
+    if (nobg == true){
         style={}
     }
 

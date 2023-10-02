@@ -225,7 +225,6 @@ export default function PageLayout(props) {
                     </View>
                 </View>
         </View>
-        
     )}
     }
 

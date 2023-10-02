@@ -17,7 +17,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    console.log(initedTabs);
+    //console.log(initedTabs);
     const windowWidth = useWindowDimensions().width;
     const [routes, setRoutes] = useState(initedTabs);
 
@@ -25,9 +25,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const { colors } = Theme();
     const [index, setIndex] = useState(routes.findIndex(function(item) {
         return data.url.includes(item.key);
-        //return item.key === data.url.replace('+', '');
     }));
-    //console.log('initedTabs', initedTabs, index, data.url);
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
@@ -391,7 +389,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     return (
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             {headerObj}
-            <View className={ appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+            <View className='max-w-screen-2xl mx-auto w-full'>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>
