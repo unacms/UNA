@@ -35,7 +35,7 @@ export const componentsMapDefault = {
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
 
-    profile_contacts: ProfileContacts,
+    get_block_contacts_messenger: ProfileContacts,
     messenger_main_page: MessengerPage
 };
 
