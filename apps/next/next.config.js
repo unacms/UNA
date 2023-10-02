@@ -51,7 +51,7 @@ const nextConfig = {
     'expo-constants',
   ],
   images: {
-    domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com', 'hihi.com', 'una.so'],
+    domains: ['ci.una.io', 'app.una.io', 'www.una0.ru', 'una0.ru', 'anton.una.io', 'trident.me', 'us-east-1.linodeobjects.com', 'hihi.com', 'una.so', 'una131.com','una.com', 'unab1.com'],
     disableStaticImages: false
   },
   /*modularizeImports: {
