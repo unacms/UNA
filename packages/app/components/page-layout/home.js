@@ -217,7 +217,7 @@ export default function PageLayout(props) {
                     <View className="hidden xl:block  xl:w-3/12 max-w-sm  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
                         
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
-                        
+                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.messenger_contacts} skeleton="one_column_browse" type="profile_contacts" />
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" />
 
                         <BlockByName name={props.blocks.intro} />
@@ -227,7 +227,6 @@ export default function PageLayout(props) {
         </View>
         
     )}
-    /*<BlockByName no_scroll={true} data={props.data} name={props.blocks.messenger_contacts} skeleton="one_column_browse" type="profile_contacts" />*/
     }
 
     let sect = [{ name: '', title: 'Top' }]
