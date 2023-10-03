@@ -7,7 +7,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from '../../lib/fetcher';
 import { appSetting, storageKey, storageGet, getDataFromCache,storageSet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
-
+import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 
@@ -145,7 +145,7 @@ export default function ElementBrowse(props) {
     return (
         (true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-            {dataItems.data.length > 0 ? <UniList 
+            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{props.block.title}</Text></View> : <></>}<UniList 
             
                     numColumns={numColumns} 
                     data={dataItems.data}
@@ -165,7 +165,7 @@ export default function ElementBrowse(props) {
                             Preload
                         ) : null
                     }
-                /> : <></>}
+                /></> : <></>}
             </View>
             }
         </View> 

@@ -22,7 +22,7 @@ export function BlockByName(props) {
         if (name.name.includes('static')){
             return <StaticBlock  {...name} />;
         }
-
+        console.log(data?.elements);
         const blockName = name?.name;
         Object.keys(data?.elements).forEach(key => {
             Object.keys(data.elements[key]).forEach(key2 => {

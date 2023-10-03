@@ -12,20 +12,27 @@ import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
+import { appStatic } from 'app/lib/app-static';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar, skeleton=''}) {
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    //console.log(initedTabs);
-    const windowWidth = useWindowDimensions().width;
+    console.log('initedTabs', initedTabs);
+    const windowDimen =  useWindowDimensions();
+    const windowWidth = windowDimen.width;
+    const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
     const [index, setIndex] = useState(routes.findIndex(function(item) {
-        return data.url.includes(item.key);
+        if (useSectionAsMenu)
+            return data.url == item.key;
+        else
+            return data.url.includes(item.key);
     }));
+
     const indicatorOffset = useSharedValue(0);
     
     const getNumCols = (width) => {
@@ -155,7 +162,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             )});
             return (
                 <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"}  >
-                    <View  className={ appSetting('layout', 'max_width')+ ' mx-auto w-full'}>
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : 'max-w-screen-2xl') + ' mx-auto w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
@@ -272,7 +279,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (route.inited){
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
-            let TabFlashListM = useMemo(() => {
+            let TabFlashListM = useMemo(() => {  
                 return <TabFlashList
                     index={route.index}
                     data={dataItems}
@@ -295,7 +302,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 <>
                 <Row style={{ paddingTop: header ? 0 : 0 }} className="mb-4"> 
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4': 'w-full p-2'}>
-                        {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload : <></>}
+                        {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 pt-4">
                         { route?.sidebar?.content?.length > 0 && <UniList
@@ -329,7 +336,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return (
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
         )});
-        return <>
+        return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:p-4 fixed top-14 left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mb-4 ">
                 <Text className="text-2xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     
@@ -339,7 +346,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                     {addButtons}
                 </Row>
             </Row>
-            <View className='hidden lg:block '>
+            <View className='hidden lg:block'>
                 {routes.map((a) => {
                     let settings = appSetting('layouts', a.key)
                     return (
@@ -361,7 +368,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                     </Link>
                 )})}
             </View>
-        </>
+            </ScrollView>
     }, [routes, index]);
 
     if (leftSideBar){
@@ -370,7 +377,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 {headerObj}
                 <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>
-                        <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d  lg:p-4 fixed lg:relative top-0 z-50">{leftSideBarObj()}</View>
+                        <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50">
+                            {leftSideBarObj()}
+                        </View>
                         <View className="w-full lg:w-3/4 xl:w-4/5 ">
                             <RenderScene route={currentRoute}/>
                         </View>

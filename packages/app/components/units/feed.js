@@ -385,7 +385,7 @@ function DefaultUnit(data) {
 
           {viewState.view != 'edited' && (
             <>
-              {!bIsGroupContent && (
+              {!bIsGroupContent && !bIsMarketContent && (
                 <>
                   <View className="  flex-col md:flex-row-reverse ">
                     {data.mainImage && (

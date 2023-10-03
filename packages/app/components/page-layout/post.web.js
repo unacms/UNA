@@ -82,9 +82,11 @@ export default function PageLayout(props) {
     if (actionsItemIndex !== -1) {
         if(windowWidth < 1024){
             header = (
-                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-d backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-d flex-row'>
+                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-d backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-between'>
                     {getBackButtonWeb()}
-                    {aItems[actionsItemIndex].data}
+                    <View className='w-5/6'>
+                        {aItems[actionsItemIndex].data}
+                    </View>
                 </Row></>
             );
             aItems.splice(actionsItemIndex, 1);
@@ -100,21 +102,22 @@ export default function PageLayout(props) {
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
     return ( 
-        <>{header}
- 
-        <View className="py-0 lg:pt-4 lg:py-14">
-            <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-tl-2xl sm:rounded-tr-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
-                <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
-                    <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
-                </View>
-                </Row>
-                <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
-                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                        <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
-                    </KeyboardAvoidingView>
+        <>
+            {header}
+            <View className="py-0 pt-12 lg:pt-4 lg:pb-14">
+                <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-tl-2xl sm:rounded-tr-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
+                    <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+                        <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
+                    </View>
+                    </Row>
+                    <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
+                        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                            <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
+                        </KeyboardAvoidingView>
+                    </View>
                 </View>
             </View>
-        </View> </>
+        </>
     )
 
 }

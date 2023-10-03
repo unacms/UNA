@@ -15,6 +15,7 @@ import { Button } from 'app/design/controls';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='' }) {
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+   
     const [routes, setRoutes] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu,menuState)){

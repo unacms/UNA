@@ -169,6 +169,23 @@ const ComponentsCommentsEmpty = <>
     </View>
     </>
 
+const ComponentsContentEmpty = <>
+    <View className="p-8">
+        <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+        <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
+            <Icon icon="ChatCircle" width={32} height={32} />
+        </View>
+        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+            No content yet
+        </Text>
+        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+            some text
+        </Text>
+        </View>
+    </View>
+    </>
+
+
 export function ComponentsIntro(props) {
 
     const AnimatedCounter = ({ value, duration }) => {
@@ -263,7 +280,7 @@ function ComponentsSplash(props) {
                      <View className="px-4">
                     {props.block}
                     </View>
-                    <Link className="px-8 mx-auto pb-4 w-full border-bdr dark:border-bdr-d"  href="/forgot">
+                    <Link className="px-8 mx-auto pb-4 w-full border-bdr dark:border-bdr-d"  href="/forgot-password">
                     <Button
                         title="Forgot password?"
                         variant="link"
@@ -524,6 +541,7 @@ export const staticDefault = {
     logo_nativedark: LogoNativeDark,
     components_about: ComponentsAbout,
     components_comments_empty: ComponentsCommentsEmpty,
+    components_content_empty: ComponentsContentEmpty,
     components_intro: ComponentsIntro,
     components_splash: ComponentsSplash,
     components_dummy: ComponentsDummy,
