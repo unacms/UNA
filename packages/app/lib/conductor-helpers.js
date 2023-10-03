@@ -24,10 +24,12 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
         item.link = item.link.replace('page/', '')
        //TOFIX
         const i = { key: item.link, title: item.title, index };
+       // console.log('----', item.link, getURI(item.link), data.uri)
         let bCurrent = getURI(item.link) === data.uri;
-        if (useSectionAsMenu)
+        if (useSectionAsMenu){
             bCurrent = item.link.replace(' ', '') === data.url.replace('+', '');
-
+            console.log('+----', item.link.replace(' ', ''), "===", data.url.replace('+', ''))
+        }
         if (bCurrent) {
 
             let contentAndEndpoint = processUrl(data, blocks);
