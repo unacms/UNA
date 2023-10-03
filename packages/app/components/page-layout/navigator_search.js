@@ -36,7 +36,7 @@ export default function PageLayout(props) {
     return (<Conductor 
         header={header} 
         minHeaderHeight={0} 
-        offsetTop={120}
+        offsetTop={130}
         isHideDefaultHeader={false} 
         menu={menu} 
         data={props.data} 

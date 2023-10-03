@@ -227,16 +227,14 @@ export default function ElementSearch(oProps) {
     const [inputValue, setInputValue] = useState(props.value);
 
 
-    return (<View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
-
-  <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 pt-4 '}>
-      <Row className='gap-x-2 justify-center items-center'>
-      
-          <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" onChangeText={(value) => setInputValue(value)}  />
-          
-          <Link href={'/search-keyword?keyword=' + inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
-          
-      </Row>
-  </View>
-</View>);
+    return (
+        <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
+            <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 py-2'}>
+                <Row className='gap-x-2 justify-center items-center'>
+                    <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" onChangeText={(value) => setInputValue(value)}  />
+                    <Link href={'/search-keyword?keyword=' + inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+                </Row>
+            </View>
+        </View>
+    );
 }
