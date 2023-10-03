@@ -330,22 +330,16 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
         )});
         return <>
-            <Row className="justify-between items-center mb-4 ml-4">
-                <Text className="text-xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-300 hidden lg:flex flex-row items-center gap-x-2 ">
-                    <Button
-                        variant="outline"
-                        size="base"
-                        rounded
-                        align="start"
-                        startDecorator={menuSettings.icon}
-                    />
+            <Row className="justify-between items-center mb-4 ">
+                <Text className="text-2xl my-auto font-bold mx-2.5 text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+                    
                     {menuSettings?.name}
                 </Text>
-                <Row className="pr-4">
+                <Row className=" ">
                     {addButtons}
                 </Row>
             </Row>
-            <View className='hidden lg:block ml-4'>
+            <View className='hidden lg:block '>
                 {routes.map((a) => {
                     let settings = appSetting('layouts', a.key)
                     return (
@@ -356,7 +350,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                             event.preventDefault()
                         }}>
                             <Button
-                                variant={a.index == index ? 'link': "text"}
+                                variant={a.index == index ? 'outline': "text"}
                                 size={!a.ident ? "lg" : "base"}
                                 fullWidth
                                 title = {a.title}
@@ -374,10 +368,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         return (
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
                 {headerObj}
-                <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'} >
+                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>
-                        <View className="hidden lg:block w-full lg:w-1/6 lg:my-4 fixed lg:relative top-0 z-50">{leftSideBarObj()}</View>
-                        <View className="w-full lg:w-5/6 ">
+                        <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d  lg:p-4 fixed lg:relative top-0 z-50">{leftSideBarObj()}</View>
+                        <View className="w-full lg:w-3/4 xl:w-4/5 ">
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>
