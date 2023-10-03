@@ -99,7 +99,7 @@ export default function PageLayout(props) {
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    <View className="hidden lg:block w-1/4 xl:w-1/5 max-w-sm  pt-4 top-0 sticky duration-200  ">
+                    <View className="hidden lg:block w-1/4  max-w-sm  pt-4 top-0 sticky duration-200  ">
                         <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
@@ -214,7 +214,7 @@ export default function PageLayout(props) {
                             </View>
                         </View>
                     </View>
-                    <View className="hidden xl:block  xl:w-1/3 max-w-md  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
+                    <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
                         
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" />
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.messenger_contacts} skeleton="one_column_browse" />
