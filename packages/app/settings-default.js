@@ -779,7 +779,7 @@ export const settingsDefault = {
             'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': 'duration-200 ',
 
-            'u-btn-primary-cnt': ' bg-primary hover:opacity-90 border border-primary  shadow-sm hover:shadow active:opacity-50 active:shadow-none',
+            'u-btn-primary-cnt': ' bg-primary/80 hover:opacity-90 border border-primary/50  shadow-sm hover:shadow active:opacity-50 active:shadow-none',
             'u-btn-primary-text': ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-primary-trans': 'duration-200 ',
 
@@ -792,7 +792,7 @@ export const settingsDefault = {
             'u-btn-text-trans': ' duration-200 ',
 
             'u-btn-link-cnt': ' border border-transparent ',
-            'u-btn-link-text': ' font-semibold text-primary dark:text-primary-d group-hover:opacity-90 active:opacity-50 ',
+            'u-btn-link-text': ' font-medium group-hover:underline text-primary dark:text-primary-d group-hover:opacity-90 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',

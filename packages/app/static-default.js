@@ -248,7 +248,7 @@ function ComponentsSplash(props) {
                     Connect and create with like-minded people, discover new perspectives, share knowledge and grow together - all within your community. 
                     </Text>
 
-                    <Link href="/create-account">
+                    <Link className='' href="/create-account">
                     <Button
                         title="Create account"
                         variant="primary"
@@ -259,8 +259,28 @@ function ComponentsSplash(props) {
                 </View>
             </View>
             <View className="mx-auto w-full lg:w-1/2 p-2 my-auto   ">
-              <Card addClassName="items-center rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto h-96 flex-col gap-y-2 p-4">
-                {props.block}
+              <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
+                     <View className="px-4">
+                    {props.block}
+                    </View>
+                    <Link className="px-8 mx-auto pb-4 w-full border-bdr dark:border-bdr-d"  href="/forgot">
+                    <Button
+                        title="Forgot password?"
+                        variant="link"
+                        fullWidth
+                        size="sm"
+                        
+                    />
+                    </Link>
+                    <Link className="p-8 w-full border-t border-bdr dark:border-bdr-d"  href="/create-account">
+                    <Button
+                        title="Create new account"
+                        variant="primary"
+                        startDecorator="UserCirclePlus"
+                        size="base"
+                        fullWidth
+                    />
+                    </Link>
               </Card>
             </View>
           </View>

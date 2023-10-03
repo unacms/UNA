@@ -12,13 +12,13 @@ export default function FormFieldSubmit(props) {
     
     const { field } = useController({ name, rules, defaultValue });
     return (
-        <Field {...props}>
+        <Field  {...props}>
             <Button
-                title={!props.icon_only ? props.value : ''}
+                title={!props.icon_only ? props.value : '  '}
                 variant={!!props.variant ? props.variant : 'default'} fullWidth
                 onPress={props.handleSubmit}
                 startDecorator={props.icon}
-               
+                
             />
             <Hidden 
                     name={props.name}
