@@ -14,7 +14,7 @@ export default function PageLayout(props) {
     let header = <SearchPanel value={keyword}/>;
     let smallHeader = header
     let sect = searchData.content[0].data.params.sections;
-
+    console.log("props", props);
     sect =[{"name":"", "title":"Top"}, ...sect];
 
     const menuItems  = sect
