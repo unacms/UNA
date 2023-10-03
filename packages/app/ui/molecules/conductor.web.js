@@ -14,15 +14,20 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, offsetTop, leftSideBar, skeleton=''}) {
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, 
+    offsetTop, leftSideBar, skeleton='', onChangeRoute, keyword}) {
     let uniRef = useRef();
   
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    console.log('initedTabs', initedTabs);
+    //console.log('initedTabs', initedTabs);
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
+   // console.log('routes', routes)
+    useEffect(() => {
+        setRoutes(initedTabs);
+    }, [keyword]);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
@@ -78,7 +83,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         isFetchingNextPage,
         
     } = useInfiniteQuery({
-            queryKey: [routes[index]?.endpoint?.request_url, index], 
+            queryKey: [routes[index]?.endpoint?.request_url, index, keyword], 
             queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
             getNextPageParam: (lastPage, pages) => { 
                 if (lastPage?.data?.length > 0){
@@ -185,6 +190,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                                             setIndex(a.index);
                                             getNumCols(windowWidth)
                                             window.history.pushState({ }, '', '/' + a.key);
+                                            console.log(onChangeRoute);
+                                            onChangeRoute(a);
                                         }}
                                     >
                                         <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={a.title}   />
@@ -272,7 +279,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         const dataItems = route.data
         //let b = useMemo(() => {
         const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
-        
+        console.log('dataItemsdataItems',dataItems)
         if (!route.inited){
             return <></>
         }

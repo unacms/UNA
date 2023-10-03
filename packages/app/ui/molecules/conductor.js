@@ -14,7 +14,7 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='' }) {
-    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu, onChangeRoute);
    
     const [routes, setRoutes] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
@@ -152,6 +152,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                             <View > 
                                 <Button onPress={() => {
                                    setIndex(a.index)
+                                   onChangeRoute(a);
                                 }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={a.title} />
                             </View>
                             </Pressable>

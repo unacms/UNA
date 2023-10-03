@@ -224,15 +224,18 @@ export default function ElementSearch(oProps) {
 
  export function  SearchPanel(props) {
 
-    const [inputValue, setInputValue] = useState(props.value);
-
-
-    return (
+    const [inputValue, setInputValue] = useState(props.value);    return (
         <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 py-2'}>
                 <Row className='gap-x-2 justify-center items-center'>
-                    <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" onChangeText={(value) => setInputValue(value)}  />
-                    <Link href={'/search-keyword?keyword=' + inputValue}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+                    <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" 
+                        onChangeText={(value) => {
+                            setInputValue(value)
+                           // props.onChangeKey(value)
+                           // window.history.pushState({ }, '', '/search-keyword?keyword='+value+"&section="+props.section );
+                        }}
+                     />
+                    <Link href={'/search-keyword?keyword=' + inputValue + '&section='+ props.section}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
                 </Row>
             </View>
         </View>

@@ -174,7 +174,7 @@ export const settingsDefault = {
             items: ['posts-home', 'posts-popular',],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-post' },
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_posts'},
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_posts'},
             ],
         },
         bx_market_submenu: {
@@ -183,7 +183,7 @@ export const settingsDefault = {
             items: ['products-home', 'products-popular', 'products-categories', 'products-category'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-product' },
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_market'},
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_market'},
             ],
         },
         bx_posts_view_actions: [
@@ -199,7 +199,7 @@ export const settingsDefault = {
             icon: 'UsersFour',
             items: ['persons-home', 'persons-active'],
             add: [
-                {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
+                {icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_persons'},
             ],
         },
         bx_events_submenu: {
@@ -208,7 +208,7 @@ export const settingsDefault = {
             items: ['events-home', 'events-top', 'events-joined', 'events-followed'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-event-profile' },
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_events' },
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_events' },
             ],
         },
         sys_con_submenu: {
@@ -216,7 +216,7 @@ export const settingsDefault = {
             icon: 'Users',
             items: ['friends', 'friend-suggestions', 'friend-requests', 'sent-friend-requests', 'follow-suggestions', 'followers', 'following'],
             add: [
-                {icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_persons'},
+                {icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_persons'},
             ],
         },
         bx_persons_view_submenu: [
@@ -246,7 +246,7 @@ export const settingsDefault = {
             items: ['groups-home', 'groups-joined', 'groups-followed'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-group-profile' },
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_groups'},
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_groups'},
             ],
         },
         bx_forum_submenu: {
@@ -255,7 +255,7 @@ export const settingsDefault = {
             items: ['discussions-home', 'discussions-categories', 'discussions-category'],
             add: [
                 { icon: 'plus', name: 'Add', link: '/create-discussion' },
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_forum'},
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_forum'},
             ],
         },
         bx_groups_view_submenu: [
@@ -303,7 +303,7 @@ export const settingsDefault = {
             icon: 'Hash',
             items: ['channels-home', 'channels-top'],
             add: [
-                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=&section=bx_channels' },
+                { icon: 'search', name: 'Search', link: '/search-keyword?keyword=keyword&section=bx_channels' },
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
