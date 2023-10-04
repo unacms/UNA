@@ -183,6 +183,25 @@ export default function Unit(props) {
             }};
         }
 
+        const sCover = (
+            <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
+                {data.cover && ( <Image
+                        {...data.cover}
+                        alt={data.title}
+                        view="cover"
+                        className="absolute u-cover"
+                        sizes={imageSizes}
+                    />
+                )}
+            </View>
+        );
+
+        const sTitle = (
+            <Text numberOfLines={2} className=" tracking-tight leading-tight text-base font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d ">
+                {data.title}
+            </Text>
+        );
+
         return (
             <>
                 <Redirect ref={redirectdRef} />
@@ -190,17 +209,8 @@ export default function Unit(props) {
                     <View className="flex-col gap-y-4 ">
                         <Link className="" href={data.url}>
                             <View className="flex-col w-full ">
-                                <View className=" w-full p-1  ">
-                                    <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                                        {data.cover && ( <Image
-                                                {...data.cover}
-                                                alt={data.title}
-                                                view="cover"
-                                                className="absolute u-cover"
-                                                sizes={imageSizes}
-                                            />
-                                        )}
-                                    </View>
+                                <View className=" w-full p-1">
+                                    {sCover}
                                 </View>
                                 <View className="flex-col flex-auto gap-y-2 p-4  ">
                                     <View className=" flex-row flex-wrap gap-x-2 gap-y-2   ">
@@ -220,10 +230,8 @@ export default function Unit(props) {
                                         )}
                                         <Text  className="my-auto text-sm flex-auto font-semibold text-neutral-600 dark:text-neutral-400">{data.visibility != '3' ? <>Private</> : <>Public</>}</Text>
                                     </View>
-                                    <View className=" sm:h-12  ">
-                                        <Text numberOfLines={2} className=" tracking-tight leading-tight text-base font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d ">
-                                            {data.title}
-                                        </Text>
+                                    <View className="sm:h-12">
+                                        {sTitle}
                                     </View>
                                     <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
                                         {data.members_count} members
@@ -234,10 +242,18 @@ export default function Unit(props) {
                                             <>
                                                 <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
                                                 <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                                                    <Menu
-                                                        displayType="mixed"
-                                                        {...oMenuItemsMore}
-                                                    />
+                                                    <View className="gap-y-4">
+                                                        <View className="flex-row items-center gap-x-4">
+                                                            <View className="w-48">{sCover}</View>
+                                                            <View>{sTitle}</View>
+                                                        </View>
+                                                        <View>
+                                                            <Menu
+                                                                displayType="mixed"
+                                                                {...oMenuItemsMore}
+                                                            />
+                                                        </View>
+                                                    </View>
                                                 </Modal>
                                             </>
                                         )}
@@ -596,10 +612,17 @@ export default function Unit(props) {
                                         <>
                                             <Button variant="outline" size="sm" className=" my-auto " startDecorator="DotsThreeOutline" onPress={(event) => handleClickMore(event)} />
                                             <Modal key="more-popup"  onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                                                <Menu
-                                                    displayType="mixed"
-                                                    {...oMenuItemsMore}
-                                                />
+                                                <View className="gap-y-4">
+                                                    <View className="flex-row items-center gap-x-4">
+                                                        <Profile display_type="unit" display_name={data.title} url={data.url} url_avatar={data?.image?.src} showInfo={false} />
+                                                    </View>
+                                                    <View>
+                                                        <Menu
+                                                            displayType="mixed"
+                                                            {...oMenuItemsMore}
+                                                        />
+                                                    </View>
+                                                </View>
                                             </Modal>
                                         </>
                                     )}
