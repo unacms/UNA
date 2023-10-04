@@ -9,6 +9,9 @@ import { fetcher } from 'app/lib/fetcher';
 import { useEffect, useState, useRef  } from 'react';
 import React from 'react';
 import { Animated } from 'react-native';
+// import Aaa from "./aaa.svg";
+
+// const AaaExample = () => <Aaa />; 
 
 const LogoText = <Svg
     aria-label="Logo Text"
@@ -264,6 +267,8 @@ function ComponentsSplash(props) {
                     <Text className="text-base lg:text-lg xl:text-xl  max-w-2xl text-neutral-700 dark:text-neutral-300  ">
                     Connect and create with like-minded people, discover new perspectives, share knowledge and grow together - all within your community. 
                     </Text>
+
+                    {/*<AaaExample />*/}
 
                     <Link className='' href="/about">
                     <Button
