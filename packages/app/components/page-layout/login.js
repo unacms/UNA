@@ -7,11 +7,11 @@ export default function PageLayout(props) {
     return (
         <ScrollView className={ getPageWidth(props.uri) + ' sm:my-4 mx-auto w-full '}>
             <Row className='w-full'>
-                <View className='bg-red-500 w-1/3'><Text>Здесь можно делать все что угодно3</Text></View> 
-                <View className='bg-green-500 w-1/3'>
+                <View className='bg-red-500 w-1/2'><Text>Здесь можно делать все что угодно3</Text></View> 
+                <View className='bg-green-500 w-1/2'>
                     <BlockByName name={props.blocks.form} data={props.data}/>
                 </View>
-                <View className='bg-blue-500 w-1/3'><Text>Здесь можно делать все что угодно4</Text></View> 
+                
             </Row>
         </ScrollView>)
 }

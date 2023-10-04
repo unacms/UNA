@@ -252,8 +252,8 @@ function ComponentsSplash(props) {
         <View className="flex-col  w-full max-w-screen-2xl mx-auto">
           <View className="flex-col lg:flex-row gap-y-4 gap-x-4 sm:m-6 p-4 duration-300 sm:border border-dashed rounded-3xl border-gray-500/20">
             <View className="flex-col mx-auto w-full max-w-xl lg:w-1/2 items-center  lg:text-start p-4 xl:p-8 my-auto lg:flex-auto">
-            <View className="flex-col mx-auto w-full  lg:p-8 gap-y-8 my-auto lg:flex-auto">
-                <View className='w-full'>
+                <View className="flex-col mx-auto w-full  lg:p-8 gap-y-8 my-auto lg:flex-auto">
+                    <View className='w-full'>
                     <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-primary dark:text-primary-d  ">
                     Welcome
                     </Text>
@@ -265,12 +265,12 @@ function ComponentsSplash(props) {
                     Connect and create with like-minded people, discover new perspectives, share knowledge and grow together - all within your community. 
                     </Text>
 
-                    <Link className='' href="/create-account">
+                    <Link className='' href="/about">
                     <Button
-                        title="Create account"
-                        variant="primary"
-                        startDecorator="UserCirclePlus"
-                        size="lg"
+                        title="Learn more"
+                        variant="default"
+                        startDecorator="Info"
+                        size="base"
                     />
                     </Link>
                 </View>
@@ -451,7 +451,7 @@ function ComponentsSplash(props) {
                 </Text>
             </Card>
             </View>
-        </View>
+            </View>
         </View>
     );
 }
