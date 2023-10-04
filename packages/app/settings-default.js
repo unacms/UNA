@@ -325,7 +325,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false }
         },
         login: {
-            layout: 'create-account',
+            layout: 'login',
             blocks: {
                 form: { name: 'system:login_form', showTitle: false },
             },
