@@ -18,7 +18,7 @@ export default function ElementSearch(oProps) {
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupOpenHandle, setPopupOpenHandle] = useState(true);
     const [popupContent, setPopupContent] = useState('');
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = useState('');
     
 
     const getSkeleton = () => {
@@ -102,7 +102,7 @@ export default function ElementSearch(oProps) {
 
     let sResult = undefined;
     switch(sType) {
-        case 'rdx_button':
+        /*case 'rdx_button':
             const handleOpenPopupRdxButton = (bOpen) => {
                 if(bOpen)
                     setTimeout(() => {inputRef.current && inputRef.current.focus()}, 100);
@@ -119,9 +119,11 @@ export default function ElementSearch(oProps) {
                         <Redirect ref={redirectdRef} />
                         <View className="flex-row items-center mb-1">
                             <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                            <Link href={'/search-keyword?keyword=' + inputValue}>
-                                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
-                            </Link>
+                            {
+                                inputValue != '' && <Link href={'/search-keyword?keyword=' + inputValue}>
+                                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                                </Link>
+                            }
                         </View>
                         <View className="flex-row">
                             <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)}  role="textbox" aria-label="Search" />
@@ -132,8 +134,8 @@ export default function ElementSearch(oProps) {
                 </DropdownPopup>
             );
             break;
-
-        case 'rdx_input':
+        */
+        /*case 'rdx_input':
             const handleOpenPopupRdxInput = (bOpen) => {
                 if(bOpen)
                     inputRef.current && inputRef.current.focus();
@@ -157,9 +159,11 @@ export default function ElementSearch(oProps) {
                             <Redirect ref={redirectdRef} />
                             <View className="flex-row items-center">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                                <Link href={'/search-keyword?keyword=' + inputValue}>
-                                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
-                                </Link>
+                                {
+                                    inputValue != '' &&  <Link href={'/search-keyword?keyword=' + inputValue}>
+                                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                                    </Link>
+                                }
                             </View>
                             {!!popupContent && popupContent}
                         </View>
@@ -168,7 +172,7 @@ export default function ElementSearch(oProps) {
                 </Row>
             );
             break;
-
+        */
         case 'input':
         case 'button':
         case 'default':
@@ -203,9 +207,11 @@ export default function ElementSearch(oProps) {
                             <Redirect ref={redirectdRef} />
                             <View className="flex-row items-center mb-2">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
-                                <Link href={'/search-keyword?keyword=' + inputValue}>
-                                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
-                                </Link>
+                                {
+                                    inputValue && <Link href={'/search-keyword?keyword=' + inputValue}>
+                                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
+                                    </Link>
+                                }
                             </View>
                             <View className="flex-row">
                                 <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />

@@ -8,14 +8,20 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
-import { updateRightHeader } from 'app/lib/native-handlers';
+import { updateRightHeaderObj } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
+import { Modal } from 'app/design/controls';
+import { Input } from 'app/design/controls'
+import { Text } from 'app/design/typography';
+import Link from 'app/ui/atoms/link'
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='' }) {
-    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu, onChangeRoute);
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
+    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
    
+    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
     const [routes, setRoutes] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu,menuState)){
@@ -118,6 +124,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
 
+    const showSearch = (section) => {
+        console.log(section);
+        setSearchVisible(section)
+    };
+    const handleSearch = (value) => {
+        setSearchValue(value)
+    };
+
     const renderTabBar = (props) => {
       
         const tabWidth = props.layout.width/props.navigationState.routes.length;
@@ -139,7 +153,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
-                updateRightHeader(menuSettings?.add, navigation);
+                const addButtons = menuSettings?.add?.map((button) => {
+                    let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" onPress={button.section ? () => showSearch(button.section) : undefined} />;
+                    btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                    return (
+                        <View  key={`add-${button.icon}`} >{btn}</View>
+                )});
+                updateRightHeaderObj(addButtons, navigation);
+                //updateRightHeader(menuSettings?.add, navigation);
             }, 300);
 
             return (
@@ -206,6 +227,21 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     }, [scroll, headerMaxHeight]);
 
     let edges = ['left', 'right'];
+
+    const searchBarObj = () => {
+        return (
+            <Modal onVisible={searchVisible!= false} onClose={() => { setSearchVisible(false)}} position="top">
+                <View className={'mx-auto w-full px-4 py-2'}>
+                    <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">Search</Text>
+                    <Row className='gap-x-2 justify-center items-center'>
+                        <Input name="search" onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                        <Link href={'/search-keyword?keyword=' + searchValue + '&section='+ searchVisible}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+                    </Row>
+                </View>
+            </Modal>
+        );
+    };
+
     return (
         <SafeAreaView edges={edges} style={{
                 width: '100%',
@@ -214,6 +250,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 alignItems: 'center',
                 height: '100%'
             }}>
+            {searchBarObj()}
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}

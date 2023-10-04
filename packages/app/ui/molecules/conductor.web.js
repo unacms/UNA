@@ -13,11 +13,23 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
+import { Modal } from 'app/design/controls';
+import { Input } from 'app/design/controls'
+import { MotiView, AnimatePresence } from 'moti'
+import MainMenu from 'app/components/nav/mainmenu'
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, 
     offsetTop, leftSideBar, skeleton='', onChangeRoute, keyword}) {
     let uniRef = useRef();
-  
+    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+    const [menuPopup, setMenuPopup] = useState(true)
+
+    const showMenu = (params) => {
+        setMenuPopup(!menuPopup)
+      }
+
+
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
     //console.log('initedTabs', initedTabs);
     const windowDimen =  useWindowDimensions();
@@ -160,8 +172,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
-                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" onPress={button.section ? () => showSearch(button.section) : undefined} rounded />;
+                btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
@@ -176,6 +188,15 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         </Row> 
                         <Row className="pr-4">
                             {addButtons}
+                            <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
+                    <Button
+                      variant="outline"
+                      startDecorator="List"
+                      rounded
+                      align="start"
+                    />
+                  
+                  </Pressable></View>
                         </Row>
                     </Row>
                     }
@@ -190,7 +211,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                                             setIndex(a.index);
                                             getNumCols(windowWidth)
                                             window.history.pushState({ }, '', '/' + a.key);
-                                            console.log(onChangeRoute);
                                             onChangeRoute(a);
                                         }}
                                     >
@@ -279,7 +299,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         const dataItems = route.data
         //let b = useMemo(() => {
         const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
-        console.log('dataItemsdataItems',dataItems)
         if (!route.inited){
             return <></>
         }
@@ -335,10 +354,19 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (getNumCols(containerWidth) != numColumns)
         setNumColumns(getNumCols(containerWidth));
     };
+    
+    const showSearch = (section) => {
+        setSearchVisible(section)
+    };
+    const handleSearch = (value) => {
+        setSearchValue(value)
+    };
+    
+    
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
-            let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
+            let btn = <Button title={button.title} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
             return (
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
@@ -378,9 +406,80 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             </ScrollView>
     }, [routes, index]);
 
+    const searchBarObj= () => {
+        return (
+            <>
+            <Modal onVisible={searchVisible} onClose={() => { setSearchVisible(false)}} position="top">
+                <View className={'mx-auto w-full px-4 py-2'}>
+                    <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">Search</Text>
+                    <Row className='gap-x-2 justify-center items-center'>
+                        <Input name="search" onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                        <Link href={'/search-keyword?keyword=' + searchValue + '&section='+ searchVisible}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+                    </Row>
+                </View>
+            </Modal>
+            
+          </>
+        );
+    };
+
     if (leftSideBar){
         return (
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+                {/*TODODIX*/}
+                <AnimatePresence exitBeforeEnter>
+            {menuPopup && (
+              <View>
+                 <MotiView
+                 style={{ width: '100%' }}
+                  from={{
+                    opacity: 1,
+                    width: '100%'
+                  }}
+                  animate={{
+                    opacity: 1,
+                    width: '100%'
+                  }}
+                  exit={{
+                    opacity: 0,
+                    width: '0'
+                  }}
+                  transition={{
+                    duration: 0,
+                  }}
+                >
+                  <Pressable
+                    
+                    onPress={showMenu}
+                  ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></Pressable>
+                </MotiView>
+                <MotiView
+                  style={{ width: 288 }}
+                  from={{
+                    translateX: -300,
+                    overshootClamping: false,
+                  }}
+                  animate={{
+                    translateX: 0,
+    
+                    overshootClamping: false,
+                  }}
+                  exit={{
+                    height: 0,
+                    translateX: -300,
+                    overshootClamping: false,
+                  }}
+                  transition={{
+                    overshootClamping: true,
+                  }}
+                >
+                  <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
+                    <MainMenu  />
+                  </Pressable>
+                </MotiView>
+              </View>
+            )}
+          </AnimatePresence>
                 {headerObj}
                 <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>
@@ -392,6 +491,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         </View>
                     </Row>
                  </View>
+                 {searchBarObj()}
             </View>
          );
 
@@ -402,6 +502,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             <View className='max-w-screen-2xl mx-auto w-full'>
                 <RenderScene route={currentRoute}/>
             </View>
+            {searchBarObj()}
        </View>
     );
 }
