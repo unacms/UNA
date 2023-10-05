@@ -331,7 +331,7 @@ function ComponentsSplash(props) {
             >
               <Button
                 title="Create account"
-                variant="primary"
+                variant="outline"
                 startDecorator="UserCirclePlus"
                 size="base"
                 fullWidth
