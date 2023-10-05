@@ -15,12 +15,10 @@ import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
 import { Modal } from 'app/design/controls';
 import { Input } from 'app/design/controls'
-import { MotiView, AnimatePresence } from 'moti'
 import MainMenu from 'app/components/nav/mainmenu'
 import Redirect from 'app/ui/atoms/redirect';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, 
-    offsetTop, leftSideBar, skeleton='', onChangeRoute, keyword}) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword}) {
     const redirectdRef = useRef();
     let uniRef = useRef();
     const [searchVisible, setSearchVisible] = useState(false);
@@ -170,7 +168,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 display:'none'
             },
         });
-        console.log(headerSettings);
+
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
@@ -435,58 +433,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     if (leftSideBar){
         return (
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-                <AnimatePresence exitBeforeEnter>
-                    {menuPopup && (
-                    <View className="lg:hidden absolute z-50 top-[115px] w-full">
-                        <MotiView
-                            style={{ width: '100%' }}
-                            from={{
-                                opacity: 1,
-                                width: '100%'
-                            }}
-                            animate={{
-                                opacity: 1,
-                                width: '100%'
-                            }}
-                            exit={{
-                                opacity: 0,
-                                width: '0'
-                            }}
-                            transition={{
-                                duration: 0,
-                            }}
-                            >
-                                <Pressable onPress={showMenu} >
-                                    <View className="bg-white/50 dark:bg-black/50 backdrop-blur w-full absolute top-0 h-screen z-50"></View>
-                                </Pressable>
-                            </MotiView>
-                            <MotiView
-                                style={{ width: 288 }}
-                                from={{
-                                    translateX: -300,
-                                    overshootClamping: false,
-                                }}
-                                animate={{
-                                    translateX: 0,
-                    
-                                    overshootClamping: false,
-                                }}
-                                exit={{
-                                    height: 0,
-                                    translateX: -300,
-                                    overshootClamping: false,
-                                }}
-                                transition={{
-                                    overshootClamping: true,
-                                }}
-                            >
-                                <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
-                                    <MainMenu  />
-                                </Pressable>
-                            </MotiView>
-                        </View>
-                    )}
-                </AnimatePresence>
+                <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
                 {headerObj}
                 <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>

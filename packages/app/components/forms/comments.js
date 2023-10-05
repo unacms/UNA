@@ -15,7 +15,6 @@ export default function FormComments(props) {
             }));
         }
     }
-
     const windowWidth = useWindowDimensions().width;
 
     let styles ={};

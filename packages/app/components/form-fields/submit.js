@@ -14,11 +14,11 @@ export default function FormFieldSubmit(props) {
     return (
         <Field  {...props}>
             <Button
-                title={!props.icon_only ? props.value : '  '}
-                variant={!!props.variant ? props.variant : 'primary'} fullWidth
+                title={!props.icon_only ? props.value : ''}
+                variant={!!props.variant ? props.variant : 'primary'} 
+                fullWidth
                 onPress={props.handleSubmit}
                 startDecorator={props.icon}
-                
             />
             <Hidden 
                     name={props.name}

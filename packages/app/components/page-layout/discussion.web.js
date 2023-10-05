@@ -9,25 +9,28 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { stripTags } from '../../lib/util';
 import { useWindowDimensions } from 'react-native'
-import Card from 'app/ui/molecules/card'
+import { Modal } from 'app/design/controls'
+import { Button } from 'app/design/controls';
 
 export default function PageLayout(props) {
 
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});
-    
+    const [showModal, setShowModal] = useState(false);
+
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
     const handleReply =  async (id, author, text) => {
+        setShowModal(true)
         setFormData({text:stripTags(text), parent_id:id, author:author})
-        document.getElementsByClassName("form-control-cmt_text")[0].getElementsByClassName("ProseMirror")[0].focus();
     }
     
     const handleForm =  async (data) => {
         setAddData(data)
         calculateSize();
+        setShowModal(false)
     }   
 
     const handleWindowSizeChange = () => {
@@ -104,16 +107,22 @@ export default function PageLayout(props) {
     return ( 
         <>
             {header}
-            <View className="py-0 pt-12 lg:pt-4 lg:pb-14">
-                <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-tl-2xl sm:rounded-tr-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
-                    <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
-                        <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
-                    </View>
+            <View className="py-0 pt-12 lg:pt-4 pb-4">
+                <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
+                    <Row>
+                        <View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+                            <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
+                        </View>
                     </Row>
-                    <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full border-t  border-bdr dark:border-bdr-d' : ' w-full'} > 
-                        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                            <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
-                        </KeyboardAvoidingView>
+                    <View className='bg-red-500 m-4'>
+                        <Button variant="text" title="Write reply" onPress={() => { setShowModal(true) }}/>
+                    </View>
+                    <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
+                        <Modal onVisible={!!showModal} onClose={() => {setShowModal(null)}}>
+                            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                                <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
+                            </KeyboardAvoidingView>
+                        </Modal>
                     </View>
                 </View>
             </View>

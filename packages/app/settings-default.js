@@ -616,7 +616,7 @@ export const settingsDefault = {
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-discussion': {
-            layout: 'post',
+            layout: 'discussion',
             top:true,
             blocks: {
                 author: { name: 'bx_forum:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },

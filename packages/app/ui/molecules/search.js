@@ -223,7 +223,6 @@ export default function ElementSearch(oProps) {
                     </Modal>
                 </Row>
             );
-
             break;
     }
 
