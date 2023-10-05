@@ -99,7 +99,7 @@ export default function PageLayout(props) {
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    <View className="hidden lg:block w-1/4  max-w-sm  pt-4 top-0 sticky duration-200  ">
+                    {props.blocks.menu && <View className="hidden lg:block w-1/4  max-w-sm  pt-4 top-0 sticky duration-200  ">
                         <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
@@ -122,6 +122,7 @@ export default function PageLayout(props) {
                         </Row>
                         <BlockByName data={props.data} name={props.blocks.menu} />
                     </View>
+                    }
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   border-x border-dashed border-neutral-500/10 w-2/3">
                             <View className="flex-auto max-w-4xl w-full mx-auto">

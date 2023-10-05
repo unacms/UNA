@@ -2,22 +2,19 @@ import React, { useEffect, useCallback, lazy, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import Footer from './footer';
 import Informer from 'app/components/elements/informer';
-import { View } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
-import Navbar from 'app/components/nav/navbar'
+//import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
-/*const Navbar = lazy(() => import('app/components/nav/navbar'));
+const Navbar = lazy(() => import('app/components/nav/navbar'));
 
 const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
     return (
         <Navbar title={title} menu_add={menu_add} uri={uri} />
     );
-  });
-*/
-
-
+});
 
 export default function Layout({ data, uri, children }) {
     const { width } = useWindowDimensions();
@@ -63,14 +60,12 @@ export default function Layout({ data, uri, children }) {
     let stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}
     let stylesBg={ backgroundColor: appSetting('layout', 'background_color')}
     if(scheme === 'dark'){
-        console.log(scheme);
         stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image_dark')}
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
-        console.log(stylesBg);
     }
 
-    return (
-        <>
+    const Content = React.memo(({ children, headerSettings }) => {
+        return (
             <View className="w-full items-stretch " style={stylesBgImage}>
                 <View className=" w-full mx-auto flex-row -top-[1px] " >
                     <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
@@ -83,11 +78,30 @@ export default function Layout({ data, uri, children }) {
                 </View>
                 {headerSettings?.footer !== false && <Footer /> }
             </View>
-            { <Navbar title={data.title} menu_add={data.menu_add} uri={uri} />}
-        </>
-    );
+        );
+    });
+
+    if(appSetting('layout', 'theme') == 'facebook'){
+        return (
+            <>
+                <Content headerSettings={headerSettings} children={children} />
+                { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+            </>
+        );
+    }
+
+    if(appSetting('layout', 'theme') == 'twitter'){
+        if (width > 1024)
+            headerSettings.offset = false;
+        return (
+            <Row className='w-full flex-col lg:flex-row-reverse '>
+                <View className='w-full lg:w-4/5'>
+                    <Content headerSettings={headerSettings} children={children} />
+                </View>
+                <View className='w-full lg:w-1/5'>
+                    { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+                </View>
+            </Row>
+        );
+    }
 }
-/*
-disable to avoid rerenders
-<NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> 
-*/

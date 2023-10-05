@@ -1,6 +1,6 @@
 export const settingsDefault = {
     layout: {
-        theme:'facebook',
+        theme:'twitter',
         max_width: 'full',
         cell_gap: 4,
         cell_style: '',
@@ -145,6 +145,11 @@ export const settingsDefault = {
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
+            { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
+            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'comments' }, 
+            { name: 'notifications-view', title: 'Notifications', link: '/notifications-view', icon: 'notifications' }, 
+            { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots' }, 
         ],
         menu_top_more: [
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
@@ -373,7 +378,7 @@ export const settingsDefault = {
                 home_intro: { name: 'static:home_intro', showTitle: false, showBg: false },
                 home_footer: { name: 'static:home_footer', showTitle: false, showBg: false },
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
-                menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
+              
                 friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
                 messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },

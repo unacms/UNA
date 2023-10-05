@@ -12,13 +12,6 @@ export default function ElementProfileMenu(props) {
     styles = { maxHeight: windowHeight - 64 }
   }
 
-  const handleLayout = (event) => {
-    windowHeight = Dimensions.get('window').height
-    if (Platform.OS === 'web') {
-      styles = { maxHeight: windowHeight - 64 }
-    }
-  }
-
   return (
     <View style={styles} className=" px-4 overflow-y-scroll profile-menu  overflow-hidden  ">
       <View className="flex-col ">
