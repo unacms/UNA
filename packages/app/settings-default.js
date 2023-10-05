@@ -359,7 +359,6 @@ export const settingsDefault = {
             top:true,
             blocks: {
                 public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
-                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: true, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
@@ -375,6 +374,7 @@ export const settingsDefault = {
                 footer: { name: 'static:footer', showTitle: false, showBg: false },
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
                 friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
+                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
             header: [
