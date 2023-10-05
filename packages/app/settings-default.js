@@ -390,7 +390,7 @@ export const settingsDefault = {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
             icon: 'Egg',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'events-top': {
             layout: 'navigator',
@@ -398,7 +398,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
             },
             icon: 'ChatCircle',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'events-joined': {
             layout: 'navigator',
@@ -406,7 +406,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
             },
             icon: 'LinkSimple',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'events-followed': {
             layout: 'navigator',
@@ -414,7 +414,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
             },
             icon: 'Binoculars',
-            headerSettings: { backButton: false, header: false, offset: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-event-profile': {
             layout: 'profile',
@@ -447,7 +447,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
             },
             icon: 'ChatCircle',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-post': {
             layout: 'post',
@@ -482,7 +482,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'HouseSimple',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'products-category': {
             layout: 'navigator',
@@ -491,7 +491,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'CirclesFour',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'products-categories': {
             layout: 'navigator',
@@ -501,7 +501,7 @@ export const settingsDefault = {
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
             },
             icon: 'Folders',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'products-popular': {
             layout: 'navigator',
@@ -510,7 +510,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'FireSimple',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-product': {
             layout: 'post',
@@ -532,7 +532,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
             },
             icon: 'UserCircle',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'friends': {
             layout: 'navigator',
@@ -540,7 +540,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
             },
             icon: 'UserList',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'follow-suggestions': {
             layout: 'navigator',
@@ -548,7 +548,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
             icon: 'UserFocus',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'followers': {
             layout: 'navigator',
@@ -556,7 +556,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
             },
             icon: 'UsersFour',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'following': {
             layout: 'navigator',
@@ -564,7 +564,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
             },
             icon: 'UserSquare',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'friend-requests': {
             layout: 'navigator',
@@ -572,7 +572,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
             },
             icon: 'UserCirclePlus',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'sent-friend-requests': {
             layout: 'navigator',
@@ -580,7 +580,7 @@ export const settingsDefault = {
                 browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
             },
             icon: 'UserCircleGear',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         
         //############ DISCUSSION PAGES ############
@@ -593,7 +593,7 @@ export const settingsDefault = {
                 
             },
             icon: 'Egg',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-category': {
             layout: 'navigator',
@@ -603,7 +603,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'Folders',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-categories': {
             layout: 'navigator',
@@ -613,7 +613,7 @@ export const settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
             icon: 'Folders',
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-discussion': {
             layout: 'post',
@@ -633,7 +633,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
             icon: 'Egg',
         },
         'groups-joined': {
@@ -645,7 +645,7 @@ export const settingsDefault = {
                     showBg: false,
                 },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
             icon: 'Egg',
         },
         'groups-followed': {
@@ -657,7 +657,7 @@ export const settingsDefault = {
                     showBg: false,
                 },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
             icon: 'Binoculars',
         },
         'view-group-profile': {
@@ -683,14 +683,14 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'channels-top': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-channel-profile': {
             layout: 'profile',
@@ -705,7 +705,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
             icon: 'Users',
         },
         'persons-active': {
@@ -713,7 +713,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
             icon: 'Users',
         },
         'view-persons-profile': {

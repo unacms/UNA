@@ -17,13 +17,15 @@ import { Modal } from 'app/design/controls';
 import { Input } from 'app/design/controls'
 import { MotiView, AnimatePresence } from 'moti'
 import MainMenu from 'app/components/nav/mainmenu'
+import Redirect from 'app/ui/atoms/redirect';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu, 
     offsetTop, leftSideBar, skeleton='', onChangeRoute, keyword}) {
+    const redirectdRef = useRef();
     let uniRef = useRef();
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const [menuPopup, setMenuPopup] = useState(true)
+    const [menuPopup, setMenuPopup] = useState(false)
 
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
@@ -168,7 +170,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 display:'none'
             },
         });
-
+        console.log(headerSettings);
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
@@ -184,11 +186,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         <Row className="items-center">
                         <View className="ml-4 "></View>
                         { headerSettings.header && getBackButtonWeb() }
-                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
-                        </Row> 
-                        <Row className="pr-4">
-                            {addButtons}
-                            <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
+                        { headerSettings.header == false && headerSettings.menu == true &&  <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
                     <Button
                       variant="outline"
                       startDecorator="List"
@@ -196,7 +194,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                       align="start"
                     />
                   
-                  </Pressable></View>
+                  </Pressable></View>}
+                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
+                        </Row> 
+                        <Row className="pr-4">
+                            {addButtons}
                         </Row>
                     </Row>
                     }
@@ -211,7 +213,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                                             setIndex(a.index);
                                             getNumCols(windowWidth)
                                             window.history.pushState({ }, '', '/' + a.key);
-                                            onChangeRoute(a);
+                                            if (onChangeRoute) {
+                                                onChangeRoute(a);
+                                            }
                                         }}
                                     >
                                         <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={a.title}   />
@@ -358,10 +362,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const showSearch = (section) => {
         setSearchVisible(section)
     };
+
     const handleSearch = (value) => {
         setSearchValue(value)
     };
     
+    const handleSearchStart = () => {
+        redirectdRef.current.redirect('/search-keyword?keyword=' + searchValue + '&section='+ searchVisible);
+    };
     
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
@@ -409,77 +417,76 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const searchBarObj= () => {
         return (
             <>
-            <Modal onVisible={searchVisible} onClose={() => { setSearchVisible(false)}} position="top">
-                <View className={'mx-auto w-full px-4 py-2'}>
-                    <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">Search</Text>
-                    <Row className='gap-x-2 justify-center items-center'>
-                        <Input name="search" onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
-                        <Link href={'/search-keyword?keyword=' + searchValue + '&section='+ searchVisible}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
-                    </Row>
-                </View>
-            </Modal>
-            
-          </>
+                <Redirect ref={redirectdRef} />
+                <Modal onVisible={searchVisible} onClose={() => { setSearchVisible(false)}} position="top">
+                    <View className="px-1.5 pb-1.5">
+                        <View className="flex-row items-center mb-2">
+                            <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5 mb-2">Search</Text>
+                        </View>
+                        <View className="flex-row">
+                            <Input name="search" onSubmitEditing={handleSearchStart} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                        </View>
+                    </View>
+                </Modal>
+            </>
         );
     };
 
     if (leftSideBar){
         return (
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-                {/*TODODIX*/}
                 <AnimatePresence exitBeforeEnter>
-            {menuPopup && (
-              <View>
-                 <MotiView
-                 style={{ width: '100%' }}
-                  from={{
-                    opacity: 1,
-                    width: '100%'
-                  }}
-                  animate={{
-                    opacity: 1,
-                    width: '100%'
-                  }}
-                  exit={{
-                    opacity: 0,
-                    width: '0'
-                  }}
-                  transition={{
-                    duration: 0,
-                  }}
-                >
-                  <Pressable
+                    {menuPopup && (
+                    <View className="lg:hidden absolute z-50 top-[115px] w-full">
+                        <MotiView
+                            style={{ width: '100%' }}
+                            from={{
+                                opacity: 1,
+                                width: '100%'
+                            }}
+                            animate={{
+                                opacity: 1,
+                                width: '100%'
+                            }}
+                            exit={{
+                                opacity: 0,
+                                width: '0'
+                            }}
+                            transition={{
+                                duration: 0,
+                            }}
+                            >
+                                <Pressable onPress={showMenu} >
+                                    <View className="bg-white/50 dark:bg-black/50 backdrop-blur w-full absolute top-0 h-screen z-50"></View>
+                                </Pressable>
+                            </MotiView>
+                            <MotiView
+                                style={{ width: 288 }}
+                                from={{
+                                    translateX: -300,
+                                    overshootClamping: false,
+                                }}
+                                animate={{
+                                    translateX: 0,
                     
-                    onPress={showMenu}
-                  ><View className="bg-white/50 dark:bg-black/50 backdrop-blur w-full absolute top-0 h-screen z-50"></View></Pressable>
-                </MotiView>
-                <MotiView
-                  style={{ width: 288 }}
-                  from={{
-                    translateX: -300,
-                    overshootClamping: false,
-                  }}
-                  animate={{
-                    translateX: 0,
-    
-                    overshootClamping: false,
-                  }}
-                  exit={{
-                    height: 0,
-                    translateX: -300,
-                    overshootClamping: false,
-                  }}
-                  transition={{
-                    overshootClamping: true,
-                  }}
-                >
-                  <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
-                    <MainMenu  />
-                  </Pressable>
-                </MotiView>
-              </View>
-            )}
-          </AnimatePresence>
+                                    overshootClamping: false,
+                                }}
+                                exit={{
+                                    height: 0,
+                                    translateX: -300,
+                                    overshootClamping: false,
+                                }}
+                                transition={{
+                                    overshootClamping: true,
+                                }}
+                            >
+                                <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
+                                    <MainMenu  />
+                                </Pressable>
+                            </MotiView>
+                        </View>
+                    )}
+                </AnimatePresence>
                 {headerObj}
                 <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>

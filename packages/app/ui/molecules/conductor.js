@@ -172,8 +172,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                             >
                             <View > 
                                 <Button onPress={() => {
-                                   setIndex(a.index)
-                                   onChangeRoute(a);
+                                    setIndex(a.index)
+                                    if (onChangeRoute) {
+                                        onChangeRoute(a);
+                                    }
                                 }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={a.title} />
                             </View>
                             </Pressable>
