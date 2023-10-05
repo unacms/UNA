@@ -451,7 +451,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                   <Pressable
                     
                     onPress={showMenu}
-                  ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></Pressable>
+                  ><View className="bg-white/50 dark:bg-black/50 backdrop-blur w-full absolute top-0 h-screen z-50"></View></Pressable>
                 </MotiView>
                 <MotiView
                   style={{ width: 288 }}

@@ -10,7 +10,7 @@ export default function ElementMainMenu(props) {
     const menu_top = appSetting('menu_items', 'menu_top')
     
     return (
-        <View onPress={handleHideMenu} className="backdrop-blur h-full xl:flex shadow-xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d  bg-navbar/80 dark:bg-navbar-d/50 border-r 2xl:border-none border-bdr dark:border-bdr-d flex-col gap-y-2">
+        <View onPress={handleHideMenu} className="backdrop-blur h-full xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d   flex-col gap-y-2">
             <View className="flex-col gap-y-0.5">
             {menuItemsByName('main_menu', menu_top).map((item, index) => (
                 <Link key={`menu-${index}`} href= {item.link}>

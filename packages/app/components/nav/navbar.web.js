@@ -329,7 +329,7 @@ export default function (props) {
               <Pressable
                 
                 onPress={showMenu}
-              ><View className="bg-white/80 dark:bg-black/80 w-full absolute top-0 h-screen z-50"></View></Pressable>
+              ><View className="bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"></View></Pressable>
             </MotiView>
             <MotiView
               style={{ width: 288 }}
