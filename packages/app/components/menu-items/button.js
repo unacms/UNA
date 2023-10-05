@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import {ButtonMenuActionDefault, ButtonMenuActionText} from 'app/design/controls';
 import { View } from 'app/design/view';
 import Redirect from 'app/ui/atoms/redirect';
 
@@ -53,7 +53,8 @@ export default function MenuItemButton(oProps) {
                 event.preventDefault();
 
                 if(oProps?.link) {
-                    redirectdRef.current.redirect('/' + oProps?.link);
+                    let sUrl = oProps.link[0] === '/' ? oProps.link : '/' + oProps.link;
+                    redirectdRef.current.redirect(sUrl);
                 }
 
                 if(oProps.params?.onclick)
@@ -71,10 +72,11 @@ export default function MenuItemButton(oProps) {
             }
 
             sContent = (
-                <View className="flex-auto">
-                  
-                </View>
-            );
+                        <View className="flex-auto">
+                            <Redirect ref={redirectdRef} />
+                            <ButtonAction onPress = {handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                        </View>
+                      );
     }
 
     return (
