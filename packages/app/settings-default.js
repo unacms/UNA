@@ -329,7 +329,7 @@ export const settingsDefault = {
             blocks: {
                 form: { name: 'system:login_form', showTitle: false },
             },
-            max_width: 'max-w-2xl',
+            max_width: 'full',
         },
         'create-account': {
             layout: 'create-account',

@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg'
+import Svg, { Path } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/components/card'
@@ -309,26 +309,29 @@ function ComponentsSplash(props) {
         </View>
 
         <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto sm:p-2 lg:p-12 ">
+          
           <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
             <View className="px-2 sm:px-4">{props.block}</View>
             <Link
-              className="px-8 mx-auto pb-4 w-full border-bdr dark:border-bdr-d"
+              className="px-8 mx-auto  w-full border-bdr dark:border-bdr-d"
               href="/forgot-password"
             >
               <Button
                 title="Forgot password?"
                 variant="link"
                 fullWidth
-                size="sm"
+                size="xs"
               />
             </Link>
+            <Text className="text-center translate-y-4 text-xs bg-bgrcard dark:bg-bgrcard-d p-2 mx-auto rounded-full text-neutral-700 dark:text-neutral-300  ">
+              Don't have an account?</Text>
             <Link
               className="p-6 sm:p-8 w-full border-t border-bdr dark:border-bdr-d"
               href="/create-account"
             >
               <Button
-                title="Create new account"
-                variant="primary"
+                title="Create account"
+                variant="outline"
                 startDecorator="UserCirclePlus"
                 size="base"
                 fullWidth
