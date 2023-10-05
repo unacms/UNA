@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
-import { Pressable, View, Row } from 'app/design/view'
+import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
@@ -193,7 +193,7 @@ export default function ElementSearch(oProps) {
 
             const sTrigger = sType == 'input' ? (
                 <Pressable onPress={() => handleOpenPopupDefault()}>
-                    <InputRounded name="search" placeholder="Search..." role="textbox" aria-label="Search" />
+                    <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder="Search..." role="textbox" aria-label="Search" />
                 </Pressable>
             ) : (
                 <Button variant="outline" fullWidth startDecorator="search" rounded onPress={() => handleOpenPopupDefault()} />
@@ -214,9 +214,11 @@ export default function ElementSearch(oProps) {
                                 }
                             </View>
                             <View className="flex-row">
-                                <Input name="search" ref={inputRef} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                                <Input name="search" value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
                             </View>
-                            {!!popupContent && popupContent}
+                            <ScrollView className="max-h-72">
+                                {!!popupContent && popupContent}
+                            </ScrollView>
                         </View>
                     </Modal>
                 </Row>
