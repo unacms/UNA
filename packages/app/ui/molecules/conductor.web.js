@@ -119,7 +119,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         fetchNextPage();
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
-    let offset = windowWidth < 1024 ? 200 : 600;
+    let offset = header ? (windowWidth < 1024 ? 200 : 600) : 50;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -178,8 +178,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )});
             return (
-                <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-center justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"}  >
-                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : 'max-w-screen-2xl') + ' mx-auto w-full'}>
+                <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-950"}  >
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : 'max-w-screen-2xl') + 'w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
@@ -435,7 +435,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
                 {headerObj}
-                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
+                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full 456'} >
                     <Row>
                         <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50">
                             {leftSideBarObj()}
@@ -454,7 +454,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            <View className='max-w-screen-2xl mx-auto w-full'>
+            <View className='max-w-screen-2xl mx-auto w-full 123'>
                 <RenderScene route={currentRoute}/>
             </View>
             {searchBarObj()}
