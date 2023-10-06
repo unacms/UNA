@@ -65,7 +65,7 @@ export function CoverSmall(props) {
   const data = props.data
   return (
     <View className=" backdrop-blur bg-bgrtabbar  border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d  w-full ">
-      <View className='max-w-screen-2xl mx-auto w-full'>
+      <View className='max-w-screen-2xl w-full'>
         <View className=" mx-2 py-2 flex-row gap-2">
           <Row className=" items-center  flex-auto">
           <View className='mr-2 ml-2'>

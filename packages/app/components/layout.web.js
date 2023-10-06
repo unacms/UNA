@@ -64,39 +64,22 @@ export default function Layout({ data, uri, children }) {
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
     }
 
-    const Content = React.memo(({ children, headerSettings }) => {
-        return (
-            <View className="w-full items-stretch " style={stylesBgImage}>
-                <View className=" w-full mx-auto flex-row -top-[1px] " >
-                    <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
-                        <View className='w-full mx-auto'>
-                            {headerSettings.offset && <View className='w-full h-16' />}
-                            <Informer />
-                            {children}
-                        </View>
-                    </View>
-                </View>
-                {headerSettings?.footer !== false && <Footer /> }
-            </View>
-        );
-    });
-
-    if(appSetting('layout', 'theme') == 'facebook'){
+    if(appSetting('layout', 'format') == 'hor'){
         return (
             <>
-                <Content headerSettings={headerSettings} children={children} />
+                <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
                 { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
     }
 
-    if(appSetting('layout', 'theme') == 'twitter'){
+    if(appSetting('layout', 'format') == 'ver'){
         if (width > 1024)
             headerSettings.offset = false;
         return (
             <Row className='w-full flex-col lg:flex-row-reverse '>
                 <View className='w-full lg:w-4/5'>
-                    <Content headerSettings={headerSettings} children={children} />
+                    <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} />
                 </View>
                 <View className='w-full lg:w-1/5'>
                     { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
@@ -105,3 +88,20 @@ export default function Layout({ data, uri, children }) {
         );
     }
 }
+
+const Content = React.memo(({ children, headerSettings, stylesBgImage }) => {
+    return (
+        <View className="w-full items-stretch " style={stylesBgImage}>
+            <View className=" w-full mx-auto flex-row -top-[1px] " >
+                <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                    <View className='w-full mx-auto'>
+                        {headerSettings.offset && <View className='w-full h-16' />}
+                        <Informer />
+                        {children}
+                    </View>
+                </View>
+            </View>
+            {headerSettings?.footer !== false && <Footer /> }
+        </View>
+    );
+});

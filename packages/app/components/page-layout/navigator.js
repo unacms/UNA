@@ -3,7 +3,7 @@ import { Conductor } from 'app/ui/molecules/conductor';
 import { appSetting } from 'app/lib/util'
 
 export default function PageLayout(props) {
-    const leftSideBar = appSetting('layout', 'theme') == 'twitter' ? false : true
+    const leftSideBar = appSetting('layout', 'format') == 'ver' ? false : true
     
     let menu = props.data.menu;
     let categories = DataByName(props.data, props.blocks.categories);

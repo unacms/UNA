@@ -3,9 +3,9 @@ import NavbarVer from 'app/components/nav/navbar-ver'
 import { appSetting } from 'app/lib/util'
 export default function (props) {
     
-    if(appSetting('layout', 'theme') == 'twitter')
+    if(appSetting('layout', 'format') == 'ver')
         return <NavbarVer {...props}/>
 
-    if(appSetting('layout', 'theme') == 'facebook')
+    if(appSetting('layout', 'format') == 'hor')
         return <NavbarHor {...props}/>
 }
