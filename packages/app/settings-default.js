@@ -1,6 +1,6 @@
 export const settingsDefault = {
     layout: {
-        theme:'facebook',
+        format:'hor',
         max_width: 'full',
         cell_gap: 4,
         cell_style: '',
