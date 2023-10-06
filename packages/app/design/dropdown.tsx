@@ -14,7 +14,7 @@ export const DropdownMenuContentV = DropdownMenu.create(
 export const DropdownMenuItemV = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'flex flex-row-reverse  justify-end items-center px-3 py-2.5 gap-x-3 hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh font-medium text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer'
+    'flex flex-row-reverse  justify-end items-center px-3 py-2.5 gap-x-3 bg-bgrmodal dark:bg-bgrmodal-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh font-medium text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer'
   ),
   'Item'
 )
