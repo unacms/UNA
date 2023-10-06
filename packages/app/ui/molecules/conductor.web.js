@@ -452,6 +452,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
     return (
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+            <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <View className='max-w-screen-2xl mx-auto w-full'>
                 <RenderScene route={currentRoute}/>
