@@ -1,7 +1,10 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
+import { appSetting } from 'app/lib/util'
 
 export default function PageLayout(props) {
+    const leftSideBar = appSetting('layout', 'theme') == 'twitter' ? false : true
+    
     let menu = props.data.menu;
     let categories = DataByName(props.data, props.blocks.categories);
     let menuItems = [];
@@ -28,6 +31,6 @@ export default function PageLayout(props) {
         data={props.data} 
         blocks={props.blocks}
         useSectionAsMenu={false}
-        leftSideBar={true}
+        leftSideBar={leftSideBar}
     />)
 }
