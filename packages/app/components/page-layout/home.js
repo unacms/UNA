@@ -84,6 +84,7 @@ export default function PageLayout(props) {
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
                     {appStatic('components_splash', p)}
+                    {appStatic('components_fullfooter', p)}
                 </View>
             )
         }
@@ -226,6 +227,7 @@ export default function PageLayout(props) {
                     </View>
                 </View>
         </View>
+        
     )}
     }
 

@@ -546,6 +546,29 @@ const ComponentsFooter = (
   </>
 )
 
+const ComponentsFullFooter = (
+  <>
+    <Card addClassName="w-full p-3 flex-row justify-center ">
+    <Text className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}>
+        123
+      </Text>
+      <Link href="/about">
+        <Button variant="text" title="About" className="mt-auto" size="sm" />
+      </Link>
+
+      <Link href="/contact">
+        <Button variant="text" title="Contact" className="mt-auto" size="sm" />
+      </Link>
+      <Link href="/privacy">
+        <Button variant="text" title="Privacy" className="mt-auto" size="sm" />
+      </Link>
+      <Link href="/terms">
+        <Button variant="text" title="Terms" className="mt-auto" size="sm" />
+      </Link>
+    </Card>
+  </>
+)
+
 export const staticDefault = {
   logo_text: LogoText,
   logo_mark: LogoMark,
@@ -558,4 +581,5 @@ export const staticDefault = {
   components_splash: ComponentsSplash,
   components_dummy: ComponentsDummy,
   components_footer: ComponentsFooter,
+  components_fullfooter: ComponentsFullFooter,
 }
