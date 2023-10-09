@@ -36,14 +36,13 @@ export default function Unit(props) {
                             <View className="flex-col w-full ">
                                 <View className=" w-full p-1 aspect-video ">
                                     <View className="w-full aspect-square mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                                        {data.cover && ( <Image
-                                                {...data.cover}
-                                                alt={data.title}
-                                                view="cover"
-                                                className="absolute u-cover"
-                                                sizes={imageSizes}
-                                            />
-                                        )}
+                                        <Image
+                                            {...data.cover}
+                                            alt={data.title}
+                                            view="cover"
+                                            className="absolute u-cover"
+                                            sizes={imageSizes}
+                                        />
                                     </View>
                                 </View>
                                 <View className="flex-col flex-auto gap-y-2 p-4  ">
@@ -185,14 +184,13 @@ export default function Unit(props) {
 
         const sCover = (
             <View className="w-full mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                {data.cover && ( <Image
-                        {...data.cover}
-                        alt={data.title}
-                        view="cover"
-                        className="absolute u-cover"
-                        sizes={imageSizes}
-                    />
-                )}
+                <Image
+                    {...data.cover}
+                    alt={data.title}
+                    view="cover"
+                    className="absolute u-cover"
+                    sizes={imageSizes}
+                />
             </View>
         );
 
@@ -290,28 +288,15 @@ export default function Unit(props) {
                                         : 'flex-col w-full p-1'
                                     }
                                 >
-                                    {data.image ? (
-                                        <View className="aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full">
-                                            <Image
-                                                {...data.image}
-                                                alt={data.title}
-                                                view="cover"
-                                                className="u-cover"
-                                                sizes={imageSizes}
-                                            />
-                                        </View>
-                                    ) : (
-                                        <View
-                                            className={`sm:aspect-video ${
-                                            !data.image &&
-                                            'sm:bg-gradient-to-b from-bgritem to-bgrcard dark:from-bgritem-d dark:to-transparent justify-end'
-                                            } rounded-xl overflow-hidden w-2/5 w-full gap-y-2 pt-3 px-3`}
-                                        >
-                                            <Text numberOfLines={5} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
-                                                {data.title}
-                                            </Text>
-                                        </View>
-                                    )}
+                                    <View className="aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full">
+                                        <Image
+                                            {...data.image}
+                                            alt={data.title}
+                                            view="cover"
+                                            className="u-cover"
+                                            sizes={imageSizes}
+                                        />
+                                    </View>
                                     <View className="flex-auto flex-col mb-auto">
                                         <View
                                             className={`flex-auto flex-col ${

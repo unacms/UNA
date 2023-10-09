@@ -2,7 +2,6 @@ import { SolitoImage } from 'solito/image'
 import { styled } from 'nativewind'
 import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
-import { useState } from "react";
 import { env } from 'app/lib/env'
 
 export const SolitoImageStyled = styled(SolitoImage)
@@ -47,8 +46,23 @@ function normalizeWidth(width) {
 export default function ElementImage(props) {
     let {width, height, alt, src, style, source, nobg, ...rest} = props; // remove width & height
 
+    style={
+        backgroundImage: `
+        linear-gradient(
+            0deg,
+            rgba(118, 142, 255, 0.8) 0%,
+            rgba(185, 111, 255, 0.8) 17%,
+            rgba(232, 98, 255, 0.8) 33%,
+            rgba(255, 90, 193, 0.8) 50%,
+            rgba(255, 73, 160, 0.8) 67%,
+            rgba(255, 56, 141, 0.8) 83%,
+            rgba(255, 41, 128, 0.8) 100%
+          )
+    ` }
+
     if (!src)
-            return null;
+        src = '/spacer.png'
+
     if (!alt)
         alt = "";        
 
@@ -94,20 +108,7 @@ export default function ElementImage(props) {
     const rgbDataURL = (r, g, b) =>  `data:image/gif;base64,R0lGODlhAQABAPAA${triplet(0, r, g) + triplet(b, 255, 255)}/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`
 */
     
-    style={
-        backgroundImage: `
-        linear-gradient(
-            0deg,
-            rgba(118, 142, 255, 0.8) 0%,
-            rgba(185, 111, 255, 0.8) 17%,
-            rgba(232, 98, 255, 0.8) 33%,
-            rgba(255, 90, 193, 0.8) 50%,
-            rgba(255, 73, 160, 0.8) 67%,
-            rgba(255, 56, 141, 0.8) 83%,
-            rgba(255, 41, 128, 0.8) 100%
-          )
-    ` }
-
+    
     if (nobg == true){
         style={}
     }
