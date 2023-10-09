@@ -26,7 +26,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                         }}
                         exit={{
                             opacity: 0,
-                            width: '0'
+                            width: '100%'
                         }}
                         transition={{
                             duration: 0,

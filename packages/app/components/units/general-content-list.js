@@ -288,7 +288,7 @@ export default function Unit(props) {
                                         : 'flex-col w-full p-1'
                                     }
                                 >
-                                    <View className="aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full">
+                                    <View className={(!data.image ? 'hidden lg:block ': '') + "aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full"}>
                                         <Image
                                             {...data.image}
                                             alt={data.title}
@@ -303,12 +303,12 @@ export default function Unit(props) {
                                             data.image ? 'h-32' : 'sm:h-32'
                                             } gap-y-2 p-3`}
                                         >
-                                            {data.image && (
+                                            {true && (
                                                 <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
                                                     {data.title}
                                                 </Text>
                                             )}
-                                            <Text numberOfLines={data.image ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
+                                            <Text numberOfLines={true ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
                                                 {data.summary_plain}
                                             </Text>
                                         </View>

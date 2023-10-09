@@ -21,6 +21,7 @@ import Redirect from 'app/ui/atoms/redirect';
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword}) {
     const redirectdRef = useRef();
     let uniRef = useRef();
+    let inputSearchRef = useRef();
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [menuPopup, setMenuPopup] = useState(false)
@@ -358,7 +359,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     };
     
     const showSearch = (section) => {
-        setSearchVisible(section)
+        setTimeout(() => {
+            inputSearchRef.current && inputSearchRef.current.focus()
+        }, 100);
+        setSearchVisible(section);
     };
 
     const handleSearch = (value) => {
@@ -422,7 +426,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5 mb-2">Search</Text>
                         </View>
                         <View className="flex-row">
-                            <Input name="search" onSubmitEditing={handleSearchStart} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                            <Input name="search" ref={inputSearchRef} onSubmitEditing={handleSearchStart} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
                         </View>
                     </View>
                 </Modal>
@@ -435,7 +439,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
                 {headerObj}
-                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full 456'} >
+                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
                     <Row>
                         <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50">
                             {leftSideBarObj()}
@@ -454,7 +458,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            <View className='max-w-screen-2xl mx-auto w-full 123'>
+            <View className='max-w-screen-2xl mx-auto w-full'>
                 <RenderScene route={currentRoute}/>
             </View>
             {searchBarObj()}

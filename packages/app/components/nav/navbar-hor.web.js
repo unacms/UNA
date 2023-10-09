@@ -265,14 +265,18 @@ export default function (props) {
                             </View>}
                             {profile ? (
                                 <View className="hidden sm:flex ml-2 flex-row justify-center">
-                                    <Button
-                                        variant="outline"
-                                        rounded
-                                        padding={1}
-                                        startDecorator={profile}
-                                        id="m3"
-                                        onPress={() => {}}
-                                    />
+                                    <Link href='/dashboard'>
+                                        <Tooltip content="Dashboard" asChildTrigger={true}>
+                                            <ButtonRef
+                                                variant="outline"
+                                                rounded
+                                                padding={1}
+                                                startDecorator={profile}
+                                                id="m3"
+                                                onPress={() => {}}
+                                            />
+                                        </Tooltip>
+                                    </Link>
                                 </View>
                             ) : (
                                 <></>
