@@ -1,3 +1,6 @@
+const merge = require('deepmerge');
+const configCustom = require('./theme.custom.js');
+
 const colors = {
   neutral: {
     DEFAULT: 'rgba(75,85,99,1)',
@@ -145,7 +148,4 @@ const theme = {
   },
 }
 
-module.exports = {
-  theme,
-  colors,
-}
+module.exports = merge({ theme, colors } , configCustom)
