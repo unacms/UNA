@@ -166,8 +166,8 @@ const ComponentsAbout = (
 const ComponentsCommentsEmpty = (
   <>
     <View className="p-8">
-      <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-        <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
+      <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+        <View className="flex-col mx-auto mb-4 text-neutral-800 dark:text-neutral-200 ">
           <Icon icon="ChatCircle" width={32} height={32} />
         </View>
         <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
@@ -184,15 +184,15 @@ const ComponentsCommentsEmpty = (
 const ComponentsContentEmpty = (
   <>
     <View className="p-8">
-      <View className="flex-col  items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
-        <View className="flex-col mx-auto mb-2 text-neutral-800 dark:text-neutral-200 ">
-          <Icon icon="ChatCircle" width={32} height={32} />
+      <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+        <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
+          <Icon icon="Binoculars" width={32} height={32} />
         </View>
         <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-          No content yet
+          Here goes nothing
         </Text>
         <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-          some text
+         Couldn't find anything to show here, sorry.
         </Text>
       </View>
     </View>
