@@ -93,7 +93,7 @@ export default function PageLayout(props) {
         }
         else{
             aItems[actionsItemIndex].data = (
-                <View className='pt-4 px-4'>
+                <View className='pt-4 px-4 lg:pt-6 lg:px-6'>
                     {aItems[actionsItemIndex].data}
                 </View>
             );
@@ -104,8 +104,8 @@ export default function PageLayout(props) {
     return ( 
         <>
             {header}
-            <View className="py-0 pt-12 lg:pt-4 lg:pb-14">
-                <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden sm:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
+            <View className="py-0 pt-14 lg:pt-4 lg:pb-14">
+                <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
                     <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                         <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                     </View>

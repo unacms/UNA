@@ -49,9 +49,9 @@ export default function AtomProfile(oProps) {
             break
 
         case 'base':
-            sSize = 'w-10 h-10'
-            iSizeWidth = 48
-            iSizeHeight = 48
+            sSize = 'w-11 h-11'
+            iSizeWidth = 44
+            iSizeHeight = 44
             sSizeFont = 'text-base font-semibold';
             break
 
@@ -140,8 +140,8 @@ export default function AtomProfile(oProps) {
     switch (sDisplayType) {
         case 'unit':
             sResult = (
-                <View className="flex-row    gap-2">
-                    <View className="flex-none gap-2">
+                <View className="flex-row gap-x-2">
+                    <View className="flex-none">
                         <AtomProfile {...oProps} displayType="unit_wo_info" />
                     </View>
                     <View className="flex-auto">

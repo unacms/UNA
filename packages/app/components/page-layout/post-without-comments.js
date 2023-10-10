@@ -74,7 +74,7 @@ export default function PageLayout(props) {
     actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
-            <View className='pt-4 px-4'>
+            <View className='pt-4 px-4 lg:pt-6 lg:px-6'>
                 {aItems[actionsItemIndex].data}
             </View>
         );
