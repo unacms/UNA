@@ -6,7 +6,8 @@ export const settingsDefault = {
         cell_style: '',
         show_user_icon: true,
         search: true,
-        messenger: true,
+        messenger: '/messenger',
+        notifications: '/notifications-view',
         apps: true,
         block: 'login',
         allow_switch_profile: true,
@@ -225,6 +226,10 @@ export const settingsDefault = {
             'persons-profile-info',
             'persons-profile-friends',
             'persons-profile-subscriptions',
+        ],
+        sys_account_settings_submenu: [
+            { name: 'account-settings-password',title: 'Account Settings', link: '/account-settings-password', icon: 'Gear'},
+            { name: 'account-settings-email',title: 'Account Settings', link: '/account-settings-email', icon: 'Gear'},
         ],
         bx_persons_view_meta: {
             iconset: {

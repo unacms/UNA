@@ -40,7 +40,7 @@ export default function (props) {
     }
 
     const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('layout', 'messenger') == true;
+    const bMessenger = appSetting('layout', 'messenger') ? true : false;
     const bApps = appSetting('layout', 'apps') == true;
 
     const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
@@ -61,7 +61,7 @@ export default function (props) {
                     title={sTxtNtfsViewAll}
                     onPress={() => {
                     setNtfsOpen(false)
-                    handleClick('/notifications-view')
+                    handleClick(appSetting('layout', 'notifications'))
                     }}
                 />
             </View>

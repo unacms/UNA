@@ -40,7 +40,8 @@ export default function (props) {
     }
 
     const bSearch = appSetting('layout', 'search') == true;
-    const bMessenger = appSetting('layout', 'messenger') == true;
+    const bMessenger = appSetting('layout', 'messenger') ? true : false;
+    const bNotifs = appSetting('layout', 'notifications') ? true : false;
     const bApps = appSetting('layout', 'apps') == true;
 
     const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
@@ -61,7 +62,7 @@ export default function (props) {
                     title={sTxtNtfsViewAll}
                     onPress={() => {
                     setNtfsOpen(false)
-                    handleClick('/notifications-view')
+                    handleClick(appSetting('layout', 'notifications'))
                     }}
                 />
             </View>
@@ -231,8 +232,8 @@ export default function (props) {
                                     </Tooltip>
                                 </DropdownMenu>
                             </View>}
-                            {bMessenger && <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
-                                <DropdownPopup
+                            <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
+                                {bNotifs && <DropdownPopup
                                     open={ntfsOpen}
                                     onOpenChange={(bOpen) => {
                                         bOpen
@@ -250,8 +251,8 @@ export default function (props) {
                                         />,
                                         ntfsContent
                                     ]}
-                                </DropdownPopup>
-                                <Tooltip content="Messenger" asChildTrigger={true}>
+                                </DropdownPopup>}
+                                {bMessenger && <Tooltip content="Messenger" asChildTrigger={true}>
                                     <ButtonRef
                                         variant="outline"
                                         rounded
@@ -261,8 +262,8 @@ export default function (props) {
                                         handleClick('/messenger')
                                         }}
                                     />
-                                </Tooltip>
-                            </View>}
+                                </Tooltip> }
+                            </View>
                             {profile ? (
                                 <View className="hidden sm:flex ml-2 flex-row justify-center">
                                     <Link href='/dashboard'>

@@ -11,6 +11,7 @@ import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import JitSi from 'app/ui/molecules/jitsi'
+import { menuItemsByName } from 'app/lib/util'
 
 export default function PageLayout(props) {
   let { currentUser, setCurrentUser } = useCurrentUser()
@@ -23,9 +24,8 @@ export default function PageLayout(props) {
     dUser.url_avatar = dUser.avatar
     profile = <Profile {...dUser} displayType="unit_wo_info" size="lg" />
   }
-
+  console.log('pageData', props, props.data.menu.items, menuItemsByName(props.data.menu.object, props.data.menu.items, ''))
   if (!currentUser) return <></>
-  console.log('showImage', showImage)
   return (
     <>
     <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
@@ -56,7 +56,10 @@ export default function PageLayout(props) {
               </View>
               <View className="flex-row gap-x-2 my-auto  lg:hidden">
                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
-                <Link href="/account-settings-password"><Button variant="outline" startDecorator="Gear" rounded /></Link>
+                 {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
+                  <Link href={item.link}><Button variant="outline" startDecorator={item.icon} rounded /></Link>
+                )}
+                
                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
               </View>
               <View className="flex-row gap-x-2 hidden lg:flex">
@@ -68,14 +71,17 @@ export default function PageLayout(props) {
                   onPress = {() => setShowImage(true)}
                   align="left"
                 />}
-                <Link href="/account-settings-password">
-                <Button
-                  variant="text"
-                  title="Account Settings"
-                  startDecorator="Gear"
-                  fullWidth
-                  align="left"
-                /></Link>
+               
+                 {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
+                   <Link href={item.link}>
+                   <Button
+                     variant="text"
+                     title={item.title}
+                     startDecorator={item.icon}
+                     fullWidth
+                     align="left"
+                   /></Link>
+                )}
                 <Link href="/logout"><Button
                   variant="text"
                   title="Sign out"

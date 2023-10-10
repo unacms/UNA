@@ -61,7 +61,7 @@ export default function AppLayout() {
             name={`tab${index}`}
             initialParams={{ url2: tab.url}}
             options={{
-              tabBarBadge: tab.url == '/notifications-view' ? notifCount : null,
+              tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
               title: tab.title,
               headerShown: false,
               tabBarIcon: ({color}) => (
