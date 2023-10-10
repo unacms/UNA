@@ -407,7 +407,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 fullWidth
                                 title = {a.title}
                                 align="start"
-                                startDecorator={!a.ident ? settings.icon : undefined}
+                                startDecorator={!a.ident ? settings?.icon : undefined}
                             />
                         </Pressable>
                     </Link>
