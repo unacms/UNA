@@ -84,7 +84,7 @@ export default function PageLayout(props) {
     return ( 
         <View className="lg:py-4">
             <Card>
-                <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+                <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? sizes.formHeight + 16: 16, heightx:sizes.otherHeight}} className='  w-full '>
                 TODO:
                 </View>
                 </Row>
