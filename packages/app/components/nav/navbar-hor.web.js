@@ -90,7 +90,7 @@ export default function (props) {
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
 
-    const windowWidth = useWindowDimensions().width + 17;
+    const windowWidth = useWindowDimensions().width;
 
     let headerSettings = getHeaderSettings(props.uri, width);
 

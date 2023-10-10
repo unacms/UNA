@@ -45,6 +45,7 @@ export default function PageLayout(props) {
 
     const router = useRouter();
     const windowWidth = useWindowDimensions().width + 24;
+    const windowWidthOr = useWindowDimensions().width;
 
     const calculateSize = () => {
         if (viewFormRef.current){
@@ -83,11 +84,11 @@ export default function PageLayout(props) {
     let header = <></>
     actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
     if (actionsItemIndex !== -1) {
-        if(windowWidth < 1024){
+        if(windowWidthOr < 1024){
             header = (
                 <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar   dark:bg-bgrnavbar-d backdrop-blur   border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-between'>
                     {getBackButtonWeb()}
-                    <View className='w-5/6'>
+                    <View style={{width:windowWidth-100}}>
                         {aItems[actionsItemIndex].data}
                     </View>
                 </Row></>

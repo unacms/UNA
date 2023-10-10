@@ -98,7 +98,7 @@ export function getHeaderSettings(uri, width) {
 
     let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : true;
     
-    if (width > 1024)
+    if (width >= 1024)
         bOffset = true;
 
     return {

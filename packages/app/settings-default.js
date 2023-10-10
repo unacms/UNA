@@ -6,7 +6,7 @@ export const settingsDefault = {
         cell_style: '',
         show_user_icon: true,
         search: true,
-        messenger: '/messenger',
+        messenger: '/chat',
         notifications: '/notifications-view',
         apps: true,
         block: 'login',
