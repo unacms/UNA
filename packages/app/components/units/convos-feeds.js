@@ -80,7 +80,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     return (
         <View className='w-full pt-3'>
             <View className="flex-row-reverse ">
-                <View className='flex-1 flex-col gap-y-1 -translate-x-2 translate-y-1 '>
+                <View className='flex-1 flex-col gap-y-4 -translate-x-2 translate-y-1 '>
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center pb-0.5">
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />

@@ -235,11 +235,11 @@ export default function FormFieldFiles(props) {
             }
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={ w + ' h-48 rounded-lg items-center justify-center border'}>
+                    <View className={ w + '  items-center justify-center bg-primary/5 w-full aspect-[3/1] hover:animate-pulse'}>
                         {img == null ? 
-                            <Text className='text-neutral-500/50 text-xl text-center'>{props.caption}</Text> 
+                            <View className='text-neutral-500/50 text-lg  h-full w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>{props.caption}</View> 
                             :( <>
-                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className="dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg u-cover rounded-lg" alt=''  src={img.file_url} /> }
+                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                         <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
@@ -257,7 +257,7 @@ export default function FormFieldFiles(props) {
     
     return (
         <Field {...props}>
-            <View className={bMultiple ? "mr-2 mb-2" : ""} >
+            <View className={bMultiple ? "mr-2" : ""} >
                 {getButton(imageSource.images)}
             </View>
             {!props.previewPlaceHolder && <Row className='flex-wrap gap-2'>{GhostsList(imageSource.images)}</Row>}

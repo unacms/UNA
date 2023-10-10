@@ -548,10 +548,10 @@ const ComponentsFooter = (
 
 const ComponentsFullFooter = (
   <>
-    <Card addClassName="w-full p-3 flex-row justify-center ">
-    <Text className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}>
-        123
-      </Text>
+    <View className=" w-full p-3 flex-row justify-center border-t border-bdr dark:border-bdr-d mt-8 ">
+      <Link href="/">
+        <Button variant="text" title="Home" className="mt-auto" size="sm" />
+      </Link>
       <Link href="/about">
         <Button variant="text" title="About" className="mt-auto" size="sm" />
       </Link>
@@ -565,7 +565,7 @@ const ComponentsFullFooter = (
       <Link href="/terms">
         <Button variant="text" title="Terms" className="mt-auto" size="sm" />
       </Link>
-    </Card>
+    </View>
   </>
 )
 

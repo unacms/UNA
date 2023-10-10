@@ -16,15 +16,15 @@ if(Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto     px-3   placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
-export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   flex-auto    px-3 dark:focus:bg-bgrinput-df placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
-export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full   flex-auto   px-3 dark:focus:bg-bgrinput-df placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto     px-3   placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   flex-auto    px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px]')
+export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full   flex-auto   px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
 
 export const Switch = SwitchDef
 export const Hidden = styled(TextInputDef, 'hidden')
-//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 h-[42px]')
+//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px]')
 
-const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto   p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base leading-5 '
+const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto   p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 

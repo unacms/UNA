@@ -234,7 +234,7 @@ export default function FormFieldFtf(props) {
 
 
     return (
-        <><View className='bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-600 dark:text-neutral-100 text-base' >
+        <><View className='bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base' >
         <EditorContent 
                 editor={editor} 
                 className={(props?.numLines == 1 ? '' : 'editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}

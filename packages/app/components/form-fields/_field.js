@@ -9,7 +9,7 @@ export default function FormField(props) {
     if (props.format == 'notitle')
         caption = '';
 
-    const sClassName = 'w-full form-control  ' + (props.format != 'custom' ? 'mt-6' : '')+ ' form-control-' + props.name ;
+    const sClassName = 'w-full form-control  ' + (props.format != 'custom' ? ' ' : '')+ ' form-control-' + props.name ;
     return (
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&

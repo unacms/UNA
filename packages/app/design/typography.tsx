@@ -18,7 +18,7 @@ export const P = styled(NativeText, 'text-base text-black my-4')
 /**
  * Components can have defaultProps and styles
  */
-const H1_ = styled(NativeText, 'text-xl lg:text-3xl font-bold my-4')
+const H1_ = styled(NativeText, 'text-2xl lg:text-3xl font-bold my-4')
 H1_.defaultProps = {
   role: 'header',
 }
@@ -27,7 +27,7 @@ export const H1 = ({ children, ...rest }) => {
   return <H1_ {...rest}>{correctedChildren}</H1_>;
 };
 
-const H1C_ = styled(NativeText, ' text-xl lg:text-3xl font-bold ')
+const H1C_ = styled(NativeText, ' text-2xl lg:text-3xl font-bold ')
 H1C_.defaultProps = {
   role: 'header',
 }

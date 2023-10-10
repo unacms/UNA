@@ -74,14 +74,14 @@ export default function FormFeed(props) {
           keyboardVerticalOffset={92}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View className="w-full flex-col pt-2 px-2">
+          <View className="w-full flex-col gap-y-4 ">
             {getFormFieldByData(
               props.data.inputs['text'],
               props.handleSubmit,
               'custom',
               { placeholder: 'Write your text here...', linkify: true }
             )}
-            <Row className="mt-2">
+            <Row className="">
               <View className="w-12">
                 {getFormFieldByData(
                   props.data.inputs['photo'],

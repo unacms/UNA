@@ -102,7 +102,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className='p-4 w-full'>
+        <View className='p-4 gap-y-6 flex-col w-full'>
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>
