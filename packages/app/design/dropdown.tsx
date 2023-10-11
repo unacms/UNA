@@ -6,7 +6,7 @@ export const DropdownMenuTrigger = DropdownMenu.Trigger
 export const DropdownMenuContentV = DropdownMenu.create(
   styled(
     DropdownMenu.Content,
-    'z-10 w-44 overflow-hidden backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d   divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-lg shadow-2xl'
+    'z-10 w-44 overflow-hidden backdrop-blur bg-bgrmodal dark:bg-bgrmodal-d mt-1  divide-y divide-bdr dark:divide-bdr-d text-sm  border dark:border-bdr-d border-bdr rounded-lg shadow-2xl'
   ),
   'Content'
 )
@@ -14,7 +14,7 @@ export const DropdownMenuContentV = DropdownMenu.create(
 export const DropdownMenuItemV = DropdownMenu.create(
   styled(
     DropdownMenu.Item,
-    'flex flex-row-reverse  justify-end items-center px-3 py-2.5 gap-x-3 bg-bgrmodal dark:bg-bgrmodal-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh font-medium text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer'
+    'flex flex-row-reverse  justify-end items-center px-3 py-2.5 gap-x-3 bg-bgrmodal dark:bg-bgrmodal-d hover:bg-bgritem dark:hover:bg-bgritem-d font-medium text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer'
   ),
   'Item'
 )
