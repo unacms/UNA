@@ -4,7 +4,6 @@ import { Text } from 'app/design/typography'
 
 
 export default function FormField(props) {
-
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';

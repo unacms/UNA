@@ -7,7 +7,7 @@ export default function FormFieldSelect(props) {
 
     const formContext = useFormContext();
     const { formState } = formContext;
-    let defaultValue = props.value;
+    let defaultValue = props?.value ? props.value : '';
     const [value, setValue] = useState(defaultValue)
 
     useEffect(() => {

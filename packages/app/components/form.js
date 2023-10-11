@@ -46,6 +46,7 @@ export default function Form(props) {
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
+            data.inputs[key].value= d[key];
         });
        await onFormSubmit(formData, d); 
     }    
@@ -53,11 +54,11 @@ export default function Form(props) {
     const onError = async d => {
         //TODO: gandle error
     }   
-    const {...methods} = useForm({defaultValues: defaultValues});  
-
+    //const {...methods} = useForm({defaultValues: defaultValues});  
+    const {...methods} = useForm();  
     useEffect(() => {
         if (methods.formState.isSubmitSuccessful) {
-            methods.reset();
+        //    methods.reset();
         }
       }, [methods.formState, methods.submittedData, methods.reset]);
 
@@ -90,7 +91,7 @@ export default function Form(props) {
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
-    
+
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm){
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} ></ElementForm>

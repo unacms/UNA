@@ -38,6 +38,23 @@ export default function BlockContentObjectDataArray(props) {
     if (error || dynamicData?.error) return <Text className="text-black dark:text-white">An error has occurred: {error ? error : dynamicData?.error}</Text>;
     //if (postData && !dynamicData) return <Text className="text-black dark:text-white">&nbsp;</Text>;
     
+
+ const setInputValueByName = (data, inputName, newValue) => {
+        for (const item of data) {
+            if (item.type === "form" && item.data.inputs[inputName]) {
+                item.data.inputs[inputName].value = newValue;
+                return true;  // Value was set successfully
+            }
+        }
+        return false;  // Input with the given name was not found
+    };
+
+    if (postData && !dynamicData){
+        postData.forEach((value, key) => {
+            setInputValueByName(props.data, key, value);
+        });
+    }
+
     let realData = props.data;
     if (dynamicData){
         realData = dynamicData.data;

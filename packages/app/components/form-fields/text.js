@@ -1,15 +1,22 @@
 import Field from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
+import React, { useState, useEffect, useCallback } from 'react';
 
 export default function FormFieldText(props) {
     
     let formContext = useFormContext();
-    let { formState } = formContext;
+    
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
     let { field } = useController({ name, rules, defaultValue });
+    
+    useEffect(() => {
+        if (props.value !== undefined)
+           formContext.setValue(props.name, props.value)
+    }, [props.name, props.value]);
+
 
     return (
         <Field {...props}>

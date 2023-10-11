@@ -49,7 +49,8 @@ export function findParent (data, c, o, insert) {
 }
 
 export function parseData (browse, dynamicData) {
-    
+    if (!dynamicData?.data?.browse?.data?.data)
+        return;
     dynamicData.data.browse.data.data.map(function(c, kc){
         let o = c[Object.keys(c)[0]];
         // add in root
@@ -87,20 +88,20 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
 
     const [commentData, setCommentData] = useState({
         parentId: 0, 
-        startFrom: browse.data.start, 
-        perView: browse.data.per_view,
-        last_count: browse.data.count,
+        startFrom: browse?.data?.start, 
+        perView: browse?.data?.per_view,
+        last_count: browse?.data?.count,
         moduleName: module, 
-        orderWay: browse.data.order,
-        view: browse.data.view,
-        objectId: browse.data.object_id,
+        orderWay: browse?.data?.order,
+        view: browse?.data?.view,
+        objectId: browse?.data?.object_id,
         formText: '',
         formAuthor: '',
         postData: null,
         num: 0,
         listData: browse,
         lastInserted:0,
-        total_count: browse.data.total_count
+        total_count: browse?.data?.total_count
     });
 
 
@@ -131,6 +132,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     }, [addData]);
 
     function DataForList(items, level, last_child_in, lvls){
+        if (!items)
+            return;
         Object.keys(items).forEach(function (k) { 
             let ilen = Object.keys(items[k]).length
             let item = null;
@@ -160,6 +163,9 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     }
 
     const handleMore = async (force = false) => {
+        if (!commentData.objectId)
+            return;
+
         if (commentData.last_count == commentData.perView){
             handleMoreInner();
         }
@@ -168,9 +174,9 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     const handleMoreInner = async () => {
         const sRequest = prepareUrl({'is_form' : false}) ;
         const sResponse = await fetcher(sRequest);
-        if(sResponse && sResponse.data != undefined){
+        if(sResponse && sResponse.data != undefined && sResponse?.data?.browse?.data){
             let browse = parseData(commentData.listData, sResponse);
-            let iCount = sResponse.data.browse.data.count;
+            let iCount = sResponse?.data?.browse?.data?.count;
             if (sResponse.data.browse.data.start == 0)
                 iCount = 0;
             addCommentData({startFrom: sResponse.data.browse.data.start, last_count: iCount, listData: browse })
@@ -182,7 +188,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         const sResponse = await fetcher(sRequest);
         if(sResponse && sResponse.data != undefined){
             let browse = parseData(commentData.listData, sResponse);
-            let iCount = sResponse.data.browse.data.count;
+            let iCount = sResponse?.data?.browse?.data?.count;
             let i = Object.keys(sResponse.data.browse.data.data[0])[0].replace('i', '');
             addCommentData({ last_count: iCount, listData: browse, total_count: commentData.total_count + iCount, lastInserted:i })
         }
@@ -198,7 +204,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         }
     }
 
-    DataForList(commentData.listData.data.data, 0, 0, []);
+    DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
     useEffect(() => {
         
@@ -255,7 +261,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             </View>
         </Row>)  : <Text>&nbsp;</Text>;
     
-    if (dataOut.length > 0){
+    if (dataOut.length > 0 || !commentData.objectId){
+        console.log('xxxxx');
         let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
         if (actionsItemIndex > 0)
         addItems.splice(actionsItemIndex, 1);
@@ -289,7 +296,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
 
                 onEndReached = {handleMore} 
                 ListFooterComponent={
-                    (commentData.last_count == commentData.perView) ? (
+                    (commentData.objectId && commentData.last_count == commentData.perView) ? (
                         <View className='m-2'><Loading/></View>
                     ) : null
                   }

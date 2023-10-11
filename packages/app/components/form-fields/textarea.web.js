@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic'
 import Field from './_field';
-import { useController } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
 
 import { TextInput as TextInputDef} from 'react-native'
@@ -23,6 +23,7 @@ export default function FormFieldText(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
+    let formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     let h = props.height ? props.height : null;
     const [height, setHeight] = useState(h);
@@ -75,7 +76,12 @@ export default function FormFieldText(props) {
 
     if (props.html == 1 || props.html == 2 || props.html == 3){
         input =  <FormFieldFtf  {...props} />;
-    }    
+    }  
+    
+    useEffect(() => {
+        if (props.value !== undefined)
+           formContext.setValue(props.name, props.value)
+    }, [props.name, props.value]);
 
     return (
         <Field {...props}>{input}</Field>

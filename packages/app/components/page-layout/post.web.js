@@ -43,7 +43,7 @@ export default function PageLayout(props) {
     const router = useRouter();
     const windowWidth = useWindowDimensions().width + 24;
     const windowWidthOr = useWindowDimensions().width;
-    console.log('windowWidth', windowWidth, window.innerWidth);
+   
     const calculateSize = () => {
         if (viewFormRef.current){
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
@@ -102,13 +102,14 @@ export default function PageLayout(props) {
 
     }
 
+   
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
     return ( 
         <>
             {header}
             <View className="py-0 pt-14 lg:pt-4 lg:pb-14">
                 <View className="max-w-5xl mx-auto w-full shadow border-bdrcard dark:border-bdrcard-d group duration-500 overflow-hidden lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
-                    <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 16: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
+                    <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 36: 16, heightx:sizes.otherHeight}} className='  w-full pb-4'>
                         <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                     </View>
                     </Row>
