@@ -235,9 +235,9 @@ export default function FormFieldFiles(props) {
             }
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={ w + '  items-center justify-center bg-primary/5 w-full aspect-[3/1] hover:animate-pulse'}>
+                    <View className={ w + '  items-center justify-center bg-primary/5 w-full aspect-[3/1] p-4 hover:animate-pulse'}>
                         {img == null ? 
-                            <View className='text-neutral-500/50 text-lg  h-full w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View> 
+                            <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View> 
                             :( <>
                                 { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }

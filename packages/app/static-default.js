@@ -311,7 +311,7 @@ function ComponentsSplash(props) {
         <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto sm:p-2 lg:p-12 ">
           
           <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-            <View className="px-2 sm:px-4">{props.block}</View>
+            <View className="px-2 sm:px-4 pt-6">{props.block}</View>
             <Link
               className="px-8 mx-auto  w-full border-bdr dark:border-bdr-d"
               href="/forgot-password"
