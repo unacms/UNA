@@ -204,7 +204,7 @@ export default function PageLayout(props) {
             <View className=" max-w-lg w-full lg:-translate-y-20  lg:p-8 mx-auto my-auto">
               
               <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-            <View className="px-2 sm:px-4"><BlockByName name={props.blocks.form} data={props.data}/></View>
+            <View className="px-2 sm:px-4  pt-6"><BlockByName name={props.blocks.form} data={props.data}/></View>
             <Link
               className="px-8 mx-auto  w-full border-bdr dark:border-bdr-d"
               href="/forgot-password"
