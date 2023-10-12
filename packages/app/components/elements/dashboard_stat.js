@@ -23,7 +23,7 @@ function getCounter(num, icon='', add='') {
             icon = 'ArrowFatDown';
     }
 
-    return <Row className={'my-auto  text-'+sColor+'-800 bg-'+sColor+'-200 dark:bg-'+sColor+'-950 gap-x-1 py-1 px-2 rounded-full dark:text-'+sColor+'-200 '}>
+    return <Row className={'mb-auto  text-'+sColor+'-800 bg-'+sColor+'-200 dark:bg-'+sColor+'-950 gap-x-1 py-1 px-2 rounded-full mb-auto dark:text-'+sColor+'-200 '}>
     <Icon className={"text-"+sColor+"-600 dark:text-"+sColor+"-400"} icon={icon} width={16} height={16} />
     <Text className={"flex-none text-"+sColor+"-800 dark:text-"+sColor+"-200 text-xs"}>{num}{add}
     </Text>
@@ -56,13 +56,13 @@ export default  function ElementDashboardStat(props) {
                       {
                         item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
                         {item.count}
-                        </Text> : <View><Link href={item2.link2} emulate={true}><Button startDecorator="plus" size="sm" rounded/></Link></View>
+                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="plus" size="" rounded/></Link></View>
                       }
                       {getCounter(item[item2.action], item2.action_icon)}
                     </Row>
                     <Row className="w-full my-auto gap-x-2 ">
                       
-                      <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
+                      <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                       {item2.title}
                       </Text>
                       <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
@@ -86,7 +86,7 @@ export default  function ElementDashboardStat(props) {
                 </Row>
                 <Row className="w-full my-auto gap-x-2 ">
                   
-                  <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
+                  <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                    {item2.title}
                   </Text>
                   <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">

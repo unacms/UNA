@@ -108,7 +108,7 @@ export default function ElementCover(props) {
 
   return (
     <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-      <View className='max-w-screen-2xl sm:px-4 mx-auto w-full'>
+      <View className='max-w-screen-2xl xl:px-4 mx-auto w-full'>
         <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto   xl:rounded-b-lg overflow-hidden">
           {!!data.cover && (
             <Image
@@ -128,7 +128,7 @@ export default function ElementCover(props) {
               </Text>
             </View>
           }
-          <View className='absolute lg:hidden top-4 left-4 z-50'>
+          <View className='absolute lg:hidden top-2.5 left-4 z-50'>
             {getBackButtonWeb()}
           </View>
         </View>
@@ -136,7 +136,7 @@ export default function ElementCover(props) {
         <View className="relative  flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
           
         {bPerson && <View className=" flex-col  w-full md:w-52 ">
-            <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d '>
+            <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-white dark:bg-neutral-900 '>
               <Profile
                 {...data.profile}
                 displayType="unit_wo_info"

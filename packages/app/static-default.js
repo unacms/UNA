@@ -39,7 +39,7 @@ const LogoText = (
 const LogoMark = (
   <Svg
     aria-label="Logo Mark"
-    className="p-[1px] group-h:rotate-[180deg] group-h:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
+    className=" group-h:rotate-[180deg] group-h:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
     viewBox="0 0 2400 2400"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -488,7 +488,7 @@ function ComponentsSplash(props) {
 
 const ComponentsDummy = (
   <>
-    <Row className="my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
+    <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
       <Icon
         className="text-green-600 dark:text-green-400"
         icon="ArrowFatUp"
@@ -500,7 +500,7 @@ const ComponentsDummy = (
       </Text>
     </Row>
 
-    <Row className="my-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
+    <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
       <Icon
         className="text-red-600 dark:text-red-400"
         icon="ArrowFatUp"
@@ -512,7 +512,7 @@ const ComponentsDummy = (
       </Text>
     </Row>
 
-    <Row className="w-1/5 my-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+    <Row className="w-1/5 mb-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
       <Icon
         className="text-gray-600 dark:text-gray-400"
         icon="ArrowFatUp"
