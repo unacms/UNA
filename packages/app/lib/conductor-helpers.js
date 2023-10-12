@@ -60,6 +60,8 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             }
 
         } else {
+            let contentAndEndpoint = processUrl(data, blocks);
+            i.sidebar = contentAndEndpoint.sidebar;
             i.link = item.link;
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
@@ -128,7 +130,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
-        let contentAndEndpoint = processUrl(sResponse.data, settings.blocks); 
+        let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks); 
         addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks, routes)
     }
 }

@@ -32,6 +32,7 @@ export const settingsDefault = {
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
         notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
+        root: 'https://ci.una.io/test3/',
     },
     lang_keys: {
         comment_list_title: 'Comments',

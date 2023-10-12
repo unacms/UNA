@@ -16,6 +16,7 @@ import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
 import MessengerPage from './messenger';
 import ProfileContacts from './contacts';
+import Lang from './lang';
 
 export const componentsMapDefault = {
     browse: Browse,
@@ -34,6 +35,7 @@ export const componentsMapDefault = {
     feed_item: FeedItem,
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
+    lang: Lang,
 
     get_block_contacts_messenger: ProfileContacts,
     messenger_main_page: MessengerPage

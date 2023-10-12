@@ -58,7 +58,7 @@ export default function Form(props) {
     const {...methods} = useForm();  
     useEffect(() => {
         if (methods.formState.isSubmitSuccessful) {
-        //    methods.reset();
+            methods.reset();
         }
       }, [methods.formState, methods.submittedData, methods.reset]);
 
