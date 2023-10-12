@@ -139,7 +139,7 @@ function DefaultUnit(data) {
 
   return (
     <AnimatedBlock>
-        <Card rounded='  ' margin=' mb-4 sm:mx-4 '>
+        <Card rounded='  ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
             <View className="flex-auto flex-row items-top px-4 py-3.5">
                 <Profile
                     {...data.author_data}
@@ -191,7 +191,7 @@ function DefaultUnit(data) {
                             classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
                             onFormSubmit={onFormSubmit}
                         />
-                        <View className="mx-4  mb-4">
+                        <View className="mx-4 mb-4">
                             <Button
                             title="Cancel"
                             fullWidth

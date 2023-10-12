@@ -548,7 +548,7 @@ const ComponentsFooter = (
 
 const ComponentsFullFooter = (
   <>
-    <View className=" w-full p-3 flex-row justify-center border-t border-bdr dark:border-bdr-d mt-8 ">
+    <View className=" w-full p-3 flex-row justify-center border-t backdrop-blur border-bdr dark:border-bdr-d mt-8 ">
       <Link href="/">
         <Button variant="text" title="Home" className="mt-auto" size="sm" />
       </Link>
