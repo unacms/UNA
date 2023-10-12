@@ -169,7 +169,7 @@ function DefaultUnit(data) {
                         onSelect={handleMenuManageSelect}
                         >
                         <Button
-                            variant="outline"
+                            variant="text"
                             size="sm"
                             rounded
                             startDecorator="DotsThreeOutline"

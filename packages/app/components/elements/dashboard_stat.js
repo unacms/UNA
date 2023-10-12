@@ -51,22 +51,23 @@ export default  function ElementDashboardStat(props) {
             if (item.type != 'growth') {
                 return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
                 <Link href={item2.link}>
-                  <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-3" margin="a">
+                  <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" >
                     <Row className='space-x-1 w-full justify-between'>
                       {
-                        item.count > 0 ? <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
+                        item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
                         {item.count}
                         </Text> : <View><Link href={item2.link2} emulate={true}><Button startDecorator="plus" size="sm" rounded/></Link></View>
                       }
                       {getCounter(item[item2.action], item2.action_icon)}
                     </Row>
                     <Row className="w-full my-auto gap-x-2 ">
-                      <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
-                        <Icon icon={item2.icon} width={24} height={24} />
-                      </View>
+                      
                       <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                       {item2.title}
                       </Text>
+                      <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
+                        <Icon icon={item2.icon} width={24} height={24} />
+                      </View>
                     </Row>
                   </Card>
                 </Link>
@@ -75,21 +76,22 @@ export default  function ElementDashboardStat(props) {
             return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
           
             <Link href={item2.link} key={index}>
-              <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-3" margin="a">
+              <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" margin="a">
                 <Row className=''>
-                <Text className=" text-3xl font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
+                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
                 {item.current} 
                 </Text>
                 {getCounter(item.growth, '', '%')}
                
                 </Row>
                 <Row className="w-full my-auto gap-x-2 ">
-                  <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
-                    <Icon icon={item2.icon} width={24} height={24} />
-                  </View>
+                  
                   <Text className=" flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
                    {item2.title}
                   </Text>
+                  <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
+                    <Icon icon={item2.icon} width={24} height={24} />
+                  </View>
                 </Row>
               </Card>
             </Link>
