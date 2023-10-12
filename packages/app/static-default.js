@@ -232,7 +232,7 @@ export function ComponentsIntro(props) {
   }, [])
 
   return (
-    <Card addClassName="  flex-col gap-y-2 p-4 mt-4">
+    <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
       <View className="flex-row gap-x-2 ">
         <Button
           variant="outline"
@@ -241,16 +241,16 @@ export function ComponentsIntro(props) {
           rounded
         />
         <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-          We are{' '}
+          
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">
-            <AnimatedCounter value={data} duration={5000} />
-          </Text>
-          .
+            <AnimatedCounter value={data} duration={1000} />
+          </Text>{' '}
+          members
         </Text>
       </View>
-      <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
-        Welcome to the community! This is a demo social network, powered by NEO
-        and UNA.
+      <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
+        Welcome to the demo social network powered by NEO App
+        and UNA CMS.
       </Text>
     </Card>
   )
