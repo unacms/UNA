@@ -19,12 +19,12 @@ export default function ElementInformer({data}) {
     };
 
     return (
-        <View className="w-full mx-auto bg-bgrnavbar dark:bg-bgrnavbar-d">
+        <View className="w-full mx-auto my-1">
             <View className="w-3/4 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
                         return (                   
-                            <View key={'informer' + index} className="bg-yellow-100 p-2 rounded m-2 gap-y-4 justify-center items-center">
+                            <View key={'informer' + index} className="bg-yellow-100 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
                                 <Row className='justify-center items-center'>
                                     <View className='mr-4 text-black dark:text-white'><Icon icon="Info" className="w-10 h-10"  /></View>
                                     {(state == 0 && <><Text className="text-black dark:text-white mr-4">{stripTags(item.msg)}</Text><Button variant="primary" title="Send verification letter"  onPress={pressBack} /></>)}
