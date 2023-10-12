@@ -259,7 +259,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         return (
             <>
-                <Animated.View  style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40 }, animatedStyle6]}>
+                <Animated.View style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40, top:windowWidth >= 1024 ? 63: 0 }, animatedStyle6]}>
                     {smallHeader}
                     {tabBarObj}
                 </Animated.View>

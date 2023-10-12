@@ -17,7 +17,6 @@ export default function FormFeed(props) {
     const [imageSource, setImageSource] = useState([])
     const { layoutData, setLayoutData } = useContext(LayoutData)
     let { currentUser, setCurrentUser } = useCurrentUser()
-    console.log(props);
     useEffect(() => {
         if (props.response?.id != responseId) {
             setLayoutData(props.response);
