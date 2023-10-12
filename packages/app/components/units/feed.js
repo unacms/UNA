@@ -103,7 +103,7 @@ function DefaultUnit(data) {
             if (l != ' ')
                 return (
                     <View className="ml-1">
-                        <Text className="text-neutral-600 dark:text-neutral-400 text-sm">
+                        <Text className="text-neutral-500  text-xs">
                         · {l}
                         </Text>
                     </View>

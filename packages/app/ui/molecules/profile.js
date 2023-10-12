@@ -52,7 +52,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-10 h-10 '
             iSizeWidth = 40
             iSizeHeight = 40
-            sSizeFont = 'text-sm font-semibold';
+            sSizeFont = 'text-base font-semibold';
             break
 
         case 'lg':
@@ -153,7 +153,7 @@ export default function AtomProfile(oProps) {
 
         case 'unit_wo_info':
             const content = <View className="relative flex-row">
-                <View className={sSize +" aspect-square overflow-hidden   border border-neutral-500/10 bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
+                <View className={sSize +" aspect-square overflow-hidden   border border-transparent bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
                     {!oProps.url_avatar && <View>
                         <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
                         <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>
@@ -184,7 +184,7 @@ export default function AtomProfile(oProps) {
                             <DisplayNameText title={oProps.display_name} />
                         )}
                         </Link>
-                        <View className="flex text-neutral-600 dark:text-neutral-400 text-sm">{sShowInfo}</View>
+                        <View className="flex text-neutral-600 dark:text-neutral-400 text-xs">{sShowInfo}</View>
                     </View>
          
             )
