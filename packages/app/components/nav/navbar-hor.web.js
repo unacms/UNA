@@ -112,7 +112,7 @@ export default function (props) {
             <View className="fixed -top-[1px]  w-full">
                 <Redirect ref={redirectdRef} />
                 <View className="  backdrop-blur h-16 px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-                    <View className="flex-row flex-auto lg:w-1/4 gap-x-3 my-auto">
+                    <View className="flex-row flex-auto lg:flex-none xl:w-1/4 gap-x-3 my-auto">
                         <Row className="flex-row  flex-none items-center">
                             {
                                 headerSettings.menu && (
@@ -141,12 +141,12 @@ export default function (props) {
                         {bSearch && <View className="hidden xl:flex"><Search type="input" /></View>}
                         
                     </View>
-                    <Row className="hidden w-1/2 lg:flex flex-auto">
-                        <Row className='mx-auto gap-x-0'>
+                    <Row className="hidden xl:w-1/2  lg:flex flex-auto">
+                        <Row className='w-full xl:mx-auto gap-x-0.5 max-w-lg justify-between'>
                             {menuItemsByName('main_menu', menu_top).map(
                             (item, index) =>
                             (currentUser || (!currentUser && item.nonlogged != false)) && (
-                                <Link href={item.link} key={`menu-${index}`} alt={item.title}>
+                                <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
                                     <Tooltip content={item.title} asChildTrigger={true}>
                                     <ButtonRef
                                         variant="text"
@@ -157,7 +157,7 @@ export default function (props) {
                                             ? item.icon
                                             : item.icon.split(' ')[0]
                                         }
-                                        align="start"
+                                        align="center"
                                     />
                                     </Tooltip>
                                 </Link>

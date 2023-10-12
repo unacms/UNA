@@ -59,7 +59,7 @@ export function UnitPerson(props) {
                 hover:bg-bgritem-h dark:hover:bg-bgritem-dh
                 max-w-5xl self-center w-full  "
         >
-          <View className="w-11 h-11 mr-2 rounded-full flex-none ">
+          <View className=" mr-2 rounded-full flex-none ">
             <Profile
               url_avatar={data?.image?.src}
               displayType="unit_wo_info"

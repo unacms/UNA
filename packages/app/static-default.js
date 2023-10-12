@@ -39,7 +39,7 @@ const LogoText = (
 const LogoMark = (
   <Svg
     aria-label="Logo Mark"
-    className="p-[1px] group-h:rotate-[180deg] group-h:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
+    className=" group-h:rotate-[180deg] group-h:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
     viewBox="0 0 2400 2400"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -232,7 +232,7 @@ export function ComponentsIntro(props) {
   }, [])
 
   return (
-    <Card addClassName="  flex-col gap-y-2 p-4 mt-4">
+    <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
       <View className="flex-row gap-x-2 ">
         <Button
           variant="outline"
@@ -241,16 +241,16 @@ export function ComponentsIntro(props) {
           rounded
         />
         <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-          We are{' '}
+          
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">
-            <AnimatedCounter value={data} duration={5000} />
-          </Text>
-          .
+            <AnimatedCounter value={data} duration={1000} />
+          </Text>{' '}
+          members
         </Text>
       </View>
-      <Text className="text-base mb-2 text-neutral-700 dark:text-neutral-300">
-        Welcome to the community! This is a demo social network, powered by NEO
-        and UNA.
+      <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
+        Welcome to the demo social network powered by NEO App
+        and UNA CMS.
       </Text>
     </Card>
   )
@@ -488,7 +488,7 @@ function ComponentsSplash(props) {
 
 const ComponentsDummy = (
   <>
-    <Row className="my-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
+    <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
       <Icon
         className="text-green-600 dark:text-green-400"
         icon="ArrowFatUp"
@@ -500,7 +500,7 @@ const ComponentsDummy = (
       </Text>
     </Row>
 
-    <Row className="my-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
+    <Row className="mb-auto  text-red-800 bg-red-200 dark:bg-red-950 gap-x-1 py-1 px-2 rounded-full dark:text-red-200 ">
       <Icon
         className="text-red-600 dark:text-red-400"
         icon="ArrowFatUp"
@@ -512,7 +512,7 @@ const ComponentsDummy = (
       </Text>
     </Row>
 
-    <Row className="w-1/5 my-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
+    <Row className="w-1/5 mb-auto  text-gray-800 bg-gray-200 dark:bg-gray-950 gap-x-1 py-1 px-2 rounded-full dark:text-gray-200 ">
       <Icon
         className="text-gray-600 dark:text-gray-400"
         icon="ArrowFatUp"
@@ -548,7 +548,7 @@ const ComponentsFooter = (
 
 const ComponentsFullFooter = (
   <>
-    <View className=" w-full p-3 flex-row justify-center border-t border-bdr dark:border-bdr-d mt-8 ">
+    <View className=" w-full p-3 flex-row justify-center border-t backdrop-blur border-bdr dark:border-bdr-d mt-8 ">
       <Link href="/">
         <Button variant="text" title="Home" className="mt-auto" size="sm" />
       </Link>

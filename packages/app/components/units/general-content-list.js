@@ -572,8 +572,8 @@ export default function Unit(props) {
                 <Redirect ref={redirectdRef} />
                 <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                     <Link className="group " href={data.url}>
-                        <View className="flex-row sm:flex-col">
-                            <View className="sm:aspect-square p-1 w-1/3 sm:w-full rounded-xl ">
+                        <View className="flex-row sm:flex-col p-1">
+                            <View className="aspect-square w-1/3 sm:w-full rounded-xl ">
                                 <Image
                                     src={data?.image?.src}
                                     alt={data.title}
@@ -582,7 +582,7 @@ export default function Unit(props) {
                                     sizes={imageSizes}
                                     />
                             </View>
-                            <View className="flex-col p-4 gap-y-4 flex-auto ">
+                            <View className="flex-col p-3 gap-y-3 flex-auto ">
                                 <Text numberOfLines={1} className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
