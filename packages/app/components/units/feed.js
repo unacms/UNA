@@ -140,12 +140,12 @@ function DefaultUnit(data) {
   return (
     <AnimatedBlock>
         <Card rounded='  ' margin=' mb-2 sm:mx-4 '>
-            <View className="flex-auto flex-row items-top p-4">
+            <View className="flex-auto flex-row items-top px-4 py-3.5">
                 <Profile
                     {...data.author_data}
                     showLink={true}
                     displayType="unit"
-                    displaySize="lg"
+                    displaySize="base"
                     showInfo={
                     <Row className="items-center">
                         <Link href={url}>
@@ -155,7 +155,7 @@ function DefaultUnit(data) {
                     </Row>
                     }
                 />
-                <View className="flex-auto justify-end flex-row my-auto">
+                <View className="flex-auto justify-end flex-row mb-auto">
                     {data.author_actions.map((item, index) => {
                     const Element = componentsMap[item.type]
                     if (!Element) return
@@ -452,7 +452,7 @@ function DefaultUnit(data) {
                             )}
                             </>
                         )}
-                        <View className="flex-col    relative px-0 pb-4 mt-4">
+                        <View className="flex-col relative px-0 py-3.5">
                             <View className=" flex-row    px-4 flex-auto">
                             <Menu
                                 {...data.menu_actions}

@@ -37,7 +37,7 @@ export default function FormFeed(props) {
     let dUser = Object.assign({}, currentUser)
     dUser.url_avatar = dUser.avatar
     dUser.url = '/dashboard'
-    profile = <Profile {...dUser} displaySize="lg" displayType="unit_wo_info" />
+    profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
   }
   return (
     <View className="w-full ">
@@ -124,8 +124,8 @@ export default function FormFeed(props) {
         </KeyboardAvoidingView>
       </Modal>
       <Card rounded='  ' margin=' p-4 mb-2 sm:mx-4 '>        
-      <View className=" flex-row ">
-          <View className='mr-2'>{profile}</View>
+      <View className=" flex-row gap-x-2 ">
+          <View className=''>{profile}</View>
           <Button
             size="base"
             variant="text"

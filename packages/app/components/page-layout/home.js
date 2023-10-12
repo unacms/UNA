@@ -125,7 +125,7 @@ export default function PageLayout(props) {
                     </View>
                     }
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                        <View className="flex-auto   border-x border-dashed border-neutral-500/10 w-2/3">
+                        <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-500/10 w-2/3">
                             <View className="flex-auto max-w-4xl w-full mx-auto">
                         {appSetting('feed', 'show_multi') ? (
                             <>
