@@ -12,9 +12,11 @@ import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
 import { Modal } from 'app/design/controls'
 import { appStatic } from 'app/lib/app-static'
+import { useTranslation } from 'react-i18next';
 
 export default function PageLayout(props) {
-
+    const { t } = useTranslation();
+    
     const [showImage, setShowImage] = useState(false);
 
     const isWeb = Platform.OS == 'web'

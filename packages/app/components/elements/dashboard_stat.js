@@ -7,6 +7,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
 import { fetcher } from '../../lib/fetcher';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 function getCounter(num, icon='', add='') {
     if (!num) num = 0;
@@ -31,7 +32,7 @@ function getCounter(num, icon='', add='') {
 }
 
 export default  function ElementDashboardStat(props) {
-
+    const { t } = useTranslation();
     const [data, setData] = useState(props.data);
     useEffect(() => {
         const fetchData = async () => {
@@ -63,7 +64,7 @@ export default  function ElementDashboardStat(props) {
                     <Row className="w-full my-auto gap-x-2 ">
                       
                       <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
-                      {item2.title}
+                      {t(item2.title)}
                       </Text>
                       <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
                         <Icon icon={item2.icon} width={24} height={24} />
@@ -87,7 +88,7 @@ export default  function ElementDashboardStat(props) {
                 <Row className="w-full my-auto gap-x-2 ">
                   
                   <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
-                   {item2.title}
+                  {t(item2.title)}
                   </Text>
                   <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
                     <Icon icon={item2.icon} width={24} height={24} />
