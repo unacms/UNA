@@ -19,17 +19,20 @@ export default function ElementInformer({data}) {
     };
 
     return (
-        <View className="w-full mx-auto my-1">
-            <View className="w-3/4 mx-auto ">
+        <View className="w-full mx-auto border-b px-4 xl:px-8 border-bdr dark:border-bdr-d mb-1">
+            <View className=" max-w-screen-lg mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
                         return (                   
-                            <View key={'informer' + index} className="bg-yellow-100 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
-                                <Row className='justify-center items-center'>
-                                    <View className='mr-4 text-black dark:text-white'><Icon icon="Info" className="w-10 h-10"  /></View>
-                                    {(state == 0 && <><Text className="text-black dark:text-white mr-4">{stripTags(item.msg)}</Text><Button variant="primary" title="Send verification letter"  onPress={pressBack} /></>)}
+                            <View key={'informer' + index} className="bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
+                                <View className='flex-row  gap-x-3'>
+                                    <View className='flex-none text-black dark:text-white'><Icon icon="Info" className="w-10 h-10"  /></View>
+                                    <View className='flex-col justify-center flex-auto gap-y-3'>
+                                    {(state == 0 && <><Text className="text-black  dark:text-white ">{stripTags(item.msg)}</Text>
+                                    <Button variant="primary" title="Send verification letter"  onPress={pressBack} /></>)}
+                                    </View>
                                     {(state == 1 && <><Text className="text-black dark:text-white">Email verification letter was sent, please check your inbox.</Text></>)}
-                                </Row>
+                                </View>
                             </View>
                         )
                     }
