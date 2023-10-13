@@ -134,7 +134,7 @@ export default function PageLayout(props) {
                             <>
                             <Row className="p-4  gap-x-2  w-full">
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title={t("Following")}/>
+                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'link' : 'text'} rounded  size="sm" />
                                 </Pressable>
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
                                     <Button
@@ -327,9 +327,9 @@ export default function PageLayout(props) {
                                 fullWidth={false}
                                 id="tab"
                                 startDecorator="Fire"
-                                variant={feedType == 'hot' ? 'outline' : 'text'}
+                                variant={feedType == 'hot' ? 'link' : 'text'}
+                                rounded
                                 size="sm"
-                                title="Hot"
                                 />
                             </Pressable>
                             {appSetting('feed', 'show_selector_view') && (
@@ -344,7 +344,7 @@ export default function PageLayout(props) {
                                             startDecorator="Rows"
                                             fullWidth={false}
                                             rounded
-                                            variant={unitMode == '' ? 'outline' : 'text'}
+                                            variant={unitMode == '' ? 'link' : 'text'}
                                             size="sm"
                                         />
                                     </Pressable>
@@ -358,7 +358,7 @@ export default function PageLayout(props) {
                                             startDecorator="ListBullets"
                                             fullWidth={false}
                                             rounded
-                                            variant={unitMode == 'small' ? 'outline' : 'text'}
+                                            variant={unitMode == 'small' ? 'link' : 'text'}
                                             size="sm"
                                         />
                                     </Pressable>
