@@ -805,7 +805,7 @@ export const settingsDefault = {
             'u-btn-text-trans': ' duration-200 ',
 
             'u-btn-link-cnt': ' border border-transparent ',
-            'u-btn-link-text': ' font-medium group-hover:underline text-primary dark:text-primary-d group-hover:opacity-90 active:opacity-50 ',
+            'u-btn-link-text': ' font-medium group-hover:underline text-primary dark:text-primary group-hover:opacity-90 active:opacity-50 ',
             'u-btn-link-trans': ' duration-200 ',
 
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:shadow-none  active:opacity-50 hover:shadow-sm ',

@@ -28,14 +28,14 @@ const ListFeed = memo((data)  => {
         <View className="flex-auto flex-col my-auto ">
           <View className="flex-row gap-2">
             <Text
-                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
+                className="flex-auto text-lg font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                 numberOfLines={1}
             > { title } </Text>
             <Time stylesName="text-neutral-600 dark:text-neutral-400 text-xs whitespace-nowrap truncate min-w-[3rem] text-right" ts={ date }></Time>
           </View>
           <View className="flex-row w-full items-end content-end">
             <Text
-              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
+              className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
               numberOfLines={1}
             >
               { message }

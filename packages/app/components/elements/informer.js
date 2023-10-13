@@ -21,12 +21,12 @@ export default function ElementInformer({data}) {
     if (!currentUser?.informer?.length)
         return <></>
     return (
-        <View className="w-full mx-auto border-b px-4 xl:px-8 border-bdr dark:border-bdr-d mb-1">
-            <View className=" max-w-screen-lg mx-auto ">
+        <View className="w-full mx-auto ">
+            <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
                         return (                   
-                            <View key={'informer' + index} className="bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
+                            <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
                                 <View className='flex-row  gap-x-3'>
                                     <View className='flex-none text-black dark:text-white'><Icon icon="Info" className="w-10 h-10"  /></View>
                                     <View className='flex-col justify-center flex-auto gap-y-3'>
