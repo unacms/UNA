@@ -13,8 +13,10 @@ import * as Linking from 'expo-linking';
 import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
 import { Redirect } from "expo-router";
+import { useTranslation } from 'react-i18next';
 
 export function Screen(params) {
+    const { t } = useTranslation();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
@@ -92,7 +94,7 @@ console.log('------------', _path);*/
                         profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
                     }
                     //settings?.icon
-                    updateCenterHeader(_path, data.props.data.title, backButtonPresented, navigation, routerExpo, colors, '', profile);
+                    updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
             }
       };

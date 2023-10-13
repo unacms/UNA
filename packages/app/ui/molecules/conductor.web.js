@@ -17,8 +17,10 @@ import { Modal } from 'app/design/controls';
 import { Input } from 'app/design/controls'
 import MainMenu from 'app/components/nav/mainmenu'
 import Redirect from 'app/ui/atoms/redirect';
+import { useTranslation } from 'react-i18next';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword}) {
+    const { t } = useTranslation();
     const redirectdRef = useRef();
     let uniRef = useRef();
     let inputSearchRef = useRef();
@@ -194,7 +196,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     />
                   
                   </Pressable></View>}
-                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{menuSettings?.name}</Text>}
+                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{t(menuSettings?.name)}</Text>}
                         </Row> 
                         <Row className="pr-4">
                             {addButtons}
@@ -217,7 +219,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                             }
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={a.title}   />
+                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)}   />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
@@ -376,7 +378,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
-            let btn = <Button title={button.title} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
+            let btn = <Button title={t(button.title)} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
             return (
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
@@ -384,8 +386,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mb-4 ">
                 <Text className="text-2xl mx-1 my-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
-                    
-                    {menuSettings?.name}
+                    {t(menuSettings?.name)}
                 </Text>
                 <Row className=" ">
                     {addButtons}
@@ -405,7 +406,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 variant={a.index == index ? 'outline': "text"}
                                 size={!a.ident ? "lg" : "base"}
                                 fullWidth
-                                title = {a.title}
+                                title = {t(a.title)}
                                 align="start"
                                 startDecorator={!a.ident ? settings?.icon : undefined}
                             />

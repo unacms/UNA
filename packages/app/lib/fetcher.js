@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { env } from 'app/lib/env';
+import i18n from 'i18next';
 
 const USE_PROXY = true; // TODO: move to some setting 
 
@@ -84,7 +85,8 @@ export async function fetcherRaw (host, mixed) {
     // headers['Pragma'] = "no-cache";
     // headers['Expires'] = "0";
     // perform fetch
-    return fetch(host + path, {
+    const lang = console.log(i18n.language);
+    return fetch(host + path + "&lang=" + lang, {
         method: data ? 'POST' : 'GET',
         body: data ? data : null,
         headers: headers,

@@ -21,8 +21,12 @@ import useSWR from 'swr'
 import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
+import { useTranslation } from 'react-i18next';
+
 
 function DefaultUnit(data) {
+    const { t } = useTranslation();
+    
     if ( data.type == 'timeline_common_repost'){
         return <></>; //NEED TO FIX
     }
@@ -96,7 +100,7 @@ function DefaultUnit(data) {
     }
 
     const ItemInfo = ({ data }) => {
-        let l = (appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '') +
+        let l = t((appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '')) +
             ' ' +
             (appSetting('lang_keys', 'feed_action_' + data.action) ? appSetting('lang_keys', 'feed_action_' + data.action) : '')
         

@@ -10,8 +10,11 @@ import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault
 import { Icon } from 'app/ui/atoms/icon'
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementScore(oProps) {
+    const { t } = useTranslation();
+    
     const bWeb = Platform.OS === 'web';
 
     const oIconAliases = {
@@ -255,7 +258,7 @@ export default function ElementScore(oProps) {
                 sUsers = getSkeleton();
 
             sCounterPopup = (
-                <Modal title={appSetting('lang_keys', 'score_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                <Modal title={t('Upvotes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                     <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
                 </Modal>
             );

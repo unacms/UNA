@@ -134,7 +134,7 @@ export default function PageLayout(props) {
                             <>
                             <Row className="p-4  gap-x-2  w-full">
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                    <Button fullWidth={true} id="tab" startDecorator="Users" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title="Following"/>
+                                    <Button fullWidth={true} id="tab" startDecorator="Users" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title={t("Following")}/>
                                 </Pressable>
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
                                     <Button
@@ -144,7 +144,7 @@ export default function PageLayout(props) {
                                         variant={feedType == 'public' ? 'outline' : 'text'}
                                         rounded
                                         size="sm"
-                                        title="For You"
+                                        title={t("For You")}
                                     />
                                 </Pressable>
                                 <Pressable
@@ -298,7 +298,7 @@ export default function PageLayout(props) {
                                     variant={feedType == 'account' ? 'outline' : 'text'}
                                     rounded
                                     size="sm"
-                                    title="Following"
+                                    title={t("Following")}
                                 />
                             </Pressable>
                             <Pressable
@@ -314,7 +314,7 @@ export default function PageLayout(props) {
                                     variant={feedType == 'public' ? 'outline' : 'text'}
                                     rounded
                                     size="sm"
-                                    title="For You"
+                                    title={t("For You")}
                                 />
                             </Pressable>
                             <Pressable

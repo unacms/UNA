@@ -9,8 +9,10 @@ import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
 import Link from '../../ui/atoms/link';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementSearch(oProps) {
+    const { t } = useTranslation();
     const redirectdRef = useRef();
 
     const sType = oProps?.type ? oProps.type : 'default';
@@ -95,8 +97,8 @@ export default function ElementSearch(oProps) {
         }
     }
 
-    const sTxtTitle = appSetting('lang_keys', 'search_popup_title');
-    const sTxtViewExtended = appSetting('lang_keys', 'search_popup_view_extended');
+    const sTxtTitle = t("Search");
+    const sTxtViewExtended = t("Extended");
 
     const inputRef = useRef();
 
@@ -193,7 +195,7 @@ export default function ElementSearch(oProps) {
 
             const sTrigger = sType == 'input' ? (
                 <Pressable onPress={() => handleOpenPopupDefault()}>
-                    <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder="Search..." role="textbox" aria-label="Search" />
+                    <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder={t("Search")+'...'} role="textbox" aria-label="Search" />
                 </Pressable>
             ) : (
                 <Button variant="outline" fullWidth startDecorator="search" rounded onPress={() => handleOpenPopupDefault()} />
@@ -235,7 +237,7 @@ export default function ElementSearch(oProps) {
         <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 py-2'}>
                 <Row className='gap-x-2 justify-center items-center'>
-                    <Input name="search" placeholder="Search..." defaultValue={inputValue} role="textbox" aria-label="Search" 
+                    <Input name="search" placeholder={t("Search")+'...'} defaultValue={inputValue} role="textbox" aria-label="Search" 
                         onChangeText={(value) => {
                             setInputValue(value)
                            // props.onChangeKey(value)
