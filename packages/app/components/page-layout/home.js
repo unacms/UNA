@@ -15,8 +15,8 @@ import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next';
 
 export default function PageLayout(props) {
-    const { t } = useTranslation();
     
+    const { t } = useTranslation();
     const [showImage, setShowImage] = useState(false);
 
     const isWeb = Platform.OS == 'web'
@@ -139,12 +139,11 @@ export default function PageLayout(props) {
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
                                     <Button
                                         fullWidth={true}
-                                        id="tab"
                                         startDecorator="Pulse"
                                         variant={feedType == 'public' ? 'link' : 'text'}
                                         rounded
                                         size="sm"
-                                        title={t("For You")}
+                                        
 
                                     />
                                 </Pressable>
@@ -156,7 +155,7 @@ export default function PageLayout(props) {
                                 >
                                     <Button
                                         fullWidth={true}
-                                        id="tab"
+                                        rounded
                                         startDecorator="Fire"
                                         variant={feedType == 'hot' ? 'link' : 'text'}
                                         size="sm"

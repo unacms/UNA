@@ -85,7 +85,7 @@ export async function fetcherRaw (host, mixed) {
     // headers['Pragma'] = "no-cache";
     // headers['Expires'] = "0";
     // perform fetch
-    const lang = console.log(i18n.language);
+    const lang = i18n.language;
     return fetch(host + path + "&lang=" + lang, {
         method: data ? 'POST' : 'GET',
         body: data ? data : null,

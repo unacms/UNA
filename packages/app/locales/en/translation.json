@@ -1,2 +1,8 @@
 {
+    "members_0": " no members",
+    "members_1": " {{count}} member",
+    "members_2": " {{count}} members",
+    "members_plural": " {{count}} members",
+    "lang_en": "English",
+    "lang_ru": "Русский"
 }

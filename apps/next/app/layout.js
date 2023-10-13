@@ -51,6 +51,7 @@ export default function RootLayout({ children }) {
     const queryClient = new QueryClient()
     return (
         <html lang="en" >
+            <meta name="color-scheme" content="dark"></meta>
             <body className='bg-bgrbody dark:bg-bgrbody-d'>
                 <Provider>
                         <QueryClientProvider client={queryClient}>

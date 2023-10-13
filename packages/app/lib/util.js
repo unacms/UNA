@@ -5,6 +5,7 @@ import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
 import { MMKVLoader } from "react-native-mmkv-storage";
 import pako from 'pako';
+import { useTranslation } from 'react-i18next';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -308,6 +309,31 @@ export function getImageSizes(){
     }
     str += '' + (1280/perLineSettings[0].count) + 'px';
     return str
+}
+
+function getPlural(key, count) {
+    
+    let lastDigit = count % 10;
+    let lastTwoDigits = count % 100;
+
+    if (count == 0)
+        return key + '_0'; 
+
+    if (lastDigit === 1 && lastTwoDigits !== 11) {
+        return key+ '_1'; 
+    }
+    if ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) {
+        return key + '_2'; 
+    }
+    return key + '_plural'; 
+}
+
+export function tp(key, count, isHideData = false) {
+    const { t: _t } = useTranslation();
+    let ct = count;
+    if (isHideData)
+        ct ='';
+    return _t(getPlural(key, count), {count: ct});
 }
 
 export function linkify2(text) {

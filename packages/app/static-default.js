@@ -6,10 +6,11 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/components/card'
 import { fetcher } from 'app/lib/fetcher'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState,  } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next';
+import { tp } from 'app/lib/util'
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -251,8 +252,8 @@ export function ComponentsIntro(props) {
           
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">
             <AnimatedCounter value={data} duration={1000} />
-          </Text>{' '}
-          {t('members')}
+          </Text>
+          {tp('members', data, true)}
         </Text>
       </View>
       <Text className="text-sm  text-neutral-700 dark:text-neutral-300">

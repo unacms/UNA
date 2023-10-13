@@ -4,7 +4,7 @@ import { CardData } from 'app/context/card'
 import Image from '../../ui/atoms/image'
 import Link from '../../ui/atoms/link'
 import Profile from '../../ui/molecules/profile'
-import { getImageSizes, FeedbackHaptics } from 'app/lib/util'
+import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import Menu from 'app/components/menu'
@@ -14,10 +14,8 @@ import Time from '../../ui/atoms/time'
 import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import {componentsMap} from  'app/ui/molecules/_map';
-import { useTranslation } from 'react-i18next';
 
 export default function Unit(props) {
-    const { t } = useTranslation();
     function channelUnit() {
         let sMeta = <></>
         if (data?.meta)
@@ -71,7 +69,7 @@ export default function Unit(props) {
                                         </Text>
                                     </View>
                                     <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
-                                        {data.members_count} members
+                                        {tp("members",data.members_count)}
                                     </Text>
                                     <View className="flex-row w-full gap-x-2 ">                
                                         <Button
@@ -234,7 +232,7 @@ export default function Unit(props) {
                                         {sTitle}
                                     </View>
                                     <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
-                                        {data.members_count} members
+                                        {tp("members", data.members_count)}
                                     </Text>
                                     <View className="flex-row w-full gap-x-2 ">                
                                         {oMenuItemPrimary}

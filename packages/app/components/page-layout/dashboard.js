@@ -11,9 +11,13 @@ import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import JitSi from 'app/ui/molecules/jitsi'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { menuItemsByName } from 'app/lib/util'
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { Appearance } from 'react-native';
+import { Platform } from 'react-native'
+import { storageSet } from 'app/lib/util'
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -28,6 +32,19 @@ export default function PageLayout(props) {
     }
     if (!currentUser) 
         return <></>
+
+    const handleLang =  async (item) => { 
+        i18n.changeLanguage(item); 
+    }
+    const handleTheme =  async (item) => { 
+       /* console.log(Appearance.getColorScheme());
+        if(Platform.OS == 'web'){
+            storageSet('layout:theme', '', item, true)
+        }
+        else{
+            Appearance.setColorScheme(item);
+        }*/
+    }
 
     return (
         <>
@@ -47,10 +64,31 @@ export default function PageLayout(props) {
                     onPress = {() => setShowImage2(true)}
                     align="left"
                 />
-                {appSetting('layout', 'switch_lang').length > 1 && appSetting('layout', 'switch_lang').map((item, index) => (
-                        <Button key={'lang-' + index} variant="text" fullWidth align="left" onPress={() => { i18n.changeLanguage(item);    }} title = {item} />
-                    ))
+                {
+                    appSetting('layout', 'switch_lang').length > 1 && (
+                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                id: lang,
+                                key: lang,
+                                name: lang,
+                                title: t('lang_' + lang)
+                            }))} 
+                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                            <Button title='Language' variant="outline" startDecorator="SortAscending" size="xs" />
+                        </DropdownMenu>)
                 }
+                {
+                    appSetting('layout', 'switch_theme') && (
+                        <DropdownMenu items={['dark', 'light','auto'].map(lang => ({
+                                key: lang,
+                                id: lang,
+                                name: lang,
+                                title: t(lang)
+                            }))} 
+                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                            <Button title='Theme' variant="outline" startDecorator="SortAscending" size="xs" />
+                        </DropdownMenu>)
+                }
+                
             </Row>
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
@@ -66,7 +104,7 @@ export default function PageLayout(props) {
                             <View className="flex-row gap-x-2 my-auto    lg:hidden">
                                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
                                 {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
-                                    <Link href={item.link}><Button variant="outline" startDecorator={item.icon} rounded /></Link>
+                                    <Link href={item.link} key={item.link}><Button variant="outline" startDecorator={item.icon} rounded /></Link>
                                 )}
                                 
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
@@ -82,7 +120,7 @@ export default function PageLayout(props) {
                                 />}
                             
                                 {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
-                                    <Link href={item.link}>
+                                    <Link href={item.link} key={item.link}>
                                     <Button
                                         variant="text"
                                         title={t(item.title)}
