@@ -147,14 +147,25 @@ const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConv
 
 export const ConvosList = () => {
     const { menuItem, menuView, setMenuView } = useContext(MenuData),
-          { screenMode, pageHeight, setConvoItem, convoInfo, convoId, setHistoryArea, setPanel } = useContext(PageData),
+          { screenMode, pageHeight, setConvoItem, convoInfo, convoId, setHistoryArea, setPanel, historyArea } = useContext(PageData),
+
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
+
           handlerCreate = useCallback(() => {
-              setHistoryArea((prev) => prev ? false : 'create-convo');
+              setHistoryArea((prev) => !prev && { action: 'create-convo' });
               if (isPhone(screenMode))
                   setPanel('history');
+
           }, [screenMode, setHistoryArea]),
-          handlerSelect = useCallback((convoItem, bManually = true) => setConvoItem({ item: convoItem, manually: bManually }), [menuItem]),
+
+          handlerSelect = useCallback((convoItem, bManually = true) => {
+              if (typeof historyArea === 'object' && bManually)
+                  setHistoryArea();
+
+              setConvoItem({ item: convoItem, manually: bManually });
+
+          }, [menuItem, historyArea, setHistoryArea]),
+
           bAllowViewOnDevice = useMemo(() => !isDesktop(screenMode), [screenMode]),
           handlerOuterClick = () => menuView && setMenuView(false);
 

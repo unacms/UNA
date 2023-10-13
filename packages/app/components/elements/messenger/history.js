@@ -8,7 +8,7 @@ import Loading from "../../../ui/atoms/loading";
 import {MsgFeed} from 'app/components/units/convos-feeds';
 import Form from "../form";
 import UniList from 'app/ui/atoms/unilist';
-import ReactionContext from "../../../context/actions";
+import ReactionContext from "app/context/actions";
 import useHistory, { useSendData, useHistoryMessageAction } from "./hooks/useHistory";
 import useKeyboard from "./hooks/useKeyboard";
 import { ConvoKeys } from "./hooks/useConvos";
@@ -17,39 +17,61 @@ import Services from "./services/history";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import CreateConvo from './create-convo';
 import { isPhone } from "./grid-utils";
+import Profile from "app/ui/molecules/profile";
 
-const SendForm = memo(({ convoId, menuItem, onSubmit }) => {
+const SendForm = memo(({ convoId, menuItem, onSubmit, payload }) => {
     const [formData, setFormData] = useState(),
           { sendMessage } = useSendData(convoId, menuItem),
-          keyboardHeight = useKeyboard();
+          keyboardHeight = useKeyboard(),
+         { profile } = payload || {};
 
     useEffect(() => {
         (async() => {
             await Services.getForm().catch((e) => { console.log(e.toString()) }).then((data) => {
+                if (profile && data?.inputs)
+                    data.inputs.payload.value = JSON.stringify({ participants: [profile.id] });
+
                 setFormData(data);
             });
         })();
     }, []);
 
+
+    useEffect(() => {
+        if (formData && formData.inputs?.payload?.value?.length) {
+            const oFormData = { ...formData };
+            oFormData.inputs.payload.value = '';
+            setFormData(oFormData);
+        }
+
+
+    }, [payload]);
+
     return formData &&  <View style={{ paddingBottom: keyboardHeight }}>
                                 <Form data={ formData } name={'bx_messenger'}
                                   classContainerName="flex-row flex-wrap px-2 w-full"
                                   onFormSubmit={ (oFormData, oData) => {
-                                                                        return sendMessage({ oFormData, oData }, {
-                                                                            onSuccess: ( data )=> onSubmit(data)
-                                                                        })
+                                                                       return sendMessage({ oFormData, oData }, {
+                                                                           onSuccess: ( data )=> onSubmit(data)
+                                                                       })
                                                                 }} />
                           </View>
 });
 
-const ConvoHeader = memo(({ title, onPress }) => {
+const ConvoHeader = memo(({ title, onPress, profile }) => {
+    let sTitle = title;
+
+    if (profile)
+        sTitle = profile.display_name;
+
     return <View className="flex flex-0 w-full px-3.5 py-2 flex-row h-14 relative border-b border-bdrnavbar dark:border-bdrnavbar-d" >
              <View className="md:hidden">
                  <Button variant="outline" startDecorator="ArrowLeft" rounded align="start" onPress={onPress} />
              </View>
-             <View className="w-full flex-1 flex items-center justify-center" title={ title }>
+             <View className={ "w-full flex-1 flex items-center " + (profile ? "justify-normal flex-row" : "justify-center") } title={ sTitle }>
+                 { profile && <Profile {...profile} displayType="unit_wo_info" displaySize="base"/> }
                  <Text className="px-2 text-lg lg:text-xl font-bold text-neutral-900 dark:text-neutral-50 capitalize" numberOfLines={1}>
-                     { title }
+                     { sTitle }
                  </Text>
              </View>
            </View>;
@@ -58,6 +80,7 @@ const ConvoHeader = memo(({ title, onPress }) => {
 export function HistoryComponent(){
     const { convoInfo: { item }, setPanel, pageHeight, setConvoItem, historyArea, setHistoryArea, screenMode } = useContext(PageData),
           { menuItem } = useContext(MenuData),
+          { action: historyAction, profile: actionProfile } = historyArea || {},
           { title, id } = item || {},
            client = useQueryClient(),
            handlerClickBackButton = useCallback(() => setPanel(false), []),
@@ -88,29 +111,17 @@ export function HistoryComponent(){
                 });
             }, [menuItem, item]);
 
-    /*let Component = () => {
-        let oComponent = null;
-        switch(historyArea){
-            case 'create-convo':
-                    oComponent = <CreateConvo onClose={handlerCloseArea}/>;
-                break;
-            default:
-                oComponent = <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />;
-        };
-
-        console.log('--------- switch history -----', historyArea);
-
-        return oComponent;
-    }*/
-
     return <View className="w-full h-full flex flex-col">
-             <ConvoHeader title={title} onPress={handlerClickBackButton}/>
+             <ConvoHeader title={title} onPress={handlerClickBackButton} profile={ actionProfile }/>
              <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
                  { !historyArea && <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />}
-                 { historyArea === 'create-convo' && <CreateConvo onClose={handlerCloseArea}/> }
+                 { historyAction === 'create-convo' && !actionProfile && <CreateConvo onClose={handlerCloseArea} /> }
              </View>
              <View className={"w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d"} >
-               { id && <SendForm convoId={id} menuItem={menuItem} onSubmit={handlerUpdateSelectedConvo}/> }
+                 { id && <SendForm convoId={ historyAction !== 'create-convo' ? id : 0 }
+                   payload={ { profile: actionProfile }}
+                   menuItem={menuItem}
+                   onSubmit={handlerUpdateSelectedConvo}/> }
              </View>
            </View>
 }

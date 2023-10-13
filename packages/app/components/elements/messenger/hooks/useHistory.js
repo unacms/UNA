@@ -136,7 +136,6 @@ export const useSendData = function(convoId, menuItem){
     const { mutate: sendMessage } = useMutation({
         mutationFn: ({ oFormData }) => Services.sendMessage(convoId, oFormData),
         onMutate: async ( { oData: { message } }) => {
-            //console.log('--------- on mutation entiers ---------', message );
 
             const iTime = parseInt((new Date()).getTime()/1000);
 
@@ -145,8 +144,12 @@ export const useSendData = function(convoId, menuItem){
 
             // Convos History
             const prevHistoryData = client.getQueryData(HistoryKeys.messagesByConvo(convoId));
+    
+            if (!prevHistoryData)
+                return;
+
             client.setQueryData(HistoryKeys.messagesByConvo(convoId), (oldData) => {
-                const { pages } = oldData || {};
+                const { pages } = oldData || { pages: [undefined]};
                 pages[pages.length - 1] = [...pages[pages.length - 1], { id: iTime, created:iTime, lot_id: convoId, message, author_data: currentUser }];
                 return {...oldData, pages };
             });

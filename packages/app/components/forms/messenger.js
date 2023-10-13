@@ -41,7 +41,7 @@ export default function FormMessenger(props) {
                   <View className="mr-2 mb-2 flex-1 w-full " style={styles}>
                       { getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom') }
-                      { getFormFieldByData(props.data.inputs['parent_id'], props.handleSubmit, 'custom') }
+                      { getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { styles: { minHeight: "auto" }, placeholder: 'Message ...' }) }
                       { getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom') }

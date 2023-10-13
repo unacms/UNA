@@ -8,10 +8,11 @@ import { PageContext, PageData, MenuContext, MenuData } from './context/messenge
 import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
 import { fetcher } from "app/lib/fetcher";
 import useBrowserHistory from './hooks/useBrowserHistory';
+import useHistory from "./hooks/useHistory";
 
 function PageLayout() {
     const { setMenuItems, menuItem, setMenuItem } = useContext(MenuData),
-          { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId } = useContext(PageData);
+          { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId, setHistoryArea, historyArea } = useContext(PageData);
 
     /* Web Routing begin */
     const handlerOnPopState = useCallback(() => {
@@ -22,7 +23,7 @@ function PageLayout() {
         return !bIsPhone;
     }, [screenMode]),
 
-    { convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState);
+    { action:sUriAction, profile:aUriProfile, convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState);
 
     useEffect(() => {
          if (iConvoIdUri) {
@@ -32,16 +33,25 @@ function PageLayout() {
              }
          }
 
-         if (sMenuUri) {
+         if (sMenuUri)
              setMenuItem(sMenuUri);
-         }
 
      }, [iConvoIdUri, sMenuUri]);
 
+    useEffect(() => {
+        if (sUriAction && aUriProfile) {
+            setHistoryArea({ action: 'create-convo', profile: aUriProfile });
+        }
+    }, [sUriAction]);
 
     useEffect(() => {
-        if (convoId && +convoId !== +iConvoIdUri)
+        if (convoId && +convoId !== +iConvoIdUri) {
             setConvoId();
+        }
+
+        if (historyArea)
+            setHistoryArea(false);
+
     }, [menuItem]);
     /* Web Routing end */
 

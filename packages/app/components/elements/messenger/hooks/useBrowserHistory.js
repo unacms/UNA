@@ -42,12 +42,14 @@ function useBrowserHistory(onPopState){
                 if (oData.length === 1){
                     Services.findConvo(oData[0]).then(({ convo, profile }) => {
                         if (convo){
-                            setStateData({ convoId: convo.id });
+                            setStateData({ menuItem: 'inbox', convoId: convo.id });
+                        } else if (profile){
+                            setStateData({ convoId: 0, action: 'create-convo', profile });
                         }
                     });
                 } else
                 if (oData.length === 2) {
-                    setStateData({menuItem: oData[0], convoId: oData[1], isBack: isPopState});
+                    setStateData({ menuItem: oData[0], convoId: oData[1], isBack: isPopState });
                 }
             }
         };
