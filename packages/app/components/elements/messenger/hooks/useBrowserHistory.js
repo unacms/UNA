@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { Platform } from 'react-native';
+import Services from '../services/convos';
 
 function useBrowserHistory(onPopState){
     if (Platform.OS !== 'web')
@@ -9,8 +10,8 @@ function useBrowserHistory(onPopState){
     const { location: { pathname }, history } = window;
 
     const parseUrl = useCallback((sUrl) => {
-        const aData = (typeof sUrl !== 'undefined' ? sUrl : window.location.pathname).split('/').slice(-3);
-        return aData.length === 3 && aData[0] === 'messenger' ? aData.slice(-2) : [];
+        const aData = (typeof sUrl !== 'undefined' ? sUrl : window.location.pathname).split('/').slice(2);
+        return aData;
     }, [pathname]);
 
     const updateState = useCallback(({ id, title, menu }) => {
@@ -37,8 +38,18 @@ function useBrowserHistory(onPopState){
             if (isPopState && typeof onPopState === 'function')
                 bUpdateState = onPopState();
 
-            if (oData.length && bUpdateState)
-                setStateData({ menuItem: oData[0], convoId: oData[1], isBack: isPopState });
+            if (oData.length && bUpdateState) {
+                if (oData.length === 1){
+                    Services.findConvo(oData[0]).then(({ convo, profile }) => {
+                        if (convo){
+                            setStateData({ convoId: convo.id });
+                        }
+                    });
+                } else
+                if (oData.length === 2) {
+                    setStateData({menuItem: oData[0], convoId: oData[1], isBack: isPopState});
+                }
+            }
         };
 
         window.addEventListener('popstate', handlerLocationChange);

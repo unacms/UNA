@@ -5,7 +5,8 @@ const iPerPage = 15;
 
 const aEndpoints = {
     'list': 'get_convos_list',
-    'convo': 'get_convo_item'
+    'convo': 'get_convo_item',
+    'exact': 'find_convo',
 };
 
 function getUrl(sLink, oParams){
@@ -23,6 +24,10 @@ export default {
     },
     getConvo: async(id) => {
         const { data } =  await fetcher(getUrl('convo', { id }));
+        return data || [];
+    },
+    findConvo: async(sParam) => {
+        const { data } =  await fetcher(getUrl('exact', { param: sParam }));
         return data || [];
     }
 };
