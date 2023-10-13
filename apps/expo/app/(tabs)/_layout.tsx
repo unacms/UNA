@@ -6,9 +6,10 @@ import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
 import { useState } from 'react'
 import EventSource from "react-native-sse";
+import { useTranslation } from 'react-i18next';
 
 export default function AppLayout() {
-
+  const { t } = useTranslation();
   let { currentUser, setCurrentUser } = useCurrentUser();
   //let currentUser =1;
   const { colors } = Theme();
@@ -62,7 +63,7 @@ export default function AppLayout() {
             initialParams={{ url2: tab.url}}
             options={{
               tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
-              title: tab.title,
+              title: t(tab.title),
               headerShown: false,
               tabBarIcon: ({color}) => (
                 (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />  

@@ -10,8 +10,10 @@ import { Dimensions } from 'react-native';
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementBrowse(props) {
+    const { t } = useTranslation();
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
@@ -145,7 +147,7 @@ export default function ElementBrowse(props) {
     return (
         (true) && <View className='w-full h-full' >
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{props.block.title}</Text></View> : <></>}<UniList 
+            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}<UniList 
             
                     numColumns={numColumns} 
                     data={dataItems.data}

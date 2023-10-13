@@ -28,7 +28,7 @@ export default function PageLayout(props) {
     }
     if (!currentUser) 
         return <></>
-        
+
     return (
         <>
             <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
@@ -47,8 +47,7 @@ export default function PageLayout(props) {
                     onPress = {() => setShowImage2(true)}
                     align="left"
                 />
-                {
-                    i18n.languages.map((item, index) => (
+                {appSetting('layout', 'switch_lang').length > 1 && appSetting('layout', 'switch_lang').map((item, index) => (
                         <Button key={'lang-' + index} variant="text" fullWidth align="left" onPress={() => { i18n.changeLanguage(item);    }} title = {item} />
                     ))
                 }

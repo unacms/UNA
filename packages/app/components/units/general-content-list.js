@@ -14,8 +14,10 @@ import Time from '../../ui/atoms/time'
 import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import {componentsMap} from  'app/ui/molecules/_map';
+import { useTranslation } from 'react-i18next';
 
 export default function Unit(props) {
+    const { t } = useTranslation();
     function channelUnit() {
         let sMeta = <></>
         if (data?.meta)
@@ -474,7 +476,7 @@ export default function Unit(props) {
             switch(props.unitType) {
                 case 'person_friends':
                     oMenuItemPrimary = {
-                        title: 'Message',
+                        title: t('Message'),
                         icon: 'ChatTeardropDots',
                         onPress: (event) => {
                             handleClick(event, '/messenger');
@@ -589,7 +591,7 @@ export default function Unit(props) {
                                 {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
                                     <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text>
                                     :
-                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + ' friends'}</Text>
+                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text>
                                 }
                                 <View className="flex-row w-full gap-x-2 ">
                                     {oMenuItemPrimary}

@@ -17,7 +17,9 @@ export default function ElementInformer({data}) {
         setState(1);  
         
     };
-
+    console.log
+    if (!currentUser?.informer?.length)
+        return <></>
     return (
         <View className="w-full mx-auto ">
             <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">

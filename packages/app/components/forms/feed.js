@@ -10,8 +10,10 @@ import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function FormFeed(props) {
+    const { t } = useTranslation();
     const [showImage, setShowImage] = useState(false)
     const [responseId, setResponseId] = useState(0)
     const [imageSource, setImageSource] = useState([])
@@ -47,7 +49,7 @@ export default function FormFeed(props) {
     return (
         <View className="w-full ">
             <Modal
-                title="Create new Post"
+                title= {t("Create new Post")}
                 onVisible={showImage}
                 onClose={() => {
                     setShowImage(null)
@@ -89,7 +91,7 @@ export default function FormFeed(props) {
                         variant="text"
                         startDecorator="Pencil"
                         fullWidth
-                        title="Create new Post..."
+                        title={t("Create new Post") + "..."}
                         align="start"
                         onPress={() => {
                             FeedbackHaptics('Medium')

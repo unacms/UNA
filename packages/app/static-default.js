@@ -9,6 +9,7 @@ import { fetcher } from 'app/lib/fetcher'
 import { useEffect, useState, useRef } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
+import { useTranslation } from 'react-i18next';
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -162,8 +163,9 @@ const ComponentsAbout = (
     </Text>
   </>
 )
-
-const ComponentsCommentsEmpty = (
+const ComponentsCommentsEmpty = () => {
+  const { t } = useTranslation();
+  return (
   <>
     <View className="pt-8">
       <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
@@ -171,17 +173,20 @@ const ComponentsCommentsEmpty = (
           <Icon icon="ChatCircle" width={32} height={32} />
         </View>
         <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-          No comments yet
+          {t('No comments yet')}
         </Text>
         <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-          Be the first to share what you think
+          {t('Be the first to share what you think')}
         </Text>
       </View>
     </View>
   </>
 )
+}
 
-const ComponentsContentEmpty = (
+const ComponentsContentEmpty = () => {
+  const { t } = useTranslation();
+  return (
   <>
     <View className="p-8">
       <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
@@ -189,18 +194,20 @@ const ComponentsContentEmpty = (
           <Icon icon="Binoculars" width={32} height={32} />
         </View>
         <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-          Here goes nothing
+        {t('Here goes nothing')}
         </Text>
         <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-         Couldn't find anything to show here, sorry.
+         {t('Couldn`t find anything to show here, sorry.')}
         </Text>
       </View>
     </View>
   </>
 )
+}
 
 export function ComponentsIntro(props) {
-  const AnimatedCounter = ({ value, duration }) => {
+    const { t } = useTranslation();
+    const AnimatedCounter = ({ value, duration }) => {
     const animatedValue = useState(new Animated.Value(0))[0]
     const [displayValue, setDisplayValue] = useState(0)
 
@@ -245,12 +252,11 @@ export function ComponentsIntro(props) {
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">
             <AnimatedCounter value={data} duration={1000} />
           </Text>{' '}
-          members
+          {t('members')}
         </Text>
       </View>
       <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
-        Welcome to the demo social network powered by NEO App
-        and UNA CMS.
+        {t('Welcome to the demo social network powered by NEO App and UNA CMS')}
       </Text>
     </Card>
   )
@@ -526,48 +532,55 @@ const ComponentsDummy = (
   </>
 )
 
-const ComponentsFooter = (
-  <>
-    <Card addClassName="w-full p-3 flex-row justify-center ">
-      <Link href="/about">
-        <Button variant="text" title="About" className="mt-auto" size="sm" />
-      </Link>
 
-      <Link href="/contact">
-        <Button variant="text" title="Contact" className="mt-auto" size="sm" />
-      </Link>
-      <Link href="/privacy">
-        <Button variant="text" title="Privacy" className="mt-auto" size="sm" />
-      </Link>
-      <Link href="/terms">
-        <Button variant="text" title="Terms" className="mt-auto" size="sm" />
-      </Link>
-    </Card>
-  </>
-)
+const ComponentsFooter = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Card addClassName="w-full p-3 flex-row justify-center ">
+        <Link href="/about">
+          <Button variant="text" title={t("About")} className="mt-auto" size="sm" />
+        </Link>
 
-const ComponentsFullFooter = (
+        <Link href="/contact">
+          <Button variant="text" title={t("Contact")} className="mt-auto" size="sm" />
+        </Link>
+        <Link href="/privacy">
+          <Button variant="text" title={t("Privacy")} className="mt-auto" size="sm" />
+        </Link>
+        <Link href="/terms">
+          <Button variant="text" title={t("Terms")} className="mt-auto" size="sm" />
+        </Link>
+      </Card>
+    </>
+  )
+}
+
+const ComponentsFullFooter = () => {
+  const { t } = useTranslation();
+  return (
   <>
     <View className=" w-full p-3 flex-row justify-center border-t backdrop-blur border-bdr dark:border-bdr-d mt-8 ">
       <Link href="/">
-        <Button variant="text" title="Home" className="mt-auto" size="sm" />
+        <Button variant="text" title={t("Home")} className="mt-auto" size="sm" />
       </Link>
       <Link href="/about">
-        <Button variant="text" title="About" className="mt-auto" size="sm" />
+        <Button variant="text" title={t("About")} className="mt-auto" size="sm" />
       </Link>
 
       <Link href="/contact">
-        <Button variant="text" title="Contact" className="mt-auto" size="sm" />
+        <Button variant="text" title={t("Contact")} className="mt-auto" size="sm" />
       </Link>
       <Link href="/privacy">
-        <Button variant="text" title="Privacy" className="mt-auto" size="sm" />
+        <Button variant="text" title={t("Privacy")} className="mt-auto" size="sm" />
       </Link>
       <Link href="/terms">
-        <Button variant="text" title="Terms" className="mt-auto" size="sm" />
+        <Button variant="text" title={t("Terms")} className="mt-auto" size="sm" />
       </Link>
     </View>
   </>
-)
+  )
+}
 
 export const staticDefault = {
   logo_text: LogoText,

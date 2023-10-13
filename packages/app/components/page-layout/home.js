@@ -144,7 +144,8 @@ export default function PageLayout(props) {
                                         variant={feedType == 'public' ? 'link' : 'text'}
                                         rounded
                                         size="sm"
-                                        
+                                        title={t("For You")}
+
                                     />
                                 </Pressable>
                                 <Pressable
@@ -158,7 +159,6 @@ export default function PageLayout(props) {
                                         id="tab"
                                         startDecorator="Fire"
                                         variant={feedType == 'hot' ? 'link' : 'text'}
-                                        rounded
                                         size="sm"
                                         
                                     />
@@ -296,11 +296,10 @@ export default function PageLayout(props) {
                                 <Button
                                     fullWidth={false}
                                     id="tab"
-                                    startDecorator="Users"
+                                    startDecorator="Binoculars"
                                     variant={feedType == 'account' ? 'outline' : 'text'}
-                                    rounded
                                     size="sm"
-                                    title="Following"
+                                    title={t("Following")}
                                 />
                             </Pressable>
                             <Pressable
@@ -314,9 +313,8 @@ export default function PageLayout(props) {
                                     id="tab"
                                     startDecorator="MagicWand"
                                     variant={feedType == 'public' ? 'outline' : 'text'}
-                                    rounded
                                     size="sm"
-                                    title="For You"
+                                    title={t("For You")}
                                 />
                             </Pressable>
                             <Pressable
@@ -329,10 +327,9 @@ export default function PageLayout(props) {
                                 fullWidth={false}
                                 id="tab"
                                 startDecorator="Fire"
-                                variant={feedType == 'hot' ? 'outline' : 'text'}
+                                variant={feedType == 'hot' ? 'link' : 'text'}
                                 rounded
                                 size="sm"
-                                title="Hot"
                                 />
                             </Pressable>
                             {appSetting('feed', 'show_selector_view') && (
@@ -347,7 +344,7 @@ export default function PageLayout(props) {
                                             startDecorator="Rows"
                                             fullWidth={false}
                                             rounded
-                                            variant={unitMode == '' ? 'outline' : 'text'}
+                                            variant={unitMode == '' ? 'link' : 'text'}
                                             size="sm"
                                         />
                                     </Pressable>
@@ -361,7 +358,7 @@ export default function PageLayout(props) {
                                             startDecorator="ListBullets"
                                             fullWidth={false}
                                             rounded
-                                            variant={unitMode == 'small' ? 'outline' : 'text'}
+                                            variant={unitMode == 'small' ? 'link' : 'text'}
                                             size="sm"
                                         />
                                     </Pressable>

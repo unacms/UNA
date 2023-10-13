@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { formatDistance } from 'date-fns';
 import { Text } from 'app/design/typography';
+import { useTranslation } from 'react-i18next';
 
-function formatDate(date) {
+function formatDate(date, t) {
     const day = String(date.getDate()).padStart(2, '0');
     const monthNames = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-    const month = monthNames[date.getMonth()];
+    const month = t(monthNames[date.getMonth()]);
     let year = date.getYear() - 100;
     if ((new Date()).getYear() == date.getYear())
         year ='';
@@ -16,6 +17,7 @@ function formatDate(date) {
 }
 
 export default function ElementTime(props) {
+    const { t } = useTranslation();
     const [date, setDate] = useState(new Date());
 
     useEffect(() => {
@@ -33,9 +35,9 @@ export default function ElementTime(props) {
     
     if (diffDays < 1) {
         s = formatDistance(d, date, { addSuffix: false }).trim();
-        s = s.replace(/\s+/g, '').replace('about', '').replace('hours', 'h').replace('hour', 'h').replace('minutes', 'm').replace('minute', 'm').replace('lessthanam', 'Now').trim();
+        s = s.replace(/\s+/g, '').replace('about', '').replace('lessthanaminute', t('Now')).replace('hours', t('h')).replace('hour', t('h')).replace('minutes', t('m')).replace('minute', t('m')).trim();
     } else {
-        s = formatDate(d).trim();
+        s = formatDate(d, t).trim();
     }
   }
 

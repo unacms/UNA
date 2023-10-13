@@ -43,8 +43,8 @@ export default function (props) {
     const bMessenger = appSetting('layout', 'messenger') ? true : false;
     const bApps = appSetting('layout', 'apps') == true;
 
-    const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
-    const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
+    const sTxtNtfsTitle = t("Notifications")
+    const sTxtNtfsViewAll = t("View all")
     const [ntfsOpen, setNtfsOpen] = useState(false)
     let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
     const ntfsContent = (

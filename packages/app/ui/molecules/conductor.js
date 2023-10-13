@@ -16,8 +16,11 @@ import { Modal } from 'app/design/controls';
 import { Input } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link'
+import { useTranslation } from 'react-i18next';
+
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
+    const { t } = useTranslation();
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
    
     const [searchVisible, setSearchVisible] = useState(false);
@@ -176,7 +179,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                                     if (onChangeRoute) {
                                         onChangeRoute(a);
                                     }
-                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={a.title} />
+                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={t(a.title)} />
                             </View>
                             </Pressable>
                         ))}

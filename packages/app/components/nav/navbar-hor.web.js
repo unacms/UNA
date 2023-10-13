@@ -20,12 +20,14 @@ import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
+import { useTranslation } from 'react-i18next';
+
 
 export default function (props) {
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
-
+    const { t } = useTranslation();
     let { width } = useWindowDimensions()
 
     if (width > 1280 && menuPopup) 
@@ -44,8 +46,8 @@ export default function (props) {
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
     const bApps = appSetting('layout', 'apps') == true;
 
-    const sTxtNtfsTitle = appSetting('lang_keys', 'ntfs_popup_title')
-    const sTxtNtfsViewAll = appSetting('lang_keys', 'ntfs_popup_view_all')
+    const sTxtNtfsTitle = t("Notifications")
+    const sTxtNtfsViewAll = t("View all")
     const [ntfsOpen, setNtfsOpen] = useState(false)
     let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
     const ntfsContent = (
@@ -147,7 +149,7 @@ export default function (props) {
                             (item, index) =>
                             (currentUser || (!currentUser && item.nonlogged != false)) && (
                                 <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
-                                    <Tooltip content={item.title} asChildTrigger={true}>
+                                    <Tooltip content={t(item.title)} asChildTrigger={true}>
                                     <ButtonRef
                                         variant="text"
                                         size="lg"
@@ -177,7 +179,7 @@ export default function (props) {
                                         {
                                             id: 'menu-' + index,
                                             link: item.link,
-                                            title: item.title,
+                                            title: t(item.title),
                                             icon:
                                             item.icon.indexOf(' ') == -1
                                                 ? item.icon
@@ -189,14 +191,14 @@ export default function (props) {
                                 >
                                     <Tooltip content="Apps" asChildTrigger={true}>
                                         <ButtonRef
-                                        variant="outline"
-                                        size="base"
-                                        fullWidth
-                                        rounded
-                                        alt="All Apps"
-                                        startDecorator="CirclesFour"
-                                        aria-label="All Apps"
-                                        onPress={() => {}}
+                                            variant="outline"
+                                            size="base"
+                                            fullWidth
+                                            rounded
+                                            alt={t("All Apps")}
+                                            startDecorator="CirclesFour"
+                                            aria-label="All Apps"
+                                            onPress={() => {}}
                                         />
                                     </Tooltip>
                                 </DropdownMenu>
@@ -210,7 +212,7 @@ export default function (props) {
                                             {
                                             id: 'menu-' + index,
                                             link: item.link,
-                                            title: item.title,
+                                            title: t(item.title),
                                             icon:
                                                 item.icon.indexOf(' ') == -1
                                                 ? item.icon
@@ -220,7 +222,7 @@ export default function (props) {
                                         }
                                     )}
                                 >
-                                    <Tooltip content="Create content" asChildTrigger={true}>
+                                    <Tooltip content={t("Create content")} asChildTrigger={true}>
                                         <ButtonRef
                                         variant="outline"
                                         rounded
@@ -239,7 +241,7 @@ export default function (props) {
                                         bOpen
                                         setNtfsOpen(bOpen)
                                     }}
-                                    title={sTxtNtfsTitle}
+                                    title={t(sTxtNtfsTitle)}
                                 >
                                     {[
                                         <ButtonRef
@@ -252,7 +254,7 @@ export default function (props) {
                                         ntfsContent
                                     ]}
                                 </DropdownPopup>}
-                                {bMessenger && <Tooltip content="Messenger" asChildTrigger={true}>
+                                {bMessenger && <Tooltip content={t("Messenger")} asChildTrigger={true}>
                                     <ButtonRef
                                         variant="outline"
                                         rounded
@@ -267,7 +269,7 @@ export default function (props) {
                             {profile ? (
                                 <View className="hidden sm:flex ml-2 flex-row justify-center">
                                     <Link href='/dashboard'>
-                                        <Tooltip content="Dashboard" asChildTrigger={true}>
+                                        <Tooltip content={t("Dashboard")} asChildTrigger={true}>
                                             <ButtonRef
                                                 variant="outline"
                                                 rounded

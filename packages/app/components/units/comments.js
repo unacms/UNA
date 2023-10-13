@@ -16,6 +16,7 @@ import { fetcher } from '../../lib/fetcher';
 import { useState } from 'react';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
+import { useTranslation } from 'react-i18next';
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -26,6 +27,7 @@ function CarouselMemo({ aImg, b }) {
 }
 
 export default function UnitComments(props) {
+    const { t } = useTranslation();
     let { currentUser } = useCurrentUser();
     const [viewState, setViewState] = useState({view: ''});
     const [postData, setPostData] = useState(null);
@@ -162,7 +164,7 @@ export default function UnitComments(props) {
                     </View>
                     { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser ? <View className='mr-2'>
-                            <Button align="start" title="Reply" size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
+                            <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
                         </View> : <></> }
                         <View className='flex-row'>
                             <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs'}} />

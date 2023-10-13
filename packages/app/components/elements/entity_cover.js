@@ -3,8 +3,10 @@ import Image from '../../ui/atoms/image';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls'
 import EntityAuthor from './entity_author';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementEntityCover(props) {
+  const { t } = useTranslation();
    const data = props.data;
     return (
         <View className="flex-col  w-full mx-auto  bg-bgrcard h-min dark:bg-bgrcard-d border hover:shadow-lg border-bdr dark:border-bdr-d overflow-hidden rounded-lg">  
@@ -21,8 +23,8 @@ export default function ElementEntityCover(props) {
             </View>
             <View className="flex-none my-auto px-4 pt-4  flex-row gap-x-2 ">
               
-              <Button title="Follow" startDecorator="plus" variant="primary"  />
-              <Button title="Message" startDecorator="messages" variant="default" />
+              <Button title={t("Follow")} startDecorator="plus" variant="primary"  />
+              <Button title={t("Message")} startDecorator="messages" variant="default" />
             </View>
 
         </View>

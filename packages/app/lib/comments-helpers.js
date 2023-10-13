@@ -17,6 +17,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
 import Toster from 'app/ui/atoms/toster';
+import { useTranslation } from 'react-i18next';
 
 export function findParent (data, c, o, insert) {
     if (Array.isArray(data)){
@@ -79,7 +80,7 @@ export function parseData (browse, dynamicData) {
 }
 
 export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems}) {
-
+    const { t } = useTranslation();
     const flashListRef = useRef(null);
     let { currentUser, setCurrentUser } = useCurrentUser();
 
@@ -248,12 +249,12 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
         <Row className='flex-row jusity-between items-center m-4'>
-            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{appSetting('lang_keys', 'comment_list_title')} ({commentData.total_count})</Text>
+            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t('Comments')} ({commentData.total_count})</Text>
             <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu items={[
-                        {id: 'newest', name: 'desc', title: appSetting('lang_keys', 'comment_sorting_desc')}, 
-                        {id: 'oldest', name: 'asc', title: appSetting('lang_keys', 'comment_sorting_asc')}
+                        {id: 'newest', name: 'desc', title: t('Oldest first')}, 
+                        {id: 'oldest', name: 'asc', title: t('Newest first')}
                     ]} onSelect={(oItem) => {handleOrder(oItem.name)}}>
                         <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
                     </DropdownMenu>

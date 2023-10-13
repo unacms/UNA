@@ -11,8 +11,11 @@ import { View, Pressable } from 'app/design/view';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
+import { useTranslation } from 'react-i18next';
+
 
 export default function ElementReactions(oProps) {
+    const { t } = useTranslation();
     const bWeb = Platform.OS === 'web';
     const sTheme = useColorScheme();
 
@@ -298,7 +301,7 @@ export default function ElementReactions(oProps) {
                     id: oItem.id,
                     name: oItem.name,
                     emoji: getIconAlias(oItem.name),
-                    title: appSetting('lang_keys', 'rvote_' + oItem.name + '_title')
+                    title: t(appSetting('lang_keys', 'rvote_' + oItem.name + '_title'))
                 };
             });
 
@@ -357,7 +360,7 @@ export default function ElementReactions(oProps) {
                 aUsers = getSkeleton();
 
             aButtons.push(<ButtonCounter key={'counter-button-' + iKey} size={sDisplaySize} startDecorator={getIconAlias(aItem.name)} title={iCount} onPress={(event) => {handleGetPerformedByDvd(event, aItem)}} />);
-            aPopups.push(<Modal key={'counter-popup-' + iKey} title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
+            aPopups.push(<Modal key={'counter-popup-' + iKey} title={t("Reactions")} onVisible={popupVisibleByDvd[aItem.name]} onClose={() => {setPopupVisibleByDvd(state => ({...state, [aItem.name]: false}))}}>{aUsers}</Modal>)
         });
 
         return [aButtons, aPopups];
@@ -446,7 +449,7 @@ export default function ElementReactions(oProps) {
         return [[
                 <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
-                <Modal key="counter-popup"  title={appSetting('lang_keys', 'rvote_performed_by_popup_title')} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
+                <Modal key="counter-popup"  title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row  border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
                     <View className="p-2">{aPerformedByUsers}</View>
                 </Modal>

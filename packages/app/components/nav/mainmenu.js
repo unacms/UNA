@@ -4,12 +4,13 @@ import { Button } from 'app/design/controls'
 import { menuItemsByName } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 import { MotiView, AnimatePresence } from 'moti'
-
+import { useTranslation } from 'react-i18next';
 export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
 
     const handleHideMenu = (params) => {}
     const menu_top = appSetting('menu_items', 'menu_top')
-    
+    const { t } = useTranslation();
+
     return (
         <AnimatePresence exitBeforeEnter>
             {menuPopup && (
@@ -32,9 +33,9 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                             duration: 0,
                         }}
                     >
-                        <Pressable onPress={showMenu}>
-                            <View className="bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"/>
-                        </Pressable>
+                        {/*<Pressable onPress={showMenu}>
+                            <View className="bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50 bg-red-500"/>
+                    </Pressable>*/}
                     </MotiView>
                     <MotiView
                         style={{ width: 288 }}
@@ -61,7 +62,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                                 <View className="flex-col gap-y-0.5">
                                     {menuItemsByName('main_menu', menu_top).map((item, index) => (
                                         <Link key={`menu-${index}`} href= {item.link}>
-                                            <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {item.title} />
+                                            <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
                                         </Link>
                                     ))}
                                 </View>

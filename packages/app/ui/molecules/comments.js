@@ -182,7 +182,7 @@ export default function ElementComments(oProps) {
         );
 
         sCounterPopup = (
-            <Modal title={appSetting('lang_keys', 'vote_performed_by_popup_title')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+            <Modal title={t("Likes")} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
                 <View className="px-2 pb-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
             </Modal>
         );
