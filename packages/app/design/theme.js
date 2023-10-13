@@ -23,5 +23,5 @@ export function Theme() {
     };
 
     const scheme = useColorScheme();
-    return scheme === 'dark' ? CustomDarkTheme : CustomDarkTheme;
+    return scheme === 'dark' ? CustomDarkTheme : CustomLightTheme;
 }   
