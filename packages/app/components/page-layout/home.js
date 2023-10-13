@@ -134,7 +134,7 @@ export default function PageLayout(props) {
                             <>
                             <Row className="p-4  gap-x-2  w-full">
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                    <Button fullWidth={true} id="tab" startDecorator="Users" variant={feedType == 'account' ? 'outline' : 'text'} rounded size="sm" title="Following"/>
+                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'outline' : 'text'}  size="sm" title="Following"/>
                                 </Pressable>
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
                                     <Button
@@ -142,7 +142,7 @@ export default function PageLayout(props) {
                                         id="tab"
                                         startDecorator="MagicWand"
                                         variant={feedType == 'public' ? 'outline' : 'text'}
-                                        rounded
+                                        
                                         size="sm"
                                         title="For You"
                                     />
@@ -158,7 +158,7 @@ export default function PageLayout(props) {
                                         id="tab"
                                         startDecorator="Fire"
                                         variant={feedType == 'hot' ? 'outline' : 'text'}
-                                        rounded
+                                        
                                         size="sm"
                                         title="Hot"
                                     />
