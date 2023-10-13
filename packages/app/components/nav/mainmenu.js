@@ -34,7 +34,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                         }}
                     >
                         <Pressable onPress={showMenu}>
-                            <View className={(menuPopup? 'h-screen': '') +"bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50 bg-red-500"}/>
+                            <View className={(menuPopup? 'h-screen': '') +"bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"}/>
                         </Pressable>
                     </MotiView>
                     <MotiView
