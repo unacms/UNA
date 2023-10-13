@@ -27,15 +27,15 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                         }}
                         exit={{
                             opacity: 0,
-                            width: '100%'
+                            width: '0'
                         }}
                         transition={{
                             duration: 0,
                         }}
                     >
-                        {/*<Pressable onPress={showMenu}>
-                            <View className="bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50 bg-red-500"/>
-                    </Pressable>*/}
+                        <Pressable onPress={showMenu}>
+                            <View className={(menuPopup? 'h-screen': '') +"bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50 bg-red-500"}/>
+                        </Pressable>
                     </MotiView>
                     <MotiView
                         style={{ width: 288 }}
