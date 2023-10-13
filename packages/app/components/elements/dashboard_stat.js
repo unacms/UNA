@@ -55,7 +55,7 @@ export default  function ElementDashboardStat(props) {
                   <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" >
                     <Row className='space-x-1 w-full justify-between'>
                       {
-                        item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
+                        item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                         {item.count}
                         </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="plus" size="" rounded/></Link></View>
                       }
@@ -63,10 +63,10 @@ export default  function ElementDashboardStat(props) {
                     </Row>
                     <Row className="w-full my-auto gap-x-2 ">
                       
-                      <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
+                      <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                       {t(item2.title)}
                       </Text>
-                      <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
+                      <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                         <Icon icon={item2.icon} width={24} height={24} />
                       </View>
                     </Row>
@@ -79,7 +79,7 @@ export default  function ElementDashboardStat(props) {
             <Link href={item2.link} key={index}>
               <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" margin="a">
                 <Row className=''>
-                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white  ">
+                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                 {item.current} 
                 </Text>
                 {getCounter(item.growth, '', '%')}
@@ -87,10 +87,10 @@ export default  function ElementDashboardStat(props) {
                 </Row>
                 <Row className="w-full my-auto gap-x-2 ">
                   
-                  <Text className=" sm:text-lg flex-auto text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold   my-auto ">
+                  <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                   {t(item2.title)}
                   </Text>
-                  <View className="flex-none text-neutral-800 group-h:text-neutral-950 dark:text-neutral-200 group-h:dark:text-white font-semibold ">
+                  <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                     <Icon icon={item2.icon} width={24} height={24} />
                   </View>
                 </Row>

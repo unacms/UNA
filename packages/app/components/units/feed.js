@@ -478,27 +478,27 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>	
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  active:opacity-50 active:translate-y-1  flex-row p-3 sm:p-4 ' margin=" mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='group  active:opacity-50 active:translate-y-1  flex-row px-3 py-2 sm:p-3  ' margin=" mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                         {...data.author_data}
                         displayType="unit_wo_info"
-                        displaySize="lg"
+                        displaySize="base"
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto ">
-                        <View className="flex-row gap-2">
-                            <Text className="text-sm flex-auto    font-semibold text-neutral-800 dark:text-neutral-200">
+                        <View className="flex-row gap-x-2">
+                            <Text className="text-xs flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
-                            <Time className="text-sm flex-none" ts={data.date}></Time>
+                            <Time className="text-xs flex-none" ts={data.date}></Time>
                         </View>
-                        <Text className="flex-auto text-base sm:text-lg font-bold text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50" numberOfLines={1}>
+                        <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}
                         </Text>
-                        <View className="flex-row    w-full items-end content-end">
+                        <View className="flex-row w-full items-end content-end">
                             <Text
-                                className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-h:text-neutral-950 dark:group-h:text-neutral-50"
+                                className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                                 numberOfLines={1}
                             >
                                 {data.plainText}{stripTags(data.content.text)}

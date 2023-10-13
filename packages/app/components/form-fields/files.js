@@ -196,7 +196,7 @@ export default function FormFieldFiles(props) {
                     { (!img?.file_type?.includes('image/') && !img?.preload) && <Icon icon="File" className="w-20 h-20" size={80} /> }
                     { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                     { img !='' && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                        <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
+                        <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size ="xs" />
                     </View> }
                 </View>
             ))
@@ -242,7 +242,7 @@ export default function FormFieldFiles(props) {
                                 { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                                        <Button onPress={() => handleDelete(img.file_id)} variant="primary" startDecorator="X" align="start" title="" rounded size ="xs" />
+                                        <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size ="xs" />
                                 </View>
                             </>)
                     }

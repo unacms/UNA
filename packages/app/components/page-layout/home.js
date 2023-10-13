@@ -94,7 +94,7 @@ export default function PageLayout(props) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
             dUser.url = '/dashboard'
-            const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+            const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
 
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
@@ -102,12 +102,12 @@ export default function PageLayout(props) {
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    {props.blocks.menu && <View className="hidden lg:block w-1/4  max-w-sm  pt-4 top-0 sticky duration-200  ">
+                    {props.blocks.menu && <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
                         
-                        <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                        <Row className="items-center justify-between pl-6 pr-4 mb-2 py-3   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
-                                        <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                        <View className="mx-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                             {profile}
                                         </View>
                                         <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
@@ -119,7 +119,7 @@ export default function PageLayout(props) {
                                 variant="text"
                                 size="sm"
                                 startDecorator="UserSwitch"
-                                fullWidth
+                                rounded
                                 onClick = {() => setShowImage(true)}
                                 align="right"
                             /></View>}
@@ -128,27 +128,27 @@ export default function PageLayout(props) {
                     </View>
                     }
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                        <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-500/10 w-2/3">
+                        <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto max-w-4xl w-full mx-auto">
                         {appSetting('feed', 'show_multi') ? (
                             <>
                             <Row className="p-4  gap-x-2  w-full">
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'outline' : 'text'}  size="sm" title="Following"/>
+                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'link' : 'text'} rounded  size="sm" />
                                 </Pressable>
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
                                     <Button
                                         fullWidth={true}
                                         id="tab"
-                                        startDecorator="MagicWand"
-                                        variant={feedType == 'public' ? 'outline' : 'text'}
-                                        
+                                        startDecorator="Pulse"
+                                        variant={feedType == 'public' ? 'link' : 'text'}
+                                        rounded
                                         size="sm"
-                                        title="For You"
+                                        
                                     />
                                 </Pressable>
                                 <Pressable
-                                    className=" hidden my-auto items-center"
+                                    className=" my-auto items-center"
                                     onPress={() => {
                                         setFeedTypeEx('hot')
                                     }}
@@ -157,17 +157,18 @@ export default function PageLayout(props) {
                                         fullWidth={true}
                                         id="tab"
                                         startDecorator="Fire"
-                                        variant={feedType == 'hot' ? 'outline' : 'text'}
-                                        
+                                        variant={feedType == 'hot' ? 'link' : 'text'}
+                                        rounded
                                         size="sm"
-                                        title="Hot"
+                                        
                                     />
                                 </Pressable>
                                 {appSetting('feed', 'show_selector_view') && (
                                     <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
                                         <Button
                                             startDecorator="Rows"
-                                            variant={unitMode == '' ? 'outline' : 'text'}
+                                            rounded
+                                            variant={unitMode == '' ? 'link' : 'text'}
                                             size="sm"
                                             onPress={() => {
                                                 setUnitModeEx('')
@@ -175,7 +176,8 @@ export default function PageLayout(props) {
                                         />
                                         <Button
                                             startDecorator="ListBullets"
-                                            variant={unitMode == 'small' ? 'outline' : 'text'}
+                                            rounded
+                                            variant={unitMode == 'small' ? 'link' : 'text'}
                                             size="sm"
                                             onPress={() => {
                                                 setUnitModeEx('small')
