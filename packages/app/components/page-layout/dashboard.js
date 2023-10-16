@@ -131,6 +131,20 @@ export default function PageLayout(props) {
                                 )}
                                 <Link href="/logout"><Button
                                     variant="text"
+                                    title= {t("Language")}
+                                    startDecorator="Translate"
+                                    fullWidth
+                                    align="left"
+                                /></Link>
+                                <Link href="/logout"><Button
+                                    variant="text"
+                                    title= {t("Dark Mode")}
+                                    startDecorator="Moon"
+                                    fullWidth
+                                    align="left"
+                                /></Link>
+                                <Link href="/logout"><Button
+                                    variant="text"
                                     title= {t("Sign out")}
                                     startDecorator="SignOut"
                                     fullWidth
@@ -142,6 +156,32 @@ export default function PageLayout(props) {
                 </View>
                 <View className=" w-full">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
+                </View>
+                <View className=" w-full p-2">
+                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
+                        <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
+                          
+                            <View className="flex-row gap-x-2 my-auto    lg:hidden">
+                                {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
+                                {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
+                                    <Link href={item.link} key={item.link}><Button variant="outline" startDecorator={item.icon} rounded /></Link>
+                                )}
+                                
+                                <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                            </View>
+                            <View className="flex-row gap-x-2 hidden lg:flex">
+                           
+                                
+                                <Link href="/logout"><Button
+                                    variant="text"
+                                    title= {t("Meet *alpha")}
+                                    startDecorator="UsersFour"
+                                    fullWidth
+                                    align="left"
+                                /></Link>
+                            </View>
+                        </View>
+                    </Card>
                 </View>
             </View>
         </>
