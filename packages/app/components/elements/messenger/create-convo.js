@@ -3,25 +3,21 @@ import { Link } from 'app/ui/atoms/link';
 import {Button, InputRounded} from 'app/design/controls';
 import { useEffect, useState, memo } from 'react';
 import { Text } from 'app/design/typography';
-import Form from "../form";
-import useHistory, { useSendData, useHistoryMessageAction } from "./hooks/useHistory";
-import useKeyboard from "./hooks/useKeyboard";
-import Services from "./services/history";
 import { Icon } from "app/ui/atoms/icon";
 import { Theme } from "app/design/theme";
 
-const CreateConvo = memo(({ onClose }) => {
+const CreateConvo = memo(({ onClose, viewButtons }) => {
     const { colors } = Theme();
 
     return <View className="w-full h-full flex flex-col">
                 <View className="max-w-full h-full mt-4 flex flex-col relative">
                     <View className="text-center py-4">
                         <View className="w-full flex flex-row justify-between pb-4">
-                            <Button variant="outline" startDecorator="CaretLeft" rounded align="start" onPress={ onClose } />
+                            { viewButtons && <Button variant="outline" startDecorator="CaretLeft" rounded align="start" onPress={ onClose } /> }
                             <View className={"relative flex items-center flex-1"}>
                                 <Icon className={"absolute"} icon={"users"} width={48} height={48} color={colors.barsColor}/>
                             </View>
-                            <Button variant="outline" startDecorator="X" rounded align="start" onPress={ onClose } />
+                            { viewButtons && <Button variant="outline" startDecorator="X" rounded align="start" onPress={ onClose } /> }
                         </View>
                         <View className="w-full p-2">
                             <Text className="text-center text-xl lg:text-2xl font-bold text-neutral-900 dark:text-neutral-50">Add users to start messaging</Text>

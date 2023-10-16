@@ -78,8 +78,8 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu, onCreateConvo }) => {
             <Text className={"ml-2 truncate text-2xl lg:text-3xl font-bold text-neutral-900 dark:text-neutral-50 capitalize flex items-center " + ( visible ? 'hidden' : '' ) }>{menuItem}</Text>
             <SearchBox visible={visible} />
             <View className="flex flex-row space-x-2">
-              <Button variant="outline" startDecorator="search" rounded align="start" onPress={handlerVisibility}/>
-                { !visible && <Button variant="outline" startDecorator="Plus" rounded align="start" onPress={onCreateConvo}/> }
+              <Button variant="outline" startDecorator="MagnifyingGlass" rounded align="start" onPress={ handlerVisibility }/>
+                { !visible && <Button variant="outline" startDecorator="Plus" rounded align="start" onPress={ onCreateConvo }/> }
             </View>
            </View>
 });
