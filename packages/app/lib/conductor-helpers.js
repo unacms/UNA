@@ -12,7 +12,7 @@ export function getBackButtonWeb() {
     if (history.length > 2){
         return (
             <Pressable className=" lg:hidden bg-bgrcard backdrop-blur dark:bg-bgrcard-d mr-4 w-10 h-10 text-neutral-800 dark:text-neutral-200 border border-bdrcard dark:border-bdrcard-d rounded-full justify-center items-center" onPress={() => history.back()} >
-                <Icon icon="left" width={24} height={24} />
+                <Icon icon="ArrowLeft" width={24} height={24} />
             </Pressable>
         )
     }

@@ -133,8 +133,8 @@ export const settingsDefault = {
     },
     menu_items: {
         menu_top: [
-            { name: 'home', title: 'Home', link: '/', icon: 'home'},
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'home', title: 'Home', link: '/', icon: 'House'},
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'UsersFour', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
@@ -142,7 +142,7 @@ export const settingsDefault = {
         menu_top_more: [
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
-            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'comments' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
@@ -167,8 +167,8 @@ export const settingsDefault = {
             icon: 'File',
             items: ['posts-home', 'posts-popular',],
             add: [
-                { icon: 'plus', name: 'Add', link: '/create-post' },
-                { icon: 'search', name: 'Search', link: '', section:'bx_posts'},
+                { icon: 'Plus', name: 'Add', link: '/create-post' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_posts'},
             ],
         },
         bx_market_submenu: {
@@ -176,8 +176,8 @@ export const settingsDefault = {
             icon: 'Storefront',
             items: ['products-home', 'products-popular', 'products-categories', 'products-category'],
             add: [
-                { icon: 'plus', name: 'Add', link: '/create-product' },
-                { icon: 'search', name: 'Search', link: '', section:'bx_market'},
+                { icon: 'Plus', name: 'Add', link: '/create-product' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_market'},
             ],
         },
         bx_posts_view_actions: [
@@ -193,7 +193,7 @@ export const settingsDefault = {
             icon: 'UsersFour',
             items: ['persons-home', 'persons-active'],
             add: [
-                {icon: 'search', name: 'Search', link: '', section:'bx_persons'},
+                {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
         },
         bx_events_submenu: {
@@ -201,16 +201,16 @@ export const settingsDefault = {
             icon: 'Calendar',
             items: ['events-home', 'events-top', 'events-joined', 'events-followed'],
             add: [
-                { icon: 'plus', name: 'Add', link: '/create-event-profile' },
-                { icon: 'search', name: 'Search', link: '', section:'bx_events' },
+                { icon: 'Plus', name: 'Add', link: '/create-event-profile' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
             ],
         },
         sys_con_submenu: {
             name: 'Connections',
-            icon: 'Users',
+            icon: 'UsersFour',
             items: ['friends', 'friend-suggestions', 'friend-requests', 'sent-friend-requests', 'follow-suggestions', 'followers', 'following'],
             add: [
-                {icon: 'search', name: 'Search', link: '', section:'bx_persons'},
+                {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
         },
         bx_persons_view_submenu: [
@@ -243,8 +243,8 @@ export const settingsDefault = {
             icon: 'UsersThree',
             items: ['groups-home', 'groups-joined', 'groups-followed'],
             add: [
-                { icon: 'plus', name: 'Add', link: '/create-group-profile' },
-                { icon: 'search', name: 'Search', link: '', section:'bx_groups'},
+                { icon: 'Plus', name: 'Add', link: '/create-group-profile' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
             ],
         },
         bx_forum_submenu: {
@@ -252,8 +252,8 @@ export const settingsDefault = {
             icon: 'comments',
             items: ['discussions-home', 'discussions-categories', 'discussions-category'],
             add: [
-                { icon: 'plus', name: 'Add', link: '/create-discussion' },
-                { icon: 'search', name: 'Search', link: '', section:'bx_forum'},
+                { icon: 'Plus', name: 'Add', link: '/create-discussion' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_forum'},
             ],
         },
         bx_groups_view_submenu: [
@@ -301,7 +301,7 @@ export const settingsDefault = {
             icon: 'Hash',
             items: ['channels-home', 'channels-top'],
             add: [
-                { icon: 'search', name: 'Search', link: '', section:'bx_channels' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_channels' },
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
@@ -349,7 +349,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'system:search_keyword_result', showTitle: false, showBg: false },
             },
-            icon: 'Search',
+            icon: 'MagnifyingGlass',
             headerSettings: { backButton: false, header: true, menu: true }
         },
         home: {
@@ -376,8 +376,8 @@ export const settingsDefault = {
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
             },
             header: [
-                { icon: 'plus', name: 'Add', link: '/create-post' },
-                { icon: 'search', name: 'Search', link: '?keyword=' },
+                { icon: 'Plus', name: 'Add', link: '/create-post' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '?keyword=' },
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
@@ -704,7 +704,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false },
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Users',
+            icon: 'UsersFour',
         },
         'persons-active': {
             layout: 'navigator',
@@ -712,7 +712,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Users',
+            icon: 'UsersFour',
         },
         'view-persons-profile': {
             layout: 'profile',
@@ -752,7 +752,7 @@ export const settingsDefault = {
             blocks: {
                 browse: { name: 'bx_notifications:get_block_view', showTitle: false,showBg: false, perLine: 1 },
             },
-            header: [{ icon: 'search', name: 'Search' }],
+            header: [{ icon: 'MagnifyingGlass', name: 'Search' }],
             headerSettings: { header:true, backButton: false, menu:true },
             icon: 'Bell',
         },
@@ -820,32 +820,6 @@ export const settingsDefault = {
             'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
         },
-
-        icons: {
-            'info-circle': 'WarningCircle',
-            home: 'House',
-            'app-menu': 'List',
-            'app-home': 'House',
-            'app-explore': 'MagnifyingGlass',
-            'app-messages': 'ChatCircleText',
-            'app-usermenu': 'UserCircle',
-            'app-notifications': 'Bell',
-            'app-plus': 'Plus',
-            left: 'ArrowLeft',
-            right: 'ArrowRight',
-            notifications: 'Bell',
-            messages: 'ChatCircleText',
-            search: 'MagnifyingGlass',
-            account: 'UserCircle',
-            comments: 'ChatsCircle',
-            'file-alt': 'NoteBlank',
-            contact: 'PaperPlaneRight',
-            reply: 'ArrowBenDownRight',
-            hashtag: 'Hash',
-            Posts:'NoteBlank',
-            Events:'CalendarCheck',
-            Groups:'UsersThree',
-        },
     },
     menu: {
         left: [
@@ -865,27 +839,27 @@ export const settingsDefault = {
             { title: 'Contact', link: '/contact', icon: 'AddressBook' },
         ],
         dashboard: [
-            { key: 'friends', title: 'Friends',icon: 'Users' , link: '/friends' },
-            { key: 'followers', title: 'Followers', icon: 'Users', link: '/followers' },
+            { key: 'friends', title: 'Friends',icon: 'UsersFour' , link: '/friends' },
+            { key: 'followers', title: 'Followers', icon: 'UsersFour', link: '/followers' },
             { key: 'bx_posts', title: 'Posts', icon: 'NoteBlank', link: '/posts-home', link2: '/create-post', action: 'score', action_icon: 'ThumbsUp' },
             { key: 'bx_forum', title: 'Discussions', icon: 'Chats', link: '/discussions-home', link2: '/create-discussion', action: 'views', action_icon: 'ChartBar' },
-            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'Users' },
-            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'Users' },
+            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'UsersFour' },
+            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'UsersFour' },
         ],
         bottom_tabs_logged: [
-            {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
-            {key: '/tab1', title: 'Friends', url: '/friends', icon: 'Users'},
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
+            {key: '/tab1', title: 'Friends', url: '/friends', icon: 'UsersFour'},
             {key: '/tab2', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
             {key: '/tab3', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
-            {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'app-notifications'},
+            {key: '/tab4', title: 'Notif*s', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab5', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
         bottom_tabs_non_logged: [
-            {key: '/tab0', title: 'Home', url: '/home',icon: 'app-home'},
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Posts', url: '/posts-home',icon: 'NoteBlank'},
-            {key: '/tab2', title: 'People', url: '/persons-home',icon: 'users'},
+            {key: '/tab2', title: 'People', url: '/persons-home',icon: 'UsersFour'},
             {key: '/tab3', title: 'About', url: '/products-home',icon: 'Info'},
-            {key: '/tab4', title: 'Sign-up', url: '/create-account',icon: 'app-usermenu'},
+            {key: '/tab4', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
             {key: '/tab5', title: 'Login', url: '/login',icon: 'SignIn'},
         ],
     },

@@ -198,7 +198,7 @@ export default function ElementSearch(oProps) {
                     <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder={t("Search")+'...'} role="textbox" aria-label="Search" />
                 </Pressable>
             ) : (
-                <Button variant="outline" fullWidth startDecorator="search" rounded onPress={() => handleOpenPopupDefault()} />
+                <Button variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded onPress={() => handleOpenPopupDefault()} />
             );
 
             sResult = (

@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet } from 'app/lib/util'
+import {useColorScheme} from 'react-native';
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -37,13 +38,17 @@ export default function PageLayout(props) {
         i18n.changeLanguage(item); 
     }
     const handleTheme =  async (item) => { 
-       /* console.log(Appearance.getColorScheme());
+        console.log(Appearance.getColorScheme());
         if(Platform.OS == 'web'){
+            const root = window.document.documentElement;
+            if (item == 'auto')
+                item = '';
+            root.setAttribute('data-mode', item);
             storageSet('layout:theme', '', item, true)
         }
         else{
             Appearance.setColorScheme(item);
-        }*/
+        }
     }
 
     return (
@@ -55,41 +60,7 @@ export default function PageLayout(props) {
                 
             </Modal>
             <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col    ">
-            <Row>
-                <Button
-                    variant="text"
-                    title="Jitsi"
-                    startDecorator="UserSwitch"
-                    fullWidth
-                    onPress = {() => setShowImage2(true)}
-                    align="left"
-                />
-                {
-                    appSetting('layout', 'switch_lang').length > 1 && (
-                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
-                                id: lang,
-                                key: lang,
-                                name: lang,
-                                title: t('lang_' + lang)
-                            }))} 
-                            onSelect={(oItem) => {handleLang(oItem.id)}}>
-                            <Button title='Language' variant="outline" startDecorator="SortAscending" size="xs" />
-                        </DropdownMenu>)
-                }
-                {
-                    appSetting('layout', 'switch_theme') && (
-                        <DropdownMenu items={['dark', 'light','auto'].map(lang => ({
-                                key: lang,
-                                id: lang,
-                                name: lang,
-                                title: t(lang)
-                            }))} 
-                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                            <Button title='Theme' variant="outline" startDecorator="SortAscending" size="xs" />
-                        </DropdownMenu>)
-                }
-                
-            </Row>
+           
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
@@ -101,8 +72,45 @@ export default function PageLayout(props) {
                                     </Text>
                                 </Link>
                             </View>
-                            <View className="flex-row gap-x-2 my-auto    lg:hidden">
+                            <View className="flex-row gap-x-2 my-auto lg:hidden">
                                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
+                                {
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                        <Button
+                                                
+                                                variant="text"
+                                                title= {t("Language")}
+                                                startDecorator="Translate"
+                                                fullWidth
+                                                align="left"
+                                            />
+                                        </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Button
+                                                    variant="text"
+                                                    title= {t("Dark Mode")}
+                                                    startDecorator="Moon"
+                                                    fullWidth
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
                                 {menuItemsByName('', appSetting('menu_items', 'sys_account_settings_submenu')).map((item, index) =>
                                     <Link href={item.link} key={item.link}><Button variant="outline" startDecorator={item.icon} rounded /></Link>
                                 )}
@@ -129,20 +137,43 @@ export default function PageLayout(props) {
                                         align="left"
                                     /></Link>
                                 )}
-                                <Link href="/logout"><Button
-                                    variant="text"
-                                    title= {t("Language")}
-                                    startDecorator="Translate"
-                                    fullWidth
-                                    align="left"
-                                /></Link>
-                                <Link href="/logout"><Button
-                                    variant="text"
-                                    title= {t("Dark Mode")}
-                                    startDecorator="Moon"
-                                    fullWidth
-                                    align="left"
-                                /></Link>
+                                {
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                        <Button
+                                                
+                                                variant="text"
+                                                title= {t("Language")}
+                                                startDecorator="Translate"
+                                                fullWidth
+                                                align="left"
+                                            />
+                                        </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Button
+                                                    variant="text"
+                                                    title= {t("Dark Mode")}
+                                                    startDecorator="Moon"
+                                                    fullWidth
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
                                 <Link href="/logout"><Button
                                     variant="text"
                                     title= {t("Sign out")}
@@ -170,15 +201,14 @@ export default function PageLayout(props) {
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
-                           
-                                
-                                <Link href="/logout"><Button
+                                <Button
                                     variant="text"
                                     title= {t("Meet *alpha")}
                                     startDecorator="UsersFour"
                                     fullWidth
+                                    onPress = {() => setShowImage2(true)}
                                     align="left"
-                                /></Link>
+                                />
                             </View>
                         </View>
                     </Card>

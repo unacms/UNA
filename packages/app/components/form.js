@@ -46,7 +46,8 @@ export default function Form(props) {
         const formData = new FormData();
         Object.keys(d).map(function (key) {
             formData.append(key, d[key]);
-            data.inputs[key].value= d[key];
+            if (data.inputs[key])
+                data.inputs[key].value= d[key];
         });
        await onFormSubmit(formData, d); 
     }    

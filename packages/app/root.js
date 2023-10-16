@@ -9,6 +9,9 @@ import { appSetting, getURI } from 'app/lib/util';
 import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
 import { storageClear } from 'app/lib/util';
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { appStatic } from 'app/lib/app-static'
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -19,6 +22,10 @@ const metaAdder = (queryProperty, value) => {
         document.head.insertAdjacentHTML("beforeend", element);
     }
 };
+
+export function Page404 (props) {
+    return  appStatic('page_not_found')
+}
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();

@@ -199,7 +199,7 @@ export default function (props) {
                                         <ButtonRef
                                         variant="outline"
                                         rounded
-                                        startDecorator="plus"
+                                        startDecorator="Plus"
                                         id="m3"
 
                                         onPress={() => {}}

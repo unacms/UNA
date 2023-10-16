@@ -58,7 +58,7 @@ export default function ElementDashboardStat(props) {
                                     {
                                         item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                         {item.count}
-                                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="plus" size="" rounded/></Link></View>
+                                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="" rounded/></Link></View>
                                     }
                                     {getCounter(item[item2.action], item2.action_icon)}
                                 </Row>

@@ -226,7 +226,7 @@ export default function (props) {
                                         <ButtonRef
                                         variant="outline"
                                         rounded
-                                        startDecorator="plus"
+                                        startDecorator="Plus"
                                         id="m3"
 
                                         onPress={() => {}}
@@ -248,7 +248,7 @@ export default function (props) {
                                         key="ddp-trigger"
                                         variant="outline"
                                         rounded
-                                        startDecorator="notifications"
+                                        startDecorator="Bell"
                                         id="m1"
                                         />,
                                         ntfsContent
@@ -294,7 +294,7 @@ export default function (props) {
                                 variant="outline"
                                 rounded
 
-                                startDecorator="account"
+                                startDecorator="UserCircle"
                                 onPress={() => {
                                 handleClick('/login')
                                 }}

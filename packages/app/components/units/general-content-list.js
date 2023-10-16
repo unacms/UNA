@@ -14,8 +14,11 @@ import Time from '../../ui/atoms/time'
 import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import {componentsMap} from  'app/ui/molecules/_map';
+import { useTranslation } from 'react-i18next';
 
 export default function Unit(props) {
+    const { t } = useTranslation();
+    
     function channelUnit() {
         let sMeta = <></>
         if (data?.meta)

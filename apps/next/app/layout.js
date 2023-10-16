@@ -1,14 +1,14 @@
 "use client"
-
+import { useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'app/provider'
 import { CurrentUserProvider } from 'app/context/user';
-
+import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-
+import { useColorScheme } from 'react-native';
 import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
 
@@ -44,14 +44,17 @@ export default function RootLayout({ children }) {
             interpolation: {
                 escapeValue: false
             }
-        }); 
-
-    i18n.changeLanguage('ru');    
+        });  
 
     const queryClient = new QueryClient()
+    let theme = storageGet('layout:theme', '', true);
+    const scheme = useColorScheme();
+    if (theme ==''){
+        theme = scheme;
+    }
+    
     return (
-        <html lang="en" >
-            <meta name="color-scheme" content="dark"></meta>
+        <html lang="en" data-mode={theme}>
             <body className='bg-bgrbody dark:bg-bgrbody-d'>
                 <Provider>
                         <QueryClientProvider client={queryClient}>

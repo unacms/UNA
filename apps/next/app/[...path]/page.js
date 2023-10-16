@@ -1,7 +1,7 @@
 //import { cookies } from 'next/headers'
 import { env } from 'app/lib/env';
 import { cache } from 'react'
-import { Root,Root2} from 'app/root'
+import { Root, Page404} from 'app/root'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
@@ -67,5 +67,8 @@ export default async function Path (props) {
         if (props?.searchParams?.empty)
             data.data.empty = true;
         return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
+    }
+    else{
+        return <Page404/>
     }
 }

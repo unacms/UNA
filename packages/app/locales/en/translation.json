@@ -4,5 +4,8 @@
     "members_2": " {{count}} members",
     "members_plural": " {{count}} members",
     "lang_en": "English",
-    "lang_ru": "Русский"
+    "lang_ru": "Русский",
+    "theme_dark": "Dark mode on",
+    "theme_light": "Dark mode off",
+    "theme_auto": "Dark mode auto"
 }

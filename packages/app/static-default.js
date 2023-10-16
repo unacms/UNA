@@ -206,6 +206,27 @@ const ComponentsContentEmpty = () => {
 )
 }
 
+const PageNotFound = () => {
+  const { t } = useTranslation();
+  return (
+  <>
+    <View className="p-8 mx-auto">
+      <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+        <View className="flex-col mx-auto m-4 text-neutral-800 dark:text-neutral-200 ">
+          <Icon icon="Binoculars" width={32} height={32} />
+        </View>
+        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+        {t('404 - not found')}
+        </Text>
+        <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+         {t('Page not found, sorry.')}
+        </Text>
+      </View>
+    </View>
+  </>
+)
+}
+
 export function ComponentsIntro(props) {
     const { t } = useTranslation();
     const AnimatedCounter = ({ value, duration }) => {
@@ -589,6 +610,7 @@ export const staticDefault = {
   logo_native: LogoNative,
   logo_nativedark: LogoNativeDark,
   components_about: ComponentsAbout,
+  page_not_found: PageNotFound,
   components_comments_empty: ComponentsCommentsEmpty,
   components_content_empty: ComponentsContentEmpty,
   components_intro: ComponentsIntro,

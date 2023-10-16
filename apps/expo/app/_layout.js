@@ -50,8 +50,6 @@ i18n
         }
     }); 
 
-    i18n.changeLanguage('ru');    
-
   const scheme = useColorScheme();
   const queryClient = new QueryClient()
   

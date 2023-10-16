@@ -23,7 +23,7 @@ export default function ElementEntityCover(props) {
             </View>
             <View className="flex-none my-auto px-4 pt-4  flex-row gap-x-2 ">
               
-              <Button title={t("Follow")} startDecorator="plus" variant="primary"  />
+              <Button title={t("Follow")} startDecorator="Plus" variant="primary"  />
               <Button title={t("Message")} startDecorator="messages" variant="default" />
             </View>
 
