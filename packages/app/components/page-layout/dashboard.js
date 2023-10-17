@@ -42,7 +42,7 @@ export default function PageLayout(props) {
             storageClear();
             storageSet('layout:lang', '', item, true);
             setCurrentUser(Object.assign({}, currentUser));
-            location.reload();
+            window.location.href = window.location.href
         }
         
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
