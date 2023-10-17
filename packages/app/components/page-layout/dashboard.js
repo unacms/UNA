@@ -26,7 +26,7 @@ export default function PageLayout(props) {
     let { currentUser, setCurrentUser } = useCurrentUser()
     const [showImage, setShowImage] = useState(false);
     const [showImage2, setShowImage2] = useState(false);
-    const [reload, setReload] = useState(false);
+
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -40,8 +40,10 @@ export default function PageLayout(props) {
         i18n.changeLanguage(item); 
         if(Platform.OS == 'web'){
             storageClear();
-            storageSet('layout:lang', '', item, true)
+            storageSet('layout:lang', '', item, true);
+            location.reload();
         }
+        
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
     }
 
@@ -58,7 +60,8 @@ export default function PageLayout(props) {
                 root.setAttribute('data-mode', item);
             
             storageSet('layout:theme', '', item, true);
-            location.reload();
+            //location.reload();
+            setCurrentUser(Object.assign({}, currentUser));
         }
         else{
             Appearance.setColorScheme(item);
@@ -80,7 +83,132 @@ export default function PageLayout(props) {
            
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
-                       
+                        <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
+                            <View className="flex-row gap-x-2 my-auto    items-center">
+                                {profile}
+                                <Link href={currentUser.url}>
+                                    <Text className="my-auto text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
+                                        {currentUser.display_name}
+                                    </Text>
+                                </Link>
+                            </View>
+                            <View className="flex-row gap-x-2 my-auto lg:hidden">
+                                {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
+                                {
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <DropdownMenu 
+                                            items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                                <Button
+                                                    variant="outline"                                               
+                                                    startDecorator="Translate"
+                                                    rounded
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Button
+                                                    variant="outline"
+                                                    startDecorator="Moon"
+                                                    rounded
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
+                               
+                                
+                                <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                            </View>
+                            <View className="flex-row gap-x-2 hidden lg:flex">
+                                {appSetting('layout', 'allow_switch_profile') && <Button
+                                    variant="text"
+                                    title={ t("Switch Profile") }
+                                    startDecorator="UserSwitch"
+                                    fullWidth
+                                    onPress = {() => setShowImage(true)}
+                                    align="left"
+                                />}
+                            
+                               
+                                {
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <DropdownMenu items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                        <Button
+                                                
+                                                variant="text"
+                                                title= {t('lang_' + i18n.language)}
+                                                startDecorator="Translate"
+                                                fullWidth
+                                                align="left"
+                                            />
+                                        </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Button
+                                                    variant="text"
+                                                    title= {t('theme_' + currentTheme)}
+                                                    startDecorator="Moon"
+                                                    fullWidth
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
+                                <Link href="/logout"><Button
+                                    variant="text"
+                                    title= {t("Sign out")}
+                                    startDecorator="SignOut"
+                                    fullWidth
+                                    align="left"
+                                /></Link>
+                            </View>
+                        </View>
+                    </Card>
+                </View>
+                <View className=" w-full">
+                  
+                </View>
+                <View className=" w-full p-2">
+                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
+                        <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
+                            <View className="flex-row gap-x-2 lg:flex">
+                                <Button
+                                    variant="text"
+                                    title= {t("Meet *alpha")}
+                                    startDecorator="UsersFour"
+                                    fullWidth
+                                    onPress = {() => setShowImage2(true)}
+                                    align="left"
+                                />
+                            </View>
+                        </View>
                     </Card>
                 </View>
             </View>
