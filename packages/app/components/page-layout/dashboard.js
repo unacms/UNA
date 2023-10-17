@@ -94,11 +94,44 @@ export default function PageLayout(props) {
                             </View>
                             <View className="flex-row gap-x-2 my-auto lg:hidden">
                                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
-                                
-                                
+                                {
+                                    appSetting('layout', 'switch_lang').length > 1 && (
+                                        <DropdownMenu 
+                                            items={appSetting('layout', 'switch_lang').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('lang_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleLang(oItem.id)}}>
+                                                <Button
+                                                    variant="outline"                                               
+                                                    startDecorator="Translate"
+                                                    rounded
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'switch_theme') && (
+                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                                key: theme,
+                                                id: theme,
+                                                name: theme,
+                                                title: t('theme_' + theme)
+                                            }))} 
+                                            onSelect={(oItem) => {handleTheme(oItem.id)}}>
+                                                <Button
+                                                    variant="outline"
+                                                    startDecorator="Moon"
+                                                    rounded
+                                                    align="left"
+                                                />
+                                        </DropdownMenu>)
+                                }
                                
                                 
-                                <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                              
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
                                 {appSetting('layout', 'allow_switch_profile') && <Button
@@ -148,13 +181,7 @@ export default function PageLayout(props) {
                                                 />
                                         </DropdownMenu>)
                                 }
-                                <Link href="/logout"><Button
-                                    variant="text"
-                                    title= {t("Sign out")}
-                                    startDecorator="SignOut"
-                                    fullWidth
-                                    align="left"
-                                /></Link>
+                               
                             </View>
                         </View>
                     </Card>
