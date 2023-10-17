@@ -52,6 +52,26 @@ export function storageGet(pref, key, isLocal = false) {
     }
 }
 
+export function storageKey(url, useUrl = true) {
+    //stringMd5
+    if ( Platform.OS !== 'web')
+        return ;
+    
+    let s = url;
+    if (!useUrl)
+        s = url;
+        //stringMd5
+    return (s);
+} 
+
+export function storageClear(pref, key) {
+    if ( Platform.OS !== 'web')
+        return ;
+    
+    sessionStorage.clear();
+} 
+
+
 function compress(data) {
     try {
         return Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64');
@@ -146,24 +166,6 @@ export function getUnitModeBySource(source){
     return 'default';
 }
 
-export function storageKey(url, useUrl = true) {
-    //stringMd5
-    if ( Platform.OS !== 'web')
-        return ;
-    
-    let s = url;
-    if (!useUrl)
-        s = url;
-        //stringMd5
-    return (s);
-} 
-
-export function storageClear(pref, key) {
-    if ( Platform.OS !== 'web')
-        return ;
-    
-    sessionStorage.clear();
-} 
 
 export function truncateHTML(text, length) {
     if (!text)

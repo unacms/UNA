@@ -55,10 +55,15 @@ export default function RootLayout({ children }) {
             i18n.changeLanguage(lang);   
     }
     const scheme = useColorScheme();
-    if (theme ==''){
+    if (theme == ''){
         theme = scheme;
     }
-    
+
+    if (typeof window !== 'undefined'){
+        const root = window.document.documentElement;
+        root.setAttribute('data-mode', theme);
+    }
+    console.log("themetheme", theme, scheme)
     return (
         <html lang="en" data-mode={theme}>
             <body className='bg-bgrbody dark:bg-bgrbody-d'>

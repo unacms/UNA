@@ -60,7 +60,7 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    let c = Block({/*key:b.id,*/ uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg})
+    let c = Block({/*key:b.id,*/ uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg, extraProps:name})
     return c;
 }
 
@@ -76,6 +76,7 @@ export function StaticBlock(props) {
 }
 
 export default function Block(props) {
+
     let block = props.block;
 
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
@@ -90,7 +91,7 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle} fullWidth={props.fullWidth}>
+        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
             <BlockType data={block.content} type={block.type} {...props}/>
         </BlockWrapper>
     );
@@ -99,7 +100,6 @@ export default function Block(props) {
 export function BlockWrapper(props) {
 
     let { block, showTitle, showBg, fullWidth, ...rest } = props
-
     block.designbox_id = Number(block.designbox_id);
 
     const aNoTitle = [0,10,13,3];
@@ -124,8 +124,10 @@ export function BlockWrapper(props) {
         bIsShowBg = true;
     }
 
+    let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
+
     return (
-        <View key={block.id} className={"w-full mx-auto  " +  ( !fullWidth ? "  max-w-screen-2xl " : "" )}>
+        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? "  max-w-screen-2xl " : "" )  + cssClasses}>
             <View key={block.id} className={bIsShowBg ? '    ' : ''}>
                 {bIsShowTitle && <View className="p-3 ">
                     <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(block.title)}</Text></View>}

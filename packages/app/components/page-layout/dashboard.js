@@ -17,7 +17,7 @@ import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
-import { storageSet } from 'app/lib/util'
+import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import {useColorScheme} from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 
@@ -26,6 +26,7 @@ export default function PageLayout(props) {
     let { currentUser, setCurrentUser } = useCurrentUser()
     const [showImage, setShowImage] = useState(false);
     const [showImage2, setShowImage2] = useState(false);
+    const [reload, setReload] = useState(false);
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -38,23 +39,34 @@ export default function PageLayout(props) {
     const handleLang =  async (item) => { 
         i18n.changeLanguage(item); 
         if(Platform.OS == 'web'){
+            storageClear();
             storageSet('layout:lang', '', item, true)
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
     }
+
+    const scheme = '';//useColorScheme();
+
     const handleTheme =  async (item) => { 
-        console.log(Appearance.getColorScheme());
         if(Platform.OS == 'web'){
             const root = window.document.documentElement;
             if (item == 'auto')
                 item = '';
-            root.setAttribute('data-mode', item);
-            storageSet('layout:theme', '', item, true)
+            if (item == '')
+                root.setAttribute('data-mode', scheme);
+            else
+                root.setAttribute('data-mode', item);
+            
+            storageSet('layout:theme', '', item, true);
+            location.reload();
         }
         else{
             Appearance.setColorScheme(item);
         }
     }
+    let currentTheme =  storageGet('layout:theme','', true);
+    if (!currentTheme)
+        currentTheme = 'auto';
 
     return (
         <>
@@ -141,7 +153,7 @@ export default function PageLayout(props) {
                                         <Button
                                                 
                                                 variant="text"
-                                                title= {t("Language")}
+                                                title= {t('lang_' + i18n.language)}
                                                 startDecorator="Translate"
                                                 fullWidth
                                                 align="left"
@@ -159,7 +171,7 @@ export default function PageLayout(props) {
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
                                                 <Button
                                                     variant="text"
-                                                    title= {t("Dark Mode")}
+                                                    title= {t('theme_' + currentTheme)}
                                                     startDecorator="Moon"
                                                     fullWidth
                                                     align="left"

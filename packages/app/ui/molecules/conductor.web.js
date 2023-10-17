@@ -34,7 +34,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    console.log('initedTabs', menu, initedTabs);
+    //console.log('initedTabs', menu, initedTabs);
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;

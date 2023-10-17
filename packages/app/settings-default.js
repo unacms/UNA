@@ -391,7 +391,7 @@ export const settingsDefault = {
         'account-settings-email': {
             layout: 'navigator',
             blocks: {
-                settings: {name: 'system:account_settings_email', showTitle: false, showBg: false, perLine: 1 },
+                settings: {name: 'system:account_settings_email', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl"},
             },
             icon: 'Gear',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -399,7 +399,7 @@ export const settingsDefault = {
         'account-settings-password': {
             layout: 'navigator',
             blocks: {
-                settings: {name: 'system:account_settings_password', showTitle: false, showBg: false, perLine: 1 },
+                settings: {name: 'system:account_settings_password', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
             },
             icon: 'Gear',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -407,7 +407,7 @@ export const settingsDefault = {
         'account-settings-info': {
             layout: 'navigator',
             blocks: {
-                settings: {name: 'system:account_settings_info', showTitle: false, showBg: false, perLine: 1 },
+                settings: {name: 'system:account_settings_info', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
             },
             icon: 'Gear',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -664,7 +664,7 @@ export const settingsDefault = {
                 browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Egg',
+            icon: 'UsersThree',
         },
         'groups-joined': {
             layout: 'navigator',
@@ -676,7 +676,7 @@ export const settingsDefault = {
                 },
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Egg',
+            icon: 'Link',
         },
         'groups-followed': {
             layout: 'navigator',
