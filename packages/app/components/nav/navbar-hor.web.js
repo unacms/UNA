@@ -91,7 +91,8 @@ export default function (props) {
     const menu_top = appSetting('menu_items', 'menu_top');
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
-
+    const menu_account = appSetting('menu_items', 'menu_account');
+    
     const windowWidth = useWindowDimensions().width;
 
     let headerSettings = getHeaderSettings(props.uri, width);
@@ -268,7 +269,22 @@ export default function (props) {
                             </View>
                             {profile ? (
                                 <View className="hidden sm:flex ml-2 flex-row justify-center">
-                                    <Link href='/dashboard'>
+                                    <DropdownMenu items={menuItemsByName('', menu_account).map(
+                                        (item, index) => {
+                                            return (
+                                            {
+                                                id: 'menu-' + index,
+                                                link: item.link,
+                                                title: t(item.title),
+                                                icon:
+                                                item.icon.indexOf(' ') == -1
+                                                    ? item.icon
+                                                    : item.icon.split(' ')[0],
+                                            }
+                                            )
+                                        }
+                                        )}
+                                    >
                                         <Tooltip content={t("Dashboard")} asChildTrigger={true}>
                                             <ButtonRef
                                                 variant="outline"
@@ -279,7 +295,7 @@ export default function (props) {
                                                 onPress={() => {}}
                                             />
                                         </Tooltip>
-                                    </Link>
+                                    </DropdownMenu>
                                 </View>
                             ) : (
                                 <></>
