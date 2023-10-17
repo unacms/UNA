@@ -41,6 +41,7 @@ export default function PageLayout(props) {
         if(Platform.OS == 'web'){
             storageClear();
             storageSet('layout:lang', '', item, true);
+            setCurrentUser(Object.assign({}, currentUser));
             location.reload();
         }
         

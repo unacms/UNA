@@ -47,7 +47,7 @@ export default function ElementLink(props) {
 
     let prefetch = true;
     if (rest?.noPrefetch)
-        prefetch =false;
+        prefetch = false;
 
     return (
         <Link href={href} {...rest} prefetch={prefetch} onClick={(e) => handleLinkClick(e, href)} legacyBehavior={false}> 
