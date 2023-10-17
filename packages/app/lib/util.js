@@ -27,12 +27,10 @@ export function storageSet(pref, key, data, isLocal = false) {
         await MMKV.setStringAsync(`${pref}-${key}`, JSON.stringify(data));*/
     }
     else{
-        if (localStorage){
-            const storage = isLocal ? localStorage : sessionStorage;
-            const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
+        const storage = isLocal ? localStorage : sessionStorage;
+        const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
 
-            storage.setItem(`${pref}-${key}`, serializedData);
-        }
+        storage.setItem(`${pref}-${key}`, serializedData);
     }
 }
 
@@ -47,12 +45,10 @@ export function storageGet(pref, key, isLocal = false) {
         return JSON.parse(storedData);*/
     }
     else{
-        if (localStorage){
-            const storage = isLocal ? localStorage : sessionStorage;
-            const storedData = storage.getItem(`${pref}-${key}`);
-            if (!storedData) return null;
-            return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
-        }
+        const storage = isLocal ? localStorage : sessionStorage;
+        const storedData = storage.getItem(`${pref}-${key}`);
+        if (!storedData) return null;
+        return appSetting('cache', 'compress') ? decompress(storedData) : JSON.parse(storedData);
     }
 }
 

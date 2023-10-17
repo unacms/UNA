@@ -36,6 +36,9 @@ export default function PageLayout(props) {
 
     const handleLang =  async (item) => { 
         i18n.changeLanguage(item); 
+        if(Platform.OS == 'web'){
+            storageSet('layout:lang', '', item, true)
+        }
     }
     const handleTheme =  async (item) => { 
         console.log(Appearance.getColorScheme());

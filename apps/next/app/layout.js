@@ -47,7 +47,13 @@ export default function RootLayout({ children }) {
         });  
 
     const queryClient = new QueryClient()
-    let theme = storageGet('layout:theme', '', true);
+    let theme = '';
+    if (typeof window !== 'undefined'){
+        theme = storageGet('layout:theme', '', true);
+        let lang = storageGet('layout:lang', '', true);
+        if (lang)
+            i18n.changeLanguage(lang);   
+    }
     const scheme = useColorScheme();
     if (theme ==''){
         theme = scheme;
