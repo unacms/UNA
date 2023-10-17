@@ -19,6 +19,7 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet } from 'app/lib/util'
 import {useColorScheme} from 'react-native';
+import { fetcher } from 'app/lib/fetcher';
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function PageLayout(props) {
         if(Platform.OS == 'web'){
             storageSet('layout:lang', '', item, true)
         }
+        const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=home&lang=' + item );
     }
     const handleTheme =  async (item) => { 
         console.log(Appearance.getColorScheme());

@@ -34,7 +34,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    //console.log('initedTabs', initedTabs);
+    console.log('initedTabs', menu, initedTabs);
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
@@ -440,9 +440,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px] w-full" />
                 {headerObj}
-                <View className={appSetting('layout', 'max_width') + ' mx-auto min-h-screen  w-full'} >
+                <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width') + ' mx-auto  w-full'} >
                     <Row>
-                        <View className="hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r min-h-screen border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50">
+                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className="w-full lg:w-3/4 xl:w-4/5 ">

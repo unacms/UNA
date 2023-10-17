@@ -224,10 +224,11 @@ export const settingsDefault = {
             'persons-profile-friends',
             'persons-profile-subscriptions',
         ],
-        sys_account_settings_submenu: [
-            { name: 'account-settings-password',title: 'Account Settings', link: '/account-settings-password', icon: 'Gear'},
-            { name: 'account-settings-email',title: 'Account Settings', link: '/account-settings-email', icon: 'Gear'},
-        ],
+        sys_account_settings_submenu: {
+            name: 'Settings',
+            icon: 'Gear',
+            items: ['account-settings-password', 'account-settings-email', 'account-settings-info'],
+        },
         bx_persons_view_meta: {
             iconset: {
                 friends: 'Users',
@@ -386,6 +387,32 @@ export const settingsDefault = {
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
+        //############ SETTINGS PAGES ############
+        'account-settings-email': {
+            layout: 'navigator',
+            blocks: {
+                settings: {name: 'system:account_settings_email', showTitle: false, showBg: false, perLine: 1 },
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'account-settings-password': {
+            layout: 'navigator',
+            blocks: {
+                settings: {name: 'system:account_settings_password', showTitle: false, showBg: false, perLine: 1 },
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'account-settings-info': {
+            layout: 'navigator',
+            blocks: {
+                settings: {name: 'system:account_settings_info', showTitle: false, showBg: false, perLine: 1 },
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        
         //############ EVENTS PAGES ############
         'events-home': {
             layout: 'navigator',

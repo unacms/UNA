@@ -37,7 +37,7 @@ export default function ElementDashboardStat(props) {
     const [data, setData] = useState(props.data);
     useEffect(() => {
         const fetchData = async () => {
-                const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices&demo=1');
+                const sResponse = await fetcher('/api.php?r=system/get_stat_block/TemplDashboardServices');
                 setData(sResponse.data[0].data);
         };
         fetchData();
