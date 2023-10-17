@@ -30,6 +30,6 @@ export function Theme() {
       if (theme != '')
         scheme = theme;
     }
-    console.log("schemescheme", scheme)
+
     return scheme === 'dark' ? CustomDarkTheme : CustomLightTheme;
 }   

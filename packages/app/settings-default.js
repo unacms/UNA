@@ -155,7 +155,7 @@ export const settingsDefault = {
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
-            { name: 'Logout',title: 'Sign out', link: '/create-event-profile', icon: 'SignOut'},
+            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
         profile_menu: [
             'view-persons-profile',
