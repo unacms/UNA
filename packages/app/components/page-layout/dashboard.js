@@ -131,7 +131,7 @@ export default function PageLayout(props) {
                                 }
                                
                                 
-                              
+                                <Link href="/logout"><Text>10555</Text></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
                                 {appSetting('layout', 'allow_switch_profile') && <Button
@@ -181,7 +181,7 @@ export default function PageLayout(props) {
                                                 />
                                         </DropdownMenu>)
                                 }
-                               
+                                <Link href="/logout"><Text>10555</Text></Link>
                             </View>
                         </View>
                     </Card>
