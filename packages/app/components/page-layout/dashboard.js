@@ -84,7 +84,7 @@ export default function PageLayout(props) {
            
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
-                        <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
+                        <View className="justify-center sm:justify-between flex-auto gap-x-8 flex-row gap-y-4 flex-wrap my-auto">
                             <View className="flex-row gap-x-2 my-auto    items-center">
                                 {profile}
                                 <Link href={currentUser.url}>
@@ -93,7 +93,7 @@ export default function PageLayout(props) {
                                     </Text>
                                 </Link>
                             </View>
-                            <View className="flex-row gap-x-2 my-auto lg:hidden">
+                            <View className="flex-row items-center gap-x-2 my-auto lg:hidden">
                                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
                                 {
                                     appSetting('layout', 'switch_lang').length > 1 && (

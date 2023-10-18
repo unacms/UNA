@@ -53,12 +53,12 @@ export default function ElementDashboardStat(props) {
                 if (item.type != 'growth') {
                     return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
                         <Link href={item2.link}>
-                            <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" >
+                            <Card rounded=" rounded-2xl " addClassName="w-full h-24 p-4 gap-y-2" >
                                 <Row className='space-x-1 w-full justify-between'>
                                     {
                                         item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                         {item.count}
-                                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="" rounded/></Link></View>
+                                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded/></Link></View>
                                     }
                                     {getCounter(item[item2.action], item2.action_icon)}
                                 </Row>
