@@ -114,8 +114,8 @@ export default function (props) {
         <>
             <View className="fixed -top-[1px]  w-full">
                 <Redirect ref={redirectdRef} />
-                <View className="  backdrop-blur h-16 px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-                    <View className="flex-row flex-auto lg:flex-none xl:w-1/4 gap-x-3 my-auto">
+                <View className="   backdrop-blur h-16 px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
+                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 gap-x-4 my-auto">
                         <Row className="flex-row  flex-none items-center">
                             {
                                 headerSettings.menu && (
@@ -141,11 +141,11 @@ export default function (props) {
                             { headerSettings.backButton  && getBackButtonWeb() }
                             { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
                         </Row>
-                        {bSearch && <View className="hidden xl:flex"><Search type="input" /></View>}
+                        {bSearch && <View className="hidden "><Search type="input" /></View>}
                         
                     </View>
-                    <Row className="hidden xl:w-1/2  lg:flex flex-auto">
-                        <Row className='w-full xl:mx-auto gap-x-0.5 max-w-lg justify-between'>
+                    <Row className="hidden w-1/2  xl:flex flex-auto">
+                        <Row className='w-full mx-auto gap-x-0.5 max-w-lg justify-between'>
                             {menuItemsByName('main_menu', menu_top).map(
                             (item, index) =>
                             (currentUser || (!currentUser && item.nonlogged != false)) && (
@@ -169,7 +169,7 @@ export default function (props) {
                             
                         </Row>
                     </Row>
-                    <Row className="flex-row lg:w-1/4  flex-none justify-end  ">          
+                    <Row className="flex-row xl:w-1/4  flex-none justify-end  ">          
                         {!!currentUser && (
                             <Row className="flex-row   justify-end ">
                             <View className=" flex-row my-auto ">
@@ -305,7 +305,7 @@ export default function (props) {
                     )}
                     {!currentUser && (
                         <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
-                            {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
+                            {bSearch && <View className=" ml-2"><Search /></View>}
                             <Button
                                 variant="outline"
                                 rounded

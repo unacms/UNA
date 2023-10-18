@@ -89,7 +89,7 @@ export default function FormFeed(props) {
                     <Button
                         size="base"
                         variant="text"
-                        startDecorator="Pencil"
+                        startDecorator="Plus"
                         fullWidth
                         title={t("Create new Post") + "..."}
                         align="start"

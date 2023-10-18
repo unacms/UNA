@@ -263,12 +263,16 @@ export function ComponentsIntro(props) {
   return (
     <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
       <View className="flex-row gap-x-2 ">
-        <Button
-          variant="outline"
-          size="sm"
-          startDecorator="UsersFour"
-          rounded
-        />
+        <View className='flex-row  '>
+          
+
+       
+        <View className="h-9 w-9  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
+
+        <View className="h-9 w-9 -ml-2  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
+        <View className="h-9 w-9 -ml-2  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
+
+        </View>
         <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
           
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">
@@ -278,7 +282,7 @@ export function ComponentsIntro(props) {
         </Text>
       </View>
       <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
-        {t('Welcome to the demo social network powered by NEO App and UNA CMS')}
+        {t('Community Intro')}
       </Text>
     </Card>
   )

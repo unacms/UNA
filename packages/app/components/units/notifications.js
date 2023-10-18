@@ -33,7 +33,7 @@ export default function UnitFeed({data}) {
         <View className=" mt-2 ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
-                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg ">  
+                <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 max-w-4xl mx-auto w-full rounded-lg ">  
                     <View className="w-12 h-12 mr-2 rounded-full flex-none " >
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
                     </View>

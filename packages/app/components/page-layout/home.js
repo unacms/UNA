@@ -104,13 +104,13 @@ export default function PageLayout(props) {
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
                     {props.blocks.menu && <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
                         
-                        <Row className="items-center justify-between pl-6 pr-4 mb-2 py-3   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
+                        <Row className="items-center justify-between pl-6 pr-4 mb-2 py-2   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
-                                        <View className="mx-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                        <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                             {profile}
                                         </View>
-                                        <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                        <Text className="text-lg flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                             {currentUser.display_name}
                                         </Text>
                                     </Row>
@@ -129,10 +129,10 @@ export default function PageLayout(props) {
                     }
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
-                            <View className="flex-auto max-w-4xl w-full mx-auto">
+                            <View className="flex-auto   w-full mx-auto">
                         {appSetting('feed', 'show_multi') ? (
                             <>
-                            <Row className="p-4  gap-x-2  w-full">
+                            <Row className="p-3 sm:mb-4  sm:border-b border-dashed border-neutral-400/20 gap-x-2  w-full">
                                 <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
                                     <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'link' : 'text'} rounded  size="sm" />
                                 </Pressable>
@@ -185,8 +185,9 @@ export default function PageLayout(props) {
                                     </Row>
                                 )}
                             </Row>
+                            <View className="relative w-full mx-auto max-w-4xl">
                             {feedType == 'account' && (
-                                <View className={ feedType == 'account' ? '' : 'w-full absolute z-0 invisible top-full' } >
+                                <View className={ feedType == 'account' ? '' : 'w-full bg-red- absolute z-0 invisible top-full' } >
                                     <LayoutDataContext>
                                         <BlockByName data={props.data} name={props.blocks.account_feed_form} />
                                         <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
@@ -208,9 +209,10 @@ export default function PageLayout(props) {
                                     </LayoutDataContext>
                                 </View>
                             )}
+                            </View>
                             </>
                         ) : (
-                            <View className="pt-4">
+                            <View className="pt-4 ">
                                 <LayoutDataContext>
                                     <BlockByName data={props.data} name={ props.blocks[appSetting('feed', 'default_feed') + '_feed_form'] }/>
                                     <BlockByName data={props.data} name={ props.blocks[ appSetting('feed', 'default_feed') + '_feed' ] } />
