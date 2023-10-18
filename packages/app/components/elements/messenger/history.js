@@ -6,11 +6,9 @@ import { PageData, MenuData } from "./context/messenger-сontext";
 import { Text } from 'app/design/typography';
 import Loading from "../../../ui/atoms/loading";
 import {MsgFeed} from 'app/components/units/convos-feeds';
-import Form from "../form";
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "app/context/actions";
-import useHistory, { useSendData, useHistoryMessageAction } from "./hooks/useHistory";
-import useKeyboard from "./hooks/useKeyboard";
+import useHistory, { useHistoryMessageAction } from "./hooks/useHistory";
 import { ConvoKeys } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
 import Services from "./services/history";
@@ -18,45 +16,7 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import CreateConvo from './create-convo';
 import { isPhone } from "./grid-utils";
 import Profile from "app/ui/molecules/profile";
-
-const SendForm = memo(({ convoId, menuItem, onSubmit, payload }) => {
-    const [formData, setFormData] = useState(),
-          { sendMessage } = useSendData(convoId, menuItem),
-          keyboardHeight = useKeyboard(),
-         { profile } = payload || {};
-
-    useEffect(() => {
-        (async() => {
-            await Services.getForm().catch((e) => { console.log(e.toString()) }).then((data) => {
-                if (profile && data?.inputs)
-                    data.inputs.payload.value = JSON.stringify({ participants: [profile.id] });
-
-                setFormData(data);
-            });
-        })();
-    }, []);
-
-
-    useEffect(() => {
-        if (formData && formData.inputs?.payload?.value?.length) {
-            const oFormData = { ...formData };
-            oFormData.inputs.payload.value = '';
-            setFormData(oFormData);
-        }
-
-
-    }, [payload]);
-
-    return formData &&  <View style={{ paddingBottom: keyboardHeight }}>
-                                <Form data={ formData } name={'bx_messenger'}
-                                  classContainerName="flex-row flex-wrap px-2 w-full"
-                                  onFormSubmit={ (oFormData, oData) => {
-                                                                       return sendMessage({ oFormData, oData }, {
-                                                                           onSuccess: ( data )=> onSubmit(data)
-                                                                       })
-                                                                }} />
-                          </View>
-});
+import {SendForm} from "./send-form";
 
 const ConvoHeader = memo(({ title, onPress, profile }) => {
     let sTitle = title;
