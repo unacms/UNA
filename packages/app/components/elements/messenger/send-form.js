@@ -5,17 +5,16 @@ import Form from "../form";
 import { useSendData } from "./hooks/useHistory";
 import { useEffect, useState, memo } from 'react';
 
-export const SendForm = memo(({ convoId, menuItem, onSubmit, payload }) => {
+export const SendForm = memo(({ convoId, menuItem, onSubmit, iSelectedProfile }) => {
     const [formData, setFormData] = useState(),
         { sendMessage } = useSendData(convoId, menuItem),
-        keyboardHeight = useKeyboard(),
-        { profile } = payload || {};
+        keyboardHeight = useKeyboard();
 
     useEffect(() => {
         (async() => {
             await Services.getForm().catch((e) => { console.log(e.toString()) }).then((data) => {
-                if (profile && data?.inputs)
-                    data.inputs.payload.value = JSON.stringify({ participants: [profile.id] });
+                if (iSelectedProfile && data?.inputs)
+                    data.inputs.payload.value = JSON.stringify({ participants: [iSelectedProfile] });
 
                 setFormData(data);
             });
@@ -30,16 +29,14 @@ export const SendForm = memo(({ convoId, menuItem, onSubmit, payload }) => {
             setFormData(oFormData);
         }
 
+    }, [iSelectedProfile]);
 
-    }, [payload]);
-
-    return formData &&  <View style={{ paddingBottom: keyboardHeight }}>
-        <Form data={ formData } name={'bx_messenger'}
-              classContainerName="flex-row flex-wrap px-2 w-full"
-              onFormSubmit={ (oFormData, oData) => {
-                  return sendMessage({ oFormData, oData }, {
-                      onSuccess: ( data )=> onSubmit(data)
-                  })
-              }} />
-    </View>
+    return formData && <View style={{ paddingBottom: keyboardHeight }}>
+                            <Form data={ formData } name={'bx_messenger'} classContainerName="flex-row flex-wrap px-2 pb-2 w-full"
+                                  onFormSubmit={ (oFormData, oData) => {
+                                      return sendMessage({ oFormData, oData }, {
+                                          onSuccess: ( data )=> onSubmit(data)
+                                      })
+                                  }} />
+                       </View>
 });

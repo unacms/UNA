@@ -41,7 +41,7 @@ export default function FormMessenger(props) {
                   <View className="flex-0">
                       { getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder }) }
                   </View>
-                  <View className="mr-2 mb-2 flex-1 w-full " style={styles}>
+                  <View className="mr-2 flex-1 w-full " style={styles}>
                       { getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom') }
@@ -49,7 +49,7 @@ export default function FormMessenger(props) {
                       { getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom') }
                       { getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom') }
                   </View>
-                  <View className="flex-0 mb-2 w-10">{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>
+                  <View className="flex-0 w-10">{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>
                 </Row>
                 {(prevList.length>0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row> }
             </View>

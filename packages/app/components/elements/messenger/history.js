@@ -77,11 +77,11 @@ export function HistoryComponent(){
                  { !historyArea && <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />}
                  { historyAction === 'create-convo' && !actionProfile && <CreateConvo onClose={handlerCloseArea} viewButtons={isPhone(screenMode)}/> }
              </View>
-             <View className={"w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d"} >
+             <View className="w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d" >
                  { id && <SendForm convoId={ historyAction !== 'create-convo' ? id : 0 }
-                   payload={ { profile: actionProfile }}
-                   menuItem={menuItem}
-                   onSubmit={handlerUpdateSelectedConvo}/> }
+                   iSelectedProfile={ actionProfile && actionProfile.id }
+                   menuItem={ menuItem }
+                   onSubmit={ handlerUpdateSelectedConvo }/> }
              </View>
            </View>
 }
