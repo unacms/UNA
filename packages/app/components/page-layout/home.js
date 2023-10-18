@@ -110,7 +110,7 @@ export default function PageLayout(props) {
                                         <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                             {profile}
                                         </View>
-                                        <Text className="text-lg flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                        <Text className="text-base flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                             {currentUser.display_name}
                                         </Text>
                                     </Row>
