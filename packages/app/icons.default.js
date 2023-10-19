@@ -15,6 +15,7 @@ import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCir
 from "phosphor-react-native";
 
 export const IconSet = {
+	X: X,
 	Moon: Moon,
 	Translate: Translate,
 	Pulse: Pulse,
@@ -116,7 +117,6 @@ export const IconSet = {
 	ThumbsUp: ThumbsUp,
 	FilePlus: FilePlus,
 	MonitorPlay:MonitorPlay,
-	X:X,
 	At: At,
 	CaretUp: CaretUp,
 	CaretDown: CaretDown,

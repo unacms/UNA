@@ -20,8 +20,10 @@ import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
+import { useTranslation } from 'react-i18next';
 
 export default function (props) {
+    const { t } = useTranslation();
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)

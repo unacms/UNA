@@ -12,7 +12,7 @@ import { useWindowDimensions } from 'react-native'
 import Card from 'app/ui/molecules/card'
 
 export default function PageLayout(props) {
-
+    console.log("**props", props)
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
     const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});

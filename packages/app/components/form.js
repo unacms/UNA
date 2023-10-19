@@ -29,6 +29,8 @@ export default function Form(props) {
     let response = props.response;
     let onFormSubmit = props.onFormSubmit;
 
+    console.log("propspropsprops", props)
+
     const defaultValues = {}
 
     Object.keys(data.inputs).forEach(function (key) {  
@@ -59,7 +61,8 @@ export default function Form(props) {
     const {...methods} = useForm();  
     useEffect(() => {
         if (methods.formState.isSubmitSuccessful) {
-          //  methods.reset();
+            if (props.resetOnSubmit)
+                methods.reset();
         }
       }, [methods.formState, methods.submittedData, methods.reset]);
 

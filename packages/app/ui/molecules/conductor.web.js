@@ -406,7 +406,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 variant={a.index == index ? 'outline': "text"}
                                 size={!a.ident ? "lg" : "base"}
                                 fullWidth
-                                title = {t(a.title)}
+                                title = {(a.title)}
                                 align="start"
                                 startDecorator={!a.ident ? settings?.icon : undefined}
                             />

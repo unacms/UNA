@@ -20,7 +20,6 @@ export function getBackButtonWeb() {
 }
 export function fillTabs(menu, data, blocks, useSectionAsMenu){
     const m = menuItemsByName(menu.object, menu.items, data.url);
-    // console.log('initedTabs11', menu.object, menu.items);
     return m.map((item, index) => {
        
         item.link = item.link.replace('page/', '')

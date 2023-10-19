@@ -46,7 +46,7 @@ export default function ElementLink(props) {
         );
 
     let prefetch = true;
-    if (rest?.noPrefetch)
+    if (rest?.noprefetch)
         prefetch = false;
 
     return (

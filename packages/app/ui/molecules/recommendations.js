@@ -122,7 +122,7 @@ export default function ElementRecommendations(oProps) {
         case 'ignore':
             if (oButtonProps.onlyIcon){
                 sTitle = '';
-                sIcon = 'x';
+                sIcon = 'X';
             }
            
             break;

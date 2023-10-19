@@ -8,7 +8,7 @@ import { Dimensions } from 'react-native';
 import { env } from 'app/lib/env';
 
 export default function FormPost(props) {
-    
+
     const [imageSource, setImageSource] = useState([]);
 
     function setPlaceHolder(name, previews) {
@@ -19,6 +19,8 @@ export default function FormPost(props) {
             }));
         }
     }
+
+
 
     let prevList = Object.values(imageSource).flat();
     if ( props.data.inputs['covers']){
@@ -31,7 +33,7 @@ export default function FormPost(props) {
 
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500';
 
-    return <View className='w-full max-w-5xl flex-col gap-y-4'>
+    return (<View className='w-full max-w-5xl flex-col gap-y-4'>
         <View className=' bg-bgrcard dark:bg-bgrcard-d sm:border border-bdrcard dark:border-bdrcard-d overflow-hidden flex-col  sm:rounded-2xl '>
             {getFormFieldByData(props.data.inputs['covers'], props.handleSubmit, 'notitle', {format:'custom'})}
             <View className='p-4 xl:px-8 xl:pb-8'>
@@ -54,8 +56,5 @@ export default function FormPost(props) {
         {getFormFieldByData(props.data.inputs['do_publish'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['do_submit'], props.handleSubmit,  'default')}
         </View>
-        
-        
-
-    </View>
+    </View>);
 }

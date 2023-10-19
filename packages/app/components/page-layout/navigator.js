@@ -22,8 +22,8 @@ export default function PageLayout(props) {
                 hideInTop: true
             }
         }); 
+        menu.items = [...menu.items, ...menuItems];
     } 
-    menu.items = [...menu.items, ...menuItems];
     return (<Conductor 
         minHeaderHeight={0} 
         isHideDefaultHeader={false} 

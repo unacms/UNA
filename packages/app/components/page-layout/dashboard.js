@@ -132,7 +132,7 @@ export default function PageLayout(props) {
                                 }
                                
                                 
-                                <Link noPrefetch={true} href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
+                                <Link noprefetch={true} href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
                                 {appSetting('layout', 'allow_switch_profile') && <Button
@@ -182,7 +182,7 @@ export default function PageLayout(props) {
                                                 />
                                         </DropdownMenu>)
                                 }
-                                <Link noPrefetch={true} href="/logout"><Button
+                                <Link noprefetch={true} href="/logout"><Button
                                     variant="text"
                                     title= {t("Sign out")}
                                     startDecorator="SignOut"

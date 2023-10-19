@@ -11,6 +11,7 @@ import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next';
 import { tp } from 'app/lib/util'
+import ProfilesList from 'app/ui/molecules/profile_list'
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -252,10 +253,14 @@ export function ComponentsIntro(props) {
     return <Animated.Text>{displayValue}</Animated.Text>
   }
   const [data, setData] = useState('0')
+  const [data2, setData2] = useState([])
   useEffect(() => {
     const fetchData = async () => {
       const sResponse = await fetcher('/api.php?r=q&q=accounts_count')
       setData(sResponse)
+
+      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%223%22,%22start%22:0,%22type%22:%22active%22}}')
+      setData2(sResponse2.data[0].data.data)
     }
     fetchData()
   }, [])
@@ -263,16 +268,7 @@ export function ComponentsIntro(props) {
   return (
     <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
       <View className="flex-row gap-x-2 ">
-        <View className='flex-row  '>
-          
-
-       
-        <View className="h-9 w-9  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
-
-        <View className="h-9 w-9 -ml-2  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
-        <View className="h-9 w-9 -ml-2  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "></View>
-
-        </View>
+        <ProfilesList data ={data2} showEmpty={true} maxCount={3}/>
         <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
           
           <Text className="font-bold text-neutral-950 dark:text-neutral-50">

@@ -1,4 +1,4 @@
-export const settingsDefault = {
+let settingsDefault = {
     layout: {
         format:'hor',
         max_width: 'full',
@@ -139,7 +139,23 @@ export const settingsDefault = {
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
-                ],
+        ],
+        menu_drower: [
+            { name: 'home', title: 'Home', link: '/', icon: 'House'},
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
+            { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+            { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
+            { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
+            { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
+            { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
+            { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree'},
+            { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar'},
+            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
+            { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
+            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
+        ],
         menu_top_more: [
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
@@ -148,7 +164,6 @@ export const settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-
         ],
         menu_add: [
             { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
@@ -897,3 +912,23 @@ export const settingsDefault = {
         ],
     },
 }
+
+if (settingsDefault.layout.format == 'ver') {
+    // Override settings for vertical layout
+    settingsDefault.menu_items.menu_top = [
+        { name: 'home', title: 'Home', link: '/', icon: 'House'},
+        { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
+        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
+        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
+        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
+        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
+        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
+        { name: 'notifications-view', title: 'Notifications', link: '/notifications-view', icon: 'Bell' }, 
+        { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots' }, 
+    ];
+    delete settingsDefault.layouts.home.blocks.menu
+}
+
+export { settingsDefault };
+

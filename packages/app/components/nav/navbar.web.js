@@ -1,11 +1,8 @@
-import NavbarHor from 'app/components/nav/navbar-hor'
-import NavbarVer from 'app/components/nav/navbar-ver'
-import { appSetting } from 'app/lib/util'
-export default function (props) {
-    
-    if(appSetting('layout', 'format') == 'ver')
-        return <NavbarVer {...props}/>
+import Navbar from 'app/components/nav/navbar-default'
+// DON'T EDIT THIS FILE IN MAIN REPO!!!
+// only for custom projects change some specific settings here if needed
+//import Navbar from 'app/components/nav/navbar-custom'
 
-    if(appSetting('layout', 'format') == 'hor')
-        return <NavbarHor {...props}/>
+export default function (props) {
+    return <Navbar {...props}/>
 }

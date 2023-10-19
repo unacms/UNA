@@ -1,15 +1,22 @@
-import { View, Pressable } from 'app/design/view'
+import { View, Pressable, ScrollView } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { menuItemsByName } from 'app/lib/util'
 import { appSetting } from 'app/lib/util'
 import { MotiView, AnimatePresence } from 'moti'
 import { useTranslation } from 'react-i18next';
+import { Dimensions, Platform } from 'react-native'
+
 export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
 
     const handleHideMenu = (params) => {}
-    const menu_top = appSetting('menu_items', 'menu_top')
+    const menu_top = appSetting('menu_items', 'menu_drower')
     const { t } = useTranslation();
+
+    let windowHeight = Dimensions.get('window').height
+
+    let styles = {}
+    styles = { height: windowHeight - 170 }
 
     return (
         <AnimatePresence exitBeforeEnter>
@@ -34,7 +41,10 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                         }}
                     >
                         <Pressable onPress={showMenu}>
-                            <View className={(menuPopup? 'h-screen': '') +"bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"}/>
+                            <ScrollView className={(menuPopup? 'h-screen': '') +" bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"}>
+                                <View className='h-screen '></View>
+                                <View className='h-screen '></View>
+                            </ScrollView>
                         </Pressable>
                     </MotiView>
                     <MotiView
@@ -57,17 +67,19 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                             overshootClamping: true,
                         }}
                     >
-                        <Pressable className="w-72 h-screen m-menu" onPress={showMenu}>
-                            <View onPress={handleHideMenu} className="backdrop-blur h-full xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d   flex-col gap-y-2">
-                                <View className="flex-col gap-y-0.5">
-                                    {menuItemsByName('main_menu', menu_top).map((item, index) => (
-                                        <Link key={`menu-${index}`} href= {item.link}>
-                                            <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
-                                        </Link>
-                                    ))}
-                                </View>
-                            </View>
-                        </Pressable>
+                        <View  className="w-72 h-screen m-menu">
+                            <Pressable  onPress={showMenu}>
+                                <ScrollView style={styles} onPress={handleHideMenu} className="backdrop-blur xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d flex-col gap-y-2 ">
+                                    <View className="flex-col gap-y-0.5">
+                                        {menuItemsByName('main_menu', menu_top).map((item, index) => (
+                                            <Link key={`menu-${index}`} href= {item.link}>
+                                                <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
+                                            </Link>
+                                        ))}
+                                    </View>
+                                </ScrollView>
+                            </Pressable>
+                        </View>
                     </MotiView>
                 </View>
             )}

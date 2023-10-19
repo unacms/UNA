@@ -263,7 +263,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         </Row>)  : <Text>&nbsp;</Text>;
     
     if (dataOut.length > 0 || !commentData.objectId){
-        console.log('xxxxx');
         let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
         if (actionsItemIndex > 0)
         addItems.splice(actionsItemIndex, 1);
@@ -396,7 +395,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                 </View>)
             }
             
-            <Form {...form} classContainerName="flex-row flex-wrap px-2 w-full lg:px-4 lg:py-2 items-start justify-between" onFormSubmit={onFormSubmit}  />
+            <Form {...form} resetOnSubmit={true} classContainerName="flex-row flex-wrap px-2 w-full lg:px-4 lg:py-2 items-start justify-between" onFormSubmit={onFormSubmit}  />
         </View> 
     )
 }

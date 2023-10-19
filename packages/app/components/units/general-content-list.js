@@ -15,6 +15,7 @@ import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect';
 import {componentsMap} from  'app/ui/molecules/_map';
 import { useTranslation } from 'react-i18next';
+import ProfilesList from 'app/ui/molecules/profile_list'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -234,9 +235,12 @@ export default function Unit(props) {
                                     <View className="sm:h-12">
                                         {sTitle}
                                     </View>
-                                    <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
-                                        {tp("members", data.members_count)}
-                                    </Text>
+                                    <Row className='items-center '>
+                                        <View className='mr-2'><ProfilesList data ={data.members_list} showEmpty={false} maxCount={3} displaySize="sm"/></View>
+                                        <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
+                                            {tp("members", data.members_count)}
+                                        </Text>
+                                    </Row>
                                     <View className="flex-row w-full gap-x-2 ">                
                                         {oMenuItemPrimary}
                                         {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (
@@ -589,11 +593,14 @@ export default function Unit(props) {
                                 <Text numberOfLines={1} className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
-                                {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
-                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text>
-                                    :
-                                    <Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text>
-                                }
+                                <Row className='items-center'>
+                                    
+                                    {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
+                                        <><View className='mr-2'><ProfilesList data ={data.followers_list} showEmpty={false} maxCount={3} displaySize="sm"/></View><Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text></>
+                                        :
+                                        <><View className='mr-2'><ProfilesList data ={data.friends_list} showEmpty={false} maxCount={3} displaySize="sm"/></View><Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text></>
+                                    }
+                                 </Row>
                                 <View className="flex-row w-full gap-x-2 ">
                                     {oMenuItemPrimary}
                                     {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (

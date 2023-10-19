@@ -232,7 +232,7 @@ export default function ElementSearch(oProps) {
  }
 
  export function  SearchPanel(props) {
-
+    const { t } = useTranslation();
     const [inputValue, setInputValue] = useState(props.value);    return (
         <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 py-2'}>

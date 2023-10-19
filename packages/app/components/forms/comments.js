@@ -5,6 +5,7 @@ import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
 export default function FormComments(props) {
+    console.log("--props", props)
     const [imageSource, setImageSource] = useState([]);
 
     function setPlaceHolder(name, previews) {
@@ -25,6 +26,8 @@ export default function FormComments(props) {
         styles = {width: 0}
     }
     let prevList = Object.values(imageSource).flat();
+
+    props.data.inputs['cmt_submit'].icon = 'PaperPlaneRight' ;
 
     return <View className='w-full  my-0.5' >
     <Row className='w-full'>
