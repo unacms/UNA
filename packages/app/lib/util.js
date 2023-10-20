@@ -345,6 +345,8 @@ export function linkify2(text) {
 }
 
 export function linkify(text, attrs = '', htmlSpecialChars = false) {
+    return text;
+    // todo improve
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
   
   const anchorRegex = /<a [^>]*>[^<]*<\/a>/g;

@@ -27,9 +27,10 @@ export default function UnitFeed({data}) {
     const handleClick = (sUrl) => {
         redirectdRef.current.redirect(sUrl);
     }
-    let content_parsed = data?.content_parsed ? data?.content_parsed : '';
+
+    let content_parsed = data?.content_parsed.site ? data?.content_parsed?.site : data?.content_parsed;
     content_parsed = content_parsed.replace('&#8230;', '...');
-    
+
     return (
         <AnimatedBlock>
         <View className=" mt-2 ">
@@ -45,7 +46,7 @@ export default function UnitFeed({data}) {
                             <Text className='text-sm flex-none text-neutral-500'><Time ts={data.date}></Time></Text>
                         </View>
                         <View className='flex-row  w-full items-end content-end'>
-                            <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(data.content_parsed)}</Text>    
+                            <Text className='flex-auto mr-2 text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{stripTags(content_parsed)}</Text>    
                         </View>         
                     </View>
                </View>

@@ -27,7 +27,7 @@ const maxWidth = appSetting('layout', 'max_width')
     {items.map((item, index) => (
       <View
       key={index}
-      className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
+      className="max-w-4xl mx-auto flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
     >
       <View className="animate-pulse flex-row items-center gap-2">
         <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
