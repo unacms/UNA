@@ -27,7 +27,9 @@ export default function UnitFeed({data}) {
     const handleClick = (sUrl) => {
         redirectdRef.current.redirect(sUrl);
     }
-    data.content_parsed = data.content_parsed.replace('&#8230;', '...')
+    let content_parsed = data?.content_parsed ? data?.content_parsed : '';
+    content_parsed = content_parsed.replace('&#8230;', '...');
+    
     return (
         <AnimatedBlock>
         <View className=" mt-2 ">

@@ -5,7 +5,6 @@ import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 
 export default function FormComments(props) {
-    console.log("--props", props)
     const [imageSource, setImageSource] = useState([]);
 
     function setPlaceHolder(name, previews) {
