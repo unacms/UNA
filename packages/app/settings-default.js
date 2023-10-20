@@ -906,9 +906,9 @@ let settingsDefault = {
         bottom_tabs_non_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'News', url: '/posts-home',icon: 'ChatCenteredText'},
-            {key: '/tab3', title: 'About', url: '/about',icon: 'Info'},
-            {key: '/tab4', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
-            {key: '/tab5', title: 'Login', url: '/login',icon: 'SignIn'},
+            {key: '/tab2', title: 'About', url: '/about',icon: 'Info'},
+            {key: '/tab3', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
+            {key: '/tab4', title: 'Login', url: '/login',icon: 'SignIn'},
         ],
     },
 }

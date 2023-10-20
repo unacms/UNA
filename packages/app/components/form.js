@@ -29,8 +29,6 @@ export default function Form(props) {
     let response = props.response;
     let onFormSubmit = props.onFormSubmit;
 
-    console.log("propspropsprops", props)
-
     const defaultValues = {}
 
     Object.keys(data.inputs).forEach(function (key) {  
@@ -107,7 +105,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className='p-3 gap-y-6 flex-col w-full'>
+        <View className='px-3 flex-col w-full'>
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>

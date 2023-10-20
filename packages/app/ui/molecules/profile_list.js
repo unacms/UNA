@@ -30,7 +30,7 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
     if (showEmpty)
         data = fillArrayToLength(data, maxCount, '');
     return  (
-        <Row className='items-center justify-center '>
+        <Row className='items-center'>
             {
                 data?.length > 0 && data?.map((profile, index) => {
                     if (profile?.image?.src){

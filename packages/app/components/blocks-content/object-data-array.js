@@ -49,7 +49,7 @@ export default function BlockContentObjectDataArray(props) {
         return false;  // Input with the given name was not found
     };
 
-    if (postData && !dynamicData){
+    if (postData && Array.isArray(postData) && !dynamicData){
         postData.forEach((value, key) => {
             setInputValueByName(props.data, key, value);
         });
@@ -63,7 +63,7 @@ export default function BlockContentObjectDataArray(props) {
     // display each block element from static data or from dynamic data
     return (
         <View className=" relative">
-            {realData?.map(a => <Element key={a.id} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
+            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );
 }

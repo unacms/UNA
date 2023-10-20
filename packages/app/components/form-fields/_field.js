@@ -8,12 +8,12 @@ export default function FormField(props) {
     if (props.format == 'notitle')
         caption = '';
 
-    const sClassName = 'w-full form-control  ' + (props.format != 'custom' ? ' ' : '')+ ' form-control-' + props.name ;
+    const sClassName = 'w-full form-control mb-3 ' + (props.format != 'custom' ? ' ' : '')+ ' form-control-' + props.name ;
     return (
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&
             <View >
-                <Text className="label-text h-2 -translate-y-4 block ml-0.5 mb-0.5 text-sm font-medium text-neutral-700 dark:text-neutral-200">{caption}</Text>
+                <Text className="label-text block ml-0.5 mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">{caption}</Text>
             </View> }
             {props.children}
             { !!props.error &&

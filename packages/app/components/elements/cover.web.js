@@ -17,6 +17,7 @@ import { genRnd } from '../../lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native';
+import ProfilesList from 'app/ui/molecules/profile_list'
 
 function CoverMenu(props) {
     return (
@@ -242,12 +243,15 @@ export default function ElementCover(props) {
                     }
                     <View className="flex-col lg:flex-row gap-x-2 gap-y-4    flex-auto ">
                             <View className=" flex-col    mt-4 flex-auto gap-y-2 ">
-                                <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 ml-2">
+                                <Text className="tracking-tight text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                     {data.profile.display_name}
                                 </Text>
-                                <View className="     ">
-                                <CoverMenuMeta {...data.meta_menu} />
-                            </View>
+                                <View>
+                                    <Row className='gap-x-2'>
+                                        <CoverMenuMeta {...data.meta_menu} />
+                                        <ProfilesList data ={data.members_list} showEmpty={false} maxCount={10} displaySize="sm"/>
+                                    </Row>
+                                </View>
                                 
                             </View>
                     

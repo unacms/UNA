@@ -1,4 +1,4 @@
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
@@ -97,7 +97,7 @@ export default function PageLayout(props) {
                                 {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
                                 {
                                     appSetting('layout', 'switch_lang').length > 1 && (
-                                        <DropdownMenu 
+                                        <View><DropdownMenu 
                                             items={appSetting('layout', 'switch_lang').map(lang => ({
                                                 id: lang,
                                                 key: lang,
@@ -105,30 +105,34 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                                <Button
-                                                    variant="outline"                                               
-                                                    startDecorator="Translate"
-                                                    rounded
-                                                    align="left"
-                                                />
-                                        </DropdownMenu>)
+                                                <Pressable>
+                                                    <Button
+                                                        variant="outline"                                               
+                                                        startDecorator="Translate"
+                                                        rounded
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu></View>)
                                 }
                                 {
                                     appSetting('layout', 'switch_theme') && (
-                                        <DropdownMenu items={['dark', 'light','auto'].map(theme => ({
+                                        <View><DropdownMenu items={['dark', 'light','auto'].map(theme => ({
                                                 key: theme,
                                                 id: theme,
                                                 name: theme,
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Button
-                                                    variant="outline"
-                                                    startDecorator="Moon"
-                                                    rounded
-                                                    align="left"
-                                                />
-                                        </DropdownMenu>)
+                                                <Pressable>
+                                                    <Button
+                                                        variant="outline"
+                                                        startDecorator="Moon"
+                                                        rounded
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu></View>)
                                 }
                                
                                 
@@ -154,14 +158,14 @@ export default function PageLayout(props) {
                                                 title: t('lang_' + lang)
                                             }))} 
                                             onSelect={(oItem) => {handleLang(oItem.id)}}>
-                                        <Button
-                                                
-                                                variant="text"
-                                                title= {t('lang_' + i18n.language)}
-                                                startDecorator="Translate"
-                                                fullWidth
-                                                align="left"
-                                            />
+                                            <Pressable>
+                                                <Button
+                                                    variant="text"
+                                                    title= {t('lang_' + i18n.language)}
+                                                    startDecorator="Translate"
+                                                    fullWidth
+                                                    align="left"
+                                            /></Pressable>
                                         </DropdownMenu>)
                                 }
                                 {
@@ -173,13 +177,15 @@ export default function PageLayout(props) {
                                                 title: t('theme_' + theme)
                                             }))} 
                                             onSelect={(oItem) => {handleTheme(oItem.id)}}>
-                                                <Button
-                                                    variant="text"
-                                                    title= {t('theme_' + currentTheme)}
-                                                    startDecorator="Moon"
-                                                    fullWidth
-                                                    align="left"
-                                                />
+                                                <Pressable>
+                                                    <Button
+                                                        variant="text"
+                                                        title= {t('theme_' + currentTheme)}
+                                                        startDecorator="Moon"
+                                                        fullWidth
+                                                        align="left"
+                                                    />
+                                                </Pressable>
                                         </DropdownMenu>)
                                 }
                                 <Link noprefetch={true} href="/logout"><Button
