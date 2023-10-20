@@ -8,6 +8,7 @@ import { Theme } from "app/design/theme";
 import Services from "./services/history";
 import Profile from "app/ui/molecules/profile";
 import { Pressable } from 'app/design/view'
+import {getSkeleton} from "../../../lib/skeleton-helpers";
 
 const SelectedUser = ({ data, onRemove }) => {
     return <View className="px-1 py-1 flex-row
@@ -67,13 +68,17 @@ const CreateConvo = memo(({ onClose, viewButtons }) => {
     const iTimeoutRef = useRef(null);
     const [users, setUsers] = useState([]);
     const [susers, setSUsers] = useState([]);
+    const [showLoading, setLoading] = useState(false);
 
     const handleSearchUsers = useCallback((sValue) => {
         clearTimeout(iTimeoutRef.current);
-        iTimeoutRef.current = setTimeout(() =>
-            Services.getSearchUsers(sValue).then((data) => {
-                setUsers(data);
-            })
+        iTimeoutRef.current = setTimeout(() => {
+                setLoading(true);
+                Services.getSearchUsers(sValue).then((data) => {
+                    setUsers(data);
+                    setLoading(false);
+                })
+            }
         , 500);
 
     }, [users]);
@@ -125,7 +130,8 @@ const CreateConvo = memo(({ onClose, viewButtons }) => {
                             </View>
                         </View>
                         <View className="text-center mt-4 overflow-y-auto h-full flex-1 flex-wrap flex-row gap-2 items-start content-start">
-                            { users && users.map((oItem) => <User key={oItem.id} data={oItem} onSelect={handlerOnSelect}/>) }
+                            { users && !showLoading && users.map((oItem) => <User key={oItem.id} data={oItem} onSelect={handlerOnSelect}/>) }
+                            { showLoading && getSkeleton('notifications') }
                         </View>
                     </View>
                 </View>
