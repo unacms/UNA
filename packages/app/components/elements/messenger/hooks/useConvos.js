@@ -18,6 +18,22 @@ function useConvoItem(menuItem, convoId) {
     });
 }
 
+function addConvoItem(menuItem, oData){
+    const queryClient = useQueryClient();
+    const { id } = oData;
+
+    queryClient.setQueryData(ConvoKeys.convoByMenu(menuItem), (data) => {
+        return { data, pages: [oData, ...oData.pages] };
+    });
+
+    queryClient.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem) });/*.then((data) => {
+        /!*setConvoId(+lot);
+        setHistoryArea(false);
+        setConvoItem({ item: convo, manually: true });
+        console.log('-------- invalisate query -------', data, lot);*!/
+    });*/
+}
+
 const getConvoItems  = (menuItem)  => {
     const queryClient = useQueryClient();
 
@@ -35,7 +51,7 @@ const getConvoItems  = (menuItem)  => {
     };
 }
 
-export { useConvoItem, ConvoKeys, getConvoItems };
+export { useConvoItem, ConvoKeys, getConvoItems, addConvoItem };
 
 export default function useConvos(menuItem, onSelect) {
     const { currentUser } = useCurrentUser();

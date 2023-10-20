@@ -8,8 +8,8 @@ import Loading from "../../../ui/atoms/loading";
 import {MsgFeed} from 'app/components/units/convos-feeds';
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "app/context/actions";
-import useHistory, { useHistoryMessageAction } from "./hooks/useHistory";
-import { ConvoKeys } from "./hooks/useConvos";
+import useHistory, { HistoryKeys, useHistoryMessageAction } from "./hooks/useHistory";
+import { ConvoKeys, addConvoItem } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
 import Services from "./services/history";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
@@ -38,7 +38,7 @@ const ConvoHeader = memo(({ title, onPress, profile }) => {
 });
 
 export function HistoryComponent(){
-    const { convoInfo: { item }, setPanel, pageHeight, setConvoItem, historyArea, setHistoryArea, screenMode } = useContext(PageData),
+    const { convoInfo: { item }, setPanel, pageHeight, setConvoItem, historyArea, setHistoryArea, screenMode, setConvoId } = useContext(PageData),
           { menuItem } = useContext(MenuData),
           { action: historyAction, profile: actionProfile } = historyArea || {},
           { title, id } = item || {},
@@ -50,6 +50,29 @@ export function HistoryComponent(){
 
                setHistoryArea(false);
            }, [screenMode]),
+           handlerSaveList = useCallback((aList) => {
+               Services.getCreateConvo(aList.map((oItem) => oItem.id)).then((data) => {
+                   const { code, message, lot, convo } = data;
+                   if (+code)
+                       console.log(message);
+                   else if (lot) {
+                       const fUpdate = () => {
+                           setConvoId(+lot);
+                           setHistoryArea(false);
+                           setConvoItem({ item: convo, manually: true });
+                       };
+
+                        client.setQueryData(ConvoKeys.convoByMenu(menuItem), (data) => {
+                                    const pages = [...data.pages];
+                                          pages[0] = [convo, ...data.pages[0]];
+                                    return { ...data, pages };
+                        });
+                        fUpdate();
+                        client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(lot) });
+                   }
+               });
+
+           }, [menuItem, item, client]),
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
                         pages?.flatMap(page => page).some((oItem) => {
@@ -58,7 +81,7 @@ export function HistoryComponent(){
                             return true;
                         }
                     });
-             }, [menuItem, item]),
+             }, [menuItem, item, client]),
             handlerSendForm = useCallback(() => {
                 const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem)),
                     convosList = pages.flatMap(page => page);
@@ -75,7 +98,8 @@ export function HistoryComponent(){
              <ConvoHeader title={title} onPress={handlerClickBackButton} profile={ actionProfile }/>
              <View className="px-3 max-h-full flex w-full h-full flex-col flex-1">
                  { !historyArea && <History convo={item} menuItem={menuItem} height={pageHeight} onHistoryUpdate={handlerUpdateSelectedConvo} />}
-                 { historyAction === 'create-convo' && !actionProfile && <CreateConvo onClose={handlerCloseArea} viewButtons={isPhone(screenMode)}/> }
+                 { historyAction === 'create-convo' && !actionProfile &&
+                    <CreateConvo onClose={ handlerCloseArea } viewButtons={ isPhone(screenMode) } onSave={ handlerSaveList }/> }
              </View>
              <View className="w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d" >
                  { id && <SendForm convoId={ historyAction !== 'create-convo' ? id : 0 }
@@ -127,7 +151,6 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
                        }
                     }});
                 case 'share':
-
             }
 
         }, [messages, refList.current]);
@@ -157,7 +180,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
 
-    if (isLoading || !messages.length || firstItemIndex.id !== convoId)
+    if (isLoading || firstItemIndex.id !== convoId)
         return getSkeleton('notifications');
 
     return <View className="w-full h-full flex-1">

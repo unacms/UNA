@@ -15,8 +15,6 @@ export { HistoryKeys };
 const updateMessage = async(iConvoId, iMessageId) => {
     const queryClient = useQueryClient();
     const oData = await queryClient.fetchQuery(HistoryKeys.messagesByConvoWithId(iConvoId, iMessageId), Services.getMessage(iMessageId));
-
-    console.log('----- data message -----', oData);
 }
 
 export default function useHistory(convoId, onSuccess) {
@@ -159,7 +157,7 @@ export const useSendData = function(convoId, menuItem){
                 const { pages } = oldData || {};
 
                 let oModifiedItem = Object.create({});
-                const oNewList = pages.map((page) => {
+                const oNewList = pages?.length && pages.map((page) => {
                     return page.filter((oItem) => {
                         const { total_messages, id } = oItem;
                         if (+id === +convoId) {

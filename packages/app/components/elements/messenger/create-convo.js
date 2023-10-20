@@ -8,7 +8,7 @@ import { Theme } from "app/design/theme";
 import Services from "./services/history";
 import Profile from "app/ui/molecules/profile";
 import { Pressable } from 'app/design/view'
-import {getSkeleton} from "../../../lib/skeleton-helpers";
+import {getSkeleton} from "app/lib/skeleton-helpers";
 
 const SelectedUser = ({ data, onRemove }) => {
     return <View className="px-1 py-1 flex-row
@@ -17,7 +17,7 @@ const SelectedUser = ({ data, onRemove }) => {
                 hover:bg-bgritem-h dark:hover:bg-bgritem-dh
                 max-w-2xl self-center border border-bdrnavbar dark:border-bdrnavbar-d"
             >
-            <View className="mr-2 rounded-full flex-none ">
+            <View className="mr-2 rounded-full flex-none">
                 <Profile
                     url_avatar={data?.image?.src}
                     displayType="unit_wo_info"
@@ -63,7 +63,7 @@ const User = ({ data, onSelect }) => {
         </Pressable>
 };
 
-const CreateConvo = memo(({ onClose, viewButtons }) => {
+const CreateConvo = memo(({ onClose, onSave, viewButtons }) => {
     const { colors } = Theme();
     const iTimeoutRef = useRef(null);
     const [users, setUsers] = useState([]);
@@ -126,7 +126,7 @@ const CreateConvo = memo(({ onClose, viewButtons }) => {
                                         role="textbox" aria-label="Select users..."
                                     />
                                 </View>
-                                <Button variant="outline" startDecorator="Check" rounded align="start" onPress={ () => {} } />
+                                <Button variant="outline" startDecorator="Check" rounded align="start" onPress={ () => onSave(susers) } />
                             </View>
                         </View>
                         <View className="text-center mt-4 overflow-y-auto h-full flex-1 flex-wrap flex-row gap-2 items-start content-start">
