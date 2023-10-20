@@ -33,7 +33,8 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
         <Row className='items-center'>
             {
                 data?.length > 0 && data?.map((profile, index) => {
-                    if (profile?.image?.src){
+                    console.log("profile.image.src", profile);
+                    if (profile?.id){
                         profile.url_avatar = profile.image.src;
                         return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : "")}><Profile {...profile} displayType="unit_wo_info" displaySize={displaySize} /></View>
                     }
