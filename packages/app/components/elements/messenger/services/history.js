@@ -6,7 +6,8 @@ const iPerPage = 20;
 const aEndpoints = {
       'list': 'get_convo_messages',
       'message': 'get_convo_message',
-      'form': 'get_send_form'
+      'form': 'get_send_form',
+      'search_users': 'search_users',
     };
 
 function getUrl(sLink, oParams){
@@ -31,7 +32,7 @@ export default {
 
         return data;
     },
-    getForm: async() => {
+    getForm: async () => {
        const { data } = await fetcher(getUrl('form'));
        return data;
     },
@@ -41,6 +42,10 @@ export default {
     },
     getMessage: async (id) => {
         const { data } = await fetcher(getUrl('message', { id }));
+        return data || [];
+    },
+    getSearchUsers: async (sValue) => {
+        const { data } = await fetcher(getUrl('search_users', { term: sValue }));
         return data || [];
     }
 };
