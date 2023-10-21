@@ -284,18 +284,18 @@ export default function Unit(props) {
 
         return (
             <>
-                <Card addClassName="  " margin="m-2 sm:mt-0" rounded="rounded-2xl">
+                <Card addClassName="  " margin="m-1 sm:m-2 sm:mt-0" rounded="rounded-2xl">
                     <View className="flex-col h-full">
                         <View className="flex-col  h-full w-full">
                             <Link href={data.url}>
                                 <View
                                     className={
                                     data.image
-                                        ? 'flex-row-reverse sm:flex-col w-full p-1'
-                                        : 'flex-col w-full p-1'
+                                        ? 'flex-row-reverse sm:flex-col w-full p-3 sm:p-1 gap-x-2'
+                                        : 'flex-col w-full p-3  sm:p-1 '
                                     }
                                 >
-                                    <View className={(!data.image ? 'hidden sm:block ': '') + " aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full"}>
+                                    <View className={(!data.image ? 'hidden sm:block ': '') + " aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4  sm:w-full"}>
                                         <Image
                                             {...data.image}
                                             alt={data.title}
@@ -308,21 +308,21 @@ export default function Unit(props) {
                                         <View
                                             className={`flex-auto flex-col ${
                                             data.image ? '  ' : ' '
-                                            } gap-y-2 p-2`}
+                                            } gap-y-2 sm:p-2`}
                                         >
                                             {true && (
-                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d  text-sm font-bold">
+                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">
                                                     {data.title}
                                                 </Text>
                                             )}
-                                            <Text numberOfLines={true ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs">
+                                            <Text numberOfLines={true ? 2 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs">
                                                 {data.summary_plain}
                                             </Text>
                                         </View>
                                     </View>
                                 </View>
                             </Link>
-                        <View className=" mt-auto px-3 pb-3 sm:pt-0">{sMeta}</View>
+                        <View className="border-t border-bdr/50 mx-2.5 dark:border-bdr-d/50 mt-auto  pt-2 pb-2.5 ">{sMeta}</View>
                     </View>
                 </View>
             </Card>
