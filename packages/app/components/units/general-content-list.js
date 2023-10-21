@@ -277,16 +277,16 @@ export default function Unit(props) {
             <Profile
                 {...data.author_data}
                 displayType="unit"
-                displaySize="sm"
+                displaySize="xs"
                 showInfo="false"
             />
         )
 
         return (
             <>
-                <Card margin="m-2 sm:mt-0" rounded="rounded-2xl">
-                    <View className="flex-col">
-                        <View className="flex-col w-full">
+                <Card addClassName="  " margin="m-2 sm:mt-0" rounded="rounded-2xl">
+                    <View className="flex-col h-full">
+                        <View className="flex-col  h-full w-full">
                             <Link href={data.url}>
                                 <View
                                     className={
@@ -295,7 +295,7 @@ export default function Unit(props) {
                                         : 'flex-col w-full p-1'
                                     }
                                 >
-                                    <View className={(!data.image ? 'hidden lg:block ': '') + "aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full"}>
+                                    <View className={(!data.image ? 'hidden sm:block ': '') + " aspect-video rounded-xl overflow-hidden w-2/5 sm:w-full"}>
                                         <Image
                                             {...data.image}
                                             alt={data.title}
@@ -304,25 +304,25 @@ export default function Unit(props) {
                                             sizes={imageSizes}
                                         />
                                     </View>
-                                    <View className="flex-auto flex-col mb-auto">
+                                    <View className="flex-auto flex-col sm:aspect-video mb-auto">
                                         <View
                                             className={`flex-auto flex-col ${
-                                            data.image ? 'h-32' : 'sm:h-32'
-                                            } gap-y-2 p-3`}
+                                            data.image ? '  ' : ' '
+                                            } gap-y-2 p-2`}
                                         >
                                             {true && (
-                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
+                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d  text-sm font-bold">
                                                     {data.title}
                                                 </Text>
                                             )}
-                                            <Text numberOfLines={true ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
+                                            <Text numberOfLines={true ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-xs">
                                                 {data.summary_plain}
                                             </Text>
                                         </View>
                                     </View>
                                 </View>
                             </Link>
-                        <View className=" mb-auto px-4 pb-3 sm:pt-0">{sMeta}</View>
+                        <View className=" mt-auto px-3 pb-3 sm:pt-0">{sMeta}</View>
                     </View>
                 </View>
             </Card>
@@ -596,9 +596,9 @@ export default function Unit(props) {
                                 <Row className='items-center'>
                                     
                                     {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
-                                        <><View className='mr-2'><ProfilesList data ={data.followers_list} showEmpty={false} maxCount={3} displaySize="sm"/></View><Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text></>
+                                        <><View className='mr-2'><ProfilesList data ={data.followers_list} showEmpty={false} maxCount={3} displaySize="xs"/></View><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text></>
                                         :
-                                        <><View className='mr-2'><ProfilesList data ={data.friends_list} showEmpty={false} maxCount={3} displaySize="sm"/></View><Text className=" flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text></>
+                                        <><View className='mr-2'><ProfilesList data ={data.friends_list} showEmpty={false} maxCount={3} displaySize="xs"/></View><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text></>
                                     }
                                  </Row>
                                 <View className="flex-row w-full gap-x-2 ">

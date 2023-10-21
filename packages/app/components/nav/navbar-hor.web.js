@@ -310,7 +310,7 @@ export default function (props) {
                                 variant="outline"
                                 rounded
 
-                                startDecorator="UserCircle"
+                                startDecorator="User"
                                 onPress={() => {
                                 handleClick('/login')
                                 }}

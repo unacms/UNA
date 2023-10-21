@@ -62,8 +62,8 @@ export default function UniList(props) {
     }
 
     if (numColumns > 1){
-        const itemComponent = styled(ReactNativeView, '  w-1/' + props.numColumns)
-        const listComponent = styled(ReactNativeView, ' flex flex-wrap flex-row ')
+        const itemComponent = styled(ReactNativeView, ' w-1/' + props.numColumns)
+        const listComponent = styled(ReactNativeView, ' max-w-screen-xl mx-auto flex flex-wrap flex-row ')
 
         return ( <><VirtuosoGrid 
                 useWindowScroll = {!height ? true : false}

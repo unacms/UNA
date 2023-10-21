@@ -197,7 +197,7 @@ export function Button (props) {
 
         case 'base':
             sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-2 py-2 ';
-            sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? 'mx-1 ' : '');
+            sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
