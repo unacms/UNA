@@ -304,7 +304,7 @@ export default function Unit(props) {
                                             sizes={imageSizes}
                                         />
                                     </View>
-                                    <View className="flex-auto flex-col sm:aspect-video mb-auto">
+                                    <View className="flex-auto flex-col sm:h-24 mb-auto">
                                         <View
                                             className={`flex-auto flex-col ${
                                             data.image ? '  ' : ' '
