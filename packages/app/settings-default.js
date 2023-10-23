@@ -677,9 +677,10 @@ let settingsDefault = {
                 text: { name: 'bx_forum:entity_text_block', showTitle: false, showBg: false, forList: true },
                 attachments: { name: 'bx_forum:entity_attachments', showTitle: false, showBg: false, forList: true },
                 actions: { name: 'bx_forum:entity_all_actions', showTitle: false, showBg: false, forList: true },
+                'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_forum:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false },
+            headerSettings: { header: false, footer: false, offset: false },
         },
         //############ GROUPS PAGES ############
         'groups-home': {
