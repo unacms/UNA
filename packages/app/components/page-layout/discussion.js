@@ -95,7 +95,7 @@ export default function PageLayout(props) {
                 </View>
             </View>       
             <View className=' m-4 mx-auto'>
-                <Button variant="default" title="Write reply" onPress={() => { setShowModal(true) }}/>
+                <Button variant="default" title="Write reply" onPress={() => {  setFormData({text:'', parent_id:0, author:''});setShowModal(true) }}/>
             </View>         
             <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                 <View ref={viewFormRef} onLayout={handleLayout} className='    '> 

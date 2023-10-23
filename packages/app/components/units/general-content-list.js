@@ -443,7 +443,7 @@ export default function Unit(props) {
                 <View className="flex-row  justify-between gap-x-4">
                     {sMeta}
                     <View className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full">
-                    Category
+                    <Text>{data.category}</Text>
                     </View>
                 </View>
 
