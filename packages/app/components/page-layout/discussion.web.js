@@ -1,16 +1,14 @@
 import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
 import { useRouter } from  'next/navigation';
-import { useState, useRef} from 'react';
+import { useState, useRef, useEffect} from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
-import { stripTags } from '../../lib/util';
+import { stripTags,parseUrl, parseQueryString } from '../../lib/util';
 import { useWindowDimensions } from 'react-native'
-import { Modal } from 'app/design/controls'
-import { Button } from 'app/design/controls';
 
 export default function PageLayout(props) {
 
@@ -23,14 +21,14 @@ export default function PageLayout(props) {
     const viewCntRef = useRef();
 
     const handleReply =  async (id, author, text) => {
-        setShowModal(true)
+        console.log(id, author, text);
         setFormData({text:stripTags(text), parent_id:id, author:author})
     }
     
     const handleForm =  async (data) => {
         setAddData(data)
         calculateSize();
-        setShowModal(false)
+        //setShowModal(false)
     }   
 
     const handleWindowSizeChange = () => {
@@ -105,6 +103,17 @@ export default function PageLayout(props) {
 
     }
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
+    useEffect(() => {
+        if (props.data.url.includes('parent_id=')){
+            let b = parseUrl(props.data.url);
+            let d = parseQueryString(b?.queryString);
+            setFormData({text:stripTags(d.text), parent_id:d.parent_id, author:d.author})
+        }
+      }, [props.data.url]);
+
+    if (props.data.url.includes('?empty=true'))
+        return <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={false} />         
+   
     return ( 
         <>
             {header}
@@ -116,7 +125,6 @@ export default function PageLayout(props) {
                         </View>
                     </Row>
                     <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
-                        
                         <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                             <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={false} />         
                         </KeyboardAvoidingView>

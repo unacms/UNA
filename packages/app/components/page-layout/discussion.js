@@ -31,7 +31,6 @@ export default function PageLayout(props) {
     }
 
     const handleForm =  async (data) => {
-
         setAddData(data)
     }
     
@@ -101,7 +100,7 @@ export default function PageLayout(props) {
                 <View ref={viewFormRef} onLayout={handleLayout} className='    '> 
                     <Modal onVisible={!!showModal} onClose={() => {setShowModal(null)}}>
                        { /* <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />  */ }
-                       <View className='w-full h-96  bg-red-500'>
+                       <View className='w-full h-96 bg-red-500'>
                             <WebView source={{ uri: u + 'view-discussion/dasdas?blocks=bx_forum:entity_comments&empty=true' }} />  
                        </View> 
                     </Modal>
