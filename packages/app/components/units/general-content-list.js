@@ -417,8 +417,8 @@ export default function Unit(props) {
     return (
       <>
         
-          <View className="flex-col max-w-lg  sm:px-4 mb-4">
-            <View className="flex-row gap-x-3 px-4 sm:px-0 pb-4 flex-auto">
+          <View className="flex-col px-0 sm:px-4 mx-auto w-full max-w-5xl">
+            <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
                 <View className="flex-col gap-y-2 flex-auto">
                 
 
@@ -432,7 +432,7 @@ export default function Unit(props) {
                         {data.title}
                         </Text>
                         <Text
-                        numberOfLines={2}
+                        numberOfLines={3}
                         className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
                         >
                         {data.summary_plain}
@@ -440,7 +440,12 @@ export default function Unit(props) {
                     </View>
                     </Link>
                 </View>
-                
+                <View className="flex-row  justify-between gap-x-4">
+                    {sMeta}
+                    <View className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full">
+                    Category
+                    </View>
+                </View>
 
 
                 </View>
@@ -461,12 +466,7 @@ export default function Unit(props) {
                 </View>
                 )}
             </View>
-            <View className="flex-row px-4 sm:px-0 pb-4 justify-between gap-x-4 border-b border-bdr">
-                    {sMeta}
-                    <View className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full">
-                    Category
-                    </View>
-                </View>
+            
           </View>
         
       </>
