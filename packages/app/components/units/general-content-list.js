@@ -347,22 +347,25 @@ export default function Unit(props) {
                         <View className="flex-col w-full">
                             <Link href={data.url}>
                                 <View
-                                    className={
-                                    data.image
-                                        ? 'flex-row-reverse sm:flex-col w-full p-1'
-                                        : 'flex-col w-full p-1'
-                                    }
+                                    className="flex-row-reverse w-full p-1"
                                 >
-                                    
+                                   {data.image && <View className={(!data.image ? 'hidden sm:block ': '') + " aspect-square h-full sm:aspect-video rounded-lg sm:rounded-xl overflow-hidden w-1/4 "}>
+                                            <Image
+                                                {...data.image}
+                                                alt={data.title}
+                                                view="cover"
+                                                className="u-cover"
+                                                sizes={imageSizes}
+                                            />
+                                        </View>
+                                    }
                                     <View className="flex-auto flex-col mb-auto">
                                         <View
                                             className={`flex-auto flex-col gap-y-2 p-3`}
                                         >
-                                            {data.image && (
-                                                <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
-                                                    {data.title}
-                                                </Text>
-                                            )}
+                                            <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold">
+                                                {data.title}
+                                            </Text>
                                             <Text numberOfLines={data.image ? 3 : 6} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm">
                                                 {data.summary_plain}
                                             </Text>
@@ -598,9 +601,9 @@ export default function Unit(props) {
                                     {(props.unitType == 'person_followers' || props.unitType == 'person_following' || props.unitType == 'person_following_recommendations') ? 
                                         <><View className='mr-2'><ProfilesList data ={data.followers_list} showEmpty={false} maxCount={3} displaySize="xs"/></View><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">{ data?.followers_count + ' followers'}</Text></>
                                         :
-                                        <><View className='mr-2'><ProfilesList data ={data.friends_list} showEmpty={false} maxCount={3} displaySize="xs"/></View><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? data?.mutual_friends_count + ' mutual friends' : data?.friends_count + t(' friends')}</Text></>
+                                        <><View className='mr-2'>{ data.mutual_friends_count > 0 ? <ProfilesList data ={data.mutual_friends_list} showEmpty={false} maxCount={3} displaySize="xs"/> : <ProfilesList data ={data.friends_list} showEmpty={false} maxCount={3} displaySize="xs"/> }</View><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">{ data.mutual_friends_count > 0 ? tp('mutual_friends', data?.mutual_friends_count, false) : tp('friends', data?.friends_count, false)}</Text></>
                                     }
-                                 </Row>
+                                </Row>
                                 <View className="flex-row w-full gap-x-2 ">
                                     {oMenuItemPrimary}
                                     {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (

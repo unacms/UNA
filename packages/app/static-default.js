@@ -231,8 +231,8 @@ const PageNotFound = () => {
 export function ComponentsIntro(props) {
     const { t } = useTranslation();
     const AnimatedCounter = ({ value, duration }) => {
-    const animatedValue = useState(new Animated.Value(0))[0]
-    const [displayValue, setDisplayValue] = useState(0)
+    const animatedValue = useState(new Animated.Value(1))[0]
+    const [displayValue, setDisplayValue] = useState(1)
 
     useEffect(() => {
       Animated.timing(animatedValue, {
@@ -252,30 +252,41 @@ export function ComponentsIntro(props) {
 
     return <Animated.Text>{displayValue}</Animated.Text>
   }
-  const [data, setData] = useState('0')
+  const [data, setData] = useState(1)
   const [data2, setData2] = useState([])
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData1 = async () => {
       const sResponse = await fetcher('/api.php?r=q&q=accounts_count')
-      setData(sResponse)
-
-      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%223%22,%22start%22:0,%22type%22:%22active%22}}')
-      setData2(sResponse2.data[0].data.data)
+      setData(sResponse);
     }
-    fetchData()
-  }, [])
+    fetchData1();
+  }, []);
+  
+  useEffect(() => {
+    const fetchData2 = async () => {
+      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%223%22,%22start%22:0,%22type%22:%22active%22}}')
+      setData2(sResponse2.data[0].data.data);
+    }
+    fetchData2();
+  }, []);
+
+
+  const CounterText = React.memo(({ data }) => {
+    return (
+      <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
+        <Text className="font-bold text-neutral-950 dark:text-neutral-50">
+          <AnimatedCounter value={data} duration={1000} startFrom={1} />
+        </Text>
+        {tp('members', data, true)}
+      </Text>
+    );
+  });
 
   return (
     <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
       <View className="flex-row gap-x-2 ">
         <ProfilesList data ={data2} showEmpty={true} maxCount={3}/>
-        <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-          
-          <Text className="font-bold text-neutral-950 dark:text-neutral-50">
-            <AnimatedCounter value={data} duration={1000} />
-          </Text>
-          {tp('members', data, true)}
-        </Text>
+        <CounterText data={data} />
       </View>
       <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
         {t('Community Intro')}

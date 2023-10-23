@@ -167,9 +167,10 @@ let settingsDefault = {
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
         ],
         menu_add: [
-            { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
-            { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree'},
-            { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar'},
+            { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText'},
+            { name: 'create-group-profile',title: 'Add group', link: '/create-group-profile', icon: 'UsersThree'},
+            { name: 'create-event-profile',title: 'Add event', link: '/create-event-profile', icon: 'Calendar'},
+            { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'ChatsCircle'},
         ],
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},

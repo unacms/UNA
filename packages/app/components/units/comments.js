@@ -126,7 +126,6 @@ export default function UnitComments(props) {
 
     return (
         <View className='w-full'>
-           
             <View  className="flex-row gap-x-2 ">
                 {cells}
                 <View className="w-10 flex-0 ">

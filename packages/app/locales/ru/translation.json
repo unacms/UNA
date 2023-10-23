@@ -1,4 +1,19 @@
 {
+  "members_0": "нет участников",
+  "members_1": "{{count}} участник",
+  "members_2": "{{count}} участника",
+  "members_plural": "{{count}} участников",
+
+  "friends_0": "нет друзей ",
+  "friends_1": "{{count}} friend",
+  "friends_2": "{{count}} friends",
+  "friends_plural": "{{count}} friends",
+
+  "mutual_friends": "no mutual friends yet",
+  "mutual_friends_1": "{{count}} mutual friend",
+  "mutual_friends_2": "{{count}} mutual friends",
+  "mutual_friends_plural": "{{count}} mutual friends",
+
   "Your Profiles": "Твои профили",
   "Dark Mode": "Темная тема",
   "Switch Profile": "Переключить профили",
@@ -30,10 +45,6 @@
   "Contact":"Контакты",
   "Privacy":"Приватность",
   "Terms":"Условия",
-  "members_0": "нет участников",
-  "members_1": "{{count}} участник",
-  "members_2": "{{count}} участника",
-  "members_plural": "{{count}} участников",
   "All Apps": "Все приложения",
   "Create content": "Создать контент",
   "Create post": "Создать публикацию",
