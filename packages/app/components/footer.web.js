@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 export default function () {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const TabList = currentUser ? appSetting('menu', 'bottom_tabs_logged') : appSetting('menu', 'bottom_tabs_non_logged');
-    const [notifCount, setNotifCount] = useState(currentUser? currentUser.notifications : null)
+    const notifCount = currentUser? currentUser.notifications : 0;
     const { t } = useTranslation();
     const pathname = usePathname()
 
@@ -23,6 +23,7 @@ export default function () {
         dUser.url = '/dashboard'
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
+    if (currentUser && currentUser.notifications)
 
  	return (
         <>
@@ -31,7 +32,7 @@ export default function () {
                     <Row className="flex-auto items-center flex-row  justify-around my-2 w-full">
                         {TabList.map((tab, index) => (
                                 <View key={"fl" + index} className={'w-1/6 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>
-                                    <Link  href={tab.url} >
+                                    <Link href={tab.url} noprefetch={tab.url == appSetting('layout', 'notifications') ? "false" : "true"}>
                                         <View className='flex-col gap-1 items-center'>
                                             {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24}  />}
                                             <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap '+ (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300':'text-primary')}>{tab.title}</Text>

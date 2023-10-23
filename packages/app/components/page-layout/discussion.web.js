@@ -115,15 +115,11 @@ export default function PageLayout(props) {
                             <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.module} requestUrl={commentsData?.content[0].url} />
                         </View>
                     </Row>
-                    <View className='bg-red-500 m-4'>
-                        <Button variant="text" title="Write reply" onPress={() => { setShowModal(true) }}/>
-                    </View>
                     <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdrcard dark:border-bdrcard-d fixed bottom-0 w-full' : ' w-full'} > 
-                        <Modal onVisible={!!showModal} onClose={() => {setShowModal(null)}}>
+                        
                             <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                                <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
+                                <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={true} />         
                             </KeyboardAvoidingView>
-                        </Modal>
                     </View>
                 </View>
             </View>

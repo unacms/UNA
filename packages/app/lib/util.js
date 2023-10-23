@@ -344,9 +344,19 @@ export function linkify2(text) {
     return matches[0] ? matches[0][0] : null;
 }
 
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+export function clearLinks(text) {
+    const rootUrl = appSetting('urls', 'root');
+    const regex = new RegExp(escapeRegExp(rootUrl), 'g');
+    return text.replace(regex, '/');
+}
+
 export function linkify(text, attrs = '', htmlSpecialChars = false) {
-    text = text.replace(appSetting('urls', 'root'), '/');
-    return text;
+    return clearLinks(text);
     // todo improve
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
   

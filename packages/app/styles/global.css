@@ -231,9 +231,11 @@ html {
 }
 .form-control-cmt_text{
     width:calc(100%) !important;
+    margin-bottom: 0px !important;
 }
 
-.form-control-cmt_image{
+.form-control-cmt_image,
+.form-control-cmt_submit{
     margin-bottom: 0px !important;
     margin-top: 0px;
 }

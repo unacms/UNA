@@ -213,6 +213,10 @@ let settingsDefault = {
             'edit-product', 
             'delete-product'
         ],
+        bx_forum_view_actions: [
+            'edit-discussion', 
+            'discussion-post'
+        ],
         bx_persons_submenu: {
             name: 'People',
             icon: 'UsersFour',

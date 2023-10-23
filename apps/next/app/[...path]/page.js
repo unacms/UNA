@@ -26,12 +26,21 @@ const getData = cache(async (props) => {
 
     delete searchParams.cookieString;
     delete searchParams.path;
+    let sBlocks = '';
+    if (searchParams.blocks){
+        sBlocks = searchParams.blocks;
+    }
+    delete searchParams.blocks;
+
+    if(sBlocks != '' && Object.keys(searchParams).length == 0){
+        l = l + '&params[]=' + sBlocks;
+    }
     
     if (Object.keys(searchParams).length > 0) {
-        l = l + '&params[]=&params[]=' + JSON.stringify(searchParams);
+        l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^',searchParams, l);
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^',searchParams, l);
     const res = await fetch(l, opts)
     //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()

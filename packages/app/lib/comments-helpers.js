@@ -306,7 +306,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     )
 }
 
-export function CommentsForm({form, requestUrl, module, browse, formData, handleForm}) {
+export function CommentsForm({form, requestUrl, module, browse, formData, handleForm, isModal}) {
     if (!form)
         return <></>
     const [commentData, setCommentData] = useState({
@@ -375,9 +375,12 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
         Keyboard.dismiss();
     }
 
+    let padding = 8;
+    if (isModal)
+        padding = 0;
     const { colors } = useTheme();    
     return ( 
-        <View className={"w-full bg-bgrcard dark:bg-bgrcard-d shadow"} style={{backgroundColor: colors.barsBackground, paddingTop:8, paddingBottom:8}}>
+        <View className={"w-full bg-bgrcard dark:bg-bgrcard-d shadow"} style={{backgroundColor: colors.barsBackground, paddingTop:padding, paddingBottom:padding}}>
             {
                 form.data.inputs.cmt_parent_id.value >0 && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
@@ -395,7 +398,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                 </View>)
             }
             
-            <Form {...form} resetOnSubmit={true} classContainerName="flex-row flex-wrap px-2 w-full lg:px-4 lg:py-2 items-start justify-between" onFormSubmit={onFormSubmit}  />
+            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : "px-2 lg:px-4 lg:py-2") + "flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit}  />
         </View> 
     )
 }

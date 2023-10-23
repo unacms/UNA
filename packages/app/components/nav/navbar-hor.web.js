@@ -29,7 +29,7 @@ export default function (props) {
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation();
     let { width } = useWindowDimensions()
-
+   
     if (width > 1280 && menuPopup) 
         setMenuPopup(false)
 
@@ -96,6 +96,8 @@ export default function (props) {
     const windowWidth = useWindowDimensions().width;
 
     let headerSettings = getHeaderSettings(props.uri, width);
+
+    const notifCount = currentUser? currentUser.notifications : 0;
 
     useEffect(() => {
         const handleClick = () => {
@@ -236,6 +238,7 @@ export default function (props) {
                                 </DropdownMenu>
                             </View>}
                             <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
+                                
                                 {bNotifs && <DropdownPopup
                                     open={ntfsOpen}
                                     onOpenChange={(bOpen) => {
@@ -245,13 +248,16 @@ export default function (props) {
                                     title={t(sTxtNtfsTitle)}
                                 >
                                     {[
-                                        <ButtonRef
-                                        key="ddp-trigger"
-                                        variant="outline"
-                                        rounded
-                                        startDecorator="Bell"
-                                        id="m1"
-                                        />,
+                                        <View key="ddp-trigger3">
+                                            <ButtonRef
+                                                variant="outline"
+                                                rounded
+                                                startDecorator="Bell"
+                                                id="m1"
+                                            />
+                                            {( notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+                                       
+                                        </View>,
                                         ntfsContent
                                     ]}
                                 </DropdownPopup>}
