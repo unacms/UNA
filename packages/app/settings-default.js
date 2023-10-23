@@ -642,7 +642,7 @@ let settingsDefault = {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
-                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true, unit:'small' },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                 
             },

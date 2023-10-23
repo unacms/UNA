@@ -221,6 +221,7 @@ export function processUrl(data, blocks) {
 }
 
 export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType }) {
+    
     if (item?.type === 'block') {
         let b = BlockByName2({b:item.data, name:item.block})
         if (!b)
@@ -233,10 +234,10 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
         );
     } 
     else {
-      return (
-        <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
-            <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
-        </View>
+        return (
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+                <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
+            </View>
         );
     }
 }

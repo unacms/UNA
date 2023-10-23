@@ -404,6 +404,69 @@ export default function Unit(props) {
     )
   }
 
+  function forumUnitSidebar() {
+    let sMeta = (
+      <Profile
+        {...data.author_data}
+        displayType="unit"
+        displaySize="xs"
+        showInfo="false"
+      />
+    )
+
+    return (
+      <>
+          <View className="flex-col px-0 sm:px-4 mx-auto w-full max-w-5xl">
+            <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
+                <View className="flex-col gap-y-2 flex-auto">
+                
+
+                <View className="flex-row gap-x-4 w-full">
+                    <Link href={data.url}>
+                    <View className={`flex-auto flex-col gap-y-2`}>
+                        <Text
+                        numberOfLines={2}
+                        className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
+                        >
+                        {data.title}
+                        </Text>
+   
+                    </View>
+                    </Link>
+                </View>
+                <View className="flex-row  justify-between gap-x-4">
+                    {sMeta}
+                    <View className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full">
+                    <Text>{data.category}</Text>
+                    </View>
+                </View>
+
+
+                </View>
+                {data.image && (
+                <View
+                    className={
+                    (!data.image ? ' hidden sm:block ' : '') +
+                    ' aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 '
+                    }
+                >
+                    <Image
+                    {...data.image}
+                    alt={data.title}
+                    view="cover"
+                    className="u-cover"
+                    sizes={imageSizes}
+                    />
+                </View>
+                )}
+            </View>
+            
+          </View>
+        
+      </>
+    )
+  }
+
   function forumUnit() {
     let sMeta = (
       <Profile
@@ -825,7 +888,6 @@ export default function Unit(props) {
   }
 
   let data = props.data
-
   const imageSizes = getImageSizes()
   const module = !!data?.module ? data.module : props.module
 
@@ -838,7 +900,7 @@ export default function Unit(props) {
     case 'bx_market':
       return marketUnit()
     case 'bx_forum':
-      return forumUnit()
+      return props.sidebar? forumUnitSidebar() : forumUnit()
     case 'bx_persons':
       return (
         <CardDataContext>

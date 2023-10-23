@@ -342,7 +342,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 data={route?.sidebar?.content}
                             />
                         }
-                        <BlockByName data={data} name={route.blocks.browse_sidebar} perLine={1} maxItems={1}/>
+                        <BlockByName data={data} name={route.blocks.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                     </View>}
                 </Row></>
         

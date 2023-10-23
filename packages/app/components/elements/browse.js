@@ -160,7 +160,7 @@ export default function ElementBrowse(props) {
                     contentContainerStyle={props?.contentContainerStyle}
                     refer={uniRef}
                     no_scroll={props.no_scroll}
-                    renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
+                    renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
                     onEndReached = {handleEndReached} 
                     ListFooterComponent={
                         ((hasNextPage && isFetchingNextPage) ) ? (
