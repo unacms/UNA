@@ -29,7 +29,9 @@ export default function PageLayout(props) {
         setAddData(data)
         calculateSize();
         //setShowModal(false)
-    }   
+    }  
+    
+   
 
     const handleWindowSizeChange = () => {
         calculateSize();
