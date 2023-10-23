@@ -112,7 +112,7 @@ export default function PageLayout(props) {
       }, [props.data.url]);
 
     if (props.data.url.includes('?empty=true'))
-        return <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={false} />         
+        return <View className=' h-screen'><CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} isModal={true} /></View>      
    
     return ( 
         <>

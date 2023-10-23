@@ -27,6 +27,7 @@ export default function PageLayout(props) {
     const viewCntRef = useRef();
 
     const handleReply =  async (id, author, text) => {
+        setShowModal(true)
         setFormData({text:stripTags(text), parent_id:id, author:author})
     }
 
@@ -101,7 +102,7 @@ export default function PageLayout(props) {
                     <Modal onVisible={!!showModal} onClose={() => {setShowModal(null)}}>
                        { /* <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />  */ }
                        <View className='w-full h-96 bg-red-500'>
-                            <WebView source={{ uri: u + 'view-discussion/dasdas?blocks=bx_forum:entity_comments&empty=true' }} />  
+                            <WebView source={{ uri: u + 'view-discussion/dasdas?blocks=bx_forum:entity_comments&empty=true&text='+formData.text+'&parent_id='+formData.parent_id+'&author='+formData.author }} />  
                        </View> 
                     </Modal>
                 </View>
