@@ -7,8 +7,7 @@ export default function FormField(props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-
-    const sClassName = 'w-full form-control mb-3 ' + (props.format != 'custom' ? ' ' : '')+ ' form-control-' + props.name ;
+    const sClassName = 'w-full form-control mb-3 ' + (props.format != 'custom' ? ' ' : '') + ' form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
     return (
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&

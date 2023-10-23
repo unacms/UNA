@@ -159,6 +159,7 @@ export default function FormFieldFtf(props) {
     console.log('defaultValue', defaultValue)
     const [link, setLink] = useState(null);
     const formContext = useFormContext();
+    const { field } = useController({ name, rules, defaultValue });
 
     useEffect(() => {
         if (props.value !== undefined)
@@ -166,10 +167,9 @@ export default function FormFieldFtf(props) {
     }, [props.name, props.value]);
 
     if (props.html == 2){
-        return <Editor defaultValue = {defaultValue} value={'cxv'}  formContext = {formContext} name = {name} viewClasses={props.viewClasses} />
+        return <Editor  contentf={field.value} defaultValue = {defaultValue}  formContext = {formContext} name = {name} viewClasses={props.viewClasses} />
     }
 
-    const { field } = useController({ name, rules, defaultValue });
 
     const editor = useEditor({
         extensions: [

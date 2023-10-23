@@ -9,6 +9,7 @@ import { Theme } from 'app/design/theme'
 import { Icon } from 'app/ui/atoms/icon'
 import Menu from 'app/components/menu'
 import { BlurView } from 'expo-blur';
+import ProfilesList from 'app/ui/molecules/profile_list'
 
 function CoverMenu(props) {
     return (

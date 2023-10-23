@@ -9,7 +9,7 @@ import { EditorBubbleMenu } from "./components/bubble-menu";
 import { getPrevText } from "app/ui/editor/lib/editor";
 import { ImageResizer } from "./components/image-resizer";
 
-export default function Editor({defaultValue, formContext, name, viewClasses}) {
+export default function Editor({defaultValue, formContext, name, viewClasses, contentf}) {
 
   const [content, setContent] = useState(defaultValue)
 
@@ -41,6 +41,11 @@ export default function Editor({defaultValue, formContext, name, viewClasses}) {
     },
     autofocus: "end",
   });
+
+  useEffect(() => {
+    console.log(contentf, editor)
+      editor?.commands.setContent(contentf);
+  }, [contentf]);
 
   const { complete, completion, isLoading, stop } = useCompletion({
     id: "novel",

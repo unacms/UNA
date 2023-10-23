@@ -91,7 +91,7 @@ export default function PageLayout(props) {
                 </View>
             </View>                
             <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                <View ref={viewFormRef} onLayout={handleLayout} className='    '> 
+                <View ref={viewFormRef} onLayout={handleLayout} className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d'> 
                     <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                 </View>
             </KeyboardAvoidingView>
