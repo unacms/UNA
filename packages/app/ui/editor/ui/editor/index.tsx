@@ -43,8 +43,8 @@ export default function Editor({defaultValue, formContext, name, viewClasses, co
   });
 
   useEffect(() => {
-    console.log(contentf, editor)
-      editor?.commands.setContent(contentf);
+    if (editor && contentf == '')
+        editor.commands.setContent(contentf);
   }, [contentf]);
 
   const { complete, completion, isLoading, stop } = useCompletion({

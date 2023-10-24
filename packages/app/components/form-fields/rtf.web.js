@@ -156,7 +156,6 @@ export default function FormFieldFtf(props) {
     let rules = {};
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
-    console.log('defaultValue', defaultValue)
     const [link, setLink] = useState(null);
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });

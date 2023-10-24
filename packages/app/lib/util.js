@@ -350,6 +350,8 @@ function escapeRegExp(string) {
 }
 
 export function clearLinks(text) {
+    if (!text)
+        return text;
     const rootUrl = appSetting('urls', 'root');
     const regex = new RegExp(escapeRegExp(rootUrl), 'g');
     return text.replace(regex, '/');
