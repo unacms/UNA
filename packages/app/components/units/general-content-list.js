@@ -404,7 +404,7 @@ export default function Unit(props) {
     )
   }
 
-  function forumUnitSidebar() {
+  function forumUnitPreview() {
     let sMeta = (
       <Profile
         {...data.author_data}
@@ -900,7 +900,7 @@ export default function Unit(props) {
     case 'bx_market':
       return marketUnit()
     case 'bx_forum':
-      return props.sidebar? forumUnitSidebar() : forumUnit()
+      return props.sidebar? forumUnitPreview() : forumUnit()
     case 'bx_persons':
       return (
         <CardDataContext>

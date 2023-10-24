@@ -4,10 +4,12 @@ import { Button } from 'app/design/controls'
 import { Dimensions, Platform } from 'react-native'
 import { appSetting } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
+import { useCurrentUser } from 'app/context/user'
 
 export default function ElementProfileMenu(props) {
     const { t } = useTranslation();
     let windowHeight = Dimensions.get('window').height
+    const { currentUser, setCurrentUser } = useCurrentUser();
 
     let styles = {}
     if (Platform.OS === 'web') {
@@ -18,7 +20,7 @@ export default function ElementProfileMenu(props) {
         <View style={styles} className=" px-4 overflow-y-scroll profile-menu    overflow-hidden    ">
             <View className="flex-col ">
                 {appSetting('menu', 'left').map((item, index) => (
-                    <Link key={`menu-${index}`} href={item.link.replace('?owner=1', '')}>
+                    <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
                         <Button
                             variant="text"
                             startDecorator={item.icon}

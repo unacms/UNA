@@ -527,6 +527,15 @@ let settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
+        ['cmts-view']: {
+            layout: 'post',
+            top:true,
+            blocks: {
+                author: { name: 'system:get_author_block', showTitle: false, showBg: false, forList: true, forHeader: true },
+                comments: {name: 'system:get_block_view', showTitle: false, showBg: false, showHeader: false },
+            },
+            headerSettings: { header: false, footer: false, offset: false },
+        },
 
         //############ MARKET PAGES ############
         'products-home': {
@@ -880,12 +889,10 @@ let settingsDefault = {
     },
     menu: {
         left: [
-            { title: 'Profile', link: '/view-persons-profile/dr-andrey-yasko-phd', icon: 'User' },
-            { title: 'Explore', link: '/explore', icon: 'Compass' },
+            { title: 'Profile', link: '{profile}', icon: 'User' },
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
-            { title: 'Bookmarks', link: '/bookmarks', icon: 'Bookmarks' },
-            { title: 'Friends', link: '/connections', icon: 'Link' },
+            { title: 'Friends', link: '/friends', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },

@@ -17,6 +17,7 @@ import { useState } from 'react';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
 import { useTranslation } from 'react-i18next';
+import Link from 'app/ui/atoms/link'
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -40,7 +41,6 @@ export default function UnitComments(props) {
     let files = props.files;
 
     // request form for reply
-
     const handleReply = async (id, author, text) => {
         FeedbackHaptics('Medium');
         props.handleReply(id, author, text);
@@ -137,7 +137,7 @@ export default function UnitComments(props) {
                         <View className="flex-row flex-1 items-center mb-0.5">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <Text className="text-neutral-500 px-1">·</Text>
-                            <Time className="" ts={data.cmt_time}></Time>
+                            <Link href={data.cmt_url}><Time className="" ts={data.cmt_time}></Time></Link>
                         </View>
                         {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
