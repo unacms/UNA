@@ -485,7 +485,7 @@ export default function Unit(props) {
     return (
       <>
         
-          <View className="flex-col px-0 sm:px-4 mx-auto w-full max-w-5xl">
+          <View className="flex-col px-0 sm:px-4 xl:px-6 mx-auto w-full max-w-5xl">
             <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
                 <View className="relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
                   
