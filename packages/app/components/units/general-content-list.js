@@ -418,16 +418,36 @@ export default function Unit(props) {
       <>
         <Card margin="mb-2 mx-4" rounded="rounded-2xl">
           
-            <View className="flex-row p-1.5 gap-x-1 ">
-                <View className="relative flex-none h-14 w-14 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
-                  <View className="absolute h-14 w-14   flex-row  text-neutral-500/20 ">
-                    <Icon icon="ChatCircle" className="mx-auto my-auto w-1/2 h-1/2"  />
+            <View className="flex-row p-2  gap-x-2 ">
+                
+               
+                
+
+                 <View className='flex-auto flex-col p-1 gap-y-2'>
+                    <Link className=" my-auto  flex-auto" href={data.url}>
+                    
+                        <Text
+                        numberOfLines={3}
+                        className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight sm:dark:hover:text-primary-d  text-sm font-bold"
+                        >
+                        {data.title}
+                        </Text>
+   
+                    
+                    </Link>
+                    <View className="flex-row gap-x-4">
+                    {sMeta}
+                    
+                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category}</Text>
+                    
                   </View>
+                </View>
+                  
                   {data.image && (
                     <View
                         className={
-                        (!data.image ? ' hidden sm:block ' : '') +
-                        ' aspect-square flex-none   overflow-hidden w-full '
+                        (!data.image ? ' hidden  ' : '') +
+                        ' relative flex-none h-16 aspect-video bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden '
                         }
                     >
                         <Image
@@ -439,23 +459,6 @@ export default function Unit(props) {
                         />
                     </View>
                     )}
-                </View>
-               
-                
-
-                
-                    <Link className=" my-auto pb-0.5 px-2  flex-auto" href={data.url}>
-                    
-                        <Text
-                        numberOfLines={3}
-                        className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight sm:dark:hover:text-primary-d  text-sm font-bold"
-                        >
-                        {data.title}
-                        </Text>
-   
-                    
-                    </Link>
-                
                 
 
 
