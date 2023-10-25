@@ -136,8 +136,8 @@ export default function UnitComments(props) {
                     <View className={sCommentClass + ' py-2'} >
                         <View className="flex-row flex-1 items-center mb-0.5">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                            <Text className="text-neutral-500 px-1">·</Text>
-                            <Link href={data.cmt_url}><Time className="" ts={data.cmt_time}></Time></Link>
+                            <View><Text className="text-neutral-500 px-1">·</Text></View>
+                            <Link href={data.cmt_url} className="flex items-center"><Time className="" ts={data.cmt_time}></Time></Link>
                         </View>
                         {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
