@@ -13,6 +13,7 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 
 export default function ElementBrowse(props) {
+
     const { t } = useTranslation();
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
@@ -143,6 +144,12 @@ export default function ElementBrowse(props) {
     }, [storageKeyValue]);
     if (status === 'loading' && dataItems.data.length == 0)
         return Preload 
+
+    if (props.sidebar){
+        return dataItems.data.map((item, index) => (
+            <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>
+        ));
+    }
 
     return (
         (true) && <View className='w-full h-full' >

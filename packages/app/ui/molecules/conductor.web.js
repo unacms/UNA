@@ -336,13 +336,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 ">
+
                         { route?.sidebar?.content?.length > 0 && <UniList
                                 no_scroll
                                 renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
                                 data={route?.sidebar?.content}
                             />
                         }
-                        <BlockByName data={data} name={route.blocks.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                        <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                     </View>}
                 </Row></>
         
@@ -397,7 +398,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     let settings = appSetting('layouts', a.key)
                     return (
                     <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
+                        <Pressable className={a.ident ? 'pl-8': ''} onPress={(event) => {
                             setIndex(a.index);
                             window.history.pushState({ }, '', a.key);
                             event.preventDefault()
