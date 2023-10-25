@@ -36,7 +36,9 @@ export const componentsMapDefault = {
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
     lang: Lang,
-
+    raw: Lang,
+    html: Lang,
+    custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
     messenger_main_page: MessengerPage
 };

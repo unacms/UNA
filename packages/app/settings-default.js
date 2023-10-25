@@ -358,12 +358,14 @@ let settingsDefault = {
                 form: { name: 'system:login_form', showTitle: false },
             },
             max_width: 'full',
+            headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
         'create-account': {
             layout: 'create-account',
             blocks: {
                 form: { name: 'system:create_account_form', showTitle: false },
             },
+            headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
         dashboard: {
             layout: 'dashboard',

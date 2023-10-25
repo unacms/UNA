@@ -58,8 +58,8 @@ export default function RootLayout({ children }) {
     if (theme == ''){
         theme = scheme;
     }
-    console.log('xxx', typeof window)
-    if (typeof window !== undefined){
+
+    if (window !== undefined){
         const root = window.document.documentElement;
         root.setAttribute('data-mode', scheme);
     }
