@@ -23,7 +23,6 @@ export default function () {
         dUser.url = '/dashboard'
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
-    if (currentUser && currentUser.notifications)
 
  	return (
         <>

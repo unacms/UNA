@@ -58,12 +58,12 @@ export default function RootLayout({ children }) {
     if (theme == ''){
         theme = scheme;
     }
-
-    if (typeof window !== 'undefined'){
+    console.log('xxx', typeof window)
+    if (typeof window !== undefined){
         const root = window.document.documentElement;
         root.setAttribute('data-mode', scheme);
     }
-
+/**/
     return (
         <html lang="en" data-mode={theme}>
             <body className='bg-bgrbody dark:bg-bgrbody-d'>
