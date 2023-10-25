@@ -420,8 +420,8 @@ export default function Unit(props) {
         <Card margin="mb-2 mx-4" rounded="rounded-2xl">
           
             <View className="flex-row p-1.5 gap-x-1 ">
-                <View className="relative flex-none h-16 w-16 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
-                  <View className="absolute h-16 w-16   flex-row  text-neutral-500/20 ">
+                <View className="relative flex-none h-14 w-14 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
+                  <View className="absolute h-14 w-14   flex-row  text-neutral-500/20 ">
                     <Icon icon="ChatCircle" className="mx-auto my-auto w-1/2 h-1/2"  />
                   </View>
                   {data.image && (
@@ -441,14 +441,14 @@ export default function Unit(props) {
                     </View>
                     )}
                 </View>
-                <View className="flex-col  px-1.5 h-16  justify-between flex-auto">
+               
                 
 
-                <View className="flex-row gap-x-4 w-full">
-                    <Link href={data.url}>
+                
+                    <Link className=" my-auto pb-0.5 px-2  flex-auto" href={data.url}>
                     
                         <Text
-                        numberOfLines={2}
+                        numberOfLines={3}
                         className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight sm:dark:hover:text-primary-d  text-sm font-bold"
                         >
                         {data.title}
@@ -456,20 +456,11 @@ export default function Unit(props) {
    
                     
                     </Link>
-                </View>
-                <View className="flex-row  justify-between gap-x-2">
-                    
-                    {sMeta}
-                    
+                
+                
 
 
-                    <View className="bg-neutral-500/20 px-1.5 py-0.5 my-auto rounded-full">
-                    <Text className="text-xs text-neutral-700 dark:text-neutral-300 " >{data.category}</Text>
-                    </View>
-                </View>
-
-
-                </View>
+                
                 
             </View>
             
@@ -496,12 +487,18 @@ export default function Unit(props) {
         
           <View className="flex-col px-0 sm:px-4 mx-auto w-full max-w-5xl">
             <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
+                <View className="relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
+                  
+                    <Icon icon="ChatCircle" className="mx-auto my-auto w-1/2 h-1/2"  />
+                  
+                  
+                </View>
                 <View className="flex-col gap-y-2 flex-auto">
                 
 
-                <View className="flex-row gap-x-4 w-full">
+                
                     <Link href={data.url}>
-                    <View className={`flex-auto flex-col gap-y-2`}>
+                    <View className={`flex-auto flex-col gap-y-1`}>
                         <Text
                         numberOfLines={2}
                         className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
@@ -509,19 +506,19 @@ export default function Unit(props) {
                         {data.title}
                         </Text>
                         <Text
-                        numberOfLines={3}
+                        numberOfLines={2}
                         className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
                         >
                         {data.summary_plain}
                         </Text>
                     </View>
                     </Link>
-                </View>
-                <View className="flex-row  justify-between gap-x-4">
+                
+                <View className="flex-row gap-x-4">
                     {sMeta}
-                    <View className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full">
-                    <Text>{data.category}</Text>
-                    </View>
+                    
+                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category}</Text>
+                    
                 </View>
 
 
@@ -530,7 +527,7 @@ export default function Unit(props) {
                 <View
                     className={
                     (!data.image ? ' hidden sm:block ' : '') +
-                    ' aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 '
+                    ' aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 '
                     }
                 >
                     <Image
