@@ -16,9 +16,9 @@ function getMenu(props) {
             return {
                 id: index + menu.items.length,
                 name: obj.url,
-                title: (obj.icon != '' ? obj.icon + ' ' : '') + obj.name + ' (' + obj.num + ')',
+                title: obj.name + ' (' + obj.num + ')',
                 link: obj.url.replace('/',''),
-                icon: '',
+                icon: obj.icon,
                 ident: 1,
                 hideInTop: true
             }
