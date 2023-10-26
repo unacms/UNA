@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
         theme = scheme;
     }
 
-    if (window !== undefined){
+    if (typeof window !== 'undefined'){
         const root = window.document.documentElement;
         root.setAttribute('data-mode', scheme);
     }

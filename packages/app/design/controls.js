@@ -218,7 +218,7 @@ export function Button (props) {
     const { colors } = Theme()
     let colorIcon = props.variant == 'link' ? colors.primary: '';
     colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)': '';
-
+    
     const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) => {
         if(!sIcon)
             return;

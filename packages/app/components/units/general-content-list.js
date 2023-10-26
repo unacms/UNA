@@ -438,7 +438,7 @@ export default function Unit(props) {
                     <View className="flex-row gap-x-4">
                     {sMeta}
                     
-                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category}</Text>
+                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
                     
                   </View>
                 </View>
@@ -483,15 +483,15 @@ export default function Unit(props) {
         showInfo="false"
       />
     )
-
+      console.log(data)
     return (
       <>
         
           <View className="flex-col px-0 sm:px-4 xl:px-6 mx-auto w-full max-w-5xl">
             <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
-                <View className="relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden">
+                <View className="relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden items-center justify-center">
+                  <Text className="text-3xl">{data.category.icon}</Text>
                   
-                    <Icon icon="ChatCircle" className="mx-auto my-auto w-1/2 h-1/2"  />
                   
                   
                 </View>
@@ -519,7 +519,7 @@ export default function Unit(props) {
                 <View className="flex-row gap-x-4">
                     {sMeta}
                     
-                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category}</Text>
+                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
                     
                 </View>
 

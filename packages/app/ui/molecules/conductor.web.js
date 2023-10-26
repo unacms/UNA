@@ -403,13 +403,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             window.history.pushState({ }, '', a.key);
                             event.preventDefault()
                         }}>
-                            <Button
+                          <Button
                                 variant={a.index == index ? 'outline': "text"}
                                 size={!a.ident ? "lg" : "base"}
                                 fullWidth
                                 title = {(a.title)}
                                 align="start"
-                                startDecorator={!a.ident ? settings?.icon : undefined}
+                                startDecorator={!a.ident ? settings?.icon : a.icon}
                             />
                         </Pressable>
                     </Link>
