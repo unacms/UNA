@@ -101,7 +101,7 @@ export function HistoryComponent(){
                  { historyAction === 'create-convo' && !actionProfile &&
                     <CreateConvo onClose={ handlerCloseArea } viewButtons={ isPhone(screenMode) } onSave={ handlerSaveList }/> }
              </View>
-             <View className="w-full pt-2 flex-0 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d" >
+             <View className="w-full pt-2 flex-0 border-t border-bdr dark:border-bdr-d" >
                  { id && <SendForm convoId={ historyAction !== 'create-convo' ? id : 0 }
                    iSelectedProfile={ actionProfile && actionProfile.id }
                    menuItem={ menuItem }

@@ -99,7 +99,7 @@ const Layout = memo(({ mode, panel }) => {
     const bPhone = isPhone(mode);
     const bAllowHistoryView = !bPhone || bPhone &&  panel === 'history';
 
-    return <View className="w-full h-full mx-auto flex flex-row bg-neutral-50 dark:bg-neutral-900">
+    return <View className="w-full h-full mx-auto flex flex-row bg-bgrcard dark:bg-bgrcard-d">
              <View className={"xl:w-2/12 hidden xl:block border-r border-bdrnavbar dark:border-bdrnavbar-d" }>
                 { bDesktop && <MenuColumn /> }
              </View>
