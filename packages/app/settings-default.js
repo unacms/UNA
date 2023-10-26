@@ -280,7 +280,7 @@ let settingsDefault = {
         bx_forum_submenu: {
             name: 'Discussions',
             icon: 'comments',
-            items: ['discussions-home', 'discussions-categories', 'discussions-category'],
+            items: ['discussions-home', 'discussions-popular', 'discussions-categories', 'discussions-category'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-discussion' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_forum'},
@@ -654,6 +654,17 @@ let settingsDefault = {
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
                 browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true, unit:'small' },
+                categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
+                
+            },
+            icon: 'Egg',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'discussions-popular': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, perLine: 1 },
+               
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                 
             },
