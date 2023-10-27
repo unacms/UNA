@@ -479,83 +479,86 @@ export default function Unit(props) {
       <Profile
         {...data.author_data}
         displayType="unit"
-        displaySize="xs"
+        displaySize="sm"
         showInfo="false"
       />
     )
       console.log(data)
     return (
       <>
-        
-          <View className="flex-col px-0 sm:px-4 xl:px-6 mx-auto w-full max-w-5xl">
-            <View className="flex-row px-4 sm:px-0 gap-x-3 mb-4 pb-4 flex-auto  border-b border-bdr dark:border-bdr-d">
-                <View className="relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden items-center justify-center">
+      <View className='sm:px-4 pb-4'>
+          <Card addClassName='flex-row gap-x-4 p-4 mx-auto w-full max-w-5xl '>
+          
+                <View className="border border-bdr dark:border-bdr-d relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden items-center justify-center">
                   <Text className="text-3xl">{data.category.icon}</Text>
                   
                   
                   
                 </View>
-                <View className="flex-col gap-y-2 flex-auto">
+                <View className="flex-col gap-y-3 flex-auto">
                 
-
+                    <View className='flex-row gap-x-4'>
                 
-                    <Link href={data.url}>
-                    <View className={`flex-auto flex-col gap-y-1`}>
-                        <Text
-                        numberOfLines={2}
-                        className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
+                        <Link href={data.url}>
+                            <View className={`flex-auto flex-col gap-y-1`}>
+                                <Text
+                                numberOfLines={3}
+                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
+                                >
+                                {data.title}
+                                </Text>
+                                <Text
+                                numberOfLines={3}
+                                className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
+                                >
+                                {data.summary_plain}
+                                </Text>
+                            </View>
+                        </Link>
+                            {data.image && (
+                        <View
+                            className={
+                            (!data.image ? ' hidden sm:block ' : '') +
+                            ' aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 '
+                            }
                         >
-                        {data.title}
-                        </Text>
-                        <Text
-                        numberOfLines={2}
-                        className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
-                        >
-                        {data.summary_plain}
-                        </Text>
-                    </View>
-                    </Link>
-                
-                <View className="flex-row gap-x-4 items-center">
-                    {sMeta}
-                    <Time
-                             stylesName="text-xs flex-none"
-                            ts={data.added}
-                          ></Time>
-                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
-                    <Menu
-                                {...data.meta}
-                                displayType="button"
-                                params={{
-                                show_action: true,
-                                show_counter: true,
-                                show_combined: true,
-                                }}
+                            <Image
+                            {...data.image}
+                            alt={data.title}
+                            view="cover"
+                            className="u-cover"
+                            sizes={imageSizes}
                             />
-                </View>
+                        </View>
+                        )}
+                    </View>
+
+                    <View className="flex-row gap-x-2 items-center">
+                    <Menu
+                                    {...data.meta}
+                                    displayType="button"
+                                    params={{
+                                    show_action: true,
+                                    show_counter: true,
+                                    show_combined: true,
+                                    }}
+                                />
+                        {sMeta}
+                        <Time
+                                stylesName="text-sm text-neutral-500 flex-none"
+                                ts={data.added}
+                              ></Time>
+                        <Text className="hidden ml-auto sm:block bg-neutral-500/20 px-2 py-0.5 my-auto text-sm rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
+                       
+                    </View>
 
 
                 </View>
-                {data.image && (
-                <View
-                    className={
-                    (!data.image ? ' hidden sm:block ' : '') +
-                    ' aspect-video flex-none rounded-lg sm:rounded-xl overflow-hidden w-1/4 sm:w-auto sm:h-24 '
-                    }
-                >
-                    <Image
-                    {...data.image}
-                    alt={data.title}
-                    view="cover"
-                    className="u-cover"
-                    sizes={imageSizes}
-                    />
-                </View>
-                )}
-            </View>
+           
             
-          </View>
-        
+          
+          </Card>
+      </View>
       </>
     )
   }
