@@ -1,5 +1,5 @@
 //import { cookies } from 'next/headers'
-import { env } from 'app/lib/env';
+import { env, isCustom } from 'app/lib/env';
 import { cache } from 'react'
 import { Root, Page404} from 'app/root'
 import 'app/styles/global.css'
@@ -56,7 +56,7 @@ const getData = cache(async (props) => {
         },
         manifest: '/manifest.json',
         icons: {
-            icon: '/favicon.ico',
+            icon: isCustom() ? '/static/favicon.ico' : '/favicon.ico',
         },
         other: {
             'apple-mobile-web-app-capable': 'yes',
