@@ -149,7 +149,7 @@ let settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
             { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
             { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree'},
             { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar'},
@@ -160,7 +160,7 @@ let settingsDefault = {
         menu_top_more: [
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
-            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
+            { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
@@ -170,7 +170,7 @@ let settingsDefault = {
             { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText'},
             { name: 'create-group-profile',title: 'Add group', link: '/create-group-profile', icon: 'UsersThree'},
             { name: 'create-event-profile',title: 'Add event', link: '/create-event-profile', icon: 'Calendar'},
-            { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'ChatsCircle'},
+            { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'Chats'},
         ],
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
@@ -925,7 +925,7 @@ let settingsDefault = {
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatsCircle'},
+            {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
@@ -950,7 +950,7 @@ if (settingsDefault.layout.format == 'ver') {
         { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
         { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
         { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
-        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'ChatsCircle' }, 
+        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
         { name: 'notifications-view', title: 'Notifications', link: '/notifications-view', icon: 'Bell' }, 
         { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots' }, 
     ];
