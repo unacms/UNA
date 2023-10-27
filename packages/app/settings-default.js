@@ -445,7 +445,7 @@ let settingsDefault = {
             blocks: {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
             },
-            icon: 'Egg',
+            icon: 'Calendar',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'events-top': {
@@ -453,7 +453,7 @@ let settingsDefault = {
             blocks: {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
             },
-            icon: 'ChatCircle',
+            icon: 'CalendarCheck',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'events-joined': {
@@ -494,7 +494,7 @@ let settingsDefault = {
             blocks: {
                 browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, menu: true },
             },
-            icon: 'Egg',
+            icon: 'ChatCenteredText',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'posts-popular': {
@@ -502,7 +502,7 @@ let settingsDefault = {
             blocks: {
                 browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
             },
-            icon: 'ChatCircle',
+            icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-post': {
@@ -546,7 +546,7 @@ let settingsDefault = {
                 browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false},
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'HouseSimple',
+            icon: 'Storefront',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'products-category': {
@@ -574,7 +574,7 @@ let settingsDefault = {
                 browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'FireSimple',
+            icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-product': {
@@ -657,7 +657,7 @@ let settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                 
             },
-            icon: 'Egg',
+            icon: 'Chats',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-popular': {
@@ -668,7 +668,7 @@ let settingsDefault = {
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                 
             },
-            icon: 'Egg',
+            icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-category': {

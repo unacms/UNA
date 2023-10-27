@@ -398,7 +398,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     let settings = appSetting('layouts', a.key)
                     return (
                     <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-8': ''} onPress={(event) => {
+                        <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
                             setIndex(a.index);
                             window.history.pushState({ }, '', a.key);
                             event.preventDefault()
