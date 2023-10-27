@@ -85,7 +85,7 @@ export default function Unit(props) {
                   </Text>
                 </View>
                 <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
-                  {tp('members', data.members_count)}
+                {(data.members_count || data.members_count === 0) && tp('members', data.members_count)}
                 </Text>
                 <View className="flex-row w-full gap-x-2 ">
                   <Button

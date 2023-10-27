@@ -23,8 +23,6 @@ export default function ElementEntityAuthor(oProps) {
         };
     }) : [];
 
-    console.log(oProps.data)
-
     return (
         <View className={ false ? "mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4  sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
             <View className={oProps.data.text? '': 'flex-auto'}><Profile {...oProps.data.author_data} displayType="unit" displaySize="lg" showInfo={sInfo} /></View>
