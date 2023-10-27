@@ -1,7 +1,7 @@
 
-import { List, ArrowLeft, House, WarningCircle, ChatsCircle, ArrowRight, ChatCircleText, 
+import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleText, 
     Plus, MagnifyingGlass, User, Compass, Bell, Bookmarks, Link, UsersThree, CalendarCheck, 
-    NoteBlank, Chats, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
+    NoteBlank, Users, Info, Question, AddressBook, Pencil, ArrowCircleLeft, ArrowCircleRight, 
     ChatTeardropDots, Smiley, ShareFat, UserCircle, DotsThreeOutlineVertical, File, SealCheck, DotsThreeOutline,
 	UserSwitch, Gear, SignOut, SignIn, Files, UsersFour, CaretDoubleRight, ArrowFatLineDown, TextB, TextItalic, TextStrikethrough,
 	TextHOne, TextHTwo, TextHThree, ListBullets, ListNumbers, Quotes, ArrowUUpLeft, ArrowUUpRight, Image, Code,
@@ -63,7 +63,6 @@ export const IconSet = {
 	House: House,
 	FileAudio: FileAudio,
 	WarningCircle: WarningCircle,
-	ChatsCircle: ChatsCircle,
 	ArrowRight: ArrowRight,
 	ChatCircleText: ChatCircleText,
 	Plus: Plus,
