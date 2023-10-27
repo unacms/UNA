@@ -92,7 +92,7 @@ export default function PageLayout(props) {
         }
         else{
             aItems[actionsItemIndex].data = (
-                <View className='pt-4 px-4 lg:pt-6 lg:px-6'>
+                <View className='pt-4 px-4 lg:pt-4'>
                     {aItems[actionsItemIndex].data}
                 </View>
             );

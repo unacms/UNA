@@ -516,11 +516,22 @@ export default function Unit(props) {
                     </View>
                     </Link>
                 
-                <View className="flex-row gap-x-4">
+                <View className="flex-row gap-x-4 items-center">
                     {sMeta}
-                    
+                    <Time
+                             stylesName="text-xs flex-none"
+                            ts={data.added}
+                          ></Time>
                     <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
-                    
+                    <Menu
+                                {...data.meta}
+                                displayType="button"
+                                params={{
+                                show_action: true,
+                                show_counter: true,
+                                show_combined: true,
+                                }}
+                            />
                 </View>
 
 

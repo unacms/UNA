@@ -516,7 +516,7 @@ let settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_posts:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false, offset: false },
+            headerSettings: { header: false, footer: false, offset: false, backButton: true },
         },
         item: {
             layout: 'post',

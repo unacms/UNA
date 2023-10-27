@@ -143,7 +143,7 @@ export default function (props) {
                             { headerSettings.backButton  && getBackButtonWeb() }
                             { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
                         </Row>
-                        {bSearch && <View className="hidden "><Search type="input" /></View>}
+                        {bSearch && <View className="hidden"><Search type="input" /></View>}
                         
                     </View>
                     <Row className="hidden w-1/2  xl:flex flex-auto">
@@ -174,7 +174,8 @@ export default function (props) {
                     <Row className="flex-row xl:w-1/4  flex-none justify-end  ">          
                         {!!currentUser && (
                             <Row className="flex-row   justify-end ">
-                            <View className=" flex-row my-auto ">
+                            <View className=" flex-row my-auto gap-x-2 ml-2">
+                                {bSearch && <View className=""><Search /></View>}
                                 {bApps && <View className="relative hidden lg:flex flex-row">
                                 <DropdownMenu items={menuItemsByName('', menu_top_more).map(
                                     (item, index) => {
@@ -206,8 +207,8 @@ export default function (props) {
                                     </Tooltip>
                                 </DropdownMenu>
                             </View>}
-                            {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
-                            { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">
+                            
+                            { menuItemsByName('', menu_add).length > 0 && <View>
                                 <DropdownMenu
                                     items={menuItemsByName('', menu_add).map(
                                         (item, index) => {
@@ -237,7 +238,7 @@ export default function (props) {
                                     </Tooltip>
                                 </DropdownMenu>
                             </View>}
-                            <View className="hidden ml-2 sm:flex flex-row gap-x-2 my-auto">
+                            <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                 
                                 {bNotifs && <DropdownPopup
                                     open={ntfsOpen}
@@ -274,7 +275,7 @@ export default function (props) {
                                 </Tooltip> }
                             </View>
                             {profile ? (
-                                <View className="hidden sm:flex ml-2 flex-row justify-center">
+                                <View className="hidden sm:flex flex-row justify-center">
                                     <DropdownMenu items={menuItemsByName('', menu_account).map(
                                         (item, index) => {
                                             return (
@@ -311,7 +312,38 @@ export default function (props) {
                     )}
                     {!currentUser && (
                         <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
-                            {bSearch && <View className=" ml-2"><Search /></View>}
+                            {bSearch && <View><Search /></View>}
+                            {bApps && <View className="relative hidden lg:flex flex-row">
+                                <DropdownMenu items={menuItemsByName('', menu_top_more).map(
+                                    (item, index) => {
+                                        return (
+                                        {
+                                            id: 'menu-' + index,
+                                            link: item.link,
+                                            title: t(item.title),
+                                            icon:
+                                            item.icon.indexOf(' ') == -1
+                                                ? item.icon
+                                                : item.icon.split(' ')[0],
+                                        }
+                                        )
+                                    }
+                                    )}
+                                >
+                                    <Tooltip content="Apps" asChildTrigger={true}>
+                                        <ButtonRef
+                                            variant="outline"
+                                            size="base"
+                                            fullWidth
+                                            rounded
+                                            alt={t("All Apps")}
+                                            startDecorator="CirclesFour"
+                                            aria-label="All Apps"
+                                            onPress={() => {}}
+                                        />
+                                    </Tooltip>
+                                </DropdownMenu>
+                            </View>}
                             <Button
                                 variant="outline"
                                 rounded
