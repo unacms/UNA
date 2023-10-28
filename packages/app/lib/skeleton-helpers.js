@@ -47,17 +47,26 @@ const bx_forum = <>
 {items.map((item, index) => (
   <View
   key={index}
-  className="flex-col p-2 my-[2px] bg-bgrcard dark:bg-bgrcard-d rounded-md"
+  className="flex-col p-4 mb-2 sm:mb-4 sm:mx-4 bg-bgrcard dark:bg-bgrcard-d sm:rounded-2xl"
 >
-  <View className="animate-pulse flex-row items-center gap-2">
-    <View className="rounded-full bg-neutral-500/40 h-12 w-12"></View>
-    <View className="flex-1 gap-1.5">
-      <View className="flex-row justify-between">
-        <View className="h-3 w-1/2 bg-neutral-500/60 rounded-full"></View>
-        <View className="h-3 w-20 bg-neutral-500/40 rounded-full"></View>
+  <View className="animate-pulse flex-col w-full  gap-y-1">
+      <View className="flex-row gap-x-2 mb-1 sm:hidden items-center">
+        <View className="h-5 w-5 flex-none bg-neutral-500/50 rounded-full"></View>
+
+        <View className="h-3 w-1/4 flex-none bg-neutral-500/40 rounded-full"></View>
+
       </View>
-      <View className="h-3 w-full bg-neutral-500/50 rounded-full"></View>
-    </View>
+     
+        <View className="h-4 w-full bg-neutral-500/50 rounded-full"></View>
+        <View className="h-4 w-2/3 bg-neutral-500/50 rounded-full"></View>
+        <View className="flex-row gap-x-2 mt-1 hidden sm:flex items-center">
+        <View className="h-5 w-5 flex-none bg-neutral-500/50 rounded-full"></View>
+
+        <View className="h-3 w-1/4 flex-none bg-neutral-500/40 rounded-full"></View>
+
+      </View>
+      
+
   </View>
 </View>
 ))}
