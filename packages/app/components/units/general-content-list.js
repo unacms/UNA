@@ -418,16 +418,16 @@ export default function Unit(props) {
       <>
         <Card margin="mb-2 mx-4" rounded="rounded-2xl">
           
-            <View className="flex-row p-2  gap-x-2 ">
+            <View className="flex-row p-1  gap-x-1.5 ">
                 
                
                 
 
-                 <View className='flex-auto flex-col p-1 gap-y-2'>
+                 <View className='flex-auto flex-col px-2 pt-1.5 pb-1 gap-y-2'>
                     <Link className=" my-auto  flex-auto" href={data.url}>
                     
                         <Text
-                        numberOfLines={3}
+                        numberOfLines={2}
                         className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary leading-tight sm:dark:hover:text-primary-d  text-sm font-bold"
                         >
                         {data.title}
@@ -435,10 +435,10 @@ export default function Unit(props) {
    
                     
                     </Link>
-                    <View className="flex-row gap-x-4">
+                    <View className="flex-row flex-auto justify-between gap-x-4">
                     {sMeta}
                     
-                    <Text className="bg-neutral-500/20 px-2 py-0.5 my-auto text-xs rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
+                    <Text className="bg-primary/10 border border-primary/10 px-2 py-0.5 my-auto text-xs rounded-full text-primary">{data.category.name}</Text>
                     
                   </View>
                 </View>
@@ -447,7 +447,7 @@ export default function Unit(props) {
                     <View
                         className={
                         (!data.image ? ' hidden  ' : '') +
-                        ' relative flex-none h-16 aspect-video bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden '
+                        ' relative flex-none h-20 w-20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden '
                         }
                     >
                         <Image
@@ -498,7 +498,7 @@ export default function Unit(props) {
                 <View className="flex-col gap-y-3 flex-auto">
                   
                     <View className='flex-row gap-x-4'>
-                        <View className='flex-col gap-y-2 w-full'>
+                        <View className='flex-col gap-y-2 flex-auto'>
                           <View className='sm:hidden flex-row justify-between w-full'>
                           {sMeta}
                         <Time
