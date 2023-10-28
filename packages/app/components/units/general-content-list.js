@@ -499,10 +499,10 @@ export default function Unit(props) {
                   
                     <View className='flex-row gap-x-4'>
                         <View className='flex-col gap-y-2 flex-auto'>
-                          <View className='sm:hidden flex-row justify-between w-full'>
+                          <View className='sm:hidden flex-row items-center justify-between w-full'>
                           {sMeta}
                         <Time
-                                stylesName="text-sm text-neutral-500 flex-none"
+                                stylesName="my-auto  ml-auto bg-bgritem dark:bgritem-d px-2.5 py-1 my-auto text-sm rounded-full text-neutral-600 dark:text-neutral-400"
                                 ts={data.added}
                               ></Time>
                               </View>
@@ -510,7 +510,7 @@ export default function Unit(props) {
                             <View className={`flex-auto flex-col gap-y-2`}>
                                 <Text
                                 numberOfLines={3}
-                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
+                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 sm:leading-6 text-base sm:text-lg font-bold"
                                 >
                                 {data.title}
                                 </Text>
@@ -560,9 +560,10 @@ export default function Unit(props) {
                         <View className='flex-row hidden flex-auto items-center sm:flex justify-between'>
                           {sMeta}
                         <Time
-                                stylesName="text-sm text-neutral-500 flex-none"
+                                stylesName=" my-auto  ml-auto bg-bgritem  px-2.5 py-1 my-auto text-base rounded-full text-neutral-500"
                                 ts={data.added}
                               ></Time>
+                              
                               </View>
                     </View>
 
