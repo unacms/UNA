@@ -486,21 +486,28 @@ export default function Unit(props) {
       console.log(data)
     return (
       <>
-      <View className='sm:px-4 pb-4'>
+      <View className='sm:px-4 pb-2 sm:pb-4'>
           <Card addClassName='flex-row gap-x-4 p-4 mx-auto w-full max-w-5xl '>
           
-                <View className="border border-bdr dark:border-bdr-d relative flex-none hidden sm:flex h-14 w-14 text-neutral-500/20 bg-bgritem dark:bg-bgritem-d rounded-xl overflow-hidden items-center justify-center">
-                  <Text className="text-3xl">{data.category.icon}</Text>
-                  
+                <View className="border p-1 border-primary/10 relative flex-none hidden sm:flex h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">
+                  <Text className="text-4xl">{data.category.icon}</Text>
+                  <Text className="text-primary text-xs">{data.category.name}</Text>
                   
                   
                 </View>
                 <View className="flex-col gap-y-3 flex-auto">
-                
+                  
                     <View className='flex-row gap-x-4'>
-                
+                        <View className='flex-col gap-y-2 w-full'>
+                          <View className='sm:hidden flex-row justify-between w-full'>
+                          {sMeta}
+                        <Time
+                                stylesName="text-sm text-neutral-500 flex-none"
+                                ts={data.added}
+                              ></Time>
+                              </View>
                         <Link href={data.url}>
-                            <View className={`flex-auto flex-col gap-y-1`}>
+                            <View className={`flex-auto flex-col gap-y-2`}>
                                 <Text
                                 numberOfLines={3}
                                 className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 text-base font-bold"
@@ -515,6 +522,10 @@ export default function Unit(props) {
                                 </Text>
                             </View>
                         </Link>
+                        </View>
+
+
+
                             {data.image && (
                         <View
                             className={
@@ -543,13 +554,16 @@ export default function Unit(props) {
                                     show_combined: true,
                                     }}
                                 />
-                        {sMeta}
+                        
+                        <Text className="sm:hidden flex-row gap-x-2 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto text-base rounded-full text-primary">{data.category.icon} {data.category.name}</Text>
+                       
+                        <View className='flex-row hidden flex-auto items-center sm:flex justify-between'>
+                          {sMeta}
                         <Time
                                 stylesName="text-sm text-neutral-500 flex-none"
                                 ts={data.added}
                               ></Time>
-                        <Text className="hidden ml-auto sm:block bg-neutral-500/20 px-2 py-0.5 my-auto text-sm rounded-full text-neutral-700 dark:text-neutral-300">{data.category.name}</Text>
-                       
+                              </View>
                     </View>
 
 
