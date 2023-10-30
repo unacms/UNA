@@ -904,7 +904,7 @@ let settingsDefault = {
         left: [
             { title: 'Profile', link: '{profile}', icon: 'User' },
             { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
-            { title: 'Messages', link: '/messages', icon: 'ChatTeardropDots' },
+            { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
             { title: 'Friends', link: '/friends', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },

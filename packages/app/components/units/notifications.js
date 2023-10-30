@@ -7,6 +7,7 @@ import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import AnimatedBlock from 'app/ui/molecules/animated-block'
+import Link from 'app/ui/atoms/link'
 
 export default function UnitFeed({data}) {
     const redirectdRef = useRef();
@@ -24,9 +25,10 @@ export default function UnitFeed({data}) {
     let url = data.content.entry_url.replace('{bx_url_root}', '');
     
     
-    const handleClick = (sUrl) => {
+   /* const handleClick = (sUrl) => {
+        alert(sUrl);
         redirectdRef.current.redirect(sUrl);
-    }
+    }*/
 
     let content_parsed = data?.content_parsed.site ? data?.content_parsed?.site : data?.content_parsed;
     content_parsed = content_parsed.replace('&#8230;', '...');
@@ -35,7 +37,7 @@ export default function UnitFeed({data}) {
         <AnimatedBlock>
         <View className=" mt-2 ">
             <Redirect ref={redirectdRef} />
-            <Pressable onPress={() => handleClick(url)}>
+            <Link href={url}>
                 <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 max-w-4xl mx-auto w-full rounded-lg ">  
                     <View className="w-12 h-12 mr-2 rounded-full flex-none " >
                         <Profile {...data.author_data} displayType="unit_wo_info" displaySize="lg" />
@@ -50,7 +52,8 @@ export default function UnitFeed({data}) {
                         </View>         
                     </View>
                </View>
-            </Pressable>
+
+            </Link>
         </View>
         </AnimatedBlock>
     );

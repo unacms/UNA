@@ -43,11 +43,16 @@ export function Root (props) {
 
     useEffect(() => {
         if (data?.user){
-            if (currentUser?.id != data.user?.id){
+            if (currentUser?.id != data.user.id){
                 let b = Object.assign({}, data.user)
                 b.pusher = connect();
                 setCurrentUser(b);
                 storageClear();
+            }
+            if (currentUser?.notifications && currentUser?.notifications != data.user.notifications){
+                let b = currentUser;
+                b.notifications = data.user.notifications
+                setCurrentUser(b);
             }
         }
         else{
@@ -73,7 +78,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 	    path = 'home';
 
     path = path.startsWith('/') ? path.substr(1) : path;    
-    
+    console.log('------------------');
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
 
 	const uri = getURI(path);
