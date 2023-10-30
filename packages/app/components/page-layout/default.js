@@ -6,6 +6,6 @@ export default function PageLayout(props) {
 
     return (<ScrollView className={ getPageWidth(props.uri) + ' sm:my-4 mx-auto w-full '}>
             {props.children}
-            {appStatic('components_fullfooter', '')}
+            {props?.data?.empty !== true && appStatic('components_fullfooter', '')}
         </ScrollView>)
 }
