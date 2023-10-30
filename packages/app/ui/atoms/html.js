@@ -1,19 +1,38 @@
 import { useWindowDimensions, useColorScheme, View} from 'react-native'
 import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
-import RenderHtml from 'react-native-render-html'
+import RenderHtml, {
+    HTMLContentModel,
+    HTMLElementModel,
+  } from 'react-native-render-html'
 import { mergeDeep } from '../../lib/util';
 import { appSetting, md5 } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useState } from 'react';
-
+import Video from 'app/ui/atoms/video';
 
 const renderers = {
-    iframe: IframeRenderer
+    iframe: IframeRenderer,
+    video: (obj1, obj2) => {
+        let link = obj1["tnode"].domNode?.attribs?.src ? obj1["tnode"].domNode.attribs.src : obj1["tnode"].domNode.children[0].attribs.src;
+        return (
+            <View className='w-full aspect-video'>
+                <Video src={ link } />
+            </View>
+        );
+      },
   };
   
+
   const customHTMLElementModels = {
-    iframe: iframeModel
+    iframe: iframeModel,
+    video: HTMLElementModel.fromCustomModel({
+        tagName: "video",
+        mixedUAStyles: {
+          alignSelf: "center",
+        },
+        contentModel: HTMLContentModel.block,
+      }),
   };
 
 function onElement(element) {
@@ -125,13 +144,10 @@ export default function ElementHtml(props) {
         setIframeH({...iframeH, ...a})
     };
    
-
-
-
     return (
-        
             <RenderHtml
                 renderers={renderers}
+                ignoredDomTags={[]}
                 WebView={WebView}
                 customHTMLElementModels={customHTMLElementModels}
                 defaultWebViewProps={
