@@ -11,5 +11,5 @@ export default function FormPost(props) {
     )
     let otherH = Dimensions.get('window').height;
     let u =  env('API_PROXY_URL').replace('/api', '/');
-    return <View className='w-full max-w-5xl ' style={{height:otherH - 150}}><WebView source={{ uri: u + 'create-post?empty=true' }} /></View>
+    return <View className='w-full max-w-5xl ' style={{height:otherH - 120}}><WebView source={{ uri: u + 'create-post?empty=true' }} /></View>
 }
