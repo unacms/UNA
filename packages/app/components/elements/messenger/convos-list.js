@@ -87,7 +87,7 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu, onCreateConvo }) => {
 const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConvoId }) => {
     const { status, isFetchingNextPage, hasNextPage, isLoading, error, fetchNextPage, data: convosList } = useConvos(menuItem);
 
-    const handlerGetSelectedConvo = useCallback(() => convosList.find((oItem) => +oItem.id === +selectedConvoId), [convosList, selectedConvoId]);
+    const handlerGetSelectedConvo = useCallback(() => convosList.find((oItem) => oItem.id === selectedConvoId), [convosList, selectedConvoId]);
 
     let iActiveItem = item && item.id;
 

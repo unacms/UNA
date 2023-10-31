@@ -45,7 +45,7 @@ function PageLayout() {
     }, [sUriAction]);
 
     useEffect(() => {
-        if (convoId && +convoId !== +iConvoIdUri) {
+        if (convoId && convoId !== iConvoIdUri) {
             setConvoId();
         }
 
@@ -73,7 +73,7 @@ function PageLayout() {
        const { item, manually } = convoInfo;
 
        if (isPhone(screenMode))
-            setPanel((manually || +convoId === +iConvoIdUri) && 'history');
+            setPanel((manually || convoId === iConvoIdUri) && 'history');
 
         // Web Routing
         const { id, title } = item || {};

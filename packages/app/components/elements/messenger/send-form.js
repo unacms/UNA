@@ -4,11 +4,16 @@ import {View} from "app/design/view";
 import Form from "../form";
 import { useSendData } from "./hooks/useHistory";
 import { useEffect, useState, memo } from 'react';
+import { subscribe, connect } from "app/ui/atoms/socket";
+import {useCurrentUser} from "../../../context/user";
 
 export const SendForm = memo(({ convoId, menuItem, onSubmit, iSelectedProfile }) => {
     const [formData, setFormData] = useState(),
         { sendMessage } = useSendData(convoId, menuItem),
-        keyboardHeight = useKeyboard();
+        keyboardHeight = useKeyboard(),
+        { currentUser: { pusher } } = useCurrentUser();
+
+    console.log('----- log -----', pusher);
 
     useEffect(() => {
         (async() => {
@@ -35,7 +40,14 @@ export const SendForm = memo(({ convoId, menuItem, onSubmit, iSelectedProfile })
                             <Form data={ formData } name={'bx_messenger'} resetOnSubmit={true} classContainerName="flex-row flex-wrap px-2 pb-2 w-full"
                                   onFormSubmit={ (oFormData, oData) => {
                                       return sendMessage({ oFormData, oData }, {
-                                          onSuccess: ( data )=> onSubmit(data)
+                                          onSuccess: ( data )=> {
+
+                                              if (pusher){
+                                                 //pusher.
+                                              }
+                                              //subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+                                              onSubmit(data);
+                                          }
                                       })
                                   }} />
                        </View>

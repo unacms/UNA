@@ -7,6 +7,7 @@ const aEndpoints = {
     'list': 'get_convos_list',
     'convo': 'get_convo_item',
     'exact': 'find_convo',
+    'create_convo': 'save_parts_list'
 };
 
 function getUrl(sLink, oParams){
@@ -28,6 +29,10 @@ export default {
     },
     findConvo: async(sParam) => {
         const { data } =  await fetcher(getUrl('exact', { param: sParam }));
+        return data || [];
+    },
+    getCreateConvo: async (aUsers) => {
+        const { data } = await fetcher(getUrl('create_convo', { parts: aUsers }));
         return data || [];
     }
 };

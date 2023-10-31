@@ -160,7 +160,7 @@ export const useSendData = function(convoId, menuItem){
                 const oNewList = pages?.length && pages.map((page) => {
                     return page.filter((oItem) => {
                         const { total_messages, id } = oItem;
-                        if (+id === +convoId) {
+                        if (id === convoId) {
                             oModifiedItem = Object.assign({}, oItem, {
                                 total_messages: +total_messages + 1,
                                 message: stripTags(message)
