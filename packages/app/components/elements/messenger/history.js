@@ -12,6 +12,7 @@ import useHistory, { HistoryKeys, useHistoryMessageAction } from "./hooks/useHis
 import { ConvoKeys, addConvoItem } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
 import Services from "./services/history";
+import ConvoServices from "./services/convos";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import CreateConvo from './create-convo';
 import { isPhone } from "./grid-utils";
@@ -51,13 +52,13 @@ export function HistoryComponent(){
                setHistoryArea(false);
            }, [screenMode]),
            handlerSaveList = useCallback((aList) => {
-               Services.getCreateConvo(aList.map((oItem) => oItem.id)).then((data) => {
+               ConvoServices.getCreateConvo(aList.map((oItem) => oItem.id)).then((data) => {
                    const { code, message, lot, convo } = data;
                    if (+code)
                        console.log(message);
                    else if (lot) {
                        const fUpdate = () => {
-                           setConvoId(+lot);
+                           setConvoId(lot);
                            setHistoryArea(false);
                            setConvoItem({ item: convo, manually: true });
                        };
@@ -76,7 +77,7 @@ export function HistoryComponent(){
            handlerUpdateSelectedConvo = useCallback(() => {
                    const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
                         pages?.flatMap(page => page).some((oItem) => {
-                        if (+oItem.id === +item.id) {
+                        if (oItem.id === item.id) {
                             setConvoItem((prev) => ({ item: oItem, manually: prev.manually }));
                             return true;
                         }
@@ -87,7 +88,7 @@ export function HistoryComponent(){
                     convosList = pages.flatMap(page => page);
 
                 convosList.some((oItem) => {
-                    if (+oItem.id === +item.id) {
+                    if (oItem.id === item.id) {
                         setConvoItem((prev) => ({ item: oItem, manually: prev.manually }));
                         return true;
                     }

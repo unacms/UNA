@@ -47,9 +47,5 @@ export default {
     getSearchUsers: async (sValue) => {
         const { data } = await fetcher(getUrl('search_users', { term: sValue }));
         return data || [];
-    },
-    getCreateConvo: async (aUsers) => {
-        const { data } = await fetcher(getUrl('save_parts_list', { parts: aUsers }));
-        return data || [];
     }
 };
