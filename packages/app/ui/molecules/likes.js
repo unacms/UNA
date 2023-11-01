@@ -11,8 +11,10 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSeq
 
 
 export default function ElementLikes(oProps) {
+    const oSettings = appSetting('social_actions', 'like');
 
-    const oParams = {...appSetting('social_actions', 'like'), ...oProps.params};
+    const oParams = {...oSettings, ...oProps.params};
+    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ThumbsUp"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -166,12 +168,12 @@ export default function ElementLikes(oProps) {
     let sActionButton = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator="ThumbsUp" title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
         );
     }
 

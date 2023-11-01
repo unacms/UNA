@@ -18,8 +18,30 @@ export default function ElementReactions(oProps) {
     const { t } = useTranslation();
     const bWeb = Platform.OS === 'web';
     const sTheme = useColorScheme();
+    const oSettings = appSetting('social_actions', 'reaction');
+    console.log("oPropsoProps", oProps);
+    const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
+        web: {
+            default: {svg: 'Smiley', emoji: '🙂'},
+            like: {svg: 'ThumbsUp', emoji: '👍'},
+            love: {svg: 'Heart', emoji: '🥰'},
+            joy: {svg: 'Smiley', emoji: '😂'},
+            surprise: {svg: 'SmileyXEyes', emoji: '😮'},
+            sadness: {svg: 'SmileySad', emoji: '😔'},
+            anger: {svg: 'SmileyAngry', emoji: '😠'},
+        },
+        native: {
+            default: {svg: 'Smiley', emoji: '🙂'},
+            like: {svg: '', emoji: '👍'},
+            love: {svg: '', emoji: '🥰'},
+            joy: {svg: '', emoji: '😂'},
+            surprise: {svg: '', emoji: '😮'},
+            sadness: {svg: '', emoji: '😔'},
+            anger: {svg: '', emoji: '😠'},
+        }
+    };
 
-    const oParams = {...appSetting('social_actions', 'reaction'), ...oProps.params};
+    const oParams = {...oSettings, ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -31,7 +53,7 @@ export default function ElementReactions(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
-
+    
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -54,26 +76,7 @@ export default function ElementReactions(oProps) {
     const getIconAlias = (sName) => {
         const sKey = bWeb ? 'web' : 'native';
         const sType = sName != 'default' ? oParams['icon_type_' + sKey] : 'svg';
-        const oAliases = {
-            web: {
-                default: {svg: 'Smiley', emoji: '🙂'},
-                like: {svg: 'ThumbsUp', emoji: '👍'},
-                love: {svg: 'Heart', emoji: '🥰'},
-                joy: {svg: 'Smiley', emoji: '😂'},
-                surprise: {svg: 'SmileyXEyes', emoji: '😮'},
-                sadness: {svg: 'SmileySad', emoji: '😔'},
-                anger: {svg: 'SmileyAngry', emoji: '😠'},
-            },
-            native: {
-                default: {svg: 'Smiley', emoji: '🙂'},
-                like: {svg: '', emoji: '👍'},
-                love: {svg: '', emoji: '🥰'},
-                joy: {svg: '', emoji: '😂'},
-                surprise: {svg: '', emoji: '😮'},
-                sadness: {svg: '', emoji: '😔'},
-                anger: {svg: '', emoji: '😠'},
-            }
-        };
+        
 
         return oAliases[sKey][sName] && oAliases[sKey][sName][sType];
     };
