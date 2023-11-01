@@ -557,10 +557,10 @@ export default function Unit(props) {
                         
                         <Text className="sm:hidden flex-row gap-x-2 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto text-sm rounded-full text-primary-600 dark:text-primary-400 tracking-tighter">{data.category.icon} {data.category.name}</Text>
                        
-                        <View className='flex-row hidden flex-auto items-center sm:flex justify-between'>
+                        <View className='flex-row hidden flex-auto items-center sm:flex gap-x-4 justify-end'>
                           {sMeta}
                         <Time
-                                stylesName=" my-auto  ml-auto bg-bgritem dark:bg-bgritem-d  px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
+                                stylesName=" my-auto  bg-bgritem dark:bg-bgritem-d  px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
                                 ts={data.added}
                               ></Time>
                               
