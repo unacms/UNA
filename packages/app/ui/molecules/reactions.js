@@ -19,7 +19,6 @@ export default function ElementReactions(oProps) {
     const bWeb = Platform.OS === 'web';
     const sTheme = useColorScheme();
     const oSettings = appSetting('social_actions', 'reaction');
-    console.log("oPropsoProps", oProps);
     const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
         web: {
             default: {svg: 'Smiley', emoji: '🙂'},
