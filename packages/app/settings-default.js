@@ -266,6 +266,7 @@ let settingsDefault = {
             'profile-subscribe-add',
             'profile-subscribe-remove',
             'edit-persons-profile',
+            'delete-persons-profile',
             'messenger',
         ],
         bx_groups_submenu: {
