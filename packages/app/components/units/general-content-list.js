@@ -479,7 +479,7 @@ export default function Unit(props) {
       <Profile
         {...data.author_data}
         displayType="unit"
-        displaySize="sm"
+        displaySize="xs"
         showInfo="false"
       />
     )
@@ -491,7 +491,7 @@ export default function Unit(props) {
           
                 <View className="border p-1 border-primary/10 relative flex-none hidden sm:flex h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">
                   <Text className="text-4xl">{data.category.icon}</Text>
-                  <Text className="text-primary text-xs">{data.category.name}</Text>
+                  <Text className="text-primary-600 dark:text-primary-400 tracking-tighter text-xs">{data.category.name}</Text>
                   
                   
                 </View>
@@ -502,7 +502,7 @@ export default function Unit(props) {
                           <View className='sm:hidden flex-row items-center justify-between w-full'>
                           {sMeta}
                         <Time
-                                stylesName="my-auto  ml-auto bg-bgritem dark:bgritem-d px-2.5 py-1 my-auto text-sm rounded-full text-neutral-600 dark:text-neutral-400"
+                                stylesName=" my-auto  ml-auto bg-bgritem dark:bg-bgritem-d  px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
                                 ts={data.added}
                               ></Time>
                               </View>
@@ -555,12 +555,12 @@ export default function Unit(props) {
                                     }}
                                 />
                         
-                        <Text className="sm:hidden flex-row gap-x-2 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto text-base rounded-full text-primary">{data.category.icon} {data.category.name}</Text>
+                        <Text className="sm:hidden flex-row gap-x-2 my-auto  ml-auto bg-primary/10 border border-primary/10 px-2.5 py-1 my-auto text-sm rounded-full text-primary-600 dark:text-primary-400 tracking-tighter">{data.category.icon} {data.category.name}</Text>
                        
                         <View className='flex-row hidden flex-auto items-center sm:flex justify-between'>
                           {sMeta}
                         <Time
-                                stylesName=" my-auto  ml-auto bg-bgritem  px-2.5 py-1 my-auto text-base rounded-full text-neutral-500"
+                                stylesName=" my-auto  ml-auto bg-bgritem dark:bg-bgritem-d  px-2.5 py-1 my-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
                                 ts={data.added}
                               ></Time>
                               
