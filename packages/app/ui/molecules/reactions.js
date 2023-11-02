@@ -19,6 +19,12 @@ export default function ElementReactions(oProps) {
     const bWeb = Platform.OS === 'web';
     const sTheme = useColorScheme();
     const oSettings = appSetting('social_actions', 'reaction');
+
+    const oParams = {...oSettings, ...oProps.params};
+    const oAction = oProps.action;
+    const oCounter = oProps.counter;
+
+    const oItems = oSettings[oProps['system']]?.items ? oSettings[oProps['system']].items : oParams.items;
     const oAliases = oSettings[oProps['system']]?.iconset ? oSettings[oProps['system']].iconset : {
         web: {
             default: {svg: 'Smiley', emoji: '🙂'},
@@ -40,10 +46,6 @@ export default function ElementReactions(oProps) {
         }
     };
 
-    const oParams = {...oSettings, ...oProps.params};
-    const oAction = oProps.action;
-    const oCounter = oProps.counter;
-
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
@@ -60,8 +62,6 @@ export default function ElementReactions(oProps) {
 
         return [].concat(aName).join('-');
     };
-
-  
 
     const getIconType = (sMode) => {
         const aIconType = {
@@ -84,8 +84,8 @@ export default function ElementReactions(oProps) {
     const [ actionsDataState, actisetActionsDataState ] = useState({});
 
     let oCounterState = {};
-    for (const i in oParams.items) {
-        oCounterState[oParams.items[i].name] = false;
+    for (const i in oItems) {
+        oCounterState[oItems[i].name] = false;
     }
 
     const [ performedBy, setPerformedBy ] = useState();
@@ -176,6 +176,9 @@ export default function ElementReactions(oProps) {
     const handleGetPerformedByCpd = (event) => {
         event.preventDefault();
 
+        if(!bAllowViewVoted)
+            return;
+
         FeedbackHaptics(oParams.haptics_type);
 
         performAction('get_performed_by', {}, (oData) => {
@@ -191,6 +194,9 @@ export default function ElementReactions(oProps) {
 
     const handleGetPerformedByDvd = (event, oItem) => {
         event.preventDefault();
+
+        if(!bAllowViewVoted)
+            return;
 
         FeedbackHaptics(oParams.haptics_type);
 
@@ -269,7 +275,7 @@ export default function ElementReactions(oProps) {
     }
     else {
         if(bWeb) {
-            const aItems = oParams.items.map((oItem) => {
+            const aItems = oItems.map((oItem) => {
                 return {
                     id: oItem.id ? oItem.id : oItem.name,
                     name: oItem.name,
@@ -279,12 +285,14 @@ export default function ElementReactions(oProps) {
                 };
             });
 
-            sActionButton = (
+            sActionButton = oItems.length > 1 ? (
                 <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                     <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
                         <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
                     </DropdownMenu>
                 </Pressable>
+            ) : (
+                <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} />
             );
         }
         else {
@@ -298,7 +306,7 @@ export default function ElementReactions(oProps) {
                 },
             });
 
-            const aReactionItems = oParams.items.map(oItem => {
+            const aReactionItems = oItems.map(oItem => {
                 return {
                     id: oItem.id,
                     name: oItem.name,
@@ -312,10 +320,12 @@ export default function ElementReactions(oProps) {
                 handleDo(undefined, item);
             };
 
-            sActionButton = (
+            sActionButton = sActionButton = oItems.length > 1 ? (
                 <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
                     <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} />
                 </Reaction>
+            ) : (
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} />
             );
         }
     }
@@ -323,6 +333,7 @@ export default function ElementReactions(oProps) {
     //--- show counter
     const sShowCounterStyle = oParams?.show_counter_style || 'compound';
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+    const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 

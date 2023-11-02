@@ -89,7 +89,8 @@
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "build-android": "eas build --platform android --local"
   },
   "version": "1.0.0",
   "private": true,

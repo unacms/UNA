@@ -111,6 +111,9 @@ export default function ElementLikes(oProps) {
     const handleGetPerformedBy = (event) => {
         event.preventDefault();
 
+        if(!bAllowViewVoted)
+            return;
+
         FeedbackHaptics(oParams.haptics_type);
 
         performAction('get_performed_by', {}, (oData) => {
@@ -179,6 +182,7 @@ export default function ElementLikes(oProps) {
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
+    const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
