@@ -16,7 +16,7 @@ export default function PageLayout(props) {
 
             <View className="w-full flex-row flex-col  lg:min-h-screen lg:flex-row ">
           <View className=" w-full p-8 sm:p-12 lg:bg-bgrnavbar lg:dark:bg-bgrnavbar-d   lg:w-1/2">
-            <View className="lg:-translate-y-20 items-center lg:items-start flex-col mx-auto w-full  max-w-md lg:max-w-xl mx-auto  gap-y-4 lg:gap-y-8 my-auto ">
+            <View className="items-center lg:items-start flex-col mx-auto w-full  max-w-md lg:max-w-xl mx-auto  gap-y-4 lg:gap-y-8 my-auto ">
                     
                         <View className="flex-col w-1/4 aspect-square rounded-full   ">
                             <Svg

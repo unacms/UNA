@@ -63,6 +63,9 @@ export default function ElementImage(props) {
     if (!src)
         src = '/spacer.png'
 
+    if (src.includes('.svg') && Platform.OS != 'web')
+        src = src.replace('.svg', '.png')
+
     if (!alt)
         alt = "";        
 

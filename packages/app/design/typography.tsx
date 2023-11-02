@@ -20,7 +20,6 @@ export const P = styled(NativeText, 'text-base text-black my-4')
  */
 const H1_ = styled(NativeText, 'text-2xl lg:text-3xl font-bold my-4')
 H1_.defaultProps = {
-  role: 'header',
 }
 export const H1 = ({ children, ...rest }) => {
   const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
@@ -29,7 +28,6 @@ export const H1 = ({ children, ...rest }) => {
 
 const H1C_ = styled(NativeText, ' text-2xl lg:text-3xl font-bold ')
 H1C_.defaultProps = {
-  role: 'header',
 }
 
 export const H1C = ({ children, ...rest }) => {
@@ -39,7 +37,6 @@ export const H1C = ({ children, ...rest }) => {
 
 export const H2_ = styled(NativeText, 'text-xl font-extrabold mb-4')
 H1_.defaultProps = {
-  role: 'header',
 }
 
 export const H2 = ({ children, ...rest }) => {

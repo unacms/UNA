@@ -26,7 +26,15 @@ export function Screen(params) {
 
     const routerExpo = useRouter();
     const { colors } = Theme();
-    let _path = route?.params?.path ? '/' + route?.params?.path?.join('/') : null;//route?.path;
+
+    let _path = route?.params?.path && Array.isArray(route?.params?.path) ? '/' + route?.params?.path?.join('/') : null;//route?.path;
+    if (route?.params){
+        let p = JSON.parse(JSON.stringify(route?.params))
+        delete p.path;
+        if (Object.keys(p).length > 0)
+            _path = _path +  '&params[]=&params[]=' + JSON.stringify(p);
+    }
+
     //console.log('*** update screen ***--' + _path, params)
 
     // DEEP LINKING
@@ -96,6 +104,7 @@ console.log('------------', _path);*/
                     //settings?.icon
                     updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
+               
             }
       };
   
