@@ -54,9 +54,8 @@ i18n
   const queryClient = new QueryClient()
   
   return (    
-    
+    <ThemeProvider value={Theme(scheme)} >
       <Provider>
-        <ThemeProvider value={Theme(scheme)} >
         <QueryClientProvider client={queryClient}>
           <CurrentUserProvider>
             <Stack screenOptions={{ 
@@ -66,8 +65,7 @@ i18n
               }}></Stack>
           </CurrentUserProvider>
         </QueryClientProvider>
-        </ThemeProvider>
       </Provider>    
-
+    </ThemeProvider>
   )
 }

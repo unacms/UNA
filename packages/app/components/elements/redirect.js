@@ -6,6 +6,8 @@ export default function ElementRedirect({data}) {
     console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Redirect to:", data);
     useEffect(() => {
         if (data?.uri) {
+            if (data.uri == '/')
+                data.uri = '/home'
             if (data?.timeout)
                 setTimeout(() => router.replace(data.uri), data.timeout);
             else
