@@ -22,7 +22,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-
+import { CommentsBrowse } from 'app/lib/comments-helpers'
 
 function DefaultUnit(data) {
     const { t } = useTranslation();
@@ -129,7 +129,7 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted') 
         return <></>
 
-  let tlContent = '';
+    let tlContent = '';
   
     if (bIsTimelineContent) {
         tlContent = data.content.text //truncateHTML(data.content.text, 380);
@@ -140,25 +140,29 @@ function DefaultUnit(data) {
             }
         }
     }
+    let commentsData = null;
+    if (data?.cmts?.data?.length > 0){
+        commentsData = {id:'cmt_list', insert: 'before', 'type': 'browse', 'data': data.cmts};
+    }
 
-  return (
-    <AnimatedBlock>
-        <Card rounded='  ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
-            <View className="flex-auto flex-row items-top px-4 py-3.5">
-                <Profile
-                    {...data.author_data}
-                    showLink={true}
-                    displayType="unit"
-                    displaySize="base"
-                    showInfo={
-                    <Row className="items-center">
-                        <Link href={url}>
-                        <Time className="" ts={data.date}></Time>
-                        </Link>
-                        <ItemInfo data={data} />
-                    </Row>
-                    }
-                />
+    return (
+        <AnimatedBlock>
+            <Card rounded='  ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
+                <View className="flex-auto flex-row items-top px-4 py-3.5">
+                    <Profile
+                        {...data.author_data}
+                        showLink={true}
+                        displayType="unit"
+                        displaySize="base"
+                        showInfo={
+                        <Row className="items-center">
+                            <Link href={url}>
+                            <Time className="" ts={data.date}></Time>
+                            </Link>
+                            <ItemInfo data={data} />
+                        </Row>
+                        }
+                    />
                 <View className="flex-auto justify-end flex-row mb-auto">
                     {data.author_actions.map((item, index) => {
                     const Element = componentsMap[item.type]
@@ -472,6 +476,11 @@ function DefaultUnit(data) {
                     </>
                     )}
                 </View>
+                { !!commentsData && <View>
+                        <CommentsBrowse browse={commentsData}  module={data?.cmts.module} isShort={true}  />
+                        <View className='p-4'><Link href={url}><Text>{t('View all comments')}</Text></Link></View>
+                    </View>
+                }
             </Card>
         </AnimatedBlock>
     )

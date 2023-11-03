@@ -79,7 +79,9 @@ export function parseData (browse, dynamicData) {
     return browse;
 }
 
-export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems}) {
+export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort=false}) {
+
+
     const { t } = useTranslation();
     const flashListRef = useRef(null);
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -163,6 +165,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         })
     }
 
+
     const handleMore = async (force = false) => {
         if (!commentData.objectId)
             return;
@@ -207,6 +210,12 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
 
     DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
+    if (isShort){
+        return dataOut.map((item, index) => <View className='mx-4' key={index}>
+        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+    </View>) 
+    }
+    
     useEffect(() => {
         
         if (commentData.lastInserted > 0){
@@ -240,6 +249,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             current.setVisible(val);
         }
     }
+
+    
     useEffect(() => {
         if (currentUser){
             subscribe(currentUser.pusher, commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
@@ -262,13 +273,16 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             </View>
         </Row>)  : <Text>&nbsp;</Text>;
     
-    if (dataOut.length > 0 || !commentData.objectId){
-        let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
-        if (actionsItemIndex > 0)
-        addItems.splice(actionsItemIndex, 1);
+    if (addItems){
+        if (dataOut.length > 0 || !commentData.objectId){
+            let actionsItemIndex = addItems.findIndex(item => item.id === 'block_comments-empty');
+            if (actionsItemIndex > 0)
+            addItems.splice(actionsItemIndex, 1);
+        }
     }
     let h = dataOut.find(item => item.id === 'block_header') 
-    if (!h)
+    
+    if (!h && addItems)
         dataOut = [ ...addItems, {id:'block_header', data: header}, ...dataOut];
     
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );

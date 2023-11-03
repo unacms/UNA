@@ -6,7 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/components/card'
 import { fetcher } from 'app/lib/fetcher'
-import { useEffect, useState,  } from 'react'
+import { useEffect, useState } from 'react'
 import React from 'react'
 import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next';
