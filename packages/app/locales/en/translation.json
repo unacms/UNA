@@ -4,6 +4,11 @@
     "members_2": "{{count}} members",
     "members_plural": "{{count}} members",
 
+    "followers_0": "no followers yet",
+    "followers_1": "{{count}} follower",
+    "followers_2": "{{count}} followers",
+    "followers_plural": "{{count}} followers",
+
     "friends_0": "no friends yet",
     "friends_1": "{{count}} friend",
     "friends_2": "{{count}} friends",

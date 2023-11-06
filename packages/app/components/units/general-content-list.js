@@ -172,7 +172,7 @@ export default function Unit(props) {
                     </Text>
                   </View>
                   <View className="sm:h-12">{sTitle}</View>
-                  <Row className="items-center ">
+                  {data.members_list && <Row className="items-center ">
                     <View className="mr-2">
                       <ProfilesList
                         data={data.members_list}
@@ -184,7 +184,20 @@ export default function Unit(props) {
                     <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
                       {tp('members', data.members_count)}
                     </Text>
-                  </Row>
+                  </Row>}
+                  {(!data.members_list && data.followers_list) && <Row className="items-center ">
+                    <View className="mr-2">
+                      <ProfilesList
+                        data={data.followers_list}
+                        showEmpty={false}
+                        maxCount={3}
+                        displaySize="sm"
+                      />
+                    </View>
+                    <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
+                      {tp('followers', data.followers_count)}
+                    </Text>
+                  </Row>}
                   <View className="flex-row w-full gap-x-2 ">
                     {oMenuItemPrimary}
                     {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (
