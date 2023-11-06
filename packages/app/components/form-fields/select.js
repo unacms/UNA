@@ -14,6 +14,13 @@ export default function FormFieldSelect(props) {
         formContext.setValue(props.name, value)
     }, [props.name, value]);
 
+    const setValueF = (val) =>
+    {
+        setValue(val);
+        if (props.onChange)
+            props.onChange(val)
+    }
+
     let values = [];
     if (!Array.isArray(props.values)){
         values = Object.keys(props.values).map(function (key) {
@@ -37,7 +44,7 @@ export default function FormFieldSelect(props) {
            <Dropdown 
                 labelField="label"
                 valueField="value"
-                onChange={setValue}
+                onChange={setValueF}
                 value={value}
                 data={values}
             />
