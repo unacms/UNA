@@ -14,10 +14,11 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
     const { t } = useTranslation();
 
     let windowHeight = Dimensions.get('window').height
-
+    let windowWidth = Dimensions.get('window').width
     let styles = {}
     styles = { height: windowHeight - 170 }
-
+    if (windowWidth < 1024)
+        styles = { height: windowHeight - 65 }
     return (
         <AnimatePresence exitBeforeEnter>
             {menuPopup && (

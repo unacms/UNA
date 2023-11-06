@@ -165,6 +165,10 @@ let settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
+            { name: 'organizations-home', title: 'Organizations', link: '/organizations-home', icon: 'UsersFour' }, 
+            { name: 'ads-home', title: 'Ads', link: '/ads-home', icon: 'Question' }, 
+            { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' }, 
+            
         ],
         menu_add: [
             { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText'},
@@ -196,6 +200,15 @@ let settingsDefault = {
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_posts'},
             ],
         },
+        bx_ads_submenu: {
+            name: 'Ads',
+            icon: 'File',
+            items: ['ads-home', 'ads-popular',],
+            add: [
+                { icon: 'Plus', name: 'Add', link: '/create-ad' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
+            ],
+        },
         bx_market_submenu: {
             name: 'Market',
             icon: 'Storefront',
@@ -215,7 +228,11 @@ let settingsDefault = {
         ],
         bx_forum_view_actions: [
             'edit-discussion', 
-            'discussion-post'
+            'delete-discussion'
+        ],
+        bx_ads_view_actions: [
+            'edit-ad', 
+            'delete-ad'
         ],
         bx_persons_submenu: {
             name: 'People',
@@ -223,6 +240,14 @@ let settingsDefault = {
             items: ['persons-home', 'persons-active'],
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
+            ],
+        },
+        bx_organizations_submenu: {
+            name: 'Organizations',
+            icon: 'UsersFour',
+            items: ['organizations-home', 'organizations-active'],
+            add: [
+                {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_organizations'},
             ],
         },
         bx_events_submenu: {
@@ -248,6 +273,11 @@ let settingsDefault = {
             'persons-profile-friends',
             'persons-profile-subscriptions',
         ],
+        bx_organizations_view_submenu: [
+            'view-organization-profile',
+            'organization-profile-info',
+            'organization-profile-fans',
+        ],
         sys_account_settings_submenu: {
             name: 'Settings',
             icon: 'Gear',
@@ -267,6 +297,15 @@ let settingsDefault = {
             'profile-subscribe-remove',
             'edit-persons-profile',
             'delete-persons-profile',
+            'messenger',
+        ],
+        bx_organizations_view_actions_all: [
+            'profile-friend-add',
+            'profile-friend-remove',
+            'profile-subscribe-add',
+            'profile-subscribe-remove',
+            'edit-organization-profile',
+            'delete-organization-profile',
             'messenger',
         ],
         bx_groups_submenu: {
@@ -391,6 +430,9 @@ let settingsDefault = {
             blocks: {
                 public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
+
+                foryou_feed: {name: 'bx_timeline:get_block_view_custom', showTitle: false, showBg: false },
+
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
                 hot_feed: {name: 'bx_timeline:get_block_view_hot', showTitle: false, showBg: false },
@@ -591,6 +633,38 @@ let settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
+        //############ ADS PAGES ############
+        'ads-home': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:browse_public', showTitle: false, showBg: false},
+              
+            },
+            icon: 'Storefront',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'ads-popular': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:browse_popular', showTitle: false, showBg: false },
+              
+            },
+            icon: 'Fire',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'view-ad': {
+            layout: 'post',
+            top:true,
+            blocks: {
+                author: { name: 'bx_ads:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },
+                text: { name: 'bx_ads:entity_text_block', showTitle: false, showBg: false, forList: true },
+                attachments: { name: 'bx_ads:entity_attachments', showTitle: false, showBg: false, forList: true },
+                actions: { name: 'bx_ads:entity_all_actions', showTitle: false, showBg: false, forList: true },
+                'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
+                comments: { name: 'bx_ads:entity_reviews', showTitle: false, showBg: false },
+            },
+            headerSettings: { header: false, footer: false, offset: false },
+        },
         //############ CONNECTION PAGES ############
         'friend-suggestions': {
             layout: 'navigator',
@@ -773,9 +847,10 @@ let settingsDefault = {
         'view-channel-profile': {
             layout: 'profile',
             blocks: {
-                col2: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
+                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
             },
-            headerSettings: { offset: false, header: true, backButton: false, menu: true }
+            headerSettings: { offset: false, header: false }
         },
         //############ PERSONS PAGES ############
         'persons-home': {
@@ -823,6 +898,48 @@ let settingsDefault = {
             blocks: {
                 col0: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
                 col1: { name: 'bx_persons:entity_info_full', showTitle: false, showBg: false },
+            },
+            headerSettings: { offset: false, header: false }
+        },
+        //############ ORGS PAGES ############
+        'organizations-home': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_organizations:browse_recent_profiles', showTitle: false, showBg: false },
+            },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
+            icon: 'UsersFour',
+        },
+        'organizations-active': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_organizations:browse_active_profiles', showTitle: false, showBg: false},
+            },
+            headerSettings: { offset: false, header: false, backButton: false, menu: true },
+            icon: 'UsersFour',
+        },
+        'view-organization-profile': {
+            layout: 'profile',
+            blocks: {
+                col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
+                col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col2: { name: 'bx_organizations:entity_info', showTitle: false, showBg: true, sidebar: true },
+                col4: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: true, sidebar: true },
+            },
+            headerSettings: { offset: false, header: false }
+        },
+        'organization-profile-info': {
+            layout: 'profile',
+            blocks: {
+                col0: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
+                col1: { name: 'bx_organizations:entity_info_full', showTitle: false, showBg: false },
+            },
+            headerSettings: { offset: false, header: false }
+        },
+        'organization-profile-fans': {
+            layout: 'profile',
+            blocks: {
+                col1: { name: 'bx_organizations:fans_table', showTitle: false, showBg: false },
             },
             headerSettings: { offset: false, header: false }
         },

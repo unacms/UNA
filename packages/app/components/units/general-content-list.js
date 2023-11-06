@@ -20,110 +20,6 @@ import { Icon } from 'app/ui/atoms/icon'
 export default function Unit(props) {
   const { t } = useTranslation()
 
-  function channelUnit() {
-    let sMeta = <></>
-    if (data?.meta)
-      sMeta = (
-        <View className="pb-2">
-          <Menu
-            {...data.meta}
-            displayType="mixed"
-            params={{ showVertical: true }}
-          />
-        </View>
-      )
-
-    return (
-      <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
-        <View className="flex-col gap-y-4 ">
-          <Link className="" href={data.url}>
-            <View className="flex-col w-full ">
-              <View className=" w-full p-1 aspect-video ">
-                <View className="w-full aspect-square mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl">
-                  <Image
-                    {...data.cover}
-                    alt={data.title}
-                    view="cover"
-                    className="absolute u-cover"
-                    sizes={imageSizes}
-                  />
-                </View>
-              </View>
-              <View className="flex-col flex-auto gap-y-2 p-4  ">
-                <View className=" flex-row flex-wrap gap-x-2 gap-y-2   ">
-                  {data?.date_start && (
-                    <Text className=" bg-bgritem dark:bg-bgritem-d rounded-lg  px-2 py-1 flex-none flex-auto text-neutral-600 dark:text-neutral-400">
-                      {data.date_start && (
-                        <>
-                          <Time
-                            stylesName="text-sm flex-none"
-                            ts={data.date_start}
-                          ></Time>
-                          {data.date_end && (
-                            <>
-                              <Text className="text-sm flex-none"> - </Text>
-                              <Time
-                                stylesName="text-sm flex-none"
-                                ts={data.date_end}
-                              ></Time>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </Text>
-                  )}
-                  <Text className="my-auto text-sm flex-auto font-semibold text-neutral-600 dark:text-neutral-400">
-                    {data.visibility != '3' ? <>Private</> : <>Public</>}
-                  </Text>
-                </View>
-                <View className=" sm:h-12  ">
-                  <Text
-                    numberOfLines={2}
-                    className=" tracking-tight leading-tight text-base font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d "
-                  >
-                    {data.title}
-                  </Text>
-                </View>
-                <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
-                {(data.members_count || data.members_count === 0) && tp('members', data.members_count)}
-                </Text>
-                <View className="flex-row w-full gap-x-2 ">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    title="Join"
-                    className=" my-auto "
-                    fullWidth={true}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className=" my-auto "
-                    startDecorator="DotsThreeOutline"
-                  />
-                </View>
-              </View>
-            </View>
-          </Link>
-          {data?.meta && (
-            <View className="px-4 pb-4 mt-auto ">
-              <Menu
-                {...data.meta}
-                displayType="mixed"
-                params={{
-                  showVertical: true,
-                  button_size: 'base',
-                  button_full_width: true,
-                  button_rounded: false,
-                }}
-              />
-            </View>
-          )}
-        </View>
-      </Card>
-    )
-  }
-
   function eventUnit() {
     const redirectdRef = useRef()
     const [popupVisible, setPopupVisible] = useState(false)
@@ -943,14 +839,14 @@ export default function Unit(props) {
   switch (module) {
     case 'bx_groups':
     case 'bx_events':
-      return eventUnit()
     case 'bx_channels':
-      return channelUnit()
+      return eventUnit()
     case 'bx_market':
       return marketUnit()
     case 'bx_forum':
       return props.sidebar? forumUnitPreview() : forumUnit()
     case 'bx_persons':
+      case 'bx_organizations':
       return (
         <CardDataContext>
           <UnitPerson {...props} />
