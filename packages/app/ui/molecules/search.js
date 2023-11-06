@@ -57,13 +57,11 @@ export default function ElementSearch(oProps) {
         const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
         if(!sResponse?.data) {
             handleSetPopupContent('');
-            return;
         }
 
         const oBlock = sResponse.data.shift();
         if(oBlock.data?.unit != 'search-results' || !oBlock.data?.data || !oBlock.data.data.length) {
             handleSetPopupContent('');
-            return;
         }
 
         const sContent = (

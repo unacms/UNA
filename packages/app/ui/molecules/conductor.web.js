@@ -335,7 +335,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-1/3 ">
+                    {isRightCol && <View className="hidden xl:block w-1/3 pt-4 pl-4">
 
                         { route?.sidebar?.content?.length > 0 && <UniList
                                 no_scroll
