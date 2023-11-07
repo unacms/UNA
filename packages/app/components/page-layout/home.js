@@ -1,7 +1,7 @@
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { appSetting, filterContent, storageSet, storageGet } from 'app/lib/util'
 import LayoutDataContext from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
@@ -28,6 +28,8 @@ export default function PageLayout(props) {
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
     )
+    const feedList = appSetting('feed', 'list');
+
     const [unitMode, setUnitMode] = useState(
         feedMode ? feedMode : appSetting('feed', 'default_view')
     )
@@ -95,7 +97,7 @@ export default function PageLayout(props) {
             dUser.url_avatar = dUser.avatar
             dUser.url = '/dashboard'
             const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-
+            
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
@@ -130,95 +132,52 @@ export default function PageLayout(props) {
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto   w-full mx-auto">
-                        {appSetting('feed', 'show_multi') ? (
-                            <>
-                            <Row className="p-3 sm:mb-4  sm:border-b border-dashed border-neutral-400/20 gap-x-2  w-full">
-                                <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('account') }} >
-                                    <Button fullWidth={true} id="tab" startDecorator="Binoculars" variant={feedType == 'account' ? 'link' : 'text'} rounded  size="sm" />
-                                </Pressable>
-                                <Pressable className=" my-auto items-center" onPress={() => { setFeedTypeEx('public') }} >
-                                    <Button
-                                        fullWidth={true}
-                                        startDecorator="Pulse"
-                                        variant={feedType == 'public' ? 'link' : 'text'}
-                                        rounded
-                                        size="sm"
-                                        
-
-                                    />
-                                </Pressable>
-                                <Pressable
-                                    className=" my-auto items-center"
-                                    onPress={() => {
-                                        setFeedTypeEx('hot')
-                                    }}
-                                >
-                                    <Button
-                                        fullWidth={true}
-                                        rounded
-                                        startDecorator="Fire"
-                                        variant={feedType == 'hot' ? 'link' : 'text'}
-                                        size="sm"
-                                        
-                                    />
-                                </Pressable>
-                                {appSetting('feed', 'show_selector_view') && (
-                                    <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                                        <Button
-                                            startDecorator="Rows"
-                                            rounded
-                                            variant={unitMode == '' ? 'link' : 'text'}
-                                            size="sm"
-                                            onPress={() => {
-                                                setUnitModeEx('')
-                                            }}
-                                        />
-                                        <Button
-                                            startDecorator="ListBullets"
-                                            rounded
-                                            variant={unitMode == 'small' ? 'link' : 'text'}
-                                            size="sm"
-                                            onPress={() => {
-                                                setUnitModeEx('small')
-                                            }}
-                                        />
-                                    </Row>
-                                )}
-                            </Row>
-                            <View className="relative w-full mx-auto max-w-4xl">
-                            {feedType == 'account' && (
-                                <View className={ feedType == 'account' ? '' : 'w-full bg-red- absolute z-0 invisible top-full' } >
-                                    <LayoutDataContext>
-                                        <BlockByName data={props.data} name={props.blocks.account_feed_form} />
-                                        <BlockByName data={props.data} name={props.blocks.account_feed} unitMode={unitMode} />
-                                    </LayoutDataContext>
+                                <Row className="p-3 sm:mb-4  sm:border-b border-dashed border-neutral-400/20 gap-x-2  w-full">
+                                    {feedList.length > 1 && feedList.map((item, index) => {
+                                        return (
+                                            <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
+                                                <Button fullWidth={true} id="tab" startDecorator={item.icon} variant={feedType == item.name ? 'link' : 'text'} rounded  size="sm" />
+                                            </Pressable>
+                                        );
+                                    })}
+                                    {appSetting('feed', 'show_selector_view') && (
+                                        <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                            <Button
+                                                startDecorator="Rows"
+                                                rounded
+                                                variant={unitMode == '' ? 'link' : 'text'}
+                                                size="sm"
+                                                onPress={() => {
+                                                    setUnitModeEx('')
+                                                }}
+                                            />
+                                            <Button
+                                                startDecorator="ListBullets"
+                                                rounded
+                                                variant={unitMode == 'small' ? 'link' : 'text'}
+                                                size="sm"
+                                                onPress={() => {
+                                                    setUnitModeEx('small')
+                                                }}
+                                            />
+                                        </Row>
+                                    )}
+                                </Row>
+                                <View className="relative w-full mx-auto max-w-4xl">
+                                    {feedList.map((item, index) => {
+                                        if (feedType == item.name){
+                                            return (
+                                                <View key={'view' + index}  >
+                                                    <LayoutDataContext>
+                                                        <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
+                                                        <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
+                                                    </LayoutDataContext>
+                                                </View>
+                                            );
+                                        }
+                                        return <React.Fragment key={'empty_' + index}></React.Fragment>
+                                    })}
                                 </View>
-                            )}
-                            {feedType == 'public' && (
-                                <View className={feedType == 'public' ? '' : 'w-full absolute z-0 invisible top-full'}>
-                                    <LayoutDataContext>
-                                        <BlockByName data={props.data} name={props.blocks.public_feed_form} />
-                                        <BlockByName data={props.data} name={props.blocks.public_feed} unitMode={unitMode} />
-                                    </LayoutDataContext>
-                                </View>
-                            )}
-                            {feedType == 'hot' && (
-                                <View className={feedType == 'hot' ? '' : 'w-full absolute z-0 invisible top-full' } >
-                                    <LayoutDataContext>
-                                        <BlockByName data={props.data} name={props.blocks.hot_feed} unitMode={unitMode} />
-                                    </LayoutDataContext>
-                                </View>
-                            )}
-                            </View>
-                            </>
-                        ) : (
-                            <View className="pt-4 ">
-                                <LayoutDataContext>
-                                    <BlockByName data={props.data} name={ props.blocks[appSetting('feed', 'default_feed') + '_feed_form'] }/>
-                                    <BlockByName data={props.data} name={ props.blocks[ appSetting('feed', 'default_feed') + '_feed' ] } />
-                                </LayoutDataContext>
-                            </View>
-                        )}
                             </View>
                         </View>
                     </View>
@@ -227,8 +186,6 @@ export default function PageLayout(props) {
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" showTitleInside={true} />
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.messenger_contacts} skeleton="one_column_browse" showTitleInside={true} />
                         <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" showTitleInside={true} />
-
-                        
                         <BlockByName name={props.blocks.footer} />
                     </View>
                 </View>
@@ -249,23 +206,15 @@ export default function PageLayout(props) {
             icon: '',
         }
     })
-
-    let dataHome = filterContent(props.data, [
-        'bx_timeline:get_block_post_home',
-        'bx_timeline:get_block_view_home',
-    ])
-    let dataAccount = filterContent(props.data, [
-        'bx_timeline:get_block_post_account',
-        'bx_timeline:get_block_view_account',
-    ])
-    let dataHot = filterContent(props.data, ['bx_timeline:get_block_view_hot'])
-    let dataSingle = dataHome
-    if (appSetting('feed', 'default_feed') == 'account') {
-        dataSingle = dataAccount
+    let blocks = appSetting('layouts', 'home').blocks;
+    let blocksForAdd = [];
+    if (blocks[feedType + '_feed_form']){
+        blocksForAdd.push(blocks[feedType + '_feed_form'].name)
     }
-    if (appSetting('feed', 'default_feed') == 'hot') {
-        dataSingle = dataHot
+    if (blocks[feedType + '_feed']){
+        blocksForAdd.push(blocks[feedType + '_feed'].name)
     }
+    let dataForFeed = filterContent(props.data, blocksForAdd)
 
     let menu = {
         object: 'search',
@@ -285,146 +234,73 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                    {appSetting('feed', 'show_multi') ? (
-                        <>
-                            <Row className="px-auto justify-center gap-x-1 ">
-                            <Pressable
-                                className="items-center justify-center py-2.5  "
-                                onPress={() => {
-                                setFeedTypeEx('account')
-                                }}
-                            >
-                                <Button
-                                    fullWidth={false}
-                                    id="tab"
-                                    startDecorator="Binoculars"
-                                    variant={feedType == 'account' ? 'outline' : 'text'}
-                                    size="sm"
-                                    title={t("Following")}
-                                />
-                            </Pressable>
-                            <Pressable
-                                className=" items-center justify-center py-2.5  "
-                                onPress={() => {
-                                setFeedTypeEx('public')
-                                }}
-                            >
-                                <Button
-                                    fullWidth={false}
-                                    id="tab"
-                                    startDecorator="MagicWand"
-                                    variant={feedType == 'public' ? 'outline' : 'text'}
-                                    size="sm"
-                                    title={t("For You")}
-                                />
-                            </Pressable>
-                            <Pressable
-                                className="items-center hidden justify-center py-2.5 "
-                                onPress={() => {
-                                setFeedTypeEx('hot')
-                                }}
-                            >
-                                <Button
-                                fullWidth={false}
-                                id="tab"
-                                startDecorator="Fire"
-                                variant={feedType == 'hot' ? 'link' : 'text'}
-                                rounded
-                                size="sm"
-                                />
-                            </Pressable>
-                            {appSetting('feed', 'show_selector_view') && (
-                                <Row className="flex-auto flex-auto justify-end">
-                                    <Pressable
-                                        className="items-center justify-center py-2.5  "
-                                        onPress={() => {
-                                        setUnitModeEx('')
-                                        }}
-                                    >
-                                        <Button
-                                            startDecorator="Rows"
-                                            fullWidth={false}
-                                            rounded
-                                            variant={unitMode == '' ? 'link' : 'text'}
-                                            size="sm"
-                                        />
-                                    </Pressable>
-                                    <Pressable
-                                        className="items-center justify-center py-2.5  "
-                                        onPress={() => {
-                                        setUnitModeEx('small')
-                                        }}
-                                    >
-                                        <Button
-                                            startDecorator="ListBullets"
-                                            fullWidth={false}
-                                            rounded
-                                            variant={unitMode == 'small' ? 'link' : 'text'}
-                                            size="sm"
-                                        />
-                                    </Pressable>
-                                </Row>
-                            )}
-                        </Row>
-                        {feedType == 'public' && (
-                            <View className={feedType == 'public' ? '' : ' h-full'}>
-                                <LayoutDataContext>
-                                    <Conductor
-                                        minHeaderHeight={0}
-                                        isHideDefaultHeader={false}
-                                        menu={menu}
-                                        unitMode={unitMode}
-                                        data={dataHome}
-                                        blocks={props.blocks}
-                                        skeleton='feed'
+                     <Row className="px-auto justify-center gap-x-1 ">
+                        {feedList.length > 1 && feedList.map((item, index) => {
+                            return (
+                                <Pressable key={'selector' + index}  className="items-center justify-center py-2.5 " onPress={() => { setFeedTypeEx(item.name) }}>
+                                    <Button
+                                        fullWidth={false}
+                                        id="tab"
+                                        startDecorator={item.icon}
+                                        variant={feedType == item.name ? 'outline' : 'text'}
+                                        size="sm"
                                     />
-                                </LayoutDataContext>
-                            </View>
-                        )}
-                        {feedType == 'account' && (
-                            <View className={feedType == 'account' ? '' : ' h-full'}>
-                                <LayoutDataContext>
-                                    <Conductor
-                                        minHeaderHeight={0}
-                                        isHideDefaultHeader={false}
-                                        menu={menu}
-                                        unitMode={unitMode}
-                                        data={dataAccount}
-                                        blocks={props.blocks}
-                                        skeleton='feed'
+                                </Pressable>
+                            );
+                        })}
+                        {appSetting('feed', 'show_selector_view') && (
+                            <Row className="flex-auto flex-auto justify-end">
+                                <Pressable
+                                    className="items-center justify-center py-2.5  "
+                                    onPress={() => {
+                                    setUnitModeEx('')
+                                    }}
+                                >
+                                    <Button
+                                        startDecorator="Rows"
+                                        fullWidth={false}
+                                        rounded
+                                        variant={unitMode == '' ? 'link' : 'text'}
+                                        size="sm"
                                     />
-                                </LayoutDataContext>
-                            </View>
+                                </Pressable>
+                                <Pressable
+                                    className="items-center justify-center py-2.5  "
+                                    onPress={() => {
+                                    setUnitModeEx('small')
+                                    }}
+                                >
+                                    <Button
+                                        startDecorator="ListBullets"
+                                        fullWidth={false}
+                                        rounded
+                                        variant={unitMode == 'small' ? 'link' : 'text'}
+                                        size="sm"
+                                    />
+                                </Pressable>
+                            </Row>
                         )}
-                        {feedType == 'hot' && (
-                        <View className={feedType == 'hot' ? '' : ' h-full'}>
-                            <LayoutDataContext>
-                                <Conductor
-                                    minHeaderHeight={0}
-                                    isHideDefaultHeader={false}
-                                    menu={menu}
-                                    data={dataHot}
-                                    unitMode={unitMode}
-                                    blocks={props.blocks}
-                                    skeleton='feed'
-                                />
-                            </LayoutDataContext>
-                        </View>
-                    )}
-                </>
-            ) : (
-                <LayoutDataContext>
-                    <Conductor
-                        minHeaderHeight={0}
-                        isHideDefaultHeader={false}
-                        menu={menu}
-                        unitMode={unitMode}
-                        data={dataSingle}
-                        blocks={props.blocks}
-                        skeleton='feed'
-                    />
-                </LayoutDataContext>
-            )}
+                    </Row>
+                    {feedList.map((item, index) => {
+                        if (feedType == item.name){
+                            return (
+                                <View key={'view' + index}  >
+                                    <LayoutDataContext>
+                                        <Conductor
+                                            minHeaderHeight={0}
+                                            isHideDefaultHeader={false}
+                                            menu={menu}
+                                            unitMode={unitMode}
+                                            data={dataForFeed}
+                                            blocks={props.blocks}
+                                            skeleton='feed'
+                                        />
+                                    </LayoutDataContext>
+                                </View>
+                            );
+                        }
+                        return <React.Fragment key={'empty_' + index}></React.Fragment>
+                    })}
             </>
         )}
         </View>

@@ -55,8 +55,14 @@ let settingsDefault = {
         show_selector_view: true,
         default_view: '',
         show_html: false,
-        show_multi: true,
-        default_feed: 'account',
+        default_feed: 'foryou',
+        list: [
+            { name: 'foryou', icon: 'Binoculars' },
+            { name: 'account', icon: 'ChartLine' },
+            { name: 'hot', icon: 'Fire' },
+            { name: 'public', icon: 'Egg' },
+           /* { name: 'channels', icon: 'Hash' }*/
+        ]
     },
     entry: {
         default_view: '',
@@ -165,8 +171,8 @@ let settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-            { name: 'organizations-home', title: 'Organizations', link: '/organizations-home', icon: 'UsersFour' }, 
-            { name: 'ads-home', title: 'Ads', link: '/ads-home', icon: 'Question' }, 
+            { name: 'organizations-home', title: 'Organizations', link: '/organizations-home', icon: 'CirclesThree' }, 
+            { name: 'ads-home', title: 'Ads', link: '/ads-home', icon: 'Megaphone' }, 
             { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' }, 
             
         ],
@@ -175,6 +181,8 @@ let settingsDefault = {
             { name: 'create-group-profile',title: 'Add group', link: '/create-group-profile', icon: 'UsersThree'},
             { name: 'create-event-profile',title: 'Add event', link: '/create-event-profile', icon: 'Calendar'},
             { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'Chats'},
+            { name: 'create-ad',title: 'Add ad', link: '/create-ad', icon: 'Megaphone'},
+            
         ],
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
@@ -244,7 +252,7 @@ let settingsDefault = {
         },
         bx_organizations_submenu: {
             name: 'Organizations',
-            icon: 'UsersFour',
+            icon: 'CirclesThree',
             items: ['organizations-home', 'organizations-active'],
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_organizations'},
@@ -431,11 +439,15 @@ let settingsDefault = {
                 public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
 
+                foryou_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 foryou_feed: {name: 'bx_timeline:get_block_view_custom', showTitle: false, showBg: false },
 
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
+                
                 hot_feed: {name: 'bx_timeline:get_block_view_hot', showTitle: false, showBg: false },
+
+                channels_feed: {name: 'bx_timeline:get_block_view_channels', showTitle: false, showBg: false },
 
                 login: {name: 'system:login_form', showTitle: false, showBg: false },
                 signup: {name: 'system:create_account_form', showTitle: false, showBg: false },
@@ -908,7 +920,7 @@ let settingsDefault = {
                 browse: { name: 'bx_organizations:browse_recent_profiles', showTitle: false, showBg: false },
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'UsersFour',
+            icon: 'CirclesThree',
         },
         'organizations-active': {
             layout: 'navigator',
@@ -916,7 +928,7 @@ let settingsDefault = {
                 browse: { name: 'bx_organizations:browse_active_profiles', showTitle: false, showBg: false},
             },
             headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'UsersFour',
+            icon: 'CirclesThree',
         },
         'view-organization-profile': {
             layout: 'profile',
