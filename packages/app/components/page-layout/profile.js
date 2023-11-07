@@ -6,6 +6,10 @@ export default function PageLayout(props) {
     let header = <Cover data={props.data.cover_block}/>
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
+    console.log("props.data.menu", props.data.menu)
+    if (!props.data.menu.items){
+        props.data.menu.items = [{name: 'view-channel-profile', link: 'view-channel-profile/unaplatform'}];
+    }
     return (<LayoutDataContext><Conductor 
         header={header} 
         smallHeader={smallHeader} 

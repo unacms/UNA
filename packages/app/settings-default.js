@@ -386,6 +386,11 @@ let settingsDefault = {
         bx_channels_view_submenu: [
             'view-channel-profile'
         ],
+        bx_channels_view_actions_all: [
+            'profile-subscribe-add',
+            'profile-subscribe-remove',
+            'delete-channel-profile',
+        ],
         bx_timeline_menu_item_manage: [
             'item-edit', 
             'item-delete'

@@ -145,7 +145,8 @@ export default function ElementLikes(oProps) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
+        if (currentUser)
+            subscribe(currentUser.pusher, oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
     }, [])
 
     const cb = (data) => {
