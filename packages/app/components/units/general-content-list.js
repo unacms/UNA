@@ -132,7 +132,7 @@ export default function Unit(props) {
     const sTitle = (
       <Text
         numberOfLines={2}
-        className=" tracking-tight leading-tight text-base font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d "
+        className=" tracking-tight leading-tight text-sm font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d "
       >
         {data.title}
       </Text>
@@ -146,21 +146,21 @@ export default function Unit(props) {
             <Link className="" href={data.url}>
               <View className="flex-col w-full ">
                 <View className=" w-full p-1">{sCover}</View>
-                <View className="flex-col flex-auto gap-y-2 p-4  ">
-                  <View className=" flex-row flex-wrap gap-x-2 gap-y-2   ">
+                <View className="flex-col flex-auto gap-y-2 px-3 py-2 ">
+                  <View className=" flex-row justify-between w-full  gap-x-2    ">
                     {data?.date_start && (
-                      <Text className=" bg-bgritem dark:bg-bgritem-d rounded-lg  px-2 py-1 flex-none flex-auto text-neutral-600 dark:text-neutral-400">
+                      <Text className="border-l-8 border-red-500/70 bg-bgritem dark:bg-bgritem-d rounded-md px-1.5 py-0.5 flex-none flex-auto text-neutral-600 dark:text-neutral-400">
                         {data.date_start && (
                           <>
                             <Time
-                              stylesName="text-sm flex-none"
+                              stylesName="text-xs flex-none"
                               ts={data.date_start}
                             ></Time>
                             {data.date_end && (
                               <>
-                                <Text className="text-sm flex-none"> - </Text>
+                                <Text className="text-xs flex-none"> - </Text>
                                 <Time
-                                  stylesName="text-sm flex-none"
+                                  stylesName="text-xs flex-none"
                                   ts={data.date_end}
                                 ></Time>
                               </>
@@ -169,18 +169,18 @@ export default function Unit(props) {
                         )}
                       </Text>
                     )}
-                    <Text className="my-auto text-sm flex-auto font-semibold text-neutral-600 dark:text-neutral-400">
+                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
                       {data.visibility != '3' ? <>Private</> : <>Public</>}
                     </Text>
                   </View>
-                  <View className="sm:h-12">{sTitle}</View>
-                  {data.members_list && <Row className="items-center ">
-                    <View className="mr-2">
+                  <View className="sm:h-10 py-0.5 ">{sTitle}</View>
+                  {data.members_list && <Row className="h-6  items-center ">
+                    <View className="mr-1 ">
                       <ProfilesList
                         data={data.members_list}
                         showEmpty={false}
                         maxCount={3}
-                        displaySize="sm"
+                        displaySize="xs"
                       />
                     </View>
                     <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
@@ -200,7 +200,7 @@ export default function Unit(props) {
                       {tp('followers', data.followers_count)}
                     </Text>
                   </Row>}
-                  <View className="flex-row w-full gap-x-2 ">
+                  <View className="flex-row w-full gap-x-2 pb-1">
                     {oMenuItemPrimary}
                     {!!oMenuItemsMore && oMenuItemsMore.items.length > 0 && (
                       <>
