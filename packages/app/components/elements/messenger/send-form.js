@@ -13,14 +13,11 @@ export const SendForm = memo(({ convoId, menuItem, onSubmit, iSelectedProfile })
         keyboardHeight = useKeyboard(),
         { currentUser: { pusher } } = useCurrentUser();
 
-    console.log('----- log -----', pusher);
-
     useEffect(() => {
         (async() => {
             await Services.getForm().catch((e) => { console.log(e.toString()) }).then((data) => {
                 if (iSelectedProfile && data?.inputs)
                     data.inputs.payload.value = JSON.stringify({ participants: [iSelectedProfile] });
-
                 setFormData(data);
             });
         })();
