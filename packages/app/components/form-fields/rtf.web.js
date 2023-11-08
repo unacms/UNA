@@ -174,7 +174,9 @@ export default function FormFieldFtf(props) {
             return {
                 ShiftEnter: () => false,
                 Enter: () => {
-                    props.handleSubmit();
+                    if (typeof props.handleSubmit === 'function')
+                        props.handleSubmit();
+
                     return true;
                 },
             };
