@@ -140,9 +140,15 @@ function DefaultUnit(data) {
             }
         }
     }
+
     let commentsData = null;
+    let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0){
         commentsData = {id:'cmt_list', insert: 'before', 'type': 'browse', 'data': data.cmts};
+        console.log("data?.cmts.total_count", data?.cmts.total_count , data?.cmts?.data?.length)
+        if (data?.cmts.total_count > data?.cmts?.data?.length){
+            isShowMoreComments = true;
+        }
     }
 
     return (
@@ -476,10 +482,12 @@ function DefaultUnit(data) {
                     </>
                     )}
                 </View>
-                { !!commentsData && <View>
+                { !!commentsData && (
+                    <View>
                         <CommentsBrowse browse={commentsData}  module={data?.cmts.module} isShort={true}  />
-                        <View className='px-4 pb-4'><Link href={url}><Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>{t('View more comments...')}</Text></Link></View>
+                        { isShowMoreComments && <View className='px-4 pb-4'><Link href={url}><Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>{t('View more comments...')}</Text></Link></View> }
                     </View>
+                    )
                 }
             </Card>
         </AnimatedBlock>
