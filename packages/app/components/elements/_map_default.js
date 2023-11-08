@@ -17,9 +17,11 @@ import DashboardStat from './dashboard_stat';
 import MessengerPage from './messenger';
 import ProfileContacts from './contacts';
 import Lang from './lang';
+import Invite from './invite';
 
 export const componentsMapDefault = {
     browse: Browse,
+    invite: Invite,
     form: Form,
     msg: Msg,
     login: Login,
