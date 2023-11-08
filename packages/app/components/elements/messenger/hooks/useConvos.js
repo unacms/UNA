@@ -46,7 +46,7 @@ const getConvoItems  = (menuItem)  => {
            if (!oData)
                oData = queryClient.getQueryData(ConvoKeys.convoByMenu(menuItem));
 
-           return oData?.pages.flatMap(page => page).find((oItem) => +oItem.id === +iConvoId)
+           return oData?.pages.flatMap(page => page).find((oItem) => oItem.id === iConvoId)
        }
     };
 }
