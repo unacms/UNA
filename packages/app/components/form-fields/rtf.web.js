@@ -14,7 +14,7 @@ import Link from '@tiptap/extension-link'
 import Iframe from 'app/lib/editor-helpers'
 import { Suggestion } from 'app/lib/editor-helpers2'
 import Mention from '@tiptap/extension-mention'
-import { mergeAttributes, Node } from '@tiptap/core'
+import { mergeAttributes, Node, Extension } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
@@ -169,11 +169,23 @@ export default function FormFieldFtf(props) {
         return <Editor  contentf={field.value} defaultValue = {defaultValue}  formContext = {formContext} name = {name} viewClasses={props.viewClasses} />
     }
 
+    const SubmitOnEnter = props.submitOnEnter && Extension.create({
+       addKeyboardShortcuts() {
+            return {
+                ShiftEnter: () => false,
+                Enter: () => {
+                    props.handleSubmit();
+                    return true;
+                },
+            };
+        },
+    });
 
     const editor = useEditor({
         extensions: [
             Image,
             Iframe,
+            SubmitOnEnter,
             Link.configure({
                 openOnClick: false,
             }),
@@ -216,7 +228,6 @@ export default function FormFieldFtf(props) {
             }
             formContext.setValue(name, editor.getHTML());
         }
-
     })
 
 
