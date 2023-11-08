@@ -264,7 +264,7 @@ export function ComponentsIntro(props) {
   
   useEffect(() => {
     const fetchData2 = async () => {
-      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%223%22,%22start%22:0,%22type%22:%22active%22}}')
+      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}')
       setData2(sResponse2.data[0].data.data);
     }
     fetchData2();

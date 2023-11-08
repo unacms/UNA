@@ -47,6 +47,8 @@ let settingsDefault = {
         feed_type_bx_posts: 'published a Post',
         feed_type_bx_groups: 'created a Group',
         feed_type_bx_events: 'created an Event',
+        feed_type_bx_forum: 'published a Discussion',
+        feed_type_bx_ads: 'published an Ad',
     },
     cache: {
         list: true,
