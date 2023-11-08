@@ -31,6 +31,7 @@ let settingsDefault = {
         domain: 'https://meet.jit.si/',
     },
     urls: {
+        site: 'http://localhost:3000',
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
         notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
@@ -57,8 +58,8 @@ let settingsDefault = {
         show_html: false,
         default_feed: 'foryou',
         list: [
-            { name: 'foryou', icon: 'Binoculars' },
-            { name: 'account', icon: 'ChartLine' },
+            { name: 'foryou', icon: 'Sparkle' },
+            { name: 'account', icon: 'Binoculars' },
             { name: 'hot', icon: 'Fire' },
             { name: 'public', icon: 'Egg' },
            /* { name: 'channels', icon: 'Hash' }*/
@@ -159,7 +160,7 @@ let settingsDefault = {
             { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
             { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree'},
             { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar'},
-            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
+            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
@@ -185,7 +186,7 @@ let settingsDefault = {
             
         ],
         menu_account: [
-            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'MagicWand'},
+            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
