@@ -37,17 +37,6 @@ let settingsDefault = {
         notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
         root: 'https://ci.una.io/test3/',
     },
-    lang_keys: {
-        rvote_like_title: 'Like',
-        rvote_love_title: 'Love',
-        rvote_joy_title: 'Joy',
-        rvote_surprise_title: 'Surprise',
-        rvote_sadness_title: 'Sadness',
-        rvote_anger_title: 'Anger',
-        feed_type_bx_posts: 'published a Post',
-        feed_type_bx_groups: 'created a Group',
-        feed_type_bx_events: 'created an Event',
-    },
     cache: {
         list: true,
         compress: true
@@ -67,6 +56,12 @@ let settingsDefault = {
     },
     entry: {
         default_view: '',
+    },
+    suggestion: {
+        list: [
+            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_recommendations', perLine:3},
+            {name: 'groups', request_url: '/api.php?r=bx_groups/browse_recommendations_fans&params[]={user_id}', title: 'Recommended groups', unitType:'person_friends_recommendations', perLine:3}
+        ],
     },
     browse: {
         per_line: [

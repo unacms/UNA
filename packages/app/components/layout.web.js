@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, lazy, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import Footer from './footer';
 import Informer from 'app/components/elements/informer';
+import Suggestions from 'app/ui/molecules/suggestions';
 import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
@@ -68,6 +69,7 @@ export default function Layout({ data, uri, children }) {
         return (
             <>
                 <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
+                <Suggestions/>
                 { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
@@ -102,6 +104,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage }) => {
                 </View>
             </View>
             {headerSettings?.footer !== false && <Footer /> }
+            
         </View>
     );
 });

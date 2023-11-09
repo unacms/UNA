@@ -264,7 +264,7 @@ export function ComponentsIntro(props) {
   
   useEffect(() => {
     const fetchData2 = async () => {
-      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%223%22,%22start%22:0,%22type%22:%22active%22}}')
+      const sResponse2 = await fetcher('/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}')
       setData2(sResponse2.data[0].data.data);
     }
     fetchData2();
@@ -273,22 +273,25 @@ export function ComponentsIntro(props) {
 
   const CounterText = React.memo(({ data }) => {
     return (
-      <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-xl font-semibold ">
-        <Text className="font-bold text-neutral-950 dark:text-neutral-50">
+      <View className="absolute right-0 flex-col bg-gradient-to-r pl-8   from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+        <Text className="font-bold text-neutral-950 leading-4 dark:text-neutral-50 text-xl font-bold">
           <AnimatedCounter value={data} duration={1000} startFrom={1} />
         </Text>
+        <Text className="  text-neutral-700 dark:text-neutral-300 text-xs ">
+
         {tp('members', data, true)}
-      </Text>
+        </Text>
+      </View>
     );
   });
 
   return (
-    <Card addClassName="  flex-col gap-y-2 px-4 py-3.5 mx-2 mt-2">
-      <View className="flex-row gap-x-2 ">
-        <ProfilesList data ={data2} showEmpty={true} maxCount={3}/>
+    <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4  mx-2 mt-2">
+      <View className="flex-row gap-y-2 ">
+        <ProfilesList data ={data2} showEmpty={true} maxCount={12}/>
         <CounterText data={data} />
       </View>
-      <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
+      <Text className="text-xs  text-neutral-700 dark:text-neutral-300">
         {t('Community Intro')}
       </Text>
     </Card>

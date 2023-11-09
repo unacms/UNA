@@ -312,7 +312,7 @@ export default function ElementReactions(oProps) {
                     id: oItem.id,
                     name: oItem.name,
                     emoji: getIconAlias(oItem.name),
-                    title: t(appSetting('lang_keys', 'rvote_' + oItem.name + '_title'))
+                    title: t('rvote_' + oItem.name + '_title')
                 };
             });
 

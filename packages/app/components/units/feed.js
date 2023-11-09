@@ -100,9 +100,24 @@ function DefaultUnit(data) {
     }
 
     const ItemInfo = ({ data }) => {
-        let l = t((appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '')) +
-            ' ' +
-            (appSetting('lang_keys', 'feed_action_' + data.action) ? appSetting('lang_keys', 'feed_action_' + data.action) : '')
+
+        let inList = <></>
+        if (data.owners?.length > 0){
+            inList = <>
+                <Text className="text-neutral-500  text-xs"> in </Text>
+                {
+                    data.owners.map((item, index) => {
+                        return (
+                            <Link key = {'owner' + index} href={item.url} emulate={true}>
+                                <Text className="text-neutral-500  text-xs">{item.title}</Text>
+                            </Link>
+                        );
+                    })
+                }
+            </>
+        }
+
+        let l = t('feed_type_' + data.type)
         
             if (l != ' ')
                 return (
@@ -110,9 +125,11 @@ function DefaultUnit(data) {
                         <Text className="text-neutral-500  text-xs">
                         · {l}
                         </Text>
-                    </View>
+                        {inList}
+                    </View> 
                 )
-        return <></>
+        
+        return <>{inList}</>
     }
 
     const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items).map(
@@ -145,7 +162,6 @@ function DefaultUnit(data) {
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0){
         commentsData = {id:'cmt_list', insert: 'before', 'type': 'browse', 'data': data.cmts};
-        console.log("data?.cmts.total_count", data?.cmts.total_count , data?.cmts?.data?.length)
         if (data?.cmts.total_count > data?.cmts?.data?.length){
             isShowMoreComments = true;
         }

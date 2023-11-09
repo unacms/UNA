@@ -97,7 +97,7 @@ export const useHistoryMessageAction = function(convoId, menuItem){
                 const oNewList = pages.map((page) => {
                     return page.map((oItem) => {
                         const { total_messages, id, created } = oItem;
-                        if (+id === +convoId) {
+                        if (id === convoId) {
                             return Object.assign({}, oItem, {
                                 total_messages: total_messages > 0 ? total_messages - 1 : 0,
                                 message: stripTags(oLastMessage.message),

@@ -19,11 +19,25 @@
     "mutual_friends_2": "{{count}} mutual friends",
     "mutual_friends_plural": "{{count}} mutual friends",
 
-    "Community Intro":  "Community managers, developers, agencies, creators and educators.",
+    "Community Intro":  "Community of amazing people who love to create, share and help each other out. We are here to help you grow your skills, network and audience.",
     
     "lang_en": "English",
     "lang_ru": "Русский",
     "theme_dark": "Dark mode on",
     "theme_light": "Dark mode off",
-    "theme_auto": "Dark mode auto"
+    "theme_auto": "Dark mode auto",
+
+    "rvote_like_title": "Like",
+    "rvote_love_title": "Love",
+    "rvote_joy_title": "Joy",
+    "rvote_surprise_title": "Surprise",
+    "rvote_sadness_title": "Sadness",
+    "rvote_anger_title": "Anger",
+
+    "feed_type_bx_posts": "published a Post",
+    "feed_type_bx_groups": "created a Group",
+    "feed_type_bx_events": "created an Event",
+    "feed_type_bx_forum": "published a Discussion",
+    "feed_type_bx_ads": "published an Ad",
+    "feed_type_timeline_common_post": ""
 }
