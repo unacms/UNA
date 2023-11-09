@@ -123,7 +123,7 @@ function DefaultUnit(data) {
                 return (
                     <View className="ml-1">
                         <Text className="text-neutral-500  text-xs">
-                        · {l}
+                        {l}
                         </Text>
                         {inList}
                     </View> 

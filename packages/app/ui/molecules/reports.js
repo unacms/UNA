@@ -11,7 +11,8 @@ import { Button, ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounte
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
-
+import Dropdown from 'app/ui/atoms/dropdown'
+import { InputMulti } from 'app/design/controls'
 
 export default function ElementReports(oProps) {
     const { t } = useTranslation();
@@ -104,15 +105,20 @@ export default function ElementReports(oProps) {
         setPopupVisibleDo(true);
     };
 
+    const [ valueType, setValueType ] = useState('');
+    const [ valueText, setValueText ] = useState('');
+
     const handleDo = (event, oDataSubmit) => {
         event.preventDefault();
-
         FeedbackHaptics(oParams.haptics_type);
 
         performAction('do', oDataSubmit, (oData) => {
             setContextVars(oData);
             setPopupVisibleDo(false);
         });
+
+        setValueType('');
+        setValueText('');
     };
 
     const handleUndo = (event) => {
@@ -196,15 +202,34 @@ export default function ElementReports(oProps) {
             <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} />
         );
 
+        let values = oParams.types.map(function (item) {
+            return item.name ? {label: item.title, value: item.name} : null
+        }); 
+        values = values.filter(Boolean);
+
         sActionPopup =(
             <Modal title={t(appSetting('lang_keys', 'report_do_popup_title'))} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
                     <View>
-                        <Text>Types:</Text>
-                        {oParams.types.map( oType => <Text>name: '{oType.name}', title(translated): '{oType.title}'</Text> )}
+                        <Text>Report Type:</Text>
                     </View>
-                    <Text>Report form is here. For now it statically send: <br />type = 'spam', <br />text = 'Report message'.</Text>
-                    <Button size={sDisplaySize} title={t('Submit')} onPress={(event) => {handleDo(event, {type: 'spam', text: 'Report message'})}} />
+                    <Dropdown 
+                        labelField="label"
+                        valueField="value"
+                        onChange={setValueType}
+                        value={valueType}
+                        data={values}
+                    />
+                    <View>
+                        <Text>Report Text:</Text>
+                    </View>
+                    <InputMulti
+                        multiline
+                        numberOfLines={4}
+                        onChangeText={setValueText}
+                        value={valueText}
+                    />
+                    <Button size={sDisplaySize} title={t('Send report')} onPress={(event) => {handleDo(event, {type: valueType, text: valueText})}} />
                 </View>
             </Modal>
         );
@@ -280,8 +305,8 @@ export default function ElementReports(oProps) {
         return (
             <View>
                 <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
-                {sActionPopup}
-                {sCounterPopup}
+                    {sActionPopup}
+                    {sCounterPopup}
             </View>
         );
     }

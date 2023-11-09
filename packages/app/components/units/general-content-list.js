@@ -931,7 +931,6 @@ export default function Unit(props) {
   let data = props.data
   const imageSizes = getImageSizes()
   const module = !!data?.module ? data.module : props.module
-console.log(module);
   switch (module) {
     case 'bx_groups':
     case 'bx_events':
