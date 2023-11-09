@@ -132,6 +132,14 @@ let settingsDefault = {
             show_counter: true,
             show_counter_as_button: false,
         },
+        report: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+            show_counter: true,
+            show_counter_as_button: false,
+            haptics_type: 'Medium',
+        },
         connection: {
             show_action_as_button: true,
         },
