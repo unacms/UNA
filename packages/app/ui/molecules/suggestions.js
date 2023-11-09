@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, storageSet, storageGet } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
-
+import { fetcher } from 'app/lib/fetcher';
+import { useWindowDimensions} from 'react-native';
 
 export default function Suggestions(props) {
+    const windowWidth = useWindowDimensions().width;
     let { currentUser, setCurrentUser } = useCurrentUser();
-
-    if (!currentUser)
-        return <></>
-
+    const [dataIndexModal, setDataIndexModal] = useState(0);
+    const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
     let suggestionListNames = suggestionList.map(item => item.name);
     let suggestionListShown = storageGet('suggestion:list', '', true);
@@ -20,27 +20,52 @@ export default function Suggestions(props) {
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
-    const [dataIndexModal, setDataIndexModal] = useState(0);
-    
-    const shangeData = () => { 
+    let dataModal = filteredList[0];
+
+    useEffect(() => {
+        const fetchData = async () => {
+                let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
+                const sResponse = await fetcher(request_url);
+                if (sResponse.data[0].data.data.length == 0){
+                    shangeData(false);
+                }
+                else{
+                    setDataCount(1)
+                }
+        };
+        if (currentUser && dataModal)
+            fetchData();
+    }, [currentUser, dataModal]);
+
+
+    if (!currentUser)
+        return <></>
+
+
+    const shangeData = (isSaveToStore) => { 
         let a = dataIndexModal + 1;
         if (a>=filteredList.length)
             a = false;
-        suggestionListShown.push(filteredList[0].name)
-        storageSet('suggestion:list', '', suggestionListShown, true);
-        
+        if (isSaveToStore || true){
+            suggestionListShown.push(filteredList[0].name)
+            storageSet('suggestion:list', '', suggestionListShown, true);
+        }
+        setDataCount(0)
         setDataIndexModal(a);
     };
-    let dataModal = filteredList[0];
 
-    if (dataModal)
+
+    if (dataModal && dataCount > 0){
+        if(dataModal.perLine > 1 && windowWidth < 1024)
+            dataModal.perLine = 1
         return (
             <View>
-                <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => shangeData()}>
+                <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => shangeData(true)}>
                     <Browse height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
                 </Modal>
             </View>
         )
+    }
 
     return <></>
 }

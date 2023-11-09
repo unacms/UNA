@@ -78,7 +78,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                             textDisabledColor: colors.border,
                             monthTextColor: colors.text,
                         }}
-                        renderArrow={direction => {return  <Icon icon={direction} width={24} height={24} />}}
+                        renderArrow={direction => {return  <Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} />}}
                         initialDate = {date}
                         onDayPress={day => {
                             setdValue({dt:day.dateString, h:dValue.h, m:dValue.m})
