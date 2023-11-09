@@ -123,7 +123,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
                     <Hidden name={props.name} onBlur={field.onBlur} value={field.value} />
                     <Input value={date} readonly={true} />
                 </View>
-                <Button startDecorator="calendar" onPress={() => { setShowModal(true) }}/>
+                <Button startDecorator="Calendar" onPress={() => { setShowModal(true) }}/>
             </Row>
         </Field>
     );

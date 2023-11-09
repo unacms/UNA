@@ -102,7 +102,7 @@ function DefaultUnit(data) {
     const ItemInfo = ({ data }) => {
 
         let inList = <></>
-        if (data.owners.length > 0){
+        if (data.owners?.length > 0){
             inList = <>
                 <Text className="text-neutral-500  text-xs"> in </Text>
                 {
