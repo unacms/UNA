@@ -58,7 +58,7 @@ function DefaultUnit(data) {
     let bIsTimelineContent = data?.type?.includes('timeline') ? true : false
     let bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
     let bIsMarketContent = (data.type == 'bx_market') &&  data.action == 'added'
-
+    let bIsAddContent = (data.type == 'bx_ads') &&  data.action == 'added'
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
     let sShort = truncateHTML(data.content.text, 380)
     let sLong = truncateHTML(data.content.text, 10000000)
@@ -254,8 +254,73 @@ function DefaultUnit(data) {
                         <View className="flex-auto p-2 my-auto flex-col    ">
                             <Link href={url} className="">
                             <Text  className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                                                                    {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
+                                {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
                             </Text>
+                            
+                            <Text
+                                numberOfLines={2}
+                                className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                            >
+                                {data.content.title}
+                            </Text>
+                            </Link>
+                            {!showFull ? (
+                            <View>
+                                <View className="flex-col gap-y-3 relative">
+                                <Text
+                                    className="text-neutral-950 dark:text-neutral-50  text-sm "
+                                    numberOfLines={3}
+                                >
+                                    {data.content.text}
+                                </Text>
+                                </View>
+                                {!!data.sFirstImg && (
+                                <View
+                                    className={
+                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
+                                    }
+                                >
+                                    <Image
+                                    src={data.sFirstImg}
+                                    alt={data.title}
+                                    view="cover"
+                                    />
+                                </View>
+                                )}
+                            </View>
+                            ) : (
+                            <View className="flex-col relative">
+                                <Html data={data.content.text} />
+                            </View>
+                            )}
+                        </View>
+                        </View>
+                        )
+                    }
+                    { bIsAddContent && (
+                        <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+                        {data.mainImage && (
+                            <View className="w-full md:w-1/3  ">
+                            <View
+                                className="w-full aspect-video   "
+                                style={styles.card_image}
+                            >
+                                <Image
+                                {...data.mainImage}
+                                alt={data.title}
+                                view="cover"
+                                className=" rounded u-cover "
+                                sizes="(max-width:768px) 100vw, 500px"
+                                />
+                            </View>
+                            </View>
+                        )}
+                        <View className="flex-auto p-2 my-auto flex-col    ">
+                            <Link href={url} className="">
+                            <Text  className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                                {data.price > 0 ? data.price  + '$' : 'Free'}
+                            </Text>
+                            
                             <Text
                                 numberOfLines={2}
                                 className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
@@ -390,7 +455,7 @@ function DefaultUnit(data) {
 
                     {viewState.view != 'edited' && (
                         <>
-                        {!bIsGroupContent && !bIsMarketContent && (
+                        {!bIsGroupContent && !bIsMarketContent  && !bIsAddContent && (
                             <>
                             <View className="  flex-col md:flex-row-reverse ">
                                 {data.mainImage && (
