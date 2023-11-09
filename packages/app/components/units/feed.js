@@ -117,9 +117,7 @@ function DefaultUnit(data) {
             </>
         }
 
-        let l = t((appSetting('lang_keys', 'feed_type_' + data.type) ? appSetting('lang_keys', 'feed_type_' + data.type) : '')) +
-            ' ' +
-            (appSetting('lang_keys', 'feed_action_' + data.action) ? appSetting('lang_keys', 'feed_action_' + data.action) : '')
+        let l = t('feed_type_' + data.type)
         
             if (l != ' ')
                 return (

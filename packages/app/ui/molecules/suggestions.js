@@ -2,36 +2,48 @@ import { View, ScrollView, Row, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { useState, useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-
+import { appSetting, storageSet, storageGet } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 
 
 export default function Suggestions(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
-    console.log('currentUser', currentUser);
-    const [showModal1, setShowModal1] = useState(true);
-    const [showModal2, setShowModal2] = useState(false);
-    
-    const hideModal1 = () => { 
-        setShowModal1(false);
-        setShowModal2(true)
-    };
 
     if (!currentUser)
         return <></>
+
+    let suggestionList = appSetting('suggestion', 'list');
+    let suggestionListNames = suggestionList.map(item => item.name);
+    let suggestionListShown = storageGet('suggestion:list', '', true);
+    if (!suggestionListShown)
+        suggestionListShown = [];
+    let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
+    let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
+    console.log(filteredList);
+
+
+
+    const [dataIndexModal, setDataIndexModal] = useState(0);
     
-    let data = {request_url : '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]=' + currentUser.id + '&params[]=', "type" : "obj_own_and_con", unit:"general-content-list"}
-    let data2 = {request_url : '/api.php?r=bx_groups/browse_recommendations_fans&params[]=' + currentUser.id, "type" : "obj_own_and_con", unit:"general-content-list"}
+    const shangeData = () => { 
+        let a = dataIndexModal + 1;
+        if (a>=filteredList.length)
+            a = false;
+        suggestionListShown.push(filteredList[0].name)
+        storageSet('suggestion:list', '', suggestionListShown, true);
+        
+        setDataIndexModal(a);
+    };
+    let dataModal = filteredList[0];
+    console.log("dataIndexModal", dataIndexModal, dataModal, suggestionListShown)
+    if (dataModal)
+        return (
+            <View>
+                <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => shangeData()}>
+                    <Browse height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
+                </Modal>
+            </View>
+        )
 
-    return (
-        <View>
-            <Modal title="Recommended friends" onVisible={showModal1} outerClickClose={false} onClose={() => hideModal1()}>
-                <Browse height={400}  data={data} perLine={3} unitType="person_friends_recommendations"/>
-            </Modal>
-
-            <Modal title="Recommended groups" onVisible={showModal2} outerClickClose={false} onClose={() => setShowModal2(false)}>
-                <Browse height={400}  data={data2} perLine={3} unitType="person_friends_recommendations"/>
-            </Modal>
-        </View>
-    )
+    return <></>
 }
