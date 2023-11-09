@@ -39,7 +39,7 @@ let settingsDefault = {
     },
     cache: {
         list: true,
-        compress: false
+        compress: true
     },
     feed: {
         show_selector_view: true,

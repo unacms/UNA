@@ -19,9 +19,6 @@ export default function Suggestions(props) {
         suggestionListShown = [];
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
-    console.log(filteredList);
-
-
 
     const [dataIndexModal, setDataIndexModal] = useState(0);
     
@@ -35,7 +32,7 @@ export default function Suggestions(props) {
         setDataIndexModal(a);
     };
     let dataModal = filteredList[0];
-    console.log("dataIndexModal", dataIndexModal, dataModal, suggestionListShown)
+
     if (dataModal)
         return (
             <View>
