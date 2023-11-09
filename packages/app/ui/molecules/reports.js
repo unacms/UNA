@@ -192,23 +192,22 @@ export default function ElementReports(oProps) {
         );
     }
     else {
-        if(bWeb) {
-            sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} />
-            );
+        sActionButton = (
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} />
+        );
 
-            sActionPopup =(
-                <Modal title={t(appSetting('lang_keys', 'report_do_popup_title'))} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
-                        <Text>Report form is here. For now it statically send: <br />type = 'spam', <br />text = 'Report message'.</Text>
-                        <Button size={sDisplaySize} title={t('Submit')} onPress={(event) => {handleDo(event, {type: 'spam', text: 'Report message'})}} />
+        sActionPopup =(
+            <Modal title={t(appSetting('lang_keys', 'report_do_popup_title'))} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
+                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
+                    <View>
+                        <Text>Types:</Text>
+                        {oParams.types.map( oType => <Text>name: '{oType.name}', title(translated): '{oType.title}'</Text> )}
                     </View>
-                </Modal>
-            );
-        }
-        else {
-            //TODO: Native popup with form should be here.
-        }
+                    <Text>Report form is here. For now it statically send: <br />type = 'spam', <br />text = 'Report message'.</Text>
+                    <Button size={sDisplaySize} title={t('Submit')} onPress={(event) => {handleDo(event, {type: 'spam', text: 'Report message'})}} />
+                </View>
+            </Modal>
+        );
     }
 
     //--- Counter
