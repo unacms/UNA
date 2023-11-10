@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
@@ -16,7 +15,6 @@ import { InputMulti } from 'app/design/controls'
 
 export default function ElementReports(oProps) {
     const { t } = useTranslation();
-    const bWeb = Platform.OS === 'web';
     const oSettings = appSetting('social_actions', 'report');
 
     const oParams = {...oSettings, ...oProps.params};
@@ -99,8 +97,6 @@ export default function ElementReports(oProps) {
 
     const handleGetDo = (event) => {
         event.preventDefault();
-
-        console.log('Show Popup');
 
         setPopupVisibleDo(true);
     };
@@ -207,8 +203,8 @@ export default function ElementReports(oProps) {
         }); 
         values = values.filter(Boolean);
 
-        sActionPopup =(
-            <Modal title={t(appSetting('lang_keys', 'report_do_popup_title'))} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
+        sActionPopup = (
+            <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">
                     <View>
                         <Text>Report Type:</Text>
@@ -289,7 +285,7 @@ export default function ElementReports(oProps) {
             );
 
             sCounterPopup = (
-                <Modal title={t(appSetting('lang_keys', 'report_performed_by_popup_title'))} onVisible={popupVisiblePerformed} onClose={() => {setPopupVisiblePerformed(false)}}>
+                <Modal title={t('Reports')} onVisible={popupVisiblePerformed} onClose={() => {setPopupVisiblePerformed(false)}}>
                     <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
                 </Modal>
             );
