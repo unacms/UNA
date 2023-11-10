@@ -10,6 +10,7 @@ let settingsDefault = {
         notifications: '/notifications-view',
         apps: true,
         block: 'login',
+        show_profile_info: true,
         allow_switch_profile: true,
         switch_lang: ['ru', 'en'],
         switch_theme: true,
@@ -398,7 +399,6 @@ let settingsDefault = {
         bx_timeline_menu_item_manage: [
             'item-edit', 
             'item-delete',
-            'item-report'
         ],
     },
 
@@ -463,14 +463,17 @@ let settingsDefault = {
                 signup: {name: 'system:create_account_form', showTitle: false, showBg: false },
 
                 profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
-                intro: { name: 'static:intro', showTitle: false, showBg: false },
+                
                 home_intro: { name: 'static:home_intro', showTitle: false, showBg: false },
                 home_footer: { name: 'static:home_footer', showTitle: false, showBg: false },
-                footer: { name: 'static:footer', showTitle: false, showBg: false },
-                menu: { name: 'system:profile_menu', showTitle: false, showBg: false },
-                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
-                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false },
-                subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
+               
+                menu: { name: 'system:profile_menu', showTitle: false, showBg: false, leftbar: true },
+                
+                intro: { name: 'static:intro', showTitle: false, showBg: false, sidebar: true },
+                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
+                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
+                subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
+                footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [
                 { icon: 'Plus', name: 'Add', link: '/create-post' },

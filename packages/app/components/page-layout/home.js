@@ -82,6 +82,18 @@ export default function PageLayout(props) {
         return <></>
     } 
 
+    let sideBarBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].sidebar).map(key => {
+        return {name: key, block: props.blocks[key]};
+    });
+
+    let topBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].topbar).map(key => {
+        return {name: key, block: props.blocks[key]};
+    });
+
+    let navBarBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].leftbar).map(key => {
+        return {name: key, block: props.blocks[key]};
+    });
+
     if (isWeb) {
         if (currentUser === null && renderBlock){
             let p = {blocks : props.blocks, data : props.data, block: SplashBlock(props)}
@@ -98,15 +110,17 @@ export default function PageLayout(props) {
             dUser.url = '/dashboard'
             const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
             
+        
+            
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
                     <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
                 </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    {props.blocks.menu && <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
-                        
-                        <Row className="items-center justify-between pl-6 pr-4 mb-2 py-2   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
+                    <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
+                        {appSetting('layout', 'show_profile_info') && (
+                            <Row className="items-center justify-between pl-6 pr-4 mb-2 py-2   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
                                         <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
@@ -117,18 +131,22 @@ export default function PageLayout(props) {
                                         </Text>
                                     </Row>
                                 </Link>
-                                {appSetting('layout', 'allow_switch_profile') && <View className='flex-none'><Button
-                                variant="text"
-                                size="sm"
-                                startDecorator="UserSwitch"
-                                rounded
-                                onClick = {() => setShowImage(true)}
-                                align="right"
-                            /></View>}
-                        </Row>
-                        <BlockByName data={props.data} name={props.blocks.menu} />
+                                {appSetting('layout', 'allow_switch_profile') && (
+                                    <View className='flex-none'><Button
+                                        variant="text"
+                                        size="sm"
+                                        startDecorator="UserSwitch"
+                                        rounded
+                                        onClick = {() => setShowImage(true)}
+                                        align="right"
+                                    /></View>)}
+                            </Row>)}
+                        {navBarBlocks.map((item, index) => {
+                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                            }
+                        )}
                     </View>
-                    }
+                    
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto   w-full mx-auto">
@@ -169,6 +187,10 @@ export default function PageLayout(props) {
                                             return (
                                                 <View key={'view' + index}  >
                                                     <LayoutDataContext>
+                                                        {topBlocks.map((item, index) => {
+                                                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                                                            }
+                                                        )}
                                                         <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
                                                         <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
                                                     </LayoutDataContext>
@@ -182,11 +204,10 @@ export default function PageLayout(props) {
                         </View>
                     </View>
                     <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
-                    <BlockByName name={props.blocks.intro} />
-                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.friends} skeleton="one_column_browse" showTitleInside={true} />
-                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.messenger_contacts} skeleton="one_column_browse" showTitleInside={true} />
-                        <BlockByName no_scroll={true} data={props.data} name={props.blocks.subscriptions} skeleton="one_column_browse" showTitleInside={true} />
-                        <BlockByName name={props.blocks.footer} />
+                        {sideBarBlocks.map((item, index) => {
+                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                            }
+                        )}
                     </View>
                 </View>
         </View>
@@ -214,6 +235,10 @@ export default function PageLayout(props) {
     if (blocks[feedType + '_feed']){
         blocksForAdd.push(blocks[feedType + '_feed'].name)
     }
+    topBlocks.map((item, index) => {
+        blocksForAdd.push(item.block.name)
+    });
+
     let dataForFeed = filterContent(props.data, blocksForAdd)
 
     let menu = {
