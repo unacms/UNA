@@ -101,7 +101,12 @@ export default function ElementReports(oProps) {
         setPopupVisibleDo(true);
     };
 
-    const [ valueType, setValueType ] = useState('');
+    let valuesType = oParams.types.map(function (item) {
+        return item.name ? {label: item.title, value: item.name} : null
+    }); 
+    valuesType = valuesType.filter(Boolean);
+
+    const [ valueType, setValueType ] = useState(valuesType[0].value);
     const [ valueText, setValueText ] = useState('');
 
     const handleDo = (event, oDataSubmit) => {
@@ -113,7 +118,7 @@ export default function ElementReports(oProps) {
             setPopupVisibleDo(false);
         });
 
-        setValueType('');
+        setValueType(valuesType[0].value);
         setValueText('');
     };
 
@@ -198,10 +203,7 @@ export default function ElementReports(oProps) {
             <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} />
         );
 
-        let values = oParams.types.map(function (item) {
-            return item.name ? {label: item.title, value: item.name} : null
-        }); 
-        values = values.filter(Boolean);
+        
 
         sActionPopup = (
             <Modal title={t('Report')} onVisible={popupVisibleDo} onClose={() => {setPopupVisibleDo(false)}}>
@@ -214,7 +216,7 @@ export default function ElementReports(oProps) {
                         valueField="value"
                         onChange={setValueType}
                         value={valueType}
-                        data={values}
+                        data={valuesType}
                     />
                     <View>
                         <Text>Report Text:</Text>

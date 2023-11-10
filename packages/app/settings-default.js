@@ -397,7 +397,8 @@ let settingsDefault = {
         ],
         bx_timeline_menu_item_manage: [
             'item-edit', 
-            'item-delete'
+            'item-delete',
+            'item-report'
         ],
     },
 
