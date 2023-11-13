@@ -118,7 +118,9 @@ export function getHeaderSettings(uri, width) {
     const bTitle = typeof settings?.headerSettings?.title !== 'undefined' ? settings.headerSettings.title : true;
 
     let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : true;
-    
+
+    let sCover = typeof settings?.headerSettings?.cover !== 'undefined' ? settings.headerSettings.cover : 'pre';
+
     if (width >= 1024)
         bOffset = true;
 
@@ -128,7 +130,8 @@ export function getHeaderSettings(uri, width) {
         menu: bMenu,
         title: bTitle,
         offset: bOffset,
-        footer: bFooter
+        footer: bFooter,
+        cover: sCover
     }
 }
 

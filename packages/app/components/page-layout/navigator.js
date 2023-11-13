@@ -4,12 +4,11 @@ import { appSetting } from 'app/lib/util';
 import { useEffect, useMemo} from 'react';
 
 function getMenu(props) {
-    //console.log(1);
+
     let menu = Object.assign({}, props.data.menu);;
     let categories = DataByName(props.data, props.blocks.categories);
     let menuItems = [];
     if (categories){
-       // console.log('categories?.content[0]?.data', categories?.content[0]?.data, menu.items);
         menuItems  = categories?.content[0]?.data
             .map((obj, index) => {
             const key = Object.keys(obj)[0];

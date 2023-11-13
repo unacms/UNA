@@ -19,7 +19,7 @@ import MainMenu from 'app/components/nav/mainmenu'
 import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword}) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover}) {
     const { t } = useTranslation();
     const redirectdRef = useRef();
     let uniRef = useRef();
@@ -34,7 +34,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    //console.log('initedTabs', menu, initedTabs);
+   // console.log('initedTabs', menu, initedTabs);
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
@@ -123,7 +123,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
     let offset = header ? (windowWidth < 1024 ? 200 : 600) : 50;
-
+    if (cover == 'min' && header > 50){
+        offset = windowWidth < 1024 ? 80 : 200
+    }
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > offset && scrollValue.value != 0){
@@ -137,10 +139,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         // Add the event listener when the component mounts
         window.addEventListener('scroll', handleScroll);
     
+        if (cover == 'pre'){
+            window.scroll({
+                top: offset-100,
+                behavior: "smooth",
+            });
+        }
+        
+        
         // Clean up the event listener when the component unmounts
         return () => {
           window.removeEventListener('scroll', handleScroll);
         };
+        
     }, []); 
 
     useEffect(() => {
@@ -150,7 +161,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const renderTabBar = (props) => {
         const currentRoute = routes.find((item) => item.index === index);
         let headerSettings = getHeaderSettings(currentRoute.key, windowWidth);
-
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -219,7 +229,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                             }
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)}   />
+                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
@@ -410,6 +420,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 title = {(a.title)}
                                 align="start"
                                 startDecorator={!a.ident ? settings?.icon : a.icon}
+                                addon={a.addon}
                             />
                         </Pressable>
                     </Link>

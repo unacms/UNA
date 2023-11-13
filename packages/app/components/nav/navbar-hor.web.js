@@ -21,7 +21,7 @@ import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useTranslation } from 'react-i18next';
-
+import { fetcher } from 'app/lib/fetcher'
 
 export default function (props) {
     const redirectdRef = useRef()
@@ -242,9 +242,13 @@ export default function (props) {
                                 
                                 {bNotifs && <DropdownPopup
                                     open={ntfsOpen}
-                                    onOpenChange={(bOpen) => {
-                                        bOpen
-                                        setNtfsOpen(bOpen)
+                                    onOpenChange={async (bOpen) => {
+                                        let b = currentUser;
+                                        b.notifications = 0
+                                        setCurrentUser(b);
+                                        const sResponse = await fetcher('/api.php?r=bx_notifications/mark_as_read/')
+                                        setNtfsOpen(bOpen);
+                                        
                                     }}
                                     title={t(sTxtNtfsTitle)}
                                 >

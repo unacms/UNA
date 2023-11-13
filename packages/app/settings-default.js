@@ -35,7 +35,7 @@ let settingsDefault = {
         site: 'http://localhost:3000',
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
-        notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',
+       /* notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',*/
         root: 'https://ci.una.io/test3/',
     },
     cache: {
@@ -846,7 +846,7 @@ let settingsDefault = {
                 col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
-            headerSettings: { offset: false, header: false }
+            headerSettings: { offset: false, header: false, cover:'pre'}
         },
         'group-fans': {
             layout: 'profile',
@@ -875,7 +875,7 @@ let settingsDefault = {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
             },
-            headerSettings: { offset: false, header: false }
+            headerSettings: { offset: false, header: false, cover:'min' }
         },
         //############ PERSONS PAGES ############
         'persons-home': {

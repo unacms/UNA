@@ -1,9 +1,16 @@
 import {Conductor} from 'app/ui/molecules/conductor';
 import Cover, {CoverSmall} from 'app/components/elements/cover';
 import  LayoutDataContext from 'app/context/layout';
-export default function PageLayout(props) {
+import { getHeaderSettings } from 'app/lib/util';
+import { useWindowDimensions } from 'react-native';
 
-    let header = <Cover data={props.data.cover_block}/>
+export default function PageLayout(props) {
+    const windowDimen =  useWindowDimensions();
+    const windowWidth = windowDimen.width;
+    let headerSettings = getHeaderSettings(props.uri, windowWidth);
+    let cover = headerSettings.cover
+
+    let header = <Cover data={props.data.cover_block} mode={cover}/>
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     if (!props.data.menu.items){
@@ -17,7 +24,8 @@ export default function PageLayout(props) {
         isHideDefaultHeader={true} 
         menu={props.data.menu} 
         data={props.data} 
-        blocks={props.blocks} 
+        blocks={props.blocks}
+        cover={cover}
     /></LayoutDataContext>)
     
 }

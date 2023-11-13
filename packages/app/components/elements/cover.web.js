@@ -109,6 +109,7 @@ export function CoverSmall(props) {
 
 export default function ElementCover(props) {
     const data = props.data
+    const mode = props.mode
     let { width } = useWindowDimensions()
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
     const [coverUrl, setCoverUrl] = useState(data.cover.src);
@@ -203,7 +204,7 @@ export default function ElementCover(props) {
     return (
         <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
             <View className='max-w-screen-2xl sm:px-4 mx-auto w-full'>
-                <View className=" duration-500 bg-primary-200    dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto     xl:rounded-b-lg overflow-hidden">
+                {mode != 'min' && <View className=" duration-500 bg-primary-200    dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto     xl:rounded-b-lg overflow-hidden">
                     {!!data.cover && (
                         <Image
                             alt={data.group_name}
@@ -226,7 +227,7 @@ export default function ElementCover(props) {
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}
                     </View>
-                </View>
+                </View>}
 
                 <View className="relative    flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
                     

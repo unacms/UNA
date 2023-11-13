@@ -140,6 +140,7 @@ export function Button (props) {
     let buttonAlign = props.align ? props.align : 'center'
     let buttonFull = props.fullWidth ? true : false
     let buttonTitle = props.title ? props.title : ''
+    let buttonAddon = props.addon ? props.addon : ''
     let buttonRounded = props.rounded ? true : false
     let buttonSolid = props.solid ? true : false
     let isIcon = buttonIconStart || buttonIconEnd;
@@ -249,7 +250,7 @@ export function Button (props) {
 
     let sButtonIconStart = buttonIconStart != '' && !buttonIconEnd ? getIcon2(buttonIconStart, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
     let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
-
+    let oButtonAddon = buttonAddon != '' && buttonAddon ? <View className='flex-1 items-end '><View className=' bg-primary dark:bg-primary-d rounded-full px-2 py-1 w-12 text-center items-center'><Text className="text-white dark:text-black text-xs font-semibold">{buttonAddon}</Text></View></View> : null;
     let Cnt = onPress !== undefined ? Pressable : View
     return (
         <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button', 'alt': rest.alt } : {} )} onPress={onPress} ref={forwardedRef}>
@@ -258,6 +259,7 @@ export function Button (props) {
                 <Text className={sClassText + sTitleContainer} numberOfLines={1}>{buttonTitle}</Text>
             )}
             {sButtonIconEnd}
+            {oButtonAddon}
             {props.children}
         </Cnt>
     );

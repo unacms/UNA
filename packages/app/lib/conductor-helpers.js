@@ -42,6 +42,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.link = item.link;
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
+            i.addon = item.addon;
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
@@ -67,6 +68,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.link = item.link;
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
+            i.addon = item.addon;
             i.icon = item.icon;
             i.inited = false;
             i.storageKeyValue = storageKey(i.link, false);
