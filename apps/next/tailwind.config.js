@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     ...theme,
   },
-  darkMode: ['class', '[data-mode="dark"]'],
+  darkMode: ['class', '[theme="dark"]'],
   important: 'html',
   plugins: [require('nativewind/tailwind/css'), require('@tailwindcss/typography')],
   future: {hoverOnlyWhenSupported: true}

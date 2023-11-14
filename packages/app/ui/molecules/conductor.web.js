@@ -110,6 +110,16 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             enabled: routes[index]?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
 
+    const scrollToCover = (cover, windowWidth, offset) => {
+        const baseScroll = windowWidth < 1024 ? 280 : offset;
+        const adjustment = cover === 'group' ? -100 : -200;
+    
+        window.scroll({
+            top: baseScroll + adjustment,
+            behavior: "smooth",
+        });
+    }
+
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage) 
             return;
@@ -128,6 +138,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
     useEffect(() => {
         const handleScroll = () => {
+            console.log("scrollValue", window.scrollY, offset, cover)
             if (window.scrollY > offset && scrollValue.value != 0){
                 scrollValue.value = 0;
             }
@@ -138,15 +149,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     
         // Add the event listener when the component mounts
         window.addEventListener('scroll', handleScroll);
-    
-        if (cover == 'pre'){
-            window.scroll({
-                top: offset-100,
-                behavior: "smooth",
-            });
-        }
-        
-        
+        scrollToCover(cover, windowWidth, offset)
+
         // Clean up the event listener when the component unmounts
         return () => {
           window.removeEventListener('scroll', handleScroll);
@@ -268,10 +272,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
                 </>
         }*/
-
+        let tOffset = appSetting('layout', 'format') =='ver' ? 0: 63;
         return (
             <>
-                <Animated.View style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40, top:windowWidth >= 1024 ? 63: 0 }, animatedStyle6]}>
+                <Animated.View style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40, top:windowWidth >= 1024 ? tOffset: 0 }, animatedStyle6]}>
                     {smallHeader}
                     {tabBarObj}
                 </Animated.View>
@@ -457,7 +461,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className="w-full lg:w-3/4 xl:w-4/5 ">
+                        <View className="w-full lg:w-3/4 xl:w-4/5 min-h-screen">
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>
@@ -471,7 +475,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            <View className='max-w-screen-2xl mx-auto w-full'>
+            <View className='max-w-screen-2xl mx-auto w-full min-h-screen '>
                 <RenderScene route={currentRoute}/>
             </View>
             {searchBarObj()}

@@ -3,6 +3,7 @@ import Cover, {CoverSmall} from 'app/components/elements/cover';
 import  LayoutDataContext from 'app/context/layout';
 import { getHeaderSettings } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
+import { View } from 'app/design/view'
 
 export default function PageLayout(props) {
     const windowDimen =  useWindowDimensions();
@@ -14,18 +15,20 @@ export default function PageLayout(props) {
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     if (!props.data.menu.items){
-        props.data.menu.items = [{name: 'view-channel-profile', link: 'view-channel-profile/unaplatform'}];
+        props.data.menu.items = [{name: 'view-channel-profile', link: props.data.url}];
     }
-    return (<LayoutDataContext><Conductor 
-        header={header} 
-        smallHeader={smallHeader} 
-        minHeaderHeight={104} 
-        offsetTop={300}
-        isHideDefaultHeader={true} 
-        menu={props.data.menu} 
-        data={props.data} 
-        blocks={props.blocks}
-        cover={cover}
-    /></LayoutDataContext>)
+    return (<LayoutDataContext>
+            <Conductor 
+                header={header} 
+                smallHeader={smallHeader} 
+                minHeaderHeight={104} 
+                offsetTop={300}
+                isHideDefaultHeader={true} 
+                menu={props.data.menu} 
+                data={props.data} 
+                blocks={props.blocks}
+                cover={cover}
+            />
+        </LayoutDataContext>)
     
 }

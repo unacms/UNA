@@ -429,7 +429,6 @@ let settingsDefault = {
             layout: 'dashboard',
             top:true,
             blocks: {
-                profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
                 stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: true },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
@@ -461,8 +460,6 @@ let settingsDefault = {
 
                 login: {name: 'system:login_form', showTitle: false, showBg: false },
                 signup: {name: 'system:create_account_form', showTitle: false, showBg: false },
-
-                profile_switcher: { name: 'system:account_profile_switcher', showTitle: false, showBg: true },
                 
                 home_intro: { name: 'static:home_intro', showTitle: false, showBg: false },
                 home_footer: { name: 'static:home_footer', showTitle: false, showBg: false },
@@ -846,7 +843,7 @@ let settingsDefault = {
                 col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
-            headerSettings: { offset: false, header: false, cover:'pre'}
+            headerSettings: { offset: false, header: false, cover: 'group'}
         },
         'group-fans': {
             layout: 'profile',
@@ -902,7 +899,7 @@ let settingsDefault = {
                 col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
-            headerSettings: { offset: false, header: false }
+            headerSettings: { offset: false, header: false, cover: 'profile' }
         },
         'persons-profile-friends': {
             layout: 'profile',

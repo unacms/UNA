@@ -11,7 +11,7 @@ import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
-
+import { BlockByName } from 'app/components/block'
 import Redirect from 'app/ui/atoms/redirect'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Search from 'app/ui/molecules/search'
@@ -21,11 +21,14 @@ import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useTranslation } from 'react-i18next';
+import { Modal } from 'app/design/controls'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function (props) {
     const { t } = useTranslation();
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
+    const [showImage, setShowImage] = useState(false);
     const [menuPopup, setMenuPopup] = useState(false)
 
     let { width } = useWindowDimensions()
@@ -111,8 +114,8 @@ export default function (props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <ScrollView className=" backdrop-blur fixed w-full lg:w-1/5 top-0 px-4 py-[11px] items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d">
-                    <View className=' flex-row lg:flex-col justify-between w-full' >
+            <ScrollView className=" backdrop-blur fixed w-full lg:w-1/5 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                    <View className=' flex-row lg:flex-col justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
                         {headerSettings.menu && (
                             <View className="lg:hidden mr-4">
                                 <Pressable  onPress={showMenu}>
@@ -125,6 +128,7 @@ export default function (props) {
                             
                                 </Pressable>
                             </View>  )}
+                        <View>
                         <Link href="/home" aria-label="Logo">
                             <View className="group  mr-auto flex-row flex-none items-center rounded-lg my-auto lg:mx-2 lg:mb-4">
                                 {appStatic('logo_mark')}
@@ -153,30 +157,34 @@ export default function (props) {
                                     </Link>
                                 )
                             )}
-                            {!!currentUser && (
-                            <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                    <Link href={currentUser.url} className="flex-auto">
-                                        <Row className='flex-row gap-x-2 items-center'>
-                                            <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                                {profile}
-                                            </View>
-                                            <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </Row>
-                                    </Link>
-                                    {appSetting('layout', 'allow_switch_profile') && <View className='flex-none'><Button
-                                    variant="text"
-                                    size="sm"
-                                    startDecorator="UserSwitch"
-                                    fullWidth
-                                    onClick = {() => setShowImage(true)}
-                                    align="right"
-                                /></View>}
-                            </Row>
-                            )}
+                            </View>
+                            </View>
+                            <View className='hidden lg:block mt-4'>
+                                {!!currentUser && (
+                                <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                        <Link href={currentUser.url} className="flex-auto">
+                                            <Row className='flex-row gap-x-2 items-center'>
+                                                <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                                    {profile}
+                                                </View>
+                                                <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                    {currentUser.display_name}
+                                                </Text>
+                                            </Row>
+                                        </Link>
+                                        {appSetting('layout', 'allow_switch_profile') && <View className='flex-none '><ProfileSwitcher hideTitle={true} >
+                                            <Button
+                                            variant="text"
+                                            size="sm"
+                                            startDecorator="UserSwitch"
+                                            fullWidth
+                                            align="right"
+                                        />
+                                            </ProfileSwitcher></View>}
+                                </Row>
+                                )}
                         </View>
-                        <Row className='lg:hidden w-full justify-end'>
+                        <Row className='lg:hidden lg:w-full justify-end'>
                            
                             {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
                             { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">

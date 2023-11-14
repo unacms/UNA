@@ -61,11 +61,11 @@ export default function RootLayout({ children }) {
 
     if (typeof window !== 'undefined'){
         const root = window.document.documentElement;
-        root.setAttribute('data-mode', scheme);
+        //root.setAttribute('theme', scheme);
     }
 /**/
     return (
-        <html lang="en" data-mode={theme}>
+        <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d'>
                 <Provider>
                         <QueryClientProvider client={queryClient}>

@@ -103,8 +103,8 @@ function DefaultUnit(data) {
 
         let inList = <></>
         if (data.owners?.length > 0){
-            inList = <>
-                <Text className="text-neutral-500  text-xs"> in </Text>
+            inList = <Row>
+                <Text className="text-neutral-500  text-xs">in </Text>
                 {
                     data.owners.map((item, index) => {
                         return (
@@ -114,7 +114,7 @@ function DefaultUnit(data) {
                         );
                     })
                 }
-            </>
+            </Row>
         }
 
         let l = t('feed_type_' + data.type)

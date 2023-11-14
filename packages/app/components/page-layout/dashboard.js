@@ -6,6 +6,7 @@ import Link from 'app/ui/atoms/link'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import { BlockByName } from 'app/components/block'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
@@ -24,7 +25,7 @@ import { fetcher } from 'app/lib/fetcher';
 export default function PageLayout(props) {
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser()
-    const [showImage, setShowImage] = useState(false);
+    
     const [showImage2, setShowImage2] = useState(false);
 
     let profile = null
@@ -56,9 +57,9 @@ export default function PageLayout(props) {
             if (item == 'auto')
                 item = '';
             if (item == '')
-                root.setAttribute('data-mode', scheme);
+                root.setAttribute('theme', scheme);
             else
-                root.setAttribute('data-mode', item);
+                root.setAttribute('theme', item);
             
             storageSet('layout:theme', '', item, true);
             //location.reload();
@@ -74,9 +75,6 @@ export default function PageLayout(props) {
 
     return (
         <>
-            <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
-                <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
-            </Modal>
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
@@ -94,7 +92,7 @@ export default function PageLayout(props) {
                                 </Link>
                             </View>
                             <View className="flex-row items-center gap-x-2 my-auto lg:hidden">
-                                {appSetting('layout', 'allow_switch_profile') && <Button variant="outline" startDecorator="UserSwitch" rounded onPress = {() => setShowImage(true)} />}
+                                {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} ><Button variant="outline" startDecorator="UserSwitch" rounded  /></ProfileSwitcher>}
                                 {
                                     appSetting('layout', 'switch_lang').length > 1 && (
                                         <View><DropdownMenu 
@@ -139,14 +137,13 @@ export default function PageLayout(props) {
                                 <Link noprefetch={true} href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
-                                {appSetting('layout', 'allow_switch_profile') && <Button
+                                {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} ><Button
                                     variant="text"
                                     title={ t("Switch Profile") }
                                     startDecorator="UserSwitch"
                                     fullWidth
-                                    onPress = {() => setShowImage(true)}
                                     align="left"
-                                />}
+                                /></ProfileSwitcher>}
                             
                                
                                 {

@@ -10,9 +10,9 @@ import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
-import { Modal } from 'app/design/controls'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next';
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function PageLayout(props) {
     
@@ -114,9 +114,6 @@ export default function PageLayout(props) {
             
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                <Modal id='file-preview' title="Your Profiles" onVisible={!!showImage} onClose={() => {setShowImage(null)}}>
-                    <BlockByName name={props.blocks.profile_switcher} data={props.data} hideTitle={true} />
-                </Modal>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
                     <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
                         {appSetting('layout', 'show_profile_info') && (
@@ -132,14 +129,13 @@ export default function PageLayout(props) {
                                     </Row>
                                 </Link>
                                 {appSetting('layout', 'allow_switch_profile') && (
-                                    <View className='flex-none'><Button
+                                    <View className='flex-none'><ProfileSwitcher hideTitle={true} ><Button
                                         variant="text"
                                         size="sm"
                                         startDecorator="UserSwitch"
                                         rounded
-                                        onClick = {() => setShowImage(true)}
                                         align="right"
-                                    /></View>)}
+                                    /></ProfileSwitcher></View>)}
                             </Row>)}
                         {navBarBlocks.map((item, index) => {
                                 return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);

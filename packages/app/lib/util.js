@@ -119,7 +119,7 @@ export function getHeaderSettings(uri, width) {
 
     let bOffset = typeof settings?.headerSettings?.offset !== 'undefined' ? settings.headerSettings.offset : true;
 
-    let sCover = typeof settings?.headerSettings?.cover !== 'undefined' ? settings.headerSettings.cover : 'pre';
+    let sCover = typeof settings?.headerSettings?.cover !== 'undefined' ? settings.headerSettings.cover : 'full';
 
     if (width >= 1024)
         bOffset = true;

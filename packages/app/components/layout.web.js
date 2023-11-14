@@ -9,6 +9,9 @@ import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
+import { storageGet } from 'app/lib/util'
+
+
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
 const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
@@ -19,6 +22,15 @@ const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
 
 export default function Layout({ data, uri, children }) {
     const { width } = useWindowDimensions();
+
+    let theme = storageGet('layout:theme', '', true);
+    const scheme = useColorScheme();
+    if (theme == ''){
+        theme = scheme;
+    }
+    const root = window.document.documentElement;
+    root.setAttribute('theme', theme);
+    
 
     const handlePageShow = useCallback((event) => {
         storageClear();
@@ -57,10 +69,9 @@ export default function Layout({ data, uri, children }) {
     if (data?.empty)
         return <>{children}</>
 
-    const scheme = useColorScheme();
     let stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}
     let stylesBg={ backgroundColor: appSetting('layout', 'background_color')}
-    if(scheme === 'dark'){
+    if(theme === 'dark'){
         stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image_dark')}
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
     }
@@ -74,6 +85,8 @@ export default function Layout({ data, uri, children }) {
             </>
         );
     }
+
+    
 
     if(appSetting('layout', 'format') == 'ver'){
         if (width > 1024)
