@@ -115,7 +115,7 @@ export default function PageLayout(props) {
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200  ">
+                    {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4  max-w-sm   top-0 sticky duration-200 ">
                         {appSetting('layout', 'show_profile_info') && (
                             <Row className="items-center justify-between pl-6 pr-4 mb-2 py-2   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
@@ -141,7 +141,7 @@ export default function PageLayout(props) {
                                 return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
                             }
                         )}
-                    </View>
+                    </View>}
                     
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
