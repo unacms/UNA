@@ -27,6 +27,10 @@ let settingsDefault = {
         port: '443',
         key: 'app-key',
     },
+    api_keys: {
+        google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',//TODO
+        open_ai: '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'
+    },
     jitsi: {
         prefix: 'prefix_',
         domain: 'https://meet.jit.si/',
@@ -35,6 +39,7 @@ let settingsDefault = {
         site: 'http://localhost:3000',
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
+        location: 'https://ci.una.io/test3/geo.php?',
        /* notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',*/
         root: 'https://ci.una.io/test3/',
     },
@@ -266,7 +271,7 @@ let settingsDefault = {
         bx_events_submenu: {
             name: 'Events',
             icon: 'Calendar',
-            items: ['events-home', 'events-top', 'events-joined', 'events-followed'],
+            items: ['events-home', 'events-top', 'events-joined', 'events-followed', 'events-calendar','events-upcoming'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-event-profile' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
@@ -361,6 +366,7 @@ let settingsDefault = {
         ],
         bx_events_view_submenu: [
             'view-event-profile', 
+            'event-profile-info', 
             'event-fans'
         ],
         bx_events_view_meta: {
@@ -529,6 +535,22 @@ let settingsDefault = {
             icon: 'LinkSimple',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
+        'events-upcoming': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_events:browse_upcoming_profiles', showTitle: false, showBg: false },
+            },
+            icon: 'LinkSimple',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'events-calendar': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
+            },
+            icon: 'LinkSimple',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
         'events-followed': {
             layout: 'navigator',
             blocks: {
@@ -542,8 +564,18 @@ let settingsDefault = {
             blocks: {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
-                col2: { name: 'bx_events:entity_info', showTitle: false, showBg: false, perLine: 1, sidebar: true },
-                col3: { name: 'bx_events:get_block_view_profile', showTitle: false, showBg: false, perLine: 1, sidebar: true },
+                col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
+                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: true },
+                col4: { name: 'system:locations_map', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
+            },
+            headerSettings: { offset: false, header: false }
+        },
+        'event-profile-info': {
+            layout: 'profile',
+            blocks: {
+                col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, showPad: true, perLine: 1,  },
+                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, showPad: true, perLine: 1,  },
+                col4: { name: 'system:locations_map', showTitle: true, showBg: true, showPad: true, perLine: 1,},
             },
             headerSettings: { offset: false, header: false }
         },
@@ -1066,7 +1098,7 @@ let settingsDefault = {
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
+            {key: '/tab2', title: 'Friends', url: '/event-profile-info/er', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],

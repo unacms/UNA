@@ -3,7 +3,6 @@ import { Text, H2 } from 'app/design/typography'
 import Time from '../../ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
-import Card from 'app/ui/molecules/card'
 
 export default function ElementEntityInfo({ data }) {
     const inputs = Object.keys(data.inputs).map(function (key) {
@@ -31,16 +30,13 @@ export default function ElementEntityInfo({ data }) {
     })
 
     return (
-        <Card addClassName="px-4 py-3" margn="none">
-            <H2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">Info</H2>
             <View className='flex-col gap-y-4 '>{inputs}</View>
-        </Card>
     )
 
     function getValue(a) {
         switch (a.type) {
             case 'datetime':
-                return <Time ts={a.value}></Time>
+                return <Time stylesName="text-base" ts={a.value}></Time>
 
             case 'select':
                 return (

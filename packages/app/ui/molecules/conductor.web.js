@@ -138,7 +138,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
     useEffect(() => {
         const handleScroll = () => {
-            console.log("scrollValue", window.scrollY, offset, cover)
             if (window.scrollY > offset && scrollValue.value != 0){
                 scrollValue.value = 0;
             }
@@ -353,7 +352,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
                         { route?.sidebar?.content?.length > 0 && <UniList
                                 no_scroll
-                                renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
+                                renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
                                 data={route?.sidebar?.content}
                             />
                         }

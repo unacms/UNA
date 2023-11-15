@@ -44,6 +44,7 @@ const nextConfig = {
     '@react-native-picker/picker',
     '@react-native-community/clipboard',
     'expo-image-picker',
+    'expo-location',
     'expo-document-picker',
     'react-native-svg',
     'expo-image-manipulator',

@@ -13,14 +13,13 @@ import Card from 'app/ui/molecules/card'
 import { appSetting } from 'app/lib/util'
 import JitSi from 'app/ui/molecules/jitsi'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { menuItemsByName } from 'app/lib/util'
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
-import {useColorScheme} from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
+import * as Location from 'expo-location';
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -51,6 +50,18 @@ export default function PageLayout(props) {
 
     const scheme = '';//useColorScheme();
 
+    const getGeo =  async () => { 
+
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        console.log(location)
+    };
+
     const handleTheme =  async (item) => { 
         if(Platform.OS == 'web'){
             const root = window.document.documentElement;
@@ -75,6 +86,14 @@ export default function PageLayout(props) {
 
     return (
         <>
+         <Button
+                                    variant="text"
+                                    title= "GeoLocation"
+                                
+                                    fullWidth
+                                    onPress = {() => getGeo(true)}
+                                    align="left"
+                                />
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>

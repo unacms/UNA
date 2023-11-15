@@ -9,11 +9,13 @@ import { List, ArrowLeft, House, WarningCircle, Chats, ArrowRight, ChatCircleTex
 	ArrowsClockwise, Graph, ChatsTeardrop, MagicWand, Student, Handshake, At, CaretUp, CaretDown, CaretLeft, Note,  ChatCenteredText, Clipboard, 
 	CirclesFour,FileAudio, DotsThreeVertical, ChatCircle, Calendar, UserPlus, Fire, Rows, IntersectThree, Cake, SquaresFour,
 	IdentificationBadge, TextAlignLeft, FilmStrip, CheckSquare, TextUnderline, Heart, ChartBar, Storefront, Video, ShoppingCart, Check,
-	HouseSimple, Folders, Egg, Binoculars, UserList, UserCircleGear, UserFocus, UserSquare, LinkSimple, ChartLine, Translate, Moon, Minus, Hash, CirclesThree, Megaphone, Sparkle 
+	HouseSimple, Folders, Egg, Binoculars, UserList, UserCircleGear, UserFocus, UserSquare, LinkSimple, ChartLine, Translate, Moon, 
+	Minus, Hash, CirclesThree, Megaphone, Sparkle, MapPin
 }  
 from "@phosphor-icons/react";
 
 export const IconSet = {
+	MapPin: MapPin,
 	SquaresFour: SquaresFour,
 	Sparkle: Sparkle,
 	Megaphone: Megaphone,

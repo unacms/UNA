@@ -2,10 +2,10 @@ import String from './blocks-content/string';
 import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
 import { View } from 'app/design/view'
-import { Text } from 'app/design/typography'
+import { Text, H2 } from 'app/design/typography'
 import { stripTags } from '../lib/util';
 import { appStatic } from 'app/lib/app-static';
-
+import Card from 'app/ui/molecules/card'
 
 const componentsMap = {
     object: ObjectDataObject,
@@ -35,7 +35,7 @@ export function BlockByName(props) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showBg={name.showBg} {...rest}  />;
+        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showPad={name.showPad} showBg={name.showBg} {...rest}  />;
     
     //return <Text className="text-black dark:text-white"><!--Not found: {JSON.stringify(name)}--></Text>
 }
@@ -60,7 +60,8 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    let c = Block({/*key:b.id,*/ uri:'', block:b, showTitle:name.showTitle, showBg:name.showBg, extraProps:name})
+    
+    let c = Block({uri:'', block:b, showTitle:name.showTitle, showPad:name.showPad, showBg:name.showBg, extraProps:name})
     return c;
 }
 
@@ -91,7 +92,7 @@ export default function Block(props) {
         return null;
 
     return (
-        <BlockWrapper block={block} showBg={props.showBg} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
+        <BlockWrapper block={block} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>
             <BlockType data={block.content} type={block.type} {...props}/>
         </BlockWrapper>
     );
@@ -99,7 +100,7 @@ export default function Block(props) {
 
 export function BlockWrapper(props) {
 
-    let { block, showTitle, showBg, fullWidth, ...rest } = props
+    let { block, showTitle, showBg, fullWidth, showPad, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
 
     const aNoTitle = [0,10,13,3];
@@ -120,19 +121,25 @@ export function BlockWrapper(props) {
     if (typeof showTitle !== 'undefined'){
         bIsShowTitle = showTitle;
     }
-    if (bIsShowTitle){
-        bIsShowBg = true;
+
+    let bIsShowPad = false;
+    if (typeof showPad !== 'undefined'){
+        bIsShowPad = showPad;
     }
 
-    let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
+    /*if (bIsShowTitle){
+        bIsShowBg = true;
+    }*/
 
+    let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
+    let cnt = <>{bIsShowTitle && <View>
+        <H2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">{stripTags(block.title)}</H2>
+    </View>
+}
+<View>{props.children}</View></>
     return (
-        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? "  max-w-screen-2xl " : "" )  + cssClasses}>
-            <View key={block.id} className={bIsShowBg ? '    ' : ''}>
-                {bIsShowTitle && <View className=" py-3 px-4 ">
-                    <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{stripTags(block.title)}</Text></View>}
-                <View>{props.children}</View>
-            </View>
+        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? "  max-w-screen-2xl " : "" ) + (bIsShowPad ? ' mb-4 ' : '') + cssClasses}>
+            { bIsShowBg ? (<Card addClassName="px-4 py-3" margn="none">{cnt}</Card>) : <View className="px-0 " >{cnt}</View>}
         </View>
     );
 }

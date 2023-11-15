@@ -224,7 +224,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType }) {
+export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
     
     if (item?.type === 'block') {
         let b = BlockByName2({b:item.data, name:item.block})
@@ -232,7 +232,7 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
             return (<View className='h-[1px]'><Text>&nbsp;</Text></View>);
 
         return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2' : 'w-full '}>
             {b}
             </View>
         );

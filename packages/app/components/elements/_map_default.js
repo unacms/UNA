@@ -18,10 +18,14 @@ import MessengerPage from './messenger';
 import ProfileContacts from './contacts';
 import Lang from './lang';
 import Invite from './invite';
+import Map from './map';
+import Calendar from './calendar';
 
 export const componentsMapDefault = {
     browse: Browse,
     invite: Invite,
+    map: Map,
+    calendar: Calendar,
     form: Form,
     msg: Msg,
     login: Login,
