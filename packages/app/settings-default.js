@@ -871,9 +871,9 @@ let settingsDefault = {
             blocks: {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
-                col3: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, sidebar: true  },
-                col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true, sidebar: true },
-                col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true, sidebar: true },
+                col3: { name: 'bx_posts:browse_public', showTitle: false, showBg: false,showPad: true, sidebar: true  },
+                col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true,showPad: true, sidebar: true },
+                col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true,showPad: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false, cover: 'group'}
         },

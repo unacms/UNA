@@ -301,6 +301,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (getNumCols(0) != numColumns)
             setNumColumns(getNumCols(0));
 
+        if (props.data.length == 1 && !props.endpoint){
+            {props.data.map((item, index ) => {
+                return <ItemRenderer key={'item' + index} numColumns={1} item={item} />
+            })}
+        }
+        
         return (
            <UniList
                 {...props}
@@ -323,6 +329,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (route.inited){
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
+            
             let TabFlashListM = useMemo(() => {  
                 return <TabFlashList
                     index={route.index}
@@ -350,12 +357,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     </View>
                     {isRightCol && <View className="hidden xl:block w-1/3 pt-4 pl-4">
 
-                        { route?.sidebar?.content?.length > 0 && <UniList
-                                no_scroll
-                                renderItem={({ item, index }) => <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>}
-                                data={route?.sidebar?.content}
-                            />
-                        }
+                        {route?.sidebar?.content.map((item, index ) => {
+                            return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                        })}
+
                         <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                     </View>}
                 </Row></>
