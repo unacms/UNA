@@ -31,8 +31,12 @@ export default function ElementLink(props) {
         }
     }, []);
 
-    if (!href)
-        href='non defined';
+    if (href == 'javascript:')
+        href='';
+
+    if (href == ''){
+        return props.children
+    }
    
     if ((href == '/home' || href == '')){
         href ='/'
