@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
 
-const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval = 5000) => {
+const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval = 10000) => {
     const [daemonData, setDaemonData] = useState(null);
     const [error, setError] = useState(null);
 
