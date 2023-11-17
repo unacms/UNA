@@ -28,7 +28,8 @@ export default function FormMessenger(props) {
     const [sizes, setSizes] = useState({ formHeight: 0 });
     const viewFormRef = useRef();
     const handleLayout = () => {
-        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+        if (viewFormRef?.current)
+            viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
             setSizes({ formHeight: height });
         });
     };

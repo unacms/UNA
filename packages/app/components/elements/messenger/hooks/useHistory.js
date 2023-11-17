@@ -1,4 +1,4 @@
-import Services from "../services/history";
+import Services from "app/components/elements/messenger/services/history";
 import { useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from 'app/context/user';
 import { stripTags } from 'app/lib/util';
@@ -122,8 +122,6 @@ export const useHistoryMessageAction = function(convoId, menuItem){
             //client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId) });
         }
     });
-
-
 
     return { executeAction, isSuccess };
 }

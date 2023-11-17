@@ -9,7 +9,7 @@ import UniList from 'app/ui/atoms/unilist';
 import { ListFeed } from 'app/components/units/convos-feeds';
 import { isDesktop, isPhone } from "./grid-utils";
 import useConvos from "./hooks/useConvos";
-import { getSkeleton } from "../../../lib/skeleton-helpers";
+import { getSkeleton } from "app/lib/skeleton-helpers";
 
 function UserAvatar({ avatars }) {
     const { thumb, title, color, letter } = Object.assign(avatars['bx_if:avatars'].content, avatars['bx_if:letters'].content);

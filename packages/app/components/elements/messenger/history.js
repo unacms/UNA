@@ -75,7 +75,7 @@ export function HistoryComponent(){
 
            }, [menuItem, item, client]),
            handlerUpdateSelectedConvo = useCallback(() => {
-                   const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
+               const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem)) || {};
                         pages?.flatMap(page => page).some((oItem) => {
                         if (oItem.id === item.id) {
                             setConvoItem((prev) => ({ item: oItem, manually: prev.manually }));
