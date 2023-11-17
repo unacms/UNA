@@ -1,0 +1,56 @@
+import { Button } from 'app/design/controls'
+import { Wrapper } from '../../../components/wrapper'
+import { View } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Unit } from 'app/components/units/general-content-list'
+import Link from "app/ui/atoms/link"
+import Image from 'app/ui/atoms/image';
+import Svg, {Path} from 'react-native-svg'
+
+# Hero
+
+Intro card is a card that is used to display the welcome message, member stats and authentication buttons.
+
+## Homepage
+
+<Wrapper className="my-40 overflow-hidden">
+
+ 
+  
+
+   <View className="relative flex-col   md:flex-row gap-4 duration-500  max-w-screen-xl mx-auto   rounded-lg">  
+            <View className="bottom-0 -right-[10%] absolute  w-[60%] aspect-square rounded-full  bg-primary  opacity-20 blur-3xl    "></View> 
+
+      <View className="flex-col  gap-y-4 my-auto py-8 flex-auto">
+          
+              <View className="text-3xl  font-bold text-primary-800 dark:text-primary-200">
+                 Welcome to the community!          
+              </View>
+                 
+                <View className='text-lg text-neutral-600 dark:text-neutral-400'>
+                  The place to share, connect and grow with people you trust. Create account to join the community. 
+                </View>          
+               
+          
+          
+            
+            <Button title="Get Started" variant="primary"  />
+          
+      </View>
+
+        <View className="border shadow-sm  border-neutral-50 dark:border-neutral-950 w-full md:w-[40%] 
+         bg-neutral-50/50 dark:bg-neutral-950/50 backdrop-blur-md   rounded-lg p-1  ">
+         <View className="w-full pb-[50%]  rounded h-full overflow-hidden">
+         <View className="absolute bg-red-500/30 h-full w-full rounded-full rotate-45 blur-3xl  translate-x-[34%]  "></View>
+         <View className="absolute bg-blue-500/30 h-full w-full rounded-full rotate-45 blur-3xl -translate-x-[34%]"></View>
+        </View>
+
+      </View> 
+    
+    </View>
+     
+</Wrapper>
+
+
+
+
