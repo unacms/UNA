@@ -40,7 +40,6 @@ let settingsDefault = {
         embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
         images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
         location: 'https://ci.una.io/test3/geo.php?',
-       /* notifs: 'https://ci.una.io/test3/api.php?r=bx_notifications/get_unread_notifications_num_ex&params[]=',*/
         root: 'https://ci.una.io/test3/',
     },
     cache: {
@@ -451,12 +450,12 @@ let settingsDefault = {
             layout: 'home',
             top:true,
             blocks: {
-                public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
+              /*  public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
-
+*/
                 foryou_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 foryou_feed: {name: 'bx_timeline:get_block_view_custom', showTitle: false, showBg: false },
-
+/*
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
                 
@@ -476,7 +475,7 @@ let settingsDefault = {
                 friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
                 messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
-                footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
+                footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },*/
             },
             header: [
                 { icon: 'Plus', name: 'Add', link: '/create-post' },

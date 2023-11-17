@@ -7,13 +7,24 @@ export default function UniList(props) {
 
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
    
-    if (props.unit == 'feed' && layoutData?.id){
-        let insertIndex = data.findIndex(item => item.type !== 'block');
-        if (insertIndex === -1) {
-            data = [layoutData, ...data]
+    if (props.unit == 'feed'){
+        if(layoutData?.id){
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data = [layoutData, ...data]
+            }
+            else{
+                data.splice(insertIndex, 0, layoutData);
+            }
         }
-        else{
-            data.splice(insertIndex, 0, layoutData);
+        if (Array.isArray(layoutData)){
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data = [...layoutData, ...data]
+            }
+            else{
+                data.splice(insertIndex, 0, ...layoutData);
+            }
         }
     }
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);

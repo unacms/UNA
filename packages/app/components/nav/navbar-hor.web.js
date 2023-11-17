@@ -11,20 +11,14 @@ import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
-
-import Redirect from 'app/ui/atoms/redirect'
-import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Search from 'app/ui/molecules/search'
-import Browse from 'app/components/elements/browse'
-import Notifications from 'app/components/units/notifications'
+import NotificationButton from 'app/ui/molecules/notif'
 import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useTranslation } from 'react-i18next';
-import { fetcher } from 'app/lib/fetcher'
 
 export default function (props) {
-    const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation();
@@ -46,40 +40,6 @@ export default function (props) {
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
     const bApps = appSetting('layout', 'apps') == true;
 
-    const sTxtNtfsTitle = t("Notifications")
-    const sTxtNtfsViewAll = t("View all")
-    const [ntfsOpen, setNtfsOpen] = useState(false)
-    let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
-    const ntfsContent = (
-        <View key="ddp-content" className="px-1.5 pb-1.5">
-            <View className="flex-row items-center mb-1">
-                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
-                    {sTxtNtfsTitle}
-                </Text>
-                <Button
-                    variant="text"
-                    size="sm"
-                    rounded
-                    endDecorator="CaretDoubleRight"
-                    title={sTxtNtfsViewAll}
-                    onPress={() => {
-                    setNtfsOpen(false)
-                    handleClick(appSetting('layout', 'notifications'))
-                    }}
-                />
-            </View>
-            {true ? (
-                <Browse height={400}  data={data} />
-            ) : (
-                oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
-            )}
-        </View>
-    )
-
-    const handleClick = (sUrl) => {
-        redirectdRef.current.redirect(sUrl)
-    }
-
     let profile = null
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
@@ -97,8 +57,6 @@ export default function (props) {
 
     let headerSettings = getHeaderSettings(props.uri, width);
 
-    const notifCount = currentUser? currentUser.notifications : 0;
-
     useEffect(() => {
         const handleClick = () => {
         hideMenu();
@@ -115,7 +73,6 @@ export default function (props) {
     return (
         <>
             <View className="fixed -top-[1px]  w-full">
-                <Redirect ref={redirectdRef} />
                 <View className="   backdrop-blur h-16 px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
                     <View className="flex-row flex-auto xl:flex-none xl:w-1/4 gap-x-4 my-auto">
                         <Row className="flex-row  flex-none items-center">
@@ -240,32 +197,7 @@ export default function (props) {
                             </View>}
                             <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                 
-                                {bNotifs && <DropdownPopup
-                                    open={ntfsOpen}
-                                    onOpenChange={async (bOpen) => {
-                                        let b = currentUser;
-                                        b.notifications = 0
-                                        setCurrentUser(b);
-                                        const sResponse = await fetcher('/api.php?r=bx_notifications/mark_as_read/')
-                                        setNtfsOpen(bOpen);
-                                        
-                                    }}
-                                    title={t(sTxtNtfsTitle)}
-                                >
-                                    {[
-                                        <View key="ddp-trigger3">
-                                            <ButtonRef
-                                                variant="outline"
-                                                rounded
-                                                startDecorator="Bell"
-                                                id="m1"
-                                            />
-                                            {( notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
-                                       
-                                        </View>,
-                                        ntfsContent
-                                    ]}
-                                </DropdownPopup>}
+                                {bNotifs && <NotificationButton />}
                                 {bMessenger && <Tooltip content={t("Messenger")} asChildTrigger={true}>
                                     <ButtonRef
                                         variant="outline"

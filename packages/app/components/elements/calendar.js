@@ -61,32 +61,24 @@ export default function ElementCalendar({ data }) {
         // console.log(a);
     }
  
-
     return (
-        <View className='w-full mx-auto max-w-5xl'>
+        <View className='w-full pr-2'>
             <CalendarProvider
                 date={transformedData[0]?.title}
                 onDateChanged={onDateChanged}
             >
-                
-                <ExpandableCalendar
-                    firstDay={1}
-                    markedDates={marked}
-                    animateScroll
-                    initialPosition={'closed'}
-                    hideKnob={false}
-                />
-                <View className='h-96 '>
+            <Row className='w-full space-x-2 '>
+                <View className='h-screen w-3/4'>
                     <AgendaList
                         sections={transformedData}
                         avoidDateUpdates={false}
                         scrollToNextEvent={true}
                         viewOffset={0}
-                        sectionStyle={{ fontSize:20, paddingBottom:12, paddingTop:12, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8}}
+                        sectionStyle={{ fontSize:20, paddingBottom:12, paddingTop:12, marginBottom:8, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8}}
                         renderItem={(item, firstItemInDay) => {
                             return (
                                 <Link href={item.item.url}>
-                                    <Card margin="my-2 mx-4" rounded="rounded">
+                                    <Card margin="mb-2 ml-16" rounded="rounded">
                                         <View className='p-4'>
                                             <Text className=" text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
                                             <Row>
@@ -105,6 +97,16 @@ export default function ElementCalendar({ data }) {
                             return <View />;
                         }}
                     /></View>
+                    <View className='w-1/4 '>
+                        <ExpandableCalendar
+                            firstDay={1}
+                            markedDates={marked}
+                            animateScroll
+                            initialPosition={'closed'}
+                            hideKnob={false}
+                        />
+                    </View>
+                </Row>
             </CalendarProvider>
         </View>
     );

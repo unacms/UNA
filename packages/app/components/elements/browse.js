@@ -1,5 +1,5 @@
-import Unit from '../unit';
-import { useState,useEffect, useRef, useMemo  } from 'react';
+import Unit from 'app/components/unit';
+import { useState,useEffect, useRef, useContext   } from 'react';
 import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
@@ -8,18 +8,23 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting, storageKey, storageGet, getDataFromCache,storageSet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery } from  '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient, QueryClient  } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
+import useDaemon from 'app/lib/hooks/daemon'
+import Toster from 'app/ui/atoms/toster';
+import  { LayoutData } from 'app/context/layout';
 
 export default function ElementBrowse(props) {
-    
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const [maxId, setMaxId] = useState(0);
+    const tosterRef = useRef();
     const { t } = useTranslation();
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
     const [cachedData, setCachedData] = useState({state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
-
+    
     let data = props.data;
     if (data.unit == 'mixed'){
         data.unit = 'general-profile-list';
@@ -77,6 +82,7 @@ export default function ElementBrowse(props) {
         let sResponse =  await fetcher(prepareUrl());
         return sResponse.data[0].data
     };
+
     const {
         status,
         data: newData,
@@ -96,17 +102,21 @@ export default function ElementBrowse(props) {
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
    
-    function prepareUrl () {
-        const params = getCurrentParams();
+    function prepareUrl (isUseDefault = false) {
+        const params = getCurrentParams(isUseDefault);
         return data.request_url + JSON.stringify({'params': params});
     } 
 
-    const getCurrentParams = () => { 
+    const getCurrentParams = (isUseDefault = false) => { 
         if (newData?.pages.length > 0){
             let ld = newData.pages[newData.pages.length - 1].params;
             let params = Object.assign({}, browseParams, ld)
             if (data.unit != 'notifications') 
                 params.start = parseInt(ld.start) + parseInt(ld.per_page);
+            if (isUseDefault){
+                params.start = 0;
+            }
+
             return params;
         }
         return browseParams;
@@ -132,6 +142,44 @@ export default function ElementBrowse(props) {
         ]
     };
 
+    /* DAEMON PART */
+    const setTosterVisible = (val) => {
+        const current = tosterRef.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+    
+    let maxIdLocal = 0;
+    const bUseDaemon =  (props.data.unit == 'feed');
+    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': getCurrentParams(true)})+'&params[]=0&params[]=0', false, bUseDaemon);
+    if (bUseDaemon){
+        maxIdLocal = dataItems?.data.length > 0 ? dataItems?.data.reduce((max, item) => item.id > max ? item.id : max, dataItems?.data[0].id) : 0;
+        if (daemonData && maxId > 0 && maxId < daemonData){
+            setTimeout(() => {
+                setTosterVisible(true);
+            }, 100);
+           
+        }
+    }
+
+    useEffect(() => {
+        if (maxIdLocal >0 && maxIdLocal != maxId){
+           setMaxId(maxIdLocal)
+        }
+      }, [maxIdLocal]);
+   
+
+    const showNewContent = async () => {
+        setTosterVisible(false); 
+        let sResponse =  await fetcher(prepareUrl(true));
+        maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
+        setLayoutData(sResponse.data[0].data.data);
+        setMaxId(maxIdLocal);
+   
+    }
+    /* DAEMON PART */
+
     useEffect(() => {
         if (dataItems.data.length > 0){
             storageSet('ul:data', storageKeyValue, dataItems);
@@ -153,8 +201,11 @@ export default function ElementBrowse(props) {
 
     return (
         (true) && <View className='w-full h-full' >
+                <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}<UniList 
+            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
+            
+            <UniList 
             
                     numColumns={numColumns} 
                     data={dataItems.data}
