@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 import { Text } from 'app/design/typography';
 import { Button } from 'app/design/controls'
 import EntityAuthor from './entity_author';

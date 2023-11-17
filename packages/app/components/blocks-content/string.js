@@ -1,4 +1,4 @@
-import Html from '../../ui/atoms/html';
+import Html from 'app/ui/atoms/html';
 
 export default function BlockContentString(props) {
 

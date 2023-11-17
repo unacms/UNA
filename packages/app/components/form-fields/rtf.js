@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useController, useFormContext } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
 import { Platform } from 'react-native'
-import { uploadImage } from '../../lib/util';
+import { uploadImage } from 'app/lib/util';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view'
 

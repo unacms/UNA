@@ -3,11 +3,12 @@ import { AgendaList, CalendarProvider, ExpandableCalendar, calendarTheme } from 
 import { View, Row } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { useEffect, useState, useRef } from 'react';
 import Card from 'app/ui/molecules/card'
 import { Icon } from 'app/ui/atoms/icon'
 import { Theme } from 'app/design/theme';
+import { stripTags } from 'app/lib/util';
 
 export default function ElementCalendar({ data }) {
     const [cdata, setData] = useState(false);
@@ -94,6 +95,7 @@ export default function ElementCalendar({ data }) {
                                                 <Time stylesName="text-base" ts={item.item.date_end}/>
                                             </Row>
                                             {item.item.location != '' && (<Row><Icon icon='MapPin' /><Text> {item.item.location}</Text></Row>)}
+                                            <Text  numberOfLines={2}> {stripTags(item.item.description)}</Text>
                                         </View>
                                     </Card>
                                 </Link>

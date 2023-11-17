@@ -18,7 +18,7 @@ import { mergeAttributes, Node, Extension } from '@tiptap/core'
 import { Modal } from 'app/design/controls'
 import { Input } from 'app/design/controls'
 import { Text as TextTag } from 'app/design/typography'
-import Html from '../../ui/atoms/html'
+import Html from 'app/ui/atoms/html'
 import Editor from "app/ui/editor/ui/editor";
 
 import "app/ui/editor/styles/globals.css";

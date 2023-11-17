@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view';
 import {BlockByName, DataByName} from 'app/components/block';
 import { useState, useRef } from 'react';
-import { stripTags } from '../../lib/util';
+import { stripTags } from 'app/lib/util';
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform, Keyboard } from 'react-native'

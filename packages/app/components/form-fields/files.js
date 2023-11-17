@@ -1,17 +1,17 @@
 import { useState, useMemo, useCallback, useEffect  } from 'react';
 import Field from './_field';
 import { View, Row, Pressable } from 'app/design/view'
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
-import { genRnd } from '../../lib/util';
+import { genRnd } from 'app/lib/util';
 import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { useFormContext } from 'react-hook-form';
-import { uploadImage, md5 } from '../../lib/util';
+import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';

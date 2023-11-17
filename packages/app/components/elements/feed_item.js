@@ -1,10 +1,7 @@
 import { View } from 'app/design/view';
-import Html from '../../ui/atoms/html';
-import Time from '../../ui/atoms/time';
-import Profile from '../../ui/molecules/profile';
-import { Text } from 'app/design/typography'
+import Html from 'app/ui/atoms/html';
 import { linkify2 } from 'app/lib/util'
-import Menu from '../menu';
+import Menu from 'app/components/menu';
 
 export default function ElementFeedItem({data}) {
     let tlContent = '';

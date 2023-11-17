@@ -1,6 +1,6 @@
 import { View } from 'app/design/view';
-import Image from '../../ui/atoms/image';
-import Html from '../../ui/atoms/html';
+import Image from 'app/ui/atoms/image';
+import Html from 'app/ui/atoms/html';
 import { Text, H1 } from 'app/design/typography';
 import { appSetting, clearLinks } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';

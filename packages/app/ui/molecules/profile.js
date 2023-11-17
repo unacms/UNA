@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View } from 'app/design/view'
-import Image from '../atoms/image'
-import Link from '../atoms/link'
+import Image from 'app/ui/atoms/image'
+import Link from 'app/ui/atoms/link'
 
 /**
  * displayType: 

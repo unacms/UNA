@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { View, Row, Pressable } from 'app/design/view'
-import Image from '../../ui/atoms/image'
+import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
-import { stripTags } from '../../lib/util'
+import { stripTags } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
@@ -12,8 +12,8 @@ import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
 import { useRouter } from    'next/navigation';
 import * as ImagePicker from 'expo-image-picker';
-import { uploadImage, md5 } from '../../lib/util';
-import { genRnd } from '../../lib/util';
+import { uploadImage, md5 } from 'app/lib/util';
+import { genRnd } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native';

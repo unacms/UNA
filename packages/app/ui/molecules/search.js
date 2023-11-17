@@ -8,7 +8,7 @@ import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
-import Link from '../../ui/atoms/link';
+import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
 
 export default function ElementSearch(oProps) {

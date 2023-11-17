@@ -1,6 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { Text, H2 } from 'app/design/typography'
-import Time from '../../ui/atoms/time'
+import Time from 'app/ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
 

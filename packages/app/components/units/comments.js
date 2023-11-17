@@ -12,7 +12,7 @@ import { useCurrentUser } from 'app/context/user';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import dynamic from 'next/dynamic'
 import React from 'react';
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
@@ -21,7 +21,7 @@ import Link from 'app/ui/atoms/link'
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
-        const Carousel = React.memo(dynamic(() => import('../../ui/molecules/carousel')));
+        const Carousel = React.memo(dynamic(() => import('app/ui/molecules/carousel')));
       return  <Carousel data={aImg}/>
     }, [b]); 
     return computedData;

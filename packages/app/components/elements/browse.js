@@ -4,7 +4,7 @@ import { View } from 'app/design/view'
 import { useWindowDimensions} from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { appSetting, storageKey, storageGet, getDataFromCache,storageSet } from 'app/lib/util'
 import { Dimensions } from 'react-native';
 import { Text } from 'app/design/typography'

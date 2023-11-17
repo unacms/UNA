@@ -1,8 +1,8 @@
 import { Text } from 'app/design/typography'
 import { useState } from 'react';
-import { stripTags } from '../../lib/util';
+import { stripTags } from 'app/lib/util';
 import { View, Pressable } from 'app/design/view';
-import Html from '../../ui/atoms/html';
+import Html from 'app/ui/atoms/html';
 import { appSetting } from 'app/lib/util';
 
 export function ContentMore({content, numberOfLines, textStyle, openSmall, textClassName}) {

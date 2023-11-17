@@ -1,7 +1,7 @@
 import { View, ScrollView, Row, Pressable } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { useState, useEffect } from 'react';
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import Card from 'app/ui/molecules/card'
 

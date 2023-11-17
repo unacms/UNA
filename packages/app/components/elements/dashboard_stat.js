@@ -5,7 +5,7 @@ import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/ui/molecules/card'
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

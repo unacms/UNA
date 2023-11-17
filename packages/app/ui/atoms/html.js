@@ -5,7 +5,7 @@ import RenderHtml, {
     HTMLContentModel,
     HTMLElementModel,
   } from 'react-native-render-html'
-import { mergeDeep } from '../../lib/util';
+import { mergeDeep } from 'app/lib/util';
 import { appSetting, md5 } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useState } from 'react';

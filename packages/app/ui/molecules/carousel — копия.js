@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import Carousel from "react-native-reanimated-carousel";
 import { View, Pressable } from 'app/design/view'
 
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 
 import Animated, {
     Extrapolate,

@@ -1,10 +1,10 @@
 import { View, Row, Pressable } from 'app/design/view';
 import { useState } from 'react';
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 import { Text, H2 } from 'app/design/typography';
-import Link from '../../ui/atoms/link';
+import Link from 'app/ui/atoms/link';
 import { Modal } from 'app/design/controls'
-import Video from '../../ui/atoms/video';
+import Video from 'app/ui/atoms/video';
 import { FeedbackHaptics } from 'app/lib/util';
 
 export default function ElementEntityAttachments(props) {

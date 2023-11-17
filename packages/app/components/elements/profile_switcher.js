@@ -5,7 +5,7 @@ import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import Profile from 'app/ui/molecules/profile'
 import { useCurrentUser } from 'app/context/user'
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';

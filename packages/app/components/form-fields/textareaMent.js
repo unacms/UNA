@@ -3,7 +3,7 @@ import { View, Pressable } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { useController } from 'react-hook-form';
 import { useState, useEffect} from 'react';
-import { fetcher } from '../../lib/fetcher';
+import { fetcher } from 'app/lib/fetcher';
 import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
 import { styled } from 'nativewind'

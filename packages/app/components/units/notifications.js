@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useWindowDimensions} from 'react-native';
-import { stripTags } from '../../lib/util';
+import { stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';

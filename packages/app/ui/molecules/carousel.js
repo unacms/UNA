@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
-import Image from '../../ui/atoms/image';
+import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
 import { Modal } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';

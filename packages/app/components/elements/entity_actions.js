@@ -1,5 +1,5 @@
 import { View } from 'app/design/view';
-import Menu from '../menu';
+import Menu from 'app/components/menu';
 
 export default function ElementEntityActions(props) {
     //relative  sm:my-0 bg-bgrcard dark:bg-bgrcard-d  border-bdr dark:border-bdr-d sm:border-x w-full mx-auto max-w-5xl

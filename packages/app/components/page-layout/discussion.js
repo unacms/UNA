@@ -2,7 +2,7 @@ import { View } from 'app/design/view';
 import { BlockByName, DataByName} from 'app/components/block';
 
 import { useState, useContext, useRef, useEffect } from 'react';
-import { stripTags } from '../../lib/util';
+import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
 import { Platform } from 'react-native'
 

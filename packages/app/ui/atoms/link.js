@@ -1,6 +1,6 @@
 import { Pressable } from 'app/design/view'
 import { Link } from 'expo-router';
-import { FeedbackHaptics } from '../../lib/util';
+import { FeedbackHaptics } from 'app/lib/util';
 
 export default function ElementLink(props) {
     if (!props.href)

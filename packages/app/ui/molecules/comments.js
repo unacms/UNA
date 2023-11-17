@@ -1,11 +1,9 @@
 import { useState, useContext, useRef } from 'react';
-
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
-
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 

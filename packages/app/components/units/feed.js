@@ -1,21 +1,21 @@
-import Image from '../../ui/atoms/image'
-import Link from '../../ui/atoms/link'
-import Time from '../../ui/atoms/time'
-import Profile from '../../ui/molecules/profile'
+import Image from 'app/ui/atoms/image'
+import Link from 'app/ui/atoms/link'
+import Time from 'app/ui/atoms/time'
+import Profile from 'app/ui/molecules/profile'
 import { useState, useMemo } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import Html from '../../ui/atoms/html'
+import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
 import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
-import Menu from '../menu'
+import Menu from 'app/components/menu'
 import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
-import { fetcher } from '../../lib/fetcher'
+import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
 import useSWR from 'swr'
 import { componentsMap } from 'app/ui/molecules/_map'
@@ -623,7 +623,7 @@ function SmallUnit(data) {
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
         const Carousel = React.memo(
-            dynamic(() => import('../../ui/molecules/carousel'))
+            dynamic(() => import('app/ui/molecules/carousel'))
         )
         return <Carousel data={aImg} />
     }, [b])

@@ -7,7 +7,7 @@ import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
-import { stripTags } from '../../lib/util';
+import { stripTags } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native'
 
 export default function PageLayout(props) {
