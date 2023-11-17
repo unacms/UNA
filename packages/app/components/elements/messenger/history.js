@@ -4,7 +4,7 @@ import { Button } from 'app/design/controls';
 import { useRef, useContext, useEffect, useState, useCallback, memo, Clipboard } from 'react';
 import { PageData, MenuData } from "./context/messenger-сontext";
 import { Text } from 'app/design/typography';
-import Loading from "../../app/ui/atoms/loading";
+import Loading from "app/ui/atoms/loading";
 import {MsgFeed} from 'app/components/units/convos-feeds';
 import UniList from 'app/ui/atoms/unilist';
 import ReactionContext from "app/context/actions";
