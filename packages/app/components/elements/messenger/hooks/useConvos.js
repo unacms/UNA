@@ -1,4 +1,4 @@
-import Services from "../services/convos";
+import Services from "app/components/elements/messenger/services/convos";
 import { useInfiniteQuery, useQuery, useQueryClient } from  '@tanstack/react-query';
 import { useCurrentUser } from 'app/context/user';
 

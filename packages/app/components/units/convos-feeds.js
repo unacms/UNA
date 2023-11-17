@@ -1,15 +1,15 @@
-import Time from '../../ui/atoms/time';
-import Profile from '../../ui/molecules/profile';
+import Time from 'app/ui/atoms/time';
+import Profile from 'app/ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
 import { memo, useMemo } from 'react';
 import dynamic from "next/dynamic";
-import {useCurrentUser} from "../../context/user";
-import {FeedbackHaptics, linkify} from "../../lib/util";
-import Html from "../../ui/atoms/html";
-import {Button} from "../../design/controls";
-import Menu from "../menu";
-import DropdownMenu from "../../ui/atoms/dropdown-menu";
+import {useCurrentUser} from "app/context/user";
+import {FeedbackHaptics, linkify} from "app/lib/util";
+import Html from "app/ui/atoms/html";
+import {Button} from "app/design/controls";
+import Menu from "app/components/menu";
+import DropdownMenu from "app/ui/atoms/dropdown-menu";
 import Reactions from 'app/ui/molecules/reactions';
 
 const ListFeed = memo((data)  => {
@@ -55,7 +55,7 @@ const ListFeed = memo((data)  => {
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
-        const Carousel = memo(dynamic(() => import('../../ui/molecules/carousel')));
+        const Carousel = memo(dynamic(() => import('app/ui/molecules/carousel')));
         return  <Carousel data={aImg} onComplete={() => console.log('----- carusel is complete ------')}/>
     }, [b]);
     return computedData;

@@ -8,11 +8,15 @@ import { PageContext, PageData, MenuContext, MenuData } from './context/messenge
 import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
 import { fetcher } from "app/lib/fetcher";
 import useBrowserHistory from './hooks/useBrowserHistory';
-import useHistory from "./hooks/useHistory";
+import { useCurrentUser } from 'app/context/user';
+import {useQueryClient} from "@tanstack/react-query";
+import {ConvoKeys} from "./hooks/useConvos";
+import {HistoryKeys} from "./hooks/useHistory";
 
 function PageLayout() {
     const { setMenuItems, menuItem, setMenuItem } = useContext(MenuData),
-          { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId, setHistoryArea, historyArea } = useContext(PageData);
+          { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId, setHistoryArea, historyArea } = useContext(PageData),
+          queryClient = useQueryClient();
 
     /* Web Routing begin */
     const handlerOnPopState = useCallback(() => {
@@ -23,12 +27,63 @@ function PageLayout() {
         return !bIsPhone;
     }, [screenMode]),
 
-    { action:sUriAction, profile:aUriProfile, convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState);
+    { action:sUriAction, profile:aUriProfile, convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState),
+
+    { currentUser } = useCurrentUser(),
+
+    handlerNewMessage = useCallback((oData) => {
+        const { id, convo, user_id } = oData;
+        if (id) {
+            queryClient.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)} );
+            queryClient.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(id)} );
+        }
+    }, [convoId, menuItem, queryClient]);
+
+    useEffect(() => {
+        let jotServer = null;
+        if (currentUser ) {
+            const { pusher : jotServer } = currentUser;
+            if (jotServer) {
+                const channel = jotServer.subscribe("bx_messenger");
+                      channel.bind('new-message', handlerNewMessage);
+
+                /*jotServer.allChannels().forEach(channel => console.log(channel.name));
+
+                channel.bind('pusher:subscription_succeeded', (members) => {
+                    console.log('-------- members connected --------', members);
+                    //setChannel(channel);
+                });
+
+                channel.bind('pusher:subscription_error', (error) => {
+                    console.log('-------- pusher:subscription_error --------', error);
+                });
+
+                channel.bind('pusher:member_added', (member) => {
+                    console.log('-------- member is added --------', channel.members);
+                });*/
+
+
+
+                /*jotServer.connection.bind('state_change', function(states) {
+                    console.log('---------- pusher status ------', states);
+                });*/
+            }
+        }
+
+       return () => {
+            if (jotServer) {
+                jotServer.subscribe("bx_messenger");
+                jotServer.bind('new-message');
+            }
+        };
+
+    }, [currentUser, queryClient]);
 
     useEffect(() => {
          if (iConvoIdUri) {
              setConvoId(iConvoIdUri);
              if (!convoId && isPhone(screenMode)) {
+                 console.log('------ set history area -------');
                  setPanel('history');
              }
          }
@@ -36,7 +91,7 @@ function PageLayout() {
          if (sMenuUri)
              setMenuItem(sMenuUri);
 
-     }, [iConvoIdUri, sMenuUri]);
+     }, [iConvoIdUri, sMenuUri, convoId]);
 
     useEffect(() => {
         if (sUriAction && aUriProfile) {
@@ -66,14 +121,13 @@ function PageLayout() {
         }
 
         initMenu();
-
     }, []);
 
     useEffect(() => {
        const { item, manually } = convoInfo;
 
-       if (isPhone(screenMode))
-            setPanel((manually || convoId === iConvoIdUri) && 'history');
+       if (isPhone(screenMode) && manually)
+            setPanel((convoId == iConvoIdUri) && 'history');
 
         // Web Routing
         const { id, title } = item || {};

@@ -1,6 +1,6 @@
 import {createContext, useState} from 'react';
 import { useWindowDimensions } from "react-native";
-import { getScreenMode } from '../grid-utils';
+import { getScreenMode } from 'app/components/elements/messenger/grid-utils';
 
 const PageData = createContext({});
 const MenuData = createContext({});
@@ -9,6 +9,7 @@ function PageContext({ children }) {
     const [panel, setPanel] = useState(false),
           [convoInfo, setConvoItem] = useState({}),
           [historyArea, setHistoryArea] = useState(),
+          [channel, setChannel] = useState(),
           [convoId, setConvoId] = useState();
 
     const { height } = useWindowDimensions();
@@ -19,6 +20,7 @@ function PageContext({ children }) {
                                         convoId, setConvoId,
                                         panel, setPanel,
                                         convoInfo, setConvoItem,
+                                        channel, setChannel,
                                      }}>{children}</PageData.Provider>;
 }
 
