@@ -38,6 +38,7 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
             {
                 data?.length > 0 && data?.map((profile, index) => {
                     if (profile?.id){
+                        profile.display_name = profile.title
                         profile.url_avatar = profile.image.src;
                         return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ")}><Profile {...profile} displayType="unit_wo_info" displaySize={displaySize} /></View>
                     }

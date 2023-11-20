@@ -1,7 +1,8 @@
 import { Text } from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
+import { getRandomColor } from 'app/lib/util';
 
 /**
  * displayType: 
@@ -73,28 +74,28 @@ export default function AtomProfile(oProps) {
             sSize = 'w-24 h-24'
             iSizeWidth = 96
             iSizeHeight = 96
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-2xl font-semibold';
             break
 
         case '3xl':
             sSize = 'w-32 h-32'
             iSizeWidth = 128
             iSizeHeight = 128
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-5xl font-semibold';
             break
 
         case '4xl':
                 sSize = 'w-48 h-48'
                 iSizeWidth = 192
                 iSizeHeight = 192
-                sSizeFont = 'text-xl font-semibold';
+                sSizeFont = 'text-7xl font-semibold';
                 break
         
         case 'full':
                 sSize = ' w-full aspect-square rounded-xl '
                 iSizeWidth = 400
                 iSizeHeight = 400
-                sSizeFont = 'text-xl font-semibold';
+                sSizeFont = 'text-7xl font-semibold';
                 break
     }
     sSize += ' rounded-full '
@@ -122,6 +123,7 @@ export default function AtomProfile(oProps) {
 
     //--- with custom or default info section
     function DisplayInfo(oProps) {
+        return <></>
         return (
             <View className="flex-row ">
                 <Text className="mr-2 text-neutral-600 dark:text-neutral-400 text-sm    tracking-tight">
@@ -152,11 +154,15 @@ export default function AtomProfile(oProps) {
             break         
 
         case 'unit_wo_info':
+            let name = oProps.display_name ? oProps.display_name.substr(0,1) : ''
             const content = <View className="relative flex-row">
                 <View className={sSize +" aspect-square overflow-hidden   border border-transparent bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
-                    {!oProps.url_avatar && <View>
+                    {/*!oProps.url_avatar && <View>
                         <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
                         <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>
+                        </View>*/}
+                    {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-'+getRandomColor(oProps.display_name)+'-700 uppercase'}>
+                        <Text className={sSizeFont + ' text-white '}>{name}</Text>
                         </View>}
                     {!!oProps.url_avatar && <Image
                             className={sSize+"    z-50"}

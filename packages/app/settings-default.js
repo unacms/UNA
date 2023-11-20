@@ -220,7 +220,7 @@ let settingsDefault = {
         bx_ads_submenu: {
             name: 'Ads',
             icon: 'File',
-            items: ['ads-home', 'ads-popular',],
+            items: ['ads-home', 'ads-popular', 'ads-administration'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-ad' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
@@ -450,12 +450,12 @@ let settingsDefault = {
             layout: 'home',
             top:true,
             blocks: {
-              /*  public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
+                public_feed_form: { name: 'bx_timeline:get_block_post_home', showTitle: false, showBg: false },
                 public_feed: {name: 'bx_timeline:get_block_view_home', showTitle: false, showBg: false },
-*/
+
                 foryou_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 foryou_feed: {name: 'bx_timeline:get_block_view_custom', showTitle: false, showBg: false },
-/*
+
                 account_feed_form: {name: 'bx_timeline:get_block_post_account', showTitle: false, showBg: false },
                 account_feed: {name: 'bx_timeline:get_block_view_account', showTitle: false, showBg: false },
                 
@@ -475,7 +475,7 @@ let settingsDefault = {
                 friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
                 messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
-                footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },*/
+                footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [
                 { icon: 'Plus', name: 'Add', link: '/create-post' },
@@ -694,6 +694,14 @@ let settingsDefault = {
               
             },
             icon: 'Storefront',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'ads-administration': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:manage_tools', showTitle: false, showBg: false },
+            },
+            icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'ads-popular': {

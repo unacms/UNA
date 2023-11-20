@@ -176,6 +176,7 @@ export default function ElementBrowse(props) {
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
         setLayoutData(sResponse.data[0].data.data);
         setMaxId(maxIdLocal);
+        uniRef.current.scrollToIndex({ animated: true, index: -1 });
    
     }
     /* DAEMON PART */

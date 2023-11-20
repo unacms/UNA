@@ -20,9 +20,11 @@ import Lang from './lang';
 import Invite from './invite';
 import Map from './map';
 import Calendar from './calendar';
+import Grid from './grid';
 
 export const componentsMapDefault = {
     browse: Browse,
+    grid: Grid,
     invite: Invite,
     map: Map,
     calendar: Calendar,

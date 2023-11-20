@@ -302,9 +302,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             setNumColumns(getNumCols(0));
 
         if (props.data.length == 1 && !props.endpoint){
-            {props.data.map((item, index ) => {
-                return <ItemRenderer key={'item' + index} numColumns={1} item={item} />
-            })}
+           let a =  props.data.map((item, index ) => {
+                return <ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} />
+            });
+            return a;
         }
         
         return (
@@ -338,6 +339,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     listState = {route?.state}
                     storagekey={route.storageKeyValue}
                     refer={uniRef}
+                    route={route}
                     unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                     ListFooterComponent = {

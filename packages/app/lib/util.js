@@ -102,6 +102,19 @@ export function getPageWidth(uri) {
     return appSetting('layout', 'max_width');
 }
 
+export function getRandomColor(str) {
+    if (!str)
+        str ='a';
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0; // Convert to 32bit integer
+    }
+    var arr = ['rose', 'red', 'amber', 'lime', 'emerald', 'cyan', 'blue', 'violet', 'fuchsia'];
+    return arr[Math.abs(hash % 10)];
+}
+
 export function getHeaderSettings(uri, width) {
     let settings = appSetting('layouts', uri)
 
