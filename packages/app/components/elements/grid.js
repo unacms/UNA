@@ -53,12 +53,23 @@ export default function ElementGrid({data}) {
     }
 
     function getActionButton(itemAction, indexRow, index) {
+        let icon = getActionButtonIcon(itemAction.name);
         if (itemAction.type == 'link'){
-            return <Link key={index} href={itemAction.url}><Button title={itemAction.title}  /></Link>
+            return <Link key={index} href={itemAction.url}><Button startDecorator={icon} size='sm' title={icon? '' : itemAction.title} /></Link>
         }
         if (itemAction.type == 'callback'){
-            return <Button  key={index} title={itemAction.title} onPress={() => getAction(itemAction, indexRow)} />
+            return <Button  key={index} title={icon? '' : itemAction.title} startDecorator={icon} size='sm' onPress={() => getAction(itemAction, indexRow)} />
         }
+    }
+
+    function getActionButtonIcon(name) {
+        if (name == 'delete'){
+            return 'Trash'
+        }
+        if(name == 'edit'){     
+            return 'Pencil'
+        }
+        return false;
     }
 
     const handleEndReached = async() => { 
@@ -174,7 +185,7 @@ export default function ElementGrid({data}) {
             <Confirm onVisible={showConfirm.show} title="Are you sure?"  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
             <Row className='justify-end mt-2'>
                 {data.actions.bulk.delete && (
-                    <Button title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
+                    <Button startDecorator="Trash" size="sm" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
                 }
             </Row>
             <UniList
