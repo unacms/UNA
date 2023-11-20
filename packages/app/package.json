@@ -3,6 +3,7 @@
   "name": "app",
   "main": "index.ts",
   "dependencies": {
+    "clsx": "^2.0.0",
     "dripsy": "^3.6.0",
     "moti": "latest",
     "solito": "3.0.0"
