@@ -111,7 +111,7 @@ export function getRandomColor(str) {
         hash = ((hash << 5) - hash) + char;
         hash |= 0; // Convert to 32bit integer
     }
-    var arr = ['rose', 'red', 'amber', 'lime', 'emerald', 'cyan', 'blue', 'violet', 'fuchsia'];
+    var arr = ['rose', 'red', 'amber', 'lime', 'emerald', 'cyan', 'blue', 'violet', 'fuchsia', 'stone'];
     return arr[Math.abs(hash % 10)];
 }
 

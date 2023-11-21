@@ -11,15 +11,21 @@ import { useEffect, useState } from 'react';
 import { Theme } from 'app/design/theme';
 import { Switch } from 'app/design/controls'
 import {CheckBox} from 'react-native';
+import { Input } from 'app/design/controls'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementGrid({data}) {
     const { colors } = Theme();
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))
-    const [dataItems, setDataItems] = useState({data: [header, ...data.data], settings:settings });
+    const [dataItems, setDataItems] = useState({data: data.data, settings:settings });
     const [selected, setSelected] = useState([]);
     const [showConfirm, setShowConfirm] = useState({show:false, cb:null});
     const [endReached, setEndReached] = useState(false);
+    const [selectedFilter, setSelectedFilter] = useState('');
+    const [searchValue, setSearchValue] = useState('');
+    const { t } = useTranslation();
     
     const deleteRows = (idsToRemove) => {
         const newItems = dataItems.data.filter(item => !idsToRemove.includes(item.id));
@@ -72,22 +78,32 @@ export default function ElementGrid({data}) {
         return false;
     }
 
+    const fetchDisplayData = async() => { 
+        let url = "&start=" + dataItems.settings.start;
+        url += '&filter=' + (selectedFilter ? selectedFilter.id : '') + '%23-%23%23-%23' + searchValue;
+        let fetchedData = await fetchData('display', url);
+        if (fetchedData && fetchedData.data) {
+            if (fetchedData.data.data.length > 0){
+                fetchedData.data.settings.start = parseInt(fetchedData.data.settings.start) + parseInt(fetchedData.data.settings.per_page);
+                setDataItems({ 
+                    ...dataItems,
+                    settings: fetchedData.data.settings,
+                    data: [...dataItems.data, ...fetchedData.data.data]
+                });
+            }
+            else{
+                setEndReached(true)
+            }
+        }
+    }
+
+    useEffect(() => {
+        fetchDisplayData();
+    }, [selectedFilter, searchValue]);
+
     const handleEndReached = async() => { 
         if (!endReached){
-            let fetchedData = await fetchData('display', "&start=" + (parseInt(dataItems.settings.start) + parseInt(dataItems.settings.per_page)));
-
-            if (fetchedData && fetchedData.data) {
-                if (fetchedData.data.data.length > 0){
-                    setDataItems({ 
-                        ...dataItems,
-                        settings: fetchedData.data.settings,
-                        data: [...dataItems.data, ...fetchedData.data.data]
-                    });
-                }
-                else{
-                    setEndReached(true)
-                }
-            }
+            fetchDisplayData();
         }
     };
     const toggleSwitch = async(id, indexRow) => { 
@@ -111,7 +127,6 @@ export default function ElementGrid({data}) {
         }
     }
     
-
     function getCell(cell, indexRow, id) {
         switch(cell.type) {
             case 'time':
@@ -121,18 +136,22 @@ export default function ElementGrid({data}) {
             case 'text':
                 return <Text>{cell.value}</Text>
             case 'switcher':
-                return <><Switch
-                trackColor={{false: colors.border, true: colors.primary}}
-                thumbColor={'#ffffff'}
-                onValueChange={() => toggleSwitch(id, indexRow )}
-                activeThumbColor={'#ffffff'}
-                value={cell.data == 'active' ? true : false}
-                ios_backgroundColor={colors.background}
-            /></>
+                return <>
+                    <Switch
+                        trackColor={{false: colors.border, true: colors.primary}}
+                        thumbColor={'#ffffff'}
+                        onValueChange={() => toggleSwitch(id, indexRow )}
+                        activeThumbColor={'#ffffff'}
+                        value={cell.data == 'active' ? true : false}
+                        ios_backgroundColor={colors.background}
+                    /></>
             case 'checkbox':
                 return <>
                     <CheckBox
-                        tintColors={{true: '#368098'}}
+                        tintColors={{ true: 'red', false: 'blue' }} // Colors for checked and unchecked state
+                        style={{ backgroundColor:'red'}}
+                        className={'bg-red-500'}
+                        color= {colors.primary}
                         value={selected.includes(cell.data)}
                         onValueChange={() => setSelection(cell.data)}
                     /></>
@@ -180,52 +199,88 @@ export default function ElementGrid({data}) {
         return closest;
     }
 
+    const handleSearch = (value) => {
+        setEndReached(false);
+        let s = dataItems.settings;
+        s.start = 0;
+        setDataItems({ 
+            ...dataItems,
+            settings: s,
+            data: [dataItems.data[0]]
+        });
+        setSearchValue(value)
+    };
+
+    const handleFilter = (value) => {
+        setEndReached(false);
+        let s = dataItems.settings;
+        s.start = 0;
+        setDataItems({ 
+            ...dataItems,
+            settings: s,
+            data: []
+        });
+        setSelectedFilter(value);       
+    };
+
+    let dropdownItems = Object.entries(settings.filter1).map(([id, title]) => ({
+        id: id,
+        name: title.toLowerCase(),
+        title: title
+    }));
+
+
     return (
-        <View className="w-full ">
-            <Confirm onVisible={showConfirm.show} title="Are you sure?"  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
-            <Row className='justify-end mt-2'>
+        <View className="w-full px-4 xl:px-6 ">
+            <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
+            <Row className='justify-between mt-2 mb-4 '>
+                <Row className="space-x-2 ">
+                    <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
+                        <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
+                    </DropdownMenu>
+     
+                    <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)}  />
+                </Row>
                 {data.actions.bulk.delete && (
-                    <Button startDecorator="Trash" size="sm" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
+                    <Button startDecorator="Trash" size="base" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
                 }
             </Row>
-            <UniList
-                useWindowScroll
-                data={dataItems.data}
-                onEndReached = {handleEndReached} 
-                renderItem={({item, index: indexRow }) => {
-                    if (Array.isArray(item)){
-                        return (
-                            <Row className='w-full border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between'>
-                                {
-                                    item.map((itemCell, index) => {
-                                        return (
-                                            <View key={index} className={getWidth(itemCell.width) + ' p-2'}>
-                                            <Text className="font-bold">{itemCell.title}</Text>
-                                            </View>
-                                            
-                                        );
-                                    })
-                                }
-                            </Row>
-                        )
+            <View className='border border-bdrnavbar dark:border-bdrnavbar-d'>
+                <Row className='w-full border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard px-2'>
+                    {
+                        header.map((itemCell, index) => {
+                            return (
+                                <View key={index} className={getWidth(itemCell.width) + ' p-2'}>
+                                <Text className="font-bold">{itemCell.title}</Text>
+                                </View>
+                                
+                            );
+                        })
                     }
-                    else{
+                </Row>
+                {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text>Nothing to show</Text></View>}
+                <UniList
+                    height={400}
+                    data={dataItems.data}
+                    onEndReached = {handleEndReached} 
+                    renderItem={({item, index: indexRow }) => {
                         return (
-                            <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between'>
+                            <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
                                 {
                                     header.map((cell, index) => {
                                         return (
                                             <View key={index} className={getWidth(cell.width) + '  p-2 justify-center'}>
-                                               {getCell(item[cell.name], indexRow, item[settings.field_id])}
+                                            {getCell(item[cell.name], indexRow, item[settings.field_id])}
                                             </View>
                                         );
                                     })
                                 }
                             </Row>
                         )
-                    }
-                }}
-            />
+                    }}
+                />
+                
+            </View>
         </View>
     );
 }

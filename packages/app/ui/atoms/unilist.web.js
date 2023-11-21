@@ -15,7 +15,7 @@ export default function UniList(props) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
     let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, ...rest } = props
+          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, ...rest } = props
    
     if (props.unit == 'feed'){
         if(layoutData?.id){
@@ -100,10 +100,12 @@ export default function UniList(props) {
         )
     }
     else{
+   
         return (
             <><Virtuoso 
                 useWindowScroll = {!height ? true : false}
                 data={data}
+                topItemCount={topItemCount}
                 isScrolling = {isScrolling}
                 style={style}
                 {...(listState?.ranges ? { restoreStateFrom: listState } : {})}
