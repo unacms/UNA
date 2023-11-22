@@ -4,7 +4,7 @@ import { cache } from 'react'
 import { Root } from 'app/root'
 import { Suspense } from 'react'
 import 'app/styles/global.css'
-
+import Intro from './inn'
 const siteTitle = 'NEO';
 export const runtime = 'edge'
 
@@ -64,14 +64,7 @@ const getData = cache(async (props) => {
 
 export default async function Path (props) {
     const data = await getData(props);
-    return  <Suspense fallback={<p>Loading feed...</p>}>
+    return  <Suspense fallback={<Intro/>}>
         <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     </Suspense>
-   /* const data = await getData(props);
-    
-    if (data.data){
-        if (props?.searchParams?.empty)
-            data.data.empty = true;
-        return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
-    }*/
 }
