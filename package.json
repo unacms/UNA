@@ -22,6 +22,7 @@
     "prod": "cd apps/next && dotenv -e ../../.env.local -- yarn start",
     "prod:pm2": "cd apps/next && dotenv -e ../../.env.local -- yarn start:pm2",
     "docs": "cd apps/docs && yarn next",
+    "analyze": "cd apps/next && cross-env ANALYZE=true yarn build",
     "clean": "rm -rf ./node_modules && rm -rf ./apps/expo/node_modules && rm -rf ./apps/next/node_modules && rm -rf ./packages/app/node_modules && rm -rf ./apps/docs/node_modules"
   },
   "nohoist": [

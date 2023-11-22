@@ -62,5 +62,10 @@ const nextConfig = {
     },
   } */ 
 }
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 
-module.exports = withExpo(merge(nextConfig, nextConfigCustom))
+module.exports = withExpo(withBundleAnalyzer(
+  merge(nextConfig, nextConfigCustom)
+))
