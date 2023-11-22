@@ -22,7 +22,6 @@ export function middleware(request) {
             return response
         }
         else{
-            console.log(8888, url);
             const response = NextResponse.rewrite(new URL(url))
             response.headers.set('Cache-Control', 'public, s-maxage=1')
             response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
