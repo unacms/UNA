@@ -183,11 +183,11 @@ export default function Unit(props) {
                         displaySize="xs"
                       />
                     </View>
-                    <Text className=" flex-none text-neutral-600 dark:text-neutral-400">
+                    <Text className=" flex-none  text-neutral-600 dark:text-neutral-400">
                       {tp('members', data.members_count)}
                     </Text>
                   </Row>}
-                  {(!data.members_list && data.followers_list) && <Row className="items-center ">
+                  {(!data.members_list && data.followers_list) && <Row className="items-center sm:h-10 ">
                     <View className="mr-2">
                       <ProfilesList
                         data={data.followers_list}

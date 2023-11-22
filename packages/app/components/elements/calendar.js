@@ -9,6 +9,7 @@ import Card from 'app/ui/molecules/card'
 import { Icon } from 'app/ui/atoms/icon'
 import { Theme } from 'app/design/theme';
 import { stripTags } from 'app/lib/util';
+import { Button } from 'app/design/controls';
 
 export default function ElementCalendar({ data }) {
     const [cdata, setData] = useState(false);
@@ -62,34 +63,42 @@ export default function ElementCalendar({ data }) {
     }
  
     return (
-        <View className='w-full pr-2'>
+        <View className='w-full'>
             <CalendarProvider
                 date={transformedData[0]?.title}
                 onDateChanged={onDateChanged}
             >
             <Row className='w-full space-x-2 '>
-                <View className='h-screen w-3/4'>
+                    <View className='h-screen pt-2 w-full md:w-2/3'>
                     <AgendaList
                         sections={transformedData}
                         avoidDateUpdates={false}
                         scrollToNextEvent={true}
                         viewOffset={0}
-                        sectionStyle={{ fontSize:20, paddingBottom:12, paddingTop:12, marginBottom:8, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8}}
+                        sectionStyle={{ fontSize:16, paddingBottom:12, paddingTop:12, marginHorizontal:2, marginBottom:16, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8, borderColor:colors.selectBorder, borderWidth:1, borderStyle:'solid' }}
                         renderItem={(item, firstItemInDay) => {
                             return (
                                 <Link href={item.item.url}>
-                                    <Card margin="mb-2 ml-16" rounded="rounded">
-                                        <View className='p-4'>
-                                            <Text className=" text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
-                                            <Row>
-                                                <Time stylesName="text-base" ts={item.item.date_start}/>
-                                                <Text> - </Text>
-                                                <Time stylesName="text-base" ts={item.item.date_end}/>
-                                            </Row>
-                                            {item.item.location != '' && (<Row><Icon icon='MapPin' /><Text> {item.item.location}</Text></Row>)}
-                                            <Text  numberOfLines={2}> {stripTags(item.item.description)}</Text>
-                                        </View>
-                                    </Card>
+                                    <View className='   pl-8 pb-4 pr-2 '>
+                                        
+                                        <View className='absolute z-50 top-0 left-2 w-4 h-4 border-2 border-bgrbody dark:border-bgrbody-d flex-none rounded-full bg-neutral-300 dark:bg-neutral-700'></View>
+                                        <View className='absolute z-10   -top-4 left-3.5 w-1 h-full  flex-none  bg-neutral-200 dark:bg-neutral-900'></View>
+
+                                    
+                                        <Card addClassName="flex-auto p-4  flex-col gap-y-2" margin="" >
+                                     
+                                                <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
+                                                <Row className='text-center gap-x-2 items-center'> 
+                                                    <Button startDecorator='CalendarCheck' size="xs"/>
+                                                    <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_start}/>
+                                                    <Text className="text-base text-neutral-700 dark:text-neutral-300" >-</Text>
+                                                    <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_end}/>
+                                                </Row>
+                                                {item.item.location != '' && (<Row  className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs"/><Text  className="text-xs text-neutral-700 dark:text-neutral-300">{item.item.location}</Text></Row>)}
+                                                <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.item.description)}</Text>
+                                           
+                                        </Card>
+                                    </View>
                                 </Link>
                             );
                         }}
@@ -97,7 +106,8 @@ export default function ElementCalendar({ data }) {
                             return <View />;
                         }}
                     /></View>
-                    <View className='w-1/4 '>
+                    <View className='hidden md:block w-1/3 '>
+                        <Card margin="m-2 pb-2" rounded="rounded">
                         <ExpandableCalendar
                             firstDay={1}
                             markedDates={marked}
@@ -105,6 +115,7 @@ export default function ElementCalendar({ data }) {
                             initialPosition={'closed'}
                             hideKnob={false}
                         />
+                        </Card>
                     </View>
                 </Row>
             </CalendarProvider>
