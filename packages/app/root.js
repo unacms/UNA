@@ -1,15 +1,11 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
-import { fetcher } from 'app/lib/fetcher';
+import React, { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, getURI } from 'app/lib/util';
 import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
 import { storageClear } from 'app/lib/util';
-import { View, Row } from 'app/design/view'
-import { Text } from 'app/design/typography'
-import { appStatic } from 'app/lib/app-static'
+//import { appStatic } from 'app/lib/app-static'
 /*
 import Layout from 'app/components/layout';
 import PageLayout from 'app/components/page-layout';
@@ -27,9 +23,9 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
-export function Page404 (props) {
-    return  appStatic('page_not_found')
-}
+/*export function Page404 (props) {
+    return appStatic('page_not_found')
+}*/
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();

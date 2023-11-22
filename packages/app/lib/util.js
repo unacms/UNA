@@ -3,7 +3,6 @@ import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
-import { MMKVLoader } from "react-native-mmkv-storage";
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 

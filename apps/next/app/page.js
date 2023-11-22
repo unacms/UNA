@@ -5,6 +5,7 @@ import { Root } from 'app/root'
 import { Suspense } from 'react'
 import 'app/styles/global.css'
 import Intro from './inn'
+
 const siteTitle = 'NEO';
 export const runtime = 'edge'
 
