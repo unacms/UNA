@@ -23,8 +23,6 @@ const nextConfig = {
     'zeego',
     'dripsy',
     '@dripsy/core',
-    'moti',
-    'app',
     'react-native-reanimated',
     'nativewind',
     '@expo/html-elements',
