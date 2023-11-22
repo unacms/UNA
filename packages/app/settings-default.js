@@ -1018,7 +1018,7 @@ let settingsDefault = {
     theme: {
         light: {
             primary: '#0284c7',
-            barsBackground: 'rgba(255,255,255,0.9)',
+            barsBackground: 'rgba(255,255,255,1)',
             barsColor: '#4B5563',
             selectBorder: 'rgba(156, 163, 175, 0.3)',
             fieldBackground: 'rgba(249, 240, 251, 1)',
@@ -1035,7 +1035,7 @@ let settingsDefault = {
             default: '#D1D5DB', //fix for icons color in iOS
             primary: '#0ea5e9',
             background: '#000000',
-            barsBackground: 'rgba(31,41,55,0.9)',
+            barsBackground: 'rgba(31,41,55,1)',
             barsColor: '#D1D5DB',
             selectBorder: 'rgba(55, 65, 81, 0.3)',
             fieldBackground: '#030712',
