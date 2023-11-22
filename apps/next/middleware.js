@@ -22,7 +22,8 @@ export function middleware(request) {
             return response
         }
         else{
-            const response = NextResponse.next()
+            console.log(8888, url);
+            const response = NextResponse.rewrite(new URL(url))
             response.headers.set('Cache-Control', 'public, s-maxage=1')
             response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
             response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')

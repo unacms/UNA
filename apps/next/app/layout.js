@@ -1,5 +1,4 @@
 "use client"
-import { useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'app/provider'
@@ -11,7 +10,7 @@ import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
-
+//import { Inter } from 'next/font/google'
 
 export default function RootLayout({ children }) {
 
