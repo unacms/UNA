@@ -4,9 +4,9 @@ const nextConfigCustom = require('./next.config.custom.js');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    experimental: {
+    /*experimental: {
       ppr: true,
-    },
+    },*/
   // reanimated (and thus, Moti) doesn't work with strict mode currently...
   // https://github.com/nandorojo/moti/issues/224
   // https://github.com/necolas/react-native-web/pull/2330
