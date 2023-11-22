@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
 
 export const config = {
-    matcher: "/((?!static|_next|sw.js|manifest.json|logo192.png).*)",
+    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png).*)"],
     runtime: 'experimental-edge',
 };
+
 
 export function middleware(request) {
     //console.log(request.nextUrl.pathname)
