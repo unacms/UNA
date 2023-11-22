@@ -1,7 +1,8 @@
 //import { cookies } from 'next/headers'
 import { env, isCustom } from 'app/lib/env';
 import { cache } from 'react'
-import { Root,Root2} from 'app/root'
+import { Root } from 'app/root'
+import { Suspense } from 'react'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
@@ -56,7 +57,6 @@ const getData = cache(async (props) => {
         },
         other: {
             'apple-mobile-web-app-capable': 'yes',
-           // 'og:title': data?.data?.title
         },
         
     }
@@ -64,10 +64,14 @@ const getData = cache(async (props) => {
 
 export default async function Path (props) {
     const data = await getData(props);
+    return  <Suspense fallback={<p>Loading feed...</p>}>
+        <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
+    </Suspense>
+   /* const data = await getData(props);
     
     if (data.data){
         if (props?.searchParams?.empty)
             data.data.empty = true;
         return <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
-    }
+    }*/
 }
