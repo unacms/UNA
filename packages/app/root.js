@@ -10,8 +10,8 @@ import { storageClear } from 'app/lib/util';
 import Layout from 'app/components/layout';
 import PageLayout from 'app/components/page-layout';
 */
-const Layout = React.lazy(() => import('app/components/layout'));
-const PageLayout = React.lazy(() => import('app/components/page-layout'));
+const Layouts = React.lazy(() => import('app/components/layouts'));
+
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -64,8 +64,6 @@ export function Root (props) {
 
     }, [data?.user]);
       return (
-        <Layout path={props?.path} data={data} uri={data?.uri}>
-            <PageLayout path={props?.path} data={data} uri={data?.uri} />
-        </Layout>
+        <Layouts path={props?.path} data={data} uri={data?.uri}/>
     );
 }

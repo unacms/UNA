@@ -2,21 +2,23 @@ import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
 
 export const config = {
-    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png).*)"],
+    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loading.svg|favicon.ico).*)"],
     runtime: 'experimental-edge',
 };
 
 
 export function middleware(request) {
-    //console.log(request.nextUrl.pathname)
     if (!request.nextUrl.pathname.includes('.php')) {
         let c = request.cookies.getAll();
         let cookieString = '';
         c.map(function (item) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
         });
+        let url = request.url;
+        if (request.nextUrl.pathname == '/')
+            url = url +'home';
         if (cookieString != ''){
-            const response =  NextResponse.rewrite(new URL(request.url + (request.url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
+            const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
             return response
         }
         else{

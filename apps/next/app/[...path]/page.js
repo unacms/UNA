@@ -3,7 +3,7 @@ import { env, isCustom } from 'app/lib/env';
 import { cache } from 'react'
 import { Root/*, Page404*/} from 'app/root'
 import { Suspense } from 'react'
-import Intro from './inn'
+import {Loading} from 'app/loading'
 import 'app/styles/global.css'
 
 const siteTitle = 'NEO';
@@ -76,7 +76,7 @@ const getData = cache(async (props) => {
 
 export default async function Path (props) {
     const data = await getData(props);
-    return  <Suspense fallback={<Intro/>}>
+    return  <Suspense fallback={<Loading/>}>
         <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
     </Suspense>
     /*else{
