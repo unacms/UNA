@@ -267,7 +267,7 @@ let settingsDefault = {
         bx_events_submenu: {
             name: 'Events',
             icon: 'Calendar',
-            items: ['events-home', 'events-top', 'events-joined', 'events-followed', 'events-calendar','events-upcoming'],
+            items: ['events-home', 'events-top', 'events-joined', 'events-followed','events-upcoming'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-event-profile' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
@@ -526,7 +526,8 @@ let settingsDefault = {
         'events-joined': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
+                /*browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },*/
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -534,7 +535,8 @@ let settingsDefault = {
         'events-upcoming': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_upcoming_profiles', showTitle: false, showBg: false },
+                /*browse: { name: 'bx_events:browse_upcoming_profiles', showTitle: false, showBg: false },*/
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -550,7 +552,8 @@ let settingsDefault = {
         'events-followed': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
+                /*browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },*/
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'Binoculars',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
