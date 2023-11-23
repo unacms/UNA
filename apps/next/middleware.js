@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
 
 export const config = {
-    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loading.svg|favicon.ico).*)"],
+    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico).*)"],
     runtime: 'experimental-edge',
 };
 
