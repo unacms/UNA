@@ -67,6 +67,7 @@ export default function (props) {
         return () => document.removeEventListener('click', handleClick)
     }, [])
 
+
     if (windowWidth < 1024 && (!headerSettings.header))
         return <></>
 
@@ -134,21 +135,15 @@ export default function (props) {
                             <View className=" flex-row my-auto gap-x-2 ml-2">
                                 {bSearch && <View className=""><Search /></View>}
                                 {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu items={menuItemsByName('', menu_top_more).map(
-                                    (item, index) => {
-                                        return (
-                                        {
+                                <DropdownMenu  items={menuItemsByName('', menu_top_more)
+                                        .filter(item => currentUser || (!currentUser && item.nonlogged !== false))
+                                        .map((item, index) => ({
                                             id: 'menu-' + index,
                                             link: item.link,
                                             title: t(item.title),
-                                            icon:
-                                            item.icon.indexOf(' ') == -1
-                                                ? item.icon
-                                                : item.icon.split(' ')[0],
-                                        }
-                                        )
+                                            icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
+                                        }))
                                     }
-                                    )}
                                 >
                                     <Tooltip content="Apps" asChildTrigger={true}>
                                         <ButtonRef
@@ -250,21 +245,15 @@ export default function (props) {
                         <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
                             {bSearch && <View><Search /></View>}
                             {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu items={menuItemsByName('', menu_top_more).map(
-                                    (item, index) => {
-                                        return (
-                                        {
+                                <DropdownMenu  items={menuItemsByName('', menu_top_more)
+                                        .filter(item => currentUser || (!currentUser && item.nonlogged !== false))
+                                        .map((item, index) => ({
                                             id: 'menu-' + index,
                                             link: item.link,
                                             title: t(item.title),
-                                            icon:
-                                            item.icon.indexOf(' ') == -1
-                                                ? item.icon
-                                                : item.icon.split(' ')[0],
-                                        }
-                                        )
+                                            icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
+                                        }))
                                     }
-                                    )}
                                 >
                                     <Tooltip content="Apps" asChildTrigger={true}>
                                         <ButtonRef
@@ -280,15 +269,14 @@ export default function (props) {
                                     </Tooltip>
                                 </DropdownMenu>
                             </View>}
+                            <Link href="/login">
                             <Button
                                 variant="outline"
                                 rounded
 
                                 startDecorator="User"
-                                onPress={() => {
-                                handleClick('/login')
-                                }}
                             />
+                            </Link>
                         </Row>
                     )}
                     </Row>

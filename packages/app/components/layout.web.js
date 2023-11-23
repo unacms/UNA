@@ -80,7 +80,7 @@ export default function Layout({ data, uri, children }) {
         return (
             <>
                 <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
-                <Suggestions/>
+                    <Suggestions/>
                 { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
