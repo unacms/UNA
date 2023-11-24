@@ -1,6 +1,6 @@
 let settingsDefault = {
     layout: {
-        format:'hor',
+        format:'ver',
         max_width: 'full',
         cell_gap: 4,
         cell_style: '',

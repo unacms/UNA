@@ -114,8 +114,12 @@ export default function (props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <ScrollView className=" backdrop-blur fixed w-full lg:w-1/5 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-                    <View className=' flex-row lg:flex-col justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
+            <ScrollView 
+                contentContainerStyle={{
+                    width: '100%',
+                }} 
+                className=" backdrop-blur fixed w-full lg:w-1/5 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                    <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
                         {headerSettings.menu && (
                             <View className="lg:hidden mr-4">
                                 <Pressable  onPress={showMenu}>
@@ -160,7 +164,7 @@ export default function (props) {
                             </View>
                             </View>
                             <View className='hidden lg:block mt-4'>
-                                {!!currentUser && (
+                                {!!currentUser ? (
                                 <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                         <Link href={currentUser.url} className="flex-auto">
                                             <Row className='flex-row gap-x-2 items-center'>
@@ -182,7 +186,27 @@ export default function (props) {
                                         />
                                             </ProfileSwitcher></View>}
                                 </Row>
+                                ) : 
+                                (
+                                    <Row className='space-x-2'>
+                                        <Link href="/login">
+                                            <Button
+                                                variant="outline"
+                                                rounded
+                                                startDecorator="User"
+                                            />
+                                        </Link>
+                                        <Link href="/create-account">
+                                            <Button
+                                                variant="outline"
+                                                rounded
+                                                startDecorator="UserCircle"
+                                            />
+                                        </Link>
+                                    </Row>
+                                    
                                 )}
+                                
                         </View>
                         <Row className='lg:hidden lg:w-full justify-end'>
                            
