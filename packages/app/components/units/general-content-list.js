@@ -689,7 +689,7 @@ export default function Unit(props) {
         showInfo="false"
       />
     )
-      console.log(data)
+
     return (
       <>
       <View className='sm:px-4 pb-2 sm:pb-4'>

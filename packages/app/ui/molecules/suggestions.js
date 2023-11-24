@@ -14,14 +14,15 @@ export default function Suggestions(props) {
     const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
     let suggestionListNames = suggestionList.map(item => item.name);
-    let suggestionListShown = storageGet('suggestion:list', '', true);
+    let suggestionListShown = currentUser?.settings?.recomendation ? currentUser.settings.recomendation : [];
+    
     if (!suggestionListShown)
         suggestionListShown = [];
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
     let dataModal = filteredList[0];
-
+  
     useEffect(() => {
         const fetchData = async () => {
                 let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
@@ -42,13 +43,17 @@ export default function Suggestions(props) {
         return <></>
 
 
-    const shangeData = (isSaveToStore) => { 
+    const shangeData  = async (isSaveToStore) => { 
         let a = dataIndexModal + 1;
         if (a>=filteredList.length)
             a = false;
         if (isSaveToStore || true){
             suggestionListShown.push(filteredList[0].name)
-            storageSet('suggestion:list', '', suggestionListShown, true);
+            if (!currentUser.settings)
+                currentUser.settings = {}
+            currentUser.settings.recomendation = suggestionListShown
+            let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id)+JSON.stringify(currentUser.settings);
+            const sResponse = await fetcher(request_url);
         }
         setDataCount(0)
         setDataIndexModal(a);
