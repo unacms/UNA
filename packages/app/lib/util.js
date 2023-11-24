@@ -581,19 +581,49 @@ export function getURI(url) {
     return u[0]
 }
 
-export function menuItemsByName(name, items, url = '') {
+const getNameFromSetting = (setting) => {
+    if (typeof setting === 'string') {
+        return setting;
+    } else if (setting && typeof setting === 'object' && setting.name) {
+        return setting.name;
+    }
+    return null;
+};
+  
+export function menuItemsByName(name, items, url = '')
+{
+   
     if (!items)
         return [];
+
     const menuSettings = appSetting('menu_items', name)
+    let menuSettingNames = []
+    
     if (menuSettings){
         if (menuSettings.items){
-            return items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
+            items = items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
         }
-        else
-            return items.filter((item) => (!!item.name && menuSettings.includes(item.name)) || (!!item.link && menuSettings.includes(getURI(item.link))));
+        else{
+            menuSettingNames = menuSettings.map(getNameFromSetting);
+            items = items.filter((item) => (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link))));
+        }
+        if (menuSettingNames){
+            items.forEach(item => {
+                if (menuSettingNames.includes(item.name)){
+                    let matchedSettings = menuSettings.filter(item2 => item.name === item2.name);
+
+                    if (matchedSettings.length > 0) {
+
+                        item.settings = matchedSettings[0].settings;
+                    }
+                }
+            });
+        }
+        return items;
     }
     if (!items)
         items =[{link: url, title: ''}];
+    
     return items;
 }
 

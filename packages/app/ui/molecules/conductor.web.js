@@ -39,7 +39,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
-   // console.log('routes', routes)
+    console.log('routes', routes)
     useEffect(() => {
         setRoutes(initedTabs);
     }, [keyword]);
@@ -221,7 +221,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <ScrollView horizontal={true} className="items-center gap-0 " >
                             <Row className="mr-auto ml-4 gap-x-2" >
                                 {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
-                                    <Pressable  className=" py-2 items-center"
+                                   <Pressable  className={" py-2 items-center " + a?.menu_settings?.class}
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index);
@@ -328,7 +328,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return <></>
         }
         if (route.inited){
-            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
+            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+            //console.log('isRightCol', isRightCol);
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             
             let TabFlashListM = useMemo(() => {  
@@ -357,7 +358,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-1/3 pt-4 pl-4">
+                    {isRightCol && <View className="hidden lg:block w-1/3 pt-4 pl-4">
 
                         {route?.sidebar?.content.map((item, index ) => {
                             return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>

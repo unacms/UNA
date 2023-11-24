@@ -43,6 +43,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
             i.addon = item.addon;
+            i.menu_settings = item.settings;
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
             i.sidebar = contentAndEndpoint.sidebar;
@@ -69,6 +70,7 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
             i.addon = item.addon;
+            i.menu_settings = item.settings;
             i.icon = item.icon;
             i.inited = false;
             i.storageKeyValue = storageKey(i.link, false);
@@ -136,7 +138,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
         let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks); 
-        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks, routes)
+        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks, routes, contentAndEndpoint.sidebar)
     }
 }
 
@@ -147,6 +149,9 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
             
             if (blocks && !route.blocks)
                 route.blocks = blocks
+
+            if (sidebar)
+                route.sidebar = sidebar
 
             route.inited = true;
             storageSet('ul:data', route.storageKeyValue, {data: route.data.concat(newItems), endpoint: route.endpoint});

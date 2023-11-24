@@ -106,8 +106,11 @@ export default function AtomProfile(oProps) {
     const bShowLinks = !oProps.showLinks || oProps.showLinks === 'true'
 
     function DisplayNameLink(oProps) {
+        if (oProps.href && (oProps.href == 'javascript:' || oProps.href === undefined))
+            oProps.href='';
+
         return (
-            <Text className={'text-neutral-900 hover:text-primary dark:text-neutral-100 dark:hover:text-primary-d ' + sSizeFont + ' truncate'}>
+            <Text className={'text-neutral-900  dark:text-neutral-100 ' + ((!oProps.href || oProps.href == '') ? '': ' hover:text-primary dark:hover:text-primary-d ')  + sSizeFont + ' truncate'}>
                 {oProps.title}
             </Text>
         )
