@@ -39,7 +39,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
-    console.log('routes', routes)
+
     useEffect(() => {
         setRoutes(initedTabs);
     }, [keyword]);

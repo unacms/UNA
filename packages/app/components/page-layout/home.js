@@ -146,7 +146,7 @@ export default function PageLayout(props) {
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto   w-full mx-auto">
-                                { (feedList.length > 1 || appSetting('feed', 'show_selector_view')) && (
+                                { (feedList.length > 1 || appSetting('feed', 'show_selector_view')) ? (
                                 <Row className="p-3 sm:mb-4  sm:border-b border-dashed border-neutral-400/20 gap-x-2  w-full">
                                     {feedList.length > 1 && feedList.map((item, index) => {
                                         return (
@@ -177,7 +177,7 @@ export default function PageLayout(props) {
                                             />
                                         </Row>
                                     )}
-                                </Row>)}
+                                </Row>) : <View className='h-4'></View>}
                                 <View className="relative w-full mx-auto max-w-4xl">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name){
