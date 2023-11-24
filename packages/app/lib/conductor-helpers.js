@@ -142,7 +142,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes) {
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false) {
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;
