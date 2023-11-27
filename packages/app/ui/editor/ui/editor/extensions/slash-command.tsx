@@ -10,7 +10,7 @@ import { Editor, Range, Extension } from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
 import { ReactRenderer } from "@tiptap/react";
 import { useCompletion } from "ai/react";
-import { appSetting } from 'app/lib/util'
+import { absoluteApiUrl } from 'app/lib/util'
 import tippy from "tippy.js";
 import LoadingCircle from "app/ui/editor/ui/icons/loading-circle";
 import { getPrevText } from "app/ui/editor/lib/editor";
@@ -185,7 +185,7 @@ const getSuggestionItems = ({ query }: { query: string }) => {
         let scheme= '';
         if (inputValue){
           
-          const rvUrl = appSetting("urls", "embeds") + inputValue + '&theme=' + scheme;
+          const rvUrl = absoluteApiUrl("embeds") + inputValue + '&theme=' + scheme;
           const d = { src: rvUrl, origin: inputValue, class: className };
           editor.chain().focus().setIframe(d).run()
         }

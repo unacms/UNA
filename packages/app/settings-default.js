@@ -34,10 +34,9 @@ let settingsDefault = {
     },
     urls: {
         site: 'http://localhost:3000',
-        embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
-        images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
-        location: 'https://ci.una.io/test3/geo.php?',
         root: 'https://ci.una.io/test3/',
+        embeds: 'oembed.php?html=1&a=get_link&l=',
+      
     },
     cache: {
         list: true,

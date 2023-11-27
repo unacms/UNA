@@ -1,4 +1,4 @@
-import { appSetting, md5 } from 'app/lib/util'
+import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
 import { useColorScheme } from 'react-native'; 
 
 export default function ElementHtml(props) {
@@ -26,7 +26,7 @@ export default function ElementHtml(props) {
 
             let hash = md5(capture);
             return (
-                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl aspect-video mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
+                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl aspect-video mx-auto " src="' + absoluteApiUrl("embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );
           });
     }

@@ -13,6 +13,10 @@ export function appSetting(section, name, path) {
     return settings[section] ? settings[section][name] : '';
 }
 
+export function absoluteApiUrl(url_name) {
+    return appSetting("urls", "root")+appSetting("urls", url_name);
+}
+
 export const getDataFromCache = (pref, storageKeyValue) => {
     if (appSetting('cache', 'list')){
         return storageGet(pref, storageKeyValue);

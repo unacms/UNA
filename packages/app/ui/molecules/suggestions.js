@@ -13,16 +13,19 @@ export default function Suggestions(props) {
     const [dataIndexModal, setDataIndexModal] = useState(0);
     const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
+
     let suggestionListNames = suggestionList.map(item => item.name);
     let suggestionListShown = currentUser?.settings?.recomendation ? currentUser.settings.recomendation : [];
     
+   
+
     if (!suggestionListShown)
         suggestionListShown = [];
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
     let dataModal = filteredList[0];
-  
+    console.log("suggestionList", suggestionList,suggestionListShown, dataModal);
     useEffect(() => {
         const fetchData = async () => {
                 let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
@@ -44,10 +47,11 @@ export default function Suggestions(props) {
 
 
     const shangeData  = async (isSaveToStore) => { 
+        console.log("shangeData", shangeData, suggestionListShown)
         let a = dataIndexModal + 1;
         if (a>=filteredList.length)
             a = false;
-        if (isSaveToStore || true){
+        if (isSaveToStore){
             suggestionListShown.push(filteredList[0].name)
             if (!currentUser.settings)
                 currentUser.settings = {}

@@ -6,7 +6,7 @@ import RenderHtml, {
     HTMLElementModel,
   } from 'react-native-render-html'
 import { mergeDeep } from 'app/lib/util';
-import { appSetting, md5 } from 'app/lib/util'
+import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { useState } from 'react';
 import Video from 'app/ui/atoms/video';
@@ -128,7 +128,7 @@ export default function ElementHtml(props) {
             }
 
             return (
-                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + appSetting("urls", "embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
+                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + absoluteApiUrl("embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
               );
             });  
     }

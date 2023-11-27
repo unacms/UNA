@@ -155,7 +155,7 @@ export default function ElementBrowse(props) {
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': getCurrentParams(true)})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
         maxIdLocal = dataItems?.data.length > 0 ? dataItems?.data.reduce((max, item) => item.id > max ? item.id : max, dataItems?.data[0].id) : 0;
-        if (daemonData && maxId > 0 && maxId < daemonData){
+        if (daemonData && daemonData?.count && maxId > 0 && maxId < daemonData.count){
             setTimeout(() => {
                 setTosterVisible(true);
             }, 100);
