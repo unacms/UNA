@@ -154,8 +154,14 @@ export default function ElementBrowse(props) {
     const bUseDaemon =  (props.data.unit == 'feed');
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': getCurrentParams(true)})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
-        maxIdLocal = dataItems?.data.length > 0 ? dataItems?.data.reduce((max, item) => item.id > max ? item.id : max, dataItems?.data[0].id) : 0;
-        if (daemonData && daemonData?.count && maxId > 0 && maxId < daemonData.count){
+        maxIdLocal = dataItems?.data.length > 0 
+            ? dataItems?.data.reduce((max, item) => {
+                const idNumber = parseFloat(item.id);
+                return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
+            }, parseFloat(dataItems?.data[0].id) || 0)
+            : 0;
+        console.log("maxIdmaxId", daemonData, maxId)
+        if (daemonData && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
                 setTosterVisible(true);
             }, 100);
@@ -201,8 +207,8 @@ export default function ElementBrowse(props) {
     }
 
     return (
-        (true) && <View className='w-full h-full' >
-                <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+        <View className='w-full h-full' >
+            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
             

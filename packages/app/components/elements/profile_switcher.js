@@ -32,7 +32,7 @@ export default function ElementProfileSwitcher(props) {
             <Pressable onPress = {() => handleClick()}>
                 {props.children}
             </Pressable>
-            {data && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
+            {(data && data.profiles ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">

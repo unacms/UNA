@@ -25,7 +25,6 @@ export default function Suggestions(props) {
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
     let dataModal = filteredList[0];
-    console.log("suggestionList", suggestionList,suggestionListShown, dataModal);
     useEffect(() => {
         const fetchData = async () => {
                 let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
@@ -47,7 +46,7 @@ export default function Suggestions(props) {
 
 
     const shangeData  = async (isSaveToStore) => { 
-        console.log("shangeData", shangeData, suggestionListShown)
+        //console.log("shangeData", shangeData, suggestionListShown)
         let a = dataIndexModal + 1;
         if (a>=filteredList.length)
             a = false;
