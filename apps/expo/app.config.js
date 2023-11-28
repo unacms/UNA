@@ -27,6 +27,7 @@ const expoConfig = {
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
         "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
+        "NFCReaderUsageDescription":  "This app uses the mic allow calls in Jitsi.",
       }
     },
     "android": {
@@ -41,7 +42,11 @@ const expoConfig = {
         "android.permission.RECORD_AUDIO",
         "android.permission.WAKE_LOCK",
         "android.permission.ACCESS_WIFI_STATE",
-        "android.permission.FOREGROUND_SERVICE"
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.NFC"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

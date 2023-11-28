@@ -10,6 +10,7 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
+import Nfc from 'app/ui/molecules/nfc'
 import { appSetting } from 'app/lib/util'
 import JitSi from 'app/ui/molecules/jitsi'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
@@ -19,7 +20,6 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
-import * as Location from 'expo-location';
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -50,17 +50,7 @@ export default function PageLayout(props) {
 
     const scheme = '';//useColorScheme();
 
-    const getGeo =  async () => { 
-
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            setErrorMsg('Permission to access location was denied');
-            return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-        console.log(location)
-    };
+   
 
     const handleTheme =  async (item) => { 
         if(Platform.OS == 'web'){
@@ -86,14 +76,6 @@ export default function PageLayout(props) {
 
     return (
         <>
-         <Button
-                                    variant="text"
-                                    title= "GeoLocation"
-                                
-                                    fullWidth
-                                    onPress = {() => getGeo(true)}
-                                    align="left"
-                                />
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
@@ -218,6 +200,7 @@ export default function PageLayout(props) {
                 <View className=" w-full">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
                 </View>
+                { appSetting('layout', 'nfc') && <Nfc/> }
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <View className="justify-between flex-auto gap-x-2 flex-row my-auto">

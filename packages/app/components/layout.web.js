@@ -3,6 +3,7 @@ import { useWindowDimensions } from 'react-native';
 import Footer from './footer';
 import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
+import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
@@ -10,7 +11,6 @@ import { getHeaderSettings } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { storageGet } from 'app/lib/util'
-
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -80,13 +80,12 @@ export default function Layout({ data, uri, children }) {
         return (
             <>
                 <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
-                    <Suggestions/>
+                <Suggestions/>
+                <AsyncWorker/>
                 { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
     }
-
-    
 
     if(appSetting('layout', 'format') == 'ver'){
         if (width > 1024)
@@ -95,6 +94,8 @@ export default function Layout({ data, uri, children }) {
             <Row className='w-full flex-col lg:flex-row-reverse '>
                 <View className='w-full lg:w-4/5'>
                     <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} />
+                    <Suggestions/>
+                    <AsyncWorker/>
                 </View>
                 <View className='w-full lg:w-1/5'>
                     { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
@@ -117,7 +118,6 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage }) => {
                 </View>
             </View>
             {headerSettings?.footer !== false && <Footer /> }
-            
         </View>
     );
 });

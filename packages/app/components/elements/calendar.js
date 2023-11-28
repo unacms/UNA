@@ -12,6 +12,7 @@ import { stripTags } from 'app/lib/util';
 import { Button } from 'app/design/controls';
 import Image from 'app/ui/atoms/image'
 import { getImageSizes } from 'app/lib/util'
+import { appStatic } from 'app/lib/app-static';
 
 export default function ElementCalendar({ data }) {
     const [cdata, setData] = useState(false);
@@ -65,6 +66,10 @@ export default function ElementCalendar({ data }) {
         // console.log(a);
     }
     const imageSizes = getImageSizes()
+
+    console.log("transformedData", transformedData)
+    if (transformedData.length == 0)
+        return<>{appStatic('components_content_empty')}</>
 
     return (
         <View className='w-full'>

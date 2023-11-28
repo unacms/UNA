@@ -17,7 +17,10 @@ let settingsDefault = {
         
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red']
+        profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
+        async_workers: ['EventChecker'],
+        async_workers_interval: 10,
+        nfc: true,
     },
     sockets: {
         host: 'ci.una.io',
@@ -525,7 +528,7 @@ let settingsDefault = {
         'events-joined': {
             layout: 'navigator',
             blocks: {
-                /*browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },*/
+                //browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
@@ -534,7 +537,7 @@ let settingsDefault = {
         'events-upcoming': {
             layout: 'navigator',
             blocks: {
-                /*browse: { name: 'bx_events:browse_upcoming_profiles', showTitle: false, showBg: false },*/
+               
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
@@ -551,7 +554,7 @@ let settingsDefault = {
         'events-followed': {
             layout: 'navigator',
             blocks: {
-                /*browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },*/
+
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'Binoculars',
