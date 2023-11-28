@@ -16,8 +16,7 @@ export default function Suggestions(props) {
 
     let suggestionListNames = suggestionList.map(item => item.name);
     let suggestionListShown = currentUser?.settings?.recomendation ? currentUser.settings.recomendation : [];
-    
-   
+
 
     if (!suggestionListShown)
         suggestionListShown = [];
@@ -69,7 +68,7 @@ export default function Suggestions(props) {
         return (
             <View>
                 <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => shangeData(true)}>
-                    <Browse height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
+                    <Browse only_one_page={true} height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
                 </Modal>
             </View>
         )

@@ -123,6 +123,10 @@ export default function ElementBrowse(props) {
     }
 
     const handleEndReached = (lastItemIndex) => { 
+
+        if(props.only_one_page == true)
+            return;
+        
         if (isFetchingNextPage) 
             return;
         if (lastItemIndex == false)
