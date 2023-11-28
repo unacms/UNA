@@ -143,6 +143,7 @@ export default function ElementHtml(props) {
         a[data[0]] = [data[1], data[2]];
         setIframeH({...iframeH, ...a})
     };
+    data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
    
     return (
             <RenderHtml

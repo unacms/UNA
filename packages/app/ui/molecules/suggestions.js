@@ -17,7 +17,6 @@ export default function Suggestions(props) {
     let suggestionListNames = suggestionList.map(item => item.name);
     let suggestionListShown = currentUser?.settings?.recomendation ? currentUser.settings.recomendation : [];
 
-
     if (!suggestionListShown)
         suggestionListShown = [];
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));

@@ -73,7 +73,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
    // useEffect(() => {
     let dataItems= routes[index];
     const bUseDaemon =  (routes[index]?.endpoint?.unit == 'feed');
-    let params = JSON.parse(JSON.stringify(routes[index].endpoint.params));
+    let params = routes[index].endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
     params.start = 0;
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': params})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
@@ -83,7 +83,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
                 }, parseFloat(dataItems?.data[0].id) || 0)
             : 0;
-        console.log("maxIdmaxId", daemonData, maxId, maxIdLocal)
         if (daemonData  && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
                 setTosterVisible(true);

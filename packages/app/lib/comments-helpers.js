@@ -210,12 +210,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
 
     DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
-    if (isShort){
-        return dataOut.map((item, index) => <View className='mx-4' key={index}>
-        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
-    </View>) 
-    }
-    
     useEffect(() => {
         
         if (commentData.lastInserted > 0){
@@ -224,8 +218,20 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             flashListRef.current.scrollToIndex({ animated: true, index: itemIndex });
         }
     }, [commentData.lastInserted]);
+    
+    useEffect(() => {
+        if (currentUser){
+            subscribe(currentUser.pusher, commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+        }
+    }, [currentUser])
 
     const dataArrayRef = useRef([]);
+
+    if (isShort){
+        return dataOut.map((item, index) => <View className='mx-4' key={index}>
+        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+    </View>) 
+    }
 
     const cb = (data) => {
         let k = JSON.parse(data);
@@ -249,13 +255,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             current.setVisible(val);
         }
     }
-
-    
-    useEffect(() => {
-        if (currentUser){
-            subscribe(currentUser.pusher, commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
-        }
-    }, [currentUser])
 
     const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (

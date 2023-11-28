@@ -126,7 +126,6 @@ export default function ElementBrowse(props) {
 
         if(props.only_one_page == true)
             return;
-        
         if (isFetchingNextPage) 
             return;
         if (lastItemIndex == false)
@@ -164,7 +163,6 @@ export default function ElementBrowse(props) {
                 return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
             }, parseFloat(dataItems?.data[0].id) || 0)
             : 0;
-        console.log("maxIdmaxId", daemonData, maxId)
         if (daemonData && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
                 setTosterVisible(true);
