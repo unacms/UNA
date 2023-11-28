@@ -210,6 +210,29 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
 
     DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
+    const cb = (data) => {
+        let k = JSON.parse(data);
+        if (currentUser && currentUser.id != k.author_id){
+            if (!dataArrayRef.current.includes(k.id)) {
+                dataArrayRef.current.push(k.id);
+            }
+            cb2(true);
+        }
+    }
+
+    const showNewContent = () => {
+        cb2(false); 
+        handleMoreNew();
+        dataArrayRef.current=[];
+    }
+
+    const cb2 = (val) => {
+        const current = tosterRef.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
     useEffect(() => {
         
         if (commentData.lastInserted > 0){
@@ -233,28 +256,6 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     </View>) 
     }
 
-    const cb = (data) => {
-        let k = JSON.parse(data);
-        if (currentUser && currentUser.id != k.author_id){
-            if (!dataArrayRef.current.includes(k.id)) {
-                dataArrayRef.current.push(k.id);
-            }
-            cb2(true);
-        }
-    }
-
-    const showNewContent = () => {
-        cb2(false); 
-        handleMoreNew();
-        dataArrayRef.current=[];
-    }
-
-    const cb2 = (val) => {
-        const current = tosterRef.current;
-        if (current) {
-            current.setVisible(val);
-        }
-    }
 
     const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
