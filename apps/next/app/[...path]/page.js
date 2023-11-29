@@ -4,6 +4,7 @@ import { cache } from 'react'
 import { Root/*, Page404*/} from 'app/root'
 import { Suspense } from 'react'
 import {Loading} from 'app/loading'
+import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 
 
