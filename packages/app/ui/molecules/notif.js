@@ -42,7 +42,7 @@ export default function (props) {
 
     let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
     const ntfsContent = (
-        <View key="ddp-content" className="px-1.5 pb-1.5">
+        ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
             <Redirect ref={redirectdRef} />
             <View className="flex-row items-center mb-1">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
@@ -60,11 +60,7 @@ export default function (props) {
                     }}
                 />
             </View>
-            {true ? (
-                <Browse height={400}  data={data} />
-            ) : (
-                oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
-            )}
+            <Browse cachePrefix={Date.now()} height={400} data={data} />
         </View>
     )
 

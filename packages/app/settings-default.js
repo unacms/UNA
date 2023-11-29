@@ -433,7 +433,7 @@ let settingsDefault = {
             layout: 'dashboard',
             top:true,
             blocks: {
-                stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: true },
+                stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
@@ -1125,6 +1125,8 @@ if (settingsDefault.layout.format == 'ver') {
     // Override settings for vertical layout
     settingsDefault.menu_items.menu_top = [
         { name: 'home', title: 'Home', link: '/', icon: 'House'},
+        { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
+        { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
         { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },

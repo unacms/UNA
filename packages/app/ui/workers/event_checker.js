@@ -16,7 +16,7 @@ import { Text } from 'app/design/typography'
 const getGeo =  async () => { 
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        console.log('Permission to access location was denied');
         return;
     }
     return await Location.getCurrentPositionAsync({})

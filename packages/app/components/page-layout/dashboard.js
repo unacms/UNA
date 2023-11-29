@@ -80,7 +80,6 @@ export default function PageLayout(props) {
                 
             </Modal>
             <View className="w-full p-2 max-w-screen-2xl mx-auto flex-col    ">
-           
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto gap-x-8 flex-row gap-y-4 flex-wrap my-auto">
@@ -197,11 +196,15 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                <View className=" w-full">
+                <View className=" w-full ">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
                 </View>
-                { appSetting('layout', 'nfc') && <Nfc/> }
-                <View className=" w-full p-2">
+                { appSetting('layout', 'nfc') && <View className=" w-full  p-2">
+                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
+                        <Nfc/>
+                    </Card>
+                </View> }
+                { /*<View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
                             <View className="flex-row gap-x-2 lg:flex">
@@ -216,7 +219,7 @@ export default function PageLayout(props) {
                             </View>
                         </View>
                     </Card>
-                </View>
+                </View> */}
             </View>
         </>
     )

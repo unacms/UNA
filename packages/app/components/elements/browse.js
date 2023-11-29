@@ -23,7 +23,7 @@ export default function ElementBrowse(props) {
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
-    const [cachedData, setCachedData] = useState({state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
+    const [cachedData, setCachedData] = useState(props.cachePrefix ? false : {state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
     
     let data = props.data;
     if (data.unit == 'mixed'){
@@ -79,6 +79,7 @@ export default function ElementBrowse(props) {
     let styles = Platform.OS === 'web' ? {} : {height: (defParams?.height ? defParams.height : windowHeight - hOffset)}
 
     const fetchData = async ({ }) => {
+       
         let sResponse =  await fetcher(prepareUrl());
         return sResponse.data[0].data
     };
@@ -90,7 +91,7 @@ export default function ElementBrowse(props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category], fetchData, {
+    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix], fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
