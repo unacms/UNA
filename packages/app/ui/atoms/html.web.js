@@ -31,7 +31,6 @@ export default function ElementHtml(props) {
           });
           data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
     }
-   
 
     return (<div>
             <div className={sClass} dangerouslySetInnerHTML={{__html:data}} style={props.htmlStyles}/>
