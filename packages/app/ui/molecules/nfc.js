@@ -51,9 +51,9 @@ export default function Nfc(props) {
     }
 
     return (
-        <Row className='justify-between'>
-            <Button onPress={() => writeUserId()} title="Share My ID" />
-            <Button onPress={() => readUserId()} title="Scan ID" />
+        <Row className='justify-between w-full '>
+            <Button startDecorator="ContactlessPayment" onPress={() => writeUserId()} title="Share My Profile" />
+            <Button startDecorator="UserFocus" onPress={() => readUserId()} title="Scan Profile" />
             <Modal onVisible={!!showModal} title="You have a new friend!" outerClickClose={true} >
                 <View className='pb-4'>
                     <Profile { ...showModal } displaySize="xl" />
