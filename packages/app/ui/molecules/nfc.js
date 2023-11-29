@@ -50,10 +50,6 @@ export default function Nfc(props) {
         }).catch(err => console.warn(err));
     }
 
-    if (showModal){
-        showModal
-    }
-
     return (
         <Row className='justify-between'>
             <Button onPress={() => writeUserId()} title="Share My ID" />
