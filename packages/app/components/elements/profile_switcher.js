@@ -9,8 +9,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { Modal } from 'app/design/controls'
+
 export default function ElementProfileSwitcher(props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
