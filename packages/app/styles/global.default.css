@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: 'Inter';
-    src: url('/Inter.ttf') format('truetype');
-}
-
 .u-vanilla-html {
     @apply prose dark:prose-invert;
     @apply text-neutral-700 dark:text-neutral-300 ;
@@ -23,43 +18,9 @@
 .u-vanilla-html > :where(:last-child):not(:where([class~="not-prose"] *)) {
     margin-bottom: 0 !important;
 }
-/*
-.u-vanilla-html img{
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}*/
-
 .u-vanilla-html H1, H2, H3, H4, H5{
     @apply text-neutral-900 dark:text-neutral-100; 
 }
-/*
-.u-vanilla-html H1{
-    font-weight: 800;
-    font-size: 1.875rem;
-    line-height: 2.5rem;
-    margin-top: 0.8em;
-    margin-bottom: 0.8em;
-}
-.u-vanilla-html H2{
-    font-size: 1.5rem;
-    line-height: 2rem;
-    font-weight: 700;
-    margin-top: 2em;
-    margin-bottom: 1em;
-}
-.u-vanilla-html H3{
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    margin-top: 1.6em;
-    margin-bottom: 0.6em;
-}
-.u-vanilla-html H4{
-    font-weight: 600;
-    margin-top: 1.125em;
-    margin-bottom: 0.5em;
-    line-height: 1.5rem;
-}*/
 .u-vanilla-html-small {
     font-size: 1rem;
     line-height: 1.5rem; 
