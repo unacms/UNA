@@ -107,8 +107,8 @@ export default function ElementCalendar({ data }) {
                                         <View className='absolute z-50 top-0 left-2 w-4 h-4 border-2 border-bgrbody dark:border-bgrbody-d flex-none rounded-full bg-neutral-300 dark:bg-neutral-700'></View>
                                         <View className='absolute z-10   -top-4 left-3.5 w-1 h-full  flex-none  bg-neutral-200 dark:bg-neutral-900'></View>
                                         <Card addClassName="flex-auto p-4  flex-col gap-y-2" margin="" >
-                                                <Row>
-                                                <View className='w-4/5'>
+                                            <Row>
+                                                <View className={(item.item.cover? 'w-4/5': 'w-full') + ' gap-y-2'}>
                                                     <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
                                                     <Row className='text-center gap-x-2 items-center'> 
                                                         <Button startDecorator='CalendarCheck' size="xs"/>
@@ -119,16 +119,15 @@ export default function ElementCalendar({ data }) {
                                                     {item.item.location != '' && (<Row  className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs"/><Text  className="text-xs text-neutral-700 dark:text-neutral-300">{item.item.location}</Text></Row>)}
                                                     <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.item.description)}</Text>
                                                 </View>
-                                                <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
-                                                <Image
-                                                    {...item.item.cover}
-                                                  
-                                                    view="cover"
-                                                    className="u-cover"
-                                                    sizes={imageSizes}
-                                                />
-                                                </View>
-                                                </Row>
+                                                { item.item.cover && <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
+                                                    <Image
+                                                        {...item.item.cover}
+                                                        view="cover"
+                                                        className="u-cover"
+                                                        sizes={imageSizes}
+                                                    />
+                                                </View>}
+                                            </Row>
                                         </Card>
                                     </View>
                                 </Link>

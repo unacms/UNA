@@ -21,7 +21,7 @@ let settingsDefault = {
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
         nfc: true,
-        use_custom_font: false,
+        use_custom_font: true,
         lock_unconfirmed: true,
     },
     sockets: {
@@ -885,6 +885,7 @@ let settingsDefault = {
                 col3: { name: 'bx_posts:browse_public', showTitle: false, showBg: false,showPad: true, sidebar: true  },
                 col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true,showPad: true, sidebar: true },
                 col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true,showPad: true, sidebar: true },
+                col5: { name: 'bx_invites:get_block_invite', showTitle: false, showBg: true, showPad: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false, cover: 'group'}
         },

@@ -42,7 +42,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    const threshold = 1500000000;
+    const threshold = 150000000;
     const [data, setData] = useState(false);
     const [local, setLocal] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -79,22 +79,22 @@ export default function WorkerEventChecker(oProps) {
 
     if (!data || !local)
         return content
-        console.log("filteredData", data.data);
+
     let filteredData = data.data.filter(event => 
             event.location_data && 
             event.location_data.lat != null && 
             !forgottedEvents.includes(event.id)
     );
     const imageSizes = getImageSizes()
-        console.log("filteredData", filteredData);
+        
     filteredData.forEach((item, key) => {
         let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude)
         if (d < threshold){
-            content = (<Modal title="You are on event" onVisible={true} >
+            content = (<Modal title="You are at the Event" onVisible={true} >
                 <View className='w-full  '>
                     <Card addClassName="flex-auto p-4  flex-col gap-y-2" margin="" >
-                        <Row>
-                            <View className='w-4/5'>
+                        <Row >
+                            <View className={(item.cover? 'w-4/5': 'w-full') + ' gap-y-2'}>
                                 <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.title}</Text>
                                 <Row className='text-center gap-x-2 items-center'> 
                                     <Button startDecorator='CalendarCheck' size="xs"/>
@@ -105,18 +105,18 @@ export default function WorkerEventChecker(oProps) {
                                 {item.location != '' && (<Row  className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs"/><Text  className="text-xs text-neutral-700 dark:text-neutral-300">{item.location}</Text></Row>)}
                                 <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.description)}</Text>
                             </View>
-                            <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
+                            { item.cover && <View className='w-1/5 mb-auto bg-bgritem dark:bg-bgritem-d aspect-video overflow-hidden rounded-xl'>
                             <Image
                                 {...item.cover}
                                 view="cover"
                                 className="u-cover"
                                 sizes={imageSizes}
                             />
-                            </View>
+                            </View>}
                         </Row>
                         <Row className='justify-between'>
                             <Link href={item.url}><Button onPress={() => ForgotEvent(item.id)}  title='Check In' size="base" variant="primary"/></Link>
-                            <Button title='Forgot' size="base" onPress={() => ForgotEvent(item.id)} />
+                            <Button title='Ignore' size="base" onPress={() => ForgotEvent(item.id)} />
                         </Row>
                     </Card>
                 </View>
