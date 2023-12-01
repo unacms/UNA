@@ -42,7 +42,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    const threshold = 150000000;
+    const threshold = 150;
     const [data, setData] = useState(false);
     const [local, setLocal] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();

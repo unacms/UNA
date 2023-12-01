@@ -3,7 +3,7 @@ import { useColorScheme } from 'react-native';
 
 export default function ElementHtml(props) {
     let data = props.data;
-    let sClass = "u-vanilla-html " + props.className;
+    let sClass = "u-vanilla-html font-default " + props.className;
     const scheme = useColorScheme();
     window.addEventListener("message", function(event) {
        

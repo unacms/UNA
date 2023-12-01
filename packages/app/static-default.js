@@ -12,6 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next';
 import { tp } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
+
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -524,6 +525,7 @@ function ComponentsSplash(props) {
           </Card>
         </View>
       </View>
+     
     </View>
   )
 }
