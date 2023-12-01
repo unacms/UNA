@@ -39,9 +39,8 @@ export default function Suggestions(props) {
     }, [currentUser, dataModal]);
 
 
-    if (!currentUser)
+    if (!currentUser || !currentUser.confirmed)
         return <></>
-
 
     const shangeData  = async (isSaveToStore) => { 
         //console.log("shangeData", shangeData, suggestionListShown)

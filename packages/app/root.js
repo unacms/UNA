@@ -14,7 +14,6 @@ import PageLayout from 'app/components/page-layout';
 */
 const Layouts = React.lazy(() => import('app/components/layouts'));
 
-
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
     if (element) {

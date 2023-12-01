@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .u-vanilla-html {
     @apply prose dark:prose-invert;
     @apply text-neutral-700 dark:text-neutral-300 ;

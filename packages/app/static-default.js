@@ -565,7 +565,7 @@ const ComponentsDummy = (
         123
       </Text>
     </Row>
-    <Row className="bg-orange-500 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
+    <Row className="font-default bg-orange-500 bg-yellow-500 bg-green-500 bg-teal-500 bg-sky-500 bg-indigo-500 bg-purple-500 bg-pink-500 bg-rose-500 bg-red-500">
       <Icon
         className="text-gray-600 dark:text-gray-400"
         icon="ArrowFatUp"

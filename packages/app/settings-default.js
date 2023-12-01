@@ -21,7 +21,8 @@ let settingsDefault = {
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
         nfc: true,
-        font_family: ""
+        use_custom_font: false,
+        lock_unconfirmed: true,
     },
     sockets: {
         host: 'ci.una.io',

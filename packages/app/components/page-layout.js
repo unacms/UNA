@@ -3,6 +3,8 @@ import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
+import { useCurrentUser } from 'app/context/user';
+import ConfirmEmail from 'app/ui/molecules/confirm_email';
 
 export default function PageLayout(props) {
 
@@ -45,8 +47,11 @@ export default function PageLayout(props) {
 }
 
 function Wrapper(p){
-
-    const isWeb = Platform.OS == 'web'
-
-    return <View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View>
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    if (!currentUser || currentUser?.confirmed || appSetting('layout', 'lock_unconfirmed') != true){
+        return <View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View>
+    }
+    else{
+        return <View className='flex-1 mx-auto w-full h-full animated-view'><ConfirmEmail/></View>
+    }
 }
