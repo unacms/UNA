@@ -9,6 +9,7 @@
     font-size: 1rem;
     line-height: 1.5rem; 
     max-width: none;
+    font-family: default-font;
 }
 .u-vanilla-html div > :where(:first-child):not(:where([class~="not-prose"] *)),
 .u-vanilla-html > :where(:first-child):not(:where([class~="not-prose"] *)){
@@ -42,6 +43,7 @@ html, body, #__next {
     padding: 0px;
     /* Allows content to fill the viewport and go beyond the bottom */
     min-height: 100%;
+    font-family: default-font;
 }
 
 #__next {

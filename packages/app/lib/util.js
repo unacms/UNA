@@ -5,12 +5,31 @@ import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
+import Clipboard from '@react-native-community/clipboard';
 
 export function appSetting(section, name, path) {
     if (path)
         return settings[section] && settings[section][name] ? settings[section][name][path] : '';
 
     return settings[section] ? settings[section][name] : '';
+}
+
+export async function getClipboard() {
+    if (Platform.OS !== 'web') {
+        return await Clipboard.getString();
+    }
+    else{
+        return await navigator.clipboard.readText();
+    }
+}
+
+export async function setClipboard(str) {
+    if (Platform.OS !== 'web') {
+        Clipboard.setString(str);
+    }
+    else{
+        await navigator.clipboard.writeText(str);
+    }
 }
 
 export function absoluteApiUrl(url_name) {

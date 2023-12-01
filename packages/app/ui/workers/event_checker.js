@@ -42,7 +42,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    const threshold = 1500;
+    const threshold = 1500000000;
     const [data, setData] = useState(false);
     const [local, setLocal] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -79,14 +79,14 @@ export default function WorkerEventChecker(oProps) {
 
     if (!data || !local)
         return content
-
+        console.log("filteredData", data.data);
     let filteredData = data.data.filter(event => 
             event.location_data && 
             event.location_data.lat != null && 
             !forgottedEvents.includes(event.id)
     );
     const imageSizes = getImageSizes()
-
+        console.log("filteredData", filteredData);
     filteredData.forEach((item, key) => {
         let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude)
         if (d < threshold){

@@ -23,26 +23,8 @@ export default function Suggestions(props) {
     let filteredList = suggestionList.filter(item => suggestionListToShow.includes(item.name));
 
     let dataModal = filteredList[0];
-    useEffect(() => {
-        const fetchData = async () => {
-                let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
-                const sResponse = await fetcher(request_url);
-                if (sResponse.data[0].data.data.length == 0){
-                    shangeData(false);
-                }
-                else{
-                    setDataCount(1)
-                }
-        };
-        if (currentUser && dataModal)
-            fetchData();
-    }, [currentUser, dataModal]);
 
-
-    if (!currentUser || !currentUser.confirmed)
-        return <></>
-
-    const shangeData  = async (isSaveToStore) => { 
+    const changeData  = async (isSaveToStore) => { 
         //console.log("shangeData", shangeData, suggestionListShown)
         let a = dataIndexModal + 1;
         if (a>=filteredList.length)
@@ -58,6 +40,27 @@ export default function Suggestions(props) {
         setDataCount(0)
         setDataIndexModal(a);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+                let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
+                const sResponse = await fetcher(request_url);
+                if (sResponse.data[0].data.data.length == 0){
+                    changeData(false);
+                }
+                else{
+                    setDataCount(1)
+                }
+        };
+        if (currentUser && dataModal)
+            fetchData();
+    }, [currentUser, dataModal]);
+
+
+    if (!currentUser || !currentUser.confirmed)
+        return <></>
+
+    
 
 
     if (dataModal && dataCount > 0){
