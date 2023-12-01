@@ -921,6 +921,10 @@ export default function Unit(props) {
         case 'person_friends_recommendations':
           sPrimary = 'befriend'
           break
+        case 'person_friends_suggestion':
+          sPrimary = 'befriend'
+          sSecondary = 'unfriend'
+          break
 
         case 'browse_friend_requests':
           sPrimary = 'befriend'

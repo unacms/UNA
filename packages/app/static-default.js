@@ -525,7 +525,6 @@ function ComponentsSplash(props) {
           </Card>
         </View>
       </View>
-     
     </View>
   )
 }

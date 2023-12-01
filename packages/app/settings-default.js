@@ -65,7 +65,7 @@ let settingsDefault = {
     },
     suggestion: {
         list: [
-            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_recommendations', perLine:3},
+            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
             {name: 'groups', request_url: '/api.php?r=bx_groups/browse_recommendations_fans&params[]={user_id}', title: 'Recommended groups', unitType:'person_friends_recommendations', perLine:3}
         ],
     },
