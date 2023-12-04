@@ -884,7 +884,7 @@ export default function Unit(props) {
 
     let data = props.data
     const { cardData, setCardData } = useContext(CardData)
-    if (!!cardData?.hidden) return
+    if (!!cardData?.hidden && props.unitType == 'person_friends_recommendations') return
     const imageSizes = getImageSizes()
 
     const handleClick = (event, sUrl) => {
