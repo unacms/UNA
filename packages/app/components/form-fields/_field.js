@@ -20,6 +20,11 @@ export default function FormField(props) {
                     <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{props.error}</Text>
                 </View>
             }
+            { !!props.info &&
+                <View className="label" >
+                    <Text className="ml-0.5 mt-0.5 text-xs">{props.info}</Text>
+                </View>
+            }
         </View>
     );
 }

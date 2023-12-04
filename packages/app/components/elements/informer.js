@@ -45,7 +45,7 @@ export default function ElementInformer({data}) {
                     }
                     
                     return (                   
-                        <View key={'informer' + index} className="bg-pink-100 p-2 rounded m-2">
+                        <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
                             <Text className="text-black dark:text-white">{stripTags(item.msg)}</Text>
                         </View>
                     )

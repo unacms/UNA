@@ -196,6 +196,7 @@ let settingsDefault = {
         ],
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
+            { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
@@ -221,7 +222,7 @@ let settingsDefault = {
         bx_ads_submenu: {
             name: 'Ads',
             icon: 'File',
-            items: ['ads-home', 'ads-popular', 'ads-administration'],
+            items: ['ads-home', 'ads-popular', 'ads-manage', 'ads-administration', 'ads-sources'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-ad' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
@@ -248,9 +249,12 @@ let settingsDefault = {
             'edit-discussion', 
             'delete-discussion'
         ],
+        
         bx_ads_view_actions: [
             'edit-ad', 
-            'delete-ad'
+            'delete-ad',
+            'edit-ad-budget',
+            'view-ad-promotion'
         ],
         bx_persons_submenu: {
             name: 'People',
@@ -259,6 +263,12 @@ let settingsDefault = {
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
+        },
+        bx_payment_menu_cart_submenu: {
+            name: 'Shopping Carts',
+            icon: 'Wallet',
+            items: ['payment-carts'],
+            add: []
         },
         bx_organizations_submenu: {
             name: 'Organizations',
@@ -485,6 +495,22 @@ let settingsDefault = {
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
         //############ SETTINGS PAGES ############
+        /*'payment-carts': {
+            layout: 'navigator',
+            blocks: {
+                grid: {name: 'bx_payment:get_block_carts', showTitle: false, showBg: false, perLine: 1},
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'payment-cart': {
+            layout: 'navigator',
+            blocks: {
+                grid: {name: 'bx_payment:get_block_cart', showTitle: false, showBg: false, perLine: 1},
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },*/
         'account-settings-email': {
             layout: 'navigator',
             blocks: {
@@ -708,6 +734,22 @@ let settingsDefault = {
             icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
+        'ads-manage': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:manage_tools', showTitle: false, showBg: false },
+            },
+            icon: 'Fire',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'ads-sources': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:block_sources_details', showTitle: false, showBg: false },
+            },
+            icon: 'Fire',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
         'ads-popular': {
             layout: 'navigator',
             blocks: {
@@ -730,6 +772,8 @@ let settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
+
+
         //############ CONNECTION PAGES ############
         'friend-suggestions': {
             layout: 'navigator',
@@ -1129,6 +1173,7 @@ if (settingsDefault.layout.format == 'ver') {
     settingsDefault.menu_items.menu_top = [
         { name: 'home', title: 'Home', link: '/', icon: 'House'},
         { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
+        { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
         { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 

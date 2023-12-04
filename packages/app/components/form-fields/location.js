@@ -86,8 +86,6 @@ export default function FormFieldLocation(props) {
             street: street, 
             street_number: street_number,
         })
-       // console.log(place,country, state, zipCode)
-        //setPlace(place)
     }
 
     return (
