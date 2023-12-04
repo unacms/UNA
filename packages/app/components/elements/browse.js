@@ -145,6 +145,7 @@ export default function ElementBrowse(props) {
             ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
         ]
     };
+    //console.log("dataItems", dataItems, data.request_url + browseParams?.type + (defParams?.category? defParams?.category : '') + (props?.cachePrefix ? props?.cachePrefix : ''));
 
     /* DAEMON PART */
     const setTosterVisible = (val) => {
