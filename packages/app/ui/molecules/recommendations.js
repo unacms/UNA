@@ -100,16 +100,19 @@ export default function ElementRecommendations(oProps) {
         event.preventDefault();
 
         performAction('perform', {a:sAction}, (oData) => {
+            setElementVars(oData);
+
             if(!oData.a)
-                setElementVars({hidden:true}, true, true);
-            else
-                setElementVars(oData);
+                setElementVars({hidden:true}, true, true);    
         });
     };
 
     let sAction = oProps?.a || '';
     if(isElementVar('a'))
         sAction = getElementVar('a');
+
+    if(!sAction)
+        return;
 
     let sTitle = oProps?.title || '';
     if(isElementVar('title'))

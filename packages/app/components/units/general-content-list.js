@@ -884,7 +884,7 @@ export default function Unit(props) {
 
     let data = props.data
     const { cardData, setCardData } = useContext(CardData)
-    if (!!cardData?.hidden) return
+    if (!!cardData?.hidden && props.unitType == 'person_friends_recommendations') return
     const imageSizes = getImageSizes()
 
     const handleClick = (event, sUrl) => {
@@ -1090,6 +1090,7 @@ export default function Unit(props) {
                           />
                         )}
                       </View>
+                      {/*TODO: Roman. Fix is needed here.
                       <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                         {data.mutual_friends_count > 0
                           ? tp(
@@ -1098,7 +1099,7 @@ export default function Unit(props) {
                               false
                             )
                           : tp('friends', data?.friends_count, false)}
-                      </Text>
+                          </Text>*/}
                     </>
                   )}
                 </Row>
