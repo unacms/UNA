@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
@@ -41,6 +41,11 @@ export default function (props) {
     }
 
     let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
+
+    const memoizedBrowse = useMemo(() => {
+        return <Browse cachePrefix={Date.now()} height={400} data={data} />;
+    }, [notifCount]);
+
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
             <Redirect ref={redirectdRef} />
@@ -60,7 +65,7 @@ export default function (props) {
                     }}
                 />
             </View>
-            <Browse cachePrefix={Date.now()} height={400} data={data} />
+            {memoizedBrowse}
         </View>
     )
 
