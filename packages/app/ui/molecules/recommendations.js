@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { CardData } from 'app/context/card';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
     const { cardData, setCardData } = useContext(CardData);

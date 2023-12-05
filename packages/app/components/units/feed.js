@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -168,8 +168,6 @@ function DefaultUnit(data) {
         }
     }
 
-    console.log("datadatadata", data.content.register_click)
-
     let linkForAd =  (
         <Link href={url}>
             <Text  className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
@@ -184,8 +182,17 @@ function DefaultUnit(data) {
         </Link>
     );
     if (data?.content?.register_click){
-        linkForAd = <Pressable  onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click + data.content.id)}} >{linkForAd}</Pressable>
+        linkForAd = <Pressable  onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click)}} >{linkForAd}</Pressable>
     }
+
+    //May be improvement needed
+    useEffect(() => {
+        (async () => {
+            if (data?.content?.register_impression){
+                await fetcher('/api.php?r=' + data.content.register_impression);
+            }
+        })();
+    }, []);
 
     return (
         <AnimatedBlock>
