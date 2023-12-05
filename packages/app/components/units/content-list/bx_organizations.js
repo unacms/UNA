@@ -1,5 +1,4 @@
 import { useState, useContext, useRef } from 'react'
-import CardDataContext from 'app/context/card'
 import { CardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
@@ -185,7 +184,7 @@ export default function Unit(props) {
         
 
     return (
-        <CardDataContext>
+        <>
             <Redirect ref={redirectdRef} />
             <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                 <Link className="group " href={data.url}>
@@ -304,6 +303,6 @@ export default function Unit(props) {
                     </View>
                 </Link>
             </Card>
-        </CardDataContext>
+        </>
     );
 }
