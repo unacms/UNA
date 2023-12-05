@@ -17,12 +17,14 @@ export default function Unit(props) {
             showInfo="false"
         />
     );
+    
     let cover_raw = data.cover_raw.replace(
         /\\u([\d\w]{4})/gi,
         function (match, grp) {
             return String.fromCharCode(parseInt(grp, 16));
         },
     );
+
     return (
         <>
             <Card margin="mb-2 mx-2" rounded="rounded-2xl">
@@ -79,7 +81,6 @@ export default function Unit(props) {
                                             </View>
                                         )}
                                     </Row>
-
                                     <Text
                                         numberOfLines={1}
                                         className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"

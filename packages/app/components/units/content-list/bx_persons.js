@@ -13,21 +13,17 @@ import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
-
+import { useTranslation } from 'react-i18next';
 
 export default function Unit(props) {
+    const { t } = useTranslation();
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
 
     const { cardData, setCardData } = useContext(CardData);
-    if (
-        !!cardData?.hidden &&
-        props.unitType == "person_friends_recommendations"
-    )
-        return;
-
+    
     const handleClick = (event, sUrl) => {
         event.preventDefault();
 
@@ -180,6 +176,13 @@ export default function Unit(props) {
         data.mutual_friends_count > 0
             ? tp("mutual_friends", data?.mutual_friends_count, false)
             : tp("friends", data?.friends_count, false);
+
+    if (
+        !!cardData?.hidden &&
+        props.unitType == "person_friends_recommendations"
+    )
+        return;
+        
 
     return (
         <CardDataContext>

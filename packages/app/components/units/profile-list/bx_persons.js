@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import CardDataContext from "app/context/card";
 import { CardData } from "app/context/card";
-import Image from "app/ui/atoms/image";
 import Link from "app/ui/atoms/link";
 import Profile from "app/ui/molecules/profile";
-import { appSetting, getImageSizes } from "app/lib/util";
+import { getImageSizes } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View } from "app/design/view";
 import Menu from "app/components/menu";
@@ -50,6 +49,7 @@ export default function Unit(props) {
                                 url_avatar={data?.image?.src}
                                 displayType="unit_wo_info"
                                 displaySize="base"
+                                display_name={data.title}
                             />
                         </View>
                         <View className="flex-auto my-auto ">
