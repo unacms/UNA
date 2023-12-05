@@ -1,5 +1,4 @@
 import { useState, useContext, useRef } from 'react'
-import CardDataContext from 'app/context/card'
 import { CardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
@@ -39,6 +38,7 @@ export default function Unit(props) {
 
     let oMenuItemPrimary = undefined;
     let oMenuItemsMore = undefined;
+    let bMenuItemsMoreShow = true;
     if (data?.meta) {
         let sPrimary = "",
             sSecondary = "",
@@ -58,9 +58,10 @@ export default function Unit(props) {
             case "person_friends_recommendations":
                 sPrimary = "befriend";
                 break;
+
             case "person_friends_suggestion":
                 sPrimary = "befriend";
-                sSecondary = "unfriend";
+                bMenuItemsMoreShow = false;
                 break;
 
             case "browse_friend_requests":
@@ -185,7 +186,7 @@ export default function Unit(props) {
         
 
     return (
-        <CardDataContext>
+        <>
             <Redirect ref={redirectdRef} />
             <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                 <Link className="group " href={data.url}>
@@ -256,7 +257,7 @@ export default function Unit(props) {
                             </Row>
                             <View className="flex-row w-full gap-x-2 ">
                                 {oMenuItemPrimary}
-                                {!!oMenuItemsMore &&
+                                {bMenuItemsMoreShow && !!oMenuItemsMore &&
                                     oMenuItemsMore.items.length > 0 && (
                                         <>
                                             <Button
@@ -304,6 +305,6 @@ export default function Unit(props) {
                     </View>
                 </Link>
             </Card>
-        </CardDataContext>
+        </>
     );
 }
