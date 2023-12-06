@@ -5,7 +5,7 @@ import { stripTags } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon'
 import { Button } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function ElementInformer({data}) {
     const [ state, setState ] = useState(0);
@@ -17,15 +17,17 @@ export default function ElementInformer({data}) {
         setState(1);  
         
     };
-    console.log
+
     if (!currentUser?.informer?.length)
         return <></>
+
     return (
         <View className="w-full mx-auto ">
             <View className="  w-full border-bdr/50 dark:border-bdr-d/50 mx-auto ">
             {currentUser?.informer?.map((item, index) => {
                    if (item.id == 'sys-account-unconfirmed-email'){
-                        return (                   
+                        return <React.Fragment key={item.id}></React.Fragment>
+                        /*return (                   
                             <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
                                 <View className='flex-row  gap-x-3'>
                                     <View className='flex-none text-black dark:text-white'><Icon icon="Info" className="w-10 h-10"  /></View>
@@ -36,14 +38,14 @@ export default function ElementInformer({data}) {
                                     {(state == 1 && <><Text className="text-black dark:text-white">Email verification letter was sent, please check your inbox.</Text></>)}
                                 </View>
                             </View>
-                        )
+                        )*/
                     }
                     if (item.id == 'sys-switch-profile-context'){
                         return <View key={'informer' + index}></View>
                     }
                     
                     return (                   
-                        <View key={'informer' + index} className="bg-pink-100 p-2 rounded m-2">
+                        <View key={'informer' + index} className="max-w-screen-lg mx-auto bg-yellow-100/80 dark:bg-yellow-900/80 border dark:border-yellow-800 border-yellow-300 p-3 rounded-lg m-2 gap-y-3 justify-center items-center">
                             <Text className="text-black dark:text-white">{stripTags(item.msg)}</Text>
                         </View>
                     )

@@ -4,7 +4,7 @@ import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/contro
 import { Pressable } from 'app/design/view'
 import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import Clipboard from '@react-native-community/clipboard';
+import { setClipboard } from 'app/lib/util'
 
 export default function MenuItemSubmenuShare(oProps) {
 
@@ -33,7 +33,7 @@ export default function MenuItemSubmenuShare(oProps) {
 
             case 'item-copy':
                 handleClick = () => {
-                    Clipboard.setString(oItem.link);
+                    setClipboard(oItem.link);
                 }
                 break;
 

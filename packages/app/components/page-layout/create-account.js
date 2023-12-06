@@ -191,7 +191,7 @@ export default function PageLayout(props) {
               <Button
                 title="Log in with email"
                 variant="outline"
-                startDecorator="UserCirclePlus"
+                startDecorator="SignIn"
                 size="base"
                 fullWidth
               />

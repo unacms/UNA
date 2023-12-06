@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -23,6 +23,7 @@ import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsBrowse } from 'app/lib/comments-helpers'
+import { Pressable } from 'dripsy'
 
 function DefaultUnit(data) {
     const { t } = useTranslation();
@@ -54,7 +55,7 @@ function DefaultUnit(data) {
         })
     }
 
-    let url = '/' + data.url
+    let url = data.url.includes('://') ? data.url : '/' + data.url
     let bIsTimelineContent = data?.type?.includes('timeline') ? true : false
     let bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
     let bIsMarketContent = (data.type == 'bx_market') &&  data.action == 'added'
@@ -166,6 +167,32 @@ function DefaultUnit(data) {
             isShowMoreComments = true;
         }
     }
+
+    let linkForAd =  (
+        <Link href={url}>
+            <Text  className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                {data.content.price ? data.content.price.replace("&#36;", "$")  : 'Free'}
+            </Text>
+            <Text
+                numberOfLines={2}
+                className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+            >
+                {data.content.title}
+            </Text>
+        </Link>
+    );
+    if (data?.content?.register_click){
+        linkForAd = <Pressable  onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click)}} >{linkForAd}</Pressable>
+    }
+
+    //May be improvement needed
+    useEffect(() => {
+        (async () => {
+            if (data?.content?.register_impression){
+                await fetcher('/api.php?r=' + data.content.register_impression);
+            }
+        })();
+    }, []);
 
     return (
         <AnimatedBlock>
@@ -315,19 +342,8 @@ function DefaultUnit(data) {
                             </View>
                             </View>
                         )}
-                        <View className="flex-auto p-2 my-auto flex-col    ">
-                            <Link href={url} className="">
-                            <Text  className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                                {data.price > 0 ? data.price  + '$' : 'Free'}
-                            </Text>
-                            
-                            <Text
-                                numberOfLines={2}
-                                className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
-                            >
-                                {data.content.title}
-                            </Text>
-                            </Link>
+                        <View className="flex-auto p-2 my-auto flex-col">
+                            {linkForAd}
                             {!showFull ? (
                             <View>
                                 <View className="flex-col gap-y-3 relative">

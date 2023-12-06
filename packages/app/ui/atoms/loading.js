@@ -4,6 +4,6 @@ import { Theme } from 'app/design/theme';
 export default function ElementLoading(props) {
     const { colors } = Theme();
     return (
-        <ActivityIndicator  accessibilityRole="progressbar" aria-label="Loading" size="large" color={colors.primary}  />
+        <ActivityIndicator   aria-label="Loading" size="large" color={colors.primary}  />
     )
 }

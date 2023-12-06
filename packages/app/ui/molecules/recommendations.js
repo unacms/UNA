@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { CardData } from 'app/context/card';
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
     const { cardData, setCardData } = useContext(CardData);
@@ -100,16 +100,19 @@ export default function ElementRecommendations(oProps) {
         event.preventDefault();
 
         performAction('perform', {a:sAction}, (oData) => {
+            setElementVars(oData);
+
             if(!oData.a)
-                setElementVars({hidden:true}, true, true);
-            else
-                setElementVars(oData);
+                setElementVars({hidden:true}, true, true);    
         });
     };
 
     let sAction = oProps?.a || '';
     if(isElementVar('a'))
         sAction = getElementVar('a');
+
+    if(!sAction)
+        return;
 
     let sTitle = oProps?.title || '';
     if(isElementVar('title'))

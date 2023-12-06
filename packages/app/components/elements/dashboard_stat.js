@@ -44,61 +44,62 @@ export default function ElementDashboardStat(props) {
     }, []);
     
     let menu = appSetting('menu', 'dashboard') 
-
     return (
         <Row className="flex-wrap flex-auto mb-auto "> 
 
             {menu.map((item2, index) => {
                 let item = data[item2.key];
-                if (item.type != 'growth') {
-                    return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
-                        <Link href={item2.link}>
-                            <Card rounded=" rounded-2xl " addClassName="w-full h-24 p-4 gap-y-2" >
-                                <Row className='space-x-1 w-full justify-between'>
-                                    {
-                                        item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                                        {item.count}
-                                        </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded/></Link></View>
-                                    }
-                                    {getCounter(item[item2.action], item2.action_icon)}
-                                </Row>
-                                <Row className="w-full my-auto gap-x-2 ">
-                                    
-                                <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
-                                    {t(item2.title)}
+                if (item){
+                    if (item?.type != 'growth') {
+                        return <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
+                            <Link href={item2.link}>
+                                <Card rounded=" rounded-2xl " addClassName="w-full h-24 p-4 gap-y-2" >
+                                    <Row className='space-x-1 w-full justify-between'>
+                                        {
+                                            item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                                            {item.count}
+                                            </Text> : <View><Link href={item2.link2} emulate={true}><Button variant="outline" startDecorator="Plus" size="sm" rounded/></Link></View>
+                                        }
+                                        {getCounter(item[item2.action], item2.action_icon)}
+                                    </Row>
+                                    <Row className="w-full my-auto gap-x-2 ">
+                                        
+                                    <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                                        {t(item2.title)}
+                                        </Text>
+                                        <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                            <Icon icon={item2.icon} width={24} height={24} />
+                                        </View>
+                                    </Row>
+                                </Card>
+                            </Link>
+                        </View>;
+                    }
+                    return (
+                        <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
+                            <Link href={item2.link} key={index}>
+                                <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" margin="a">
+                                    <Row className=''>
+                                    <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
+                                    {item.current} 
                                     </Text>
-                                    <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                        <Icon icon={item2.icon} width={24} height={24} />
-                                    </View>
-                                </Row>
-                            </Card>
-                        </Link>
-                    </View>;
+                                    {getCounter(item.growth, '', '%')}
+                                    
+                                    </Row>
+                                    <Row className="w-full my-auto gap-x-2 ">
+                                        
+                                    <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                                        {t(item2.title)}
+                                        </Text>
+                                        <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
+                                            <Icon icon={item2.icon} width={24} height={24} />
+                                        </View>
+                                    </Row>
+                                </Card>
+                            </Link>
+                        </View>
+                    )
                 }
-                return (
-                    <View className=" w-1/2 lg:w-1/3 p-2" key={index}>
-                        <Link href={item2.link} key={index}>
-                            <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" margin="a">
-                                <Row className=''>
-                                <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
-                                {item.current} 
-                                </Text>
-                                {getCounter(item.growth, '', '%')}
-                                
-                                </Row>
-                                <Row className="w-full my-auto gap-x-2 ">
-                                    
-                                <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
-                                    {t(item2.title)}
-                                    </Text>
-                                    <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
-                                        <Icon icon={item2.icon} width={24} height={24} />
-                                    </View>
-                                </Row>
-                            </Card>
-                        </Link>
-                    </View>
-                )
             })}      
         </Row>     
     ) 

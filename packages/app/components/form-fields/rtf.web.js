@@ -7,7 +7,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
 import { uploadImage,linkify2 } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
-import { appSetting } from 'app/lib/util'
+import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
@@ -65,7 +65,7 @@ const MenuBar = ({ editor }) => {
             if (inputValue != '') {
                 let className = "w-full max-w-xl aspect-video mx-auto ";
                 
-                const rvUrl = appSetting("urls", "embeds") + inputValue + '&theme=' + scheme;
+                const rvUrl = absoluteApiUrl("embeds") + inputValue + '&theme=' + scheme;
                 editor.chain().focus().setIframe({ src: rvUrl, origin: inputValue, class: className }).run()
                 setShowModal(false);
                 setModalType('');

@@ -13,8 +13,10 @@ export default function Suggestions(props) {
     const [dataIndexModal, setDataIndexModal] = useState(0);
     const [dataCount, setDataCount] = useState(0);
     let suggestionList = appSetting('suggestion', 'list');
+
     let suggestionListNames = suggestionList.map(item => item.name);
-    let suggestionListShown = storageGet('suggestion:list', '', true);
+    let suggestionListShown = currentUser?.settings?.recomendation ? currentUser.settings.recomendation : [];
+
     if (!suggestionListShown)
         suggestionListShown = [];
     let suggestionListToShow = suggestionListNames.filter(item => !suggestionListShown.includes(item));
@@ -22,12 +24,29 @@ export default function Suggestions(props) {
 
     let dataModal = filteredList[0];
 
+    const changeData  = async (isSaveToStore) => { 
+        //console.log("shangeData", shangeData, suggestionListShown)
+        let a = dataIndexModal + 1;
+        if (a>=filteredList.length)
+            a = false;
+        if (isSaveToStore){
+            suggestionListShown.push(filteredList[0].name)
+            if (!currentUser.settings)
+                currentUser.settings = {}
+            currentUser.settings.recomendation = suggestionListShown
+            let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id)+JSON.stringify(currentUser.settings);
+            const sResponse = await fetcher(request_url);
+        }
+        setDataCount(0)
+        setDataIndexModal(a);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
                 let request_url = dataModal.request_url.replace('{user_id}', currentUser.id);
                 const sResponse = await fetcher(request_url);
                 if (sResponse.data[0].data.data.length == 0){
-                    shangeData(false);
+                    changeData(false);
                 }
                 else{
                     setDataCount(1)
@@ -38,21 +57,10 @@ export default function Suggestions(props) {
     }, [currentUser, dataModal]);
 
 
-    if (!currentUser)
+    if (!currentUser || !currentUser.confirmed)
         return <></>
 
-
-    const shangeData = (isSaveToStore) => { 
-        let a = dataIndexModal + 1;
-        if (a>=filteredList.length)
-            a = false;
-        if (isSaveToStore || true){
-            suggestionListShown.push(filteredList[0].name)
-            storageSet('suggestion:list', '', suggestionListShown, true);
-        }
-        setDataCount(0)
-        setDataIndexModal(a);
-    };
+    
 
 
     if (dataModal && dataCount > 0){
@@ -60,8 +68,10 @@ export default function Suggestions(props) {
             dataModal.perLine = 1
         return (
             <View>
-                <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => shangeData(true)}>
-                    <Browse height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
+                <Modal title={dataModal.title} onVisible={dataIndexModal <= filteredList.length} outerClickClose={false} onClose={() => changeData(true)}>
+                    <ScrollView>
+                        <Browse only_one_page={true} height={400} data={{request_url : dataModal.request_url.replace('{user_id}', currentUser.id), "type" : "obj_own_and_con", unit:"general-content-list"}} perLine={dataModal.perLine} unitType={dataModal.unitType}/>
+                    </ScrollView>
                 </Modal>
             </View>
         )

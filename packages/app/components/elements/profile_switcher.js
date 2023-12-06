@@ -1,4 +1,4 @@
-import { View, Pressable } from 'app/design/view'
+import { View, Pressable, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { useState, useEffect, Children } from 'react'
 import { Button } from 'app/design/controls'
@@ -9,8 +9,8 @@ import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { Modal } from 'app/design/controls'
+
 export default function ElementProfileSwitcher(props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -32,7 +32,7 @@ export default function ElementProfileSwitcher(props) {
             <Pressable onPress = {() => handleClick()}>
                 {props.children}
             </Pressable>
-            {data && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
+            {(data && data.profiles ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">
@@ -60,6 +60,30 @@ export default function ElementProfileSwitcher(props) {
                             </Link>
                         )
                     })}
+                    <Row className='justity-between mt-4 w-full'>
+                        <View className='w-1/2 pr-2'>
+                        <Link noprefetch="true" href="/create-persons-profile">
+                            <Button
+                                variant="outline"
+                                title= {t("Create new profile")}
+                                startDecorator="UserCircle"
+                                fullWidth
+                  
+                            />
+                        </Link>
+                        </View>
+                        <View className='w-1/2 pl-2'>
+                        <Link noprefetch="true" href="/logout">
+                            <Button
+                                variant="outline"
+                                title= {t("Sign out")}
+                                startDecorator="SignOut"
+                                fullWidth
+                        
+                            />
+                        </Link>
+                        </View>
+                    </Row>
                 </View>
             </Modal>}
         </>   

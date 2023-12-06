@@ -5,13 +5,14 @@ import { useCurrentUser } from 'app/context/user';
 import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
 import { storageClear } from 'app/lib/util';
+import { fetcher } from 'app/lib/fetcher';
+import { appSetting, getURI } from 'app/lib/util';
 //import { appStatic } from 'app/lib/app-static'
 /*
 import Layout from 'app/components/layout';
 import PageLayout from 'app/components/page-layout';
 */
 const Layouts = React.lazy(() => import('app/components/layouts'));
-
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -67,3 +68,35 @@ export function Root (props) {
         <Layouts path={props?.path} data={data} uri={data?.uri}/>
     );
 }
+
+// this function is called in Next as serverSideProps and in Expo to get data dynamically
+export async function getData(path, token, origin, headers, callback, params) {
+    if (!path || path.startsWith('expo-development-client'))
+	    path = 'home';
+
+    path = path.startsWith('/') ? path.substr(1) : path;    
+    console.log('------------------');
+    path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+
+	const uri = getURI(path);
+    let settings = appSetting('layouts', uri)
+    if (settings && settings?.blocks){
+        path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
+    }
+    else{
+        if (params)
+            path = path + '&params[]=';
+    }
+
+    if (params){
+        path = path + '&params[]=' + params
+    }
+    // TODO: pass GET&POST params
+    const t1 = Date.now();
+    const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
+    const diff = Date.now() - t1;
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", path, ")");
+    // console.log("************** load data:", path, "**************", data);
+    return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
+}
+

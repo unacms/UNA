@@ -1,9 +1,9 @@
-import { appSetting, md5 } from 'app/lib/util'
+import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
 import { useColorScheme } from 'react-native'; 
 
 export default function ElementHtml(props) {
     let data = props.data;
-    let sClass = "u-vanilla-html " + props.className;
+    let sClass = "u-vanilla-html font-default " + props.className;
     const scheme = useColorScheme();
     window.addEventListener("message", function(event) {
        
@@ -26,11 +26,12 @@ export default function ElementHtml(props) {
 
             let hash = md5(capture);
             return (
-                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl aspect-video mx-auto " src="' + appSetting("urls", "embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
+                '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl h-30 mx-auto " src="' + absoluteApiUrl("embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );
           });
+          data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
     }
-    
+
     return (<div>
             <div className={sClass} dangerouslySetInnerHTML={{__html:data}} style={props.htmlStyles}/>
         </div>

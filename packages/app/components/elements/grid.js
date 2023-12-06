@@ -22,7 +22,7 @@ const getWidth = (width) => {
             16.666667: 'w-2/12',
             25: 'w-1/4',
             33.333333: 'w-1/3',
-            41.666667: 'w-5/12',
+            41.666667: 'w-4/12',
             50: 'w-1/2',
             58.333333: 'w-7/12',
             66.666667: 'w-2/3',
@@ -84,7 +84,7 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
 
 const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setShowConfirm, deleteRows, fetchData }) => {
     const { colors } = Theme();
-    switch(cell.type) {
+    switch(cell?.type) {
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm'}></Time>
         case 'link':
@@ -117,6 +117,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             return ( <Row className='space-x-2 justify-end'>
             {cell.data.filter(item => item?.type).map((itemAction, index) => (
                 <ActionButton
+                    key={"ab" + index}
                     index={index}
                     itemAction={itemAction}
                     indexRow={indexRow}
@@ -237,35 +238,52 @@ export default function ElementGrid({data}) {
         setSelectedFilter(value);       
     };
 
-    const dropdownItems = useMemo(() => Object.entries(settings.filter1).map(([id, title]) => ({
-        id: id,
-        name: title.toLowerCase(),
-        title: title
-    })), [settings.filter1]);
-
+    const dropdownItems = useMemo(() => {
+        // Check the condition inside useMemo
+        if (settings.filter1.length > 0) {
+            return Object.entries(settings.filter1).map(([id, title]) => ({
+                id: id,
+                name: title.toLowerCase(),
+                title: title
+            }));
+        }
+        return []; // Return an empty array if the condition is not met
+    }, [settings.filter1]);
 
     return (
         <View className="w-full px-4 xl:px-6 ">
             <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
             <Row className='justify-between mt-2 mb-4 '>
-                <Row className="space-x-2 ">
-                    <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
-                        <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
-                    </DropdownMenu>
-     
-                    <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)}  />
-                </Row>
-                {data.actions.bulk.delete && (
-                    <Button startDecorator="Trash" size="base" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
+                {settings.filter1.length >0  && <Row className="gap-x-2 ">
+                        <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
+                            <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
+                        </DropdownMenu>
+        
+                        <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)}  />
+                    </Row>
                 }
+                <Row className="gap-x-2 ">
+                    {
+                        data.actions.bulk.delete && (
+                            <Button startDecorator="Trash" size="base" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
+                    }
+                    {
+                        data.actions.bulk.credits && (
+                            <Button  size="base" title={"Checkout with Credits"} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
+                    }
+                    {
+                        data.actions.bulk.paypal_api && (
+                            <Button  size="base" title={"Checkout with PayPal"} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
+                    }
+                </Row>
             </Row>
             <View className='border border-bdrnavbar dark:border-bdrnavbar-d'>
                 <Row className='w-full border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard px-2'>
                     {
                         header.map((itemCell, index) => {
                             return (
-                                <View key={index} className={getWidth(itemCell.width) + ' p-2'}>
-                                <Text className="font-bold">{itemCell.title}</Text>
+                                <View key={'header'  + index} className={getWidth(itemCell.width) + ' p-2'}>
+                                    <Text className="font-bold">{itemCell.title}</Text>
                                 </View>
                                 
                             );
@@ -281,10 +299,10 @@ export default function ElementGrid({data}) {
                         return (
                             <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
                                 {header.map((cellHeader, index) => (
-                                    <View key={index} className={`${getWidth(cellHeader.width)} p-2 justify-center`}>
+                                    <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} p-2 justify-center`}>
                                         <Cell 
                                             cell={item[cellHeader.name]} 
-                                            indexRow={indexRow} 
+                                            indexRow={indexRow + '_' + index} 
                                             id={item[settings.field_id]}
                                             toggleSwitch={toggleSwitch}
                                             setSelection={setSelection}

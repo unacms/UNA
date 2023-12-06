@@ -14,13 +14,15 @@ let settingsDefault = {
         allow_switch_profile: true,
         switch_lang: ['ru', 'en'],
         switch_theme: true,
-        dots_background_image: `url("data:image/svg+xml,%3Csvg width='36' height='36' viewBox='0 0 36 36' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M36 0H0v36h36V0zM15.126 2H2v13.126c.367.094.714.24 1.032.428L15.554 3.032c-.188-.318-.334-.665-.428-1.032zM18 4.874V18H4.874c-.094-.367-.24-.714-.428-1.032L16.968 4.446c.318.188.665.334 1.032.428zM22.874 2h11.712L20 16.586V4.874c1.406-.362 2.512-1.468 2.874-2.874zm10.252 18H20v13.126c.367.094.714.24 1.032.428l12.522-12.522c-.188-.318-.334-.665-.428-1.032zM36 22.874V36H22.874c-.094-.367-.24-.714-.428-1.032l12.522-12.522c.318.188.665.334 1.032.428zm0-7.748V3.414L21.414 18h11.712c.362-1.406 1.468-2.512 2.874-2.874zm-18 18V21.414L3.414 36h11.712c.362-1.406 1.468-2.512 2.874-2.874zM4.874 20h11.712L2 34.586V22.874c1.406-.362 2.512-1.468 2.874-2.874z' fill='%239ca3af' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E")`,        
-        shapes_background_image: ` url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%239ca3af' fill-opacity='0.1'%3E%3Cpath fill-rule='evenodd' d='M11 0l5 20H6l5-20zm42 31a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM0 72h40v4H0v-4zm0-8h31v4H0v-4zm20-16h20v4H20v-4zM0 56h40v4H0v-4zm63-25a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM53 41a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-30 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-28-8a5 5 0 0 0-10 0h10zm10 0a5 5 0 0 1-10 0h10zM56 5a5 5 0 0 0-10 0h10zm10 0a5 5 0 0 1-10 0h10zm-3 46a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm10 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM21 0l5 20H16l5-20zm43 64v-4h-4v4h-4v4h4v4h4v-4h4v-4h-4zM36 13h4v4h-4v-4zm4 4h4v4h-4v-4zm-4 4h4v4h-4v-4zm8-8h4v4h-4v-4z'/%3E%3C/g%3E%3C/svg%3E")`, 
-        bamboo_background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='32' viewBox='0 0 16 32'%3E%3Cg fill='%239ca3af' fill-opacity='0.1'%3E%3Cpath fill-rule='evenodd' d='M0 24h4v2H0v-2zm0 4h6v2H0v-2zm0-8h2v2H0v-2zM0 0h4v2H0V0zm0 4h2v2H0V4zm16 20h-6v2h6v-2zm0 4H8v2h8v-2zm0-8h-4v2h4v-2zm0-20h-6v2h6V0zm0 4h-4v2h4V4zm-2 12h2v2h-2v-2zm0-8h2v2h-2V8zM2 8h10v2H2V8zm0 8h10v2H2v-2zm-2-4h14v2H0v-2zm4-8h6v2H4V4zm0 16h6v2H4v-2zM6 0h2v2H6V0zm0 24h2v2H6v-2z'/%3E%3C/g%3E%3C/svg%3E")`,
         
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`
- 
+        background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
+        async_workers: ['EventChecker'],
+        async_workers_interval: 10,
+        nfc: true,
+        use_custom_font: false,
+        lock_unconfirmed: true,
     },
     sockets: {
         host: 'ci.una.io',
@@ -37,10 +39,9 @@ let settingsDefault = {
     },
     urls: {
         site: 'http://localhost:3000',
-        embeds: 'https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=',
-        images: 'https://ci.una.io/test3/image_transcoder.php?o=sys_custom_images&u=',
-        location: 'https://ci.una.io/test3/geo.php?',
         root: 'https://ci.una.io/test3/',
+        embeds: 'oembed.php?html=1&a=get_link&l=',
+      
     },
     cache: {
         list: true,
@@ -64,7 +65,7 @@ let settingsDefault = {
     },
     suggestion: {
         list: [
-            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_recommendations', perLine:3},
+            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
             {name: 'groups', request_url: '/api.php?r=bx_groups/browse_recommendations_fans&params[]={user_id}', title: 'Recommended groups', unitType:'person_friends_recommendations', perLine:3}
         ],
     },
@@ -195,6 +196,7 @@ let settingsDefault = {
         ],
         menu_account: [
             { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
+            { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
@@ -220,7 +222,7 @@ let settingsDefault = {
         bx_ads_submenu: {
             name: 'Ads',
             icon: 'File',
-            items: ['ads-home', 'ads-popular', 'ads-administration'],
+            items: ['ads-home', 'ads-popular', 'ads-manage', 'ads-administration', 'ads-sources'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-ad' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
@@ -247,9 +249,12 @@ let settingsDefault = {
             'edit-discussion', 
             'delete-discussion'
         ],
+        
         bx_ads_view_actions: [
             'edit-ad', 
-            'delete-ad'
+            'delete-ad',
+            'edit-ad-budget',
+            'view-ad-promotion'
         ],
         bx_persons_submenu: {
             name: 'People',
@@ -258,6 +263,12 @@ let settingsDefault = {
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
+        },
+        bx_payment_menu_cart_submenu: {
+            name: 'Shopping Carts',
+            icon: 'Wallet',
+            items: ['payment-carts'],
+            add: []
         },
         bx_organizations_submenu: {
             name: 'Organizations',
@@ -270,7 +281,7 @@ let settingsDefault = {
         bx_events_submenu: {
             name: 'Events',
             icon: 'Calendar',
-            items: ['events-home', 'events-top', 'events-joined', 'events-followed', 'events-calendar','events-upcoming'],
+            items: ['events-home', 'events-top', 'events-joined', 'events-followed','events-upcoming'],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-event-profile' },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
@@ -434,7 +445,7 @@ let settingsDefault = {
             layout: 'dashboard',
             top:true,
             blocks: {
-                stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: true },
+                stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
@@ -484,6 +495,22 @@ let settingsDefault = {
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
         //############ SETTINGS PAGES ############
+        /*'payment-carts': {
+            layout: 'navigator',
+            blocks: {
+                grid: {name: 'bx_payment:get_block_carts', showTitle: false, showBg: false, perLine: 1},
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'payment-cart': {
+            layout: 'navigator',
+            blocks: {
+                grid: {name: 'bx_payment:get_block_cart', showTitle: false, showBg: false, perLine: 1},
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },*/
         'account-settings-email': {
             layout: 'navigator',
             blocks: {
@@ -529,7 +556,8 @@ let settingsDefault = {
         'events-joined': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
+                //browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -537,7 +565,8 @@ let settingsDefault = {
         'events-upcoming': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_upcoming_profiles', showTitle: false, showBg: false },
+               
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'LinkSimple',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -553,7 +582,8 @@ let settingsDefault = {
         'events-followed': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_events:browse_followed_entries', showTitle: false, showBg: false },
+
+                browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
             },
             icon: 'Binoculars',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
@@ -704,6 +734,22 @@ let settingsDefault = {
             icon: 'Fire',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
+        'ads-manage': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:manage_tools', showTitle: false, showBg: false },
+            },
+            icon: 'Fire',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'ads-sources': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_ads:block_sources_details', showTitle: false, showBg: false },
+            },
+            icon: 'Fire',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
         'ads-popular': {
             layout: 'navigator',
             blocks: {
@@ -726,6 +772,8 @@ let settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
+
+
         //############ CONNECTION PAGES ############
         'friend-suggestions': {
             layout: 'navigator',
@@ -881,6 +929,7 @@ let settingsDefault = {
                 col3: { name: 'bx_posts:browse_public', showTitle: false, showBg: false,showPad: true, sidebar: true  },
                 col2: { name: 'bx_groups:entity_info', showTitle: false, showBg: true,showPad: true, sidebar: true },
                 col4: { name: 'bx_groups:entity_text_block', showTitle: false, showBg: true,showPad: true, sidebar: true },
+                col5: { name: 'bx_invites:get_block_invite', showTitle: false, showBg: true, showPad: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false, cover: 'group'}
         },
@@ -1123,6 +1172,9 @@ if (settingsDefault.layout.format == 'ver') {
     // Override settings for vertical layout
     settingsDefault.menu_items.menu_top = [
         { name: 'home', title: 'Home', link: '/', icon: 'House'},
+        { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
+        { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
+        { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
         { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },

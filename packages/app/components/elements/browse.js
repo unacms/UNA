@@ -23,7 +23,7 @@ export default function ElementBrowse(props) {
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
 
-    const [cachedData, setCachedData] = useState({state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
+    const [cachedData, setCachedData] = useState(props.cachePrefix ? false : {state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
     
     let data = props.data;
     if (data.unit == 'mixed'){
@@ -79,6 +79,7 @@ export default function ElementBrowse(props) {
     let styles = Platform.OS === 'web' ? {} : {height: (defParams?.height ? defParams.height : windowHeight - hOffset)}
 
     const fetchData = async ({ }) => {
+       
         let sResponse =  await fetcher(prepareUrl());
         return sResponse.data[0].data
     };
@@ -90,7 +91,7 @@ export default function ElementBrowse(props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category], fetchData, {
+    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix], fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
@@ -123,6 +124,9 @@ export default function ElementBrowse(props) {
     }
 
     const handleEndReached = (lastItemIndex) => { 
+
+        if(props.only_one_page == true)
+            return;
         if (isFetchingNextPage) 
             return;
         if (lastItemIndex == false)
@@ -141,6 +145,7 @@ export default function ElementBrowse(props) {
             ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
         ]
     };
+    //console.log("dataItems", dataItems, data.request_url + browseParams?.type + (defParams?.category? defParams?.category : '') + (props?.cachePrefix ? props?.cachePrefix : ''));
 
     /* DAEMON PART */
     const setTosterVisible = (val) => {
@@ -154,7 +159,12 @@ export default function ElementBrowse(props) {
     const bUseDaemon =  (props.data.unit == 'feed');
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': getCurrentParams(true)})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
-        maxIdLocal = dataItems?.data.length > 0 ? dataItems?.data.reduce((max, item) => item.id > max ? item.id : max, dataItems?.data[0].id) : 0;
+        maxIdLocal = dataItems?.data.length > 0 
+            ? dataItems?.data.reduce((max, item) => {
+                const idNumber = parseFloat(item.id);
+                return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
+            }, parseFloat(dataItems?.data[0].id) || 0)
+            : 0;
         if (daemonData && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
                 setTosterVisible(true);
@@ -201,8 +211,8 @@ export default function ElementBrowse(props) {
     }
 
     return (
-        (true) && <View className='w-full h-full' >
-                <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+        <View className='w-full h-full' >
+            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
             

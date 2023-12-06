@@ -10,6 +10,8 @@ import Select from './select';
 import Files from './files';
 import Location from './location';
 import Datetime from './dattime';
+import BlockHeader from './block_header';
+import Suggestion from './suggestion';
 
 export const componentsMapDefault = {
     captcha: Captcha,
@@ -25,5 +27,7 @@ export const componentsMapDefault = {
     files: Files,
     location: Location,
     datetime: Datetime,
-    datepicker: Datetime
+    datepicker: Datetime,
+    suggestion: Suggestion,
+    block_header: BlockHeader
 };

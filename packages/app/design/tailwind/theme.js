@@ -139,7 +139,9 @@ const colors = {
 const theme = {
   extend: {
     colors: colors,
-
+    fontFamily: {
+      default: ['default-font', 'sans-serif']
+    },
     aspectRatio: {
       '3/1': '3 / 1',
       '4/1': '4 / 1',

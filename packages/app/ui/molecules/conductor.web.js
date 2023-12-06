@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo, memo   } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo, useContext    } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable, ScrollView  } from 'app/design/view';
@@ -18,8 +18,13 @@ import { Input } from 'app/design/controls'
 import MainMenu from 'app/components/nav/mainmenu'
 import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
+import { fetcher } from 'app/lib/fetcher';
+import Toster from 'app/ui/atoms/toster';
+import useDaemon from 'app/lib/hooks/daemon'
+import  { LayoutData } from 'app/context/layout';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover}) {
+    const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     const redirectdRef = useRef();
     let uniRef = useRef();
@@ -28,9 +33,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const [searchValue, setSearchValue] = useState('');
     const [menuPopup, setMenuPopup] = useState(false)
 
+    const [maxId, setMaxId] = useState(0);
+    const tosterRef = useRef();
+
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
-      }
+    }
 
 
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
@@ -39,19 +47,73 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
-   // console.log('routes', routes)
+
     useEffect(() => {
         setRoutes(initedTabs);
     }, [keyword]);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
-    const [index, setIndex] = useState(routes.findIndex(function(item) {
+    const [ index, setIndex ] = useState(routes.findIndex(function(item) {
         if (useSectionAsMenu)
             return data.url == item.key;
         else
             return data.url.includes(item.key);
     }));
+
+     /* DAEMON PART */
+     const setTosterVisible = (val) => {
+        const current = tosterRef.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
+    let maxIdLocal = 0;
+   // useEffect(() => {
+    let dataItems= routes[index];
+    const bUseDaemon =  (routes[index]?.endpoint?.unit == 'feed');
+    let params = routes[index].endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
+    params.start = 0;
+    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': params})+'&params[]=0&params[]=0', false, bUseDaemon);
+    if (bUseDaemon){
+        maxIdLocal = dataItems?.data.length > 0 
+            ? dataItems?.data.reduce((max, item) => {
+                const idNumber = parseFloat(item.id);
+                return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
+                }, parseFloat(dataItems?.data[0].id) || 0)
+            : 0;
+        if (daemonData  && maxId > 0 && maxId < daemonData){
+            setTimeout(() => {
+                setTosterVisible(true);
+            }, 100);
+        
+        }
+    }
+   // }, [index]);
+    
+
+    useEffect(() => {
+        if (maxIdLocal >0 && maxIdLocal != maxId){
+            setMaxId(maxIdLocal)
+        }
+    }, [maxIdLocal]);
+
+
+    const showNewContent = async () => {
+        setTosterVisible(false);
+        let params = JSON.parse(JSON.stringify(routes[index].endpoint.params));
+        params.start = 0; 
+        const sRequest = routes[index].endpoint.request_url + JSON.stringify({ params });
+
+        const sResponse = await fetcher(sRequest);
+        maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
+        setLayoutData(sResponse.data[0].data.data);
+        setMaxId(maxIdLocal);
+        uniRef.current.scrollToIndex({ animated: true, index: -1 });
+
+    }
+    /* DAEMON PART */
 
     const indicatorOffset = useSharedValue(0);
     
@@ -110,6 +172,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             enabled: routes[index]?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
 
+   
     const scrollToCover = (cover, windowWidth, offset) => {
         const baseScroll = windowWidth < 1024 ? 280 : offset;
         const adjustment = cover === 'group' ? -100 : -200;
@@ -221,7 +284,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <ScrollView horizontal={true} className="items-center gap-0 " >
                             <Row className="mr-auto ml-4 gap-x-2" >
                                 {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
-                                    <Pressable  className=" py-2 items-center"
+                                   <Pressable  className={" py-2 items-center " + a?.menu_settings?.class}
                                         key={`tab-${a.index}`}
                                         onPress={() => {
                                             setIndex(a.index);
@@ -328,7 +391,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return <></>
         }
         if (route.inited){
-            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar
+            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+            //console.log('isRightCol', isRightCol);
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             
             let TabFlashListM = useMemo(() => {  
@@ -353,19 +417,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }, [dataItems.length]);
             return (
                 <>
-                <Row style={{ paddingTop: header ? 0 : 0 }} className=" "> 
-                    <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
-                        {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
-                    </View>
-                    {isRightCol && <View className="hidden xl:block w-1/3 pt-4 pl-4">
-
-                        {route?.sidebar?.content.map((item, index ) => {
-                            return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
-                        })}
-
-                        <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
-                    </View>}
-                </Row></>
+                   
+                    <Row style={{ paddingTop: header ? 0 : 0 }} className=" "> 
+                        <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
+                            {dataItems.length > 0 ? TabFlashListM : rqtStatus != 'success' ? Preload :appStatic('components_content_empty')}
+                        </View>
+                        {isRightCol && <View className="hidden lg:block w-1/3 pt-4 pl-4">
+                            {route?.sidebar?.content.map((item, index ) => {
+                                return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                            })}
+                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                        </View>}
+                    </Row>
+                </>
         
     )}
     // can be the problem (freeze data im lists)
@@ -462,6 +526,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px] w-full" />
                 {headerObj}
+                <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width') + ' mx-auto  w-full'} >
                     <Row>
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
@@ -481,6 +546,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
+            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             <View className='max-w-screen-2xl mx-auto w-full min-h-screen '>
                 <RenderScene route={currentRoute}/>
             </View>

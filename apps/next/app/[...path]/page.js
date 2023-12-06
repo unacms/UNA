@@ -4,10 +4,12 @@ import { cache } from 'react'
 import { Root/*, Page404*/} from 'app/root'
 import { Suspense } from 'react'
 import {Loading} from 'app/loading'
+import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 
+
 const siteTitle = 'NEO';
-export const runtime = 'edge'
+//export const runtime = 'edge'
 
 const getData = cache(async (props) => {
     let path = props.params.path.join('/');
@@ -62,7 +64,7 @@ const getData = cache(async (props) => {
  export async function generateMetadata(props) {
     return {
         description: siteTitle,
-        manifest: '/manifest.json',
+        manifest: isCustom() ? '/static/manifest.json' : '/manifest.json',
         icons: {
             icon: isCustom() ? '/static/favicon.ico' : '/favicon.ico',
         },
@@ -77,9 +79,6 @@ const getData = cache(async (props) => {
 export default async function Path (props) {
     const data = await getData(props);
     return  <Suspense fallback={<Loading/>}>
-        <Root path={'home'} data={data.data} uri={data.data.uri} url ={data.data.url}></Root>
+        <Root path={'home'} data={data?.data} uri={data?.data?.uri} url ={data?.data?.url}></Root>
     </Suspense>
-    /*else{
-        return <Page404/>
-    }*/
 }

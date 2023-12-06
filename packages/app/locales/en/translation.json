@@ -4,6 +4,16 @@
     "members_2": "{{count}} members",
     "members_plural": "{{count}} members",
 
+    "intrested_0": "no intrested in",
+    "intrested_1": "{{count}} intrested",
+    "intrested_2": "{{count}} intrested",
+    "intrested_plural": "{{count}} intrested",
+
+    "going_0": "",
+    "going_1": "{{count}} going",
+    "going_2": "{{count}} going",
+    "going_plural": "{{count}} going",
+
     "followers_0": "no followers yet",
     "followers_1": "{{count}} follower",
     "followers_2": "{{count}} followers",

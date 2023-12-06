@@ -3,8 +3,7 @@ import { View, Row } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { appSetting } from 'app/lib/util'
-import Clipboard from '@react-native-community/clipboard';
+import { appSetting, setClipboard } from 'app/lib/util'
 
 export default function ElementInvite({data}) {
     const [showModal, setShowModal] = useState(false);
@@ -16,7 +15,7 @@ export default function ElementInvite({data}) {
     }
 
     const handleCopy = async () => {
-        Clipboard.setString(appSetting("urls", "site") + showModal);
+        setClipboard(appSetting("urls", "site") + showModal);
     }
 
     return (

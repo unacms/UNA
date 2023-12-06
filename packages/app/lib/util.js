@@ -5,12 +5,35 @@ import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5'; 
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
+import Clipboard from '@react-native-community/clipboard';
 
 export function appSetting(section, name, path) {
     if (path)
         return settings[section] && settings[section][name] ? settings[section][name][path] : '';
 
     return settings[section] ? settings[section][name] : '';
+}
+
+export async function getClipboard() {
+    if (Platform.OS !== 'web') {
+        return await Clipboard.getString();
+    }
+    else{
+        return await navigator.clipboard.readText();
+    }
+}
+
+export async function setClipboard(str) {
+    if (Platform.OS !== 'web') {
+        Clipboard.setString(str);
+    }
+    else{
+        await navigator.clipboard.writeText(str);
+    }
+}
+
+export function absoluteApiUrl(url_name) {
+    return appSetting("urls", "root")+appSetting("urls", url_name);
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {
@@ -110,7 +133,7 @@ export function getRandomColor(str) {
         hash = ((hash << 5) - hash) + char;
         hash |= 0; // Convert to 32bit integer
     }
-    var arr = ['rose', 'red', 'amber', 'lime', 'emerald', 'cyan', 'blue', 'violet', 'fuchsia', 'stone'];
+    var arr = appSetting('layout', 'profile_colors')
     return arr[Math.abs(hash % 10)];
 }
 
@@ -581,19 +604,49 @@ export function getURI(url) {
     return u[0]
 }
 
-export function menuItemsByName(name, items, url = '') {
+const getNameFromSetting = (setting) => {
+    if (typeof setting === 'string') {
+        return setting;
+    } else if (setting && typeof setting === 'object' && setting.name) {
+        return setting.name;
+    }
+    return null;
+};
+  
+export function menuItemsByName(name, items, url = '')
+{
+   
     if (!items)
         return [];
+
     const menuSettings = appSetting('menu_items', name)
+    let menuSettingNames = []
+    
     if (menuSettings){
         if (menuSettings.items){
-            return items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
+            items = items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
         }
-        else
-            return items.filter((item) => (!!item.name && menuSettings.includes(item.name)) || (!!item.link && menuSettings.includes(getURI(item.link))));
+        else{
+            menuSettingNames = menuSettings.map(getNameFromSetting);
+            items = items.filter((item) => (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link))));
+        }
+        if (menuSettingNames){
+            items.forEach(item => {
+                if (menuSettingNames.includes(item.name)){
+                    let matchedSettings = menuSettings.filter(item2 => item.name === item2.name);
+
+                    if (matchedSettings.length > 0) {
+
+                        item.settings = matchedSettings[0].settings;
+                    }
+                }
+            });
+        }
+        return items;
     }
     if (!items)
         items =[{link: url, title: ''}];
+    
     return items;
 }
 
