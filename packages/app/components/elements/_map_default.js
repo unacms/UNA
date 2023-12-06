@@ -21,8 +21,10 @@ import Invite from './invite';
 import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
+import Chart from './chart';
 
 export const componentsMapDefault = {
+    chart: Chart,
     browse: Browse,
     grid: Grid,
     invite: Invite,

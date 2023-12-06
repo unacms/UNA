@@ -69,6 +69,12 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
         if(name == 'edit'){     
             return 'Pencil'
         }
+        if(name == 'promotion'){     
+            return 'ChartLine'
+        }
+        if(name == 'edit_budget'){     
+            return 'Wallet'
+        }
         return false;
     };
 

@@ -1,0 +1,149 @@
+import { Text} from 'app/design/typography'
+import { View, Row } from 'app/design/view'
+import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { fetcher } from 'app/lib/fetcher';
+import { useState, useEffect } from 'react';
+import { appSetting, setClipboard } from 'app/lib/util'
+import { VictoryPie, VictoryChart, VictoryLine, VictoryTheme, VictoryAxis,VictoryLabel } from "victory";
+import Dropdown from 'app/ui/atoms/dropdown'
+import Calendar from 'app/ui/atoms/calendar'
+import { Theme } from 'app/design/theme';
+import { Icon } from 'app/ui/atoms/icon';
+
+export default function ElementChart({data}) {
+    const [chartParams, setChartParams] = useState(data.params);
+    const [dataChart, setDataChart] = useState([]);
+    const [size, setSize] = useState([300,300]);
+
+    function getColor(color) {
+        if (color == 'orange') return '#f97316';
+        if (color == 'yellow') return '#eab308';
+        if (color == 'green') return '#22c55e';
+    }
+
+    const fetchData = async () => {
+        if (data.endpoint){
+            const queryParams = Object.entries(chartParams)
+                .map(([key, value]) => `&params[]=${encodeURIComponent(value)}`)
+                .join('');
+            const sUrl = '/api.php?r=' + data.endpoint + queryParams;
+            const sResponse = await fetcher(sUrl);
+            const transformedData = sResponse.data.data.map(([x, y]) => ({ x: new Date(x), y: y }));
+            setDataChart(transformedData);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [chartParams]);
+    
+    const setParamValue = (key, value, format ='') =>  {
+        if (format =='date'){
+            const date = new Date(value*1000);
+            value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        setChartParams({
+            ...chartParams,
+            [key]: value
+        });
+    }
+
+    let CharComponent = null;
+
+    if (data.type == 'pie') {
+        const transformedData = data.labels.map((label, index) => {
+            return { x: label, y: data.data.data[index] };
+        });
+        var backgroundColor = appSetting('layout', 'profile_colors');
+        var backgroundColor2 = backgroundColor.map(color => getColor(color));
+        CharComponent = (
+            <View>
+                <View className='w-full aspect-square'>
+                    <VictoryPie colorScale={backgroundColor2} data={transformedData} />
+                </View>
+                <Row className='gap-x-2 mb-4 justify-center'>
+                    {data.labels.map((label, index) => (
+                        <Row key={"chart"+index} className='gap-x-2'>
+                            <View className={'aspect-square w-4  bg-' + backgroundColor[index] + '-500'}></View>
+                            <Text key={index}>{label}</Text>
+                        </Row>
+                    ))}
+                </Row>
+                {data.text && <Text className=" text-center text-xl font-medium">{data.text}</Text>}
+            </View>
+        )
+    }
+
+    if (data.type == 'line') {
+        CharComponent = (
+            <>
+                <View className='w-full aspect-video' onLayout={(event) => {
+                        setSize([event.nativeEvent.layout.width, event.nativeEvent.layout.height]);
+                    }}
+                >
+                    <VictoryChart
+                        theme={VictoryTheme.material}
+                        width={size[0]}
+                        height={size[1]}
+                        >
+                      
+                        <VictoryLine
+                            interpolation="basis"
+                        
+                            style={{
+                                data: { stroke: getColor("green") },
+                                parent: { border: "1px solid #ccc"}
+                            }}
+                            data={dataChart}
+                        />
+                    </VictoryChart>
+                </View>
+                <View className='lg:flex-row gap-4 mx-auto'>
+                {
+                    Object.keys(data.form.inputs).map((key, index) => (
+                        <View >
+                        {
+                            data.form.inputs[key].type == 'select' && (
+                                (() => {
+                                let values = [];
+                                if (Array.isArray(data.form.inputs[key].values)) {
+                                    values = data.form.inputs[key].values.map(function (key) {
+                                        return key.value ? {label: key.value, value: key.key} : null;
+                                    });
+                                    values = values.filter(Boolean);
+                                }
+                                return (
+                                    <Dropdown 
+                                        labelField="label"
+                                        valueField="value"
+                                        onChange={(value) => setParamValue(data.form.inputs[key].name, value)} 
+                                        data={values}
+                                    />
+                                );
+                                })()
+                            )
+                        }
+                        {
+                            data.form.inputs[key].type == 'datepicker'  && (
+                                <Calendar value={data.form.inputs[key].value} type={data.form.inputs[key].type} name={data.form.inputs[key].name} onChange={(value) => { setParamValue(data.form.inputs[key].name, value, 'date')}}/>
+                            )
+                        }
+                        </View>
+                    ))
+                }
+                </View>
+            </>
+        );
+    }
+    return (
+        <>
+            <View className='mb-4'>
+                <Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200">{data.title}</Text>
+            </View>
+            <View className='max-w-5xl w-full mx-auto'>
+                {CharComponent}
+            </View>
+        </>
+    )
+}

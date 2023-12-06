@@ -69,7 +69,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-sound": "0.11.2",
     "react-native-splash-screen": "3.3.0",
-    "react-native-svg": "^13.13.0",
+    "react-native-svg": "^14.1.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-video": "alpha",
     "react-native-watch-connectivity": "1.1.0",
@@ -79,6 +79,7 @@
     "set-cookie-parser": "^2.6.0",
     "swr": "^2.2.0",
     "uuid": "3.4.0",
+    "victory-native": "^36.7.0",
     "zeego": "^1.7.0"
   },
   "devDependencies": {
