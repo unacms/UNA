@@ -301,8 +301,8 @@ export function ComponentsIntro(props) {
 
 function ComponentsSplash(props) {
   return (
-    <View className="flex-col px-2 lg:px-6 w-full max-w-screen-2xl mx-auto">
-      <View className="flex-col p-2 md:flex-row gap-y-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 sm:mx-2 sm:mb-2 gap-x-4 lg:my-4 duration-300 sm:border border-dashed rounded-2xl border-gray-500/20">
+    <View className="flex-col xl:px-4 w-full max-w-screen-2xl mx-auto">
+      <View className="flex-col p-2 md:flex-row gap-y-4 xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 sm:mb-2 gap-x-4 lg:mb-4 sm:mt-2 duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
         <View className="flex-col xl:flex-row mx-auto  justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-4 sm:p-8 md:p-6 lg:p-12  ">
           <View className="flex-col gap-y-4 w-40 xl:w-1/3 aspect-square rounded-full   ">
              <Svg
@@ -353,7 +353,7 @@ function ComponentsSplash(props) {
 
         <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto sm:p-2 lg:p-12 ">
           
-          <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
+          <Card rounded=" rounded-2xl " addClassName="  justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
             <View className="px-6 pt-6 py-2 ">{props.block}</View>
             <Link
               className="px-6 mx-auto  w-full border-bdr dark:border-bdr-d"
@@ -383,7 +383,7 @@ function ComponentsSplash(props) {
           </Card>
         </View>
       </View>
-      <View className="flex-col sm:flex-row flex-wrap w-full duration-300">
+      <View className="flex-col px-2 sm:flex-row flex-wrap w-full duration-300">
         <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
