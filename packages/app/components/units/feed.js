@@ -169,7 +169,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded='  ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
                 <View className="flex-auto flex-row items-top px-4 py-3.5">
                     <Profile
                         {...data.author_data}
@@ -580,7 +580,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>	
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='group  active:opacity-50 active:translate-y-1  flex-row px-3 py-2 sm:p-3  ' margin=" mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 sm:p-3' rounded="rounded-none sm:rounded-2xl" margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                         {...data.author_data}

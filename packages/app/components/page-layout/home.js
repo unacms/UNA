@@ -117,7 +117,7 @@ export default function PageLayout(props) {
                 <View className="flex-auto relative w-full flex-row mx-auto  ">
                     {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4  max-w-xs   top-0 sticky duration-200 ">
                         {appSetting('layout', 'show_profile_info') && (
-                            <Row className="items-center justify-between pl-6 pr-4 mb-2 py-2   border-b border-dashed border-neutral-400/20 cursor-pointer active:opacity-50">
+                            <Row className="items-center justify-between pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
                                     <Row className='flex-row gap-x-2 items-center'>
                                         <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
@@ -146,7 +146,7 @@ export default function PageLayout(props) {
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto   w-full mx-auto">
-                                <Row className="p-3 sm:mb-4  sm:border-b border-dashed border-neutral-400/20 gap-x-2  w-full">
+                                <Row className="p-4  max-w-4xl mx-auto gap-x-2  w-full">
                                     {feedList.length > 1 && feedList.map((item, index) => {
                                         return (
                                             <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
@@ -199,7 +199,7 @@ export default function PageLayout(props) {
                             </View>
                         </View>
                     </View>
-                    <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-2 flex-col space-y-4 sticky top-0 duration-200 ">
+                    <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-4 flex-col space-y-4 sticky top-0 duration-200 ">
                         {sideBarBlocks.map((item, index) => {
                                 return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
                             }
@@ -327,3 +327,4 @@ export default function PageLayout(props) {
         </View>
     )
 }
+
