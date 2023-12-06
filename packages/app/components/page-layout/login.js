@@ -14,51 +14,14 @@ export default function PageLayout(props) {
             
 
 
-            <View className="w-full flex-row flex-col  lg:min-h-screen lg:flex-row ">
+            <View className="w-full flex-row flex-col  lg:h-[calc(100vh-4rem)] lg:flex-row ">
           <View className=" w-full p-8 sm:p-12 lg:bg-bgrnavbar lg:dark:bg-bgrnavbar-d   lg:w-1/2">
-            <View className="items-center lg:items-start flex-col mx-auto w-full  max-w-md lg:max-w-xl mx-auto  gap-y-4 lg:gap-y-8 my-auto ">
+          <View className="flex-col mx-auto w-full items-center lg:items-start max-w-md lg:max-w-xl mx-auto gap-y-4 lg:gap-y-8 my-auto ">
                     
-                        <View className="flex-col w-1/4 aspect-square rounded-full   ">
-                            <Svg
-                    aria-label="Logo Mark"
-                    className="p-[1px] group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-full w-full  "
-                    viewBox="0 0 2400 2400"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <Path
-                    d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-                    className="opacity-80 "
-                    fill="#E2554F"
-                    />
-                    <Path
-                    d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-                    className="opacity-80 "
-                    fill="#E2554F"
-                    />
-                    <Path
-                    d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-                    className="text-neutral-950 dark:text-neutral-50   group-hover:text-accent dark:group-hover:text-accent-d"
-                    fill="#E2554F"
-                    />
-                    <Path
-                    d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-                    className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-                    fill="currentColor"
-                    />
-                    <Path
-                    d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-                    className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-                    fill="currentColor"
-                    />
-                            </Svg>
-                        </View>
-
-                        
                         
 
                     
-                    <Text className="text-3xl text-center lg:text-left lg:text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
+                    <Text className="text-4xl lg:text-5xl text-center lg:text-left lg:text-4xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                     Welcome back!
                     </Text>
             
@@ -201,28 +164,33 @@ export default function PageLayout(props) {
             </View>
           </View>
           <View className="p-4 w-full lg:w-1/2">
-            <View className=" max-w-lg w-full lg:-translate-y-20  lg:p-8 mx-auto my-auto">
+            <View className=" max-w-lg w-full  lg:p-8 mx-auto my-auto">
               
-              <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-            <View className="px-2 sm:px-4  pt-6"><BlockByName name={props.blocks.form} data={props.data}/></View>
+               
+
+                  <View addClassName=" justify-center w-full max-w-xl mx-auto flex-auto  flex-col gap-y-4 ">
+                  <BlockByName name={props.blocks.form} data={props.data}/>
             <Link
-              className="px-8 mx-auto  w-full border-bdr dark:border-bdr-d"
+              className="px-8 mx-auto mb-8 w-full "
               href="/forgot-password"
             >
               <Button
                 title="Forgot password?"
                 variant="link"
                 fullWidth
-                size="xs"
+                size="sm"
               />
             </Link>
-            <Text className="text-center translate-y-4 text-xs bg-bgrcard dark:bg-bgrcard-d p-2 mx-auto rounded-full text-neutral-700 dark:text-neutral-300  ">
-              Don't have an account?</Text>
+            
+            <Card addClassName="border p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
+            
+            <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+            Don't have an account?</Text>
             <Link
-              className="p-6 sm:p-8 w-full border-t border-bdr dark:border-bdr-d"
-              href="/create-account"
+              className=" w-full "
+              href="/login"
             >
-              <Button
+               <Button
                 title="Create account"
                 variant="outline"
                 startDecorator="UserCirclePlus"
@@ -231,6 +199,9 @@ export default function PageLayout(props) {
               />
             </Link>
           </Card>
+              </View>
+
+
             </View>
           </View>
         </View>

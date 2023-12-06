@@ -167,37 +167,27 @@ export default function PageLayout(props) {
             <View className=" max-w-lg w-full lg:p-8 mx-auto my-auto">
               
               <View addClassName=" justify-center w-full max-w-xl mx-auto flex-auto  flex-col gap-y-4 ">
-            <BlockByName name={props.blocks.form} data={props.data} />
-            <Link
-              className="px-8 mx-auto mb-8 w-full "
-              href="/forgot-password"
-            >
-              <Button
-                title="Forgot password?"
-                variant="link"
-                fullWidth
-                size="sm"
-              />
-            </Link>
-            
-            <Card addClassName="border p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
-            
-            <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
-            Already have an account?</Text>
-            <Link
-              className=" w-full "
-              href="/login"
-            >
-              <Button
-                title="Log in with email"
-                variant="outline"
-                startDecorator="SignIn"
-                size="base"
-                fullWidth
-              />
-            </Link>
-          </Card>
-          </View>
+                    <BlockByName name={props.blocks.form} data={props.data} />
+                    
+                    
+                    <Card addClassName="border p-4 sm:p-6 mt-4 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
+                    
+                    <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                    Already have an account?</Text>
+                    <Link
+                      className=" w-full "
+                      href="/login"
+                    >
+                      <Button
+                        title="Log in with email"
+                        variant="outline"
+                        startDecorator="SignIn"
+                        size="base"
+                        fullWidth
+                      />
+                    </Link>
+                    </Card>
+              </View>
             </View>
 
 

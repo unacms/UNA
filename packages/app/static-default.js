@@ -302,7 +302,7 @@ export function ComponentsIntro(props) {
 function ComponentsSplash(props) {
   return (
     <View className="flex-col px-2 lg:px-6 w-full max-w-screen-2xl mx-auto">
-      <View className="flex-col p-2 md:flex-row gap-y-4 sm:mx-2 sm:mb-2 gap-x-4 lg:my-4 duration-300 sm:border border-dashed rounded-3xl border-gray-500/20">
+      <View className="flex-col p-2 md:flex-row gap-y-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 sm:mx-2 sm:mb-2 gap-x-4 lg:my-4 duration-300 sm:border border-dashed rounded-2xl border-gray-500/20">
         <View className="flex-col xl:flex-row mx-auto  justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-4 sm:p-8 md:p-6 lg:p-12  ">
           <View className="flex-col gap-y-4 w-40 xl:w-1/3 aspect-square rounded-full   ">
              <Svg
@@ -354,9 +354,9 @@ function ComponentsSplash(props) {
         <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto sm:p-2 lg:p-12 ">
           
           <Card addClassName=" rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-            <View className="px-2 sm:px-4 pt-6">{props.block}</View>
+            <View className="px-6 pt-6 py-2 ">{props.block}</View>
             <Link
-              className="px-8 mx-auto  w-full border-bdr dark:border-bdr-d"
+              className="px-6 mx-auto  w-full border-bdr dark:border-bdr-d"
               href="/forgot-password"
             >
               <Button
@@ -369,7 +369,7 @@ function ComponentsSplash(props) {
             <Text className="text-center translate-y-4 text-xs bg-bgrcard dark:bg-bgrcard-d p-2 mx-auto rounded-full text-neutral-700 dark:text-neutral-300  ">
               Don't have an account?</Text>
             <Link
-              className="p-6 sm:p-8 w-full border-t border-bdr dark:border-bdr-d"
+              className="p-6 w-full border-t border-bdr dark:border-bdr-d"
               href="/create-account"
             >
               <Button
