@@ -176,7 +176,7 @@ export default function PageLayout(props) {
                                             />
                                         </Row>
                                     )}
-                                </Row>) : <View className='h-4'></View>}
+                                </Row>
                                 <View className="relative w-full mx-auto max-w-4xl">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name){
