@@ -10,7 +10,8 @@ import { Image as ImageOr } from 'react-native';
 export default function ElementCarousel(props) {
     let data = props.data;
     if (data.length == 0)
-            return <></>
+        return <></>
+    
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -18,12 +19,15 @@ export default function ElementCarousel(props) {
     const [imageSize, setImageSize] = useState([0,0]);
     const [width, setWidth] = useState(400);
 
+    console.log(props.data[0].src, width, showImage, imageSize);
+
     const handleShowImage = (img) => {
         setShowImage(img);
     } 
 
     const handleLayout = (event) => {
-        setWidth(event.nativeEvent.layout.width);
+        if (event.nativeEvent.layout.width != width)
+            setWidth(event.nativeEvent.layout.width);
     };
 
     const data2 = data.map(item => ({url: item.src}));    
@@ -87,7 +91,9 @@ export default function ElementCarousel(props) {
         let widthIm = width;
         let heightIm= widthIm/imageSize[0]*imageSize[1];
         if (heightIm > widthIm)
-            heightIm = widthIm
+            heightIm = widthIm;
+       
+
         return ( 
             <View className='px-0.5 pt-4 sm:px-4 '>
                 <ImViewer/>
@@ -109,7 +115,7 @@ export default function ElementCarousel(props) {
                 ))}
                 </Row>
                 <Row className={(len > 2 ? 'h-1/2 gap-y-0.5 ': 'h-full') + ' gap-x-0.5 w-full '}>
-                {
+                    {
                     dataR2?.map((item, index) => (
                         <Image2 row ={1} key={index} index={index} src={item.src} />
                     )) }

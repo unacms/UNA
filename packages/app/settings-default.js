@@ -373,6 +373,7 @@ let settingsDefault = {
           'profile-subscribe-remove',
           'edit-group-profile',
           'delete-group-profile',
+          'report'
         ],
         bx_events_view_submenu: [
             'view-event-profile', 
