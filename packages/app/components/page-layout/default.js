@@ -7,7 +7,7 @@ export default function PageLayout(props) {
 
     const isWeb = Platform.OS == 'web';
     return (
-        <ScrollView className={ getPageWidth(props.uri) + ' sm:my-4 mx-auto w-full '}>
+        <ScrollView className={ getPageWidth(props.uri) + '  mx-auto w-full '}>
             {props.children}
             {props?.data?.empty !== true && isWeb && appStatic('components_fullfooter', '')}
         </ScrollView>
