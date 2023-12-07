@@ -114,8 +114,8 @@ export default function PageLayout(props) {
             
         return (
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                <View className="flex-auto relative w-full flex-row mx-auto  ">
-                    {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4  max-w-xs   top-0 sticky duration-200 ">
+                <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
+                    {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4   max-w-xs   top-0 sticky duration-200 ">
                         {appSetting('layout', 'show_profile_info') && (
                             <Row className="items-center justify-between pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
                                 <Link href={currentUser.url} className="flex-auto">
@@ -146,7 +146,7 @@ export default function PageLayout(props) {
                     <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                         <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
                             <View className="flex-auto   w-full mx-auto">
-                                <Row className="p-4  max-w-4xl mx-auto gap-x-2  w-full">
+                                <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                     {feedList.length > 1 && feedList.map((item, index) => {
                                         return (
                                             <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
@@ -177,7 +177,7 @@ export default function PageLayout(props) {
                                         </Row>
                                     )}
                                 </Row>
-                                <View className="relative w-full mx-auto max-w-4xl">
+                                <View className="relative w-full mx-auto max-w-3xl">
                                     {feedList.map((item, index) => {
                                         if (feedType == item.name){
                                             return (
