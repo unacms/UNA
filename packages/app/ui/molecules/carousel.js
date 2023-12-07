@@ -5,6 +5,7 @@ import { Button } from 'app/design/controls';
 import { Modal } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { Text } from 'app/design/typography';
+import { Image as ImageOr } from 'react-native';
 
 export default function ElementCarousel(props) {
     let data = props.data;
@@ -14,14 +15,15 @@ export default function ElementCarousel(props) {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [showImage, setShowImage] = useState(false);
+    const [imageSize, setImageSize] = useState([0,0]);
     const [width, setWidth] = useState(400);
 
     const handleShowImage = (img) => {
-            setShowImage(img);
+        setShowImage(img);
     } 
 
     const handleLayout = (event) => {
-            setWidth(event.nativeEvent.layout.width);
+        setWidth(event.nativeEvent.layout.width);
     };
 
     const data2 = data.map(item => ({url: item.src}));    
@@ -69,7 +71,34 @@ export default function ElementCarousel(props) {
                 {item.row == 1 && item.index== 1 && len > 4 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{len-4}</Text></View>} 
         </Pressable></View>
     );
-        
+
+    if (data.length == 1){
+        if (imageSize[0] == 0){
+            ImageOr.getSize(
+                data[0].src, 
+                (width, height) => {
+                    setImageSize([width, height])               
+                }
+            );
+        }
+        if (imageSize[0] == 0){
+            return <></>
+        }
+        let widthIm = width;
+        let heightIm= widthIm/imageSize[0]*imageSize[1];
+        if (heightIm > widthIm)
+            heightIm = widthIm
+        return ( 
+            <View className='px-0.5 pt-4 sm:px-4 '>
+                <ImViewer/>
+                <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
+                    <Row className='gap-x-0.5  ' style={{width:widthIm, height: heightIm}}>
+                        <Image2 row ={0}  key={0} src={data[0].src}/>
+                    </Row>
+                </View>
+            </View>
+        )
+    }
     return ( 
         <View className='px-0.5 pt-4 sm:px-4 '>
             <ImViewer/>

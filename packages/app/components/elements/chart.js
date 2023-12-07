@@ -4,13 +4,12 @@ import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect } from 'react';
 import { appSetting, setClipboard } from 'app/lib/util'
-import { VictoryPie, VictoryChart, VictoryLine, VictoryTheme, VictoryAxis,VictoryLabel } from "victory";
+import { VictoryPie, VictoryChart, VictoryLine, VictoryTheme, VictoryArea } from "victory-native";
 import Dropdown from 'app/ui/atoms/dropdown'
 import Calendar from 'app/ui/atoms/calendar'
-import { Theme } from 'app/design/theme';
-import { Icon } from 'app/ui/atoms/icon';
 
 export default function ElementChart({data}) {
+
     const [chartParams, setChartParams] = useState(data.params);
     const [dataChart, setDataChart] = useState([]);
     const [size, setSize] = useState([300,300]);
@@ -28,8 +27,10 @@ export default function ElementChart({data}) {
                 .join('');
             const sUrl = '/api.php?r=' + data.endpoint + queryParams;
             const sResponse = await fetcher(sUrl);
-            const transformedData = sResponse.data.data.map(([x, y]) => ({ x: new Date(x), y: y }));
-            setDataChart(transformedData);
+            if (sResponse?.data?.data){
+                const transformedData = sResponse.data.data.map(([x, y]) => ({ x: new Date(x), y: y }));
+                setDataChart(transformedData);
+            }
         }
     };
 
@@ -53,7 +54,7 @@ export default function ElementChart({data}) {
 
     if (data.type == 'pie') {
         const transformedData = data.labels.map((label, index) => {
-            return { x: label, y: data.data.data[index] };
+            return { x: '', y: data.data.data[index] };
         });
         var backgroundColor = appSetting('layout', 'profile_colors');
         var backgroundColor2 = backgroundColor.map(color => getColor(color));
@@ -86,23 +87,31 @@ export default function ElementChart({data}) {
                         theme={VictoryTheme.material}
                         width={size[0]}
                         height={size[1]}
+                    
+                        domainPadding={{x: [0, 0], y: [2, 2]}}
                         >
                       
                         <VictoryLine
                             interpolation="basis"
-                        
+                            animate={{
+                                duration: 2000,
+                                onLoad: { duration: 1000 }
+                              }}
+                            
+
+                            
                             style={{
-                                data: { stroke: getColor("green") },
-                                parent: { border: "1px solid #ccc"}
+                                data: { stroke: getColor("green"),  },
+                               
                             }}
                             data={dataChart}
                         />
                     </VictoryChart>
                 </View>
-                <View className='lg:flex-row gap-4 mx-auto'>
+                <View className='lg:flex-row gap-4 lg:mx-auto'>
                 {
                     Object.keys(data.form.inputs).map((key, index) => (
-                        <View >
+                        <View key={index}>
                         {
                             data.form.inputs[key].type == 'select' && (
                                 (() => {
@@ -114,19 +123,23 @@ export default function ElementChart({data}) {
                                     values = values.filter(Boolean);
                                 }
                                 return (
-                                    <Dropdown 
+                                    <View >
+                                        <Dropdown 
                                         labelField="label"
                                         valueField="value"
                                         onChange={(value) => setParamValue(data.form.inputs[key].name, value)} 
                                         data={values}
-                                    />
+                                        />
+                                    </View>
                                 );
                                 })()
                             )
                         }
                         {
                             data.form.inputs[key].type == 'datepicker'  && (
-                                <Calendar value={data.form.inputs[key].value} type={data.form.inputs[key].type} name={data.form.inputs[key].name} onChange={(value) => { setParamValue(data.form.inputs[key].name, value, 'date')}}/>
+                                <View>
+                                    <Calendar value={data.form.inputs[key].value} type={data.form.inputs[key].type} name={data.form.inputs[key].name} onChange={(value) => { setParamValue(data.form.inputs[key].name, value, 'date')}}/>
+                                </View>
                             )
                         }
                         </View>

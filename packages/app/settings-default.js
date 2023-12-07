@@ -1154,8 +1154,8 @@ let settingsDefault = {
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/event-profile-info/er', icon: 'Users'},
-            {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
+            {key: '/tab2', title: 'Friends', url: '/view-ad-promotion/animooz-diapers', icon: 'Users'},
+            {key: '/tab3', title: 'Notifications', url: '/create-event-profile', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
         bottom_tabs_non_logged: [
