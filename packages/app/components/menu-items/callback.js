@@ -5,6 +5,7 @@ import { View } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
+import Redirect from 'app/ui/atoms/redirect';
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
@@ -51,6 +52,8 @@ export default function MenuItemButton(oProps) {
                 const sResponse = await fetcher(request_url);
                 if (oProps.data.on_callback == 'hide')
                     setIsVisible(false)
+                if (oProps.data.on_callback == 'redirect')
+                    redirectdRef.current.redirect(sResponse.data);
             };
 
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
@@ -65,6 +68,7 @@ export default function MenuItemButton(oProps) {
 
             sContent = (
                         <View className="flex-auto">
+                            <Redirect ref={redirectdRef} />
                             <ButtonAction onPress = {handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
                         </View>
                       );
