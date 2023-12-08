@@ -83,7 +83,7 @@ export default function FormFeed(props) {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-            <Card rounded='    ' margin=' p-4 mb-2 sm:mb-4 sm:mx-4 '>                
+            <Card rounded=' rounded-none sm:rounded-xl  ' margin=' p-4 mb-2 sm:mb-4 sm:mx-4 '>                
             <View className=" flex-row ">
                     <View className='mr-2'>{profile}</View>
                     <Button

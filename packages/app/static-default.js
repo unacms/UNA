@@ -354,15 +354,26 @@ function ComponentsSplash(props) {
         <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto mx-auto items-center p-2 xl:p-8 ">
           
         
-                <View className=" flex-auto flex-col w-full max-w-md  p-2 ">
-                <View className="py-2">
+                <View className=" flex-auto flex-col w-full max-w-md gap-y-2 p-2 ">
+                
                   <Card
                   rounded=" rounded-2xl "
-                  addClassName="border p-2 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
+                  addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
                 >
                   <View className="">{props.block}</View>
                   </Card>
-                </View>
+                
+                <Link
+                className=" mx-auto  w-full "
+                href="/forgot-password"
+              >
+                <Button
+                  title="Forgot password?"
+                  variant="link"
+                  fullWidth
+                  size="sm"
+                />
+              </Link>
                 
                 <View className="pb-2">
                 <Card addClassName="border  p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
