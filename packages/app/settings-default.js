@@ -309,7 +309,7 @@ let settingsDefault = {
         sys_account_settings_submenu: {
             name: 'Settings',
             icon: 'Gear',
-            items: ['account-settings-password', 'account-settings-email', 'account-settings-info'],
+            items: ['account-settings-password', 'account-settings-email', 'account-settings-info', 'account-settings-delete'],
         },
         bx_persons_view_meta: {
             iconset: {
@@ -532,6 +532,14 @@ let settingsDefault = {
             layout: 'navigator',
             blocks: {
                 settings: {name: 'system:account_settings_info', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
+            },
+            icon: 'Gear',
+            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+        },
+        'account-settings-delete': {
+            layout: 'navigator',
+            blocks: {
+                settings: {name: 'system:account_settings_del_account', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
             },
             icon: 'Gear',
             headerSettings: { offset: false, header: false, backButton: false, menu: true }
