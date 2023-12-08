@@ -505,7 +505,7 @@ function DefaultUnit(data) {
                                     <View>
                                     <View className="flex-col gap-y-3 relative">
                                         {bIsTimelineContent && (
-                                        <View>
+                                        <View className={tlContent && data.content.images_attach.length >0 ? 'pb-3' : ''}>
                                             <HtmlMemo tlContent={tlContent} />
                                             {data.showMore && !showFull && bIsLong && (
                                             <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d ">
@@ -551,7 +551,7 @@ function DefaultUnit(data) {
                                     </View>
                                 ) : (
                                     <View className="flex-col relative">
-                                    <Html data={data.content.text} />
+                                        <HtmlMemo tlContent={data.content.text} />
                                     </View>
                                 )}
                                 </View>

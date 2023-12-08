@@ -95,7 +95,7 @@ export default function ElementCarousel(props) {
        
 
         return ( 
-            <View className='px-0.5 pt-4 sm:px-4 '>
+            <View className='px-0.5 sm:px-4 '>
                 <ImViewer/>
                 <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
                     <Row className='gap-x-0.5  ' style={{width:widthIm, height: heightIm}}>
@@ -106,7 +106,7 @@ export default function ElementCarousel(props) {
         )
     }
     return ( 
-        <View className='px-0.5 pt-4 sm:px-4 '>
+        <View className='px-0.5 sm:px-4 '>
             <ImViewer/>
             <View className="w-full  aspect-square gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
                 <Row className={(len > 2 ? 'h-1/2': 'h-full') + ' gap-x-0.5 w-full '}>
