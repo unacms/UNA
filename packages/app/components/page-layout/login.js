@@ -13,7 +13,7 @@ export default function PageLayout(props) {
         getPageWidth(props.uri) + ' lg:h-[calc(100vh-4rem)] justify-center'
       }
     >
-      <View className=" w-full mx-auto max-w-5xl flex-col items-center lg:flex-row p-3 rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
+      <View className=" w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
         <View className="flex-col p-8 flex-auto w-full  items-center lg:items-start  gap-y-4 lg:gap-y-8 my-auto ">
           <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
             Welcome back!
@@ -127,7 +127,7 @@ export default function PageLayout(props) {
         </View>
        
 
-        <View className=" flex-auto flex-col w-full max-w-xl gap-y-3 ">
+        <View className=" flex-auto flex-col w-full  max-w-md gap-y-2 ">
         <BlockByName name={props.blocks.form} data={props.data} />
               <Link
                 className=" mx-auto  w-full "
@@ -140,8 +140,8 @@ export default function PageLayout(props) {
                   size="sm"
                 />
               </Link>
-
-              <Card addClassName="border p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
+              <View className="p-4">
+              <Card addClassName="border  p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
                 <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                   Don't have an account?
                 </Text>
@@ -155,6 +155,7 @@ export default function PageLayout(props) {
                   />
                 </Link>
               </Card>
+              </View>
         </View>
 
       </View>

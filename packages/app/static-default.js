@@ -302,8 +302,8 @@ export function ComponentsIntro(props) {
 function ComponentsSplash(props) {
   return (
     <View className="flex-col xl:px-4 w-full max-w-screen-2xl mx-auto">
-      <View className="flex-col p-2 md:flex-row gap-y-4 xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 sm:mb-2 gap-x-4 lg:mb-4 sm:mt-2 duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
-        <View className="flex-col xl:flex-row mx-auto  justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-2 sm:p-4 xl:p-8  ">
+      <View className="flex-col  md:flex-row  xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 px-2  gap-x-4   duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
+        <View className="flex-col xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-8  ">
           <View className="flex-col gap-y-4 w-40 xl:w-1/3 aspect-square rounded-full   ">
              <Svg
     aria-label="Logo Mark"
@@ -351,40 +351,40 @@ function ComponentsSplash(props) {
           </View>
         </View>
 
-        <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto px-2 py-8 xl:px-8 ">
+        <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto mx-auto items-center p-2 xl:p-8 ">
           
-          <Card rounded=" rounded-2xl xl:rounded-xl " addClassName="  justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-            <View className="px-6 pt-6 py-2 ">{props.block}</View>
-            <Link
-              className="px-6 mx-auto  w-full border-bdr dark:border-bdr-d"
-              href="/forgot-password"
-            >
-              <Button
-                title="Forgot password?"
-                variant="link"
-                fullWidth
-                size="xs"
-              />
-            </Link>
-            <Text className="text-center translate-y-4 text-xs bg-bgrcard dark:bg-bgrcard-d p-2 mx-auto rounded-full text-neutral-700 dark:text-neutral-300  ">
-              Don't have an account?</Text>
-            <Link
-              className="p-6 w-full border-t border-bdr dark:border-bdr-d"
-              href="/create-account"
-            >
-              <Button
-                title="Create account"
-                variant="outline"
-                startDecorator="UserCirclePlus"
-                size="base"
-                fullWidth
-              />
-            </Link>
-          </Card>
+        
+                <View className=" flex-auto flex-col w-full max-w-md  p-2 ">
+                <View className="py-2">
+                  <Card
+                  rounded=" rounded-2xl "
+                  addClassName="border p-2 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
+                >
+                  <View className="">{props.block}</View>
+                  </Card>
+                </View>
+                
+                <View className="pb-2">
+                <Card addClassName="border  p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
+                <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                  Don't have an account?
+                </Text>
+                <Link className=" w-full " href="/create-account">
+                  <Button
+                    title="Create account"
+                    variant="outline"
+                    startDecorator="UserCirclePlus"
+                    size="base"
+                    fullWidth
+                  />
+                </Link>
+              </Card>
+                </View>
+              </View>
         </View>
       </View>
-      <View className="flex-col px-2 sm:flex-row flex-wrap w-full duration-300">
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+      <View className="flex-col p-2 items-center sm:flex-row flex-wrap w-full duration-300">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button variant="outline" startDecorator="Users" rounded />
@@ -400,7 +400,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button variant="outline" startDecorator="UsersThree" rounded />
@@ -416,7 +416,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button
@@ -436,7 +436,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button
@@ -456,7 +456,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button
@@ -476,7 +476,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button variant="outline" startDecorator="Chats" rounded />
@@ -492,7 +492,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button variant="outline" startDecorator="Storefront" rounded />
@@ -508,7 +508,7 @@ function ComponentsSplash(props) {
             </Text>
           </Card>
         </View>
-        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
+        <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
           <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
             <View className="flex-row gap-x-2 ">
               <Button variant="outline" startDecorator="Video" rounded />
@@ -608,7 +608,7 @@ const ComponentsFullFooter = () => {
   const { t } = useTranslation();
   return (
   <>
-    <View className=" w-full p-3 flex-row justify-center  border-t border-bdr dark:border-bdr-d mt-4 ">
+    <View className=" w-full p-3 flex-row justify-center  border-t border-bdr dark:border-bdr-d  ">
       <Link href="/">
         <Button variant="text" title={t("Home")} className="mt-auto" size="sm" />
       </Link>
