@@ -185,6 +185,18 @@ export default function ElementReports(oProps) {
     const bShowActionReported = oAction?.is_reported === true || (isContextVar('is_reported') && getContextVar('is_reported') === true);
     const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
 
+    let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+
     let sTitle = oAction?.title || '';
     if(isContextVar('title'))
         sTitle = getContextVar('title');
@@ -195,12 +207,12 @@ export default function ElementReports(oProps) {
     let sActionPopup = undefined;
     if(bShowActionUndo && bShowActionReported) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleGetDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
 
         
@@ -282,7 +294,7 @@ export default function ElementReports(oProps) {
 
             sCounterButton = (
                 <Animated.View key="counter" style={indicatorStyle}>
-                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
+                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? sIcon : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
                 </Animated.View>
             );
 
