@@ -14,7 +14,6 @@ let settingsDefault = {
         allow_switch_profile: true,
         switch_lang: ['ru', 'en'],
         switch_theme: true,
-        
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
@@ -41,7 +40,6 @@ let settingsDefault = {
         site: 'http://localhost:3000',
         root: 'https://ci.una.io/test3/',
         embeds: 'oembed.php?html=1&a=get_link&l=',
-      
     },
     cache: {
         list: true,

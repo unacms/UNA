@@ -15,6 +15,7 @@ import { Text } from 'app/design/typography'
 
 const getGeo =  async () => { 
     let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("getGeo")
     if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;
@@ -52,7 +53,12 @@ export default function WorkerEventChecker(oProps) {
         const fetchData = async () => {
             let request_url = "/api.php?r=bx_events/calendar_data&params[]={%22params%22:{%22profile_id%22:%22{profile_id}%22,%22type%22:%22joined%22,%22start%22:1698578064,%22end%22:1703848464}}";
             const sResponse = await fetcher(request_url);
-            setData(sResponse);
+            let filteredData = sResponse.data.filter(event => 
+                event.location_data && 
+                event.location_data.lat != null && 
+                !forgottedEvents.includes(event.id)
+            );
+            setData(filteredData);
         };
         if (currentUser)
             fetchData();
@@ -63,8 +69,9 @@ export default function WorkerEventChecker(oProps) {
             const geo = await getGeo();
             setLocal(geo);
         }
-        fetchLocation();
-    }, []);
+        if (data.length > 0)
+            fetchLocation();
+    }, [data]);
 
     const ForgotEvent  = async (eventId) => { 
         forgottedEvents.push(eventId)
@@ -80,14 +87,9 @@ export default function WorkerEventChecker(oProps) {
     if (!data || !local)
         return content
 
-    let filteredData = data.data.filter(event => 
-            event.location_data && 
-            event.location_data.lat != null && 
-            !forgottedEvents.includes(event.id)
-    );
     const imageSizes = getImageSizes()
         
-    filteredData.forEach((item, key) => {
+    data.forEach((item, key) => {
         let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude)
         if (d < threshold){
             content = (<Modal title="You are at the Event" onVisible={true} >

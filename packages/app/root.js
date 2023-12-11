@@ -7,11 +7,8 @@ import { Platform } from 'react-native'
 import { storageClear } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, getURI } from 'app/lib/util';
-//import { appStatic } from 'app/lib/app-static'
-/*
-import Layout from 'app/components/layout';
-import PageLayout from 'app/components/page-layout';
-*/
+import { appStatic } from 'app/lib/app-static'
+
 const Layouts = React.lazy(() => import('app/components/layouts'));
 
 const metaAdder = (queryProperty, value) => {
@@ -24,15 +21,15 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
-/*export function Page404 (props) {
+export function Page404 (props) {
     return appStatic('page_not_found')
-}*/
+}
 
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     let data = props?.data;
-
+   
     const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
@@ -64,7 +61,12 @@ export function Root (props) {
         }
 
     }, [data?.user]);
-      return (
+
+    if (props.code == 404) {
+        return <Page404/>
+    }
+
+    return (
         <Layouts path={props?.path} data={data} uri={data?.uri}/>
     );
 }

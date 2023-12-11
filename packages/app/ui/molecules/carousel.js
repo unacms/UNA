@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
@@ -12,14 +12,12 @@ export default function ElementCarousel(props) {
     if (data.length == 0)
         return <></>
     
-
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [showImage, setShowImage] = useState(false);
     const [imageSize, setImageSize] = useState([0,0]);
     const [width, setWidth] = useState(400);
 
-    console.log(props.data[0].src, width, showImage, imageSize);
 
     const handleShowImage = (img) => {
         setShowImage(img);
@@ -76,15 +74,20 @@ export default function ElementCarousel(props) {
         </Pressable></View>
     );
 
-    if (data.length == 1){
-        if (imageSize[0] == 0){
+
+    useEffect(() => {
+        if (data.length === 1 && imageSize[0] === 0) {
             ImageOr.getSize(
-                data[0].src, 
-                (width, height) => {
-                    setImageSize([width, height])               
-                }
-            );
+            data[0].src,
+            (width, height) => {
+              setImageSize([width, height]);
+            }
+          );
         }
+      }, [data, imageSize]);
+
+    if (data.length == 1){
+        
         if (imageSize[0] == 0){
             return <></>
         }

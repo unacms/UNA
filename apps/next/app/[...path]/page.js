@@ -79,6 +79,6 @@ const getData = cache(async (props) => {
 export default async function Path (props) {
     const data = await getData(props);
     return  <Suspense fallback={<Loading/>}>
-        <Root path={'home'} data={data?.data} uri={data?.data?.uri} url ={data?.data?.url}></Root>
+        <Root path={'home'} data={data?.data} uri={data?.data?.uri} url ={data?.data?.url} code={data.code}></Root>
     </Suspense>
 }

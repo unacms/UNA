@@ -40,14 +40,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setMenuPopup(!menuPopup)
     }
 
-
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-   // console.log('initedTabs', menu, initedTabs);
+    console.log('initedTabs', menu, initedTabs);
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
-
+    
+    console.log('initedTabs11', routes);
     useEffect(() => {
         setRoutes(initedTabs);
     }, [keyword]);
@@ -56,11 +56,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const { colors } = Theme();
     const [ index, setIndex ] = useState(routes.findIndex(function(item) {
         if (useSectionAsMenu)
-            return data.url == item.key;
+            return data.uri + data.url == item.key;
         else
             return data.url.includes(item.key);
     }));
-
+    
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -73,7 +73,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
    // useEffect(() => {
     let dataItems= routes[index];
     const bUseDaemon =  (routes[index]?.endpoint?.unit == 'feed');
-    let params = routes[index].endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
+    let params = routes[index]?.endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
     params.start = 0;
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': params})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
@@ -226,7 +226,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const renderTabBar = (props) => {
         const currentRoute = routes.find((item) => item.index === index);
-        let headerSettings = getHeaderSettings(currentRoute.key, windowWidth);
+        let headerSettings = getHeaderSettings(currentRoute?.key, windowWidth);
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -384,7 +384,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const headerObj = renderHeader(tabBarObj);
 
     const TabScene = ({ route, width, status }) => {
-        const dataItems = route.data
+        const dataItems = route?.data
         //let b = useMemo(() => {
         const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
         if (!route.inited){
