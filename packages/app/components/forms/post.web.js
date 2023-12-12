@@ -51,6 +51,7 @@ export default function FormPost(props) {
         </Row>
         { (prevList.length> 0 && prevList[0]?.key) && <Row className='flex-wrap'>{prevList}</Row>}
         {getFormFieldByData(props.data.inputs['cat'], props.handleSubmit, 'notitle')}
+        {getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
         {getFormFieldByData(props.data.inputs['allow_view_to'], props.handleSubmit,  'notitle')}
         {getFormFieldByData(props.data.inputs['allow_comments'], props.handleSubmit,  'default')}
         {getFormFieldByData(props.data.inputs['do_publish'], props.handleSubmit,  'default')}

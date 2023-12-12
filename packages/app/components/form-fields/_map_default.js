@@ -12,6 +12,7 @@ import Location from './location';
 import Datetime from './dattime';
 import BlockHeader from './block_header';
 import Suggestion from './suggestion';
+import Labels from './labels';
 
 export const componentsMapDefault = {
     captcha: Captcha,
@@ -29,5 +30,6 @@ export const componentsMapDefault = {
     datetime: Datetime,
     datepicker: Datetime,
     suggestion: Suggestion,
-    block_header: BlockHeader
+    block_header: BlockHeader,
+    labels: Labels
 };
