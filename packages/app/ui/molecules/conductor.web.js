@@ -22,8 +22,10 @@ import { fetcher } from 'app/lib/fetcher';
 import Toster from 'app/ui/atoms/toster';
 import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
+import { useCurrentUser } from 'app/context/user'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover}) {
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     const redirectdRef = useRef();
@@ -41,16 +43,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-    console.log('initedTabs', menu, initedTabs);
+   
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
     
-    console.log('initedTabs11', routes);
     useEffect(() => {
         setRoutes(initedTabs);
-    }, [keyword]);
+    }, [keyword, data.url]);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
@@ -58,9 +59,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (useSectionAsMenu)
             return data.uri + data.url == item.key;
         else
-            return data.url.includes(item.key);
+            return (data.url).includes(item.key);
     }));
-    
+
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -251,11 +252,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" onPress={button.section ? () => showSearch(button.section) : undefined} rounded />;
-                btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
-                return (
-                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-            )});
+                if(currentUser || (!currentUser && button.nonlogged != false)){
+                    let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" onPress={button.section ? () => showSearch(button.section) : undefined} rounded />;
+                    btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
+                    return (
+                        <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+                    )
+                }
+            });
             return (
                 <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
                     <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-2xl mx-auto ') + 'w-full'}>
@@ -463,11 +467,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
-            let btn = <Button title={t(button.title)} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
-            btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
-            return (
-                <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-        )});
+            if(currentUser || (!currentUser && button.nonlogged != false)){
+                let btn = <Button title={t(button.title)} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
+                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                return (
+                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+                )
+            }
+        });
         return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mb-4 ">
                 <Text className="text-2xl mx-1 my-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">

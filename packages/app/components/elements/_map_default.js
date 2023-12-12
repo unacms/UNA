@@ -16,6 +16,7 @@ import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
 import MessengerPage from './messenger';
 import ProfileContacts from './contacts';
+import EventSessions from './event_sessions';
 import Lang from './lang';
 import Invite from './invite';
 import Map from './map';
@@ -50,7 +51,8 @@ export const componentsMapDefault = {
     html: Lang,
     custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
-    messenger_main_page: MessengerPage
+    messenger_main_page: MessengerPage,
+    event_sessions: EventSessions
 };
 
 

@@ -1,7 +1,7 @@
 //import { cookies } from 'next/headers'
 import { env, isCustom } from 'app/lib/env';
 import { cache } from 'react'
-import { Root/*, Page404*/} from 'app/root'
+import { Root } from 'app/root'
 import { Suspense } from 'react'
 import {Loading} from 'app/loading'
 import 'app/styles/global.default.css'

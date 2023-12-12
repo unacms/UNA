@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view'
 import { Modal } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef  } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import * as Location from 'expo-location';
 import Card from 'app/ui/molecules/card'
@@ -12,6 +12,7 @@ import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
 import { getImageSizes } from 'app/lib/util'
 import { Text } from 'app/design/typography'
+import Redirect from 'app/ui/atoms/redirect';
 
 const getGeo =  async () => { 
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -43,11 +44,13 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    const threshold = 150;
+    const redirectdRef = useRef();
     const [data, setData] = useState(false);
     const [local, setLocal] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();
     let forgottedEvents = currentUser?.settings?.forgotted_events ? currentUser.settings.forgotted_events : [];
+    
+    console.log("forgottedEventsforgottedEvents", forgottedEvents)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,11 +78,31 @@ export default function WorkerEventChecker(oProps) {
 
     const ForgotEvent  = async (eventId) => { 
         forgottedEvents.push(eventId)
-        if (!currentUser.settings)
+        
+        if (!currentUser.settings) {
             currentUser.settings = {}
-        currentUser.settings.forgotted_events = forgottedEvents
+        }
+        currentUser.settings.forgotted_events = forgottedEvents;
+        
+        const updatedUser = {
+            ...currentUser, 
+            settings: {
+                ...currentUser.settings,
+                forgotted_events: forgottedEvents,
+            },
+        };
+        
+        setCurrentUser(updatedUser);
+
         let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id)+JSON.stringify(currentUser.settings);
         await fetcher(request_url);
+    };
+
+    const CheckInEvent  = async (eventId, eventUrl) => { 
+        let request_url = '/api.php?r=bx_events/check_in/&params[]=' + eventId;
+        await fetcher(request_url);
+        await ForgotEvent(eventId);
+       // redirectdRef.current.redirect(eventUrl);
     };
 
     let content =<></>
@@ -90,9 +113,10 @@ export default function WorkerEventChecker(oProps) {
     const imageSizes = getImageSizes()
         
     data.forEach((item, key) => {
-        let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude)
-        if (d < threshold){
+        let d = getDistance(item.location_data.lat, item.location_data.lng, local.coords.latitude, local.coords.longitude);
+        if (d < item.threshold){
             content = (<Modal title="You are at the Event" onVisible={true} >
+                 <Redirect ref={redirectdRef} />
                 <View className='w-full  '>
                     <Card addClassName="flex-auto p-4  flex-col gap-y-2" margin="" >
                         <Row >
@@ -117,7 +141,7 @@ export default function WorkerEventChecker(oProps) {
                             </View>}
                         </Row>
                         <Row className='justify-between'>
-                            <Link href={item.url}><Button onPress={() => ForgotEvent(item.id)}  title='Check In' size="base" variant="primary"/></Link>
+                            <Button onPress={() => CheckInEvent(item.id, item.url)}  title='Check In' size="base" variant="primary"/>
                             <Button title='Ignore' size="base" onPress={() => ForgotEvent(item.id)} />
                         </Row>
                     </Card>

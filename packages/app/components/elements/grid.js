@@ -14,6 +14,7 @@ import {CheckBox} from 'react-native';
 import { Input } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
+import { stripTags } from 'app/lib/util';
 
 const getWidth = (width) => {
     let iWidth = parseInt(width.replace('%', ''), 10);
@@ -93,10 +94,14 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
     switch(cell?.type) {
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm'}></Time>
+        case 'datetime':
+            return <Time ts={cell.data} format='datetime' stylesName={'text-sm'}></Time>
         case 'link':
             return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
         case 'text':
-            return <Text>{cell.value}</Text>
+            return <Text>{stripTags(cell.value)}</Text>
+        case 'order': // TODO
+            return <Text></Text>
         case 'switcher':
             return <>
                 <Switch

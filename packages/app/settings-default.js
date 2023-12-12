@@ -170,19 +170,19 @@ let settingsDefault = {
         ],
         menu_drower: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
-            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'friends', title: 'Friends1', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
             { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-            { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText'},
-            { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree'},
-            { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar'},
-            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
-            { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
-            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
+            { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText', nonlogged: false},
+            { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree', nonlogged: false},
+            { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar', nonlogged: false},
+            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour', nonlogged: false},
+            { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear', nonlogged: false},
+            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},
         ],
         menu_top_more: [
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
@@ -226,7 +226,7 @@ let settingsDefault = {
             icon: 'File',
             items: ['posts-home', 'posts-popular',],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-post' },
+                { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_posts'},
             ],
         },
@@ -235,7 +235,7 @@ let settingsDefault = {
             icon: 'File',
             items: ['ads-home', 'ads-popular', 'ads-manage', 'ads-administration', 'ads-sources'],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-ad' },
+                { icon: 'Plus', name: 'Add', link: '/create-ad', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
             ],
         },
@@ -244,7 +244,7 @@ let settingsDefault = {
             icon: 'Storefront',
             items: ['products-home', 'products-popular', 'products-categories', 'products-category'],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-product' },
+                { icon: 'Plus', name: 'Add', link: '/create-product', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_market'},
             ],
         },
@@ -294,7 +294,7 @@ let settingsDefault = {
             icon: 'Calendar',
             items: ['events-home', 'events-top', 'events-joined', 'events-followed','events-upcoming'],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-event-profile' },
+                { icon: 'Plus', name: 'Add', link: '/create-event-profile', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
             ],
         },
@@ -352,7 +352,7 @@ let settingsDefault = {
             icon: 'UsersThree',
             items: ['groups-home', 'groups-joined', 'groups-followed'],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-group-profile' },
+                { icon: 'Plus', name: 'Add', link: '/create-group-profile', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
             ],
         },
@@ -361,7 +361,7 @@ let settingsDefault = {
             icon: 'comments',
             items: ['discussions-home', 'discussions-popular', 'discussions-categories', 'discussions-category'],
             add: [
-                { icon: 'Plus', name: 'Add', link: '/create-discussion' },
+                { icon: 'Plus', name: 'Add', link: '/create-discussion', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_forum'},
             ],
         },
@@ -406,6 +406,9 @@ let settingsDefault = {
           'profile-subscribe-remove',
           'edit-event-profile',
           'delete-event-profile',
+          'edit-event-sessions',
+          'edit-event-questionnaire',
+          'profile-check-in'
         ],
         bx_channels_submenu: {
             name: 'Channels',
@@ -501,7 +504,7 @@ let settingsDefault = {
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [
-                { icon: 'Plus', name: 'Add', link: '/create-post' },
+                { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '?keyword=' },
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },
@@ -613,9 +616,11 @@ let settingsDefault = {
             blocks: {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
+                col5: { name: 'bx_events:sessions', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col4: { name: 'system:locations_map', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
+               
             },
             headerSettings: { offset: false, header: false }
         },
@@ -628,6 +633,13 @@ let settingsDefault = {
             },
             headerSettings: { offset: false, header: false }
         },
+       /* 'edit-event-sessions': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_events:entity_sessions', showTitle: false, showBg: false },
+            },
+            headerSettings: { offset: false, header: false }
+        },*/
         'event-fans': {
             layout: 'profile',
             blocks: {

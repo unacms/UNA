@@ -17,9 +17,10 @@ import { Input } from 'app/design/controls'
 import { Text } from 'app/design/typography';
 import Link from 'app/ui/atoms/link'
 import { useTranslation } from 'react-i18next';
-
+import { useCurrentUser } from 'app/context/user'
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const { t } = useTranslation();
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
    
@@ -157,11 +158,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
                 const addButtons = menuSettings?.add?.map((button) => {
-                    let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" onPress={button.section ? () => showSearch(button.section) : undefined} />;
-                    btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
-                    return (
-                        <View  key={`add-${button.icon}`} >{btn}</View>
-                )});
+                    if(currentUser || (!currentUser && button.nonlogged != false)){
+                        let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" onPress={button.section ? () => showSearch(button.section) : undefined} />;
+                        btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                        return (
+                            <View  key={`add-${button.icon}`} >{btn}</View>
+                        )
+                    }
+                });
                 updateRightHeaderObj(addButtons, navigation);
                 //updateRightHeader(menuSettings?.add, navigation);
             }, 300);

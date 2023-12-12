@@ -6,9 +6,10 @@ import { appSetting } from 'app/lib/util'
 import { MotiView, AnimatePresence } from 'moti'
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform } from 'react-native'
+import { useCurrentUser } from 'app/context/user'
 
 export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const handleHideMenu = (params) => {}
     const menu_top = appSetting('menu_items', 'menu_drower')
     const { t } = useTranslation();
@@ -73,9 +74,11 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                                 <ScrollView style={styles} onPress={handleHideMenu} className="backdrop-blur xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d flex-col gap-y-2 ">
                                     <View className="flex-col gap-y-0.5">
                                         {menuItemsByName('main_menu', menu_top).map((item, index) => (
+                                            (currentUser || (!currentUser && item.nonlogged != false)) && (
                                             <Link key={`menu-${index}`} href= {item.link}>
                                                 <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
                                             </Link>
+                                            )
                                         ))}
                                     </View>
                                 </ScrollView>

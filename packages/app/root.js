@@ -25,6 +25,10 @@ export function Page404 (props) {
     return appStatic('page_not_found')
 }
 
+export function Page403(props) {
+    return appStatic('page_not_allowed')
+}
+
 export function Root (props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
@@ -64,6 +68,10 @@ export function Root (props) {
 
     if (props.code == 404) {
         return <Page404/>
+    }
+
+    if (data?.page_status == 403) {
+        return <Page403/>
     }
 
     return (

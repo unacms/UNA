@@ -12,7 +12,7 @@ function formatDate(date, t) {
     const month = t(monthNames[date.getMonth()]);
     let year = date.getYear() - 100;
     if ((new Date()).getYear() == date.getYear())
-        year ='';
+        year = '';
     return `${day} ${month} ${year}`;
 }
 
@@ -30,17 +30,20 @@ export default function ElementTime(props) {
     let s = props.ts;
     if (!isNaN(props.ts)) {
         let d = new Date(props.ts * 1000);
-    let now = new Date();
-    const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
-    
-    if (diffDays < 1) {
-        s = formatDistance(d, date, { addSuffix: false }).trim();
-        s = s.replace(/\s+/g, '').replace('about', '').replace('lessthanaminute', t('Now')).replace('hours', t('h')).replace('hour', t('h')).replace('minutes', t('m')).replace('minute', t('m')).trim();
-    } else {
-        s = formatDate(d, t).trim();
-    }
-  }
+        let now = new Date();
+        const diffDays = Math.abs(now - d) / (1000 * 60 * 60 * 24);
 
-  const { stylesName } = props;
-  return <Text className={ stylesName || "text-neutral-600 dark:text-neutral-400 text-xs"}>{s}</Text>;
+        if (diffDays < 1) {
+            s = formatDistance(d, date, { addSuffix: false }).trim();
+            s = s.replace(/\s+/g, '').replace('about', '').replace('lessthanaminute', t('Now')).replace('hours', t('h')).replace('hour', t('h')).replace('minutes', t('m')).replace('minute', t('m')).trim();
+        } else {
+            s = formatDate(d, t).trim();
+        }
+        if (props.format == 'datetime') {
+            s = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+        }
+    }
+
+    const { stylesName } = props;
+    return <Text className={stylesName || "text-neutral-600 dark:text-neutral-400 text-xs"}>{s}</Text>;
 }
