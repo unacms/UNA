@@ -57,7 +57,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const { colors } = Theme();
     const [ index, setIndex ] = useState(routes.findIndex(function(item) {
         if (useSectionAsMenu)
-            return data.uri + data.url == item.key;
+            return data.url == item.key;
         else
             return (data.url).includes(item.key);
     }));

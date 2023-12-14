@@ -169,7 +169,7 @@ export function getLayoutName(data, uri, isWeb) {
     if (data.cover_block.profile)
         return {layoutName : 'profile', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
 
-    if (data.menu?.items?.length > 0)
+    if (data.menu?.items?.length > 0 && !uri.includes('create-') )
         return {layoutName : 'navigator', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
 
     if (isWeb)
