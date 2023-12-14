@@ -16,7 +16,6 @@ import Redirect from 'app/ui/atoms/redirect';
 
 const getGeo =  async () => { 
     let { status } = await Location.requestForegroundPermissionsAsync();
-    console.log("getGeo")
     if (status !== 'granted') {
         console.log('Permission to access location was denied');
         return;

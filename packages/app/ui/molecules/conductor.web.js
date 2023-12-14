@@ -24,7 +24,7 @@ import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover}) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -62,6 +62,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
+    //console.log("routes", routes, index, menu)
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -71,7 +72,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
     let maxIdLocal = 0;
-   // useEffect(() => {
+
     let dataItems= routes[index];
     const bUseDaemon =  (routes[index]?.endpoint?.unit == 'feed');
     let params = routes[index]?.endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
@@ -227,7 +228,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const renderTabBar = (props) => {
         const currentRoute = routes.find((item) => item.index === index);
-        let headerSettings = getHeaderSettings(currentRoute?.key, windowWidth);
+
+        let headerSettings = getHeaderSettings(currentRoute?.key, windowWidth, layoutName);
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -262,7 +264,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
             return (
                 <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
-                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-2xl mx-auto ') + 'w-full'}>
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-2xl mx-auto ') + '  w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
@@ -370,7 +372,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (props.data.length == 1 && !props.endpoint){
            let a =  props.data.map((item, index ) => {
-                return <ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} />
+                return <View className="max-w-5xl mx-auto w-full"><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
@@ -419,23 +421,20 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     }
                 />
             }, [dataItems.length]);
+            //
             return (
-                <>
-                   
-                    <Row style={{ paddingTop: header ? 0 : 0 }} className=" "> 
-                        <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
-                            {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
-                        </View>
-                        {isRightCol && <View className="hidden lg:block w-1/3 pt-4 pl-4">
-                            {route?.sidebar?.content.map((item, index ) => {
-                                return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
-                            })}
-                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
-                        </View>}
-                    </Row>
-                </>
-        
-    )}
+                <Row style={{ paddingTop: header ? 0 : 0 }} className=""> 
+                    <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
+                        {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
+                    </View>
+                    {isRightCol && <View className="hidden lg:block w-1/3 pt-4 pl-4">
+                        {route?.sidebar?.content.map((item, index ) => {
+                            return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                        })}
+                        <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                    </View>}
+                </Row>
+            )}
     // can be the problem (freeze data im lists)
                     //    }, [dataItems.length, route.index]);
                       //  return b;
@@ -487,6 +486,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className=' hidden flex-col gap-y-0.5 lg:flex '>
                 {routes.map((a) => {
                     let settings = appSetting('layouts', a.key)
+                    let icon = !a.ident ? (settings?.icon? settings?.icon : a?.icon) : a.icon;
                     return (
                     <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
                         <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
@@ -500,7 +500,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 fullWidth
                                 title = {(a.title)}
                                 align="start"
-                                startDecorator={!a.ident ? settings?.icon : a.icon}
+                                startDecorator={icon}
                                 addon={a.addon}
                             />
                         </Pressable>
@@ -539,7 +539,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className="w-full lg:w-3/4 xl:w-4/5 ">{/*min-h-screen???*/}
+                        <View className="w-full lg:w-3/4 xl:w-4/5">{/*min-h-screen???*/}
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>

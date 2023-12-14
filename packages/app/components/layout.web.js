@@ -5,7 +5,7 @@ import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
-import { storageClear } from 'app/lib/util';
+import { storageClear, getLayoutName  } from 'app/lib/util';
 import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';
@@ -20,7 +20,10 @@ const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
     );
 });
 
-export default function Layout({ data, uri, children }) {
+export default function Layout(props) {
+    let data = props.data;
+    let uri = props.uri
+    let children = props.children
     const { width } = useWindowDimensions();
 
     let theme = storageGet('layout:theme', '', true);
@@ -64,7 +67,9 @@ export default function Layout({ data, uri, children }) {
       
         
     }, [data.url]);
-    const headerSettings = useMemo(() => getHeaderSettings(uri, width), [uri, width]);
+
+    const { layoutName } = getLayoutName(data, uri, true);
+    const headerSettings = useMemo(() => getHeaderSettings(uri, width, layoutName), [uri, width]);
 
     if (data?.empty)
         return <>{children}</>
@@ -82,7 +87,7 @@ export default function Layout({ data, uri, children }) {
                 <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
                 <Suggestions/>
                 <AsyncWorker/>
-                { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+                { <NavbarMemo layoutName={layoutName} title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
     }
@@ -98,7 +103,7 @@ export default function Layout({ data, uri, children }) {
                     <AsyncWorker/>
                 </View>
                 <View className='w-full lg:w-1/5'>
-                    { <NavbarMemo title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+                    { <NavbarMemo layoutName={layoutName} title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
                 </View>
             </Row>
         );

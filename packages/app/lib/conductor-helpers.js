@@ -7,6 +7,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { useMemo  } from 'react';
+import { getBlocksFromData } from 'app/lib/util';
 
 export function getBackButtonWeb() {
     if (history.length > 2){
@@ -137,8 +138,12 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
         }
         const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + link);
         let settings = appSetting('layouts', getURI(currentRoute.link));
+        let blocks = settings?.blocks;
+        if (!blocks)
+            blocks = getBlocksFromData(sResponse.data);
+
         let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks); 
-        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, settings.blocks, routes, contentAndEndpoint.sidebar)
+        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, blocks, routes, contentAndEndpoint.sidebar)
     }
 }
 
@@ -206,6 +211,9 @@ function processBrowse(acc, b) {
 }
 
 export function processUrl(data, blocks) {
+    if (!blocks)
+        blocks = getBlocksFromData(data);
+
     const contentAndEndpoint = Object.values(blocks).reduce((acc, block) => {
         const b = getContent(data, block);
         

@@ -16,16 +16,16 @@ export default function FormFieldLabels(props) {
     const formContext = useFormContext();
     let name = props.name ? props.name : '';
     let { field } = useController({ name, rules, defaultValue });
-    
-    const [labelsData, setLabelsData ] = useState(false);
+    const labelsData = props.values;
+    // const [labelsData, setLabelsData ] = useState(false);
     let selectedValues = String(field.value).split(',');
    
-    const fetchData = async () => {
+    /*const fetchData = async () => {
         const sResponse = await fetcher('/api.php?r=' + props.ajax_get_suggestions);
         if (sResponse?.data){
             setLabelsData(sResponse?.data)
         }
-    };
+    };*/
 
     const addValue = (value) => {
         if (selectedValues.includes(value)){
@@ -40,9 +40,9 @@ export default function FormFieldLabels(props) {
         formContext.setValue(props.name, selectedValues.join(','))
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         fetchData();
-    }, []);
+    }, []);*/
 
     const renderLabelSection = (data, title) => {
         if (data.length > 0) {

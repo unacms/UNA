@@ -4,9 +4,8 @@ import { appSetting } from 'app/lib/util';
 import { useEffect, useMemo} from 'react';
 
 function getMenu(props) {
-
     let menu = Object.assign({}, props.data.menu);;
-    let categories = DataByName(props.data, props.blocks.categories);
+    let categories = DataByName(props.data, props.blocks?.categories);
     let menuItems = [];
     if (categories){
         menuItems  = categories?.content[0]?.data
@@ -30,8 +29,8 @@ function getMenu(props) {
 export default function PageLayout(props) {
     const leftSideBar = appSetting('layout', 'format') == 'ver' ? false : true
     const menu = useMemo(() => getMenu(props), [leftSideBar]);
-    
     return (<Conductor 
+        layoutName={props.layoutName}
         minHeaderHeight={0} 
         isHideDefaultHeader={false} 
         menu={menu} 

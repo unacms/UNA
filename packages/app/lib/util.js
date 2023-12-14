@@ -6,6 +6,7 @@ import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
+import { componentsMap } from 'app/components/page-layout/_map';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -137,9 +138,62 @@ export function getRandomColor(str) {
     return arr[Math.abs(hash % 10)];
 }
 
-export function getHeaderSettings(uri, width) {
-    let settings = appSetting('layouts', uri)
+export function getBlocksFromData(data) {
+    let blocks = {};
+    Object.keys(data?.elements).forEach(key => {
+        Object.keys(data.elements[key]).forEach(key2 => {
+            blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true}
+            if(data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse'){
+                blocks['block' + data.elements[key][key2].id].perLine = 1
+            }
+        })
+    })
+    return blocks;
+}
 
+export function getLayoutName(data, uri, isWeb) {
+    let layoutCustomKey = appSetting('layouts', uri)
+    let layoutKey = '';
+    let layoutBlocks = '';
+
+    if (layoutCustomKey){
+        layoutKey = layoutCustomKey.layout;
+        layoutBlocks = layoutCustomKey.blocks
+    }
+
+    let isCustomLayout =  layoutCustomKey ? true : false;
+
+    if (componentsMap[layoutKey])
+        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+    
+    if (data.cover_block.profile)
+        return {layoutName : 'profile', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    if (data.menu?.items?.length > 0)
+        return {layoutName : 'navigator', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    if (isWeb)
+        layoutKey = data.layout;
+
+    if (componentsMap[layoutKey])
+        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    return {layoutName : 'default', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+}
+
+export function getHeaderSettings(uri, width, layout) {
+
+    let settings = appSetting('layouts', uri)
+    if (!settings){
+        if (layout == 'navigator'){
+            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true }}
+        }
+        if (layout == 'profile'){
+            settings = {headerSettings: { offset: false, header: false }}
+        }
+        // may be add somesing else
+    }
+       
     const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' ? settings.headerSettings.backButton : true;
 
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
@@ -595,20 +649,30 @@ const getNameFromSetting = (setting) => {
   
 export function menuItemsByName(name, items, url = '')
 {
-   
     if (!items)
         return [];
-
     const menuSettings = appSetting('menu_items', name)
     let menuSettingNames = []
     
     if (menuSettings){
         if (menuSettings.items){
-            items = items.filter((item) => (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link))));
+            if (typeof menuSettings.items[0] === 'string') {
+                items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link)))));
+            }
+            else{
+                menuSettingNames = menuSettings.items.map(getNameFromSetting);
+                items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
+               
+                menuSettingNames = [];
+                items = items.map(item1 => {
+                    const item2 = menuSettings.items.find(item2 => item2.name === item1.name);
+                    return item2 ? { ...item1, ...item2 } : item1;
+                });
+            }
         }
         else{
             menuSettingNames = menuSettings.map(getNameFromSetting);
-            items = items.filter((item) => (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link))));
+            items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
         }
         if (menuSettingNames){
             items.forEach(item => {
@@ -622,6 +686,7 @@ export function menuItemsByName(name, items, url = '')
                 }
             });
         }
+
         return items;
     }
     if (!items)

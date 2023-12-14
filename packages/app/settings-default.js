@@ -194,8 +194,7 @@ let settingsDefault = {
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
             { name: 'organizations-home', title: 'Organizations', link: '/organizations-home', icon: 'CirclesThree' }, 
             { name: 'ads-home', title: 'Ads', link: '/ads-home', icon: 'Megaphone' }, 
-            { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' }, 
-            
+            { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' },  
         ],
         menu_add: [
             { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText'},
@@ -203,10 +202,9 @@ let settingsDefault = {
             { name: 'create-event-profile',title: 'Add event', link: '/create-event-profile', icon: 'Calendar'},
             { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'Chats'},
             { name: 'create-ad',title: 'Add ad', link: '/create-ad', icon: 'Megaphone'},
-            
         ],
         menu_account: [
-            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
+            { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
             { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
@@ -224,7 +222,9 @@ let settingsDefault = {
         bx_posts_submenu: {
             name: 'Posts',
             icon: 'File',
-            items: ['posts-home', 'posts-popular',],
+            items: [
+                { name:'posts-home', icon:'ChatCenteredText'},
+                { name:'posts-popular', icon:'Fire'}],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_posts'},
@@ -233,7 +233,13 @@ let settingsDefault = {
         bx_ads_submenu: {
             name: 'Ads',
             icon: 'File',
-            items: ['ads-home', 'ads-popular', 'ads-manage', 'ads-administration', 'ads-sources'],
+            items: [
+                { name:'ads-home', icon:'Storefront' },
+                { name:'ads-popular', icon:'Fire' }, 
+                { name:'ads-manage', icon:'Fire' },
+                { name:'ads-administration', icon:'Fire' },
+                { name:'ads-sources', icon:'Fire' },
+            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-ad', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_ads'},
@@ -242,35 +248,24 @@ let settingsDefault = {
         bx_market_submenu: {
             name: 'Market',
             icon: 'Storefront',
-            items: ['products-home', 'products-popular', 'products-categories', 'products-category'],
+            items: [
+                { name:'products-home', icon:'Storefront' },
+                { name:'products-popular', icon:'Fire' }, 
+                { name:'products-categories', icon:'Folders' },
+                { name:'products-category', icon:'Folders' },
+            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-product', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_market'},
             ],
         },
-        bx_posts_view_actions: [
-            'edit-post', 
-            'delete-post'
-        ],
-        bx_market_view_actions: [
-            'edit-product', 
-            'delete-product'
-        ],
-        bx_forum_view_actions: [
-            'edit-discussion', 
-            'delete-discussion'
-        ],
-        
-        bx_ads_view_actions: [
-            'edit-ad', 
-            'delete-ad',
-            'edit-ad-budget',
-            'view-ad-promotion'
-        ],
         bx_persons_submenu: {
             name: 'People',
             icon: 'UsersFour',
-            items: ['persons-home', 'persons-active'],
+            items: [
+                { name:'persons-home', icon:'UsersFour'},
+                { name:'persons-active', icon:'UsersFour'}
+            ],
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
@@ -284,7 +279,10 @@ let settingsDefault = {
         bx_organizations_submenu: {
             name: 'Organizations',
             icon: 'CirclesThree',
-            items: ['organizations-home', 'organizations-active'],
+            items: [
+                { name:'organizations-home', icon:'CirclesThree'},
+                { name:'organizations-active', icon:'CirclesThree'}
+            ],
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_organizations'},
             ],
@@ -292,7 +290,13 @@ let settingsDefault = {
         bx_events_submenu: {
             name: 'Events',
             icon: 'Calendar',
-            items: ['events-home', 'events-top', 'events-joined', 'events-followed','events-upcoming'],
+            items: [
+                { name:'events-home', icon:'Calendar' },
+                { name:'events-top', icon:'CalendarCheck' },
+                { name:'events-joined', icon:'LinkSimple' },
+                { name:'events-followed', icon:'Binoculars' },
+                { name:'events-upcoming', icon:'LinkSimple' }
+            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-event-profile', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_events' },
@@ -301,26 +305,28 @@ let settingsDefault = {
         sys_con_submenu: {
             name: 'Connections',
             icon: 'UsersFour',
-            items: ['friends', 'friend-suggestions', 'friend-requests', 'sent-friend-requests', 'follow-suggestions', 'followers', 'following'],
+            items: [
+                { name: 'friends', icon:'UserList'},
+                { name: 'friend-suggestions', icon:'UserCircle'}, 
+                { name: 'friend-requests', icon:'UserCirclePlus'}, 
+                { name: 'sent-friend-requests', icon:'UserCircleGear'}, 
+                { name: 'follow-suggestions', icon:'UserFocus'}, 
+                { name: 'followers', icon:'UsersFour'}, 
+                { name: 'following', icon:'UserSquare'}, 
+            ],
             add: [
                 {icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_persons'},
             ],
         },
-        bx_persons_view_submenu: [
-            'view-persons-profile',
-            'persons-profile-info',
-            'persons-profile-friends',
-            'persons-profile-subscriptions',
-        ],
-        bx_organizations_view_submenu: [
-            'view-organization-profile',
-            'organization-profile-info',
-            'organization-profile-fans',
-        ],
         sys_account_settings_submenu: {
             name: 'Settings',
             icon: 'Gear',
-            items: ['account-settings-password', 'account-settings-email', 'account-settings-info', 'account-settings-delete'],
+            items: [
+                {name:'account-settings-password', icon:'Gear'},
+                {name:'account-settings-email', icon:'Gear'},
+                {name:'account-settings-info', icon:'Gear'},
+                {name:'account-settings-delete', icon:'Gear'}
+            ],
         },
         bx_persons_view_meta: {
             iconset: {
@@ -329,28 +335,14 @@ let settingsDefault = {
             },
             items: [ 'friends', 'subscribers'],
         },
-        bx_persons_view_actions_all: [
-            'profile-friend-add',
-            'profile-friend-remove',
-            'profile-subscribe-add',
-            'profile-subscribe-remove',
-            'edit-persons-profile',
-            'delete-persons-profile',
-            'messenger',
-        ],
-        bx_organizations_view_actions_all: [
-            'profile-friend-add',
-            'profile-friend-remove',
-            'profile-subscribe-add',
-            'profile-subscribe-remove',
-            'edit-organization-profile',
-            'delete-organization-profile',
-            'messenger',
-        ],
         bx_groups_submenu: {
             name: 'Groups',
             icon: 'UsersThree',
-            items: ['groups-home', 'groups-joined', 'groups-followed'],
+            items: [
+                { name:'groups-home', icon:'UsersThree'},
+                { name:'groups-joined', icon:'Link'},
+                { name:'groups-followed', icon:'Binoculars'}
+            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-group-profile', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
@@ -359,57 +351,34 @@ let settingsDefault = {
         bx_forum_submenu: {
             name: 'Discussions',
             icon: 'comments',
-            items: ['discussions-home', 'discussions-popular', 'discussions-categories', 'discussions-category'],
+            items: [
+                { name:'discussions-home', icon:'Chats'},
+                { name:'discussions-popular', icon:'Fire'},
+                { name:'discussions-categories', icon:'Folders'},
+                { name:'discussions-category', icon:'Folders'}
+            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-discussion', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_forum'},
             ],
         },
-        bx_groups_view_submenu: [
-            'view-group-profile', 
-            'group-fans'
-        ],
         bx_groups_view_meta: {
-          iconset: {
-              members: 'Users',
-              friends: 'Users',
-              subscribers: 'Users',
-          },
-          items: ['members', 'friends', 'subscribers'],
+            iconset: {
+                members: 'Users',
+                friends: 'Users',
+                subscribers: 'Users',
+            },
+            items: ['members', 'friends', 'subscribers'],
         },
-        bx_groups_view_actions_all: [
-          'profile-fan-add',
-          'profile-fan-remove',
-          'profile-subscribe-add',
-          'profile-subscribe-remove',
-          'edit-group-profile',
-          'delete-group-profile',
-          'report'
-        ],
-        bx_events_view_submenu: [
-            'view-event-profile', 
-            'event-profile-info', 
-            'event-fans'
-        ],
         bx_events_view_meta: {
-          iconset: {
-              members: 'Users',
-              friends: 'Users',
-              subscribers: 'Users',
-          },
-          items: ['members', 'friends', 'subscribers'],
+            iconset: {
+                members: 'Users',
+                friends: 'Users',
+                subscribers: 'Users',
+            },
+            items: ['members', 'friends', 'subscribers'],
         },
-        bx_events_view_actions_all: [
-          'profile-fan-add',
-          'profile-fan-remove',
-          'profile-subscribe-add',
-          'profile-subscribe-remove',
-          'edit-event-profile',
-          'delete-event-profile',
-          'edit-event-sessions',
-          'edit-event-questionnaire',
-          'profile-check-in'
-        ],
+        
         bx_channels_submenu: {
             name: 'Channels',
             icon: 'Hash',
@@ -419,20 +388,7 @@ let settingsDefault = {
                 { icon: 'DotsThreeOutlineVertical', name: 'More' },
             ],
         },
-        bx_channels_view_submenu: [
-            'view-channel-profile'
-        ],
-        bx_channels_view_actions_all: [
-            'profile-subscribe-add',
-            'profile-subscribe-remove',
-            'delete-channel-profile',
-        ],
-        bx_timeline_menu_item_manage: [
-            'item-edit', 
-            'item-delete',
-        ],
     },
-
     layouts: {
         messenger: {
             layout: 'messenger',
@@ -446,7 +402,6 @@ let settingsDefault = {
             blocks: {
                 form: { name: 'system:login_form', showTitle: false },
             },
-            max_width: 'full',
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
         'create-account': {
@@ -509,107 +464,44 @@ let settingsDefault = {
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
-        //############ SETTINGS PAGES ############
-        /*'payment-carts': {
-            layout: 'navigator',
-            blocks: {
-                grid: {name: 'bx_payment:get_block_carts', showTitle: false, showBg: false, perLine: 1},
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'payment-cart': {
-            layout: 'navigator',
-            blocks: {
-                grid: {name: 'bx_payment:get_block_cart', showTitle: false, showBg: false, perLine: 1},
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },*/
-        'account-settings-email': {
-            layout: 'navigator',
-            blocks: {
-                settings: {name: 'system:account_settings_email', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl"},
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'account-settings-password': {
-            layout: 'navigator',
-            blocks: {
-                settings: {name: 'system:account_settings_password', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'account-settings-info': {
-            layout: 'navigator',
-            blocks: {
-                settings: {name: 'system:account_settings_info', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'account-settings-delete': {
-            layout: 'navigator',
-            blocks: {
-                settings: {name: 'system:account_settings_del_account', showTitle: true, showBg: false, perLine: 1, cssClasses:"py-4 max-w-5xl" },
-            },
-            icon: 'Gear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
         
         //############ EVENTS PAGES ############
         'events-home': {
             layout: 'navigator',
             blocks: {
                 browse: {name: 'bx_events:browse_recent_profiles', showTitle: false, showBg: false },
-            },
-            icon: 'Calendar',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'events-top': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:browse_top_profiles', showTitle: false, showBg: false },
-            },
-            icon: 'CalendarCheck',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'events-joined': {
             layout: 'navigator',
             blocks: {
-                //browse: { name: 'bx_events:browse_joined_entries', showTitle: false, showBg: false },
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
-            },
-            icon: 'LinkSimple',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'events-upcoming': {
             layout: 'navigator',
             blocks: {
-               
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
-            },
-            icon: 'LinkSimple',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'events-calendar': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
-            },
-            icon: 'LinkSimple',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'events-followed': {
             layout: 'navigator',
             blocks: {
 
                 browse: { name: 'bx_events:calendar', showTitle: false, showBg: false, perLine: 1 },
-            },
-            icon: 'Binoculars',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'view-event-profile': {
             layout: 'profile',
@@ -624,45 +516,8 @@ let settingsDefault = {
             },
             headerSettings: { offset: false, header: false }
         },
-        'event-profile-info': {
-            layout: 'profile',
-            blocks: {
-                col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, showPad: true, perLine: 1,  },
-                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, showPad: true, perLine: 1,  },
-                col4: { name: 'system:locations_map', showTitle: true, showBg: true, showPad: true, perLine: 1,},
-            },
-            headerSettings: { offset: false, header: false }
-        },
-       /* 'edit-event-sessions': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_events:entity_sessions', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false }
-        },*/
-        'event-fans': {
-            layout: 'profile',
-            blocks: {
-                col1: { name: 'bx_events:fans_table', showTitle: false, showBg: false },
-            },
-        },
+        
         //############ POSTS PAGES ############
-        'posts-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, menu: true },
-            },
-            icon: 'ChatCenteredText',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'posts-popular': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false },
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
         'view-post': {
             layout: 'post',
             top:true,
@@ -703,18 +558,14 @@ let settingsDefault = {
             blocks: {
                 browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false},
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-            },
-            icon: 'Storefront',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'products-category': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_market:browse_category', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-            },
-            icon: 'CirclesFour',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'products-categories': {
             layout: 'navigator',
@@ -722,18 +573,14 @@ let settingsDefault = {
                 browse: { name: 'system:categories_list', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
                // col3: { name: 'system:keywords_cloud', showTitle: false, showBg: true, sidebar: true },
-            },
-            icon: 'Folders',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'products-popular': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_market:browse_popular', showTitle: false, showBg: false },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
+            }
         },
         'view-product': {
             layout: 'post',
@@ -749,48 +596,6 @@ let settingsDefault = {
             headerSettings: { header: false, footer: false, offset: false },
         },
         //############ ADS PAGES ############
-        'ads-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_ads:browse_public', showTitle: false, showBg: false},
-              
-            },
-            icon: 'Storefront',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'ads-administration': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_ads:manage_tools', showTitle: false, showBg: false },
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'ads-manage': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_ads:manage_tools', showTitle: false, showBg: false },
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'ads-sources': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_ads:block_sources_details', showTitle: false, showBg: false },
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'ads-popular': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_ads:browse_popular', showTitle: false, showBg: false },
-              
-            },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
         'view-ad': {
             layout: 'post',
             top:true,
@@ -804,65 +609,6 @@ let settingsDefault = {
             },
             headerSettings: { header: false, footer: false, offset: false },
         },
-
-
-        //############ CONNECTION PAGES ############
-        'friend-suggestions': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false },
-            },
-            icon: 'UserCircle',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'friends': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_friends', showTitle: false, showBg: false },
-            },
-            icon: 'UserList',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'follow-suggestions': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false },
-            },
-            icon: 'UserFocus',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'followers': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_subscribed_me', showTitle: false, showBg: false },
-            },
-            icon: 'UsersFour',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'following': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_subscriptions', showTitle: false, showBg: false },
-            },
-            icon: 'UserSquare',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'friend-requests': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_friend_requests', showTitle: false, showBg: false}
-            },
-            icon: 'UserCirclePlus',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'sent-friend-requests': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'system:browse_friend_requested', showTitle: false, showBg: false },
-            },
-            icon: 'UserCircleGear',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
         
         //############ DISCUSSION PAGES ############
         'discussions-home': {
@@ -871,21 +617,14 @@ let settingsDefault = {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
                 browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true, unit:'small' },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-                
             },
-            icon: 'Chats',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-popular': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_popular', showTitle: false, showBg: false, perLine: 1 },
-               
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-                
             },
-            icon: 'Fire',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-category': {
             layout: 'navigator',
@@ -894,8 +633,6 @@ let settingsDefault = {
                 browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Folders',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'discussions-categories': {
             layout: 'navigator',
@@ -904,8 +641,6 @@ let settingsDefault = {
                 browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
-            icon: 'Folders',
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
         },
         'view-discussion': {
             layout: 'discussion',
@@ -921,38 +656,6 @@ let settingsDefault = {
             headerSettings: { header: false, footer: false, offset: false },
         },
         //############ GROUPS PAGES ############
-        'groups-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_groups:browse_recent_profiles', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'UsersThree',
-        },
-        'groups-joined': {
-            layout: 'navigator',
-            blocks: {
-                browse: {
-                    name: 'bx_groups:browse_joined_entries',
-                    showTitle: false,
-                    showBg: false,
-                },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Link',
-        },
-        'groups-followed': {
-            layout: 'navigator',
-            blocks: {
-                browse: {
-                    name: 'bx_groups:browse_followed_entries',
-                    showTitle: false,
-                    showBg: false,
-                },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'Binoculars',
-        },
         'view-group-profile': {
             layout: 'profile',
             blocks: {
@@ -965,27 +668,7 @@ let settingsDefault = {
             },
             headerSettings: { offset: false, header: false, cover: 'group'}
         },
-        'group-fans': {
-            layout: 'profile',
-            blocks: {
-                col1: { name: 'bx_groups:fans_table', showTitle: false, showBg: false },
-            },
-        },
         //############ CHANNELS PAGES ############
-        'channels-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_channels:browse_recent_profiles', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
-        'channels-top': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_channels:browse_top_profiles', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true }
-        },
         'view-channel-profile': {
             layout: 'profile',
             blocks: {
@@ -995,22 +678,6 @@ let settingsDefault = {
             headerSettings: { offset: false, header: false, cover:'min' }
         },
         //############ PERSONS PAGES ############
-        'persons-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_persons:browse_recent_profiles', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'UsersFour',
-        },
-        'persons-active': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_persons:browse_active_profiles', showTitle: false, showBg: false},
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'UsersFour',
-        },
         'view-persons-profile': {
             layout: 'profile',
             blocks: {
@@ -1021,45 +688,7 @@ let settingsDefault = {
             },
             headerSettings: { offset: false, header: false, cover: 'profile' }
         },
-        'persons-profile-friends': {
-            layout: 'profile',
-            blocks: {
-                col1: { name: 'system:connections_table', showTitle: false, showBg: false }, 
-            },
-            headerSettings: { offset: false, header: false }
-        },
-        'persons-profile-subscriptions': {
-            layout: 'profile',
-            blocks: {
-                col1: { name: 'system:subscriptions_table', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false }
-        },
-        'persons-profile-info': {
-            layout: 'profile',
-            blocks: {
-                col0: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
-                col1: { name: 'bx_persons:entity_info_full', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false }
-        },
         //############ ORGS PAGES ############
-        'organizations-home': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_organizations:browse_recent_profiles', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'CirclesThree',
-        },
-        'organizations-active': {
-            layout: 'navigator',
-            blocks: {
-                browse: { name: 'bx_organizations:browse_active_profiles', showTitle: false, showBg: false},
-            },
-            headerSettings: { offset: false, header: false, backButton: false, menu: true },
-            icon: 'CirclesThree',
-        },
         'view-organization-profile': {
             layout: 'profile',
             blocks: {
@@ -1067,21 +696,6 @@ let settingsDefault = {
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
                 col2: { name: 'bx_organizations:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: true, sidebar: true },
-            },
-            headerSettings: { offset: false, header: false }
-        },
-        'organization-profile-info': {
-            layout: 'profile',
-            blocks: {
-                col0: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: false, perLine: 1 },
-                col1: { name: 'bx_organizations:entity_info_full', showTitle: false, showBg: false },
-            },
-            headerSettings: { offset: false, header: false }
-        },
-        'organization-profile-fans': {
-            layout: 'profile',
-            blocks: {
-                col1: { name: 'bx_organizations:fans_table', showTitle: false, showBg: false },
             },
             headerSettings: { offset: false, header: false }
         },

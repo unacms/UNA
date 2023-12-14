@@ -62,7 +62,7 @@ export default function ElementEntityInfo({ data }) {
                 )
 
             case 'location':
-                    return false
+                return false
 
             default:
                 return (

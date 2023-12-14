@@ -1,5 +1,5 @@
-import { componentsMap } from './page-layout/_map';
-import { appSetting } from 'app/lib/util'
+import { componentsMap } from 'app/components/page-layout/_map';
+import { appSetting, getLayoutName } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
@@ -9,26 +9,11 @@ import ConfirmEmail from 'app/ui/molecules/confirm_email';
 export default function PageLayout(props) {
 
     const isWeb = Platform.OS == 'web'
+    let {layoutName, layoutBlocks, isCustomLayout}  = getLayoutName(props.data, props.data.uri.toString(), isWeb)
+    let Component = componentsMap[layoutName];
 
-    let layoutCustomKey = appSetting('layouts', props.data.uri.toString())
-    let layoutKey = '';
-    let layoutBlocks = '';
-    if (!layoutCustomKey){
-        if (isWeb)
-            layoutKey = props.data.layout;
-    }
-    else{
-        layoutKey = layoutCustomKey.layout;
-        layoutBlocks = layoutCustomKey.blocks
-    }
-
-    let Component = componentsMap[layoutKey];
-    if (!Component)
-        Component = componentsMap['default'];
-    
-    // return data for custom pages
-    if(layoutCustomKey && layoutCustomKey.blocks)
-        return Wrapper(<Component {...props} blocks={layoutBlocks}/>);
+    if(isCustomLayout && layoutBlocks)
+        return Wrapper(<Component layoutName={layoutName} {...props} blocks={layoutBlocks}/>);
 
     let cells = null;
 
@@ -41,9 +26,8 @@ export default function PageLayout(props) {
         return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
     });
 
-    
     // return data web layouts
-    return Wrapper(<Component {...props} >{cells}</Component>);
+    return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>);
 }
 
 function Wrapper(p){

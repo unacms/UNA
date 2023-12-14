@@ -7,7 +7,7 @@ import { View, Row, Pressable } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { appSetting, getHeaderSettings, getLayoutName } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
@@ -54,8 +54,7 @@ export default function (props) {
     const menu_account = appSetting('menu_items', 'menu_account');
     
     const windowWidth = useWindowDimensions().width;
-
-    let headerSettings = getHeaderSettings(props.uri, width);
+    let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
 
     useEffect(() => {
         const handleClick = () => {
