@@ -10,19 +10,22 @@ export default function ElementEntityInfo({ data }) {
         const v = a.values ? a.values[a.value] : a.value
         if (v) {
             if (a.type) {
-                return (
-                    <View className="flex-row flex-wrap gap-y-2 gap-x-2" key={a.name}>
-                        <Row className="items-center text-2xl">
-                            {getIcon(a)}
-                            <View className="ml-2">
-                                <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">
-                                    {a.caption}:
-                                </Text>
-                            </View>
-                        </Row>
-                        {getValue(a)}
-                    </View>
-                )
+                let value = getValue(a);
+                if (value){
+                    return (
+                        <View className="flex-row flex-wrap gap-y-2 gap-x-2" key={a.name}>
+                            <Row className="items-center text-2xl">
+                                {getIcon(a)}
+                                <View className="ml-2">
+                                    <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">
+                                        {a.caption}:
+                                    </Text>
+                                </View>
+                            </Row>
+                            {getValue(a)}
+                        </View>
+                    )
+                }
             } else {
                 return <Text key={a.name}>Unsupporded field type: {a.type}</Text>
             }
@@ -57,6 +60,9 @@ export default function ElementEntityInfo({ data }) {
                         {(Math.abs(ageDate.getUTCFullYear() - 1970)).toString()}
                     </Text>
                 )
+
+            case 'location':
+                    return false
 
             default:
                 return (

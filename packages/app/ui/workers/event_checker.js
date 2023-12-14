@@ -49,8 +49,6 @@ export default function WorkerEventChecker(oProps) {
     const [local, setLocal] = useState(false);
     let { currentUser, setCurrentUser } = useCurrentUser();
     let forgottedEvents = currentUser?.settings?.forgotted_events ? currentUser.settings.forgotted_events : [];
-    
-    console.log("forgottedEventsforgottedEvents", forgottedEvents)
 
     useEffect(() => {
         const fetchData = async () => {

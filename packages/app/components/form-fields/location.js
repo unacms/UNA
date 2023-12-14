@@ -39,16 +39,16 @@ export default function FormFieldLocation(props) {
 
     const parseAdd = (place) =>
     {
-        let country = null;
-        let state = null;
-        let zipCode = null;
+        let country = '';
+        let state = '';
+        let zipCode = '';
 
-        let city = null;
-        let street = null;
-        let street_number = null;
+        let city = '';
+        let street = '';
+        let street_number = '';
 
-        let lat = null;
-        let lng = null;
+        let lat = '';
+        let lng = '';
     
         place.address_components.forEach(component => {
             if (component.types.includes('country')) {
