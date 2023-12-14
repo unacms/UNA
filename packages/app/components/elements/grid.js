@@ -145,7 +145,6 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
 });
 
 export default function ElementGrid({data}) {
-    
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))
     const [dataItems, setDataItems] = useState({data: data.data, settings:settings });
@@ -170,17 +169,23 @@ export default function ElementGrid({data}) {
             }
         });
     };
-    
-      
+
     const fetchData = useCallback(async (action, params) => {
-        return await fetcher('/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o='+settings.object+'&a='+ action + params);
+        let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
+        if(settings?.query_append)
+            Object.keys(settings.query_append).forEach((sKey) => {
+                sUrl += '&' + sKey + '=' + settings.query_append[sKey];
+            });
+
+        return await fetcher(sUrl + params);
     }, [settings.object]);
 
     const fetchDisplayData = async() => { 
         let url = "&start=" + dataItems.settings.start;
-        url += '&filter=' + (selectedFilter ? selectedFilter.id : '') + '%23-%23%23-%23' + searchValue;
+        url += '&filter=' + (selectedFilter ? selectedFilter.id + '%23-%23' : '') + searchValue;
+
         let fetchedData = await fetchData('display', url);
-        if (fetchedData && fetchedData.data) {
+        if (fetchedData && fetchedData.data && fetchedData.data?.data) {
             if (fetchedData.data.data.length > 0){
                 fetchedData.data.settings.start = parseInt(fetchedData.data.settings.start) + parseInt(fetchedData.data.settings.per_page);
                 setDataItems({ 
@@ -251,26 +256,30 @@ export default function ElementGrid({data}) {
 
     const dropdownItems = useMemo(() => {
         // Check the condition inside useMemo
-        if (settings.filter1.length > 0) {
-            return Object.entries(settings.filter1).map(([id, title]) => ({
-                id: id,
-                name: title.toLowerCase(),
-                title: title
+        if (settings.filters?.filter1 && settings.filters.filter1.length > 0) {
+            return settings.filters.filter1.map((aItem) => ({
+                id: aItem.value,
+                name: aItem.title.toLowerCase(),
+                title: aItem.title
             }));
         }
         return []; // Return an empty array if the condition is not met
-    }, [settings.filter1]);
+    }, [settings.filters?.filter1]);
 
     return (
         <View className="w-full px-4 xl:px-6 ">
             <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
             <Row className='justify-between mt-2 mb-4 '>
-                {settings.filter1.length >0  && <Row className="gap-x-2 ">
-                        <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
-                            <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
-                        </DropdownMenu>
-        
-                        <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)}  />
+                {Object.keys(settings.filters).length > 0 && 
+                    <Row className="gap-x-2 ">
+                        {settings.filters?.filter1 && settings.filters.filter1.length > 0 && 
+                            <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
+                                <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
+                            </DropdownMenu>
+                        }
+                        {settings.filters?.search && 
+                            <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
+                        }
                     </Row>
                 }
                 <Row className="gap-x-2 ">
