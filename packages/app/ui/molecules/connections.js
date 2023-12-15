@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
+import { View, Row } from 'app/design/view'
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { Modal } from 'app/design/controls'
+import { BlockByData } from 'app/components/block';
+import { useTranslation } from 'react-i18next';
 
 export default function ElementConnections(oProps) {
     const [ elementData, setElementData ] = useState(false);
+    const [ modalContent, setModalContent ] = useState(false);
+    const { t } = useTranslation();
 
     const oParams = {...appSetting('social_actions', 'connection'), ...oProps.params};
 
@@ -55,11 +61,19 @@ export default function ElementConnections(oProps) {
             oProps.params.on_do(sAction);
 
         performAction('perform', {a:sAction}, (oData) => {
-            setElementVars(oData);
+            if(oData.a == 'questionnaire') {
+                setModalContent({content: oData.data, designbox_id: 0});
+            }
+            else
+                setElementVars(oData);
 
             if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
                 oProps.params.on_done(sAction, oData);
         });
+    };
+
+    const handleCloseModal = () => {
+        setModalContent(false);
     };
 
     let sAction = oProps?.a || '';
@@ -73,6 +87,13 @@ export default function ElementConnections(oProps) {
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
     return (
-        <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
+        <>
+            <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
+            {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+                <View className='px-4'>
+                    <BlockByData /*onFormEmpty = {() => handleUpdate()}*/ block = {modalContent}  />
+                </View>
+            </Modal>}
+        </>
     );
 }
