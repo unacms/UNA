@@ -20,6 +20,7 @@ export default function FormFieldDattime({ name, value = '', type, ...props }) {
 
     const setParamValue = (value) => {
         const date = new Date(value*1000);
+        //let v = date.toISOString().replace('.000Z', '+00:00');
         let v = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:00Z`;
         setTimeout(() => {
             formContext.setValue(name, v);

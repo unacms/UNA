@@ -24,7 +24,6 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
 }
 
 export default function Form(props) {
-
     let data = props.data;
     let response = props.response;
     let onFormSubmit = props.onFormSubmit;
@@ -38,7 +37,6 @@ export default function Form(props) {
         if (data.inputs[key].value || data.inputs[key].value == 0)      
             defaultValues[key] = data.inputs[key].value;
     });
-
 
     const onSubmit = async d => {
 

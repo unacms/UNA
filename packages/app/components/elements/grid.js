@@ -15,6 +15,9 @@ import { Input } from 'app/design/controls'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
 import { stripTags } from 'app/lib/util';
+import { Modal } from 'app/design/controls'
+import Form from 'app/components/elements/form'
+import { BlockByName, Block, BlockByData } from 'app/components/block';
 
 const getWidth = (width) => {
     let iWidth = parseInt(width.replace('%', ''), 10);
@@ -49,7 +52,7 @@ const getWidth = (width) => {
 
 
 
-const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows, fetchData }) => {
+const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
 
     const getAction = async (itemAction, setShowConfirm) => {
         if (itemAction.name == 'delete'){
@@ -84,12 +87,17 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
     if (itemAction.type == 'link'){
         return <Link key={index} href={itemAction.url}><Button startDecorator={icon} size='sm' title={icon? '' : itemAction.title} /></Link>
     }
+
+    if (itemAction.type == 'modal'){
+        return <Button startDecorator={icon} size='sm' title={icon? '' : itemAction.title} onPress={() => {console.log(itemAction); handleBlock(itemAction)}}/>
+    }
+
     if (itemAction.type == 'callback'){
         return <Button  key={index} title={icon? '' : itemAction.title} startDecorator={icon} size='sm'  onPress={() => getAction(itemAction, setShowConfirm)} />
     }
 });
 
-const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setShowConfirm, deleteRows, fetchData }) => {
+const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selected, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
     const { colors } = Theme();
     switch(cell?.type) {
         case 'time':
@@ -135,6 +143,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                     setShowConfirm = {setShowConfirm}
                     deleteRows = {deleteRows}
                     fetchData = {fetchData}
+                    handleBlock = {handleBlock}
                     // You need to define this function in your component
                 />
             ))}
@@ -153,6 +162,8 @@ export default function ElementGrid({data}) {
     const [endReached, setEndReached] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState('');
     const [searchValue, setSearchValue] = useState('');
+    const [timeStamp, setTimeStamp] = useState(Date.now());
+    const [modalContent, setModalContent] = useState(false);
     const { t } = useTranslation();
     
     const deleteRows = useCallback((idsToRemove) => {
@@ -160,7 +171,7 @@ export default function ElementGrid({data}) {
         setDataItems({ ...dataItems, data: newItems });
     }, [dataItems.data]);
 
-    const deleteSelected = () => {
+    const handleDeleteSelected = () => {
         setShowConfirm({
             show: true, 
             cb: () => {
@@ -169,6 +180,26 @@ export default function ElementGrid({data}) {
             }
         });
     };
+
+    const handleActionBlock = async (data) => {
+        if (data.type == 'modal'){
+            let fetchedData = await fetchData(data.action, data.params);
+            let cnt = {content: fetchedData.data, designbox_id: 0}
+            setModalContent(cnt);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setModalContent(false);
+    };
+
+    const handleUpdate = () => {
+        setTimeout(() => {
+            handleCloseModal();
+            resetData();
+            setTimeStamp(Date.now());
+        }, 100);
+    }
 
     const fetchData = useCallback(async (action, params) => {
         let sUrl = '/api.php?r=system/perfom_action_api/TemplServiceGrid/&params[]=&o=' + settings.object + '&a=' + action;
@@ -179,6 +210,8 @@ export default function ElementGrid({data}) {
 
         return await fetcher(sUrl + params);
     }, [settings.object]);
+
+
 
     const fetchDisplayData = async() => { 
         let url = "&start=" + dataItems.settings.start;
@@ -202,7 +235,7 @@ export default function ElementGrid({data}) {
 
     useEffect(() => {
         fetchDisplayData();
-    }, [selectedFilter, searchValue]);
+    }, [selectedFilter, searchValue, timeStamp]);
 
     const handleEndReached = async() => { 
         if (!endReached){
@@ -231,18 +264,16 @@ export default function ElementGrid({data}) {
     }
 
     const handleSearch = (value) => {
-        setEndReached(false);
-        let s = dataItems.settings;
-        s.start = 0;
-        setDataItems({ 
-            ...dataItems,
-            settings: s,
-            data: []
-        });
+        resetData();
         setSearchValue(value)
     };
 
     const handleFilter = (value) => {
+        resetData();
+        setSelectedFilter(value);       
+    };
+
+    const resetData = () => {
         setEndReached(false);
         let s = dataItems.settings;
         s.start = 0;
@@ -251,8 +282,7 @@ export default function ElementGrid({data}) {
             settings: s,
             data: []
         });
-        setSelectedFilter(value);       
-    };
+    }
 
     const dropdownItems = useMemo(() => {
         // Check the condition inside useMemo
@@ -265,9 +295,13 @@ export default function ElementGrid({data}) {
         }
         return []; // Return an empty array if the condition is not met
     }, [settings.filters?.filter1]);
-
     return (
         <View className="w-full px-4 xl:px-6 ">
+            {modalContent && <Modal title={t("Add new")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+                <View className='px-4'>
+                    <BlockByData onFormEmpty = {() => handleUpdate()} block = {modalContent}  />
+                </View>
+            </Modal>}
             <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
             <Row className='justify-between mt-2 mb-4 '>
                 {Object.keys(settings.filters).length > 0 && 
@@ -285,15 +319,19 @@ export default function ElementGrid({data}) {
                 <Row className="gap-x-2 ">
                     {
                         data.actions.bulk.delete && (
-                            <Button startDecorator="Trash" size="base" title={"Delete selected"} disabled={selected.length == 0} onPress={() => {deleteSelected()}} />)
+                            <Button startDecorator="Trash" size="base" title={t("Delete selected")} disabled={selected.length == 0} onPress={() => {handleDeleteSelected()}} />)
                     }
                     {
                         data.actions.bulk.credits && (
-                            <Button  size="base" title={"Checkout with Credits"} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
+                            <Button  size="base" title={t("Checkout with Credits")} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
                     }
                     {
                         data.actions.bulk.paypal_api && (
-                            <Button  size="base" title={"Checkout with PayPal"} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
+                            <Button  size="base" title={t("Checkout with PayPal")} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
+                    }
+                    {
+                        data.actions.independent.add && (
+                            <Button startDecorator="Plus" size="base" title={t("Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
                     }
                 </Row>
             </Row>
@@ -330,6 +368,7 @@ export default function ElementGrid({data}) {
                                             setShowConfirm={setShowConfirm}
                                             deleteRows={deleteRows}
                                             fetchData={fetchData}
+                                            handleBlock={handleActionBlock}
                                         />
                                     </View>
                                 ))}
@@ -337,7 +376,6 @@ export default function ElementGrid({data}) {
                         )
                     }}
                 />
-                
             </View>
         </View>
     );

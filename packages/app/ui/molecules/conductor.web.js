@@ -372,7 +372,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (props.data.length == 1 && !props.endpoint){
            let a =  props.data.map((item, index ) => {
-                return <View className="max-w-5xl mx-auto w-full"><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className="max-w-screen-xl mx-auto w-full" key={"tab-"+index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }

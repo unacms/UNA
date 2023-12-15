@@ -13,8 +13,10 @@ import Datetime from './dattime';
 import BlockHeader from './block_header';
 import Suggestion from './suggestion';
 import Labels from './labels';
+import InputSet from './input_set';
 
 export const componentsMapDefault = {
+    input_set: InputSet,
     captcha: Captcha,
     custom: Custom,
     hidden: Hidden,

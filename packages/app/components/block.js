@@ -19,7 +19,7 @@ export function BlockByName(props) {
     let b = null;
     if (name){
 
-        if (name.name.includes('static')){
+        if (name.name?.includes('static')){
             return <StaticBlock  {...name} />;
         }
         const blockName = name?.name;
@@ -36,8 +36,10 @@ export function BlockByName(props) {
     }
     if (b)
         return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showPad={name.showPad} showBg={name.showBg} {...rest}  />;
-    
-    //return <Text className="text-black dark:text-white"><!--Not found: {JSON.stringify(name)}--></Text>
+}
+
+export function BlockByData(props) {
+    return <Block {...props} />
 }
 
 export function DataByName(data, name) {
@@ -77,7 +79,7 @@ export function StaticBlock(props) {
 }
 
 export default function Block(props) {
-
+    console.log("propsprops",props);
     let block = props.block;
 
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
@@ -102,7 +104,6 @@ export function BlockWrapper(props) {
 
     let { block, showTitle, showBg, fullWidth, showPad, ...rest } = props
     block.designbox_id = Number(block.designbox_id);
-
     const aNoTitle = [0,10,13,3];
     const aNoBg = [0,10,14,4];
     let bIsShowTitle = false;

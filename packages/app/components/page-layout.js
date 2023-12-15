@@ -25,7 +25,6 @@ export default function PageLayout(props) {
     cells = Object.keys(data.elements).map(key => {
         return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
     });
-    console.log(layoutName);
     // return data web layouts
     return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>);
 }
