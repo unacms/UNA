@@ -294,8 +294,9 @@ let settingsDefault = {
                 { name:'events-home', icon:'Calendar' },
                 { name:'events-top', icon:'CalendarCheck' },
                 { name:'events-joined', icon:'LinkSimple' },
+                { name:'events-search', icon:'MagnifyingGlass' },
+                { name:'events-upcoming', icon:'LinkSimple' },
                 { name:'events-followed', icon:'Binoculars' },
-                { name:'events-upcoming', icon:'LinkSimple' }
             ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-event-profile', nonlogged: false },

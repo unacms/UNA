@@ -79,7 +79,6 @@ export function StaticBlock(props) {
 }
 
 export default function Block(props) {
-    console.log("propsprops",props);
     let block = props.block;
 
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
