@@ -55,22 +55,31 @@ const getWidth = (width) => {
 
 
 
-const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
+const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, deleteRows, fetchData, handleBlock }) => {
+    const [hide, setHide] = useState(false);
+
+    const getActionAfter = async (itemAction) => {
+        if (itemAction.on_callback == 'hide'){
+            setHide(true);
+        }
+        if (itemAction.on_callback == 'hide_row'){
+            deleteRows([itemAction.attr.bx_grid_action_data, id]);
+        }
+    }
 
     const getAction = async (itemAction, setShowConfirm) => {
-        if (itemAction.name == 'delete'){
+        if (itemAction.confirm == '1'){
             setShowConfirm({
                 show: true, 
                 cb: () => {
-                    //TODO: For Roman ID in Grid may be a custom value like in Connctions Grids: 19:159
-                    deleteRows([itemAction.attr.bx_grid_action_data]);
                     fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+                    getActionAfter(itemAction);
                 }
              });
         }
-        else if(itemAction.name == 'accept') {
+        else{
             fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
-            //TODO: For Roman update grid.
+            getActionAfter(itemAction)
         }
     }
 
@@ -92,7 +101,7 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
 
     let icon = getActionButtonIcon(itemAction.name);
 
-    if (itemAction.name == 'set_role'){
+    if (itemAction.name == 'set_role' || hide){
         return <></>;
     }
 
@@ -152,6 +161,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
                     index={index}
                     itemAction={itemAction}
                     indexRow={indexRow}
+                    id={id}
                     setShowConfirm = {setShowConfirm}
                     deleteRows = {deleteRows}
                     fetchData = {fetchData}
@@ -179,6 +189,7 @@ export default function ElementGrid({data}) {
     const { t } = useTranslation();
     
     const deleteRows = useCallback((idsToRemove) => {
+        console.log("dataItems", dataItems)
         const newItems = dataItems.data.filter(item => !idsToRemove.includes(item.id));
         setDataItems({ ...dataItems, data: newItems });
     }, [dataItems.data]);
@@ -309,7 +320,7 @@ export default function ElementGrid({data}) {
     }, [settings.filters?.filter1]);
     return (
         <View className="w-full px-4 xl:px-6 ">
-            {modalContent && <Modal title={t("Add new")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+            {modalContent && <Modal title={" "} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
                     <BlockByData onFormEmpty = {() => handleUpdate()} block = {modalContent}  />
                 </View>

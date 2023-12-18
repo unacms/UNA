@@ -1,7 +1,7 @@
 import { View } from 'app/design/view';
 import { Text } from 'app/design/typography';
 
-export default function ElementEventSessions({data}) {
+export default function ElementSimpleList({data}) {
     const keys = Object.keys(data[0]);
     return (
         <View>

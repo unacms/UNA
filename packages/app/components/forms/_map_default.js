@@ -12,4 +12,3 @@ export const componentsMapDefault = {
     bx_forum: FormPost,
     bx_messenger: FormMessenger,
 };
-
