@@ -59,18 +59,17 @@ export default function BlockContentObjectDataArray(props) {
     if (dynamicData){
         realData = dynamicData.data;
     }
-    console.log('xxxxxx',dynamicData)
+
     if (dynamicData && dynamicData.data?.length == 0){
       
         if (props.onFormEmpty){
-            console.log('xxxxxx1',dynamicData)
             props.onFormEmpty();
         }
     }
 
     // display each block element from static data or from dynamic data
     return (
-        <View className=" relative">
+        <View className="relative gap-y-4">
             {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );

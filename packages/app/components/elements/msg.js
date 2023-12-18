@@ -13,6 +13,11 @@ export default function ElementMsg({data, msg_type}) {
         clsname1 = "text-black dark:text-white text-base";
     }
 
+    if (msg_type == 'result'){
+        clsname = "mb-4";
+        clsname1 = "text-black dark:text-white text-base text-center";
+    }
+
     return (
         <View className={clsname}>
             <Text className={clsname1}>{data}</Text>

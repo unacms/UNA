@@ -90,8 +90,12 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
         return false;
     };
 
-
     let icon = getActionButtonIcon(itemAction.name);
+
+    if (itemAction.name == 'set_role'){
+        return <></>;
+    }
+
     if (itemAction.type == 'link'){
         return <Link key={index} href={itemAction.url}><Button startDecorator={icon} size='sm' title={icon? '' : itemAction.title} /></Link>
     }

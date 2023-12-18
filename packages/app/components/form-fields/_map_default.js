@@ -14,6 +14,7 @@ import BlockHeader from './block_header';
 import Suggestion from './suggestion';
 import Labels from './labels';
 import InputSet from './input_set';
+import LocationRadius from './location_radius';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -29,6 +30,7 @@ export const componentsMapDefault = {
     select: Select,
     files: Files,
     location: Location,
+    location_radius: LocationRadius,
     datetime: Datetime,
     datepicker: Datetime,
     suggestion: Suggestion,
