@@ -62,10 +62,15 @@ const ActionButton = React.memo(({ index, itemAction, setShowConfirm, deleteRows
             setShowConfirm({
                 show: true, 
                 cb: () => {
+                    //TODO: For Roman ID in Grid may be a custom value like in Connctions Grids: 19:159
                     deleteRows([itemAction.attr.bx_grid_action_data]);
                     fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
                 }
              });
+        }
+        else if(itemAction.name == 'accept') {
+            fetchData(itemAction.name, '&ids[]=' + itemAction.attr.bx_grid_action_data);
+            //TODO: For Roman update grid.
         }
     }
 
