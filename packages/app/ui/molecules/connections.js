@@ -55,7 +55,8 @@ export default function ElementConnections(oProps) {
     };
 
     const handleDo = (event, sAction) => {
-        event.preventDefault();
+        if(!!event)
+            event.preventDefault();
 
         if(oProps.params?.on_do && typeof oProps.params.on_do === 'function')
             oProps.params.on_do(sAction);
@@ -76,6 +77,14 @@ export default function ElementConnections(oProps) {
         setModalContent(false);
     };
 
+    const handleFormSubmittedAndValid = () => {
+        setTimeout(() => {
+            handleCloseModal();
+
+            handleDo(null, 'add');
+        }, 100);
+    }
+
     let sAction = oProps?.a || '';
     if(isElementVar('a'))
         sAction = getElementVar('a');
@@ -91,7 +100,7 @@ export default function ElementConnections(oProps) {
             <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
             {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
-                    <BlockByData /*onFormEmpty = {() => handleUpdate()}*/ block = {modalContent}  />
+                    <BlockByData onFormEmpty = {() => handleFormSubmittedAndValid()} block = {modalContent}  />
                 </View>
             </Modal>}
         </>

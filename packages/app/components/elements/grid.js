@@ -20,6 +20,9 @@ import Form from 'app/components/elements/form'
 import { BlockByName, Block, BlockByData } from 'app/components/block';
 
 const getWidth = (width) => {
+    if(!width)
+        return'';
+
     let iWidth = parseInt(width.replace('%', ''), 10);
         const tailwindClasses = {
             8.333333: 'w-1/12',
