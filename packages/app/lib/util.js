@@ -393,7 +393,7 @@ function getPlural(key, count) {
     if (count == 0)
         return key + '_0'; 
 
-    if (lastDigit === 1 && lastTwoDigits !== 11) {
+    if (count == 1) {
         return key+ '_1'; 
     }
     if ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) {
