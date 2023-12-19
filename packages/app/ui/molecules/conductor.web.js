@@ -23,6 +23,8 @@ import Toster from 'app/ui/atoms/toster';
 import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
+import Dropdown from 'app/ui/atoms/dropdown'
+import Calendar from 'app/ui/atoms/calendar'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -62,7 +64,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
-    //console.log("routes", routes, index, menu)
+    console.log("routes", routes, index, menu)
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -183,6 +185,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             top: baseScroll + adjustment,
             behavior: "smooth",
         });
+    }
+
+
+    const setFilterValue = (name, val) => {
+        routes[index].endpoint.params.filters.inputs[name].value = val;
+        console.log(routes[index]);
+        alert(name+val)
+        //TODO
     }
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
@@ -363,7 +373,55 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         );
     }, [windowWidth]);
 
-    const RenderScene = useCallback(({ route, status }) => <TabScene status={status}  route={route} width={windowWidth} index={index} />, [numColumns, windowWidth, rqtStatus, index]);  
+
+
+    
+    const RenderScene = useCallback(({ route, status }) => { 
+        let inputs = route?.endpoint?.params?.filters?.inputs;
+        return (
+            <>
+                {
+                    inputs && <View className="max-w-screen-xl mx-auto w-full p-4 pb-0">
+                    {(
+                        Object.keys(inputs).map((key, index) => (
+                            <View key={index}>
+                            {
+                                inputs[key].type == 'radio_set' && (
+                                    (() => {
+                                    let values = [];
+                                    if (Array.isArray(inputs[key].values)) {
+                                        values = inputs[key].values.map(function (key) {
+                                            return key.value ? {label: key.value, value: key.key} : null;
+                                        });
+                                        values = values.filter(Boolean);
+                                    }
+                                    return (
+                                        <Row className="items-center gap-x-4">
+                                            <Text>{inputs[key].caption}:</Text>
+                                            <View >
+                                                <Dropdown 
+                                                labelField="label"
+                                                valueField="value"
+                                                onChange={(value) => setFilterValue(inputs[key].name, value)} 
+                                                data={values}
+                                                />
+                                            </View>
+                                        </Row>
+                                    );
+                                    })()
+                                )
+                            }
+                    
+                            </View>
+                        ))
+                    )}
+                    </View>
+                }
+                <TabScene status={status}  route={route} width={windowWidth} index={index} />
+            </>
+        )
+    }
+    , [numColumns, windowWidth, rqtStatus, index]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
@@ -540,6 +598,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             {leftSideBarObj()}
                         </View>
                         <View className="w-full lg:w-3/4 xl:w-4/5">{/*min-h-screen???*/}
+
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>

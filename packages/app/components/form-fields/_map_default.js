@@ -28,6 +28,7 @@ export const componentsMapDefault = {
     text: TextField,
     textarea: Textarea,
     select: Select,
+    radio_set: Select,
     files: Files,
     location: Location,
     location_radius: LocationRadius,
