@@ -31,11 +31,18 @@ export default function ElementCalendar({ data }) {
         return marked;
     }
 
+    const fetchData = async () => {
+        let params = {params: data.params};
+        console.log("cdata", cdata)
+        if (cdata){
+            params.params = {start: cdata.params.start, end: cdata.params.start + 24*60*60*30};
+        }
+        const sResponse = await fetcher('/api.php?r=' + data.request_url + JSON.stringify(params));
+        console.log("sResponse", sResponse, '/api.php?r=' + data.request_url + JSON.stringify(params))
+        setData(sResponse.data);
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            const sResponse = await fetcher('/api.php?r=' + data.request_url);
-            setData(sResponse.data);
-        };
         fetchData();
     }, []);
 
@@ -48,7 +55,7 @@ export default function ElementCalendar({ data }) {
     function transformToCalendarFormat(data) {
         const groupedEvents = {};
 
-        data.forEach(event => {
+        data.data.forEach(event => {
             const date = new Date(event.start).toISOString().split('T')[0];
             if (!groupedEvents[date]) {
                 groupedEvents[date] = [];
@@ -67,9 +74,12 @@ export default function ElementCalendar({ data }) {
     }
     const imageSizes = getImageSizes()
 
-    console.log("transformedData", transformedData)
     if (transformedData.length == 0)
         return<>{appStatic('components_content_empty')}</>
+
+    const onEndReached = () => {
+        fetchData();
+    };
 
     return (
         <View className='w-full'>
@@ -98,6 +108,7 @@ export default function ElementCalendar({ data }) {
                         sections={transformedData}
                         avoidDateUpdates={false}
                         scrollToNextEvent={true}
+                        onEndReached={onEndReached}
                         viewOffset={0}
                         sectionStyle={{ fontSize:16, paddingBottom:12, paddingTop:12, marginHorizontal:2, marginBottom:16, color:colors.default, backgroundColor:colors.barsBackground, borderRadius:8, borderColor:colors.selectBorder, borderWidth:1, borderStyle:'solid' }}
                         renderItem={(item, firstItemInDay) => {
@@ -110,12 +121,15 @@ export default function ElementCalendar({ data }) {
                                             <Row>
                                                 <View className={(item.item.cover? 'w-4/5': 'w-full') + ' gap-y-2'}>
                                                     <Text className=" text-neutral-900 dark:text-neutral-100 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base font-bold">{item.item.title}</Text>
-                                                    <Row className='text-center gap-x-2 items-center'> 
-                                                        <Button startDecorator='CalendarCheck' size="xs"/>
-                                                        <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_start}/>
-                                                        <Text className="text-base text-neutral-700 dark:text-neutral-300" >-</Text>
-                                                        <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_end}/>
-                                                    </Row>
+                                                    { item.item.date_start > 0 && (
+                                                        <Row className='text-center gap-x-2 items-center'> 
+                                                            <Button startDecorator='CalendarCheck' size="xs"/>
+                                                            <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_start}/>
+                                                            <Text className="text-base text-neutral-700 dark:text-neutral-300" >-</Text>
+                                                            <Time className="text-base text-neutral-700 dark:text-neutral-300" ts={item.item.date_end}/>   
+                                                        </Row>  
+                                                        )
+                                                    }
                                                     {item.item.location != '' && (<Row  className='text-center gap-x-2 items-center'><Button startDecorator='MapPin' size="xs"/><Text  className="text-xs text-neutral-700 dark:text-neutral-300">{item.item.location}</Text></Row>)}
                                                     <Text className="text-neutral-700 dark:text-neutral-300" numberOfLines={2}> {stripTags(item.item.description)}</Text>
                                                 </View>

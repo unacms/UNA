@@ -142,7 +142,7 @@ export default function Unit(props) {
                             <View className=" w-full p-1">{sCover}</View>
                             <View className="flex-col flex-auto gap-y-2 px-3 py-2 ">
                                 <View className=" flex-row justify-between w-full  gap-x-2    ">
-                                    {data?.date_start && (
+                                    {data?.date_start > 0 ? (
                                         <Text className="border-l-8 border-red-500/70 bg-bgritem dark:bg-bgritem-d rounded-md px-1.5 py-0.5 flex-none flex-auto text-neutral-600 dark:text-neutral-400">
                                             {data.date_start && (
                                                 <>
@@ -162,7 +162,7 @@ export default function Unit(props) {
                                                 </>
                                             )}
                                         </Text>
-                                    )}
+                                    ) : <Text> </Text>}
                                     <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
                                         {data.visibility != '3' ? <>Private</> : <>Public</>}
                                     </Text>

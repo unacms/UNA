@@ -64,7 +64,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
-    console.log("routes", routes)
+    //console.log("routes", routes)
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -105,9 +105,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const showNewContent = async () => {
         setTosterVisible(false);
-        let params = JSON.parse(JSON.stringify(routes[index].endpoint.params));
+        let params = JSON.parse(JSON.stringify(currentRoute.endpoint.params));
         params.start = 0; 
-        const sRequest = routes[index].endpoint.request_url + JSON.stringify({ params });
+        const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
@@ -162,7 +162,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         isFetchingNextPage,
         
     } = useInfiniteQuery({
-            queryKey: [routes[index]?.endpoint?.request_url, index, keyword], 
+            queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], 
             queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
             getNextPageParam: (lastPage, pages) => { 
                 if (lastPage?.data?.length > 0){
@@ -171,7 +171,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
                 return;
             },
-            enabled: routes[index]?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
+            enabled: currentRoute?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
 
    
@@ -188,12 +188,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const setFilterValue = (name, val) => {
         const newRoutes = [...routes];
-
-        if (newRoutes[index].endpoint.params.filters)
+        if (newRoutes[index].endpoint.params.filters){
             newRoutes[index].endpoint.params.filters[name] = val;
-        else
+        }
+        else{
             newRoutes[index].endpoint.params.filters = {[name]: val};
-
+        }
+        newRoutes[index].data = [];
+        newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
     }
 
@@ -202,7 +204,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return;
         if (!hasNextPage) 
             return;
-        if (routes[index]?.endpoint.finished)
+        if (currentRoute?.endpoint.finished)
             return;
         if (lastItemIndex == false)
             return;
@@ -382,7 +384,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return (
             <>
                 {
-                    inputs && <View className="max-w-screen-xl mx-auto w-full p-4 pb-0">
+                    inputs && <Row className="max-w-screen-xl mx-auto w-full p-4 pb-0 w-full gap-x-4 items-center justify-end"><Text>Filters:</Text>
                     {(
                         Object.keys(inputs).map((key, index) => (
                             <View key={index}>
@@ -392,23 +394,22 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     let values = [];
                                     if (Array.isArray(inputs[key].values)) {
                                         values = inputs[key].values.map(function (key) {
-                                            return key.value ? {label: key.value, value: key.key} : null;
+                                            return key.value && key.key != "date_range" ? {label: key.value, value: key.key} : null;
                                         });
                                         values = values.filter(Boolean);
                                     }
                                     return (
-                                        <Row className="items-center gap-x-4">
-                                            <Text>{inputs[key].caption}:</Text>
-                                            <View >
-                                                <Dropdown 
-                                                labelField="label"
-                                                valueField="value"
-                                                onChange={(value) => setFilterValue(inputs[key].name, value)} 
-                                                data={values}
-                                                />
-                                            </View>
-                                        </Row>
+                                        <View>
+                                            <Dropdown 
+                                            labelField="label"
+                                            valueField="value"
+                                            onChange={(value) => setFilterValue(inputs[key].name, value)} 
+                                            data={values}
+                                            />
+                                        </View>
+
                                     );
+                                  
                                     })()
                                 )
                             }
@@ -416,7 +417,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             </View>
                         ))
                     )}
-                    </View>
+                    </Row>
                 }
                 <TabScene status={status}  route={route} width={windowWidth} index={index} />
             </>

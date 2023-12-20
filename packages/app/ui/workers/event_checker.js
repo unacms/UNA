@@ -53,7 +53,7 @@ export default function WorkerEventChecker(oProps) {
         const fetchData = async () => {
             let request_url = "/api.php?r=bx_events/calendar_data&params[]={%22params%22:{%22profile_id%22:%22{profile_id}%22,%22type%22:%22joined%22,%22start%22:1698578064,%22end%22:1703848464}}";
             const sResponse = await fetcher(request_url);
-            let filteredData = sResponse.data.filter(event => 
+            let filteredData = sResponse.data.data.filter(event => 
                 event.location_data && 
                 event.location_data.lat != null && 
                 !forgottedEvents.includes(event.id)

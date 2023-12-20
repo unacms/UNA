@@ -191,6 +191,7 @@ function processEndpoint(acc, b) {
         ...acc.endpoint,
         params: b.data.params,
         request_url: b.data.request_url,
+        filters: b.data.filters,
         finished: false,
         unit: b.data.unit,
         module: b.data.module,
