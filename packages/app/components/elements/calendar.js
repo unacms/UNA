@@ -35,7 +35,7 @@ export default function ElementCalendar({ data }) {
         let params = {params: data.params};
         console.log("cdata", cdata)
         if (cdata){
-            params.params = {start: cdata.params.start, end: cdata.params.start + 24*60*60*30};
+            params.params = {start: cdata.params.end, end: cdata.params.end + 24*60*60*30};
         }
         const sResponse = await fetcher('/api.php?r=' + data.request_url + JSON.stringify(params));
         console.log("sResponse", sResponse, '/api.php?r=' + data.request_url + JSON.stringify(params))
