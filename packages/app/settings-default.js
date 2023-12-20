@@ -16,6 +16,7 @@ let settingsDefault = {
         switch_theme: true,
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
+        background_cover: 'linear-gradient(0deg, rgba(118, 142, 255, 0.8) 0%, rgba(185, 111, 255, 0.8) 17%, rgba(232, 98, 255, 0.8) 33%, rgba(255, 90, 193, 0.8) 50%, rgba(255, 73, 160, 0.8) 67%, rgba(255, 56, 141, 0.8) 83%,  rgba(255, 41, 128, 0.8) 100% )',
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
