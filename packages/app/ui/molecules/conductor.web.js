@@ -64,7 +64,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
-    console.log("routes", routes, index, menu)
+    console.log("routes", routes)
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -74,18 +74,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
     let maxIdLocal = 0;
-
-    let dataItems= routes[index];
-    const bUseDaemon =  (routes[index]?.endpoint?.unit == 'feed');
-    let params = routes[index]?.endpoint?.params ? JSON.parse(JSON.stringify(routes[index].endpoint.params)) : {};
+    const currentRoute = routes.find((item) => item.index === index);
+    const bUseDaemon =  (currentRoute?.endpoint?.unit == 'feed');
+    let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
     params.start = 0;
     const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': params})+'&params[]=0&params[]=0', false, bUseDaemon);
     if (bUseDaemon){
-        maxIdLocal = dataItems?.data.length > 0 
-            ? dataItems?.data.reduce((max, item) => {
+        maxIdLocal = currentRoute?.data.length > 0 
+            ? currentRoute?.data.reduce((max, item) => {
                 const idNumber = parseFloat(item.id);
                 return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
-                }, parseFloat(dataItems?.data[0].id) || 0)
+                }, parseFloat(currentRoute?.data[0].id) || 0)
             : 0;
         if (daemonData  && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
@@ -123,7 +122,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     
     const getNumCols = (width) => {
 
-        let currentRoute = routes.find((item) => item.index === index);
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
 
@@ -189,10 +187,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const setFilterValue = (name, val) => {
-        routes[index].endpoint.params.filters.inputs[name].value = val;
-        console.log(routes[index]);
-        alert(name+val)
-        //TODO
+        const newRoutes = [...routes];
+
+        if (newRoutes[index].endpoint.params.filters)
+            newRoutes[index].endpoint.params.filters[name] = val;
+        else
+            newRoutes[index].endpoint.params.filters = {[name]: val};
+
+        setRoutes(newRoutes);
     }
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
@@ -237,8 +239,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [index]);
 
     const renderTabBar = (props) => {
-        const currentRoute = routes.find((item) => item.index === index);
-
+        
         let headerSettings = getHeaderSettings(currentRoute?.key, windowWidth, layoutName);
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
@@ -377,7 +378,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     
     const RenderScene = useCallback(({ route, status }) => { 
-        let inputs = route?.endpoint?.params?.filters?.inputs;
+        let inputs = route?.endpoint?.filters?.inputs;
         return (
             <>
                 {
@@ -498,8 +499,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                       //  return b;
                         
 };
-    const currentRoute = routes.find((item) => item.index === index);
-
+    
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         if (getNumCols(containerWidth) != numColumns)
