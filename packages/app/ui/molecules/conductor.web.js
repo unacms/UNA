@@ -63,8 +63,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         else
             return (data.url).includes(item.key);
     }));
-
+    
     console.log("routes", routes)
+
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
