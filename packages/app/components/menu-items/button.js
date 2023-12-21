@@ -1,14 +1,11 @@
-import { useRef } from 'react';
-
+import Link from 'app/ui/atoms/link'
 import {ButtonMenuActionDefault, ButtonMenuActionText} from 'app/design/controls';
 import { View } from 'app/design/view';
-import Redirect from 'app/ui/atoms/redirect';
-
+import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 
 export default function MenuItemButton(oProps) {
-    const redirectdRef = useRef();
 
     const oIconAliases = {
         'item-comment': 'ChatTeardropDots',
@@ -53,8 +50,8 @@ export default function MenuItemButton(oProps) {
                 event.preventDefault();
 
                 if(oProps?.link) {
-                    let sUrl = oProps.link[0] === '/' ? oProps.link : '/' + oProps.link;
-                    redirectdRef.current.redirect(sUrl);
+                  //  let sUrl = oProps.link[0] === '/' ? oProps.link : '/' + oProps.link;
+                   // redirectdRef.current.redirect(sUrl);
                 }
 
                 if(oProps.params?.onclick)
@@ -71,12 +68,19 @@ export default function MenuItemButton(oProps) {
                     sButtonIcon = oIconset[oProps.name];
             }
 
+            const buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
+
             sContent = (
-                        <View className="flex-auto">
-                            <Redirect ref={redirectdRef} />
-                            <ButtonAction onPress = {handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
-                        </View>
-                      );
+                <View className="flex-auto">
+                    {oProps?.link ? 
+                        <Link href={oProps.link[0] === '/' ? oProps.link : '/' + oProps.link}>
+                            {buttonAction}
+                        </Link> 
+                        : 
+                        React.cloneElement(buttonAction, { onPress: handleClick })
+                    }
+                </View>
+            );
     }
 
     return (

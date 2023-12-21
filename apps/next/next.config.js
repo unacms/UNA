@@ -54,7 +54,8 @@ const nextConfig = {
     'i18next',
     'react-i18next',
     'react-native-localize',
-    'victory-native'
+    'victory-native',
+    '@stripe/stripe-react-native'
   ],
   images: {
     remotePatterns: [

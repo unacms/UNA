@@ -6,7 +6,6 @@ import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
-import { componentsMap } from 'app/components/page-layout/_map';
 
 export function appSetting(section, name, path) {
     if (path)
@@ -151,40 +150,10 @@ export function getBlocksFromData(data) {
     return blocks;
 }
 
-export function getLayoutName(data, uri, isWeb) {
-    let layoutCustomKey = appSetting('layouts', uri)
-    let layoutKey = '';
-    let layoutBlocks = '';
-
-    if (layoutCustomKey){
-        layoutKey = layoutCustomKey.layout;
-        layoutBlocks = layoutCustomKey.blocks
-    }
-
-    let isCustomLayout =  layoutCustomKey ? true : false;
-
-    if (componentsMap[layoutKey])
-        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
-    
-    if (data.cover_block.profile)
-        return {layoutName : 'profile', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
-
-    if (data.menu?.items?.length > 0 && !uri.includes('create-') )
-        return {layoutName : 'navigator', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
-
-    if (isWeb)
-        layoutKey = data.layout;
-
-    if (componentsMap[layoutKey])
-        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
-
-    return {layoutName : 'default', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
-}
-
 export function getHeaderSettings(uri, width, layout) {
 
     let settings = appSetting('layouts', uri)
-    if (!settings){
+    if (!settings?.headerSettings){
         if (layout == 'navigator'){
             settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true }}
         }
@@ -535,7 +504,7 @@ export function isEmoji(s) {
 
 export function stripTags(s) {
     if (s)
-        return s.replace(/(<([^>]+)>)/ig, '');
+        return String(s).replace(/(<([^>]+)>)/ig, '');
     
     return s;
 }

@@ -4,7 +4,6 @@ import Time from 'app/ui/atoms/time';
 
 export default function ElementSimpleList({data}) {
     const keys = Object.keys(data[0]);
-    console.log(keys);
     return (
         <View>
             {data.map((item, index) => (

@@ -29,7 +29,7 @@ export default function Form(props) {
     let onFormSubmit = props.onFormSubmit;
 
     const defaultValues = {}
-
+console.log("propsprops", props);
     Object.keys(data.inputs).forEach(function (key) {  
         if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
             data.inputs[key].value = 0;
@@ -103,7 +103,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className='flex-col w-full gap-y-4'>
+        <View className='flex-col w-full'>
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>

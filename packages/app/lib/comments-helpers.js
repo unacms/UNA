@@ -50,6 +50,7 @@ export function findParent (data, c, o, insert) {
 }
 
 export function parseData (browse, dynamicData) {
+    console.log("dynamicData", dynamicData)
     if (!dynamicData?.data?.browse?.data?.data)
         return;
     dynamicData.data.browse.data.data.map(function(c, kc){

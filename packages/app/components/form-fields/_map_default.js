@@ -15,6 +15,7 @@ import Suggestion from './suggestion';
 import Labels from './labels';
 import InputSet from './input_set';
 import LocationRadius from './location_radius';
+import DoubleRange from './doublerange';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -36,5 +37,6 @@ export const componentsMapDefault = {
     datepicker: Datetime,
     suggestion: Suggestion,
     block_header: BlockHeader,
-    labels: Labels
+    labels: Labels,
+    doublerange: DoubleRange
 };

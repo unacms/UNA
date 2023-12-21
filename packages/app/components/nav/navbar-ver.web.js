@@ -7,7 +7,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import MainMenu from 'app/components/nav/mainmenu'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings, getLayoutName } from 'app/lib/util'
+import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'

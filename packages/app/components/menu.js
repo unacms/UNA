@@ -1,5 +1,5 @@
 
-import { View } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import {componentsMap} from './menu-items/_map';
 
@@ -85,6 +85,9 @@ export default function ElementMenu(oProps) {
         return sItems;
 
     return (
-        <View className={sClassName}>{oProps.unitType}{sItems}</View>
+        //TO CHECK: ANTON in vertcal menu
+        <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
+            <View className={sClassName}>{oProps.unitType}{sItems}</View>
+        </ScrollView>
     );
 }

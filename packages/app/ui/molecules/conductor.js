@@ -35,8 +35,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
-
-    const [index, setIndex] = useState(routes[0].index);
+    const [ index, setIndex ] = useState(routes.findIndex(function(item) {
+        if (useSectionAsMenu)
+            return data.url == item.key;
+        else
+            return (data.url).includes(item.key);
+    }));
+   // const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
@@ -223,12 +228,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return <></>
         return (
             <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
-                <Animated.View style={[{ width: '100%', position: 'absolute' }, animatedStyleA]}>
+                <Animated.View style={[{ width: '100%', position: 'absolute', zIndex:500 }, animatedStyleA]}>
                 <View onLayout={handleHeaderMaxLayout}>
                     {header}
                 </View>
                 </Animated.View>
-                <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
+                <Animated.View style={[{ width: '100%', position: 'absolute', bottom:0 }, animatedStyleB]}>
                     {smallHeader}
                 </Animated.View>
             </Animated.View>

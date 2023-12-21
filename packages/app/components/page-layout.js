@@ -1,5 +1,5 @@
 import { componentsMap } from 'app/components/page-layout/_map';
-import { appSetting, getLayoutName } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
@@ -37,4 +37,34 @@ function Wrapper(p){
     else{
         return <View className='flex-1 mx-auto w-full h-full animated-view'><ConfirmEmail/></View>
     }
+}
+
+export function getLayoutName(data, uri, isWeb) {
+    let layoutCustomKey = appSetting('layouts', uri)
+    let layoutKey = '';
+    let layoutBlocks = '';
+
+    if (layoutCustomKey){
+        layoutKey = layoutCustomKey.layout;
+        layoutBlocks = layoutCustomKey.blocks
+    }
+
+    let isCustomLayout =  layoutCustomKey ? true : false;
+
+    if (componentsMap[layoutKey])
+        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+    
+    if (data.cover_block.profile)
+        return {layoutName : 'profile', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    if (data.menu?.items?.length > 0 && !uri.includes('create-') )
+        return {layoutName : 'navigator', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    if (isWeb)
+        layoutKey = data.layout;
+
+    if (componentsMap[layoutKey])
+        return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
+
+    return {layoutName : 'default', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
 }

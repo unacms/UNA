@@ -38,10 +38,6 @@ export function BlockByName(props) {
         return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showPad={name.showPad} showBg={name.showBg} {...rest}  />;
 }
 
-export function BlockByData(props) {
-    return <Block {...props} />
-}
-
 export function DataByName(data, name) {
 
     let b = null;
@@ -86,7 +82,7 @@ export default function Block(props) {
 
     const aAllowTypes = ['html', 'raw', 'lang'];
     if (type == 'string' && !aAllowTypes.includes(block.type))
-    //    return null;
+        return null;
 
     
     if (block.content.length == 0)

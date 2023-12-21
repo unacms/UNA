@@ -29,14 +29,20 @@ function getMenu(props) {
 export default function PageLayout(props) {
     const leftSideBar = appSetting('layout', 'format') == 'ver' ? false : true
     const menu = useMemo(() => getMenu(props), [leftSideBar]);
-    return (<Conductor 
-        layoutName={props.layoutName}
-        minHeaderHeight={0} 
-        isHideDefaultHeader={false} 
-        menu={menu} 
-        data={props.data} 
-        blocks={props.blocks}
-        useSectionAsMenu={false}
-        leftSideBar={leftSideBar}
-    />)
+    const isNamePresent = menu.items.some(item => item.name === props.uri);
+    if (!isNamePresent){
+        menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
+    }
+    return (
+        <Conductor 
+            layoutName={props.layoutName}
+            minHeaderHeight={0} 
+            isHideDefaultHeader={false} 
+            menu={menu} 
+            data={props.data} 
+            blocks={props.blocks}
+            useSectionAsMenu={false}
+            leftSideBar={leftSideBar}
+        />
+    )
 }
