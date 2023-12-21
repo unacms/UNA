@@ -5,7 +5,9 @@ import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
-import { storageClear, getLayoutName  } from 'app/lib/util';
+import { storageClear } from 'app/lib/util';
+import {getLayoutName} from 'app/components/page-layout';
+
 import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';

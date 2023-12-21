@@ -47,7 +47,9 @@ function normalizeWidth(width) {
 export default function ElementImage(props) {
     let {width, height, alt, src, style, source, nobg, ...rest} = props; // remove width & height
 
-    style={backgroundImage: appSetting('layout','background_cover')}
+    style={ backgroundImage: appSetting('layout','background_cover')}
+    if (Platform.OS != 'web')
+        style={ backgroundColor: appSetting('layout','background_cover_color')}
 
     if (!src)
         src = '/spacer.png'

@@ -28,19 +28,18 @@ export function CoverSmall(props) {
     const data = props.data
     const { colors } = Theme()
     const windowWidth = useWindowDimensions().width;
-
+// 
     return (
         <Row
-            className=" justify-left items-center pt-4 w-full h-24"
-            style={{ backgroundColor: colors.barsBackground }}
+            className=" justify-left items-center pt-4 w-full h-24 bg-primary-200    dark:bg-primary-950"
         >
-            <View className="absolute h-80 w-full 0">
+            <View className="absolute h-80 w-full">
                 {!!data.cover && (
                          <><Image    view="cover"
                          sizes="(max-width:1280px) 100vw, 1280px"
                          className="u-cover "
                          src={data.cover.src} />
-                        <BlurView intensity={90} tint="dark" style={{width:'100%', height:320}} className='bg-red-500'>
+                        <BlurView intensity={90} tint="dark" style={{width:'100%', height:320}} >
                      </BlurView></>
                  
                 )}
@@ -82,8 +81,8 @@ export default function ElementCover(props) {
     let bPerson = props.data.profile.module == 'bx_persons' ? true : false
 
     return (
-        <View className=" bg-white dark:bg-neutral-900 ">
-            <View className=" absolute h-48 w-full ">
+        <View className=" bg-white dark:bg-neutral-900">
+            <View className=" absolute h-48 w-full   bg-primary-200    dark:bg-primary-950">
                 {!!data.cover && (
                     <Image
                         alt={data.group_name}
@@ -97,7 +96,7 @@ export default function ElementCover(props) {
             <Row className=" justify-left w-full h-24 pt-12">
                 <Pressable
                     className="mr-2 ml-2 bg-bgrnavbar dark:bg-bgrnavbar-d    w-10 h-10 rounded-full justify-center items-center"
-                    onPress={routerExpo.back}
+                    onPress={() => routerExpo.back()}
                 >
                     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} />
                 </Pressable>
@@ -133,7 +132,7 @@ export default function ElementCover(props) {
                     </Text>
                 )}
             </View>
-            <View className=" flex-col gap-y-2 p-4     ">
+            <View className=" flex-col gap-y-2 p-4">
                 <CoverMenu {...data.actions_menu} />
             </View>
         </View>

@@ -1,5 +1,5 @@
 import { Text} from 'app/design/typography'
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import UniList from 'app/ui/atoms/unilist'
 import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
@@ -17,7 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
 import Form from 'app/components/elements/form'
-import { BlockByName, Block, BlockByData } from 'app/components/block';
+import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
+import { useWindowDimensions} from 'react-native';
 
 const getWidth = (width) => {
     if(!width)
@@ -124,7 +125,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         case 'time':
             return <Time ts={cell.data} stylesName={'text-sm'}></Time>
         case 'datetime':
-            return <Time ts={cell.data} format='datetime' stylesName={'text-sm'}></Time>
+            return <Time ts={cell.data} format='datetime' stylesName={'text-xs'}></Time>
         case 'link':
             return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
         case 'text':
@@ -187,6 +188,7 @@ export default function ElementGrid({data}) {
     const [timeStamp, setTimeStamp] = useState(Date.now());
     const [modalContent, setModalContent] = useState(false);
     const { t } = useTranslation();
+    const windowWidth = useWindowDimensions().width;
     
     const deleteRows = useCallback((idsToRemove) => {
         console.log("dataItems", dataItems)
@@ -318,88 +320,95 @@ export default function ElementGrid({data}) {
         }
         return []; // Return an empty array if the condition is not met
     }, [settings.filters?.filter1]);
-    return (
-        <View className="w-full px-4 xl:px-6 ">
-            {modalContent && <Modal title={" "} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
-                <View className='px-4'>
-                    <BlockByData onFormEmpty = {() => handleUpdate()} block = {modalContent}  />
-                </View>
-            </Modal>}
-            <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
-            <Row className='justify-between mt-2 mb-4 '>
-                {Object.keys(settings.filters).length > 0 && 
-                    <Row className="gap-x-2 ">
-                        {settings.filters?.filter1 && settings.filters.filter1.length > 0 && 
-                            <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
-                                <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
-                            </DropdownMenu>
-                        }
-                        {settings.filters?.search && 
-                            <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
-                        }
-                    </Row>
-                }
-                <Row className="gap-x-2 ">
-                    {
-                        data.actions.bulk.delete && (
-                            <Button startDecorator="Trash" size="base" title={t("Delete selected")} disabled={selected.length == 0} onPress={() => {handleDeleteSelected()}} />)
-                    }
-                    {
-                        data.actions.bulk.credits && (
-                            <Button  size="base" title={t("Checkout with Credits")} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
-                    }
-                    {
-                        data.actions.bulk.paypal_api && (
-                            <Button  size="base" title={t("Checkout with PayPal")} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
-                    }
-                    {
-                        data.actions.independent.add && (
-                            <Button startDecorator="Plus" size="base" title={t("Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
-                    }
-                </Row>
-            </Row>
-            <View className='border border-bdrnavbar dark:border-bdrnavbar-d'>
-                <Row className='w-full border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard px-2'>
-                    {
-                        header.map((itemCell, index) => {
-                            return (
-                                <View key={'header'  + index} className={getWidth(itemCell.width) + ' p-2'}>
-                                    <Text className="font-bold">{itemCell.title}</Text>
-                                </View>
-                                
-                            );
-                        })
-                    }
-                </Row>
-                {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text>Nothing to show</Text></View>}
-                <UniList
-                    height={400}
-                    data={dataItems.data}
-                    onEndReached = {handleEndReached} 
-                    renderItem={({item, index: indexRow }) => {
-                        return (
-                            <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
-                                {header.map((cellHeader, index) => (
-                                    <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} p-2 justify-center`}>
-                                        <Cell 
-                                            cell={item[cellHeader.name]} 
-                                            indexRow={indexRow + '_' + index} 
-                                            id={item[settings.field_id]}
-                                            toggleSwitch={toggleSwitch}
-                                            setSelection={setSelection}
-                                            selected={selected}
-                                            setShowConfirm={setShowConfirm}
-                                            deleteRows={deleteRows}
-                                            fetchData={fetchData}
-                                            handleBlock={handleActionBlock}
-                                        />
-                                    </View>
-                                ))}
-                            </Row>
-                        )
-                    }}
-                />
+
+    let a = <View className="w-full xl:px-6">
+        {modalContent && <Modal title={" "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+            <View className='px-4'>
+                <BlockByData onFormEmpty = {() => handleUpdate()} block = {modalContent}  />
             </View>
-        </View>
+        </Modal>}
+        <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
+        <Row className='xl:justify-between mt-2 mb-4 '>
+            {Object.keys(settings.filters).length > 0 && 
+                <Row className="gap-x-2 ">
+                    {settings.filters?.filter1 && settings.filters.filter1.length > 0 && 
+                        <DropdownMenu items={dropdownItems}  onSelect={(oItem) => {handleFilter(oItem)}}>
+                            <Button title={selectedFilter ? selectedFilter.title: dropdownItems[0].title} size="base" />
+                        </DropdownMenu>
+                    }
+                    {settings.filters?.search && 
+                        <Input placeholder= {t('Search')} name="search" onChangeText={(value) => handleSearch(value)} />
+                    }
+                </Row>
+            }
+            <Row className="gap-x-2 ml-1">
+                {
+                    data.actions.bulk.delete && (
+                        <Button startDecorator="Trash" size="base"  hideTitleOnSmall={true} title={t("Delete selected")} disabled={selected.length == 0} onPress={() => {handleDeleteSelected()}} />)
+                }
+                {
+                    data.actions.bulk.credits && (
+                        <Button  size="base" title={t("Checkout with Credits")}  hideTitleOnSmall={true} disabled={selected.length == 0} onPress={() => {alert("TODO Checkout with Credits")}} />)
+                }
+                {
+                    data.actions.bulk.paypal_api && (
+                        <Button  size="base" title={t("Checkout with PayPal")}  hideTitleOnSmall={true} disabled={selected.length == 0} onPress={() => {alert("TODO CheCheckout with PayPal")}} />)
+                }
+                {
+                    data.actions.independent.add && (
+                        <Button startDecorator="Plus" size="base"  hideTitleOnSmall={true} title={t("Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
+                }
+            </Row>
+        </Row>
+        <View className='border border-bdrnavbar dark:border-bdrnavbar-d rounded-xl'>
+            <Row className='w-full border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard lg:px-2'>
+                {
+                    header.map((itemCell, index) => {
+                        return (
+                            <View key={'header'  + index} className={getWidth(itemCell.width) + ' py-1 xl:p-2 '}>
+                                <Text className="font-bold">{itemCell.title}</Text>
+                            </View>
+                            
+                        );
+                    })
+                }
+            </Row>
+            {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text>Nothing to show</Text></View>}
+            <UniList
+                height={400}
+                data={dataItems.data}
+                onEndReached = {handleEndReached} 
+                renderItem={({item, index: indexRow }) => {
+                    return (
+                        <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
+                            {header.map((cellHeader, index) => (
+                                <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} py-1 xl:p-2 justify-center`}>
+                                    <Cell 
+                                        cell={item[cellHeader.name]} 
+                                        indexRow={indexRow + '_' + index} 
+                                        id={item[settings.field_id]}
+                                        toggleSwitch={toggleSwitch}
+                                        setSelection={setSelection}
+                                        selected={selected}
+                                        setShowConfirm={setShowConfirm}
+                                        deleteRows={deleteRows}
+                                        fetchData={fetchData}
+                                        handleBlock={handleActionBlock}
+                                    />
+                                </View>
+                            ))}
+                        </Row>
+                    )
+                }}
+            />
+            </View>
+        </View>;
+
+    return (
+        windowWidth < 600 ? <ScrollView horizontal={true} className='min-w-full'>
+            <View className='w-full mx-auto ' style={{minWidth:600}} >
+                {a}
+            </View>
+        </ScrollView> : a
     );
 }

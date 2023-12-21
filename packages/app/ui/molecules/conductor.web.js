@@ -64,7 +64,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
-    //console.log("routes", routes)
      /* DAEMON PART */
      const setTosterVisible = (val) => {
         const current = tosterRef.current;
@@ -174,7 +173,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             enabled: currentRoute?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
 
-   
     const scrollToCover = (cover, windowWidth, offset) => {
         const baseScroll = windowWidth < 1024 ? 280 : offset;
         const adjustment = cover === 'group' ? -100 : -200;
@@ -194,6 +192,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         else{
             newRoutes[index].endpoint.params.filters = {[name]: val};
         }
+        newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = [];
         newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
@@ -397,12 +396,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                             return key.value && key.key != "date_range" ? {label: key.value, value: key.key} : null;
                                         });
                                         values = values.filter(Boolean);
+                                        
                                     }
                                     return (
                                         <View>
                                             <Dropdown 
                                             labelField="label"
                                             valueField="value"
+                                            value={route?.endpoint?.params?.filters?.[inputs[key].name]}
                                             onChange={(value) => setFilterValue(inputs[key].name, value)} 
                                             data={values}
                                             />

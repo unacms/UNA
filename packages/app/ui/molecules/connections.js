@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { View, Row } from 'app/design/view'
 import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { Modal } from 'app/design/controls'
-import { BlockByData } from 'app/components/block';
+import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useTranslation } from 'react-i18next';
 
 export default function ElementConnections(oProps) {
@@ -100,7 +100,7 @@ export default function ElementConnections(oProps) {
             <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
             {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
-                    <BlockByData onFormEmpty = {() => handleFormSubmittedAndValid()} block = {modalContent}  />
+                   
                 </View>
             </Modal>}
         </>
