@@ -29,7 +29,6 @@ export default function Form(props) {
     let onFormSubmit = props.onFormSubmit;
 
     const defaultValues = {}
-console.log("propsprops", props);
     Object.keys(data.inputs).forEach(function (key) {  
         if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
             data.inputs[key].value = 0;

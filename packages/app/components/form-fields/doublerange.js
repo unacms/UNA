@@ -26,9 +26,7 @@ export default function FormFieldText(props) {
         formContext.setValue(props.name, value.join('-'))
     }, [props.name, value]);
 
-    const setValueF = (val) =>
-    {
-        console.log(val)
+    const setValueF = (val) => {
         setValue(val);
     }
 
@@ -45,9 +43,9 @@ export default function FormFieldText(props) {
                     thumbSize={15}   
                     slideOnTap={true}           
                     range={value}                    // set the current slider's value
-                    minimumValue={props.attrs.min}                  // Minimum value
-                    maximumValue={props.attrs.max}                  // Maximum value
-                    step={props.attrs.step}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
+                    minimumValue={0+props.attrs.min}                  // Minimum value
+                    maximumValue={0+props.attrs.max}                  // Maximum value
+                    step={1}                          // The step for the slider (0 means that the slider will handle any decimal value within the range [min, max])
                     minimumRange={0}                  // Minimum range between the two thumbs (defaults as "step")
                     crossingAllowed={false}           // If true, the user can make one thumb cross over the second thumb
                     outboundColor={colors.background}              // The track color outside the current range value

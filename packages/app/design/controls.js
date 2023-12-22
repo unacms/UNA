@@ -7,6 +7,7 @@ import { Icon } from 'app/ui/atoms/icon'
 import { appSetting, isEmoji } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
+import Tooltip from 'app/ui/atoms/tooltip';
 
 let h11 = '';
 if(Platform.OS === 'android') {
@@ -132,7 +133,7 @@ export function Button (props) {
     let buttonType = props.variant ? props.variant : 'default'
     let buttonSize = props.size ? props.size : 'base'
     let hideTitleOnSmall = props.hideTitleOnSmall ? props.hideTitleOnSmall : false
-
+    let buttonTooltip = props.tooltip ? props.tooltip : false
     let buttonPressed = props.pressed ? true : false
     let buttonDisabled = props.disabled ? true : false
     let buttonIconStart = props.startDecorator ? props.startDecorator : false
@@ -254,7 +255,7 @@ export function Button (props) {
     if (buttonDisabled)
         onPress = undefined;
     let Cnt = onPress !== undefined ? Pressable : View
-    return (
+    let Cnt2 = (
         <Cnt className={sClassContainer} {...rest}  {...(rest.alt ? { 'aria-label': rest.alt, role: 'button', 'alt': rest.alt } : {} )} onPress={onPress} ref={forwardedRef}>
             {sButtonIconStart}
             {buttonTitle !== undefined && (
@@ -265,6 +266,13 @@ export function Button (props) {
             {props.children}
         </Cnt>
     );
+    
+    if (buttonTooltip){
+        return <Tooltip content={buttonTooltip}>{Cnt2}</Tooltip>
+    }
+
+    return Cnt2;
+
 }
 
 export const ButtonRef = React.forwardRef((props, forwardedRef) => {

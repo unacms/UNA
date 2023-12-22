@@ -177,31 +177,30 @@ export default function (props) {
                                         }
                                     )}
                                 >
-                                    <Tooltip content={t("Create content")} asChildTrigger={true}>
-                                        <ButtonRef
-                                        variant="outline"
-                                        rounded
-                                        startDecorator="Plus"
-                                        id="m3"
+                                   
+                                    <ButtonRef
+                                    variant="outline"
+                                    rounded
+                                    startDecorator="Plus"
+                                    id="m3"
+                                    tooltip="Create content"
 
-                                        onPress={() => {}}
-                                        />
-                                    </Tooltip>
+                                    onPress={() => {}}
+                                    />
                                 </DropdownMenu>
                             </View>}
                             <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                 { bNotifs && <NotificationButton /> }
                                 { bMessenger &&
-                                                <Link href='/messenger' alt={t("Messenger")}>
-                                                    <Tooltip content={t("Messenger")} asChildTrigger={true}>
-                                                        <ButtonRef
-                                                            variant="outline"
-                                                            rounded
-                                                            startDecorator="ChatTeardropDots"
-                                                            id="m2"
-                                                        />
-                                                    </Tooltip>
-                                                </Link>
+                                    <Link href='/messenger' alt={t("Messenger")}>
+                                            <ButtonRef
+                                                tooltip={t("Messenger")}
+                                                variant="outline"
+                                                rounded
+                                                startDecorator="ChatTeardropDots"
+                                                id="m2"
+                                            />
+                                    </Link>
                                 }
                             </View>
                             {profile ? (
@@ -222,16 +221,15 @@ export default function (props) {
                                         }
                                         )}
                                     >
-                                        <Tooltip content={t("Dashboard")} asChildTrigger={true}>
-                                            <ButtonRef
-                                                variant="outline"
-                                                rounded
-                                                padding={1}
-                                                startDecorator={profile}
-                                                id="m3"
-                                                onPress={() => {}}
-                                            />
-                                        </Tooltip>
+                                    <ButtonRef
+                                        tooltip={t("Dashboard")}
+                                        variant="outline"
+                                        rounded
+                                        padding={1}
+                                        startDecorator={profile}
+                                        id="m3"
+                                        onPress={() => {}}
+                                    />
                                     </DropdownMenu>
                                 </View>
                             ) : (

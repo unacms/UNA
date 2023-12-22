@@ -252,16 +252,17 @@ export default function FormFieldFtf(props) {
 
 
     return (
-        <><View className='bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base' >
-        <EditorContent 
-                editor={editor} 
-                className={(props?.numLines == 1 ? '' : 'editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}
-            />
-            <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
-            {isFullHtml && <MenuBar editor={editor} /> }
+        <>
+            <View>
+                <EditorContent 
+                    editor={editor} 
+                    className={(props?.numLines == 1 ? 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base' : 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base editor-height') + ' ' + (isFullHtml? 'p-4 ' :'p-2')}
+                />
+                <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
+                    {isFullHtml && <MenuBar editor={editor} /> }
+                </View>
             </View>
-        </View>
-        { computedData}
+            { computedData}
         </>
     )
 }

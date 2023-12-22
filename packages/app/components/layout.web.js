@@ -6,7 +6,7 @@ import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
-import {getLayoutName} from 'app/components/page-layout';
+import { getLayoutName } from 'app/components/page-layout';
 
 import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
@@ -71,6 +71,7 @@ export default function Layout(props) {
     }, [data.url]);
 
     const { layoutName } = getLayoutName(data, uri, true);
+    console.log("layoutName", layoutName)
     const headerSettings = useMemo(() => getHeaderSettings(uri, width, layoutName), [uri, width]);
 
     if (data?.empty)

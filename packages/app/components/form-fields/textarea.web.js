@@ -4,11 +4,9 @@ import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
 import { useState, useMemo, useEffect } from 'react';
 import React from 'react';
-
+import { View } from 'app/design/view'
 import { TextInput as TextInputDef} from 'react-native'
 import { styled } from 'nativewind'
-
-//import FormFieldFtf  from './rtf';
 
 function FormFieldFtf(props) {
     const computedData = useMemo(() => {
@@ -75,7 +73,9 @@ export default function FormFieldText(props) {
     }
 
     if (props.html == 1 || props.html == 2 || props.html == 3){
-        input =  <FormFieldFtf  {...props} />;
+        input = <View className='editor-height '>
+            <FormFieldFtf  {...props} />
+        </View>;
     }  
     
     useEffect(() => {

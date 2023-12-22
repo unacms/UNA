@@ -250,10 +250,12 @@ div::-webkit-scrollbar {
     width: 100%;
     border-color: #000;
     }
-    .editor-height .ProseMirror{
-        min-height: 150px;
+    .editor-height{
+        min-height: 138px !important;
     }
-    
+    .editor-height .ProseMirror{
+        min-height: 120px;
+    }
     .editor-height .ProseMirror P{
         margin-top: 1em;
         margin-bottom: 1em;

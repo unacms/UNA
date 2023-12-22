@@ -16,6 +16,8 @@ import Labels from './labels';
 import InputSet from './input_set';
 import LocationRadius from './location_radius';
 import DoubleRange from './doublerange';
+import CheckboxSet from './checkbox_set';
+
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -38,5 +40,6 @@ export const componentsMapDefault = {
     suggestion: Suggestion,
     block_header: BlockHeader,
     labels: Labels,
-    doublerange: DoubleRange
+    doublerange: DoubleRange,
+    checkbox_set: CheckboxSet
 };
