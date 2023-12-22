@@ -8,7 +8,7 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import { fetcher } from 'app/lib/fetcher';
 import { Hidden } from 'app/design/controls'
 
-export default function FormFieldCustom(props) {
+export default function FormFieldSuggestion(props) {
 
     let rules = {};
     let defaultValue = props.value ? props.value : '';

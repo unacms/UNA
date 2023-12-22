@@ -80,7 +80,6 @@ export default function ElementConnections(oProps) {
     const handleFormSubmittedAndValid = () => {
         setTimeout(() => {
             handleCloseModal();
-
             handleDo(null, 'add');
         }, 100);
     }
@@ -100,7 +99,7 @@ export default function ElementConnections(oProps) {
             <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
             {modalContent && <Modal title={t("Questionnaire")} onVisible={modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                 <View className='px-4'>
-                   
+                    <BlockByData onFormEmpty = {() => handleFormSubmittedAndValid()} block = {modalContent}  />
                 </View>
             </Modal>}
         </>

@@ -2,8 +2,9 @@ import { useState,  } from 'react';
 import useSWR from "swr";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
+import SimpleList from 'app/components/elements/simple_list';
 import { View } from 'app/design/view'
-import { Text} from 'app/design/typography'
+import { Text } from 'app/design/typography'
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props}  />
@@ -69,10 +70,19 @@ export default function BlockContentObjectDataArray(props) {
         }
     }
 
+    const components = {
+        'simple_list': SimpleList,
+        'form': Form,
+        // Add other component types here
+    };
+
+    const Component = components[props.block.content[0].type];
+
+    
     // display each block element from static data or from dynamic data
     return (
         <View className="relative gap-y-4">
-           {realData?.map(a => <Form key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
+           {realData?.map(a => <Component key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );
 }

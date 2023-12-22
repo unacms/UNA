@@ -275,7 +275,7 @@ let settingsDefault = {
         bx_payment_menu_cart_submenu: {
             name: 'Shopping Carts',
             icon: 'Wallet',
-            items: ['payment-carts'],
+            items: ['payment-carts', 'payment-history'],
             add: []
         },
         bx_organizations_submenu: {
