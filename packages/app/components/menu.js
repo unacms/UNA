@@ -84,10 +84,17 @@ export default function ElementMenu(oProps) {
     if(bShowContent)
         return sItems;
 
+    const oMenu = (
+        <View className={sClassName}>{oProps.unitType}{sItems}</View>
+    );
+
+    if (bShowVertical){
+        return oMenu;
+    }
+    
     return (
-        //TO CHECK: ANTON in vertcal menu
-        <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
-            <View className={sClassName}>{oProps.unitType}{sItems}</View>
+        <ScrollView horizontal={true} className="min-w-full">
+            {oMenu}
         </ScrollView>
     );
 }

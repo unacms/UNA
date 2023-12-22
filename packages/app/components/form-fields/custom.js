@@ -8,8 +8,6 @@ export default function FormFieldCustom(props) {
         return <FormFieldSuggestion {...props}/>
 
     return (
-        <Field {...props}>
-            <Text>TODO: {props.name}</Text>
-        </Field>
+        <></>
     );
 }
