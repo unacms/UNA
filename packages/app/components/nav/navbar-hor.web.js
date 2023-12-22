@@ -190,19 +190,19 @@ export default function (props) {
                                 </DropdownMenu>
                             </View>}
                             <View className="hidden sm:flex flex-row gap-x-2 my-auto">
-                                
-                                {bNotifs && <NotificationButton />}
-                                {bMessenger && <Tooltip content={t("Messenger")} asChildTrigger={true}>
-                                    <ButtonRef
-                                        variant="outline"
-                                        rounded
-                                        startDecorator="ChatTeardropDots"
-                                        id="m2"
-                                        onPress={() => {
-                                        handleClick('/messenger')
-                                        }}
-                                    />
-                                </Tooltip> }
+                                { bNotifs && <NotificationButton /> }
+                                { bMessenger &&
+                                                <Link href='/messenger' alt={t("Messenger")}>
+                                                    <Tooltip content={t("Messenger")} asChildTrigger={true}>
+                                                        <ButtonRef
+                                                            variant="outline"
+                                                            rounded
+                                                            startDecorator="ChatTeardropDots"
+                                                            id="m2"
+                                                        />
+                                                    </Tooltip>
+                                                </Link>
+                                }
                             </View>
                             {profile ? (
                                 <View className="hidden sm:flex flex-row justify-center">
