@@ -261,8 +261,6 @@ export default function ElementCover(props) {
                             </View>
                     </View>
                 </View>
-                
-             
             </View>
         </View>
     )

@@ -228,7 +228,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     
         // Add the event listener when the component mounts
         window.addEventListener('scroll', handleScroll);
-        scrollToCover(cover, windowWidth, offset)
+        if (appSetting('layout', 'cover_scroll'))
+            scrollToCover(cover, windowWidth, offset)
 
         // Clean up the event listener when the component unmounts
         return () => {
