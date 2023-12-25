@@ -65,7 +65,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
     const { currentUser } = useCurrentUser();
 
     const { author_data, created, count, files, message, menu, id, reactions } = item,
-        sCommentClass = " bg-neutral-500/10   rounded-tl-none  rounded-2xl   px-4  u-vanilla-html-small ";
+        sCommentClass = "bg-neutral-500/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small";
 
     if (!created)
         return (<View></View>);
@@ -112,7 +112,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                                                 }} />
                                           </View> : <></> }
                         { !!currentUser && menu && menu.length && <View className='flex-row'>
-                            <Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />
+                            {/*<Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />*/}
                             <View className="ml-2">
                                 <DropdownMenu items={menu.map((aItem) => {
                                     return {
@@ -128,7 +128,7 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                         </View> }
                     </View>
                 </View>
-                <View className=" bg-neutral-50 dark:bg-neutral-900 rounded-full mb-auto p-0.5">
+                <View className="bg-neutral-50 dark:bg-neutral-900 rounded-full mb-auto p-0.5">
                     <Profile {...author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                 </View>
             </View>

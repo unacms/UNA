@@ -31,7 +31,7 @@ export const SendForm = memo(({ convoId, menuItem, onSubmit, iSelectedProfile })
     }, [iSelectedProfile]);
 
     return formData && <View style={{ paddingBottom: keyboardHeight }}>
-                            <Form data={ formData } name={'bx_messenger'} resetOnSubmit={true} classContainerName="flex-row flex-wrap px-2 pb-2 w-full"
+                            <Form data={ formData } name={'bx_messenger'} resetOnSubmit={true} classContainerName="flex-row flex-wrap px-2 w-full"
                                   onFormSubmit={ (oFormData, oData) => {
                                       return sendMessage({ oFormData, oData }, {
                                           onSuccess: ( data )=> {
