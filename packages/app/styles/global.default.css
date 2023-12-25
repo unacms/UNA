@@ -9,7 +9,7 @@
     font-size: 1rem;
     line-height: 1.5rem; 
     max-width: none;
-    word-wrap: pre;
+    word-wrap: break-word;
 }
 .u-vanilla-html div > :where(:first-child):not(:where([class~="not-prose"] *)),
 .u-vanilla-html > :where(:first-child):not(:where([class~="not-prose"] *)){
