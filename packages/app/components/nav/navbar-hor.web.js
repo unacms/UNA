@@ -208,7 +208,7 @@ export default function (props) {
                                             return (
                                             {
                                                 id: 'menu-' + index,
-                                                link: item.link,
+                                                link: item.link.replace('{profile}', currentUser.url),
                                                 title: t(item.title),
                                                 icon:
                                                 item.icon.indexOf(' ') == -1
