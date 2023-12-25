@@ -109,106 +109,106 @@ export default function PageLayout(props) {
             dUser.url_avatar = dUser.avatar
             dUser.url = '/dashboard'
             const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-            
-        
-            
-        return (
-            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
-                    {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4   max-w-xs   top-0 sticky duration-200 ">
-                        {appSetting('layout', 'show_profile_info') && (
-                            <Row className="items-center justify-between pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
-                                <Link href={currentUser.url} className="flex-auto">
-                                    <Row className='flex-row gap-x-2 items-center'>
-                                        <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                            {profile}
-                                        </View>
-                                        <Text className="text-base flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                            {currentUser.display_name}
-                                        </Text>
-                                    </Row>
-                                </Link>
-                                {appSetting('layout', 'allow_switch_profile') && (
-                                    <View className='flex-none'><ProfileSwitcher hideTitle={true} ><Button
-                                        variant="text"
-                                        size="sm"
-                                        startDecorator="UserSwitch"
-                                        rounded
-                                        align="right"
-                                    /></ProfileSwitcher></View>)}
-                            </Row>)}
-                        {navBarBlocks.map((item, index) => {
-                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                            }
-                        )}
-                    </View>}
-                    
-                    <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                        <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
-                            <View className="flex-auto   w-full mx-auto">
-                                <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
-                                    {feedList.length > 1 && feedList.map((item, index) => {
-                                        return (
-                                            <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
-                                                <Button fullWidth={true} id="tab" startDecorator={item.icon} variant={feedType == item.name ? 'link' : 'text'} rounded  size="sm" />
-                                            </Pressable>
-                                        );
-                                    })}
-                                    {appSetting('feed', 'show_selector_view') && (
-                                        <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                                            <Button
-                                                startDecorator="Rows"
-                                                rounded
-                                                variant={unitMode == '' ? 'link' : 'text'}
-                                                size="sm"
-                                                onPress={() => {
-                                                    setUnitModeEx('')
-                                                }}
-                                            />
-                                            <Button
-                                                startDecorator="ListBullets"
-                                                rounded
-                                                variant={unitMode == 'small' ? 'link' : 'text'}
-                                                size="sm"
-                                                onPress={() => {
-                                                    setUnitModeEx('small')
-                                                }}
-                                            />
+
+            return (
+                <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+                    <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
+                        {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4   max-w-xs   top-0 sticky duration-200 ">
+                            {appSetting('layout', 'show_profile_info') && (
+                                <Row className="items-center justify-between pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
+                                    <Link href={currentUser.url} className="flex-auto">
+                                        <Row className='flex-row gap-x-2 items-center'>
+                                            <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                                {profile}
+                                            </View>
+                                            <Text className="text-base flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                {currentUser.display_name}
+                                            </Text>
                                         </Row>
-                                    )}
-                                </Row>
-                                <View className="relative w-full mx-auto max-w-3xl">
-                                    {feedList.map((item, index) => {
-                                        if (feedType == item.name){
+                                    </Link>
+                                    {appSetting('layout', 'allow_switch_profile') && (
+                                        <View className='flex-none'><ProfileSwitcher hideTitle={true} ><Button
+                                            variant="text"
+                                            tooltip={t('Switch profile')}
+                                            size="sm"
+                                            startDecorator="UserSwitch"
+                                            rounded
+                                            align="right"
+                                        /></ProfileSwitcher></View>)}
+                                </Row>)}
+                            {navBarBlocks.map((item, index) => {
+                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                                }
+                            )}
+                        </View>}
+                        
+                        <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
+                            <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
+                                <View className="flex-auto   w-full mx-auto">
+                                    <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
+                                        {feedList.length > 1 && feedList.map((item, index) => {
                                             return (
-                                                <View key={'view' + index}  >
-                                                    <LayoutDataContext>
-                                                        {topBlocks.map((item, index) => {
-                                                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                                                            }
-                                                        )}
-                                                        <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
-                                                        <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
-                                                    </LayoutDataContext>
-                                                </View>
+                                                <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
+                                                    <Button fullWidth={true} tooltip={t(item.title)} startDecorator={item.icon} variant={feedType == item.name ? 'link' : 'text'} rounded  size="sm" />
+                                                </Pressable>
                                             );
-                                        }
-                                        return <React.Fragment key={'empty_' + index}></React.Fragment>
-                                    })}
+                                        })}
+                                        {appSetting('feed', 'show_selector_view') && (
+                                            <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                                <Button
+                                                    startDecorator="Rows"
+                                                    tooltip={t('Full')}
+                                                    rounded
+                                                    variant={unitMode == '' ? 'link' : 'text'}
+                                                    size="sm"
+                                                    onPress={() => {
+                                                        setUnitModeEx('')
+                                                    }}
+                                                />
+                                                <Button
+                                                    startDecorator="ListBullets"
+                                                    rounded
+                                                    tooltip={t('Short')}
+                                                    variant={unitMode == 'small' ? 'link' : 'text'}
+                                                    size="sm"
+                                                    onPress={() => {
+                                                        setUnitModeEx('small')
+                                                    }}
+                                                />
+                                            </Row>
+                                        )}
+                                    </Row>
+                                    <View className="relative w-full mx-auto max-w-3xl">
+                                        {feedList.map((item, index) => {
+                                            if (feedType == item.name){
+                                                return (
+                                                    <View key={'view' + index}  >
+                                                        <LayoutDataContext>
+                                                            {topBlocks.map((item, index) => {
+                                                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                                                                }
+                                                            )}
+                                                            <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
+                                                            <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
+                                                        </LayoutDataContext>
+                                                    </View>
+                                                );
+                                            }
+                                            return <React.Fragment key={'empty_' + index}></React.Fragment>
+                                        })}
+                                    </View>
                                 </View>
                             </View>
                         </View>
+                        <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-4 flex-col space-y-4 sticky top-0 duration-200 ">
+                            {sideBarBlocks.map((item, index) => {
+                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
+                                }
+                            )}
+                        </View>
                     </View>
-                    <View className="hidden xl:block  xl:w-1/4 max-w-md  px-4 xl:mt-4 flex-col space-y-4 sticky top-0 duration-200 ">
-                        {sideBarBlocks.map((item, index) => {
-                                return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                            }
-                        )}
-                    </View>
-                </View>
-        </View>
-        
-    )}
+            </View>  
+        )}
     }
 
     let sect = [{ name: '', title: 'Top' }]

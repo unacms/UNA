@@ -54,7 +54,7 @@ export default function ElementProfileSwitcher(props) {
                                     <View className="w-10 h-10 bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900  dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                    <Button id="menu" startDecorator="UserSwitch" variant='outline'  size='sm'  onPress={() => handleSwitch(item.id)} />           
+                                    <Button id="menu" startDecorator="UserSwitch" tooltip={t('Switch profile')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />           
                                 </View>
                             </View>
                             </Link>

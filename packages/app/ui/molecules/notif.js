@@ -82,6 +82,7 @@ export default function (props) {
             <View key="ddp-trigger3">
                 <ButtonRef
                     variant="outline"
+                    tooltip="Notifications"
                     rounded
                     startDecorator="Bell"
                     id="m1"

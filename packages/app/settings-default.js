@@ -53,10 +53,10 @@ let settingsDefault = {
         show_html: false,
         default_feed: 'foryou',
         list: [
-            { name: 'foryou', icon: 'Sparkle' },
-            { name: 'account', icon: 'Binoculars' },
-            { name: 'hot', icon: 'Fire' },
-            { name: 'public', icon: 'Egg' },
+            { name: 'foryou', icon: 'Sparkle', title: 'For you' },
+            { name: 'account', icon: 'Binoculars', title: 'Account' },
+            { name: 'hot', icon: 'Fire', title: 'Hot' },
+            { name: 'public', icon: 'Egg', title: 'Public' },
            /* { name: 'channels', icon: 'Hash' }*/
         ]
     },

@@ -144,8 +144,8 @@ export default function (props) {
                                 (item, index) =>
                                 (currentUser || (!currentUser && item.nonlogged != false)) && (
                                     <Link href={item.link} key={`menu-${index}`} alt={item.title}>
-                                        <Tooltip content={item.title} asChildTrigger={true}>
                                         <ButtonRef
+                                            tooltip={item.title}
                                             variant="text"
                                             size="lg"
                                             fullWidth
@@ -157,7 +157,6 @@ export default function (props) {
                                             align="start"
                                             title={item.title}
                                         />
-                                        </Tooltip>
                                     </Link>
                                 )
                             )}
@@ -178,6 +177,7 @@ export default function (props) {
                                         </Row><View className='flex-none '><Button
                                             variant="text"
                                             size="sm"
+                                            tooltip={t('Switch profile')}
                                             startDecorator="UserSwitch"
                                             fullWidth
                                             align="right"
@@ -232,16 +232,15 @@ export default function (props) {
                                         }
                                     )}
                                 >
-                                    <Tooltip content="Create content" asChildTrigger={true}>
-                                        <ButtonRef
+                                    <ButtonRef
+                                        tooltip="Create content" 
                                         variant="outline"
                                         rounded
                                         startDecorator="Plus"
                                         id="m3"
 
                                         onPress={() => {}}
-                                        />
-                                    </Tooltip>
+                                    />
                                 </DropdownMenu>
                             </View>}
                         </Row>

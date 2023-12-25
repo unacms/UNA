@@ -109,10 +109,10 @@ export default function (props) {
                             (item, index) =>
                             (currentUser || (!currentUser && item.nonlogged != false)) && (
                                 <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
-                                    <Tooltip content={t(item.title)} asChildTrigger={true}>
                                     <ButtonRef
                                         variant="text"
                                         size="lg"
+                                        tooltip={t(item.title)}
                                         fullWidth
                                         startDecorator={
                                         item.icon.indexOf(' ') == -1
@@ -121,7 +121,6 @@ export default function (props) {
                                         }
                                         align="center"
                                     />
-                                    </Tooltip>
                                 </Link>
                                 )
                             )}
@@ -144,18 +143,17 @@ export default function (props) {
                                         }))
                                     }
                                 >
-                                    <Tooltip content="Apps" asChildTrigger={true}>
-                                        <ButtonRef
-                                            variant="outline"
-                                            size="base"
-                                            fullWidth
-                                            rounded
-                                            alt={t("All Apps")}
-                                            startDecorator="CirclesFour"
-                                            aria-label="All Apps"
-                                            onPress={() => {}}
-                                        />
-                                    </Tooltip>
+                                    <ButtonRef
+                                        tooltip="Apps"
+                                        variant="outline"
+                                        size="base"
+                                        fullWidth
+                                        rounded
+                                        alt={t("All Apps")}
+                                        startDecorator="CirclesFour"
+                                        aria-label="All Apps"
+                                        onPress={() => {}}
+                                    />
                                 </DropdownMenu>
                             </View>}
                             
@@ -252,8 +250,8 @@ export default function (props) {
                                         }))
                                     }
                                 >
-                                    <Tooltip content="Apps" asChildTrigger={true}>
                                         <ButtonRef
+                                            tooltip="Apps"
                                             variant="outline"
                                             size="base"
                                             fullWidth
@@ -263,7 +261,6 @@ export default function (props) {
                                             aria-label="All Apps"
                                             onPress={() => {}}
                                         />
-                                    </Tooltip>
                                 </DropdownMenu>
                             </View>}
                             <Link href="/login">

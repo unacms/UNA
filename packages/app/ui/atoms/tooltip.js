@@ -1,5 +1,5 @@
-export default function Tooltip(oProps) {
+export default function Tooltip(props) {
     return (
-        <></>
+        <>{props.children}</>
     );
 }
