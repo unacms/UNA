@@ -1,7 +1,5 @@
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import dynamic from 'next/dynamic'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useMemo } from 'react';
 import { appSetting, setClipboard } from 'app/lib/util'
@@ -62,7 +60,7 @@ function VictoryLineChart({size, dataChart}) {
                     duration: 2000,
                     onLoad: { duration: 1000 }
                 }}
-                
+
                 style={{
                     data: { stroke: getColor("green"), },
 

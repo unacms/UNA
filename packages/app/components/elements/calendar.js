@@ -1,5 +1,5 @@
 import { Text } from 'app/design/typography'
-import { AgendaList, CalendarProvider, ExpandableCalendar, calendarTheme } from 'react-native-calendars';
+//import { AgendaList, CalendarProvider, ExpandableCalendar, calendarTheme } from 'react-native-calendars';
 import { View, Row } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
 import Link from 'app/ui/atoms/link'
@@ -17,6 +17,18 @@ import { appStatic } from 'app/lib/app-static';
 export default function ElementCalendar({ data }) {
     const [cdata, setData] = useState(false);
     const [showCalendar, setShowCalendar] = useState(true);
+
+    const [Calendars, setCalendars] = useState(null);
+    
+    useEffect(() => {
+        const loadComponents = async () => {
+            const CalendarsModule = await import('react-native-calendars');
+            setCalendars(() => CalendarsModule);
+        };
+
+        loadComponents();
+    }, []);
+
     const { colors } = Theme();
 
     function getMarkedDates() {
@@ -83,7 +95,7 @@ export default function ElementCalendar({ data }) {
 
     return (
         <View className='w-full'>
-            <CalendarProvider
+            <Calendars.CalendarProvider
                 date={transformedData[0]?.title}
                 onDateChanged={onDateChanged}
             >
@@ -91,7 +103,7 @@ export default function ElementCalendar({ data }) {
                 
                 <View className={(!showCalendar ? 'hidden' : '') +' md:block f-full sm:w-1/3 '}>
                     <Card margin="m-2 pb-2" rounded="rounded">
-                        <ExpandableCalendar
+                        <Calendars.ExpandableCalendar
                             firstDay={1}
                             markedDates={marked}
                             animateScroll
@@ -104,7 +116,7 @@ export default function ElementCalendar({ data }) {
                 </View>
                 <View className='sm:hidden w-full justify-center pr-4'><Button size="xs" fullWidth title ={showCalendar ? "Hide Calendar" : "Show Calendar"} onPress={() => {setShowCalendar(!showCalendar)}} /></View>
                 <View className='h-screen pt-2 w-full md:w-2/3 pr-4 sm:pr-0'>
-                    <AgendaList
+                    <Calendars.AgendaList
                         sections={transformedData}
                         avoidDateUpdates={false}
                         scrollToNextEvent={true}
@@ -152,7 +164,7 @@ export default function ElementCalendar({ data }) {
                         }}
                     /></View>
                 </View>
-            </CalendarProvider>
+            </Calendars.CalendarProvider>
         </View>
     );
 }

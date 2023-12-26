@@ -18,7 +18,15 @@ import { stripTags } from 'app/lib/util';
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useWindowDimensions} from 'react-native';
-import Stripe from 'app/ui/molecules/stripe';
+import dynamic from 'next/dynamic'
+
+function Stripe(props) {
+    const computedData = useMemo(() => {
+        const StripeCont = React.memo(dynamic(() => import('app/ui/molecules/stripe')));
+            return  <StripeCont {...props} />
+    }, [props.b]); 
+    return computedData;
+}
 
 const getWidth = (width) => {
     if(!width)
