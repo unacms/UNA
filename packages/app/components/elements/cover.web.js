@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import { Text } from 'app/design/typography'
 import { stripTags } from 'app/lib/util'
@@ -257,7 +257,9 @@ export default function ElementCover(props) {
                             </View>
                     
                             <View className="flex-none ml-2 mt-auto    ">
-                                <CoverMenu {...data.actions_menu} />
+                                <ScrollView horizontal={true} className="min-w-full">
+                                    <CoverMenu {...data.actions_menu} />
+                                </ScrollView>
                             </View>
                     </View>
                 </View>

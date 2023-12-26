@@ -125,7 +125,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
-
+        console.log("numColumnsnumColumns numColumnsnumColumns ", blocksroutes)
         if (!blocksroutes)
             return 1;
         const blockKeys = Object.keys(blocksroutes);
@@ -155,6 +155,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     };
 
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
+    console.log("numColumnsnumColumns", numColumns)
     const {
         status: rqtStatus,
         data: newData,

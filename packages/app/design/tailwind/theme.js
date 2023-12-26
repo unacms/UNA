@@ -132,7 +132,7 @@ const colors = {
   bgr: {
     DEFAULT: 'rgba(255,255,255,1)',
     d: 'rgba(17,24,39,1)',
-
+  },
   screen: {
     DEFAULT: '#f3f4f6',
     d: '#030712',

@@ -93,8 +93,6 @@ export default function ElementMenu(oProps) {
     }
     
     return (
-        <ScrollView horizontal={true} className="min-w-full">
-            {oMenu}
-        </ScrollView>
+        oMenu
     );
 }
