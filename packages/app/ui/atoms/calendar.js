@@ -10,7 +10,6 @@ import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 
-
 export default function ElemenCalendar({ name, value = '', type, onChange }) {
     const bIsTime = type === 'datetime';
 
