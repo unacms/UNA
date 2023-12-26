@@ -1,11 +1,12 @@
 'use client'
-//import IconDef from 'app/icons-web';
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { lazy } from 'react'
+import IconDef from 'app/icons-web';
+import { Theme } from 'app/design/theme';
+
 //const IconDef = lazy(() => import('app/icons-web'));
 
-const FormFieldFtf = dynamic(() => import('app/icons-web'));
-
-export const Icon = React.memo(function Icon(props) {
-    return <FormFieldFtf {...props}/>
-});
+export function Icon(props) {
+    const { colors } = Theme();
+    let { color, ...rest } = props;
+    return <IconDef color={color === '' ? colors.default : color} {...rest}/>
+}

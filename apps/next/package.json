@@ -12,7 +12,7 @@
   "dependencies": {
     "@expo/next-adapter": "5.0.2",
     "@jitsi/react-sdk": "^1.3.0",
-    "@phosphor-icons/react": "^2.0.10",
+    "@phosphor-icons/react": "^2.0.15",
     "@react-navigation/native": "^6.1.7",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.2",
