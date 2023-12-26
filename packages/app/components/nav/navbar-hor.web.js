@@ -85,6 +85,8 @@ export default function (props) {
                                                 startDecorator="List"
                                                 rounded
                                                 align="start"
+                                                aria-label={t("Menu")}
+                                                alt={t("Menu")}
                                             />
                                     
                                         </Pressable>
@@ -113,6 +115,8 @@ export default function (props) {
                                         variant="text"
                                         size="lg"
                                         tooltip={t(item.title)}
+                                        alt={t(item.title)}
+                                        aria-label={t(item.title)}
                                         fullWidth
                                         startDecorator={
                                         item.icon.indexOf(' ') == -1
@@ -182,7 +186,7 @@ export default function (props) {
                                     startDecorator="Plus"
                                     id="m3"
                                     tooltip="Create content"
-
+                                    aria-label="Create new content"
                                     onPress={() => {}}
                                     />
                                 </DropdownMenu>
@@ -227,6 +231,7 @@ export default function (props) {
                                         startDecorator={profile}
                                         id="m3"
                                         onPress={() => {}}
+                                        aria-label="Dashboard"
                                     />
                                     </DropdownMenu>
                                 </View>
@@ -267,7 +272,8 @@ export default function (props) {
                             <Button
                                 variant="outline"
                                 rounded
-
+                                aria-label="Account"
+                                alt={t("Account")}
                                 startDecorator="User"
                             />
                             </Link>
