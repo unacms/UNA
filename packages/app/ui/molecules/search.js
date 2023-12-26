@@ -4,12 +4,13 @@ import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
+import { Button, ButtonRef, Input, InputRounded, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
 import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
+
 
 export default function ElementSearch(oProps) {
     const { t } = useTranslation();
@@ -196,7 +197,7 @@ export default function ElementSearch(oProps) {
                     <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder={t("Search")+'...'} role="textbox" aria-label="Search" />
                 </Pressable>
             ) : (
-                <Button variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded onPress={() => handleOpenPopupDefault()} />
+                <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} />
             );
 
             sResult = (

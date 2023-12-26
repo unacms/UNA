@@ -148,7 +148,7 @@ export default function (props) {
                                     }
                                 >
                                     <ButtonRef
-                                        tooltip="Apps"
+                                        tooltip="All Apps"
                                         variant="outline"
                                         size="base"
                                         fullWidth
@@ -251,26 +251,28 @@ export default function (props) {
                                             id: 'menu-' + index,
                                             link: item.link,
                                             title: t(item.title),
+                                            'aria-label': t(item.title),
                                             icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
                                         }))
                                     }
                                 >
                                         <ButtonRef
-                                            tooltip="Apps"
+                                            tooltip="All Apps"
                                             variant="outline"
                                             size="base"
                                             fullWidth
                                             rounded
                                             alt={t("All Apps")}
                                             startDecorator="CirclesFour"
-                                            aria-label="All Apps"
+                                            aria-label={t("All Apps")}
                                             onPress={() => {}}
                                         />
                                 </DropdownMenu>
                             </View>}
                             <Link href="/login">
-                            <Button
+                            <ButtonRef
                                 variant="outline"
+                                tooltip="Account"
                                 rounded
                                 aria-label="Account"
                                 alt={t("Account")}
