@@ -279,7 +279,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
             return (
                 <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
-                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-2xl mx-auto ') + '  w-full'}>
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-xl mx-auto ') + '  w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
@@ -303,7 +303,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <Row className="items-center ">
                         {menuSettings?.name ? <Text  className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
                         <ScrollView horizontal={true} className="items-center gap-0 " >
-                            <Row className="mr-auto ml-4 gap-x-2" >
+                            <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
                                 {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                                    <Pressable  className={" py-2 items-center " + a?.menu_settings?.class}
                                         key={`tab-${a.index}`}
@@ -386,7 +386,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return (
             <>
                 {
-                    inputs && <Row className="max-w-screen-xl mx-auto w-full p-4 pb-0 w-full gap-x-4 items-center justify-end"><Text>Filters:</Text>
+                    inputs && <Row className="max-w-screen-xl mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center ">
                     {(
                         Object.keys(inputs).map((key, index) => (
                             <View key={index}>
@@ -618,7 +618,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            <View className='max-w-screen-2xl mx-auto w-full min-h-screen '>
+            <View className='max-w-screen-xl mx-auto w-full min-h-screen '>
                 <RenderScene route={currentRoute}/>
             </View>
             {searchBarObj()}

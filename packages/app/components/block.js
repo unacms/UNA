@@ -134,7 +134,7 @@ export function BlockWrapper(props) {
 }
 <View>{props.children}</View></>
     return (
-        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? "  max-w-screen-2xl  " : "" ) + (bIsShowPad ? ' mb-4 ' : '') + cssClasses}>
+        <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? "  max-w-screen-xl  " : "" ) + (bIsShowPad ? ' mb-4 ' : '') + cssClasses}>
             { bIsShowBg ? (<Card addClassName=" p-6 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
         </View>
     );

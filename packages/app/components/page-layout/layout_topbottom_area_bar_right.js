@@ -3,7 +3,7 @@ import { View } from 'app/design/view';
 export default function PageLayout(props) {
     
     return (
-        <View className="flex-auto relative w-full flex-row mx-auto lg:mt-4 max-w-screen-2xl">
+        <View className="flex-auto relative w-full flex-row mx-auto lg:mt-4 max-w-screen-xl">
             <View className="flex-auto w-full flex-col lg:flex-row gap-4 lg:gap-8">
                 <View className="w-full lg:w-2/3 lg:gap-4">
                     {props.children[1]}

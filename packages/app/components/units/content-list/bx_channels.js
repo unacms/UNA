@@ -135,7 +135,7 @@ export default function Unit(props) {
   return (
     <>
       <Redirect ref={redirectdRef} />
-      <Card margin=" mb-2 sm:mx-2 " rounded=" rounded-2xl ">
+      <Card margin=" mb-2 mx-1 sm:mx-2 " rounded=" rounded-2xl ">
         <View className="flex-col gap-y-4 ">
           <Link className="" href={data.url}>
             <View className="flex-col w-full ">
