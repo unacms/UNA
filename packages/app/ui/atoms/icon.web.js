@@ -1,27 +1,55 @@
 'use client'
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { appSetting, storageKey, storageGet, getDataFromCache,storageSet } from 'app/lib/util'
-//const IconDef = lazy(() => import('app/icons-web'));
 
-//const IconWeb = dynamic(() => import('app/icons-web'));
+import React, { useEffect, useState } from 'react';
+import { storageGet, storageSet } from 'app/lib/util'
 
-export const Icon = React.memo(function Icon({ icon, className, id, style }) {
-    const iconHTML = useRef({});
-    const [currentIcon, setCurrentIcon] = useState(null);
-    let iconOr = storageGet('icon'+icon, '', true);
+export const Icon = React.memo(function Icon(props) {
+    let {  icon, className, width, height,size,  ...rest } = props
+    const key = icon +'-'+ (width?width:'') +'-'+ (height?height:'') +'-'+ (size?size:'');
+    const [currentIcon, setCurrentIcon] = useState( storageGet('icon-'+key, '', true));
     useEffect(() => {
         const fetchIcon = async () => {
-            const response = await fetch('/api/api.icon?icon='+icon);
+            let url = '/api/api.icon?icon='+icon;
+            if (width)
+                url += '&width='+width;
+            if (height)
+                url += '&height='+height;   
+            if (size)
+                url += '&size='+size;   
+            const response = await fetch(url);
             const data = await response.json();
-            iconHTML.current = { ...iconHTML.current, [icon]: data.icon };
-            storageSet('icon'+icon, '', data.icon, true);
-            //setCurrentIcon(data.icon);
+            setCurrentIcon(data.icon)
+            storageSet('icon-'+key, '', data.icon, true);
             
         };
-        if (!iconOr)
+        if (!currentIcon && icon)
             fetchIcon();
     }, [icon]); 
-
-    return <div className={className} id={id} style={style} dangerouslySetInnerHTML={{ __html: iconOr }} />;
+    if (!currentIcon)
+        return <></>
+    return <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />;
 });
+
+/*
+OLD CODE
+'use client'
+import React, { lazy } from 'react'
+import IconDef from 'app/icons-web';
+
+
+export function Icon(props) {
+    return <IconDef {...props}/>
+}
+*/
+
+/*
+OLD CODE WITH HOOK
+'use client'
+import dynamic from 'next/dynamic'
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+//const IconDef = lazy(() => import('app/icons-web'));
+
+const IconWeb = dynamic(() => import('app/icons-web'));
+
+export const Icon = React.memo(function Icon(props) {
+    return <IconWeb {...props}/>*/

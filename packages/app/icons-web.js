@@ -3,7 +3,7 @@
 import { IconSet as IconSetDedault } from './icons-web.default';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
-import { Airplane}  
+import { Airplane, Lifebuoy, Prohibit, Medal, Shield, Eye}  
 
 from "@phosphor-icons/react";
 
@@ -12,6 +12,11 @@ from "@phosphor-icons/react";
 
 const IconSet = {
 	'Airplane': Airplane,
+    'Lifebuoy': Lifebuoy,
+    'Prohibit': Prohibit,
+    'Medal': Medal,
+    'Shield': Shield,
+    'Eye': Eye,
 	...IconSetDedault
 }
 

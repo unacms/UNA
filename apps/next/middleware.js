@@ -34,7 +34,16 @@ export function middleware(request) {
         else{
             const url = new URL(request.url);
             const IconComponent = Icons[url.searchParams.get('icon')];
-            const iconString = ReactDOMServer.renderToString(<IconComponent />);
+            const width = url.searchParams.get('width');
+            const height = url.searchParams.get('height');
+            const size = url.searchParams.get('size');
+            const iconProps = {
+                color: "currentColor",
+                ...(width && { width }),
+                ...(height && { height }),
+                ...(size && { size }),
+            };
+            const iconString = ReactDOMServer.renderToString(<IconComponent {...iconProps}  />);
             return NextResponse.json({ icon: iconString }, { status: 200 });
         }
     }
