@@ -85,7 +85,7 @@ export default function Layout(props) {
     }
 
     if (layoutName === 'messenger')
-        stylesBgImage.minHeight = 'auto';
+        stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
 
     if(appSetting('layout', 'format') == 'hor'){
         return (
