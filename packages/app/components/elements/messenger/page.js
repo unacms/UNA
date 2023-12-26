@@ -116,6 +116,8 @@ function PageLayout() {
           iSpace = useMemo(() => getSpace(screenMode), [screenMode]),
           iHeight = pageHeight - iSpace + keyboardHeight;
 
+    console.log('---- height -- space -- keyboard height', pageHeight, iSpace, keyboardHeight);
+
     useEffect(() => {
         const initMenu = async () => {
             const { data } =  await fetcher('/api.php?r=bx_messenger/get_messenger_menu');
