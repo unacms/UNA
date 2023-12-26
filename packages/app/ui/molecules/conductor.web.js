@@ -154,7 +154,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     };
 
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
-    console.log("numColumnsnumColumns", numColumns)
     const {
         status: rqtStatus,
         data: newData,
