@@ -12,11 +12,6 @@ from "@phosphor-icons/react";
 
 const IconSet = {
 	'Airplane': Airplane,
-    'Lifebuoy': Lifebuoy,
-    'Prohibit': Prohibit,
-    'Medal': Medal,
-    'Shield': Shield,
-    'Eye': Eye,
 	...IconSetDedault
 }
 

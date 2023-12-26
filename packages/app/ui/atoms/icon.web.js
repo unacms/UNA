@@ -1,13 +1,4 @@
 'use client'
-import React, { lazy } from 'react'
-import IconDef from 'app/icons-web';
-
-
-export function Icon(props) {
-    return <IconDef {...props}/>
-}
-
-/*'use client'
 
 import React, { useEffect, useState } from 'react';
 import { storageGet, storageSet } from 'app/lib/util'
@@ -38,10 +29,17 @@ export const Icon = React.memo(function Icon(props) {
         return <></>
     return <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />;
 });
-*/
+
 /*
 OLD CODE
+'use client'
+import React, { lazy } from 'react'
+import IconDef from 'app/icons-web';
 
+
+export function Icon(props) {
+    return <IconDef {...props}/>
+}
 */
 
 /*
