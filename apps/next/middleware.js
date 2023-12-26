@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
-
+import * as Icons from  "@phosphor-icons/react/dist/ssr";
+import ReactDOMServer from 'react-dom/server';
 export const config = {
     matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico).*)"],
     runtime: 'experimental-edge',
@@ -9,26 +10,33 @@ export const config = {
 
 export function middleware(request) {
     if (!request.nextUrl.pathname.includes('.php')) {
-        let c = request.cookies.getAll();
-        let cookieString = '';
-        c.map(function (item) {
-            cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
-        });
-        let url = request.url;
-        if (request.nextUrl.pathname == '/')
-            url = url +'home';
-        if (cookieString != ''){
-            const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
-            return response
+        if (!request.nextUrl.pathname.includes('.icon')) {
+            let c = request.cookies.getAll();
+            let cookieString = '';
+            c.map(function (item) {
+                cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
+            });
+            let url = request.url;
+            if (request.nextUrl.pathname == '/')
+                url = url +'home';
+            if (cookieString != ''){
+                const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
+                return response
+            }
+            else{
+                const response = NextResponse.rewrite(new URL(url))
+                response.headers.set('Cache-Control', 'public, s-maxage=1')
+                response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
+                response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
+                return response
+            }
         }
         else{
-            const response = NextResponse.rewrite(new URL(url))
-            response.headers.set('Cache-Control', 'public, s-maxage=1')
-            response.headers.set('CDN-Cache-Control', 'public, s-maxage=60')
-            response.headers.set('Vercel-CDN-Cache-Control', 'public, s-maxage=3600')
-            return response
+            const url = new URL(request.url);
+            const IconComponent = Icons[url.searchParams.get('icon')];
+            const iconString = ReactDOMServer.renderToString(<IconComponent />);
+            return NextResponse.json({ icon: iconString }, { status: 200 });
         }
-            
     }
     else{
         let c = request.cookies.getAll();

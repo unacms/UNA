@@ -125,7 +125,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
-        console.log("numColumnsnumColumns numColumnsnumColumns ", currentRoute)
        // if (!blocksroutes)
         //    return 1;
         if (blocksroutes){
