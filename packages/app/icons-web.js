@@ -1,27 +1,28 @@
-'use server'
+'use client'
 
-//import { IconSet as IconSetDedault } from './icons-web.default';
-import * as Icons from  "@phosphor-icons/react/dist/ssr";
-//import { Theme } from 'app/design/theme'
+import { IconSet as IconSetDedault } from './icons-web.default';
+import { appSetting } from 'app/lib/util'
+import { Theme } from 'app/design/theme';
+import { Airplane}  
+
+from "@phosphor-icons/react";
+
 // DON'T EDIT THIS FILE IN MAIN REPO!!!
 // only for custom projects change some specific static components here if needed
-//let a = IconSetDedault;
-/*
+
 const IconSet = {
 	'Airplane': Airplane,
-	//...a
+	...IconSetDedault
 }
 
-*/
-export default async function Icon(props) {
-    console.log('Icon', props);
+export default function Icon(props) {
 
-    if (props && props.icon){
-  let { icon, className, color, ...rest } = props
+    
+    const { colors } = Theme();
+    let { icon, className, color, ...rest } = props
     icon = icon.replace('far ', '').replace('fa-','').replace('fa ', '')
     let a = icon.split(' ')[0];
     let  ic = a;
-    const IconComponent = Icons[ic];
     /*let ic = appSetting('theme', 'icons', a);
 
     if (!ic){
@@ -29,11 +30,9 @@ export default async function Icon(props) {
         ic = a;
     }*/
     
-   // const IconComponent = IconSet['Airplane'];
-    //if (!IconComponent)
-     //   console.log('Icon not found:', ic);
+    const IconComponent = IconSet[ic];
+    if (!IconComponent)
+        console.log('Icon not found:', ic);
 
-    return <IconComponent  color={color} className={className} {...rest}/>
-    }
-    return <></>
+    return !IconComponent ? <></> : <IconComponent color={color == '' ? colors.default : color} className={className} {...rest} />
 }
