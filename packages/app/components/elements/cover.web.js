@@ -230,7 +230,7 @@ export default function ElementCover(props) {
                                 displayType="unit_wo_info"
                                 displaySize='4xl'
                             />
-                            { data.allow_edit && <View className='p-4 absolute bottom-0'><Button rounded startDecorator="Gear" onPress={() => handleUpload('picture')} /></View>}
+                            { data.allow_edit && <View className='p-4 absolute -bottom-2 right-0'><Button rounded  startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
                         </View>    
                     </View>
                     }
