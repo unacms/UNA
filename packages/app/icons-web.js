@@ -16,7 +16,7 @@ const IconSet = {
 export default async function Icon(props) {
     console.log('Icon', props);
 
-    if (props){
+    if (props && props.icon){
   let { icon, className, color, ...rest } = props
     icon = icon.replace('far ', '').replace('fa-','').replace('fa ', '')
     let a = icon.split(' ')[0];
