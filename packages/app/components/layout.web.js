@@ -84,6 +84,9 @@ export default function Layout(props) {
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
     }
 
+    if (layoutName === 'messenger')
+        stylesBgImage.minHeight = 'auto';
+
     if(appSetting('layout', 'format') == 'hor'){
         return (
             <>
