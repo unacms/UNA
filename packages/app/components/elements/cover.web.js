@@ -72,7 +72,7 @@ export function CoverSmall(props) {
     const data = props.data
     return (
         <View className=" backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d    w-full ">
-            <View className='max-w-screen-2xl w-full mx-auto'>
+            <View className='max-w-screen-xl w-full mx-auto'>
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center    flex-auto">
                         <View className='mr-2 ml-2'>
@@ -203,7 +203,7 @@ export default function ElementCover(props) {
 
     return (
         <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-            <View className='max-w-screen-2xl sm:px-4 mx-auto w-full'>
+            <View className='max-w-screen-xl sm:px-4 mx-auto w-full'>
                 {mode != 'min' && <View className=" duration-500 bg-primary-200    dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto     xl:rounded-b-lg overflow-hidden">
                     {!!data.cover && (
                         <Image
@@ -232,7 +232,7 @@ export default function ElementCover(props) {
                 <View className="relative    flex-col md:flex-row gap-x-2 px-2 sm:px-4 pb-4 ">
                     
                 {bPerson && <View className=" flex-col    w-full md:w-52 ">
-                        <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-bgrcard dark:bg-bgrcard-d '>
+                        <View className='rounded-full w-min p-1 z-50 right-0 lg:p-2 absolute duration-200 -bottom-12 sm:-bottom-24 md:-bottom-2 flex-none bg-bgr dark:bg-bgr-d '>
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_info"

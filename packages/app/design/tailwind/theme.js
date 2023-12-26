@@ -129,6 +129,9 @@ const colors = {
     DEFAULT: 'rgba(229,231,235,1)',
     d: 'rgba(31,41,55,1)',
   },
+  bgr: {
+    DEFAULT: 'rgba(255,255,255,1)',
+    d: 'rgba(17,24,39,1)',
 
   screen: {
     DEFAULT: '#f3f4f6',
