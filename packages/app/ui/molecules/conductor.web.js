@@ -125,15 +125,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         let blocksroutes =  currentRoute?.blocks;
         width = windowWidth;
-        console.log("numColumnsnumColumns numColumnsnumColumns ", blocksroutes)
-        if (!blocksroutes)
-            return 1;
-        const blockKeys = Object.keys(blocksroutes);
-
-
-        for (const key of blockKeys) {
-            if (blocksroutes[key].perLine > 0) {
-                return blocksroutes[key].perLine;
+        console.log("numColumnsnumColumns numColumnsnumColumns ", currentRoute)
+       // if (!blocksroutes)
+        //    return 1;
+        if (blocksroutes){
+            const blockKeys = Object.keys(blocksroutes);
+            for (const key of blockKeys) {
+                if (blocksroutes[key].perLine > 0) {
+                    return blocksroutes[key].perLine;
+                }
             }
         }
 
