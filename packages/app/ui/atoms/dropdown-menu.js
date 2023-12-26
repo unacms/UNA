@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState,useEffect } from 'react';
 import { Platform } from 'react-native';
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-import { 
+/*import { 
     DropdownMenuRoot, 
     DropdownMenuContentV, 
     DropdownMenuContentH, 
@@ -13,12 +13,29 @@ import {
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
+*/
 import Redirect from 'app/ui/atoms/redirect';
 import { Icon } from 'app/ui/atoms/icon'
-import { connect } from './socket';
 
 export default function DropdownMenu(oProps) {
+
+    const [DropdownMenu, setDropdownMenu] = useState(null);
+    
+    useEffect(() => {
+        const loadComponents = async () => {
+            const DropdownMenu = await import('app/design/dropdown');
+            setDropdownMenu(() => DropdownMenu);
+        };
+
+        loadComponents();
+    }, []);
+
     const redirectdRef = useRef();
+
+    if (!DropdownMenu) {
+        return null; // or return a loading spinner
+    }
+
     const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
@@ -29,8 +46,8 @@ export default function DropdownMenu(oProps) {
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
     const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
 
-    const DmContent = sVariant == 'vertical' ? DropdownMenuContentV : DropdownMenuContentH;
-    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : DropdownMenuItemH;   
+    const DmContent = sVariant == 'vertical' ? DropdownMenu.DropdownMenuContentV : DropdownMenu.DropdownMenuContentH;
+    const DmItem = sVariant == 'vertical' ? DropdownMenu.DropdownMenuItemV : DropdownMenu.DropdownMenuItemH;   
 
     const aDmItems = oProps.items.map((oItem) => {
         let sIcon = undefined;
@@ -47,8 +64,8 @@ export default function DropdownMenu(oProps) {
 
         return (
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
-                {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
-                {!!oItem?.title && <DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenuItemTitle>}
+                {!!sIcon && <DropdownMenu.DropdownMenuItemIcon>{sIcon}</DropdownMenu.DropdownMenuItemIcon>}
+                {!!oItem?.title && <DropdownMenu.DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenu.DropdownMenuItemTitle>}
             </DmItem>
         );
     });
@@ -56,10 +73,10 @@ export default function DropdownMenu(oProps) {
     return (
         <View >
             <Redirect ref={redirectdRef} />
-            <DropdownMenuRoot >
-                <DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenuTrigger>
+            <DropdownMenu.DropdownMenuRoot >
+                <DropdownMenu.DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenu.DropdownMenuTrigger>
                 <DmContent>{aDmItems}</DmContent>
-            </DropdownMenuRoot>
+            </DropdownMenu.DropdownMenuRoot>
         </View>
     );
 }
