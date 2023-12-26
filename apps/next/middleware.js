@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { env } from 'app/lib/env';
-import * as Icons from  "@phosphor-icons/react/dist/ssr";
-import ReactDOMServer from 'react-dom/server';
+//import * as Icons from  "@phosphor-icons/react/dist/ssr";
+//import ReactDOMServer from 'react-dom/server';
 export const config = {
-    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico).*)"],
+    matcher: ["/((?!static|_next|sw.js|manifest.json|logo192.png|loader.svg|favicon.ico|_vercel/speed-insights).*)"],
     runtime: 'experimental-edge',
 };
 
@@ -31,7 +31,7 @@ export function middleware(request) {
                 return response
             }
         }
-        else{
+       /* else{
             const url = new URL(request.url);
             const IconComponent = Icons[url.searchParams.get('icon')];
             const width = url.searchParams.get('width');
@@ -45,7 +45,7 @@ export function middleware(request) {
             };
             const iconString = ReactDOMServer.renderToString(<IconComponent {...iconProps}  />);
             return NextResponse.json({ icon: iconString }, { status: 200 });
-        }
+        }*/
     }
     else{
         let c = request.cookies.getAll();
