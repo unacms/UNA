@@ -17,8 +17,6 @@ function useBrowserHistory(onPopState){
     const updateState = useCallback(({ id, title, menu }) => {
          const { convoId, isBack } = stateData;
 
-
-         console.log('----------- confo selected ------', convoId, isBack);
          document.title = title;
          if (convoId === id && isBack) {
              setStateData({});

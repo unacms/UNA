@@ -12,10 +12,12 @@ import { useCurrentUser } from 'app/context/user';
 import {useQueryClient} from "@tanstack/react-query";
 import {ConvoKeys} from "./hooks/useConvos";
 import {HistoryKeys} from "./hooks/useHistory";
+import useKeyboard from "./hooks/useKeyboard";
 
 function PageLayout() {
     const { setMenuItems, menuItem, setMenuItem } = useContext(MenuData),
           { panel, setPanel, pageHeight, screenMode, convoInfo, setConvoId, convoId, setHistoryArea, historyArea } = useContext(PageData),
+          keyboardHeight = useKeyboard(),
           queryClient = useQueryClient();
 
     /* Web Routing begin */
@@ -112,7 +114,7 @@ function PageLayout() {
 
     const oWindowRef = useRef(),
           iSpace = useMemo(() => getSpace(screenMode), [screenMode]),
-          iHeight = pageHeight - iSpace;
+          iHeight = pageHeight - iSpace + keyboardHeight;
 
     useEffect(() => {
         const initMenu = async () => {
