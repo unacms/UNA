@@ -7,6 +7,7 @@ import AsyncWorker from 'app/ui/molecules/async_worker';
 import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getLayoutName } from 'app/components/page-layout';
+import { useCurrentUser } from 'app/context/user'
 
 import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
@@ -16,13 +17,14 @@ import { storageGet } from 'app/lib/util'
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
-const NavbarMemo = React.memo(function NavbarMemo({ title, menu_add, uri }) {
+const NavbarMemo = React.memo(function NavbarMemo(props) {
     return (
-        <Navbar title={title} menu_add={menu_add} uri={uri} />
+        <Navbar {...props}/>
     );
 });
 
 export default function Layout(props) {
+    const { currentUser, setCurrentUser } = useCurrentUser();
     let data = props.data;
     let uri = props.uri
     let children = props.children
@@ -36,6 +38,12 @@ export default function Layout(props) {
     const root = window.document.documentElement;
     root.setAttribute('theme', theme);
     
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    darkModeMediaQuery.addListener((e) => {
+    const newColorScheme = e.matches ? "dark" : "light";
+        root.setAttribute('theme', newColorScheme);
+    });
 
     const handlePageShow = useCallback((event) => {
         storageClear();
@@ -93,7 +101,7 @@ export default function Layout(props) {
                 <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
                 <Suggestions/>
                 <AsyncWorker/>
-                { <NavbarMemo layoutName={layoutName} title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+                { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
     }
@@ -104,19 +112,19 @@ export default function Layout(props) {
         return (
             <Row className='w-full flex-col lg:flex-row-reverse '>
                 <View className='w-full lg:w-4/5'>
-                    <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} />
+                    <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} currentUser={currentUser}/>
                     <Suggestions/>
                     <AsyncWorker/>
                 </View>
                 <View className='w-full lg:w-1/5'>
-                    { <NavbarMemo layoutName={layoutName} title={data.title} menu_add={data.menu_add || false} uri={uri} /> }
+                    { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
                 </View>
             </Row>
         );
     }
 }
 
-const Content = React.memo(({ children, headerSettings, stylesBgImage }) => {
+const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser }) => {
     return (
         <View className="w-full items-stretch " style={stylesBgImage}>
             <View className=" w-full mx-auto flex-row -top-[1px] " >
@@ -128,7 +136,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage }) => {
                     </View>
                 </View>
             </View>
-            {headerSettings?.footer !== false && <Footer /> }
+            {headerSettings?.footer !== false || !currentUser && <Footer /> }
         </View>
     );
 });

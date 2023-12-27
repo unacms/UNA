@@ -119,8 +119,7 @@ export default function ElementCover(props) {
             </View>
             <View className="m-2    flex-col space-y-1    ">
                 <Row className='gap-x-2'>
-                        <CoverMenuMeta {...data.meta_menu} />
-                        <ProfilesList data ={data.members_list} showEmpty={false} maxCount={10} displaySize="sm"/>
+                    <CoverMenuMeta {...data.meta_menu} />
                 </Row>
                 
                 {bPerson && (

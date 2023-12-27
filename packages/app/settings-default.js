@@ -331,13 +331,6 @@ let settingsDefault = {
                 {name:'account-settings-delete', icon:'Gear'}
             ],
         },
-        bx_persons_view_meta: {
-            iconset: {
-                friends: 'Users',
-                subscribers: 'Users',
-            },
-            items: [ 'friends', 'subscribers'],
-        },
         bx_groups_submenu: {
             name: 'Groups',
             icon: 'UsersThree',
@@ -365,23 +358,6 @@ let settingsDefault = {
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_forum'},
             ],
         },
-        bx_groups_view_meta: {
-            iconset: {
-                members: 'Users',
-                friends: 'Users',
-                subscribers: 'Users',
-            },
-            items: ['members', 'friends', 'subscribers'],
-        },
-        bx_events_view_meta: {
-            iconset: {
-                members: 'Users',
-                friends: 'Users',
-                subscribers: 'Users',
-            },
-            items: ['members', 'friends', 'subscribers'],
-        },
-        
         bx_channels_submenu: {
             name: 'Channels',
             icon: 'Hash',
@@ -689,7 +665,7 @@ let settingsDefault = {
                 col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
-            headerSettings: { offset: false, header: false, cover: 'profile' }
+            headerSettings: { offset: false, header: false, cover: 'profile', columns:'reverse' }
         },
         //############ ORGS PAGES ############
         'view-organization-profile': {

@@ -151,7 +151,6 @@ export function getBlocksFromData(data) {
 }
 
 export function getHeaderSettings(uri, width, layout) {
-
     let settings = appSetting('layouts', uri)
     if (!settings?.headerSettings){
         if (layout == 'navigator'){
@@ -160,13 +159,12 @@ export function getHeaderSettings(uri, width, layout) {
         if (layout == 'profile'){
             settings = {headerSettings: { offset: false, header: false }}
         }
-        // may be add somesing else
     }
-       
+
     const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' ? settings.headerSettings.backButton : true;
-
+    
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
-
+    
     let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.header: true;
     if (width > 1024)
         bHeader = true;
@@ -179,6 +177,8 @@ export function getHeaderSettings(uri, width, layout) {
 
     let sCover = typeof settings?.headerSettings?.cover !== 'undefined' ? settings.headerSettings.cover : 'full';
 
+    let sColumns = typeof settings?.headerSettings?.columns !== 'undefined' ? settings.headerSettings.columns : '';
+
     if (width >= 1024)
         bOffset = true;
 
@@ -189,7 +189,8 @@ export function getHeaderSettings(uri, width, layout) {
         title: bTitle,
         offset: bOffset,
         footer: bFooter,
-        cover: sCover
+        cover: sCover,
+        columns: sColumns
     }
 }
 

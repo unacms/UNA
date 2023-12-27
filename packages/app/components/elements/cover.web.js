@@ -20,23 +20,25 @@ import { Image as ImageNative } from 'react-native';
 import ProfilesList from 'app/ui/molecules/profile_list'
 
 function CoverMenu(props) {
+    let { width } = useWindowDimensions();
+    let size="base"
+    
+    if (width < 1280)
+        size="sm"
+
     return (
-        
-            
-                <Menu
-                    {...props}
-                    displayType="button"
-                    params={{ 
-                        show_action: true,
-                        show_counter: true,
-                        show_combined: true, 
-                        button_variant: 'default', 
-                        button_size: 'base', 
-                        button_rounded: false, 
-                    }}
-                />
-            
-        
+        <Menu
+            {...props}
+            displayType="button"
+            params={{ 
+                show_action: true,
+                show_counter: true,
+                show_combined: true, 
+                button_variant: 'default', 
+                button_size: size, 
+                button_rounded: false,
+            }}
+        />
     )
 }
 
@@ -70,7 +72,7 @@ function CoverMenuSmall(props) {
 
 function CoverMenuMeta(props) {
     return (
-        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm' }} />
+        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm', button_hide_title_on_small: false  }} />
     )
 }
 
@@ -221,7 +223,7 @@ export default function ElementCover(props) {
                             src={coverUrl}
                         />
                     )}
-                    { data.allow_edit && <View className='p-4'><Button rounded startDecorator="Gear" onPress={() => handleUpload('cover')} /></View>}
+                    { data.allow_edit && <View className='p-4 items-end'><Button rounded startDecorator="Gear" onPress={() => handleUpload('cover')} /></View>}
                   
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}
@@ -249,14 +251,13 @@ export default function ElementCover(props) {
                                 
                                     <Row className='gap-x-2 md:-translate-x-2'>
                                         <CoverMenuMeta {...data.meta_menu} />
-                                        <ProfilesList data ={data.members_list} showEmpty={false} maxCount={10} displaySize="sm"/>
                                     </Row>
                                 
                                 
                             </View>
                     
                             <View className="flex-none  mt-auto  lg:mt-6    ">
-                                <ScrollView horizontal={true} className="items-center md:items-start mx-auto md:ml-0">
+                                <ScrollView horizontal={true} className={(data.actions_menu.items.length > 3 ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
                                     <CoverMenu {...data.actions_menu} />
                                 </ScrollView>
                             </View>

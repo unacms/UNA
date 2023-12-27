@@ -43,7 +43,7 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
                         return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ")}><Profile {...profile} displayType="unit_wo_info" displaySize={displaySize} /></View>
                     }
                     else{
-                        return <View key={index} className={sSize + (index > 0 ? "  " : " ") + " h-10 w-10 -ml-2 rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "}></View>
+                        return <View key={index} className={sSize + (index > 0 ? " -ml-2 " : " ") + " h-10 w-10  rounded-full border border-white dark:border-neutral-900 dark:bg-neutral-700 bg-neutral-300 "}></View>
                     }
                 })
             }

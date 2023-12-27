@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -76,6 +76,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     let maxIdLocal = 0;
     const currentRoute = routes.find((item) => item.index === index);
+
+    let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
     const bUseDaemon =  (currentRoute?.endpoint?.unit == 'feed');
     let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
     params.start = 0;
@@ -211,7 +213,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         fetchNextPage();
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
-    let offset = header ? (windowWidth < 1024 ? 200 : 600) : 50;
+    let offset = header ? (windowWidth < 1024 ? 600 : 600) : 50;
     if (cover == 'min' && header > 50){
         offset = windowWidth < 1024 ? 80 : 200
     }
@@ -243,7 +245,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const renderTabBar = (props) => {
         
-        let headerSettings = getHeaderSettings(currentRoute?.key, windowWidth, layoutName);
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -461,7 +462,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
         if (route.inited){
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-            //console.log('isRightCol', isRightCol);
             const unitType = getUnitModeBySource(route?.endpoint?.request_url)
             
             let TabFlashListM = useMemo(() => {  
@@ -486,7 +486,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }, [dataItems.length]);
             //
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className=""> 
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>

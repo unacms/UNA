@@ -71,9 +71,10 @@ export default function FormFieldText(props) {
             aria-label={accessibility}
         />
     }
-
+    console.log("propsprops", props);
+    
     if (props.html == 1 || props.html == 2 || props.html == 3){
-        input = <View className='editor-height '>
+        input = <View className={props.numLines ==1 ? '' : 'editor-height '}>
             <FormFieldFtf  {...props} />
         </View>;
     }  

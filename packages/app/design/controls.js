@@ -297,8 +297,8 @@ export function ButtonMenuGroupItem(props) {
 }
 
 export function ButtonMenuActionDefault(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, ...rest } = props
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
 
 export function ButtonMenuActionText(props) {
@@ -313,5 +313,5 @@ export function ButtonMenuCounterDefault(props) {
 
 export function ButtonMenuCounterText(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, ...rest } = props
-    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
+    return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }

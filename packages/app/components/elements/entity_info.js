@@ -15,7 +15,7 @@ export default function ElementEntityInfo({ data }) {
                     return (
                         <View className="flex-row flex-wrap gap-y-2 gap-x-2" key={a.name}>
                             <Row className="items-center text-2xl">
-                                {getIcon(a)}
+                                <View className="text-neutral-800 dark:text-neutral-200">{getIcon(a)}</View>
                                 <View className="ml-2">
                                     <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">
                                         {a.caption}:

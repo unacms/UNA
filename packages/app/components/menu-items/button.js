@@ -1,9 +1,12 @@
 import Link from 'app/ui/atoms/link'
 import {ButtonMenuActionDefault, ButtonMenuActionText} from 'app/design/controls';
-import { View } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
+import ProfilesList from "app/ui/molecules/profile_list";
+import Icon from 'app/icons-web';
+import { Text } from 'app/design/typography'
 
 export default function MenuItemButton(oProps) {
 
@@ -42,7 +45,8 @@ export default function MenuItemButton(oProps) {
                 oButtonProps.rounded = oProps.params.button_rounded;
             if(oProps.params?.button_full_width != undefined)
                 oButtonProps.fullWidth = oProps.params.button_full_width;
-
+            if(oProps.params?.button_hide_title_on_small != undefined)
+                oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
             const handleClick = (event) => {
                 if(!oProps?.link && !oProps.params?.onclick)
                     return;
@@ -61,7 +65,10 @@ export default function MenuItemButton(oProps) {
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
             let sButtonIcon = '';
-            if(!bTitleOnly) {
+            if (oProps.list && oProps.list.length == 0)
+                sButtonIcon = "Users"
+            
+                if(!bTitleOnly) {
                 if(!!oIconAliases[oProps.name])
                     sButtonIcon = oIconAliases[oProps.name];
                 else if(!!oIconset[oProps.name])
@@ -69,9 +76,9 @@ export default function MenuItemButton(oProps) {
             }
 
             const buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
-
             sContent = (
-                <View className="flex-auto">
+                <Row className="flex-auto items-center">
+                    { (oProps.list && oProps.list.length> 0) && <ProfilesList data ={oProps.list} showEmpty={false} maxCount={3} displaySize="sm"/> }
                     {oProps?.link ? 
                         <Link href={oProps.link[0] === '/' ? oProps.link : '/' + oProps.link}>
                             {buttonAction}
@@ -79,7 +86,8 @@ export default function MenuItemButton(oProps) {
                         : 
                         React.cloneElement(buttonAction, { onPress: handleClick })
                     }
-                </View>
+                    
+                </Row>
             );
     }
 

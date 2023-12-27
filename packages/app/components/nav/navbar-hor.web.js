@@ -70,6 +70,11 @@ export default function (props) {
     if (windowWidth < 1024 && (!headerSettings.header))
         return <></>
 
+    let sTitle = props.title;
+    const menuSettings = appSetting('menu_items', props?.menu?.object);
+    if (menuSettings && menuSettings.name)
+        sTitle = t(menuSettings.name);
+
     return (
         <>
             <View className="fixed -top-[1px]  w-full">
@@ -100,7 +105,8 @@ export default function (props) {
                                     </Link>
                             }
                             { headerSettings.backButton  && getBackButtonWeb() }
-                            { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{props.title}</Text> }
+
+                            { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text> }
                         </Row>
                         {bSearch && <View className="hidden"><Search type="input" /></View>}
                         
