@@ -314,7 +314,7 @@ export default function ElementReports(oProps) {
 
         return (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                     {sActionPopup}
                     {sCounterPopup}
             </View>

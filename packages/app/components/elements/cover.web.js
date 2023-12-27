@@ -26,7 +26,14 @@ function CoverMenu(props) {
                 <Menu
                     {...props}
                     displayType="button"
-                    params={{ button_variant: 'default', button_size: 'base', button_rounded: false }}
+                    params={{ 
+                        show_action: true,
+                        show_counter: true,
+                        show_combined: true, 
+                        button_variant: 'default', 
+                        button_size: 'base', 
+                        button_rounded: false, 
+                    }}
                 />
             
         

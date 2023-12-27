@@ -283,13 +283,14 @@ export const ButtonRef = React.forwardRef((props, forwardedRef) => {
 
 export function ButtonsGroupMenu(props) {
     let { variant, size, rounded, ...rest } = props
-    return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={!!rounded ? rounded : true}>{props.children}</ButtonsGroup>
+
+    return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
-    let { size, title, startDecorator, endDecorator, onPress, disabled, ...rest } = props
+    let { size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, ...rest } = props
     return (
-        <Button variant='group-item' hideTitleOnSmall={true} size={!!size ? size : 'sm'} title={title} disabled={disabled != undefined ? disabled : false}  startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress}>
+        <Button variant='group-item' hideTitleOnSmall={true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false}  fullWidth={fullWidth != undefined ? fullWidth : false}>
             {props.children}
         </Button>
     );
