@@ -3,7 +3,7 @@ import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
 import { Modal } from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+//import ImageViewer from 'react-native-image-zoom-viewer';
 import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 
@@ -32,7 +32,11 @@ export default function ElementCarousel(props) {
 
     const ImViewer = () => (
         <Modal visible={!!showImage} transparent={true}>
-            <ImageViewer 
+           
+        </Modal>
+    );
+    /*
+     <ImageViewer 
                 index={currentImageIndex}
                 imageUrls={data2} 
                 renderArrowLeft={() => (
@@ -53,8 +57,7 @@ export default function ElementCarousel(props) {
                 )}
                 onClick={() => {setShowImage(null)}}
             />
-        </Modal>
-    );
+    */
     data = data.slice(0,3);
     const len = data.length;
    

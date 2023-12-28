@@ -22,7 +22,7 @@ export default function ElementSimpleList({data}) {
                     {renderData(item[1])}
                     {
                         item[2] && <>
-                            <Text> - </Text>
+                            <Text className='text-xs'> - </Text>
                             {renderData(item[2])}
                         </>
                     }

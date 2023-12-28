@@ -47,14 +47,14 @@ export default function ElementConfirmEmail(props) {
                 </View>
                 <View className='gap-y-4'>
                     <Row className='w-full gap-x-4 items-start justify-between'>
-                        <View className='flex-auto'>
+                        <View className='flex-auto w-24 lg:w-auto'>
                             <Input  placeholder={t("Input verification code")} value={inputValue} onChangeText={(value) => {setInputValue(value)}}  />  
-                            { inputError && <View className="label" >
-                                <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
-                            </View> }
                         </View>
                         <Button variant="primary" title={t("Confirm account")} onPress={()=> handleConfirm()} />
                     </Row>
+                    { inputError && <View className="label" >
+                        <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
+                    </View> }
                     <Button variant="text" title={t("Send the verification letter again.")}  onPress={pressBack} />
                 </View>
             </Card>    

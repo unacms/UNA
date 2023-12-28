@@ -145,7 +145,6 @@ export default function (props) {
                                 (currentUser || (!currentUser && item.nonlogged != false)) && (
                                     <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                         <ButtonRef
-                                            tooltip={item.title}
                                             variant="text"
                                             size="lg"
                                             fullWidth
@@ -211,39 +210,40 @@ export default function (props) {
                                 )}
                                 
                         </View>
-                        <Row className='lg:hidden lg:w-full justify-end flex-auto'>
-                           
-                            {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
-                            { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">
-                                <DropdownMenu
-                                    items={menuItemsByName('', menu_add).map(
-                                        (item, index) => {
-                                        return (
-                                            {
-                                            id: 'menu-' + index,
-                                            link: item.link,
-                                            title: item.title,
-                                            icon:
-                                                item.icon.indexOf(' ') == -1
-                                                ? item.icon
-                                                : item.icon.split(' ')[0],
+                        {!!currentUser && (
+                            <Row className='lg:hidden lg:w-full justify-end flex-auto'>
+                                {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
+                                { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">
+                                    <DropdownMenu
+                                        items={menuItemsByName('', menu_add).map(
+                                            (item, index) => {
+                                            return (
+                                                {
+                                                id: 'menu-' + index,
+                                                link: item.link,
+                                                title: item.title,
+                                                icon:
+                                                    item.icon.indexOf(' ') == -1
+                                                    ? item.icon
+                                                    : item.icon.split(' ')[0],
+                                                }
+                                            )
                                             }
-                                        )
-                                        }
-                                    )}
-                                >
-                                    <ButtonRef
-                                        tooltip="Create content" 
-                                        variant="outline"
-                                        rounded
-                                        startDecorator="Plus"
-                                        id="m3"
+                                        )}
+                                    >
+                                        <ButtonRef
+                                            tooltip="Create content" 
+                                            variant="outline"
+                                            rounded
+                                            startDecorator="Plus"
+                                            id="m3"
 
-                                        onPress={() => {}}
-                                    />
-                                </DropdownMenu>
-                            </View>}
-                        </Row>
+                                            onPress={() => {}}
+                                        />
+                                    </DropdownMenu>
+                                </View>}
+                            </Row>)
+                        }
                 </View>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
             </ScrollView>

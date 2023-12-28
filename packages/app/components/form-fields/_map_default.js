@@ -29,6 +29,7 @@ export const componentsMapDefault = {
     switcher: Switcher,
     checkbox: Switcher,
     text: TextField,
+    price: TextField,
     textarea: Textarea,
     select: Select,
     radio_set: Select,
