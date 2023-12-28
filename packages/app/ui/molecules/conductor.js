@@ -39,7 +39,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (useSectionAsMenu)
             return data.url == item.key;
         else
-            return (data.url).includes(item.key);
+            return ('/'+data.url).includes('/'+item.key);
     }));
    // const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
