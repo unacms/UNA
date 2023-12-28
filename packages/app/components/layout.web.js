@@ -136,7 +136,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                     </View>
                 </View>
             </View>
-            {headerSettings?.footer !== false || !currentUser && <Footer /> }
+            {(headerSettings?.footer !== false || !currentUser) && <Footer /> }
         </View>
     );
 });
