@@ -168,7 +168,7 @@ export default function Unit(props) {
                   </Text>
                 </View>
                 <View className="sm:h-10 py-0.5 ">{sTitle}</View>
-                {data.members_list && <Row className="h-6  items-center ">
+                {data.members_list && <Row className="h-6  items-center h-6">
                   <View className="mr-1 ">
                     <ProfilesList
                       data={data.members_list}

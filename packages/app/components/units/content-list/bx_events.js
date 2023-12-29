@@ -168,7 +168,7 @@ export default function Unit(props) {
                                     </Text>
                                 </View>
                                 <View className="sm:h-10 py-0.5 ">{sTitle}</View>
-                                <Row className='justify-between'>
+                                <Row className='justify-between h-10'>
                                     {(data.followers_list) && <Row className="items-center sm:h-10 ">
                                         <View className="mr-2">
                                             <ProfilesList

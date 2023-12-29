@@ -10,9 +10,7 @@ function formatDate(date, t) {
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     const month = t(monthNames[date.getMonth()]);
-    let year = date.getYear() - 100;
-    if ((new Date()).getYear() == date.getYear())
-        year = '';
+    const year = date.getFullYear();
     return `${day} ${month} ${year}`;
 }
 
@@ -40,7 +38,7 @@ export default function ElementTime(props) {
             s = formatDate(d, t).trim();
         }
         if (props.format == 'datetime') {
-            s = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+            s = d.toLocaleDateString()  + d.toLocaleTimeString();
         }
     }
 
