@@ -1,4 +1,4 @@
-import Services from "app/components/elements/messenger/services/history";
+import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import { useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser } from 'app/context/user';
 import { stripTags } from 'app/lib/util';

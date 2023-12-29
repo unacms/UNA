@@ -28,7 +28,7 @@ function GroupsMenuSubItems({ item }){
 }
 
 const TopMenu = memo(({ items, onSelect }) => {
-    const aIconsAliases = { 'inbox': 'home', 'comment': 'messages', 'reply': 'bell', 'bookmark':'files' },
+    const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark':'Bookmarks' },
           aAllowedList = ['inbox', 'direct', 'saved'];
 
     return items && <View className="flex-col gap-0.5 mb-2 mx-2">

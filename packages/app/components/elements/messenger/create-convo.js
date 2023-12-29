@@ -5,7 +5,7 @@ import {memo, useCallback, useRef, useState} from 'react';
 import { Text } from 'app/design/typography';
 import { Icon } from "app/ui/atoms/icon";
 import { Theme } from "app/design/theme";
-import Services from "./services/history";
+import { HistoryServices as Services } from 'app/components/elements/messenger/services';
 import Profile from "app/ui/molecules/profile";
 import { Pressable } from 'app/design/view'
 import {getSkeleton} from "app/lib/skeleton-helpers";
