@@ -279,7 +279,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
             return (
                 <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
-                    <View  className={ (/*leftSideBar*/ true ? appSetting('layout', 'max_width') : ' max-w-screen-xl mx-auto ') + '  w-full'}>
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-xl mx-auto ') + '  w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>

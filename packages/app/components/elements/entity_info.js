@@ -35,10 +35,18 @@ export default function ElementEntityInfo({ data }) {
     return (
             <View className='flex-col gap-y-4 '>{inputs}</View>
     )
+    
+
 
     function getValue(a) {
         switch (a.type) {
+            case 'datepicker':
             case 'datetime':
+                if (isNaN(a.value)){
+                    a.value = (new Date(a.value)/1000);
+                    console.log(a.value);
+                }
+
                 return <Time stylesName="text-base" ts={a.value}></Time>
 
             case 'select':

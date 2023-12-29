@@ -207,7 +207,7 @@ export default function Unit(props) {
                             >
                                 {data.title}
                             </Text>
-                            <Row className="items-center">
+                            <Row className="items-center h-6">
                                 {props.unitType == "person_followers" ||
                                 props.unitType == "person_following" ||
                                 props.unitType ==
@@ -228,7 +228,7 @@ export default function Unit(props) {
                                     </>
                                 ) : (
                                     <>
-                                        <View className="mr-2">
+                                        <View className="mr-2 h-6">
                                             {data.mutual_friends_count > 0 ? (
                                                 <ProfilesList
                                                     data={

@@ -1,10 +1,10 @@
 {
-    "members_0": "no members yet",
+    "members_0": " ",
     "members_1": "{{count}} member",
     "members_2": "{{count}} members",
     "members_plural": "{{count}} members",
 
-    "intrested_0": "no intrested in",
+    "intrested_0": " ",
     "intrested_1": "{{count}} intrested",
     "intrested_2": "{{count}} intrested",
     "intrested_plural": "{{count}} intrested",
@@ -14,17 +14,17 @@
     "going_2": "{{count}} going",
     "going_plural": "{{count}} going",
 
-    "followers_0": "no followers yet",
+    "followers_0": "",
     "followers_1": "{{count}} follower",
     "followers_2": "{{count}} followers",
     "followers_plural": "{{count}} followers",
 
-    "friends_0": "no friends yet",
+    "friends_0": " ",
     "friends_1": "{{count}} friend",
     "friends_2": "{{count}} friends",
     "friends_plural": "{{count}} friends",
 
-    "mutual_friends": "no mutual friends yet",
+    "mutual_friends": " ",
     "mutual_friends_1": "{{count}} mutual friend",
     "mutual_friends_2": "{{count}} mutual friends",
     "mutual_friends_plural": "{{count}} mutual friends",
