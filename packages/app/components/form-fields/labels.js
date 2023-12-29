@@ -52,9 +52,9 @@ export default function FormFieldLabels(props) {
             );
 
             return (
-                <View className='w-full mb-2'>
-                    <Text className="font-medium">{title}</Text>
-                    <Row className="gap-x-2 justify-start items-start mt-1">
+                <View className='w-full mb-4'>
+                    <Text className="font-medium text-sm text-neutral-800 dark:text-neutral-200">{title}</Text>
+                    <Row className="gap-x-2 justify-start items-start mt-1.5">
                         {dataFlat.map((item, index) => <View  key={item.value + index} >
                             <Button 
                                 variant={selectedValues.includes(item.value) ? "primary" : "default"} 
