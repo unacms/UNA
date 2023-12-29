@@ -110,16 +110,18 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
         return (
+            <View className=' max-w-screen-2xl w-full mx-auto'>
             <Row className='w-full flex-col lg:flex-row-reverse '>
-                <View className='w-full lg:w-4/5'>
+                <View className='w-full lg:w-[calc(100%-20rem)]'>
                     <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} currentUser={currentUser}/>
                     <Suggestions/>
                     <AsyncWorker/>
                 </View>
-                <View className='w-full lg:w-1/5'>
+                <View className='w-full lg:w-80'>
                     { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
                 </View>
             </Row>
+            </View>
         );
     }
 }

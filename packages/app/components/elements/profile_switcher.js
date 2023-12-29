@@ -32,7 +32,7 @@ export default function ElementProfileSwitcher(props) {
             <Pressable onPress = {() => handleClick()}>
                 {props.children}
             </Pressable>
-            {(data && data.profiles ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
+            {(data  ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">
@@ -41,7 +41,7 @@ export default function ElementProfileSwitcher(props) {
                         </Text>
                     </View>
                     }
-                    {data.profiles.filter((item) => (item.id != currentUser.id)).map((item, index) => {
+                    {data.profiles && data.profiles.filter((item) => (item.id != currentUser.id)).map((item, index) => {
                         let dUser = {...item}
                         dUser.url_avatar = dUser.avatar
                         let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
@@ -79,7 +79,6 @@ export default function ElementProfileSwitcher(props) {
                                 title= {t("Sign out")}
                                 startDecorator="SignOut"
                                 fullWidth
-                        
                             />
                         </Link>
                         </View>

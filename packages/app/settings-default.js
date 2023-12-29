@@ -207,7 +207,7 @@ let settingsDefault = {
         ],
         menu_account: [
             { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
-            { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet' }, 
+            { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
@@ -798,7 +798,7 @@ if (settingsDefault.layout.format == 'ver') {
     settingsDefault.menu_items.menu_top = [
         { name: 'home', title: 'Home', link: '/', icon: 'House'},
         { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
-        { name: 'payment-carts', title: 'Payment carts', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
+        { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
         { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
