@@ -160,7 +160,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         if (messages && current && typeof current.scrollToEnd === 'function') {
             setTimeout(() => {
                 refList.current.scrollToEnd();
-            }, 100);
+            }, 200);
         }
     }, [messages]);
 
