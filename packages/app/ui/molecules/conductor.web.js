@@ -537,15 +537,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
         });
         return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
-            <Row className="justify-between items-center mb-4 ">
-                <Text className="text-2xl mx-1 my-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+            <Row className="justify-between items-center mt-1 mb-4 ">
+                <Text className="text-3xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
                 </Text>
                 <Row className=" ">
                     {addButtons}
                 </Row>
             </Row>
-            <View className=' hidden flex-col gap-y-0.5 lg:flex '>
+            <View className=' hidden flex-col gap-y-1 lg:flex '>
                 {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                     let settings = appSetting('layouts', a.key)
                     let icon = !a.ident ? (settings?.icon? settings?.icon : a?.icon) : a.icon;
@@ -558,7 +558,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         }}>
                           <Button
                                 variant={a.index == index ? 'outline': "text"}
-                                size={!a.ident ? "lg" : "base"}
+                                size={!a.ident ? "base" : "sm"}
                                 fullWidth
                                 title = {(a.title)}
                                 align="start"

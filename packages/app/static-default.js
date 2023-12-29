@@ -379,7 +379,7 @@ function ComponentsSplash(props) {
                     </View>
                 </View>
 
-                <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto mx-auto items-center p-2 xl:p-8 ">
+                <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto mx-auto items-center  xl:p-4 ">
                     <View className=" flex-auto flex-col w-full max-w-md gap-y-2 p-2 ">
                         <Card
                             rounded=" rounded-2xl "
