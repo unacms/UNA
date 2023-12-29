@@ -1,4 +1,3 @@
-import { View, Row } from 'app/design/view';
 import * as React from 'react';
 import {loadStripe} from '@stripe/stripe-js';
 import {
