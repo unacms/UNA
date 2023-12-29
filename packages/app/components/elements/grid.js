@@ -220,7 +220,7 @@ export default function ElementGrid({data}) {
     };
 
     const handleActionBlockPayment = async () => {
-        let cnt =<Stripe/>
+        let cnt =<Stripe seller_id={settings.query_append.seller_id} items={selected} />
         setModalContentElement(cnt);
     };
 
