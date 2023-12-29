@@ -117,7 +117,7 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }} 
-                className=" backdrop-blur fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d  ">
+                className=" backdrop-blur fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
                         {headerSettings.menu && (
                             <View className="lg:hidden mr-4">

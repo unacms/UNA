@@ -85,20 +85,28 @@ export default function Layout(props) {
     if (data?.empty)
         return <>{children}</>
 
-    let stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}
+    let stylesBgImage={ backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image')}
     let stylesBg={ backgroundColor: appSetting('layout', 'background_color')}
     if(theme === 'dark'){
-        stylesBgImage={ minHeight: '100vh', backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image_dark')}
+        stylesBgImage={ backgroundAttachment:'fixed', backgroundImage: appSetting('layout', 'background_image_dark')}
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
     }
 
-    if (layoutName === 'messenger')
-        stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
+    useEffect(() => {
+        for (let style in stylesBgImage) {
+            document.body.style[style] = stylesBgImage[style];
+        }
+        for (let style in stylesBg) {
+            document.body.style[style] = stylesBg[style];
+        }
+        
+    }, []);
+    
 
     if(appSetting('layout', 'format') == 'hor'){
         return (
             <>
-                <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage}/>
+                <Content headerSettings={headerSettings} children={children} />
                 <Suggestions/>
                 <AsyncWorker/>
                 { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
@@ -110,10 +118,10 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
         return (
-            <View className=' max-w-screen-2xl w-full mx-auto'>
+            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
             <Row className='w-full flex-col lg:flex-row-reverse '>
                 <View className='w-full lg:w-[calc(100%-20rem)]'>
-                    <Content headerSettings={headerSettings} children={children} stylesBgImage={stylesBgImage} currentUser={currentUser}/>
+                    <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
                     <Suggestions/>
                     <AsyncWorker/>
                 </View>
@@ -128,7 +136,7 @@ export default function Layout(props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser }) => {
     return (
-        <View className="w-full items-stretch " style={stylesBgImage}>
+        <View className="w-full items-stretch " >
             <View className=" w-full mx-auto flex-row -top-[1px] " >
                 <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     <View className='w-full mx-auto'>

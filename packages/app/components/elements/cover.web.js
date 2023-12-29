@@ -79,8 +79,17 @@ function CoverMenuMeta(props) {
 export function CoverSmall(props) {
     const router = useRouter();
     const data = props.data
+
+    const windowDimen =  useWindowDimensions();
+    const windowWidth = windowDimen.width;
+
+    let styles={}
+    if (windowWidth > 600 && appSetting('layout', 'format') == 'ver'){
+        styles = {width: 1536 - 20*16}
+    }
+
     return (
-        <View className=" backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d    w-full ">
+        <View style={styles} className=" backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d    w-full ">
             <View className='max-w-screen-xl w-full mx-auto'>
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">

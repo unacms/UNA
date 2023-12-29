@@ -277,8 +277,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     )
                 }
             });
+
+            let styles={}
+            if (windowWidth > 600 && appSetting('layout', 'format') == 'ver'){
+                styles = {width: 1536 - 20*16}
+            }
+
             return (
-                <View className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
+                
+                <View  style={styles} className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
                     <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-xl mx-auto ') + '  w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
