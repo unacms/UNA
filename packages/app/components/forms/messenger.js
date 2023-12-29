@@ -37,7 +37,7 @@ export default function FormMessenger(props) {
     if (typeof props.data.inputs['send'] !== 'undefined' )
         props.data.inputs['submit'].icon = 'PaperPlaneRight';
 
-    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 0 ) }}>
+    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}>
                 <Row className="w-full flex flex-row items-center">
                   <View className="flex-0">
                       { getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder }) }

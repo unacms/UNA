@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { Platform } from 'react-native';
-import Services from 'app/components/elements/messenger/services/convos';
+import { ConvoServices as Services } from 'app/components/elements/messenger/services';
 
 function useBrowserHistory(onPopState){
     if (Platform.OS !== 'web')

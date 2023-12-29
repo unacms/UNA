@@ -1,5 +1,5 @@
 import useKeyboard from "./hooks/useKeyboard";
-import Services from "./services/history";
+import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import {View} from "app/design/view";
 import Form from "app/components/elements/form";
 import { useSendData } from "./hooks/useHistory";

@@ -11,8 +11,7 @@ import ReactionContext from "app/context/actions";
 import useHistory, { HistoryKeys, useHistoryMessageAction } from "./hooks/useHistory";
 import { ConvoKeys, addConvoItem } from "./hooks/useConvos";
 import { useQueryClient } from '@tanstack/react-query';
-import Services from "./services/history";
-import ConvoServices from "./services/convos";
+import { HistoryServices as Services, ConvoServices } from "./services";
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import CreateConvo from './create-convo';
 import { isPhone } from "./grid-utils";
@@ -161,7 +160,7 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         if (messages && current && typeof current.scrollToEnd === 'function') {
             setTimeout(() => {
                 refList.current.scrollToEnd();
-            }, 100);
+            }, 200);
         }
     }, [messages]);
 
