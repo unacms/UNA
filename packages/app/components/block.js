@@ -3,7 +3,7 @@ import ObjectDataObject from './blocks-content/object-data-object';
 import ObjectDataArray from './blocks-content/object-data-array';
 import { View } from 'app/design/view'
 import { Text, H2 } from 'app/design/typography'
-import { stripTags } from 'app/lib/util';
+import { stripTags, appSetting } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static';
 import Card from 'app/ui/molecules/card'
 
