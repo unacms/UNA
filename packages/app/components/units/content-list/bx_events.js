@@ -36,7 +36,7 @@ export default function Unit(props) {
     if (data?.meta) {
         //--- Primary button
         let sPrimary = 'join'
-        if (props.module == 'bx_channels')
+        if (props.module == 'bx_events' || props.module == 'bx_channels')
             sPrimary = 'subscribe';
         oMenuItemPrimary = data.meta.items
             .filter((aItem) => aItem.name == sPrimary)
