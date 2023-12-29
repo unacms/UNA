@@ -124,6 +124,10 @@ export function getPageWidth(uri) {
     return appSetting('layout', 'max_width');
 }
 
+export function getAlert(type, data) {
+    return {type : type, data: data};
+}
+
 export function getRandomColor(str) {
     if (!str)
         str ='a';

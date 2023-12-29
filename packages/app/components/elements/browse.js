@@ -13,10 +13,8 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
 import Toster from 'app/ui/atoms/toster';
-import  { LayoutData } from 'app/context/layout';
 
 export default function ElementBrowse(props) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
     const [maxId, setMaxId] = useState(0);
     const tosterRef = useRef();
     const { t } = useTranslation();
@@ -184,7 +182,6 @@ export default function ElementBrowse(props) {
         setTosterVisible(false); 
         let sResponse =  await fetcher(prepareUrl(true));
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
-        setLayoutData(sResponse.data[0].data.data);
         setMaxId(maxIdLocal);
         uniRef.current.scrollToIndex({ animated: true, index: -1 });
    

@@ -44,7 +44,6 @@ export default function ElementEntityInfo({ data }) {
             case 'datetime':
                 if (isNaN(a.value)){
                     a.value = (new Date(a.value)/1000);
-                    console.log(a.value);
                 }
 
                 return <Time stylesName="text-base" ts={a.value}></Time>

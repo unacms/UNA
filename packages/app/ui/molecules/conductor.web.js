@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -24,7 +24,6 @@ import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
-import Calendar from 'app/ui/atoms/calendar'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -53,7 +52,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     
     useEffect(() => {
         setRoutes(initedTabs);
-    }, [keyword, data.url]);
+    }, [keyword, data.url, data.elements]);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
@@ -76,7 +75,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     let maxIdLocal = 0;
     const currentRoute = routes.find((item) => item.index === index);
-
+    
     let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
     const bUseDaemon =  (currentRoute?.endpoint?.unit == 'feed');
     let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
@@ -114,7 +113,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         const sResponse = await fetcher(sRequest);
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
-        setLayoutData(sResponse.data[0].data.data);
+        setLayoutData(getAlert('feed:new_content', sResponse.data[0].data.data));
+
         setMaxId(maxIdLocal);
         uniRef.current.scrollToIndex({ animated: true, index: -1 });
 
@@ -490,7 +490,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     }
                 />
-            }, [dataItems.length]);
+            }, [dataItems]);
             //
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 

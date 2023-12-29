@@ -8,22 +8,24 @@ export default function UniList(props) {
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
    
     if (props.unit == 'feed'){
-        if(layoutData?.id){
-            let insertIndex = data.findIndex(item => item.type !== 'block');
-            if (insertIndex === -1) {
-                data = [layoutData, ...data]
+        if(layoutData && layoutData?.type == 'feed:new_content'){
+            if(layoutData.data?.id){
+                let insertIndex = data.findIndex(item => item.type !== 'block');
+                if (insertIndex === -1) {
+                    data = [layoutData.data, ...data]
+                }
+                else{
+                    data.splice(insertIndex, 0, layoutData.data);
+                }
             }
-            else{
-                data.splice(insertIndex, 0, layoutData);
-            }
-        }
-        if (Array.isArray(layoutData)){
-            let insertIndex = data.findIndex(item => item.type !== 'block');
-            if (insertIndex === -1) {
-                data = [...layoutData, ...data]
-            }
-            else{
-                data.splice(insertIndex, 0, ...layoutData);
+            if (Array.isArray(layoutData.data)){
+                let insertIndex = data.findIndex(item => item.type !== 'block');
+                if (insertIndex === -1) {
+                    data = [...layoutData.data, ...data]
+                }
+                else{
+                    data.splice(insertIndex, 0, ...layoutData.data);
+                }
             }
         }
     }

@@ -1,15 +1,17 @@
-import { useState } from 'react';
-import { appSetting } from 'app/lib/util';
+import { useState, useContext } from 'react';
+import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { View, Row } from 'app/design/view'
-import { Button, ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
+import { View } from 'app/design/view'
+import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useTranslation } from 'react-i18next';
+import { LayoutData } from 'app/context/layout'
 
 export default function ElementConnections(oProps) {
     const [ elementData, setElementData ] = useState(false);
     const [ modalContent, setModalContent ] = useState(false);
+    const { layoutData, setLayoutData } = useContext(LayoutData)
     const { t } = useTranslation();
 
     const oParams = {...appSetting('social_actions', 'connection'), ...oProps.params};
@@ -50,6 +52,7 @@ export default function ElementConnections(oProps) {
         const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
+        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now()} ));
         if(typeof onLoad === 'function')
             onLoad(sResponse?.data);
     };
@@ -67,7 +70,8 @@ export default function ElementConnections(oProps) {
             }
             else
                 setElementVars(oData);
-            //TODO oProps.o
+              
+            
             if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
                 oProps.params.on_done(sAction, oData);
         });

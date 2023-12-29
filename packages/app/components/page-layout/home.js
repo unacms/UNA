@@ -3,7 +3,6 @@ import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { appSetting, filterContent, storageSet, storageGet } from 'app/lib/util'
-import LayoutDataContext from 'app/context/layout'
 import { useCurrentUser } from 'app/context/user'
 import { Conductor } from 'app/ui/molecules/conductor'
 import { Text } from 'app/design/typography'
@@ -183,14 +182,13 @@ export default function PageLayout(props) {
                                             if (feedType == item.name){
                                                 return (
                                                     <View key={'view' + index}  >
-                                                        <LayoutDataContext>
+                                                       
                                                             {topBlocks.map((item, index) => {
                                                                     return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
                                                                 }
                                                             )}
                                                             <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
                                                             <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
-                                                        </LayoutDataContext>
                                                     </View>
                                                 );
                                             }
@@ -306,7 +304,7 @@ export default function PageLayout(props) {
                         if (feedType == item.name){
                             return (
                                 <View key={'view' + index}  >
-                                    <LayoutDataContext>
+                                    
                                         <Conductor
                                             minHeaderHeight={0}
                                             isHideDefaultHeader={false}
@@ -316,7 +314,6 @@ export default function PageLayout(props) {
                                             blocks={props.blocks}
                                             skeleton='feed'
                                         />
-                                    </LayoutDataContext>
                                 </View>
                             );
                         }

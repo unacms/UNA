@@ -1,12 +1,29 @@
-import {Conductor} from 'app/ui/molecules/conductor';
+import { Conductor } from 'app/ui/molecules/conductor';
+import { useContext, useState, useEffect } from 'react';
 import Cover, {CoverSmall} from 'app/components/elements/cover';
-import  LayoutDataContext from 'app/context/layout';
 import { getHeaderSettings, getBlocksFromData } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
-import { View } from 'app/design/view'
+import { LayoutData } from 'app/context/layout';
+import { fetcher } from 'app/lib/fetcher';
+import { storageSet, storageClear, storageGet } from 'app/lib/util'
 
 export default function PageLayout(props) {
     const windowDimen =  useWindowDimensions();
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const [ pageData, setPageData] = useState(props.data);
+    let ts = 0;
+
+    useEffect(() => {
+        if(layoutData && layoutData?.type == 'сonnections:action'){
+            (async () => {
+                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + 'view-event-profile/ert');
+                setPageData(sResponse.data);
+            })();
+            
+        }
+    }, [layoutData?.data?.time]);
+
+      
     const windowWidth = windowDimen.width;
     let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
     let cover = headerSettings.cover
@@ -28,19 +45,20 @@ export default function PageLayout(props) {
         blocks = getBlocksFromData(props.data)
     }
 
-    return (<LayoutDataContext>
-            <Conductor 
-                layoutName={props.layoutName}
-                header={header} 
-                smallHeader={smallHeader} 
-                minHeaderHeight={104} 
-                offsetTop={300}
-                isHideDefaultHeader={true} 
-                menu={menu} 
-                data={props.data} 
-                blocks={blocks}
-                cover={cover}
-            />
-        </LayoutDataContext>)
+    return (
+        <Conductor 
+            layoutName={props.layoutName}
+            header={header} 
+            smallHeader={smallHeader} 
+            minHeaderHeight={104} 
+            offsetTop={300}
+            isHideDefaultHeader={true} 
+            menu={menu} 
+            data={pageData} 
+            blocks={blocks}
+            cover={cover}
+            ts={ts}
+        />
+       )
     
 }

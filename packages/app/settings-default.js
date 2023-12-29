@@ -44,7 +44,7 @@ let settingsDefault = {
         embeds: 'oembed.php?html=1&a=get_link&l=',
     },
     cache: {
-        list: true,
+        list: false,
         compress: true
     },
     feed: {

@@ -3,7 +3,7 @@ import { Button, Modal,  } from 'app/design/controls'
 import { useState, useContext } from 'react';
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import  { LayoutData } from 'app/context/layout';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, getAlert } from 'app/lib/util';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
@@ -17,7 +17,7 @@ export default function FormFeed(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
     if (props.response?.id){
         setTimeout(() => {
-            setLayoutData(props.response)
+            setLayoutData(getAlert('feed:new_content', props.response));
         }, 100);
        
     }
