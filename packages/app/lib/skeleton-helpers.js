@@ -74,28 +74,25 @@ const bx_forum = <>
 
 function browse_item(num) {
   return ( <View className={Platform.OS === 'web' ? 'mt-0': 'mt-16'}>{items.map((item, index) => (
-      <View key={'browse_item' + index} className="flex-row w-full animate-pulse max-w-screen-xl mx-auto p-2">
-        <View className="mb-4 mx-4 sm:mx-2 flex-auto aspect-square rounded-xl  overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-          <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+      <View key={'browse_item' + index} className="flex-row gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto p-2">
+        <View className="mb-2  flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+          <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
         </View>
         { num > 1 && 
-        <View className="mb-4 mx-4 sm:mx-2  hidden sm:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d  ">
-        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-        </View>
+        <View className="mb-2  flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+        <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+      </View>
         }
         { num > 2 && 
-        <View className="mb-4 mx-4 sm:mx-2  hidden md:block flex-auto aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
-        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
+        <View className="mb-2  flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+        <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+      </View>
+        }
+        { num > 3 && <View className="mb-2  flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+          <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
         </View>
         }
-        { num > 3 && <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-        </View>
-        }
-        { num > 4 && <View className="hidden lg:block flex-auto mx-4 sm:mx-2 aspect-square rounded-xl overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-        <View className="relative bg-neutral-500/20  aspect-video  w-full "></View>
-        </View>
-        }
+       
       </View>
     ))}
   </View>

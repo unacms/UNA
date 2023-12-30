@@ -191,18 +191,18 @@ export function Button (props) {
         case 'sm':
             sClassContainer += buttonRounded ? 'rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-0.5 ' : '');
-            sClassText += ' text-sm  '
+            sClassText += ' text-sm leading-5  '
             iIconSize = 20;
-            sTitleContainer += buttonTitle !== '' ? 'mx-1.5 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' // Conditionally add 'mx-2' class
 
         break
 
         case 'base':
-            sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-2 py-2 ';
-            sIconContainer = 'h-6 w-6 ' + (buttonTitle !== '' ? ' mx-1 ' : '');
-            sClassText += ' text-base '
+            sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
+            sIconContainer = 'h-6 w-6 m-[1px] ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sClassText += ' text-sm leading-6 my-0.5 '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? 'mx-2 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-2  my-0.5 ' : '' // Conditionally add 'mx-2' class
 
         break
 
@@ -251,7 +251,7 @@ export function Button (props) {
 
     let sButtonIconStart = buttonIconStart != '' && !buttonIconEnd ? getIcon2(buttonIconStart, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
     let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
-    let oButtonAddon = buttonAddon != '' && buttonAddon ? <View className='flex-1 items-end '><View className=' bg-primary dark:bg-primary-d rounded-full px-2 py-1 w-12 text-center items-center'><Text className="text-white dark:text-black text-xs font-semibold">{buttonAddon}</Text></View></View> : null;
+    let oButtonAddon = buttonAddon != '' && buttonAddon ? <View className='flex-1 items-end '><View className=' bg-primary dark:bg-primary-d rounded-full px-2 py-0.5 mx-1 text-center items-center'><Text className="text-white dark:text-black text-xs font-semibold">{buttonAddon}</Text></View></View> : null;
     if (buttonDisabled)
         onPress = undefined;
     let Cnt = onPress !== undefined ? Pressable : View

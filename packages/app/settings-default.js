@@ -71,19 +71,16 @@ let settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-            { width: 1280, count: 5 },
             { width: 1024, count: 4 },
             { width: 768, count: 3 },
             { width: 640, count: 3 },
         ],
         per_line_left_side_bar: [
-            { width: 1536, count: 5 },
             { width: 1280, count: 4 },
             { width: 1024, count: 3 },
             { width: 768, count: 4 },
@@ -756,7 +753,7 @@ let settingsDefault = {
     menu: {
         left: [
             { title: 'Profile', link: '{profile}', icon: 'User' },
-            { title: 'Notifs', link: '/notifications-view', icon: 'Bell' },
+            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
             { title: 'Friends', link: '/friends', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },

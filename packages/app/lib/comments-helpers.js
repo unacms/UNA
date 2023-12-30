@@ -395,7 +395,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
         padding = 0;
     const { colors } = useTheme();    
 
-    let className = "w-full bg-bgrcard dark:bg-bgrcard-d shadow";
+    let className = "w-full bg-bgrcard dark:bg-bgrcard-d ";
     if (isModal)
         className = "w-full h-screen bg-bgrcard dark:bg-bgrcard-d";
     return ( 
@@ -418,7 +418,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                 </View>)
             }
             
-            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : "px-2 lg:px-4 lg:py-2") + "flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit}  />
+            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " px-4 lg:py-1 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit}  />
         </View> 
     )
 }

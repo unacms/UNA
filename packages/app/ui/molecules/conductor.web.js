@@ -545,7 +545,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         });
         return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mt-1 mb-4 ">
-                <Text className="text-3xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+                <Text className="text-2xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
                 </Text>
                 <Row className=" ">

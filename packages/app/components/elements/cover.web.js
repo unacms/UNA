@@ -221,8 +221,8 @@ export default function ElementCover(props) {
 
     return (
         <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-            <View className='max-w-screen-xl sm:px-4 mx-auto w-full'>
-                {mode != 'min' && <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto sm:rounded-b-xl overflow-hidden">
+            <View className='max-w-screen-xl sm:p-4 mx-auto w-full'>
+                {mode != 'min' && <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto sm:rounded-xl overflow-hidden">
                     {!!data.cover && (
                         <Image
                             alt={data.group_name}
@@ -258,7 +258,7 @@ export default function ElementCover(props) {
                                     {data.profile.display_name}
                                 </Text>
                                 
-                                    <Row className='gap-x-2 md:-translate-x-2'>
+                                    <Row className='gap-x-2'>
                                         <CoverMenuMeta {...data.meta_menu} />
                                     </Row>
                                 

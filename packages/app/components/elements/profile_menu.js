@@ -28,7 +28,7 @@ export default function ElementProfileMenu(props) {
                             solid
                             align="start"
                             title={t(item.title)}
-                            size="lg"
+                            size="base"
                         />
                     </Link>
                 ))}
