@@ -11,7 +11,7 @@ import { useCurrentUser } from 'app/context/user'
 export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const handleHideMenu = (params) => {}
-    const menu_top = appSetting('menu_items', 'menu_drower')
+    const menu_top = appSetting('menu_items', 'menu_drawer')
     const { t } = useTranslation();
 
     let windowHeight = Dimensions.get('window').height

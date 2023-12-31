@@ -167,7 +167,7 @@ let settingsDefault = {
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
         ],
-        menu_drower: [
+        menu_drawer: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
             { name: 'friends', title: 'Friends1', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 

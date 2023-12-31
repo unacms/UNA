@@ -199,10 +199,10 @@ export function Button (props) {
 
         case 'base':
             sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
-            sIconContainer = 'h-6 w-6 m-[1px] ' + (buttonTitle !== '' ? ' mx-1 ' : '');
-            sClassText += ' text-sm leading-6 my-0.5 '
+            sIconContainer = 'h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sClassText += ' text-sm leading-6  '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2  my-0.5 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-2   ' : '' // Conditionally add 'mx-2' class
 
         break
 
