@@ -11,6 +11,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Text } from 'app/design/typography'
 
 export default function FormFeed(props) {
     const { t } = useTranslation();
@@ -64,14 +65,15 @@ export default function FormFeed(props) {
                 <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                     <View className="w-full flex-col gap-y-4 ">
                         {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
-                        <Row className="">
-                            {props.data.inputs['photo'] && <View className="w-12">
+                        <Row className=" flex-wrap border border-bdr dark:border-bdr-d rounded-xl py-2 items-center ">
+                            <Text className="px-4 flex-auto text-neutral-800 dark:text-neutral-200 text-sm font-semibold">{t("Add media to your post")}</Text>
+                            {props.data.inputs['photo'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}
-                            {props.data.inputs['video'] && <View className="w-12">
+                            {props.data.inputs['video'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}
-                            {props.data.inputs['file'] && <View className="w-12">
+                            {props.data.inputs['file'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}
                         </Row>

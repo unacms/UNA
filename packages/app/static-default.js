@@ -175,7 +175,7 @@ const ComponentsCommentsEmpty = () => {
         <>
             <View className="pt-8">
                 <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto mb-4 text-neutral-800 dark:text-neutral-200 ">
+                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
                         <Icon icon="ChatCircle" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">

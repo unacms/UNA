@@ -129,13 +129,13 @@ export function BlockWrapper(props) {
 
     let cssClasses = rest?.extraProps?.cssClasses ? rest?.extraProps?.cssClasses : "";
     let cnt = <>{bIsShowTitle && <View>
-        <H2 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">{stripTags(block.title)}</H2>
+        <H2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">{stripTags(block.title)}</H2>
     </View>
 }
 <View>{props.children}</View></>
     return (
         <View key={block.id} className={"w-full mx-auto " +  ( !fullWidth && !cssClasses.includes("max-w-") ? (appSetting('layout', 'format') == 'ver' ? "  max-w-screen-lg  " : "  max-w-screen-xl  ") : "" ) + (bIsShowPad ? ' mb-4 ' : '') + cssClasses}>
-            { bIsShowBg ? (<Card addClassName=" p-6 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
+            { bIsShowBg ? (<Card addClassName=" px-6 py-5 ">{cnt}</Card>) : <View className="  " >{cnt}</View>}
         </View>
     );
 }

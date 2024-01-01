@@ -107,17 +107,17 @@ export default function PageLayout(props) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
             dUser.url = '/dashboard'
-            const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
+            const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
 
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                     <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
                         {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block w-1/4   max-w-xs   top-0 sticky duration-200 ">
                             {appSetting('layout', 'show_profile_info') && (
-                                <Row className="items-center justify-between pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
+                                <Row className="items-center justify-between px-6 py-4 cursor-pointer active:opacity-50">
                                     <Link href={currentUser.url} className="flex-auto">
                                         <Row className='flex-row gap-x-2 items-center'>
-                                            <View className="m-[1px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                            <View className=" ml-[5px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                                 {profile}
                                             </View>
                                             <Text className="text-base flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">

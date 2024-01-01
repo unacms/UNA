@@ -395,7 +395,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
         padding = 0;
     const { colors } = useTheme();    
 
-    let className = "w-full bg-bgrcard dark:bg-bgrcard-d ";
+    let className = "w-full backdrop-blur rounded-b-xl";
     if (isModal)
         className = "w-full h-screen bg-bgrcard dark:bg-bgrcard-d";
     return ( 
