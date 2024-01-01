@@ -78,8 +78,8 @@ export default function Unit(props) {
 
         return (
             <>
-                <View className="sm:px-4 pb-2 sm:pb-4">
-                    <Card addClassName="flex-row gap-x-4 p-4 mx-auto w-full max-w-5xl ">
+                <View className="px-4 mb-4  max-w-4xl ">
+                    <View className="flex-row pb-4  gap-x-4 border-b border-bdr dark:border-bdr-d mx-auto w-full">
                         <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
                             <View className="border p-1 border-primary/10 relative flex-none  h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">
                                 <Text className="text-4xl">
@@ -90,11 +90,11 @@ export default function Unit(props) {
                                 </Text>
                             </View>
                             <Time
-                                stylesName="  text-center bg-bgritem dark:bg-bgritem-d  px-2.5 py-2 mt-auto text-sm rounded-full dark:text-neutral-300 text-neutral-700"
+                                stylesName="  text-center bg-bgritem dark:bg-bgritem-d  px-2.5 py-2 mt-auto text-xs rounded-full dark:text-neutral-300 text-neutral-700"
                                 ts={data.added}
                             ></Time>
                         </View>
-                        <View className="flex-col gap-y-3 flex-auto">
+                        <View className="flex-col gap-y-3 flex-auto ">
                             <View className="flex-row gap-x-4">
                                 <View className="flex-col gap-y-2 flex-auto">
                                     <View className="sm:hidden flex-row items-center justify-between w-full">
@@ -168,7 +168,7 @@ export default function Unit(props) {
                                 </View>
                             </View>
                         </View>
-                    </Card>
+                    </View>
                 </View>
             </>
         );
