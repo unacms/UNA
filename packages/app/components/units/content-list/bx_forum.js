@@ -21,7 +21,7 @@ export default function Unit(props) {
 
         return (
             <>
-                <Card margin="mb-2 mx-4" rounded="rounded-2xl">
+                <Card margin="mr-4" rounded="rounded-2xl">
                     <View className="flex-row p-1  gap-x-1.5 ">
                         <View className="flex-auto flex-col px-2 pt-1.5 pb-1 gap-y-2">
                             <Link
