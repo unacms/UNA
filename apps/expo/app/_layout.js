@@ -9,6 +9,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
+import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
+
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -17,6 +19,11 @@ import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
 
 export default function Root(props) {
+
+  // if (!__DEV__) {
+  RNScreenshotPrevent.enableSecureView();
+  RNScreenshotPrevent.enabled(true);
+  // }
 
   const languageDetector = {
     type: 'languageDetector',
