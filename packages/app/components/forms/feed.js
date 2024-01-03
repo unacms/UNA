@@ -66,7 +66,7 @@ export default function FormFeed(props) {
                     <View className="w-full flex-col gap-y-4 ">
                         {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
                         <Row className=" flex-wrap border border-bdr dark:border-bdr-d rounded-xl py-2 items-center ">
-                            <Text className="px-4 flex-auto text-neutral-800 dark:text-neutral-200 text-sm font-semibold">{t("Add media to your post")}</Text>
+                            <Text className="px-4 flex-auto text-neutral-800 dark:text-neutral-200 text-sm font-semibold">{t("Add media")}</Text>
                             {props.data.inputs['photo'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}

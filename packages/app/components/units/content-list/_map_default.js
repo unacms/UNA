@@ -7,6 +7,7 @@ import UnitMarket from './bx_market';
 import UnitOrg from './bx_organizations';
 import UnitPerson from './bx_persons';
 import UnitDefault from './default';
+import UnitPosts from './bx_posts';
 export const componentsMapDefault = {
     'bx_groups': UnitGroup,
     'bx_ads': UnitAd,
@@ -16,6 +17,7 @@ export const componentsMapDefault = {
     'bx_market': UnitMarket,
     'bx_organizations': UnitOrg,
     'bx_persons': UnitPerson,
+    'bx_posts': UnitPosts,
 
     'default': UnitDefault,
     

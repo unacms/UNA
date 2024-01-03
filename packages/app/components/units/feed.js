@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -13,7 +13,6 @@ import { Button } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
 import dynamic from 'next/dynamic'
-import React from 'react'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
@@ -144,8 +143,7 @@ function DefaultUnit(data) {
             }
         ) : []
 
-    if (viewState.view == 'deleted') 
-        return <></>
+   
 
     let tlContent = '';
   
@@ -193,6 +191,17 @@ function DefaultUnit(data) {
             }
         })();
     }, []);
+
+    let content_attach= [];
+    if (data.content.images_attach && data.content.images_attach.length > 0 ) {
+        content_attach = content_attach.concat(data.content.images_attach);
+    }
+    if (data.content.videos_attach && data.content.videos_attach.length > 0 ) {
+        content_attach = content_attach.concat(data.content.videos_attach);
+    }
+
+    if (viewState.view == 'deleted') 
+        return <></>
 
     return (
         <AnimatedBlock>
@@ -505,7 +514,7 @@ function DefaultUnit(data) {
                                     <View>
                                     <View className="flex-col gap-y-3 relative">
                                         {bIsTimelineContent && (
-                                        <View className={tlContent && data.content.images_attach.length >0 ? 'pb-3' : ''}>
+                                        <View className={tlContent && content_attach.length >0 ? 'pb-3' : ''}>
                                             <HtmlMemo tlContent={tlContent} />
                                             {data.showMore && !showFull && bIsLong && (
                                             <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d ">

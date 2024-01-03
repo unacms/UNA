@@ -21,17 +21,19 @@ export default function UniList(props) {
         if(layoutData && layoutData?.type == 'feed:new_content'){
             if(layoutData.data?.id){
                 let insertIndex = data.findIndex(item => item.type !== 'block');
+                console.log("------01",  data)
                 if (insertIndex === -1) {
-                    data = [layoutData.data, ...data]
+                    data.splice(data.length, 0, layoutData.data);
                 }
                 else{
                     data.splice(insertIndex, 0, layoutData.data);
                 }
+                console.log("------02", data)
             }
             if (Array.isArray(layoutData.data)){
                 let insertIndex = data.findIndex(item => item.type !== 'block');
                 if (insertIndex === -1) {
-                    data = [...layoutData.data, ...data]
+                    data.splice(data.length, 0, ...layoutData.data);
                 }
                 else{
                     data.splice(insertIndex, 0, ...layoutData.data);

@@ -73,7 +73,7 @@ export default function FormFieldText(props) {
     }
     
     if (props.html == 1 || props.html == 2 || props.html == 3){
-        input = <View className={props.numLines ==1 ? '' : 'editor-height '}>
+        input = <View className={props.numLines ==1 ? '' : 'editor-height editor-height-'+props.html}>
             <FormFieldFtf  {...props} />
         </View>;
     }  

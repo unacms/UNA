@@ -9,7 +9,7 @@ import Time from "app/ui/atoms/time";
 import Profile from "app/ui/molecules/profile";
 
 export default function Unit(props) {
-    function forumUnitPreview() {
+    function smallUnit() {
         let sMeta = (
             <Profile
                 {...data.author_data}
@@ -66,7 +66,7 @@ export default function Unit(props) {
         );
     }
 
-    function forumUnit() {
+    function unit() {
         let sMeta = (
             <Profile
                 {...data.author_data}
@@ -176,5 +176,5 @@ export default function Unit(props) {
 
     const data = props.data;
     const imageSizes = getImageSizes();
-    return props.sidebar ? forumUnitPreview() : forumUnit();
+    return props.unitType == 'small' ? smallUnit() : unit();
 }

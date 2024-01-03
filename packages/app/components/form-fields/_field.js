@@ -4,6 +4,7 @@ import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 
 export default function FormField(props) {
+
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
@@ -12,7 +13,7 @@ export default function FormField(props) {
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&
             <View >
-                <Text className="label-text block ml-0.5 mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-200">{caption}</Text>
+                <Text className="label-text block ml-0.5 mb-1 text-sm text-neutral-700 dark:text-neutral-200"><Text className="font-medium">{caption}</Text> {props.checker ? '' : '(Optional)'}</Text>
             </View> }
             {props.children}
             {!!props.error && Array.isArray(props.error) && 
@@ -27,7 +28,7 @@ export default function FormField(props) {
             }
             {!!props.info &&
                 <View className="label" >
-                    <Text className="ml-0.5 mt-0.5 text-xs">{props.info}</Text>
+                    <Text className="ml-0.5 mt-0.5 text-xs text-neutral-700 dark:text-neutral-200">{props.info}</Text>
                 </View>
             }
         </View>

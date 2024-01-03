@@ -6,17 +6,18 @@ import { appSetting, clearLinks } from 'app/lib/util'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import EntityAttachments from './entity_attachments';
 
-export default function ElementEntityText({data}) {
+export default function ElementEntityText(props) {
+    let data = props.data;
     const view = appSetting('entry', 'default_view');
     switch (view) {
         case 'small':
-            return <Small data={data} />;
+            return <Small data={data} showPad={props.showPad} />;
         default:
-            return <Default data={data} />;
+            return <Default data={data} showPad={props.showPad} />;
       }
 }
 
-function Small({ data }) {
+function Small({ data, showPad }) {
 
     const oCommentTextStyle = {
         body: {
@@ -52,14 +53,13 @@ const getImagesData = (data) => {
     return att;
 };
 
-function Default({ data }) {
+function Default({ data, showPad }) {
     let att = getImagesData(data);
     const text = clearLinks(data.entry_text);
-
     return (
         <View className="w-full">
             {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" mt-4 u-cover" view="cover"   /></View>}              
-            <View className="mx-auto w-full px-4">
+            <View className={"mx-auto w-full " + (showPad == false ? '' : ' px-4')}>
                 <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>
                 <Html data={text} />
             </View>

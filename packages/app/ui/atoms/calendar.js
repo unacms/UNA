@@ -10,6 +10,7 @@ import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 
+
 export default function ElemenCalendar({ name, value = '', type, onChange }) {
     const bIsTime = type === 'datetime';
 
@@ -90,10 +91,10 @@ export default function ElemenCalendar({ name, value = '', type, onChange }) {
                         theme={{
                             calendarBackground: colors.background2,
                             dayTextColor: colors.text,
-                            textDisabledColor: colors.border,
+                            textDisabledColor: colors.text,
                             monthTextColor: colors.text,
                         }}
-                        renderArrow={direction => {return  <Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} />}}
+                        renderArrow={direction => {return  <View className="text-neutral-800 dark:text-neutral-200"><Icon  icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View>}}
                         initialDate = {date}
                         onDayPress={day => {
                             setValueDay(day)

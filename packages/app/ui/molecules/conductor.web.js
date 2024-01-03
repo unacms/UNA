@@ -122,6 +122,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     /* DAEMON PART */
 
     const indicatorOffset = useSharedValue(0);
+
+    const getUnitType = (currentRoute) => {
+        let blocksroutes =  currentRoute?.blocks;
+        if (blocksroutes){
+            const blockKeys = Object.keys(blocksroutes);
+            for (const key of blockKeys) {
+                if (!blocksroutes[key].sidebar && blocksroutes[key].unitType) {
+                    return blocksroutes[key].unitType;
+                }
+            }
+        }
+
+    }
     
     const getNumCols = (width) => {
 
@@ -463,14 +476,16 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
         //let b = useMemo(() => {
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit), numColumns);
         if (!route.inited){
             return <></>
         }
         if (route.inited){
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
-            const unitType = getUnitModeBySource(route?.endpoint?.request_url)
-            
+            let unitType = getUnitModeBySource(route?.endpoint?.request_url)
+            if (unitType == 'default')
+                unitType = getUnitType(route);
+
             let TabFlashListM = useMemo(() => {  
                 return <TabFlashList
                     index={route.index}
@@ -492,6 +507,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 />
             }, [dataItems]);
             //
+            let sidebarUnitType = 'default';
+            if (route.blocks?.browse_sidebar?.unitType){
+                sidebarUnitType = route.blocks.browse_sidebar.unitType
+            }
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
                     <View className={isRightCol? 'flex-auto w-2/3 pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
@@ -499,7 +518,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     </View>
                     {isRightCol && <View className="hidden lg:block w-1/3 pt-4 pl-4">
                         {route?.sidebar?.content.map((item, index ) => {
-                            return <ItemRenderer key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                            return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
                         })}
                         <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                     </View>}

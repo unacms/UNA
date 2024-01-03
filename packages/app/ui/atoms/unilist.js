@@ -12,7 +12,7 @@ export default function UniList(props) {
             if(layoutData.data?.id){
                 let insertIndex = data.findIndex(item => item.type !== 'block');
                 if (insertIndex === -1) {
-                    data = [layoutData.data, ...data]
+                    data.splice(data.length, 0, layoutData.data);
                 }
                 else{
                     data.splice(insertIndex, 0, layoutData.data);
@@ -21,7 +21,7 @@ export default function UniList(props) {
             if (Array.isArray(layoutData.data)){
                 let insertIndex = data.findIndex(item => item.type !== 'block');
                 if (insertIndex === -1) {
-                    data = [...layoutData.data, ...data]
+                    data.splice(data.length, 0, ...layoutData.data);
                 }
                 else{
                     data.splice(insertIndex, 0, ...layoutData.data);

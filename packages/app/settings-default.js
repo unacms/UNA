@@ -16,8 +16,8 @@ let settingsDefault = {
         switch_theme: true,
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_cover: 'linear-gradient(0deg, rgba(118, 142, 255, 0.8) 0%, rgba(185, 111, 255, 0.8) 17%, rgba(232, 98, 255, 0.8) 33%, rgba(255, 90, 193, 0.8) 50%, rgba(255, 73, 160, 0.8) 67%, rgba(255, 56, 141, 0.8) 83%,  rgba(255, 41, 128, 0.8) 100% )',
-        background_cover_color: 'rgba(255, 41, 128, 0.8)',
+        background_cover: 'rgba(107, 114, 128, 0.5)',
+        background_cover_color: 'rgba(107, 114, 128, 0.5)',
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
@@ -44,7 +44,7 @@ let settingsDefault = {
         embeds: 'oembed.php?html=1&a=get_link&l=',
     },
     cache: {
-        list: false,
+        list: true,
         compress: true
     },
     feed: {
@@ -65,9 +65,9 @@ let settingsDefault = {
     },
     suggestion: {
         list: [
-            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
+           /* {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
             {name: 'groups', request_url: '/api.php?r=bx_groups/browse_recommendations_fans&params[]={user_id}', title: 'Recommended groups', unitType:'person_friends_recommendations', perLine:3}
-        ],
+        */],
     },
     browse: {
         per_line: [
@@ -176,11 +176,6 @@ let settingsDefault = {
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
             { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-            { name: 'create-post',title: 'Create post', link: '/create-post', icon: 'ChatCenteredText', nonlogged: false},
-            { name: 'create-group-profile',title: 'Create group', link: '/create-group-profile', icon: 'UsersThree', nonlogged: false},
-            { name: 'create-event-profile',title: 'Create event', link: '/create-event-profile', icon: 'Calendar', nonlogged: false},
-            { name: 'dashboard',title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour', nonlogged: false},
-            { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear', nonlogged: false},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},
         ],
         menu_top_more: [
@@ -486,7 +481,7 @@ let settingsDefault = {
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
                 col5: { name: 'bx_events:sessions', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
-                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: true },
+                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: false },
                 col4: { name: 'system:locations_map', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                
             },
@@ -586,12 +581,28 @@ let settingsDefault = {
             headerSettings: { header: false, footer: false, offset: false },
         },
         
+        //############ POSTS PAGES ############
+        'posts-home': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, perLine: 1, unitType:'small' },
+                browse_sidebar: { name: 'bx_posts:browse_featured', showTitle: true, showBg: false, sidebar: true },
+            },
+        },
+
+        'posts-popular': {
+            layout: 'navigator',
+            blocks: {
+                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false,  },
+            },
+        },
+
         //############ DISCUSSION PAGES ############
         'discussions-home': {
             layout: 'navigator',
             blocks: {
                 browse: { name: 'bx_forum:browse_new', showTitle: false, showBg: false, perLine: 1 },
-                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true, unit:'small' },
+                browse_sidebar: { name: 'bx_forum:browse_popular', showTitle: true, showBg: false, sidebar: true, unitType:'small' },
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
             },
         },

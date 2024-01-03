@@ -106,7 +106,7 @@ export default function Layout(props) {
     if(appSetting('layout', 'format') == 'hor'){
         return (
             <>
-                <Content headerSettings={headerSettings} children={children} />
+                <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 <Suggestions/>
                 <AsyncWorker/>
                 { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }

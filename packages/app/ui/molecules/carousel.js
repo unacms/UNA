@@ -111,13 +111,14 @@ export default function ElementCarousel(props) {
             </View>
         )
     }
+
     return ( 
         <View className='px-0.5 sm:px-4 '>
             <ImViewer/>
-            <View className="w-full  aspect-square gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
+            <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full   gap-y-0.5 rounded sm:rounded-lg overflow-hidden max-w-3xl mx-auto"} onLayout={handleLayout}>
                 <Row className={(len > 2 ? 'h-1/2': 'h-full') + ' gap-x-0.5 w-full '}>
                 {dataR1?.map((item, index) => (
-                        <Image2 row ={0}  key={index} src={item.src}/>
+                    <Image2 row ={0}  key={index} src={item.src}/>
                 ))}
                 </Row>
                 <Row className={(len > 2 ? 'h-1/2 gap-y-0.5 ': 'h-full') + ' gap-x-0.5 w-full '}>

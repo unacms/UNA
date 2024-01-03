@@ -38,7 +38,7 @@ export default function ElementTime(props) {
             s = formatDate(d, t).trim();
         }
         if (props.format == 'datetime') {
-            s = d.toLocaleDateString()  + d.toLocaleTimeString();
+            s = d.toLocaleDateString() + ' '+ d.toLocaleTimeString();
         }
     }
 

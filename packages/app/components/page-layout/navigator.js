@@ -18,7 +18,7 @@ function getMenu(props) {
                 link: obj.url.replace('/',''),
                 icon: obj.icon,
                 ident: 1,
-                hideInTop: true
+                hideInTop: false
             }
         }); 
         menu.items = [...menu.items, ...menuItems];

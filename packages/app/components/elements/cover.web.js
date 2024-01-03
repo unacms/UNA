@@ -137,7 +137,6 @@ export default function ElementCover(props) {
     const so = data.cover.storage;
     const img_trans = '';
     const c = data.profile.info.id;
-
     const handleUpload = async (mode) => {
 
         const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + uo + '&so=' + so + '&uid=' + genRnd(8) + '&img_trans=' + img_trans + '&m=0&c=' + c + '&p=0';

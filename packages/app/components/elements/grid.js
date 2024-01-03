@@ -131,13 +131,13 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
     const { colors } = Theme();
     switch(cell?.type) {
         case 'time':
-            return <Time ts={cell.data} stylesName={'text-sm'}></Time>
+            return <Time ts={cell.data} stylesName={'text-sm text-neutral-800 dark:text-neutral-200'}></Time>
         case 'datetime':
-            return <Time ts={cell.data} format='datetime' stylesName={'text-xs'}></Time>
+            return <Time ts={cell.data} format='datetime' stylesName={'text-xs text-neutral-800 dark:text-neutral-200'}></Time>
         case 'link':
             return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
         case 'text':
-            return <Text>{stripTags(cell.value)}</Text>
+            return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
         case 'order': // TODO
             return <Text></Text>
         case 'switcher':
@@ -177,7 +177,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
         </Row>)
            
     }
-    return  <Text>{JSON.stringify(cell)}</Text>
+    return  <Text className="text-neutral-800 dark:text-neutral-200">{JSON.stringify(cell)}</Text>
 });
 
 export default function ElementGrid({data}) {
@@ -390,19 +390,19 @@ export default function ElementGrid({data}) {
             </Row>
         </Row>
         <View className='border border-bdrnavbar dark:border-bdrnavbar-d rounded-xl'>
-            <Row className='w-full border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard lg:px-2'>
+            <Row className='w-full border-b  rounded-t-xl border-bdrnavbar dark:border-bdrnavbar-d justify-between py-2  bg-bgrcard dark:bg-bgrcard-d lg:px-2'>
                 {
                     header.map((itemCell, index) => {
                         return (
                             <View key={'header'  + index} className={getWidth(itemCell.width) + ' py-1 xl:p-2 '}>
-                                <Text className="font-bold">{itemCell.title}</Text>
+                                <Text className="font-bold text-neutral-800 dark:text-neutral-200">{itemCell.title}</Text>
                             </View>
                             
                         );
                     })
                 }
             </Row>
-            {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text>Nothing to show</Text></View>}
+            {(endReached && dataItems.data.length == 0) && <View className=" items-center pt-4"><Text className="text-neutral-800 dark:text-neutral-200">Nothing to show</Text></View>}
             <UniList
                 height={400}
                 data={dataItems.data}
