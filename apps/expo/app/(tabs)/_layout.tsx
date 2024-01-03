@@ -48,7 +48,7 @@ export default function AppLayout() {
       },
       tabBarItemStyle: {
           marginBottom: 15, 
-          height: 32,
+          height: 40,
           marginTop: 5,
       },
       tabBarInactiveTintColor: colors.barsColor,
