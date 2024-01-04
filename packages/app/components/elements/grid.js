@@ -337,7 +337,7 @@ export default function ElementGrid({data}) {
 
     let a = <View className="w-full xl:px-6">
         {modalContent && (
-                <Modal title={" "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
+                <Modal title={modalContent.content[0]?.title ? modalContent.content[0]?.title : " "} onVisible={!!modalContent} outerClickClose={false} onClose={() => handleCloseModal()}>
                     <View className='px-4'>
                         <BlockByData onFormEmpty = {() => handleUpdate()} block = {modalContent}  />
                     </View>
