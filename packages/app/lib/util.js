@@ -125,6 +125,10 @@ export function getPageWidth(uri) {
 }
 
 export function getAlert(type, data) {
+    /*
+    сonnections:action
+    feed:new_content
+    */
     return {type : type, data: data};
 }
 

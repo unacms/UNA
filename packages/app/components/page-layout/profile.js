@@ -16,13 +16,13 @@ export default function PageLayout(props) {
     useEffect(() => {
         if(layoutData && layoutData?.type == 'сonnections:action'){
             (async () => {
-                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + 'view-event-profile/ert');
+                const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageData.url);
+                storageClear();
                 setPageData(sResponse.data);
             })();
             
         }
     }, [layoutData?.data?.time]);
-
       
     const windowWidth = windowDimen.width;
     let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
