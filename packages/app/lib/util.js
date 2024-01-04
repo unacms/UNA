@@ -6,12 +6,17 @@ import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
+import { decode } from 'html-entities';
 
 export function appSetting(section, name, path) {
     if (path)
         return settings[section] && settings[section][name] ? settings[section][name][path] : '';
 
     return settings[section] ? settings[section][name] : '';
+}
+
+export function decodeText(str) {
+    return decode(str);
 }
 
 export async function getClipboard() {
@@ -125,6 +130,10 @@ export function getPageWidth(uri) {
 }
 
 export function getAlert(type, data) {
+    /*
+    сonnections:action
+    feed:new_content
+    */
     return {type : type, data: data};
 }
 

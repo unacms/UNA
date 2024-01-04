@@ -33,6 +33,7 @@
     "expo-router": "2.0.0",
     "expo-splash-screen": "~0.20.4",
     "expo-status-bar": "~1.6.0",
+    "html-entities": "^2.4.0",
     "i18next": "^23.5.1",
     "nativewind": "^2.0.11",
     "pako": "^2.1.0",
