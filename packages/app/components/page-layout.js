@@ -54,7 +54,7 @@ export function getLayoutName(data, uri, isWeb) {
     if (componentsMap[layoutKey])
         return {layoutName : layoutKey, layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
     
-    if (data.cover_block.profile)
+    if (data?.cover_block?.profile)
         return {layoutName : 'profile', layoutBlocks: layoutBlocks, isCustomLayout: isCustomLayout};
 
     if (data.menu?.items?.length > 0 && !uri.includes('create-') )
