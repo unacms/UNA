@@ -208,6 +208,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         else{
             newRoutes[index].endpoint.params.filters = {[name]: val};
         }
+       
+        setRoutes(newRoutes);
+    }
+
+    const applyFilterValue = () => {
+        const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = [];
         newRoutes[index].endpoint.params.start = 0;
@@ -406,48 +412,55 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return (
             <>
                 {
-                    inputs && <Row className="max-w-screen-xl mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center ">
-                    {(
-                        Object.keys(inputs).map((key, index) => (
-                            <View key={index}>
-                            {
-                                inputs[key].type == 'radio_set' && (
-                                    (() => {
+                    inputs && (
+                        <Row className="max-w-screen-xl mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center ">
+                            {Object.keys(inputs).map((key, index) => {
+                                if (inputs[key].type == 'radio_set') {
                                     let values = [];
                                     if (Array.isArray(inputs[key].values)) {
                                         values = inputs[key].values.map(function (key) {
-                                            return key.value && key.key != "date_range" ? {label: key.value, value: key.key} : null;
+                                            return key.value && key.key != "date_range" ? { label: key.value, value: key.key } : null;
                                         });
                                         values = values.filter(Boolean);
-                                        
                                     }
                                     return (
-                                        <View>
-                                            <Dropdown 
-                                            labelField="label"
-                                            valueField="value"
-                                            value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-                                            onChange={(value) => setFilterValue(inputs[key].name, value)} 
-                                            data={values}
+                                        <Row key={index} className="items-center">
+                                            <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>
+                                            <Dropdown
+                                                labelField="label"
+                                                valueField="value"
+                                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
+                                                onChange={(value) => setFilterValue(inputs[key].name, value)}
+                                                data={values}
                                             />
-                                        </View>
-
+                                        </Row>
                                     );
-                                  
-                                    })()
-                                )
-                            }
-                    
+                                } else if (inputs[key].type == 'text') {
+                                    return (
+                                        <Row key={index} className="items-center">
+                                            <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>
+                                            <Input
+                                                name="search"
+                                                value={route?.endpoint?.params?.filters?.[inputs[key].name]}
+ 
+                                                onChangeText={(value) => setFilterValue(inputs[key].name, value)}
+                                            />
+                                        </Row>
+                                    );
+                                }
+                                return null; // Return null if none of the conditions are met
+                            })}
+                            <View>
+                                <Button title="Search" variant="primary" onPress={() => applyFilterValue()} />
                             </View>
-                        ))
-                    )}
-                    </Row>
+                        </Row>
+                    )
                 }
-                <TabScene status={status}  route={route} width={windowWidth} index={index} />
+                <TabScene status={status} route={route} width={windowWidth} index={index} />
             </>
         )
     }
-    , [numColumns, windowWidth, rqtStatus, index]);  
+        , [numColumns, windowWidth, rqtStatus, index]);  
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
