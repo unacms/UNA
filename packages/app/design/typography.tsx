@@ -2,7 +2,7 @@ import { ComponentProps, forwardRef } from 'react'
 import { Text as NativeText, Platform, Linking, TextStyle } from 'react-native'
 import { styled, StyledProps } from 'nativewind'
 import { TextLink as SolitoTextLink, Link as SolitoLink } from 'solito/link'
-import { appSetting } from 'app/lib/util'
+import { appSetting, decodeText } from 'app/lib/util'
 
 
 const Text_ = styled(NativeText)
@@ -11,7 +11,7 @@ export const Text = ({ children, className, ...rest }) => {
 
   const isWeb = Platform.OS == 'web'
 
-  const correctedChildren = typeof children === 'string' ? children.replace(/&amp;/g, '&') : children;
+  const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
   const isUseCustomFont = appSetting('layout', 'use_custom_font');
 
   if (isUseCustomFont != '')
