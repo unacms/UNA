@@ -92,6 +92,9 @@ export default function Layout(props) {
         stylesBg={ backgroundColor: appSetting('layout', 'background_color_dark')}
     }
 
+    if (layoutName === 'messenger')
+        stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
+
     useEffect(() => {
         for (let style in stylesBgImage) {
             document.body.style[style] = stylesBgImage[style];
