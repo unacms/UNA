@@ -18,7 +18,7 @@ export default function ElementReports(oProps) {
     const oSettings = appSetting('social_actions', 'report');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "Info"
+    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "WarningCircle"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
