@@ -12,7 +12,10 @@ export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const sInfo = (
-        <Time ts={oProps.data.entry_date}></Time>
+        <Row className='items-center'>
+            <Time ts={oProps.data.entry_date}></Time>
+            {oProps.data?.entry_context?.id && <><Text className="text-neutral-500  text-xs"> in </Text><Profile {...oProps.data.entry_context} displayType="unit" displaySize="xs" /><Link href={oProps.data.entry_context.url}></Link></>}
+        </Row>
     );
 
     const aMenuManageItems = !!currentUser ? oProps?.data?.menu_manage && menuItemsByName(oProps.data.menu_manage?.object, oProps.data.menu_manage?.items).map((aItem) => {
