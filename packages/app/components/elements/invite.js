@@ -29,7 +29,7 @@ export default function ElementInvite({data}) {
             <View className="p-4">
                     <Text className="text-black dark:text-white text-center">You can invite your friends to join. You have {data.remain} invites to share.</Text>
                     <View className='mx-auto pt-4'>
-                        <Button variant="default" size="base" rounded  title={"Get inite link"} onPress={() => handleClick()} />
+                        <Button variant="default" size="base" rounded  title={"Get invite link"} onPress={() => handleClick()} />
                     </View>
             </View>
         </>
