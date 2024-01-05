@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo, useContext    } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo, useContext } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable, ScrollView  } from 'app/design/view';
@@ -13,10 +13,8 @@ import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
-import { Modal } from 'app/design/controls';
 import { Input } from 'app/design/controls'
 import MainMenu from 'app/components/nav/mainmenu'
-import Redirect from 'app/ui/atoms/redirect';
 import { useTranslation } from 'react-i18next';
 import { fetcher } from 'app/lib/fetcher';
 import Toster from 'app/ui/atoms/toster';
@@ -24,16 +22,13 @@ import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
+import Search from 'app/ui/molecules/search';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
-    const redirectdRef = useRef();
     let uniRef = useRef();
-    let inputSearchRef = useRef();
-    const [searchVisible, setSearchVisible] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
     const [menuPopup, setMenuPopup] = useState(false)
 
     const [maxId, setMaxId] = useState(0);
@@ -288,9 +283,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                if(currentUser || (!currentUser && button.nonlogged != false)){
-                    let btn = <Button title={button.title} startDecorator={button.icon} variant="outline" onPress={button.section ? () => showSearch(button.section) : undefined} rounded />;
-                    btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
+                if(currentUser || (!currentUser && button.nonlogged != false)) {
+                    let btn = undefined;
+                    if(button.section)
+                        btn = <Search section={button.section} />
+                    else {
+                        btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded />;
+                        btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
+                    }
+
                     return (
                         <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
                     )
@@ -549,27 +550,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setNumColumns(getNumCols(containerWidth));
     };
     
-    const showSearch = (section) => {
-        setTimeout(() => {
-            inputSearchRef.current && inputSearchRef.current.focus()
-        }, 100);
-        setSearchVisible(section);
-    };
-
-    const handleSearch = (value) => {
-        setSearchValue(value)
-    };
-    
-    const handleSearchStart = () => {
-        redirectdRef.current.redirect('/search-keyword?keyword=' + searchValue + '&section='+ searchVisible);
-    };
-    
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
             if(currentUser || (!currentUser && button.nonlogged != false)){
-                let btn = <Button title={t(button.title)} onPress={button.section ? () => showSearch(button.section) : undefined} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
-                btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                let btn = undefined;
+                if(button.section)
+                    btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
+                else {
+                    btn = <Button title={t(button.title)} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
+                    btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+                }
+
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
                 )
@@ -611,24 +603,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </ScrollView>
     }, [routes, index]);
 
-    const searchBarObj= () => {
-        return (
-            <>
-                <Redirect ref={redirectdRef} />
-                <Modal onVisible={searchVisible} onClose={() => { setSearchVisible(false)}} position="top">
-                    <View className="px-1.5 pb-1.5">
-                        <View className="flex-row items-center mb-2">
-                            <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5 mb-2">Search</Text>
-                        </View>
-                        <View className="flex-row">
-                            <Input name="search" ref={inputSearchRef} onSubmitEditing={handleSearchStart} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
-                        </View>
-                    </View>
-                </Modal>
-            </>
-        );
-    };
-
     if (leftSideBar){
         return (
             <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
@@ -646,7 +620,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     </Row>
                  </View>
-                 {searchBarObj()}
             </View>
          );
 
@@ -659,7 +632,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className='max-w-screen-xl mx-auto w-full min-h-screen '>
                 <RenderScene route={currentRoute}/>
             </View>
-            {searchBarObj()}
        </View>
     );
 }
