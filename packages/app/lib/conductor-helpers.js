@@ -26,7 +26,8 @@ export function fillTabs(menu, data, blocks, useSectionAsMenu){
         item.link = item.link.replace('page/', '')
        //TOFIX
         const i = { key: item.link, title: item.title, index };
-        let bCurrent = getURI(item.link) === data.uri;
+      //  let bCurrent = getURI(item.link) === data.uri;
+        let bCurrent = data.url.includes(item.link);
         if (useSectionAsMenu){
             let b = parseUrl(item.link);
             let d = parseQueryString(b?.queryString);
