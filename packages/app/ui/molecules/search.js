@@ -42,6 +42,15 @@ export default function ElementSearch(oProps) {
         );
     };
 
+    const handleKeyPress = (event) => {
+        if (event.key !== "Enter")
+            return;
+
+        handleClose();
+
+        redirectdRef.current.redirect('/search-keyword?keyword=' + inputValue);
+    };
+
     const handleSearch = async (sValue) => {
         setInputValue(sValue);
 
@@ -215,7 +224,7 @@ export default function ElementSearch(oProps) {
                                 }
                             </View>
                             <View className="flex-row">
-                                <Input name="search" value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
+                                <Input name="search" value={inputValue} ref={inputRef} onKeyPress={(event) => handleKeyPress(event)} onChangeText={(value) => handleSearch(value)} role="textbox" aria-label="Search" />
                             </View>
                             <ScrollView className="max-h-72">
                                 {!!popupContent && popupContent}
