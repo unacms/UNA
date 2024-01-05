@@ -17,6 +17,10 @@ export default function ElementSearch(oProps) {
     const redirectdRef = useRef();
 
     const sType = oProps?.type ? oProps.type : 'default';
+    const sSection = oProps?.section ? oProps.section : '';
+    const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section='+ sSection : '');
+
+    const oParams = oProps?.params ? oProps.params : {};
 
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupOpenHandle, setPopupOpenHandle] = useState(true);
@@ -48,7 +52,7 @@ export default function ElementSearch(oProps) {
 
         handleClose();
 
-        redirectdRef.current.redirect('/search-keyword?keyword=' + inputValue);
+        redirectdRef.current.redirect(sUrlRedirect.replace('{keyword}', inputValue));
     };
 
     const handleSearch = async (sValue) => {
@@ -61,6 +65,7 @@ export default function ElementSearch(oProps) {
 
         const aParams = {params: {
                 keyword: sValue,
+                section: sSection
             }
         };
 
@@ -130,7 +135,7 @@ export default function ElementSearch(oProps) {
                         <View className="flex-row items-center mb-1">
                             <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                             {
-                                inputValue != '' && <Link href={'/search-keyword?keyword=' + inputValue}>
+                                inputValue != '' && <Link href={sUrlRedirect.replace('{keyword}', inputValue)}>
                                     <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                 </Link>
                             }
@@ -170,7 +175,7 @@ export default function ElementSearch(oProps) {
                             <View className="flex-row items-center">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                                 {
-                                    inputValue != '' &&  <Link href={'/search-keyword?keyword=' + inputValue}>
+                                    inputValue != '' &&  <Link href={sUrlRedirect.replace('{keyword}', inputValue)}>
                                         <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                     </Link>
                                 }
@@ -206,7 +211,7 @@ export default function ElementSearch(oProps) {
                     <InputRounded name="search" value={inputValue}  onChangeText={(value) => {handleSearch(value);handleOpenPopupDefault()}} placeholder={t("Search")+'...'} role="textbox" aria-label="Search" />
                 </Pressable>
             ) : (
-                <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} />
+                <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             );
 
             sResult = (
@@ -218,7 +223,7 @@ export default function ElementSearch(oProps) {
                             <View className="flex-row items-center mb-2">
                                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
                                 {
-                                    !!inputValue && <Link href={'/search-keyword?keyword=' + inputValue}>
+                                    !!inputValue && <Link href={sUrlRedirect.replace('{keyword}', inputValue)}>
                                         <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleClick()} />
                                     </Link>
                                 }
