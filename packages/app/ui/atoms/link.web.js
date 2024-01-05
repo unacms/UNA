@@ -28,7 +28,7 @@ export default function ElementLink(props) {
         }
     }, []);
 
-    if (href == 'javascript:' || href === undefined)
+    if (href == 'javascript:' || href === undefined || href == '/javascript:')
         href='';
 
     if (href == ''){
