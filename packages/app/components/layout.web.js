@@ -112,7 +112,7 @@ export default function Layout(props) {
                 <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 <Suggestions/>
                 <AsyncWorker/>
-                { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
+                { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
             </>
         );
     }
@@ -129,7 +129,7 @@ export default function Layout(props) {
                     <AsyncWorker/>
                 </View>
                 <View className='w-full lg:w-80'>
-                    { <NavbarMemo layoutName={layoutName} title={data.title} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
+                    { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
                 </View>
             </Row>
             </View>
