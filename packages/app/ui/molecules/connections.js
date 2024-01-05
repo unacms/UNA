@@ -7,6 +7,7 @@ import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useTranslation } from 'react-i18next';
 import { LayoutData } from 'app/context/layout'
+import { storageClear } from 'app/lib/util'
 
 export default function ElementConnections(oProps) {
     const [ elementData, setElementData ] = useState(false);
@@ -52,6 +53,7 @@ export default function ElementConnections(oProps) {
         const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
+        storageClear();
         setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now()} ));
         if(typeof onLoad === 'function')
             onLoad(sResponse?.data);

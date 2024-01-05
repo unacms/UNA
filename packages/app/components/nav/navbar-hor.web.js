@@ -75,41 +75,40 @@ export default function (props) {
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
 
+        sTitle = "aaaaaa a aaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaa"
     return (
         <>
             <View className="fixed -top-[1px]  w-full">
                 <View className="   backdrop-blur h-16 px-3 sm:px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 xl:max-w-xs gap-x-4 my-auto">
-                        <Row className="flex-row  flex-none items-center">
-                            {
-                                headerSettings.menu && (
-                                    <View className="lg:hidden mr-4">
-                                        <Pressable  onPress={showMenu}>
-                                            <Button
-                                                variant="outline"
-                                                startDecorator="List"
-                                                rounded
-                                                align="start"
-                                                aria-label={t("Menu")}
-                                                alt={t("Menu")}
-                                            />
-                                    
-                                        </Pressable>
-                                    </View>  )}
-                                    { (props.uri == 'home' || windowWidth >= 1024) &&  
-                                    <Link href="/home" aria-label="Logo">
-                                        <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                                            {appStatic('logo_mark')}
-                                            {appStatic('logo_text')}
-                                        </View>
-                                    </Link>
-                            }
-                            { headerSettings.backButton  && getBackButtonWeb() }
+                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 xl:max-w-xs my-auto ">
+                        {
+                            headerSettings.menu && (
+                                <View className="lg:hidden mr-4">
+                                    <Pressable onPress={showMenu}>
+                                        <Button
+                                            variant="outline"
+                                            startDecorator="List"
+                                            rounded
+                                            align="start"
+                                            aria-label={t("Menu")}
+                                            alt={t("Menu")}
+                                        />
 
-                            { headerSettings.title && <View className='w-5/12 overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View> }
-                        </Row>
+                                    </Pressable>
+                                </View>)}
+                        {(props.uri == 'home' || windowWidth >= 1024) &&
+                            <Link href="/home" aria-label="Logo">
+                                <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
+                                    {appStatic('logo_mark')}
+                                    {appStatic('logo_text')}
+                                </View>
+                            </Link>
+                        }
+                        {headerSettings.backButton && getBackButtonWeb()}
+                        {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
+
                         {bSearch && <View className="hidden"><Search type="input" /></View>}
-                        
+
                     </View>
                     <Row className="hidden w-1/2  xl:flex flex-auto">
                         <Row className='w-full mx-auto gap-x-0.5 max-w-lg justify-between'>

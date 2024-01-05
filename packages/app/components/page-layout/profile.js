@@ -5,7 +5,6 @@ import { getHeaderSettings, getBlocksFromData } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { LayoutData } from 'app/context/layout';
 import { fetcher } from 'app/lib/fetcher';
-import { storageSet, storageClear, storageGet } from 'app/lib/util'
 
 export default function PageLayout(props) {
     const windowDimen =  useWindowDimensions();
@@ -17,7 +16,6 @@ export default function PageLayout(props) {
         if(layoutData && layoutData?.type == 'сonnections:action'){
             (async () => {
                 const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageData.url);
-                storageClear();
                 setPageData(sResponse.data);
             })();
             
