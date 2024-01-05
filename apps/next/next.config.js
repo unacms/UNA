@@ -35,7 +35,6 @@ const nextConfig = {
     '@babel/plugin-proposal-export-namespace-from',
    // '@react-navigation/native',
     'react-native-calendars',
-    'react-native-image-zoom-viewer',
     'react-native-image-pan-zoom',
     'react-native-swipe-gestures',
     'expo-haptics',

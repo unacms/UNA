@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { stripTags,getImageSizes } from 'app/lib/util';
+import { stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
 import Time from 'app/ui/atoms/time';
@@ -7,11 +7,11 @@ import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 import Link from 'app/ui/atoms/link';
 import Card from 'app/ui/molecules/card'
-
+import GeneralContentList from './general-content-list';
 export default function UnitSearchResults(props) {
-    let data = props.data;
-    const imageSizes = getImageSizes();
-    return (     
+   
+    return <GeneralContentList {...props}/>
+    /*return (     
         <Card margin="mt-4 mx-2">
             <Link href={data.url}>  
                 <View className='flex-col    '>   
@@ -24,7 +24,7 @@ export default function UnitSearchResults(props) {
                 </View>      
             </Link>
         </Card>  
-    )
+    )*/
 }
 
 

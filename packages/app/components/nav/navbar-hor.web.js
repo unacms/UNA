@@ -106,7 +106,7 @@ export default function (props) {
                             }
                             { headerSettings.backButton  && getBackButtonWeb() }
 
-                            { headerSettings.title && <Text  className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text> }
+                            { headerSettings.title && <View className='w-5/12 overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View> }
                         </Row>
                         {bSearch && <View className="hidden"><Search type="input" /></View>}
                         

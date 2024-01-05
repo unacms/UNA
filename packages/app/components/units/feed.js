@@ -104,7 +104,7 @@ function DefaultUnit(data) {
         let inList = <></>
         if (data.owners?.length > 0){
             inList = <Row>
-                <Text className="text-neutral-500  text-xs">in </Text>
+                <Text className="text-neutral-500  text-xs"> in </Text>
                 {
                     data.owners.map((item, index) => {
                         return (
@@ -121,12 +121,12 @@ function DefaultUnit(data) {
         
             if (l != ' ')
                 return (
-                    <View className="ml-1">
+                    <Row className="ml-1">
                         <Text className="text-neutral-500  text-xs">
                         {l}
                         </Text>
                         {inList}
-                    </View> 
+                    </Row> 
                 )
         
         return <>{inList}</>
