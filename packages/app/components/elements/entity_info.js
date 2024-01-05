@@ -13,7 +13,7 @@ export default function ElementEntityInfo({ data }) {
                 let value = getValue(a);
                 if (value){
                     return (
-                        <View className="flex-row flex-wrap gap-y-2 gap-x-2" key={a.name}>
+                        <View className={ (a.type!='textarea'? 'flex-row': '') +" flex-wrap gap-y-2 gap-x-2"} key={a.name}>
                             <Row className="items-center text-2xl">
                                 <View className="text-neutral-800 dark:text-neutral-200">{getIcon(a)}</View>
                                 <View className="ml-2">
