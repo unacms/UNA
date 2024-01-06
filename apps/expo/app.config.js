@@ -27,7 +27,8 @@ const expoConfig = {
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera allow calls in Jitsi.",
         "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
-        "NFCReaderUsageDescription":  "This app uses the mic allow calls in Jitsi.",
+        "NSCalendarsUsageDescription": "See your scheduled meetings in Jitsi.",
+        "NFCReaderUsageDescription":  "Quick contacts between users.",
       }
     },
     "android": {
