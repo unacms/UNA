@@ -8,7 +8,7 @@ import { View, Row } from 'app/design/view';
 import { storageClear } from 'app/lib/util';
 import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
-
+import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings } from 'app/lib/util';
 //import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';
@@ -113,6 +113,7 @@ export default function Layout(props) {
                 <Suggestions/>
                 <AsyncWorker/>
                 { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
+                <BottomSheet/>
             </>
         );
     }
@@ -122,16 +123,17 @@ export default function Layout(props) {
             headerSettings.offset = false;
         return (
             <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-            <Row className='w-full flex-col lg:flex-row-reverse '>
-                <View className='w-full lg:w-[calc(100%-20rem)]'>
-                    <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
-                    <Suggestions/>
-                    <AsyncWorker/>
-                </View>
-                <View className='w-full lg:w-80'>
-                    { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
-                </View>
-            </Row>
+                <Row className='w-full flex-col lg:flex-row-reverse '>
+                    <View className='w-full lg:w-[calc(100%-20rem)]'>
+                        <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
+                        <Suggestions/>
+                        <AsyncWorker/>
+                    </View>
+                    <View className='w-full lg:w-80'>
+                        { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
+                    </View>
+                </Row>
+                <BottomSheet/>
             </View>
         );
     }

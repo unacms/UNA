@@ -415,7 +415,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 {
                     inputs && (
+                        <ScrollView horizontal={true} className="items-center gap-0 " >
                         <Row className="max-w-screen-xl mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center ">
+                           
                             {Object.keys(inputs).map((key, index) => {
                                 if (inputs[key].type == 'radio_set') {
                                     let values = [];
@@ -455,7 +457,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             <View>
                                 <Button title="Search" variant="primary" onPress={() => applyFilterValue()} />
                             </View>
+                            
                         </Row>
+                        </ScrollView>
                     )
                 }
                 <TabScene status={status} route={route} width={windowWidth} index={index} />

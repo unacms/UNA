@@ -102,7 +102,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className='flex-col w-full gap-y-3'>
+        <View className={(Platform.OS == 'web' ? 'gap-y-3' : '') +' flex-col w-full'}>
             <FormProvider {...methods}> 
                 {inputs}
             </FormProvider>

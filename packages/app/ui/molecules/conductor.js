@@ -161,7 +161,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         }
 
                         return (
-                            <View  key={`add-${button.icon}`} >{btn}</View>
+                            <View className="w-8"  key={`add-${button.icon}`} >{btn}</View>
                         )
                     }
                 });

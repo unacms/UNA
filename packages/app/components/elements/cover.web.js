@@ -43,9 +43,7 @@ function CoverMenu(props) {
             });
     
             return false; // Include this item in the new array
-        }
-
-        
+        }        
     });
 
     return (
@@ -63,7 +61,7 @@ function CoverMenu(props) {
         />
         <View className='ml-2'>
             <DropdownMenu items={aMenuManageItems}>
-                <Button variant="default"  startDecorator="ShieldStar"  onPress={() => { FeedbackHaptics('Medium'); }}  />
+                <Button variant="default" tooltip="Manage" startDecorator="ShieldStar"  onPress={() => { FeedbackHaptics('Medium'); }}  />
             </DropdownMenu>
         </View>
         </>

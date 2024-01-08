@@ -5,10 +5,12 @@ import LayoutDataContext from 'app/context/layout';
 
 export default function Layouts({path, data, uri}) {
     return(
-        <Layout path={path} data={data} uri={uri}>
-            <LayoutDataContext>
-                <PageLayout path={path} data={data} uri={uri} />
-            </LayoutDataContext>
-        </Layout>
+        <LayoutDataContext>
+            <Layout path={path} data={data} uri={uri}>
+                
+                    <PageLayout path={path} data={data} uri={uri} />
+            
+            </Layout>
+        </LayoutDataContext>
     )
 }

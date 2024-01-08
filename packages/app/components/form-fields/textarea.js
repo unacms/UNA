@@ -47,6 +47,6 @@ export default function FormFieldText(props) {
     }    
 
     return (
-        <Field {...props}>{input}</Field>
+        input
     );
 }

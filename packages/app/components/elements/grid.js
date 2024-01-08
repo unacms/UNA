@@ -7,7 +7,7 @@ import Profile from 'app/ui/molecules/profile';
 import Confirm from 'app/ui/molecules/confirm';
 import { Button } from 'app/design/controls'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import { Theme } from 'app/design/theme';
 import { Switch } from 'app/design/controls'
 import CheckBox from 'app/ui/atoms/checkbox';
@@ -19,6 +19,8 @@ import { Modal } from 'app/design/controls'
 import { BlockByData } from 'app/components/blocks-content/object-data-array-int';
 import { useWindowDimensions} from 'react-native';
 import dynamic from 'next/dynamic'
+import { getAlert } from 'app/lib/util';
+import  { LayoutData } from 'app/context/layout';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
@@ -181,6 +183,8 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
 });
 
 export default function ElementGrid({data}) {
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))
     const [dataItems, setDataItems] = useState({data: data.data, settings:settings });
@@ -215,7 +219,8 @@ export default function ElementGrid({data}) {
         if (data.type == 'modal'){
             let fetchedData = await fetchData(data.action, data.params);
             let cnt = {content: fetchedData.data, designbox_id: 0}
-            setModalContent(cnt);
+            setLayoutData(getAlert('bottomsheet:data', {title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  />}));
+            //setModalContent(cnt);
         }
     };
 
@@ -225,6 +230,7 @@ export default function ElementGrid({data}) {
     };
 
     const handleCloseModal = () => {
+        setLayoutData(getAlert('bottomsheet:data', false));
         setModalContent(false);
     };
 
@@ -394,7 +400,7 @@ export default function ElementGrid({data}) {
                 {
                     header.map((itemCell, index) => {
                         return (
-                            <View key={'header'  + index} className={getWidth(itemCell.width) + ' py-1 xl:p-2 '}>
+                            <View key={'header'  + index} className={getWidth(itemCell.width) + ' py-1 p-1 xl:p-2 '}>
                                 <Text className="font-bold text-neutral-800 dark:text-neutral-200">{itemCell.title}</Text>
                             </View>
                             
@@ -411,7 +417,7 @@ export default function ElementGrid({data}) {
                     return (
                         <Row className='border-b border-bdrnavbar dark:border-bdrnavbar-d justify-between px-2'>
                             {header.map((cellHeader, index) => (
-                                <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} py-1 xl:p-2 justify-center`}>
+                                <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} py-1 p-1 xl:p-2 justify-center`}>
                                     <Cell 
                                         cell={item[cellHeader.name]} 
                                         indexRow={indexRow + '_' + index} 

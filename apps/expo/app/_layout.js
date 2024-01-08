@@ -5,8 +5,8 @@ import { ThemeProvider } from "@react-navigation/native";
 import { CurrentUserProvider } from 'app/context/user';
 import { useColorScheme } from 'react-native';
 import {
-  QueryClient,
-  QueryClientProvider,
+    QueryClient,
+    QueryClientProvider,
 } from '@tanstack/react-query'
 
 import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-prevent';
@@ -14,64 +14,65 @@ import RNScreenshotPrevent, { addListener } from 'react-native-screenshot-preven
 import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { appSetting } from 'app/lib/util'
 
 import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
 
 export default function Root(props) {
 
-  // if (!__DEV__) {
-  RNScreenshotPrevent.enableSecureView();
-  RNScreenshotPrevent.enabled(true);
-  // }
+    if (appSetting('layout', 'disable_screenshots')) {
+        RNScreenshotPrevent.enableSecureView();
+        RNScreenshotPrevent.enabled(true);
+    }
 
-  const languageDetector = {
-    type: 'languageDetector',
-    async: true,
-    detect: async (callback) => {
-        const locale = await RNLocalize.getLocales();
-        callback(locale[0].languageCode);
-    },
-    init: () => {},
-    cacheUserLanguage: () => {},
-};
-
-i18n
-    .use(initReactI18next)
-    .use(languageDetector)
-    .init({
-        compatibilityJSON: 'v3',
-        resources: {
-            en: {
-                translation: en
-            },
-            ru: {
-                translation: ru
-            }
+    const languageDetector = {
+        type: 'languageDetector',
+        async: true,
+        detect: async (callback) => {
+            const locale = await RNLocalize.getLocales();
+            callback(locale[0].languageCode);
         },
-        lng: 'en', // default language
-        fallbackLng: 'en',
-        interpolation: {
-            escapeValue: false
-        }
-    }); 
+        init: () => { },
+        cacheUserLanguage: () => { },
+    };
 
-  const scheme = useColorScheme();
-  const queryClient = new QueryClient()
-  
-  return (    
-    <ThemeProvider value={Theme(scheme)} >
-      <Provider>
-        <QueryClientProvider client={queryClient}>
-          <CurrentUserProvider>
-            <Stack screenOptions={{ 
-              headerShown: false, 
-              freezeOnBlur: true,
-              unmountOnBlur: false,
-              }}></Stack>
-          </CurrentUserProvider>
-        </QueryClientProvider>
-      </Provider>    
-    </ThemeProvider>
-  )
+    i18n
+        .use(initReactI18next)
+        .use(languageDetector)
+        .init({
+            compatibilityJSON: 'v3',
+            resources: {
+                en: {
+                    translation: en
+                },
+                ru: {
+                    translation: ru
+                }
+            },
+            lng: 'en', // default language
+            fallbackLng: 'en',
+            interpolation: {
+                escapeValue: false
+            }
+        });
+
+    const scheme = useColorScheme();
+    const queryClient = new QueryClient()
+
+    return (
+        <ThemeProvider value={Theme(scheme)} >
+            <Provider>
+                <QueryClientProvider client={queryClient}>
+                    <CurrentUserProvider>
+                        <Stack screenOptions={{
+                            headerShown: false,
+                            freezeOnBlur: true,
+                            unmountOnBlur: false,
+                        }}></Stack>
+                    </CurrentUserProvider>
+                </QueryClientProvider>
+            </Provider>
+        </ThemeProvider>
+    )
 }

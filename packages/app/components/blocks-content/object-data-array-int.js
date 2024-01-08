@@ -5,6 +5,7 @@ import Form from 'app/components/elements/form';
 import SimpleList from 'app/components/elements/simple_list';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
+import { Platform } from 'react-native'
 
 export function BlockByData(props) {
     return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props}  />
@@ -81,7 +82,7 @@ export default function BlockContentObjectDataArray(props) {
     
     // display each block element from static data or from dynamic data
     return (
-        <View className="relative gap-y-4">
+        <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>
            {realData?.map(a => <Component key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );

@@ -2,6 +2,7 @@
   "dependencies": {
     "@amplitude/react-native": "2.7.0",
     "@giphy/react-native-sdk": "2.3.0",
+    "@gorhom/bottom-sheet": "^4",
     "@jitsi/react-native-sdk": "^0.4.1",
     "@native-html/iframe-plugin": "^2.6.1",
     "@react-native-assets/slider": "^7.0.6",

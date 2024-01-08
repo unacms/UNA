@@ -3,7 +3,7 @@ import Suggestions from 'app/ui/molecules/suggestions';
 import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
 import { appSetting } from 'app/lib/util'
-
+import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 
 export default function Layout(props) {
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
@@ -20,6 +20,7 @@ export default function Layout(props) {
             <AsyncWorker/>
             <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">
                 {props.children}
+                <BottomSheet/>
             </View>
         </>
     );

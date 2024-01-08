@@ -3,12 +3,15 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { replaceLinks } from 'app/lib/form-helpers'
+import { Platform } from 'react-native'
 
 export default function FormField(props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-    const sClassName = 'w-full form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
+    let sClassName = 'w-full form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
+    if (Platform.OS != 'web')
+        sClassName += ' mb-4';
     return (
         <View className={sClassName}>
             { (!!props.caption && props.format == 'default') &&

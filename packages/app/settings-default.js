@@ -24,7 +24,8 @@ let settingsDefault = {
         nfc: true,
         use_custom_font: false,
         lock_unconfirmed: true,
-        entity_info_icon: false
+        entity_info_icon: 'Info',
+        disable_screenshots: true,
     },
     sockets: {
         host: 'ci.una.io',
@@ -788,9 +789,9 @@ let settingsDefault = {
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/view-ad-promotion/10-for-20-b-grade-9197', icon: 'Users'},
-            {key: '/tab3', title: 'Notifications', url: '/create-event-profile', icon: 'Bell'},
-            {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
+            {key: '/tab2', title: 'Friends', url: '/edit-event-sessions/sf', icon: 'Users'},
+            {key: '/tab3', title: 'Notifications', url: '/events-home', icon: 'Bell'},
+            {key: '/tab4', title: 'Menu', url: '/events-home',icon: 'UserList'},
         ],
         bottom_tabs_non_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
