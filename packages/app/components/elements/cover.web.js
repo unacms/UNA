@@ -17,7 +17,8 @@ import { genRnd } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native';
-import ProfilesList from 'app/ui/molecules/profile_list'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import { FeedbackHaptics } from 'app/lib/util';
 
 function CoverMenu(props) {
     let { width } = useWindowDimensions();
@@ -26,9 +27,30 @@ function CoverMenu(props) {
     if (width < 1280)
         size="sm"
 
+    let aMenuManageItems = [];
+
+    let propsCopy = {...props}; // Create a copy of the array
+
+    propsCopy.items = propsCopy.items.filter(aItem => {
+        if(aItem?.display_type && aItem.display_type != 'link') {
+            return true; // Exclude this item from the new array
+        }
+        else{
+            aMenuManageItems.push({
+                id: aItem.id ? aItem.id : aItem.name,
+                link: '/' + aItem.link,
+                title: aItem.title
+            });
+    
+            return false; // Include this item in the new array
+        }
+
+        
+    });
+
     return (
-        <Menu
-            {...props}
+        <><Menu
+            {...propsCopy}
             displayType="button"
             params={{ 
                 show_action: true,
@@ -39,6 +61,12 @@ function CoverMenu(props) {
                 button_rounded: false,
             }}
         />
+        <View className='ml-2'>
+            <DropdownMenu items={aMenuManageItems}>
+                <Button variant="default"  startDecorator="ShieldStar"  onPress={() => { FeedbackHaptics('Medium'); }}  />
+            </DropdownMenu>
+        </View>
+        </>
     )
 }
 

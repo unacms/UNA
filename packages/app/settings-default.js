@@ -24,6 +24,7 @@ let settingsDefault = {
         nfc: true,
         use_custom_font: false,
         lock_unconfirmed: true,
+        entity_info_icon: false
     },
     sockets: {
         host: 'ci.una.io',

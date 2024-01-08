@@ -22,22 +22,29 @@ export default function PageLayout(props) {
         }
     }, [layoutData?.data?.time]);
       
-    const windowWidth = windowDimen.width;
-    let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
-    let cover = headerSettings.cover
 
-    let header = <Cover data={props.data.cover_block} mode={cover}/>
-    let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     if (!props.data.menu.items){
         props.data.menu.items = [];
     }
-    let menu = props.data.menu;
+    let menu = JSON.parse(JSON.stringify(props.data.menu));
     let blocks = props.blocks;
+    
     const isNamePresent = menu.items.some(item => item.name === props.uri);
+    const isNamePresent2 = props.data.menu.items.some(item => item.name === props.uri);
+
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
+
+    const windowWidth = windowDimen.width;
+    let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
+    let cover = headerSettings.cover;
+    if (!isNamePresent2)
+        cover = 'min';
+
+    let header = <Cover data={props.data.cover_block} mode={cover}/>
+    let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     if (!blocks){
         blocks = getBlocksFromData(props.data)

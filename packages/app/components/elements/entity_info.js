@@ -3,8 +3,11 @@ import { Text, H2 } from 'app/design/typography'
 import Time from 'app/ui/atoms/time'
 import Html from 'app/ui/atoms/html'
 import { Icon } from 'app/ui/atoms/icon'
+import { appSetting } from 'app/lib/util'
 
 export default function ElementEntityInfo({ data }) {
+    const defaultIcon = appSetting('layout', 'entity_info_icon');
+
     const inputs = Object.keys(data.inputs).map(function (key) {
         const a = data.inputs[key]
         const v = a.values ? a.values[a.value] : a.value
@@ -16,7 +19,7 @@ export default function ElementEntityInfo({ data }) {
                         <View className={ (a.type!='textarea'? 'flex-row': '') +" flex-wrap gap-y-2 gap-x-2"} key={a.name}>
                             <Row className="items-center text-2xl">
                                 <View className="text-neutral-800 dark:text-neutral-200">{getIcon(a)}</View>
-                                <View className="ml-2">
+                                <View className={defaultIcon? "ml-2" :''}>
                                     <Text className="font-bold text-base text-neutral-800 dark:text-neutral-200">
                                         {a.caption}
                                     </Text>
@@ -92,7 +95,7 @@ export default function ElementEntityInfo({ data }) {
                 return <Icon icon="IdentificationBadge" />
 
             default:
-                return <Icon icon="Info" />
+                return defaultIcon ? <Icon icon={defaultIcon} /> : <></>
         }
     }
 }

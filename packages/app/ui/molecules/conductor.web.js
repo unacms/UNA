@@ -187,11 +187,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const scrollToCover = (cover, windowWidth, offset) => {
         const baseScroll = windowWidth < 1024 ? 280 : offset;
         const adjustment = cover === 'group' ? -100 : -200;
-    
-        window.scroll({
-            top: baseScroll + adjustment,
-            behavior: "smooth",
-        });
+        if (cover!= 'min'){
+            window.scroll({
+                top: baseScroll + adjustment,
+                behavior: "smooth",
+            });
+        }
     }
 
 

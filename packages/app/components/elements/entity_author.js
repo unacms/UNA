@@ -1,7 +1,7 @@
 import { FeedbackHaptics } from 'app/lib/util';
 import { useCurrentUser } from 'app/context/user';
 import { Button } from 'app/design/controls';
-import { View } from 'app/design/view';
+import { View, Row } from 'app/design/view';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
