@@ -2,15 +2,16 @@
 import Layout from 'app/components/layout';
 import PageLayout from 'app/components/page-layout';
 import LayoutDataContext from 'app/context/layout';
+import BottomSheetDataContext from 'app/context/bottomsheet';
 
 export default function Layouts({path, data, uri}) {
     return(
         <LayoutDataContext>
-            <Layout path={path} data={data} uri={uri}>
-                
+            <BottomSheetDataContext>
+                <Layout path={path} data={data} uri={uri}>
                     <PageLayout path={path} data={data} uri={uri} />
-            
-            </Layout>
+                </Layout>
+            </BottomSheetDataContext>
         </LayoutDataContext>
     )
 }

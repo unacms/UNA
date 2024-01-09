@@ -20,7 +20,7 @@ import { BlockByData } from 'app/components/blocks-content/object-data-array-int
 import { useWindowDimensions} from 'react-native';
 import dynamic from 'next/dynamic'
 import { getAlert } from 'app/lib/util';
-import  { LayoutData } from 'app/context/layout';
+import { BottomSheetData } from 'app/context/bottomsheet';
 
 function Stripe(props) {
     const computedData = useMemo(() => {
@@ -183,7 +183,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
 });
 
 export default function ElementGrid({data}) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
 
     let settings = data.settings;
     let header = data.header.filter((item) => (item?.name != 'reports'))
@@ -200,7 +200,6 @@ export default function ElementGrid({data}) {
     const windowWidth = useWindowDimensions().width;
     
     const deleteRows = useCallback((idsToRemove) => {
-        console.log("dataItems", dataItems)
         const newItems = dataItems.data.filter(item => !idsToRemove.includes(item.id));
         setDataItems({ ...dataItems, data: newItems });
     }, [dataItems.data]);
@@ -219,7 +218,7 @@ export default function ElementGrid({data}) {
         if (data.type == 'modal'){
             let fetchedData = await fetchData(data.action, data.params);
             let cnt = {content: fetchedData.data, designbox_id: 0}
-            setLayoutData(getAlert('bottomsheet:data', {title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  />}));
+            setBottomSheetData({title:cnt.content[0]?.title ? cnt.content[0]?.title : " ", content:<BlockByData onFormEmpty = {() => handleUpdate()} block = {cnt}  />});
             //setModalContent(cnt);
         }
     };
@@ -230,7 +229,7 @@ export default function ElementGrid({data}) {
     };
 
     const handleCloseModal = () => {
-        setLayoutData(getAlert('bottomsheet:data', false));
+        setBottomSheetData (false);
         setModalContent(false);
     };
 

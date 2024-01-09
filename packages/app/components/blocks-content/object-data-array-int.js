@@ -83,7 +83,7 @@ export default function BlockContentObjectDataArray(props) {
     // display each block element from static data or from dynamic data
     return (
         <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>
-           {realData?.map(a => <Component key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
+           {realData?.map(a => <Component key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );
 }

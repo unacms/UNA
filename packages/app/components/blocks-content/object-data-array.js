@@ -70,7 +70,7 @@ export default function BlockContentObjectDataArray(props) {
     // display each block element from static data or from dynamic data
     return (
         <View className="relative gap-y-2">
-            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onFormSubmit={onFormSubmit} {...a} />)}
+            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />)}
         </View>
     );
 }
