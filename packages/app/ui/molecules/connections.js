@@ -114,6 +114,7 @@ export default function ElementConnections(oProps) {
     const icon = oParams.icons[oProps.o +  '_' + oProps.a];
     if(icon){
         oButtonProps.startDecorator = icon;
+        oButtonProps.hideTitleOnSmall = true;
     }
     return (
         <>

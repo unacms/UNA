@@ -109,7 +109,7 @@ function DefaultUnit(data) {
                     data.owners.map((item, index) => {
                         return (
                             <Link key = {'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500  text-xs">{item.title}</Text>
+                                <Text className="text-neutral-500  text-xs hover:text-blue-500">{item.title}</Text>
                             </Link>
                         );
                     })
@@ -215,7 +215,7 @@ function DefaultUnit(data) {
                         showInfo={
                         <Row className="items-center">
                             <Link href={url}>
-                            <Time className="" ts={data.date}></Time>
+                                <Time stylesNameAdd="hover:text-red-500" ts={data.date}></Time>
                             </Link>
                             <ItemInfo data={data} />
                         </Row>
