@@ -733,15 +733,15 @@ let settingsDefault = {
         button_styles: {
             'u-btn-default-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm hover:shadow active:shadow-none ',
             'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
-            'u-btn-default-trans': 'duration-200 ',
+            'u-btn-default-trans': ' duration-200 ',
 
             'u-btn-primary-cnt': ' bg-primary/90 hover:bg-primary border border-primary/50  shadow-sm hover:shadow active:opacity-50 active:shadow-none',
             'u-btn-primary-text': ' font-medium text-primary-50 group-hover:text-white ',
-            'u-btn-primary-trans': 'duration-200 ',
+            'u-btn-primary-trans': ' duration-200 ',
 
             'u-btn-danger-cnt': ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none ',
-            'u-btn-danger-text': 'font-medium text-neutral-100 group-hover:text-white ',
-            'u-btn-danger-trans': 'duration-200',
+            'u-btn-danger-text': ' font-medium text-neutral-100 group-hover:text-white ',
+            'u-btn-danger-trans': ' duration-200',
 
             'u-btn-text-cnt': ' border border-transparent hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
             'u-btn-text-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',

@@ -173,8 +173,8 @@ export function Button (props) {
     sClassContainer += ' justify-' + buttonAlign + ' '
 
     if (buttonPressed) {
-        sClassContainer += ' ring-2 ring-inset ring-offset-2 ';
-        sClassText += ' font-bold ';
+        sClassContainer += ' bg-primary/10 dark:bg-primary-d/10  ring-offset-1 ring-primary/50 dark:ring-primary-d/50 ';
+        sClassText += ' text-primary-600 dark:text-primary-400 ';
     }
 
     const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-lg' : '';

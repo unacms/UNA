@@ -344,7 +344,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                             }
                                         }}
                                     >
-                                        <Button fullWidth={true} id="tab" variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                                        <Button fullWidth={true} id="tab" pressed={a.index ==index ? true : false } variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
                                     </Pressable>
                                 ))}
                                 <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
@@ -572,7 +572,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 )
             }
         });
-        return  <ScrollView className='hidden lg:block lg:w-1/4 xl:w-1/5 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
+        return  <ScrollView className='hidden lg:block w-80 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mt-1 mb-4 ">
                 <Text className="text-2xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
@@ -593,8 +593,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             event.preventDefault()
                         }}>
                           <Button
-                                variant={a.index == index ? 'outline': "text"}
+                                variant={a.index == index ? 'outline' : "text"}
                                 size={!a.ident ? "base" : "sm"}
+                                pressed={a.index == index ? true : false}
                                 fullWidth
                                 title = {(a.title)}
                                 align="start"
@@ -616,10 +617,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width') + ' mx-auto  w-full'} >
                     <Row>
-                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full lg:w-1/4 xl:w-1/5 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
+                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full w-80 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className="w-full lg:w-3/4 xl:w-4/5">{/*min-h-screen???*/}
+                        <View className=" flex-auto ">{/*min-h-screen???*/}
 
                             <RenderScene route={currentRoute}/>
                         </View>

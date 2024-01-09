@@ -5,8 +5,7 @@ import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 import ProfilesList from "app/ui/molecules/profile_list";
-import Icon from 'app/icons-web';
-import { Text } from 'app/design/typography'
+
 
 export default function MenuItemButton(oProps) {
 
