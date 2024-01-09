@@ -56,7 +56,7 @@
   "Create new Post": "Создать новое сообщение",
   "No comments yet": "Пока без коментариев",
   "Be the first to share what you think": "Будьте первым, кто расскажет, что вы думаете",
-  "Here goes nothing": "Тут ничего не происходит",
+  "Nothing found": "Ничего не найдено",
   "Newest first": "Сначала новые",
   "Oldest first": "Сначала старые",
   "Comments": "Комментарии",
@@ -87,7 +87,7 @@
   "lang_en": "English",
   "lang_ru": "Русский",
   "theme": "Тема",
-  "Couldn`t find anything to show here, sorry.": "Не удалось найти здесь ничего, что можно было бы показать, извините.",
+  "This is like searching for a needle in a haystack, but without the needle.": "Это как поиск иголки в стоге сена, но без иголки.",
   "Community Intro": "Создатели, лидеры и разработчики сообществ."
 
 }

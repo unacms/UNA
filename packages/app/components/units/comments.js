@@ -46,7 +46,7 @@ export default function UnitComments(props) {
         props.handleReply(id, author, text);
     };
 
-    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10  rounded-lg   px-2.5  u-vanilla-html-small ";
+    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small ";
 
     if (!data)
         return (<View></View>);

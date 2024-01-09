@@ -200,10 +200,10 @@ const ComponentsContentEmpty = () => {
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        {t("Here goes nothing")}
+                        {t("Nothing found")}
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                        {t("Couldn`t find anything to show here, sorry.")}
+                        {t("This is like searching for a needle in a haystack, but without the needle.")}
                     </Text>
                 </View>
             </View>
@@ -655,7 +655,7 @@ const ComponentsFooter = () => {
     const { t } = useTranslation();
     return (
         <>
-            <Card addClassName="w-full p-3 flex-row justify-center ">
+            <View className=" w-full  flex-row flex-wrap opacity-80 ">
                 <Link href="/about">
                     <Button
                         variant="text"
@@ -689,7 +689,7 @@ const ComponentsFooter = () => {
                         size="sm"
                     />
                 </Link>
-            </Card>
+            </View>
         </>
     );
 };
