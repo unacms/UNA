@@ -80,7 +80,7 @@ export default function (props) {
         <>
             <View className="fixed -top-[1px]  w-full">
                 <View className="   backdrop-blur h-16 px-3 sm:px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 xl:max-w-xs my-auto ">
+                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 xl:max-w-xs my-auto items-center">
                         {
                             headerSettings.menu && (
                                 <View className="lg:hidden mr-4">

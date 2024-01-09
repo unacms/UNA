@@ -34,7 +34,7 @@ const H1_ = styled(NativeText, 'text-2xl lg:text-3xl font-bold my-4')
 H1_.defaultProps = {
 }
 export const H1 = ({ children, ...rest }) => {
-  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
   return <H1_ {...rest}>{correctedChildren}</H1_>;
 };
 
@@ -43,7 +43,7 @@ H1C_.defaultProps = {
 }
 
 export const H1C = ({ children, ...rest }) => {
-  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
   return <H1C_ {...rest}>{correctedChildren}</H1C_>;
 };
 
@@ -52,7 +52,7 @@ H1_.defaultProps = {
 }
 
 export const H2 = ({ children, ...rest }) => {
-  const correctedChildren = typeof children === 'string' ?  children.replace(/&amp;/g, '&') : children;
+  const correctedChildren = typeof children === 'string' ? decodeText(children) : children;
   return <H2_ {...rest}>{correctedChildren}</H2_>;
 };
 

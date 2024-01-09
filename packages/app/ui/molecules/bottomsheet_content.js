@@ -13,7 +13,7 @@ export default function ElementCommentForm(props) {
         isShow = true;
     }
 
-    console.log("layoutData", layoutData, isShow)
+    //console.log("layoutData", layoutData, isShow)
     return (
         isShow ? (
             <BottomSheet2 open={isShow}>

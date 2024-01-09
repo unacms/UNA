@@ -33,6 +33,7 @@ export default function PageLayout(props) {
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
+
     return (
         <Conductor 
             layoutName={props.layoutName}

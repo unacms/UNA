@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { appSetting, getAlert } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { View } from 'app/design/view'
@@ -46,18 +46,28 @@ export default function ElementConnections(oProps) {
             setElementData({...elementData, ...mValue});
     };
 
-    const performAction = async (sAction, aParams, onLoad) => {
+    const getKey = () => {
+        return oProps.o + '!' + oProps.iid + '!' + oProps.cid;
+    }
+
+    const performAction = async (sAction, aParams) => {
         const aParamsDefault = {o:oProps.o, iid:oProps.iid, cid:oProps.cid};
 
         aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
         const sRequest = '/api.php?r=system/' + sAction + '/TemplServiceConnections&params[]=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
+
         storageClear();
-        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now()} ));
-        if(typeof onLoad === 'function')
-            onLoad(sResponse?.data);
+        setLayoutData(getAlert('сonnections:action', {object: oProps.o, time:Date.now(), data: sResponse?.data, key: getKey()} ));
     };
+
+    useEffect(() => {
+        if(layoutData && layoutData?.type == 'сonnections:action' && layoutData?.data.key == getKey()){
+            handleOnDo(layoutData.data.data)
+        }
+    }, [layoutData?.data?.time]);
+      
 
     const handleDo = (event, sAction) => {
         if(!!event)
@@ -66,18 +76,20 @@ export default function ElementConnections(oProps) {
         if(oProps.params?.on_do && typeof oProps.params.on_do === 'function')
             oProps.params.on_do(sAction);
 
-        performAction('perform', {a:sAction}, (oData) => {
-            if(oData.a == 'questionnaire') {
-                setModalContent({content: oData.data, designbox_id: 0});
-            }
-            else
-                setElementVars(oData);
-              
-            
-            if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
-                oProps.params.on_done(sAction, oData);
-        });
+        performAction('perform', {a:sAction});
     };
+
+    const handleOnDo = (oData) => {
+        if(oData.a == 'questionnaire') {
+            setModalContent({content: oData.data, designbox_id: 0});
+        }
+        else{
+            setElementVars(oData);
+        }
+        
+        if(oProps.params?.on_done && typeof oProps.params.on_done === 'function')
+            oProps.params.on_done(sAction, oData);
+    }
 
     const handleCloseModal = () => {
         setModalContent(false);

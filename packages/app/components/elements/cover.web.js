@@ -27,24 +27,39 @@ function CoverMenu(props) {
     if (width < 1280)
         size="sm"
 
+    const isSplitMenu = appSetting('layout', 'split_action_menu');
+
     let aMenuManageItems = [];
 
     let propsCopy = {...props}; // Create a copy of the array
 
-    propsCopy.items = propsCopy.items.filter(aItem => {
-        if(aItem?.display_type && aItem.display_type != 'link') {
-            return true; // Exclude this item from the new array
-        }
-        else{
-            aMenuManageItems.push({
-                id: aItem.id ? aItem.id : aItem.name,
-                link: '/' + aItem.link,
-                title: aItem.title
-            });
-    
-            return false; // Include this item in the new array
-        }        
-    });
+    if (isSplitMenu){
+        propsCopy.items = propsCopy.items.filter(aItem => {
+            if(aItem?.display_type && aItem.display_type != 'link') {
+                return true; // Exclude this item from the new array
+            }
+            else{
+                aMenuManageItems.push({
+                    id: aItem.id ? aItem.id : aItem.name,
+                    link: '/' + aItem.link,
+                    title: aItem.title
+                });
+        
+                return false; // Include this item in the new array
+            }        
+        });
+    }
+    else{
+        propsCopy.items = propsCopy.items.filter(aItem => {
+            if(aItem.name != props.uri) {
+                return true; // Exclude this item from the new array
+            }
+            else{
+                
+                return false; // Include this item in the new array
+            }        
+        });
+    }
 
     return (
         <><Menu
@@ -59,11 +74,11 @@ function CoverMenu(props) {
                 button_rounded: false,
             }}
         />
-        <View className='ml-2'>
+        {isSplitMenu && <View className='ml-2'>
             <DropdownMenu items={aMenuManageItems}>
                 <Button variant="default" tooltip="Manage" startDecorator="ShieldStar"  onPress={() => { FeedbackHaptics('Medium'); }}  />
             </DropdownMenu>
-        </View>
+        </View>}
         </>
     )
 }
@@ -292,7 +307,7 @@ export default function ElementCover(props) {
                     
                             <View className="flex-none  mt-auto  lg:mt-6    ">
                                 <ScrollView horizontal={true} className={(data.actions_menu.items.length > 3 ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
-                                    <CoverMenu {...data.actions_menu} />
+                                    <CoverMenu {...data.actions_menu} uri={props?.uri} />
                                 </ScrollView>
                             </View>
 

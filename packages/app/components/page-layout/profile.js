@@ -43,7 +43,7 @@ export default function PageLayout(props) {
     if (!isNamePresent2)
         cover = 'min';
 
-    let header = <Cover data={props.data.cover_block} mode={cover}/>
+    let header = <Cover data={props.data.cover_block} mode={cover} uri={props.uri}/>
     let smallHeader = <CoverSmall data={props.data.cover_block}/>
 
     if (!blocks){

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
@@ -8,6 +8,7 @@ import { storageClear } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, getURI } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static'
+import Redirect from 'app/ui/atoms/redirect'
 
 const Layouts = React.lazy(() => import('app/components/layouts'));
 
@@ -26,7 +27,20 @@ export function Page404 (props) {
 }
 
 export function Page403(props) {
-    return appStatic('page_not_allowed')
+  
+    const r = appSetting('layout', 'redirect_on_forbidden');
+    const redirectdRef = useRef()
+    useEffect(() => {
+        if (r){
+            redirectdRef.current.redirect(r);
+        }
+    }, []);
+    return (
+        <>
+            <Redirect ref={redirectdRef} />
+            {appStatic('page_not_allowed')}
+        </>
+    );
 }
 
 export function Root (props) {
