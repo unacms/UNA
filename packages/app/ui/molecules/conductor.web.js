@@ -617,7 +617,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width') + ' mx-auto  w-full'} >
                     <Row>
-                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-full w-80 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
+                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto ">{/*min-h-screen???*/}
