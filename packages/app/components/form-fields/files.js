@@ -228,21 +228,23 @@ export default function FormFieldFiles(props) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
             let w = props.name == 'picture' ? 'w-48' : 'w-full';
             if (! props.viewClasses){
-                w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d '
+                w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
             }
             else{
                 w += ' ' + props.viewClasses
             }
+
+            let isImage = img?.file_type?.includes('image/');
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={ w + '  items-center justify-center bg-primary/5 w-full aspect-[3/1] p-4'}>
+                    <View className={ w + '  items-center justify-center bg-primary/5 w-full ' + (isImage ? 'aspect-[3/1]': 'h-16')}>
                         {img == null ? 
                             <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View> 
                             :( <>
-                                { img?.file_type?.includes('image/') && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt=''  src={img.file_url} /> }
+                                { isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt=''  src={img.file_url} /> }
                                 { img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading/></View> }
                                 <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                                        <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size ="xs" />
+                                    <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size ="xs" />
                                 </View>
                             </>)
                     }

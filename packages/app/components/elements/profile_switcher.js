@@ -62,7 +62,7 @@ export default function ElementProfileSwitcher(props) {
                     })}
                     <Row className='justity-between mt-4 w-full'>
                         <View className='w-1/2 pr-2'>
-                        <Link noprefetch="true" href="/create-persons-profile">
+                        <Link href="/create-persons-profile">
                             <Button
                                 variant="outline"
                                 title= {t("Create new profile")}
@@ -73,7 +73,7 @@ export default function ElementProfileSwitcher(props) {
                         </Link>
                         </View>
                         <View className='w-1/2 pl-2'>
-                        <Link noprefetch="true" href="/logout">
+                        <Link href="/logout">
                             <Button
                                 variant="outline"
                                 title= {t("Sign out")}

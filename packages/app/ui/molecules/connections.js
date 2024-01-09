@@ -47,7 +47,7 @@ export default function ElementConnections(oProps) {
     };
 
     const getKey = () => {
-        return oProps.o + '!' + oProps.iid + '!' + oProps.cid;
+        return oProps.o + '_' + oProps.iid + '_' + oProps.cid;
     }
 
     const performAction = async (sAction, aParams) => {
@@ -111,7 +111,10 @@ export default function ElementConnections(oProps) {
         sTitle = getElementVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-
+    const icon = oParams.icons[oProps.o +  '_' + oProps.a];
+    if(icon){
+        oButtonProps.startDecorator = icon;
+    }
     return (
         <>
             <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />

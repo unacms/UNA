@@ -76,7 +76,7 @@ function CoverMenu(props) {
         />
         {isSplitMenu && <View className='ml-2'>
             <DropdownMenu items={aMenuManageItems}>
-                <Button variant="default" tooltip="Manage" startDecorator="ShieldStar"  onPress={() => { FeedbackHaptics('Medium'); }}  />
+                <Button variant="default" tooltip="Settings" startDecorator="Gear" onPress={() => { FeedbackHaptics('Medium'); }}  />
             </DropdownMenu>
         </View>}
         </>

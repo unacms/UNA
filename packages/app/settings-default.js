@@ -144,6 +144,16 @@ let settingsDefault = {
         },
         connection: {
             show_action_as_button: true,
+            icons: {   
+                'sys_profiles_subscriptions_add':   'CheckCircle',  
+                'sys_profiles_subscriptions_remove':   'MinusCircle',
+                'bx_events_fans_add':   'SignIn',
+                'bx_events_fans_remove':   'SignOut',
+                'bx_groups_fans_add':   'SignIn',
+                'bx_groups_fans_remove':   'SignOut',
+                'sys_profiles_friends_add':   'UserCirclePlus',  
+                'sys_profiles_friends_remove':   'UserCircleMinus',  
+            }
         },
         recommendation: {
             show_action_as_button: true,
@@ -163,6 +173,11 @@ let settingsDefault = {
         }
     },
     menu_items: {
+        iconset: {
+        'profile-fan-remove': 'Users',
+        'profile-subscribe-remove': 'Users',
+        'edit-event-profile': 'Users',
+        },
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 

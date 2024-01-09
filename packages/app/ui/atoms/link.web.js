@@ -47,7 +47,7 @@ export default function ElementLink(props) {
         );
 
     let prefetch = true;
-    if (rest?.noprefetch)
+    if (rest?.noprefetch || href == '/logout' || href == 'logout')
         prefetch = false;
 
     return (
