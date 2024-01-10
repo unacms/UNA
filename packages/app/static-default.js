@@ -596,7 +596,7 @@ function ComponentsSplash(props) {
 
 const ComponentsDummy = (
     <>
-        <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 ">
+        <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
             <Icon
                 className="text-green-600 dark:text-green-400"
                 icon="ArrowFatUp"

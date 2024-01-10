@@ -10,7 +10,7 @@ export default function PageLayout(props) {
   return (
     <ScrollView
       className={
-        getPageWidth(props.uri) + ' lg:h-[calc(100vh-4rem)] justify-center'
+       ' lg:h-[calc(100vh-4rem)] justify-center'
       }
     >
       <View className=" w-full mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
