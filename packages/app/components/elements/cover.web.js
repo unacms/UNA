@@ -76,7 +76,7 @@ function CoverMenu(props) {
         />
         {isSplitMenu && <View className='ml-2'>
             <DropdownMenu items={aMenuManageItems}>
-                <Button variant="default" tooltip="Settings" startDecorator="Gear" onPress={() => { FeedbackHaptics('Medium'); }}  />
+                <Button variant="default" size={size} tooltip="Settings" startDecorator="Gear" onPress={() => { FeedbackHaptics('Medium'); }}  />
             </DropdownMenu>
         </View>}
         </>
@@ -305,17 +305,17 @@ export default function ElementCover(props) {
                                 
                             </View>
                     
-                            <View className="flex-none  mt-auto  lg:mt-6    ">
-                                <ScrollView horizontal={true} className={(data.actions_menu.items.length > 3 ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
+                            <View className="flex-none mt-auto lg:mt-6 max-w-3xl overflow-hidden ">
+                                <ScrollView horizontal={true} className={(data.actions_menu.items.length > (width > 640? 3: 100) ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
                                     <CoverMenu {...data.actions_menu} uri={props?.uri} />
                                 </ScrollView>
                             </View>
 
                             { bPerson && 
-                            <Text
-                                numberOfLines={3}
-                                className="lg:hidden  w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
-                            >
+                                <Text
+                                    numberOfLines={3}
+                                    className="lg:hidden  w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                                >
                                 {stripTags(data.profile.info.description)}
                             </Text>
                     }

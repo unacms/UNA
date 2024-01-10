@@ -5,9 +5,11 @@ import { storageGet, storageSet } from 'app/lib/util'
 
 export const Icon = React.memo(function Icon(props) {
     let {  icon, className, width, height,size,  ...rest } = props
-    const key = icon +'-'+ (width?width:'') +'-'+ (height?height:'') +'-'+ (size?size:'');
-    const [currentIcon, setCurrentIcon] = useState( storageGet('icon-'+key, '', true));
+    const key = icon + '-' + (width ? width : '') + '-' + (height ? height : '') + '-' + (size ? size : '');
+    const [currentIcon, setCurrentIcon] = useState(storageGet('icon-'+key, '', true));
+
     useEffect(() => {
+        
         const fetchIcon = async () => {
             let url = '/api/api.icon?icon='+icon;
             if (width)
@@ -22,9 +24,14 @@ export const Icon = React.memo(function Icon(props) {
             storageSet('icon-'+key, '', data.icon, true);
             
         };
-        if (!currentIcon && icon)
-            fetchIcon();
-    }, [icon]); 
+        let nIcon = storageGet('icon-'+key, '', true)
+        if (icon){
+            if (!nIcon)
+                fetchIcon();
+            else
+                setCurrentIcon(nIcon)
+        }
+    }, [key]); 
     if (!currentIcon)
         return <></>
     return <div className={className} {...rest} dangerouslySetInnerHTML={{ __html: currentIcon }} />;

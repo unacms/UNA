@@ -24,7 +24,7 @@ export default function ElementMap({data}) {
                 defaultZoom={defaultProps.zoom}
             >
                 <Row className='items-center'>
-                    <Text className="text-3xl text-red-500"><Icon icon='MapPin' /></Text>
+                    <Text className="text-3xl text-lnkha1"><Icon icon='MapPin' /></Text>
                     <View className='bg-white p-2 rounded-2xl w-48'>
                         <Text className="text-xs">{data.caption}</Text>
                     </View>

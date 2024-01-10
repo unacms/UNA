@@ -27,7 +27,7 @@ let settingsDefault = {
         entity_info_icon: 'Info',
         disable_screenshots: true,
         redirect_on_forbidden: '/home',
-        split_action_menu: true
+        split_action_menu: false
     },
     sockets: {
         host: 'ci.una.io',
@@ -174,9 +174,11 @@ let settingsDefault = {
     },
     menu_items: {
         iconset: {
-        'profile-fan-remove': 'Users',
-        'profile-subscribe-remove': 'Users',
-        'edit-event-profile': 'Users',
+            'edit-event-profile': 'Pencil',
+            'delete-event-profile': 'Trash',
+            'profile-check-in': 'Check',
+            'edit-event-questionnaire': 'List',
+            'edit-event-sessions': 'Calendar',
         },
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},

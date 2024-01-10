@@ -111,7 +111,7 @@ export default function ElementConnections(oProps) {
         sTitle = getElementVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    const icon = oParams.icons[oProps.o +  '_' + oProps.a];
+    const icon = oParams.icons[oProps.o +  '_' + sAction];
     if(icon){
         oButtonProps.startDecorator = icon;
         oButtonProps.hideTitleOnSmall = true;
