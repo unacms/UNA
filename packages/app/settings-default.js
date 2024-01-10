@@ -1,7 +1,7 @@
 let settingsDefault = {
     layout: {
         format:'hor',
-        max_width: 'full',
+        max_width: 'max-w-screen-2xl',
         cell_gap: 4,
         cell_style: '',
         show_user_icon: true,

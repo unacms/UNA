@@ -79,8 +79,9 @@ export default function (props) {
     return (
         <>
             <View className="fixed -top-[1px]  w-full">
-                <View className="   backdrop-blur h-16 px-3 sm:px-4 lg:px-6 items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d flex-row  ">
-                    <View className="flex-row flex-auto xl:flex-none xl:w-1/4 xl:max-w-xs my-auto items-center">
+                <View className="  backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
+                  <View className=" px-3 sm:px-4 lg:px-6 max-w-screen-2xl w-full flex-row flex-auto  items-center">
+                    <View className="flex-row flex-auto xl:flex-none w-80 my-auto items-center">
                         {
                             headerSettings.menu && (
                                 <View className="lg:hidden mr-4">
@@ -110,7 +111,7 @@ export default function (props) {
                         {bSearch && <View className="hidden"><Search type="input" /></View>}
 
                     </View>
-                    <Row className="hidden w-1/2  xl:flex flex-auto">
+                    <Row className="hidden xl:flex flex-auto">
                         <Row className='w-full mx-auto gap-x-0.5 max-w-lg justify-between'>
                             {menuItemsByName('main_menu', menu_top).map(
                             (item, index) =>
@@ -136,7 +137,7 @@ export default function (props) {
                             
                         </Row>
                     </Row>
-                    <Row className="flex-row xl:w-1/4 max-w-md  flex-none justify-end  ">          
+                    <Row className="flex-row flex-auto xl:flex-none w-96 justify-end  ">          
                         {!!currentUser && (
                             <Row className="flex-row   justify-end ">
                             <View className=" flex-row my-auto gap-x-2 ml-2">
@@ -287,6 +288,7 @@ export default function (props) {
                         </Row>
                     )}
                     </Row>
+                    </View>
                 </View>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
             </View>
