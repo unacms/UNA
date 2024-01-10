@@ -74,8 +74,6 @@ export default function (props) {
     const menuSettings = appSetting('menu_items', props?.menu?.object);
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
-
-        sTitle = "aaaaaa a aaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaa"
     return (
         <>
             <View className="fixed -top-[1px]  w-full">
