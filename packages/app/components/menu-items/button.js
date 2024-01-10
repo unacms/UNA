@@ -5,14 +5,9 @@ import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 import ProfilesList from "app/ui/molecules/profile_list";
-
+import { getIconByNameFromIconset } from 'app/lib/util';
 
 export default function MenuItemButton(oProps) {
-
-    const oIconAliases = {
-        'item-comment': 'ChatTeardropDots',
-        'item-share': 'ShareFat'
-    };
 
     const bShowActionAsButton = oProps.params?.show_action_as_button == undefined || oProps.params.show_action_as_button === true;
     const bShowVertical = oProps?.params && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
@@ -67,11 +62,9 @@ export default function MenuItemButton(oProps) {
             if (oProps.list && oProps.list.length == 0)
                 sButtonIcon = "Users"
             
-                if(!bTitleOnly) {
-                if(!!oIconAliases[oProps.name])
-                    sButtonIcon = oIconAliases[oProps.name];
-                else if(!!oIconset[oProps.name])
-                    sButtonIcon = oIconset[oProps.name];
+            if(!bTitleOnly) {
+                if(sButtonIcon == '')
+                    sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
             }
 
             const buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;

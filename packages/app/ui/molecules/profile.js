@@ -120,7 +120,7 @@ export default function AtomProfile(oProps) {
             oProps.href='';
 
         return (
-            <Text className={'text-neutral-900  dark:text-neutral-100 ' + ((!oProps.href || oProps.href == '') ? '': ' hover:text-primary dark:hover:text-primary-d ')  + sSizeFont + ' truncate hover:text-lnkha'}>
+            <Text className={'text-neutral-900  dark:text-neutral-100 ' + ((!oProps.href || oProps.href == '') ? '': ' hover:text-primary dark:hover:text-primary-d ')  + sSizeFont + ' truncate hover:text-linkhover'}>
                 {oProps.title}
             </Text>
         )

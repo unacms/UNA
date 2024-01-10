@@ -111,7 +111,7 @@ export default function PageLayout(props) {
 
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
-                    <View className="flex-auto  relative w-full flex-row mx-auto max-w-screen-2xl ">
+                    <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block  w-80 top-0 sticky duration-200 ">
                             {appSetting('layout', 'show_profile_info') && (
                                 <Row className="items-center justify-between px-6 py-4 cursor-pointer active:opacity-50">

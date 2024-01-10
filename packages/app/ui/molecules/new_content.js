@@ -1,7 +1,7 @@
 export default function (props) {
 
-    const setTosterVisible = (val) => {
-        const current = tosterRef.current;
+    const setToasterVisible = (val) => {
+        const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
         }
@@ -14,7 +14,7 @@ export default function (props) {
         maxIdLocal = dataItems?.data.length > 0 ? dataItems?.data.reduce((max, item) => item.id > max ? item.id : max, dataItems?.data[0].id) : 0;
         if (daemonData && daemonData?.count && maxId > 0 && maxId < daemonData.count){
             setTimeout(() => {
-                setTosterVisible(true);
+                setToasterVisible(true);
             }, 100);
            
         }
@@ -28,7 +28,7 @@ export default function (props) {
    
 
     const showNewContent = async () => {
-        setTosterVisible(false); 
+        setToasterVisible(false); 
         let sResponse =  await fetcher(prepareUrl(true));
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
         setLayoutData(sResponse.data[0].data.data);

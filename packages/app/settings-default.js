@@ -1,7 +1,9 @@
 let settingsDefault = {
     layout: {
         format:'hor',
-        max_width: 'max-w-screen-2xl',
+        max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
+        max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        cover_aspect: 'aspect-5/1',
         cell_gap: 4,
         cell_style: '',
         show_user_icon: true,
@@ -174,11 +176,14 @@ let settingsDefault = {
     },
     menu_items: {
         iconset: {
-            'edit-event-profile': 'Pencil',
-            'delete-event-profile': 'Trash',
             'profile-check-in': 'Check',
             'edit-event-questionnaire': 'List',
             'edit-event-sessions': 'Calendar',
+            'item-comment': 'ChatTeardropDots',
+            'item-share': 'ShareFat',
+            'edit': 'Pencil',
+            'delete': 'Trash',
+            
         },
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
@@ -606,8 +611,8 @@ let settingsDefault = {
         'posts-home': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, perLine: 1, unitType:'small' },
-                browse_sidebar: { name: 'bx_posts:browse_featured', showTitle: true, showBg: false, sidebar: true },
+                browse: { name: 'bx_posts:browse_public', showTitle: false, showBg: false, perLine: 1 },
+                browse_sidebar: { name: 'bx_posts:browse_featured', showTitle: true, showBg: false, sidebar: true, unitType:'small' },
             },
         },
 

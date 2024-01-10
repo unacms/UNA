@@ -32,21 +32,20 @@ const colors = {
         900: 'rgba(30, 58, 138, 1)',
         950: 'rgba(23, 37, 84, 1)',
     },
-    lnkh: {
+    linkhover: {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         d: 'rgba(96, 165, 250, 1)',
     },
-    lnkha: {
+    linkhoverbrand: {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         d: 'rgba(96, 165, 250, 1)',
     },
-    lnkha1: {
-        DEFAULT: 'rgba(37, 99, 235, 1)',
-        d: 'rgba(96, 165, 250, 1)',
+    linkhoverneutral: {
+        DEFAULT: 'rgba(75,85,99,1)',
+        d: 'rgba(209,213,219,1)',
     },
-
     accent: {
-        DEFAULT: 'rgba(246, 208, 25,1)',
+        DEFAULT: 'rgba(55,65,81,1)',
         d: 'rgba(249,115,22,1)',
     },
 

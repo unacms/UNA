@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { Animated } from "react-native";
 import { useTranslation } from "react-i18next";
-import { tp } from "app/lib/util";
+import { tp, appSetting } from "app/lib/util";
 import ProfilesList from "app/ui/molecules/profile_list";
 
 // import Aaa from "./aaa.svg";
@@ -329,7 +329,7 @@ export function ComponentsIntro(props) {
 
 function ComponentsSplash(props) {
     return (
-        <View className="flex-col xl:px-4 w-full max-w-screen-2xl mx-auto">
+        <View className={"flex-col xl:px-4 w-full mx-auto" + appSetting('layout', 'max_width')}>
             <View className="flex-col  md:flex-row  xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 px-2  gap-x-4   duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
                 <View className="flex-col xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-8  ">
                     <View className="flex-col gap-y-4 w-40 xl:w-1/3 aspect-square rounded-full   ">

@@ -12,11 +12,11 @@ import { useInfiniteQuery, useQueryClient, QueryClient  } from  '@tanstack/react
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
-import Toster from 'app/ui/atoms/toster';
+import Toaster from 'app/ui/atoms/toaster';
 
 export default function ElementBrowse(props) {
     const [maxId, setMaxId] = useState(0);
-    const tosterRef = useRef();
+    const toasterRef = useRef();
     const { t } = useTranslation();
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
     let uniRef = useRef();
@@ -146,8 +146,8 @@ export default function ElementBrowse(props) {
     //console.log("dataItems", dataItems, data.request_url + browseParams?.type + (defParams?.category? defParams?.category : '') + (props?.cachePrefix ? props?.cachePrefix : ''));
 
     /* DAEMON PART */
-    const setTosterVisible = (val) => {
-        const current = tosterRef.current;
+    const setToasterVisible = (val) => {
+        const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
         }
@@ -165,7 +165,7 @@ export default function ElementBrowse(props) {
             : 0;
         if (daemonData && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
-                setTosterVisible(true);
+                setToasterVisible(true);
             }, 100);
            
         }
@@ -179,7 +179,7 @@ export default function ElementBrowse(props) {
    
 
     const showNewContent = async () => {
-        setTosterVisible(false); 
+        setToasterVisible(false); 
         let sResponse =  await fetcher(prepareUrl(true));
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
         setMaxId(maxIdLocal);
@@ -209,7 +209,7 @@ export default function ElementBrowse(props) {
 
     return (
         <View className='w-full h-full' >
-            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
             {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
             

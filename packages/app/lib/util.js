@@ -623,6 +623,19 @@ export function genRnd(length) {
     return result;
 }
 
+export function getIconByNameFromIconset(iconset, name) {
+    let icon = iconset[name];
+    if (!icon){
+        Object.keys(iconset).find((item) => {
+            if (name.includes(item)){
+                icon = iconset[item];
+                return true;
+            }
+        });
+    }
+    return icon;
+}
+
 export function getURI(url) {
     if(!url || !url.length || typeof(url) !== 'string')
         return false;

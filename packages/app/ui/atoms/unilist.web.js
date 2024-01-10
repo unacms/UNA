@@ -6,8 +6,7 @@ import { styled } from 'nativewind'
 import  {LayoutData} from 'app/context/layout';
 import { useContext } from 'react';
 import { Dimensions } from 'react-native';   
-import { storageSet } from 'app/lib/util'
-import { useEffect} from 'react';
+import { storageSet, appSetting } from 'app/lib/util'
 
 export default function UniList(props) {
     
@@ -77,7 +76,7 @@ export default function UniList(props) {
 
     if (numColumns > 1){
         const itemComponent = styled(ReactNativeView, ' w-1/' + props.numColumns)
-        const listComponent = styled(ReactNativeView, ' max-w-screen-xl mx-auto flex flex-wrap flex-row ')
+        const listComponent = styled(ReactNativeView, appSetting('layout', 'max_width_block') + ' mx-auto flex flex-wrap flex-row ')
 
         return ( <><VirtuosoGrid 
                 useWindowScroll = {!height ? true : false}

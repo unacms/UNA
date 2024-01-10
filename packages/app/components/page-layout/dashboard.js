@@ -79,7 +79,7 @@ export default function PageLayout(props) {
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
-            <View className="w-full p-2 max-w-screen-xl mx-auto flex-col    ">
+            <View className={appSetting('layout', 'max_width') +" w-full p-2  mx-auto flex-col"}>
                 <View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto gap-x-8 flex-row gap-y-4 flex-wrap my-auto">

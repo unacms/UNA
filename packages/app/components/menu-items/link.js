@@ -4,15 +4,11 @@ import Link from 'app/ui/atoms/link';
 import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import { Icon } from 'app/ui/atoms/icon'
+import { getIconByNameFromIconset } from 'app/lib/util';
 
 export default function MenuItemLink(oProps) {
     if(!oProps.title && !oProps.icon)
         return;
-
-    const oIconAliases = {
-        'item-comment': 'ChatTeardropDots',
-        'item-share': 'ShareFat'
-    };
 
     const bShowVertical = oProps?.params && oProps.params?.showVertical === true;
     const bShowLink = (oProps?.link && oProps.link != 'javascript:void(0)') || false;
@@ -41,10 +37,8 @@ export default function MenuItemLink(oProps) {
 
     let sIcon = '';
     if(!bTitleOnly) {
-        if(!!oIconAliases[oProps.name])
-            sIcon = oIconAliases[oProps.name];
-        else if(!!oIconset[oProps.name])
-            sIcon = oIconset[oProps.name];
+        if(sButtonIcon == '')
+            sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
     }
 
     let sContent = undefined;

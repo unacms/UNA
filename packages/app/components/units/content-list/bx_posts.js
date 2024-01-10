@@ -7,7 +7,7 @@ import { View } from 'app/design/view'
 import Card from 'app/ui/molecules/card'
 
 export default function Unit(props) {
-    function unit() {
+    function smallUnit() {
         let sMeta = (
             <Profile
                 {...data.author_data}
@@ -56,7 +56,7 @@ export default function Unit(props) {
         )
     }
 
-    function smallUnit() {
+    function unit() {
         let sMeta = (
             <Profile
                 {...data.author_data}

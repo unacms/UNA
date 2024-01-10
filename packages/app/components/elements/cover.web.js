@@ -131,7 +131,7 @@ export function CoverSmall(props) {
 
     return (
         <View style={styles} className=" backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d    w-full ">
-            <View className='max-w-screen-xl w-full mx-auto'>
+            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         <View className='mr-2 ml-2'>
@@ -261,8 +261,8 @@ export default function ElementCover(props) {
 
     return (
         <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
-            <View className='max-w-screen-xl sm:p-4 mx-auto w-full'>
-                {mode != 'min' && <View className=" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:aspect-3/1 w-auto sm:rounded-xl overflow-hidden">
+            <View className={appSetting('layout', 'max_width') + ' sm:p-4 mx-auto w-full'}>
+                {mode != 'min' && <View className={" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:"+appSetting('layout', 'cover_aspect')+" w-auto sm:rounded-xl overflow-hidden"}>
                     {!!data.cover && (
                         <Image
                             alt={data.group_name}

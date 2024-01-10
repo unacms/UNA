@@ -17,7 +17,7 @@ import { Input } from 'app/design/controls'
 import MainMenu from 'app/components/nav/mainmenu'
 import { useTranslation } from 'react-i18next';
 import { fetcher } from 'app/lib/fetcher';
-import Toster from 'app/ui/atoms/toster';
+import Toaster from 'app/ui/atoms/toaster';
 import useDaemon from 'app/lib/hooks/daemon'
 import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
@@ -32,7 +32,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const [menuPopup, setMenuPopup] = useState(false)
 
     const [maxId, setMaxId] = useState(0);
-    const tosterRef = useRef();
+    const toasterRef = useRef();
 
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
@@ -61,8 +61,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     //console.log("routes", routes)
 
      /* DAEMON PART */
-     const setTosterVisible = (val) => {
-        const current = tosterRef.current;
+     const setToasterVisible = (val) => {
+        const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
         }
@@ -85,7 +85,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             : 0;
         if (daemonData  && maxId > 0 && maxId < daemonData){
             setTimeout(() => {
-                setTosterVisible(true);
+                setToasterVisible(true);
             }, 100);
         
         }
@@ -101,7 +101,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
     const showNewContent = async () => {
-        setTosterVisible(false);
+        setToasterVisible(false);
         let params = JSON.parse(JSON.stringify(currentRoute.endpoint.params));
         params.start = 0; 
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
@@ -204,7 +204,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         else{
             newRoutes[index].endpoint.params.filters = {[name]: val};
         }
-       
         setRoutes(newRoutes);
     }
 
@@ -215,6 +214,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
     }
+
+    useEffect(() => {
+        if (currentRoute?.endpoint?.params?.filters)
+            applyFilterValue();
+    }, [currentRoute?.endpoint?.params?.filters]);
 
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage) 
@@ -307,7 +311,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (
                 
                 <View  style={styles} className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
-                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : ' max-w-screen-xl mx-auto ') + '  w-full'}>
+                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
                         <View className="ml-4 "></View>
@@ -415,8 +419,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 {
                     inputs && (
-                        <ScrollView horizontal={true} className="items-center gap-0 " >
-                        <Row className="max-w-screen-xl mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center ">
+                        <ScrollView horizontal={true} className="items-center " >
+                        <Row className={appSetting('layout', 'max_width') + " mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center "}>
                            
                             {Object.keys(inputs).map((key, index) => {
                                 if (inputs[key].type == 'radio_set') {
@@ -429,7 +433,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     }
                                     return (
                                         <Row key={index} className="items-center">
-                                            <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>
+                                           {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
                                             <Dropdown
                                                 labelField="label"
                                                 valueField="value"
@@ -442,9 +446,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 } else if (inputs[key].type == 'text') {
                                     return (
                                         <Row key={index} className="items-center">
-                                            <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>
+                                           {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
                                             <Input
                                                 name="search"
+                                                placeholder={inputs[key].caption}
                                                 value={route?.endpoint?.params?.filters?.[inputs[key].name]}
  
                                                 onChangeText={(value) => setFilterValue(inputs[key].name, value)}
@@ -454,9 +459,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 }
                                 return null; // Return null if none of the conditions are met
                             })}
-                            <View>
+                           {/* <View>
                                 <Button title="Search" variant="primary" onPress={() => applyFilterValue()} />
-                            </View>
+                        </View>*/ }
                             
                         </Row>
                         </ScrollView>
@@ -475,7 +480,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (props.data.length == 1 && !props.endpoint){
            let a =  props.data.map((item, index ) => {
-                return <View className="max-w-screen-xl mx-auto w-full" key={"tab-"+index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
+                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-"+index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
@@ -572,7 +577,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 )
             }
         });
-        return  <ScrollView className='hidden lg:block w-80 xl:w-96 t-0 lg:px-4 lg:py-3 fixed top-16 left-0' style={{height: windowHeight - 80}}>
+        return  <ScrollView className='hidden lg:block w-80 xl:w-96 t-0 lg:px-4 lg:py-3 absolute left-0' style={{height: windowHeight - 80}}>
             <Row className="justify-between items-center mt-1 mb-4 ">
                 <Text className="text-2xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
@@ -611,10 +616,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     if (leftSideBar){
         return (
-            <View className="w-full h-full " scrollEnabled={false} onLayout={handleLayoutTop}>
+            <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
-                <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+                <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80 xl:w-96 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
@@ -634,8 +639,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            <View className='max-w-screen-xl mx-auto w-full min-h-screen '>
+            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen '}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>

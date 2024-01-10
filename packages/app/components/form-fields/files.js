@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
-import { genRnd } from 'app/lib/util';
+import { genRnd, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
@@ -237,7 +237,7 @@ export default function FormFieldFiles(props) {
             let isImage = img?.file_type?.includes('image/');
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={ w + '  items-center justify-center bg-primary/5 w-full ' + (isImage ? 'aspect-[3/1]': 'h-16')}>
+                    <View className={ w + '  items-center justify-center bg-primary/5 w-full ' + (isImage ? appSetting('layout', 'cover_aspect'): 'h-16')}>
                         {img == null ? 
                             <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View> 
                             :( <>

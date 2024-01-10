@@ -16,7 +16,7 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
-import Toster from 'app/ui/atoms/toster';
+import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
 
 export function findParent (data, c, o, insert) {
@@ -228,7 +228,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     }
 
     const cb2 = (val) => {
-        const current = tosterRef.current;
+        const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
         }
@@ -288,7 +288,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
 
-    const tosterRef = useRef();
+    const toasterRef = useRef();
 
     return (
         <> 
@@ -316,7 +316,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
                     ) : null
                   }
             />
-            <Toster ref={tosterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
+            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
         </>
     )
 }
