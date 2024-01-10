@@ -132,7 +132,7 @@ export default function PageLayout(props) {
           
           <Card
             rounded=" rounded-2xl "
-            addClassName="border p-4 sm:p-6 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
+            addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
           >
             <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  ">
               Already have an account?

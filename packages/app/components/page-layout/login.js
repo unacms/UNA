@@ -141,7 +141,7 @@ export default function PageLayout(props) {
                 />
               </Link>
               <View className="">
-              <Card addClassName="border  p-4 sm:p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
+              <Card addClassName="border  p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto gap-y-4 flex-col ">
                 <Text className="text-center  text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                   Don't have an account?
                 </Text>
