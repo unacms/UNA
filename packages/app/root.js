@@ -38,7 +38,7 @@ export function Page403(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            {appStatic('page_not_allowed')}
+            {!r && appStatic('page_not_allowed')}
         </>
     );
 }
