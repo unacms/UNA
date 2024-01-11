@@ -74,6 +74,6 @@ const expoConfig = {
       "PROTO": process.env.PROTO,
       "HOST": process.env.HOST,
       "PORT": process.env.PORT
-    },    
+    },
 };
 module.exports = merge(expoConfig, expoConfigCustom);

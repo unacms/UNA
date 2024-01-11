@@ -5,58 +5,131 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting, storageSet, storageGet } from 'app/lib/util'
 import Browse from 'app/components/elements/browse'
 import { fetcher } from 'app/lib/fetcher';
-import { useWindowDimensions} from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import NfcManager, { Ndef } from 'react-native-nfc-manager';
+import NfcManager, { Ndef, NfcEvents, NfcTech, } from 'react-native-nfc-manager';
 import Profile from 'app/ui/molecules/profile';
+import { Switch } from 'app/design/controls'
+import { Theme } from 'app/design/theme';
 
 export default function Nfc(props) {
-
+    const { colors } = Theme();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showModal, setShowModal] = useState(false);
+    const [hasNfc, setHasNFC] = useState(null);
+    const [isEnabled, setIsEnabled] = useState(false);
+    const [nfcStatus, setNfcStatus] = useState('');
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
-    async function writeUserId() {
-        try {
-            const bytes = Ndef.encodeMessage([Ndef.textRecord(currentUser.id)]);
-            await NfcManager.writeNdefMessage(bytes);
-            setShowModal(true);
-            console.log('NFC Tag written successfully!');
-
-        } catch (err) {
-            console.warn('Error writing NFC tag:', err);
+    useEffect(() => {
+        const checkIsSupported = async () => {
+            const deviceIsSupported = await NfcManager.isSupported()
+            setHasNFC(deviceIsSupported)
+            if (deviceIsSupported) {
+            //    await NfcManager.start()
+            }
         }
-    }
-    
-    
-    function readUserId() {
+        checkIsSupported()
+    }, []);
 
-        /*const handleTag = async () => {
-            let userId = 26
+    function readNdef1() {
+        
+        setNfcStatus('read')
+    }
+
+    function writeUserId1(){
+        setNfcStatus('write')
+    }
+
+    async function readNdef() {
+        try {
+            console.log('READ START');
+           
+            await NfcManager.requestTechnology(NfcTech.Ndef);
+            const tag = await NfcManager.getTag();
+            let userId = Ndef.text.decodePayload(tag.ndefMessage[0].payload); //MAIN ERROR IN THIS LINE no ndefMessage
+            //let userId=37;
             let request_url = '/api.php?r=system/befriend/TemplServiceProfiles&params[]=' + userId;
             const sResponse = await fetcher(request_url);
             setShowModal(sResponse.data);
+        } catch (ex) {
+            console.log('ERROR READ', ex);
+        } finally {
+            setNfcStatus('')
         }
-        handleTag();*/
-
-        NfcManager.registerTagEvent(tag => {
-            const handleTag = async (tag) => {
-                let userId = Ndef.text.decodePayload(tag.ndefMessage[0].payload);
-                let request_url = '/api.php?r=system/befriend/TemplServiceProfiles&params[]=' + userId;
-                  const sResponse = await fetcher(request_url);
-                setShowModal(sResponse.data);
-            }
-            handleTag(tag);
-        }).catch(err => console.warn(err));
     }
+
+    async function writeUserId() {
+        try {
+            console.log('WRITE START');
+            await NfcManager.requestTechnology(NfcTech.Ndef);
+            const bytes = Ndef.encodeMessage([Ndef.textRecord(currentUser.id)]);
+            if (bytes) {
+                await NfcManager.ndefHandler
+                    .writeNdefMessage(bytes);
+            }
+        } catch (ex) {
+            console.log('ERROR WRITE', ex);
+        } finally {
+            setNfcStatus('')
+        }
+    }
+
+    useEffect(() => {  
+        async function reset() {
+
+            await NfcManager.cancelTechnologyRequest();  
+          /*  setTimeout(() => {
+                console.log('RESET'); 
+            }, 5000);*/
+        }
+        reset();
+        //NfcManager.cancelTechnologyRequest();    
+        if (nfcStatus === 'read') {     
+            readNdef();
+        }
+        if (nfcStatus === 'write') {
+            writeUserId();
+        }       
+    }, [nfcStatus]); 
+
+    if (hasNfc === null) {
+        return (
+            <View></View>
+        )
+    }
+
+    if (!hasNfc) {
+        return (
+            <View>
+                <Text>NFC not supported</Text>
+            </View>
+        )
+    }
+
+    /*   <Text>Allow Scan Profile</Text><Switch
+                    trackColor={{false: colors.border, true: colors.primary}}
+                    thumbColor={'#ffffff'}
+                    activeThumbColor={'#ffffff'}
+                    ios_backgroundColor={colors.background}
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                /><Row className='items-center'> </Row>
+       */
+
 
     return (
         <Row className='justify-between w-full '>
-            <Button startDecorator="ContactlessPayment" onPress={() => writeUserId()} title="Share My Profile" />
-            <Button startDecorator="UserFocus" onPress={() => readUserId()} title="Scan Profile" />
+            <Button disabled={nfcStatus=='write'} startDecorator="Megaphone" onPress={() => writeUserId1()} title="Share  Profile" />
+            
+                <Button disabled={nfcStatus=='read'} startDecorator="UserFocus" onPress={() => readNdef1()} title="Scan Profile" />
+
+           
+
             <Modal onVisible={!!showModal} title="You have a new friend!" outerClickClose={true} >
                 <View className='pb-4'>
-                    <Profile { ...showModal } displaySize="xl" />
+                    <Profile {...showModal} displaySize="xl" />
                 </View>
                 <Button onPress={() => setShowModal(false)} title="OK" />
             </Modal>
