@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
-import { storageClear } from 'app/lib/util';
+import { storageClear,decodeText } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { appSetting, getURI } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static'
@@ -52,8 +52,8 @@ export function Root (props) {
 
     useEffect(() => {
         if (isWeb){
-            document.title = data?.title;  
-            metaAdder('property="og:title"', data?.title)
+            document.title = decodeText(data?.title);  
+            metaAdder('property="og:title"', decodeText(data?.title))
         }
       }, []);
 
