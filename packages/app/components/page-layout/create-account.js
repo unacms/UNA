@@ -128,7 +128,7 @@ export default function PageLayout(props) {
         </View>
 
         <View className=" flex-auto flex-col gap-y-4 w-full max-w-md  ">
-          <BlockByName name={props.blocks.form} data={props.data} />
+          <BlockByName name={props.blocks.form} data={props.data} any="zz" />
           
           <Card
             rounded=" rounded-2xl "

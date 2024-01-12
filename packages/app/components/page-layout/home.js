@@ -112,7 +112,8 @@ export default function PageLayout(props) {
             return (
                 <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
-                        {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block  w-80 top-0 sticky duration-200 ">
+                        {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block  w-80  duration-200">
+                            <View className='top-16 fixed fixed-process w-80'>
                             {appSetting('layout', 'show_profile_info') && (
                                 <Row className="items-center justify-between px-6 py-4 cursor-pointer active:opacity-50">
                                     <Link href={currentUser.url} className="flex-auto">
@@ -139,6 +140,7 @@ export default function PageLayout(props) {
                                     return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
                                 }
                             )}
+                            </View>
                         </View>}
                         
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
@@ -198,11 +200,13 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden xl:block  w-96  max-w-md  px-4 xl:mt-4 flex-col space-y-4 sticky top-0 duration-200 ">
+                        <View className="hidden xl:block  w-96   ">
+                            <View className='top-16 fixed fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200'>
                             {sideBarBlocks.map((item, index) => {
                                     return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
                                 }
                             )}
+                            </View>
                         </View>
                     </View>
             </View>  

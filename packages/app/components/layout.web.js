@@ -73,10 +73,42 @@ export default function Layout(props) {
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }
-
-      
-        
     }, [data.url]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+           
+            let elements = document.getElementsByClassName("fixed-process");
+            for (let i = 0; i < elements.length; i++) {
+                let h = window.scrollY - 64;
+                let style = window.getComputedStyle(elements[i]);
+                let marginTop = parseInt(style.marginTop);
+                let marginBottom = parseInt(style.marginBottom)
+                let height = elements[i].offsetHeight +marginTop +marginBottom- window.innerHeight + 24;
+                console.log('xxx', height , h)
+                if (window.innerHeight - 64 <  elements[i].offsetHeight +marginTop +marginBottom + 24)  {
+                    
+                    if (height > h){
+                        console.log("window.scrollY1", -h, elements[i].offsetHeight )
+                        elements[i].style.top = (-h) + "px" ;
+                        elements[i].setAttribute('a', (-h) + "px");
+                    }
+                    else{
+                        elements[i].style.top = (-height) + "px" ;
+                    }
+                }
+            }
+        };
+    
+        // Add the event listener when the component mounts
+        window.addEventListener('scroll', handleScroll);
+
+        // Clean up the event listener when the component unmounts
+        return () => {
+          window.removeEventListener('scroll', handleScroll);
+        };
+        
+    }, []); 
 
     const { layoutName } = getLayoutName(data, uri, true);
     console.log("layoutName", layoutName)

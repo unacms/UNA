@@ -591,7 +591,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 )
             }
         });
-        return  <ScrollView className='hidden lg:block w-80 xl:w-96 t-0 lg:px-4 lg:py-3 absolute left-0' style={{height: windowHeight - 80}}>
+        return  <View className="hidden lg:block w-80 xl:w-96 t-0 "><View className=' fixed-process top-16 fixed w-80 xl:w-96 lg:px-4 lg:py-3 '>
             <Row className="justify-between items-center mt-1 mb-4 ">
                 <Text className="text-2xl ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
@@ -625,7 +625,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     </Link>
                 )})}
             </View>
-            </ScrollView>
+            </View></View>
     }, [routes, index]);
 
     if (leftSideBar){
@@ -636,7 +636,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80 xl:w-96 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d lg:p-4 fixed lg:relative top-0 z-50'}>
+                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80 xl:w-96 border-r  border-neutral-500/10 bg-bgrnavbar dark:bg-bgrnavbar-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto ">{/*min-h-screen???*/}

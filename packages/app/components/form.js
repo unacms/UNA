@@ -19,7 +19,7 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
     }
 
     return  Object.keys(inputs).map(function (key) {
-        return getFormFieldByData(inputs[key], handleSubmit, 'default', isInitial)
+        return getFormFieldByData(inputs[key], handleSubmit, 'default', {form_name:name})
     });  
 }
 
@@ -88,7 +88,7 @@ export default function Form(props) {
         }, 100);
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
-    let name = props.data.params?.display?.includes('_delete') ? '' : props.name
+     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')

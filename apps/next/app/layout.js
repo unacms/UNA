@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
 /**/
     return (
         <html lang="en" >
-            <body className='bg-bgrbody dark:bg-bgrbody-d'>
+            <body className='bg-bgrbody dark:bg-bgrbody-d' style={{overflowY:'initial'}}>
                 <Provider>
                         <QueryClientProvider client={queryClient}>
                             <CurrentUserProvider>
