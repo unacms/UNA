@@ -49,7 +49,7 @@ export default function FormFieldLocation(props) {
 
         let lat = '';
         let lng = '';
-    
+
         place.address_components.forEach(component => {
             if (component.types.includes('country')) {
                 country = component.short_name;
@@ -67,15 +67,21 @@ export default function FormFieldLocation(props) {
         });
         lat = place.geometry.location.lat()
         lng = place.geometry.location.lng()
-
-        formContext.setValue(name + '_country', country);
-        formContext.setValue(name + '_state', state);
-        formContext.setValue(name + '_city', city);
-        formContext.setValue(name + '_zip', zipCode);
-        formContext.setValue(name + '_lat', lat);
-        formContext.setValue(name + '_lng', lng);
-        formContext.setValue(name + '_street', street);
-        formContext.setValue(name + '_street_number', street_number);
+        
+        if (formContext){
+            formContext.setValue(name + '_country', country);
+            formContext.setValue(name + '_state', state);
+            formContext.setValue(name + '_city', city);
+            formContext.setValue(name + '_zip', zipCode);
+            formContext.setValue(name + '_lat', lat);
+            formContext.setValue(name + '_lng', lng);
+            formContext.setValue(name + '_street', street);
+            formContext.setValue(name + '_street_number', street_number);
+        }
+        if (props.onChange) {
+            props.onChange({ location_string: place.formatted_address, lat: lat, lng: lng, street: street, street_number: street_number, city: city, state: state, country: country, zipCode: zipCode })
+        }
+        
         setPlace({
             country: country, 
             state: state,

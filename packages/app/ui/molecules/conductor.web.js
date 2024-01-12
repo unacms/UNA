@@ -23,6 +23,7 @@ import  { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
+import Location from 'app/components/form-fields/location'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -196,18 +197,26 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
 
-    const setFilterValue = (name, val) => {
+    const setFilterValue = (values) => {
+
         const newRoutes = [...routes];
-        if (newRoutes[index].endpoint.params.filters){
-            newRoutes[index].endpoint.params.filters[name] = val;
-        }
-        else{
-            newRoutes[index].endpoint.params.filters = {[name]: val};
-        }
+        values.forEach(function (value) {
+            const name = value.name;
+            const val = value.value;
+            if (newRoutes[index].endpoint.params.filters){
+                newRoutes[index].endpoint.params.filters[name] = val;
+            }
+            else{
+                newRoutes[index].endpoint.params.filters = {[name]: val};
+            }
+        })
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = [];
+        newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
     }
 
-    const applyFilterValue = () => {
+    /*const applyFilterValue = () => {
         const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = [];
@@ -219,7 +228,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (currentRoute?.endpoint?.params?.filters)
             applyFilterValue();
     }, [currentRoute?.endpoint?.params?.filters]);
-
+*/
     const handleEndReached = useCallback(async (lastItemIndex) => {
         if (isFetchingNextPage) 
             return;
@@ -419,7 +428,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <>
                 {
                     inputs && (
-                        <ScrollView horizontal={true} className="items-center " >
+                     
                         <Row className={appSetting('layout', 'max_width') + " mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center "}>
                            
                             {Object.keys(inputs).map((key, index) => {
@@ -438,7 +447,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                                 labelField="label"
                                                 valueField="value"
                                                 value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-                                                onChange={(value) => setFilterValue(inputs[key].name, value)}
+                                                onChange={(value) => setFilterValue([{name:inputs[key].name, value:value}])}
                                                 data={values}
                                             />
                                         </Row>
@@ -446,7 +455,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 } else if (inputs[key].type == 'text') {
                                     return (
                                         <Row key={index} className="items-center">
-                                           {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
                                             <Input
                                                 name="search"
                                                 placeholder={inputs[key].caption}
@@ -456,15 +464,21 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                             />
                                         </Row>
                                     );
+                                } else if (inputs[key].type == 'location') {
+                                    return (
+                                        <Row key={index} className="items-center">
+                                            <Location
+                                               name="search"
+                                               value = {{location_string: route?.endpoint?.params?.filters?.[inputs[key].name]}}
+                                               onChange={(value) => {setFilterValue([{name:inputs[key].name, value:value.location_string}, {name:inputs[key].name+'_country', value:value.country},{name:inputs[key].name+'_state', value:value.state}, {name:inputs[key].name+'_city', value:value.city}])}}
+                                            />
+                                        </Row>
+                                    );
                                 }
                                 return null; // Return null if none of the conditions are met
                             })}
-                           {/* <View>
-                                <Button title="Search" variant="primary" onPress={() => applyFilterValue()} />
-                        </View>*/ }
-                            
                         </Row>
-                        </ScrollView>
+                     
                     )
                 }
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
