@@ -10,13 +10,12 @@ import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
 import { appStatic } from 'app/lib/app-static'
-import { useTranslation } from 'react-i18next';
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
+import { useTranslation } from 'react-i18next'
+import ProfileSwitcher from 'app/components/elements/profile_switcher'
 
 export default function PageLayout(props) {
-    
-    const { t } = useTranslation();
-    const [showImage, setShowImage] = useState(false);
+    const { t } = useTranslation()
+    const [showImage, setShowImage] = useState(false)
 
     const isWeb = Platform.OS == 'web'
     const [isDesktop, setIsDesktop] = useState(false)
@@ -27,7 +26,7 @@ export default function PageLayout(props) {
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
     )
-    const feedList = appSetting('feed', 'list');
+    const feedList = appSetting('feed', 'list')
 
     const [unitMode, setUnitMode] = useState(
         feedMode ? feedMode : appSetting('feed', 'default_view')
@@ -63,41 +62,63 @@ export default function PageLayout(props) {
 
         return () => clearTimeout(timer) // This will clear the timer when the component is unmounted.
     }, [])
-   
-    function SplashBlock (props) {
-        if (appSetting('layout', 'block') == 'image'){
-            let url = '/splash.webp';
-            return <Image sizes="1024px" view="cover" className="u-cover" src={url} />
+
+    function SplashBlock(props) {
+        if (appSetting('layout', 'block') == 'image') {
+            let url = '/splash.webp'
+            return (
+                <Image
+                    sizes="1024px"
+                    view="cover"
+                    className="u-cover"
+                    src={url}
+                />
+            )
         }
-    
-        if (appSetting('layout', 'block') == 'login'){
-            return <BlockByName name={props.blocks.login} data={props.data}/>
+
+        if (appSetting('layout', 'block') == 'login') {
+            return <BlockByName name={props.blocks.login} data={props.data} />
         }
-    
-        if (appSetting('layout', 'block') == 'signup'){
-            return <BlockByName name={props.blocks.signup} data={props.data}/>
+
+        if (appSetting('layout', 'block') == 'signup') {
+            return <BlockByName name={props.blocks.signup} data={props.data} />
         }
-    
+
         return <></>
-    } 
+    }
 
-    let sideBarBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].sidebar).map(key => {
-        return {name: key, block: props.blocks[key]};
-    });
+    let sideBarBlocks = Object.keys(props.blocks)
+        .filter((key) => props.blocks[key].sidebar)
+        .map((key) => {
+            return { name: key, block: props.blocks[key] }
+        })
 
-    let topBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].topbar).map(key => {
-        return {name: key, block: props.blocks[key]};
-    });
+    let topBlocks = Object.keys(props.blocks)
+        .filter((key) => props.blocks[key].topbar)
+        .map((key) => {
+            return { name: key, block: props.blocks[key] }
+        })
 
-    let navBarBlocks = Object.keys(props.blocks).filter(key => props.blocks[key].leftbar).map(key => {
-        return {name: key, block: props.blocks[key]};
-    });
+    let navBarBlocks = Object.keys(props.blocks)
+        .filter((key) => props.blocks[key].leftbar)
+        .map((key) => {
+            return { name: key, block: props.blocks[key] }
+        })
 
     if (isWeb) {
-        if (currentUser === null && renderBlock){
-            let p = {blocks : props.blocks, data : props.data, block: SplashBlock(props)}
+        if (currentUser === null && renderBlock) {
+            let p = {
+                blocks: props.blocks,
+                data: props.data,
+                block: SplashBlock(props),
+            }
             return (
-                <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
+                <View
+                    className={
+                        appSetting('layout', 'max_width') +
+                        ' mx-auto w-full pt-4'
+                    }
+                >
                     {appStatic('components_splash', p)}
                     {appStatic('components_fullfooter', p)}
                 </View>
@@ -107,60 +128,135 @@ export default function PageLayout(props) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
             dUser.url = '/dashboard'
-            const profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+            const profile = (
+                <Profile
+                    {...dUser}
+                    displayType="unit_wo_info"
+                    displaySize="base"
+                />
+            )
 
             return (
-                <View className={appSetting('layout', 'max_width') + ' mx-auto w-full'}>
+                <View
+                    className={
+                        appSetting('layout', 'max_width') + ' mx-auto w-full'
+                    }
+                >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
-                        {(appSetting('layout', 'format') != 'ver') && <View className="hidden lg:block  w-80  duration-200">
-                            <View className='top-16 fixed fixed-process w-80'>
-                            {appSetting('layout', 'show_profile_info') && (
-                                <Row className="items-center justify-between px-6 py-4 cursor-pointer active:opacity-50">
-                                    <Link href={currentUser.url} className="flex-auto">
-                                        <Row className='flex-row gap-x-2 items-center'>
-                                            <View className=" ml-[5px] bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                                {profile}
-                                            </View>
-                                            <Text className="text-base flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </Row>
-                                    </Link>
-                                    {appSetting('layout', 'allow_switch_profile') && (
-                                        <View className='flex-none'><ProfileSwitcher hideTitle={true} ><Button
-                                            variant="text"
-                                            tooltip={t('Switch profile')}
-                                            size="sm"
-                                            startDecorator="UserSwitch"
-                                            rounded
-                                            align="right"
-                                        /></ProfileSwitcher></View>)}
-                                </Row>)}
-                            {navBarBlocks.map((item, index) => {
-                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                                }
-                            )}
+                        {appSetting('layout', 'format') != 'ver' && (
+                            <View className="hidden lg:block  w-80  duration-200">
+                                <View className="top-16 fixed fixed-process w-80">
+                                    {appSetting(
+                                        'layout',
+                                        'show_profile_info'
+                                    ) && (
+                                        <View className="flex-col w-full pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
+                                            <Link
+                                                href={currentUser.url}
+                                                className="flex-auto"
+                                            >
+                                                <Row className="flex-row w-full gap-x-2 items-center">
+                                                    <View className="flex-none mx-0.5 items-start">
+                                                        {profile}
+                                                    </View>
+                                                    
+                                                        
+                                                        <Text className="text-xl flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                            {
+                                                                currentUser.display_name
+                                                            }
+                                                        </Text>
+                                                        {appSetting(
+                                                            'layout',
+                                                            'allow_switch_profile'
+                                                        ) && (
+                                                            <View className="flex-none">
+                                                                <ProfileSwitcher
+                                                                    hideTitle={
+                                                                        true
+                                                                    }
+                                                                >
+                                                                    <Button
+                                                                        variant="text"
+                                                                        tooltip={t(
+                                                                            'Switch profile'
+                                                                        )}
+                                                                        size="sm"
+                                                                        startDecorator="UserSwitch"
+                                                                        rounded
+                                                                        align="right"
+                                                                    />
+                                                                </ProfileSwitcher>
+                                                            </View>
+                                                        )}
+                                                </Row>
+                                            </Link>
+                                        </View>
+                                    )}
+                                    {navBarBlocks.map((item, index) => {
+                                        return (
+                                            <BlockByName
+                                                key={'block_' + index}
+                                                name={item.block}
+                                                data={props.data}
+                                                {...item.block.props}
+                                            />
+                                        )
+                                    })}
+                                </View>
                             </View>
-                        </View>}
-                        
+                        )}
+
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto   lg:border-l xl:border-r border-dashed border-neutral-400/20 w-2/3">
+                            <View className="flex-auto   lg:border-l xl:border-r border-dashed border-bdr dark:border-bdr-d ">
                                 <View className="flex-auto   w-full mx-auto">
                                     <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
-                                        {feedList.length > 1 && feedList.map((item, index) => {
-                                            return (
-                                                <Pressable key={'selector' + index} className=" my-auto items-center" onPress={() => { setFeedTypeEx(item.name) }} >
-                                                    <Button fullWidth={true} tooltip={t(item.title)} startDecorator={item.icon} variant={feedType == item.name ? 'link' : 'text'} rounded  size="sm" />
-                                                </Pressable>
-                                            );
-                                        })}
-                                        {appSetting('feed', 'show_selector_view') && (
+                                        {feedList.length > 1 &&
+                                            feedList.map((item, index) => {
+                                                return (
+                                                    <Pressable
+                                                        key={'selector' + index}
+                                                        className=" my-auto items-center"
+                                                        onPress={() => {
+                                                            setFeedTypeEx(
+                                                                item.name
+                                                            )
+                                                        }}
+                                                    >
+                                                        <Button
+                                                            fullWidth={true}
+                                                            tooltip={t(
+                                                                item.title
+                                                            )}
+                                                            startDecorator={
+                                                                item.icon
+                                                            }
+                                                            variant={
+                                                                feedType ==
+                                                                item.name
+                                                                    ? 'link'
+                                                                    : 'text'
+                                                            }
+                                                            rounded
+                                                            size="sm"
+                                                        />
+                                                    </Pressable>
+                                                )
+                                            })}
+                                        {appSetting(
+                                            'feed',
+                                            'show_selector_view'
+                                        ) && (
                                             <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
                                                 <Button
                                                     startDecorator="Rows"
                                                     tooltip={t('Full')}
                                                     rounded
-                                                    variant={unitMode == '' ? 'link' : 'text'}
+                                                    variant={
+                                                        unitMode == ''
+                                                            ? 'link'
+                                                            : 'text'
+                                                    }
                                                     size="sm"
                                                     onPress={() => {
                                                         setUnitModeEx('')
@@ -170,7 +266,11 @@ export default function PageLayout(props) {
                                                     startDecorator="ListBullets"
                                                     rounded
                                                     tooltip={t('Short')}
-                                                    variant={unitMode == 'small' ? 'link' : 'text'}
+                                                    variant={
+                                                        unitMode == 'small'
+                                                            ? 'link'
+                                                            : 'text'
+                                                    }
                                                     size="sm"
                                                     onPress={() => {
                                                         setUnitModeEx('small')
@@ -181,36 +281,80 @@ export default function PageLayout(props) {
                                     </Row>
                                     <View className="relative w-full mx-auto max-w-3xl">
                                         {feedList.map((item, index) => {
-                                            if (feedType == item.name){
+                                            if (feedType == item.name) {
                                                 return (
-                                                    <View key={'view' + index}  >
-                                                       
-                                                            {topBlocks.map((item, index) => {
-                                                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                                                                }
-                                                            )}
-                                                            <BlockByName data={props.data} name={props.blocks[item.name + '_feed_form']} />
-                                                            <BlockByName data={props.data} name={props.blocks[item.name + '_feed']} unitMode={unitMode} />
+                                                    <View key={'view' + index}>
+                                                        {topBlocks.map(
+                                                            (item, index) => {
+                                                                return (
+                                                                    <BlockByName
+                                                                        key={
+                                                                            'block_' +
+                                                                            index
+                                                                        }
+                                                                        name={
+                                                                            item.block
+                                                                        }
+                                                                        data={
+                                                                            props.data
+                                                                        }
+                                                                        {...item
+                                                                            .block
+                                                                            .props}
+                                                                    />
+                                                                )
+                                                            }
+                                                        )}
+                                                        <BlockByName
+                                                            data={props.data}
+                                                            name={
+                                                                props.blocks[
+                                                                    item.name +
+                                                                        '_feed_form'
+                                                                ]
+                                                            }
+                                                        />
+                                                        <BlockByName
+                                                            data={props.data}
+                                                            name={
+                                                                props.blocks[
+                                                                    item.name +
+                                                                        '_feed'
+                                                                ]
+                                                            }
+                                                            unitMode={unitMode}
+                                                        />
                                                     </View>
-                                                );
+                                                )
                                             }
-                                            return <React.Fragment key={'empty_' + index}></React.Fragment>
+                                            return (
+                                                <React.Fragment
+                                                    key={'empty_' + index}
+                                                ></React.Fragment>
+                                            )
                                         })}
                                     </View>
                                 </View>
                             </View>
                         </View>
                         <View className="hidden xl:block  w-96   ">
-                            <View className='top-16 fixed fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200'>
-                            {sideBarBlocks.map((item, index) => {
-                                    return(<BlockByName key={'block_'+index} name={item.block} data={props.data} {...item.block.props}/>);
-                                }
-                            )}
+                            <View className="top-16 fixed fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200">
+                                {sideBarBlocks.map((item, index) => {
+                                    return (
+                                        <BlockByName
+                                            key={'block_' + index}
+                                            name={item.block}
+                                            data={props.data}
+                                            {...item.block.props}
+                                        />
+                                    )
+                                })}
                             </View>
                         </View>
                     </View>
-            </View>  
-        )}
+                </View>
+            )
+        }
     }
 
     let sect = [{ name: '', title: 'Top' }]
@@ -225,17 +369,17 @@ export default function PageLayout(props) {
             icon: '',
         }
     })
-    let blocks = appSetting('layouts', 'home').blocks;
-    let blocksForAdd = [];
-    if (blocks[feedType + '_feed_form']){
+    let blocks = appSetting('layouts', 'home').blocks
+    let blocksForAdd = []
+    if (blocks[feedType + '_feed_form']) {
         blocksForAdd.push(blocks[feedType + '_feed_form'].name)
     }
-    if (blocks[feedType + '_feed']){
+    if (blocks[feedType + '_feed']) {
         blocksForAdd.push(blocks[feedType + '_feed'].name)
     }
     topBlocks.map((item, index) => {
         blocksForAdd.push(item.block.name)
-    });
+    })
 
     let dataForFeed = filterContent(props.data, blocksForAdd)
 
@@ -244,60 +388,86 @@ export default function PageLayout(props) {
         items: menuItems,
     }
 
-    let p = {blocks : props.blocks, data : props.data, block: SplashBlock(props)}
-           
+    let p = {
+        blocks: props.blocks,
+        data: props.data,
+        block: SplashBlock(props),
+    }
+
     return (
         <View className="w-full ">
             {!currentUser && renderBlock && (
                 <ScrollView>
-                    <View className={appSetting('layout', 'max_width') + ' mx-auto w-full pt-4'} >
+                    <View
+                        className={
+                            appSetting('layout', 'max_width') +
+                            ' mx-auto w-full pt-4'
+                        }
+                    >
                         {appStatic('components_splash', p)}
                     </View>
                 </ScrollView>
             )}
             {!!currentUser && (
                 <>
-                     <Row className="px-auto justify-center gap-x-1 ">
-                        {feedList.length > 1 && feedList.map((item, index) => {
-                            return (
-                                <Pressable key={'selector' + index}  className="items-center justify-center py-2.5 " onPress={() => { setFeedTypeEx(item.name) }}>
-                                    <Button
-                                        fullWidth={false}
-                                        id="tab"
-                                        startDecorator={item.icon}
-                                        variant={feedType == item.name ? 'outline' : 'text'}
-                                        size="sm"
-                                    />
-                                </Pressable>
-                            );
-                        })}
+                    <Row className="px-auto justify-center gap-x-1 ">
+                        {feedList.length > 1 &&
+                            feedList.map((item, index) => {
+                                return (
+                                    <Pressable
+                                        key={'selector' + index}
+                                        className="items-center justify-center py-2.5 "
+                                        onPress={() => {
+                                            setFeedTypeEx(item.name)
+                                        }}
+                                    >
+                                        <Button
+                                            fullWidth={false}
+                                            id="tab"
+                                            startDecorator={item.icon}
+                                            variant={
+                                                feedType == item.name
+                                                    ? 'outline'
+                                                    : 'text'
+                                            }
+                                            size="sm"
+                                        />
+                                    </Pressable>
+                                )
+                            })}
                         {appSetting('feed', 'show_selector_view') && (
                             <Row className="flex-auto flex-auto justify-end">
                                 <Pressable
                                     className="items-center justify-center py-2.5  "
                                     onPress={() => {
-                                    setUnitModeEx('')
+                                        setUnitModeEx('')
                                     }}
                                 >
                                     <Button
                                         startDecorator="Rows"
                                         fullWidth={false}
                                         rounded
-                                        variant={unitMode == '' ? 'link' : 'text'}
+                                        variant={
+                                            unitMode == '' ? 'link' : 'text'
+                                        }
                                         size="sm"
                                     />
                                 </Pressable>
                                 <Pressable
                                     className="items-center justify-center py-2.5  "
                                     onPress={() => {
-                                    setUnitModeEx('small')
+                                        setUnitModeEx('small')
                                     }}
                                 >
                                     <Button
                                         startDecorator="ListBullets"
                                         fullWidth={false}
                                         rounded
-                                        variant={unitMode == 'small' ? 'link' : 'text'}
+                                        variant={
+                                            unitMode == 'small'
+                                                ? 'link'
+                                                : 'text'
+                                        }
                                         size="sm"
                                     />
                                 </Pressable>
@@ -305,27 +475,29 @@ export default function PageLayout(props) {
                         )}
                     </Row>
                     {feedList.map((item, index) => {
-                        if (feedType == item.name){
+                        if (feedType == item.name) {
                             return (
-                                <View key={'view' + index}  >
-                                    
-                                        <Conductor
-                                            minHeaderHeight={0}
-                                            isHideDefaultHeader={false}
-                                            menu={menu}
-                                            unitMode={unitMode}
-                                            data={dataForFeed}
-                                            blocks={props.blocks}
-                                            skeleton='feed'
-                                        />
+                                <View key={'view' + index}>
+                                    <Conductor
+                                        minHeaderHeight={0}
+                                        isHideDefaultHeader={false}
+                                        menu={menu}
+                                        unitMode={unitMode}
+                                        data={dataForFeed}
+                                        blocks={props.blocks}
+                                        skeleton="feed"
+                                    />
                                 </View>
-                            );
+                            )
                         }
-                        return <React.Fragment key={'empty_' + index}></React.Fragment>
+                        return (
+                            <React.Fragment
+                                key={'empty_' + index}
+                            ></React.Fragment>
+                        )
                     })}
-            </>
-        )}
+                </>
+            )}
         </View>
     )
 }
-
