@@ -605,9 +605,9 @@ function ComponentsSplash(props) {
                             <View className="flex-row gap-x-1 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-1.5 py-1">
                                 <Icon
                                     icon="PlusCircle"
-                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
+                                    className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
                                 />
-                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
                                     Special Button
                                 </Text>
                             </View>
@@ -616,9 +616,9 @@ function ComponentsSplash(props) {
                             <View className="flex-row gap-x-1.5 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-2.5 py-1.5">
                                 <Icon
                                     icon="PlusCircle"
-                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-xl "
+                                    className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-xl "
                                 />
-                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-sm dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] font-semibold text-sm dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
                                     Special Button
                                 </Text>
                             </View>
@@ -627,9 +627,9 @@ function ComponentsSplash(props) {
                             <View className="flex-row gap-x-2 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-3 py-2 ">
                                 <Icon
                                     icon="PlusCircle"
-                                    className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-2xl "
+                                    className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.2)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-2xl "
                                 />
-                                <Text className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-base dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                <Text className="my-auto  drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.2)] font-semibold text-base dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
                                     Special Button
                                 </Text>
                             </View>
@@ -638,9 +638,9 @@ function ComponentsSplash(props) {
                             <View className="flex-row gap-x-2 items-center bg-gradient-to-b  from-primary-600 to-primary-500 rounded-lg px-3 py-2 ">
                                 <Icon
                                     icon="PlusCircle"
-                                    className="  drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] text-neutral-100 group-hover:text-white  text-2xl "
+                                    className="  drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] text-neutral-100 group-hover:text-white  text-2xl "
                                 />
-                                <Text className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-base text-neutral-100 group-hover:text-white ">
+                                <Text className="my-auto  drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] font-semibold text-base text-neutral-100 group-hover:text-white ">
                                     Special Button
                                 </Text>
                             </View>
@@ -649,9 +649,9 @@ function ComponentsSplash(props) {
                             <View className="flex-row gap-x-2.5 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-3.5 py-2.5 ">
                                 <Icon
                                     icon="PlusCircle"
-                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-3xl "
+                                    className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-3xl "
                                 />
-                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-lg dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] font-semibold text-lg dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
                                     Special Button
                                 </Text>
                             </View>
