@@ -146,15 +146,7 @@ export function CoverSmall(props) {
                             <Text className="text-lg xl:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>
-                            <View className="ml-4">
-                                <Button
-                                    size="sm"
-                                    rounded
-                                    startDecorator="SealCheck"
-                                    variant="link"
-                                    fullWidth
-                                />
-                            </View>
+                            
                         </Row>
                     </Row>
                     <View className=" w-auto    my-auto ">

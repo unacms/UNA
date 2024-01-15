@@ -1,17 +1,17 @@
-import { View, Row } from "app/design/view";
-import { Text } from "app/design/typography";
-import { Button } from "app/design/controls";
-import Svg, { Path } from "react-native-svg";
-import Link from "app/ui/atoms/link";
-import { Icon } from "app/ui/atoms/icon";
-import Card from "app/components/card";
-import { fetcher } from "app/lib/fetcher";
-import { useEffect, useState } from "react";
-import React from "react";
-import { Animated } from "react-native";
-import { useTranslation } from "react-i18next";
-import { tp, appSetting } from "app/lib/util";
-import ProfilesList from "app/ui/molecules/profile_list";
+import { View, Row } from 'app/design/view'
+import { Text } from 'app/design/typography'
+import { Button } from 'app/design/controls'
+import Svg, { Path } from 'react-native-svg'
+import Link from 'app/ui/atoms/link'
+import { Icon } from 'app/ui/atoms/icon'
+import Card from 'app/components/card'
+import { fetcher } from 'app/lib/fetcher'
+import { useEffect, useState } from 'react'
+import React from 'react'
+import { Animated } from 'react-native'
+import { useTranslation } from 'react-i18next'
+import { tp, appSetting } from 'app/lib/util'
+import ProfilesList from 'app/ui/molecules/profile_list'
 
 // import Aaa from "./aaa.svg";
 
@@ -38,7 +38,7 @@ const LogoText = (
             fill="currentColor"
         />
     </Svg>
-);
+)
 
 const LogoMark = (
     <Svg
@@ -74,7 +74,7 @@ const LogoMark = (
             fill="currentColor"
         />
     </Svg>
-);
+)
 
 const LogoNative = (
     <Svg
@@ -117,7 +117,7 @@ const LogoNative = (
             fill="currentColor"
         />
     </Svg>
-);
+)
 
 const LogoNativeDark = (
     <Svg
@@ -157,7 +157,7 @@ const LogoNativeDark = (
             fill="currentColor"
         />
     </Svg>
-);
+)
 
 const ComponentsAbout = (
     <>
@@ -168,9 +168,9 @@ const ComponentsAbout = (
             The place to connect, share and grow with the community.
         </Text>
     </>
-);
+)
 const ComponentsCommentsEmpty = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className="pt-8">
@@ -179,19 +179,19 @@ const ComponentsCommentsEmpty = () => {
                         <Icon icon="ChatCircle" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        {t("No comments yet")}
+                        {t('No comments yet')}
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                        {t("Be the first to share what you think")}
+                        {t('Be the first to share what you think')}
                     </Text>
                 </View>
             </View>
         </>
-    );
-};
+    )
+}
 
 const ComponentsContentEmpty = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className="p-8">
@@ -200,19 +200,21 @@ const ComponentsContentEmpty = () => {
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        {t("Nothing found")}
+                        {t('Nothing found')}
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                        {t("This is like searching for a needle in a haystack, but without the needle.")}
+                        {t(
+                            'This is like searching for a needle in a haystack, but without the needle.'
+                        )}
                     </Text>
                 </View>
             </View>
         </>
-    );
-};
+    )
+}
 
 const PageNotFound = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className="p-8 mx-auto">
@@ -221,18 +223,18 @@ const PageNotFound = () => {
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        {t("404 - not found")}
+                        {t('404 - not found')}
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                        {t("Page not found, sorry.")}
+                        {t('Page not found, sorry.')}
                     </Text>
                 </View>
             </View>
         </>
-    );
-};
+    )
+}
 const PageNotAllowed = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className="p-8 mx-auto">
@@ -241,61 +243,60 @@ const PageNotAllowed = () => {
                         <Icon icon="Binoculars" width={32} height={32} />
                     </View>
                     <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        {t("403 - not allowed")}
+                        {t('403 - not allowed')}
                     </Text>
                     <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
-                        {t("Page not allowed, sorry.")}
+                        {t('Page not allowed, sorry.')}
                     </Text>
                 </View>
             </View>
         </>
-    );
-};
-
+    )
+}
 
 export function ComponentsIntro(props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     const AnimatedCounter = ({ value, duration }) => {
-        const animatedValue = useState(new Animated.Value(1))[0];
-        const [displayValue, setDisplayValue] = useState(1);
+        const animatedValue = useState(new Animated.Value(1))[0]
+        const [displayValue, setDisplayValue] = useState(1)
 
         useEffect(() => {
             Animated.timing(animatedValue, {
                 toValue: value,
                 duration: duration,
                 useNativeDriver: false,
-            }).start();
+            }).start()
 
             const listener = animatedValue.addListener(({ value }) => {
-                setDisplayValue(Math.round(value));
-            });
+                setDisplayValue(Math.round(value))
+            })
 
             return () => {
-                animatedValue.removeListener(listener);
-            };
-        }, [value]);
+                animatedValue.removeListener(listener)
+            }
+        }, [value])
 
-        return <Animated.Text>{displayValue}</Animated.Text>;
-    };
-    const [data, setData] = useState(1);
-    const [data2, setData2] = useState([]);
+        return <Animated.Text>{displayValue}</Animated.Text>
+    }
+    const [data, setData] = useState(1)
+    const [data2, setData2] = useState([])
     useEffect(() => {
         const fetchData1 = async () => {
-            const sResponse = await fetcher("/api.php?r=q&q=accounts_count");
-            setData(sResponse);
-        };
-        fetchData1();
-    }, []);
+            const sResponse = await fetcher('/api.php?r=q&q=accounts_count')
+            setData(sResponse)
+        }
+        fetchData1()
+    }, [])
 
     useEffect(() => {
         const fetchData2 = async () => {
             const sResponse2 = await fetcher(
-                "/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}",
-            );
-            setData2(sResponse2.data[0].data.data);
-        };
-        fetchData2();
-    }, []);
+                '/api.php?r=bx_persons/browse/&params[]={%22params%22:{%22per_page%22:%2212%22,%22start%22:0,%22type%22:%22active%22}}'
+            )
+            setData2(sResponse2.data[0].data.data)
+        }
+        fetchData2()
+    }, [])
 
     const CounterText = React.memo(({ data }) => {
         return (
@@ -308,11 +309,11 @@ export function ComponentsIntro(props) {
                     />
                 </Text>
                 <Text className="  text-neutral-700 dark:text-neutral-300 text-xs ">
-                    {tp("members", data, true)}
+                    {tp('members', data, true)}
                 </Text>
             </View>
-        );
-    });
+        )
+    })
 
     return (
         <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4 ">
@@ -321,15 +322,20 @@ export function ComponentsIntro(props) {
                 <CounterText data={data} />
             </View>
             <Text className="text-xs  text-neutral-700 dark:text-neutral-300">
-                {t("Community Intro")}
+                {t('Community Intro')}
             </Text>
         </Card>
-    );
+    )
 }
 
 function ComponentsSplash(props) {
     return (
-        <View className={"flex-col xl:px-4 w-full mx-auto" + appSetting('layout', 'max_width')}>
+        <View
+            className={
+                'flex-col xl:px-4 w-full mx-auto' +
+                appSetting('layout', 'max_width')
+            }
+        >
             <View className="flex-col  md:flex-row  xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 px-2  gap-x-4   duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
                 <View className="flex-col xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center gap-y-8 gap-x-12 flex-auto p-8  ">
                     <View className="flex-col gap-y-4 w-40 xl:w-1/3 aspect-square rounded-full   ">
@@ -376,6 +382,8 @@ function ComponentsSplash(props) {
                             Connect and create with like-minded people, discover
                             new perspectives, share knowledge and grow together.
                         </Text>
+
+                       
                     </View>
                 </View>
 
@@ -568,6 +576,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
+
                 <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
                         <View className="flex-row gap-x-2 ">
@@ -589,9 +598,70 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
+
+                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
+                    <button className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
+                            <View className="flex-row gap-x-1 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-1.5 py-1">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
+                                />
+                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
+                            </View>
+                        </button>
+                    <button className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
+                            <View className="flex-row gap-x-1.5 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-2.5 py-1.5">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-xl "
+                                />
+                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-sm dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
+                            </View>
+                        </button>
+                        <button className=" group p-[2px] rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 mr-auto">
+                            <View className="flex-row gap-x-2 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-3 py-2 ">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-2xl "
+                                />
+                                <Text className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-base dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
+                            </View>
+                        </button>
+                        <button className=" group p-[2px] rounded-[10px] bg-gradient-to-b from-primary-500 to-primary-600 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 mr-auto">
+                            <View className="flex-row gap-x-2 items-center bg-gradient-to-b  from-primary-600 to-primary-500 rounded-lg px-3 py-2 ">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className="  drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] text-neutral-100 group-hover:text-white  text-2xl "
+                                />
+                                <Text className=" drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-base text-neutral-100 group-hover:text-white ">
+                                    Special Button
+                                </Text>
+                            </View>
+                        </button>
+                        <button className=" group p-[2px] rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2x_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_32px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 mr-auto">
+                            <View className="flex-row gap-x-2.5 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-3.5 py-2.5 ">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-3xl "
+                                />
+                                <Text className="drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.3)] font-semibold text-lg dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
+                            </View>
+                        </button>
+                    </Card>
+                </View>
+           
             </View>
         </View>
-    );
+    )
 }
 
 const ComponentsDummy = (
@@ -616,7 +686,7 @@ const ComponentsDummy = (
                 height={16}
             />
             <Text
-                className={"flex-none text-red-800 dark:text-red-200 text-xs"}
+                className={'flex-none text-red-800 dark:text-red-200 text-xs'}
             >
                 456
             </Text>
@@ -630,7 +700,7 @@ const ComponentsDummy = (
                 height={16}
             />
             <Text
-                className={"flex-none text-gray-800 dark:text-gray-200 text-xs"}
+                className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
             >
                 123
             </Text>
@@ -643,23 +713,23 @@ const ComponentsDummy = (
                 height={16}
             />
             <Text
-                className={"flex-none text-gray-800 dark:text-gray-200 text-xs"}
+                className={'flex-none text-gray-800 dark:text-gray-200 text-xs'}
             >
                 123
             </Text>
         </Row>
     </>
-);
+)
 
 const ComponentsFooter = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className=" w-full  flex-row flex-wrap opacity-80 ">
                 <Link href="/about">
                     <Button
                         variant="text"
-                        title={t("About")}
+                        title={t('About')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -668,7 +738,7 @@ const ComponentsFooter = () => {
                 <Link href="/contact">
                     <Button
                         variant="text"
-                        title={t("Contact")}
+                        title={t('Contact')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -676,7 +746,7 @@ const ComponentsFooter = () => {
                 <Link href="/privacy">
                     <Button
                         variant="text"
-                        title={t("Privacy")}
+                        title={t('Privacy')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -684,25 +754,25 @@ const ComponentsFooter = () => {
                 <Link href="/terms">
                     <Button
                         variant="text"
-                        title={t("Terms")}
+                        title={t('Terms')}
                         className="mt-auto"
                         size="sm"
                     />
                 </Link>
             </View>
         </>
-    );
-};
+    )
+}
 
 const ComponentsFullFooter = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     return (
         <>
             <View className=" w-full p-3 flex-row justify-center  border-t border-bdr dark:border-bdr-d  ">
                 <Link href="/">
                     <Button
                         variant="text"
-                        title={t("Home")}
+                        title={t('Home')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -710,7 +780,7 @@ const ComponentsFullFooter = () => {
                 <Link href="/about">
                     <Button
                         variant="text"
-                        title={t("About")}
+                        title={t('About')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -719,7 +789,7 @@ const ComponentsFullFooter = () => {
                 <Link href="/contact">
                     <Button
                         variant="text"
-                        title={t("Contact")}
+                        title={t('Contact')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -727,7 +797,7 @@ const ComponentsFullFooter = () => {
                 <Link href="/privacy">
                     <Button
                         variant="text"
-                        title={t("Privacy")}
+                        title={t('Privacy')}
                         className="mt-auto"
                         size="sm"
                     />
@@ -735,15 +805,15 @@ const ComponentsFullFooter = () => {
                 <Link href="/terms">
                     <Button
                         variant="text"
-                        title={t("Terms")}
+                        title={t('Terms')}
                         className="mt-auto"
                         size="sm"
                     />
                 </Link>
             </View>
         </>
-    );
-};
+    )
+}
 
 export const staticDefault = {
     logo_text: LogoText,
@@ -760,4 +830,4 @@ export const staticDefault = {
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,
-};
+}
