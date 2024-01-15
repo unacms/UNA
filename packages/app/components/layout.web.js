@@ -75,26 +75,36 @@ export default function Layout(props) {
         }
     }, [data.url]);
 
+    function getFullOffsetTop(element) {
+        let offsetTop = 0;
+        while(element) {
+            offsetTop += element.offsetTop;
+            element = element.offsetParent;
+        }
+        return offsetTop;
+    }
+
     useEffect(() => {
         const handleScroll = () => {
-           
             let elements = document.getElementsByClassName("fixed-process");
             for (let i = 0; i < elements.length; i++) {
-                let h = window.scrollY - 64;
+                const offset = getFullOffsetTop(elements[i].parentNode);
+                const offset1 = 24;
+                const scrollY = window.scrollY;
+                const innerHeight = window.innerHeight;
+                let h = scrollY - offset;
                 let style = window.getComputedStyle(elements[i]);
-                let marginTop = parseInt(style.marginTop);
-                let marginBottom = parseInt(style.marginBottom)
-                let height = elements[i].offsetHeight +marginTop +marginBottom- window.innerHeight + 24;
-                console.log('xxx', height , h)
-                if (window.innerHeight - 64 <  elements[i].offsetHeight +marginTop +marginBottom + 24)  {
-                    
-                    if (height > h){
-                        console.log("window.scrollY1", -h, elements[i].offsetHeight )
-                        elements[i].style.top = (-h) + "px" ;
-                        elements[i].setAttribute('a', (-h) + "px");
-                    }
-                    else{
-                        elements[i].style.top = (-height) + "px" ;
+                let marginTop = parseInt(style.marginTop, 10);
+                let marginBottom = parseInt(style.marginBottom, 10);
+                let elementHeight = elements[i].offsetHeight;
+                let height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
+                elements[i].style.top = offset + 'px';
+                console.log("offset", innerHeight - offset, elementHeight + marginTop + marginBottom + offset1)
+                if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
+                    let topValue = height > h ? -h : -height;
+                    elements[i].style.top = `${topValue}px`;
+                    if (height > h) {
+                        elements[i].setAttribute('a', `${topValue}px`);
                     }
                 }
             }

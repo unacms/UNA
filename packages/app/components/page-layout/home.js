@@ -145,7 +145,7 @@ export default function PageLayout(props) {
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {appSetting('layout', 'format') != 'ver' && (
                             <View className="hidden lg:block  w-80  duration-200">
-                                <View className="top-16 fixed fixed-process w-80">
+                                <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'

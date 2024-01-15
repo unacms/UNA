@@ -554,11 +554,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className={isRightCol? 'flex-auto  pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
-                    {isRightCol && <View className="hidden lg:block w-96 pt-4 pl-4">
-                        {route?.sidebar?.content.map((item, index ) => {
-                            return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
-                        })}
-                        <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                    {isRightCol && <View className="hidden lg:block w-96  ">
+                        <View className="fixed-process fixed w-96 pt-4 pl-4 ">
+                            {route?.sidebar?.content.map((item, index ) => {
+                                return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                            })}
+                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                        </View>
                     </View>}
                 </Row>
             )}
