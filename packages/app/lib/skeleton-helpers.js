@@ -74,7 +74,7 @@ const bx_forum = <>
 
 function browse_item(num) {
     return (<View className={Platform.OS === 'web' ? 'mt-0' : 'mt-16'}>{items.map((item, index) => (
-        <View key={'browse_item' + index} className="flex-row gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto p-2">
+        <View key={'browse_item' + index} className="flex-row lg:gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto p-2">
             <View className="mb-2  flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
                 <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
             </View>

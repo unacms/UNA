@@ -147,8 +147,8 @@ let settingsDefault = {
         connection: {
             show_action_as_button: true,
             icons: {   
-                'sys_profiles_subscriptions_add':   'CheckCircle',  
-                'sys_profiles_subscriptions_remove':   'MinusCircle',
+                'sys_profiles_subscriptions_add':   'UserPlus',  
+                'sys_profiles_subscriptions_remove':   'UserMinus',
                 'bx_events_fans_add':   'SignIn',
                 'bx_events_fans_remove':   'SignOut',
                 'bx_groups_fans_add':   'SignIn',
@@ -183,6 +183,7 @@ let settingsDefault = {
             'item-share': 'ShareFat',
             'edit': 'Pencil',
             'delete': 'Trash',
+            'messenger': 'ChatTeardropDots', 
             
         },
         menu_top: [
@@ -812,7 +813,7 @@ let settingsDefault = {
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
+            {key: '/tab1', title: 'Messages', url: '/posts-home',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},

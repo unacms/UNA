@@ -1,10 +1,9 @@
 import { Root, getData } from 'app/root'
 import { useState, useEffect } from 'react'
-import { useNavigation } from "expo-router";
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
@@ -14,6 +13,7 @@ import { MMKVLoader } from "react-native-mmkv-storage";
 import { Text } from 'app/design/typography';
 import { Redirect } from "expo-router";
 import { useTranslation } from 'react-i18next';
+import {Loading} from 'app/loading'
 
 export function Screen(params) {
     const { t } = useTranslation();
@@ -58,10 +58,10 @@ console.log('------------', _path);*/
             _path = item ? item.url : null;
     }
 
-    const backButtonPresented = useNavigationState((state) => {
+   /* const backButtonPresented = useNavigationState((state) => {
         return state.routes.length > 1;
     });
-
+*/
     const isFocused2 = true;//useIsFocused();
 
     useEffect(() => {
@@ -92,17 +92,17 @@ console.log('------------', _path);*/
                     setPageData(data.props);
 
                     let settings = appSetting('layouts', data.props.data.uri)
-                    updateRightHeader(settings?.header, navigation);
+                   // updateRightHeader(settings?.header, navigation, routerExpo, path2);
                     let isProfile = appSetting('layout', 'show_user_icon');
                     let profile=<></>
                     if (isProfile && currentUser ){
                         let dUser = Object.assign({}, currentUser);
                         dUser.url_avatar = dUser.avatar
-                        dUser.url = '/dashboard'
-                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
+                        //dUser.url = '/dashboard'
+                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="sm" /></View>
                     }
                     //settings?.icon
-                    updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
+                  //  updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
                
             }
@@ -110,8 +110,8 @@ console.log('------------', _path);*/
   
       fetchPageData();
     }, [_path]);
-  
+    //console.log('-----------------', pageData?.data?.uri)
     return pageData?.data ? (
         <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
-    ) : <></>;
+    ) : <Loading/>;
 }

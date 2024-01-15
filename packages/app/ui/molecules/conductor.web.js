@@ -549,6 +549,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (route.blocks?.browse_sidebar?.unitType){
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
+            console.log("hasNextPage", hasNextPage, isFetchingNextPage, route.data.length, route.inited, rqtStatus)
+
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
                     <View className={isRightCol? 'flex-auto  pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>

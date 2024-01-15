@@ -69,7 +69,7 @@ export default function Unit(props) {
         return (
             <>
                 <View className=" px-4 mb-4 mx-auto w-full max-w-4xl">
-                    <Card addClassName="  p-4   flex-auto  mx-auto w-full flex-col md:flex-row-reverse gap-y-4 gap-x-4 duration-300 ">
+                    <Card addClassName=" p-4 flex-auto  mx-auto w-full flex-col md:flex-row-reverse lg:gap-y-4 lg:gap-x-4 duration-300 ">
                         {data.image && (
                             <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full md:w-1/3 ">
                                 <Image
@@ -89,7 +89,7 @@ export default function Unit(props) {
                                     className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-lg sm:text-xl font-bold"
                                 >
                                     {data.title}
-                                </Text>{' '}
+                                </Text>
                             </Link>
 
                             <Text

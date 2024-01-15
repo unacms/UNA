@@ -4,6 +4,7 @@ import { stripTags } from 'app/lib/util';
 import { View, Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { appSetting } from 'app/lib/util';
+import { Button } from 'app/design/controls'
 
 export function ContentMore({content, numberOfLines, textStyle, openSmall, textClassName}) {
     
@@ -23,6 +24,15 @@ export function ContentMore({content, numberOfLines, textStyle, openSmall, textC
             <View className={!showFull ? 'hidden' : ''}>
                 <Html data={content} htmlStyles={textStyle}  />
             </View>
+            {!showFull && <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d "><Button
+                title="More"
+                
+                startDecorator="ArrowFatLineDown"
+                size="xs"
+                solid
+                rounded
+                variant="outline"
+                /></View>}
         </Pressable>
     )
 }

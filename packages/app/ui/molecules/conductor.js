@@ -1,10 +1,10 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { useNavigation } from '@react-navigation/native';
+import { useRouter, useNavigation } from 'expo-router';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
@@ -16,8 +16,10 @@ import Link from 'app/ui/atoms/link'
 import Search from 'app/ui/molecules/search';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
+import { appStatic } from 'app/lib/app-static';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
+    //console.log("-------------------IN-------------------")
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { t } = useTranslation();
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
@@ -31,6 +33,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
+    const routerExpo = useRouter();
     const [ index, setIndex ] = useState(routes.findIndex(function(item) {
         if (useSectionAsMenu)
             return data.url == item.key;
@@ -42,17 +45,19 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
-
+    const currentRoute = routes.find((item) => item.index === index);
+    //console.log("currentRoute", currentRoute, index)
+    
     const {
-        status,
+        status: rqtStatus,
         data: newData,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useInfiniteQuery([routes[index]?.endpoint?.request_url, index], 
-        ({ pageParam }) => parseData(routes, index, setRoutes),
-        {
-            getNextPageParam: lastPage => {
+    } = useInfiniteQuery({
+        queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], 
+        queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
+        getNextPageParam: lastPage => {
                 if (lastPage?.data?.length == 0)
                     return;
                 return lastPage?.endpoint;
@@ -64,7 +69,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (isFetchingNextPage) 
             return;
         fetchNextPage();
-    }, [routes, index, isFetchingNextPage, status]);
+    }, [routes, index, isFetchingNextPage, rqtStatus]);
 
     if (isHideDefaultHeader) {
         setTimeout(() => {
@@ -106,28 +111,33 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const TabScene = ({ route, index }) => {
       
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit), 1);
         if (!route.inited){
-            return Preload
+            return <></>
         }
+
+        let TabFlashListM = useMemo(() => {  
+            return <TabFlashList
+                index={route.index}
+                data={route.data}
+                unit={route.endpoint?.unit}
+                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
+                ListFooterComponent= {(hasNextPage && isFetchingNextPage) ? (
+                    Preload
+                ) : null}
+            />
+        }, [route.data]);
+
+        console.log("hasNextPage", hasNextPage, isFetchingNextPage, route.data.length, route.inited, rqtStatus)
 
         const unitType = getUnitModeBySource(route?.endpoint?.request_url);
         if (route.inited)
-            return (
-                <TabFlashList
-                    index={route.index}
-                    data={route.data}
-                    unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
-                    ListFooterComponent={
-                        (route.data.length > 0 && route?.endpoint?.finished === false) ? (
-                            Preload
-                        ) : null
-                    }
-                />
-    )};
+            return route.data.length > 0 ? TabFlashListM : ((hasNextPage || hasNextPage === undefined) && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))
+        
+                
+    };
 
-    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
+    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode, rqtStatus, hasNextPage, isFetchingNextPage]);
 
     const renderTabBar = (props) => {
       
@@ -150,13 +160,13 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
-                const addButtons = menuSettings?.add?.map((button) => {
+                let addButtons = menuSettings?.add?.map((button) => {
                     if(currentUser || (!currentUser && button.nonlogged != false)){
                         let btn = undefined;
                         if(button.section)
-                            btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
+                            btn = <Search section={button.section} params={{trigger: {size: 'sm', variant: 'text'}}} />
                         else {
-                            btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" />;
+                            btn = <Button variant='text' title={button.title}  startDecorator={button.icon} size="sm" />;
                             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                         }
 
@@ -164,9 +174,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                             <View className="w-8"  key={`add-${button.icon}`} >{btn}</View>
                         )
                     }
+                    
                 });
+                let newButton = <Button key="Repeat" onPress={() => {console.log(routes[index].link); routerExpo.replace('/'+routes[index].link)}} startDecorator="Repeat" variant='text' size="sm" />; // replace with your button
+                   
+            
+                    addButtons.push(newButton);
+
                 updateRightHeaderObj(addButtons, navigation);
-                //updateRightHeader(menuSettings?.add, navigation);
             }, 300);
 
             return (

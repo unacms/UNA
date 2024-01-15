@@ -16,16 +16,22 @@ export function SvgLogoNative() {
     }
 };
 
-export function updateRightHeader(items, navigation) {
+export function updateRightHeader(items, navigation, routerExpo, path) {
 
-    const addButtons = items?.map((button) => {
-        let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm"/>;
-        btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+    let addButtons = items?.map((button) => {
+        let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" />;
+        btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
         return (
-            <View  key={`add-${button.icon}`} >{btn}</View>
-    )});
+            <View key={`add-${button.icon}`} >{btn}</View>
+        )
+    });
 
-    if (addButtons){
+    let newButton = <Button key="Repeat" onPress={() => {routerExpo.replace(path)}} startDecorator="Repeat" variant='text' size="sm" />; // replace with your button
+    if (!items)
+        addButtons = [];
+    addButtons.push(newButton);
+
+    if (addButtons) {
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
 };

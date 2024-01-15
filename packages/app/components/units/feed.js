@@ -64,7 +64,6 @@ function DefaultUnit(data) {
     let sLong = truncateHTML(data.content.text, 10000000)
 
     let bIsLong = data?.content?.text && stripTags(sShort.trim()) != stripTags(sLong.trim())
-
     //TODO EDIT TIMELINE
     let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
@@ -145,10 +144,16 @@ function DefaultUnit(data) {
 
    
 
-    let tlContent = '';
+    let tlContent = sShort;
+
+    useEffect(() => {
+        if (bIsTimelineContent) {
+            tlContent = showFull ? sLong: sShort;
+        }
+    }, [showFull]);
   
     if (bIsTimelineContent) {
-        tlContent = data.content.text //truncateHTML(data.content.text, 380);
+        
         if (data?.content?.images_attach?.length == 0) {
             let link = linkify2(data.content.text)
             if (link) {
@@ -658,7 +663,7 @@ function CarouselMemo({ aImg, b }) {
 function HtmlMemo({ tlContent }) {
     const computedData = useMemo(() => {
         return <Html data={tlContent} />
-    }, [])
+    }, [tlContent])
     return computedData
 }
 

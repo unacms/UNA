@@ -19,23 +19,3 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
 export function inputByKey(array, value) {
     return array.find(obj => obj['key'] === value);
 }
-
-
-export function replaceLinks(htmlString) {
-    const linkRegex = /<a href="(.*?)".*?>(.*?)<\/a>/g;
-    const parts = htmlString.split(linkRegex);
-  
-    return parts.map((part, index) => {
-      if (index % 3 === 0) {
-        // This part is not a link
-        return <Text key={index}>{part}</Text>;
-      } else if (index % 3 === 1) {
-        // This part is a link URL
-        const linkText = parts[index + 1];
-        part = part.replace(appSetting('urls', 'root'), '/');
-        return <Link key={index} href={part}>{linkText}</Link>;
-      }
-      // Skip link text parts because they're handled in the link URL parts
-      return null;
-    }).filter(Boolean);
-  }

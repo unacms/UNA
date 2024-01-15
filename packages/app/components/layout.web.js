@@ -10,7 +10,6 @@ import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { getHeaderSettings } from 'app/lib/util';
-//import Navbar from 'app/components/nav/navbar'
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { storageGet } from 'app/lib/util'
