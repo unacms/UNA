@@ -12,7 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient'
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -382,8 +382,6 @@ function ComponentsSplash(props) {
                             Connect and create with like-minded people, discover
                             new perspectives, share knowledge and grow together.
                         </Text>
-
-                       
                     </View>
                 </View>
 
@@ -601,40 +599,58 @@ function ComponentsSplash(props) {
 
                 <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col gap-y-2 p-4">
-
-                   
-                        <View className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
-                                <View className="flex-row gap-x-1 items-center bg-gradient-to-b from-neutral-200/50 to-white dark:from-neutral-900/50 dark:to-neutral-700/50 rounded-lg px-1.5 py-1">
-                                <LinearGradient className="rounded" colors={['#ff00ff', '#ff0000', '#ff00ff']}>
-                                    <View className="rounded-xl overflow-hidden bg-red-500 w-24  m-4">
-                                        <LinearGradient className="rounded" colors={['#000000', '#00ff00', '#ff00ff']}>
-                                    <Icon
-                                        icon="PlusCircle"
-                                        className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
-                                    />
-                                    <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
-                                        Special Button
-                                    </Text>
-                                    </LinearGradient>
-                                    </View>
+                        
+                        <View className="rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 overflow-hidden mr-auto">
+                            <LinearGradient colors={['#3b82f6', '#2563eb']}>
+                                <View className="rounded-lg overflow-hidden m-[2px]">
+                                    <LinearGradient
+                                        colors={['#2563eb', '#3b82f6']}
+                                    >
+                                        <View className="flex-row px-3 py-2">
+                                            <Icon
+                                                icon="PlusCircle"
+                                                className="mr-2 drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] text-neutral-100 group-hover:text-white  text-2xl "
+                                            />
+                                            <Text className="my-auto  drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)] font-semibold text-base text-neutral-100 group-hover:text-white ">
+                                                Special Button
+                                            </Text>
+                                        </View>
                                     </LinearGradient>
                                 </View>
+                            </LinearGradient>
+                        </View>
+                        <View className="rounded-[10px] shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 overflow-hidden mr-auto">
+                            <LinearGradient colors={['#ffffff', '#e5e7eb']}>
+                                <View className="rounded-lg overflow-hidden m-[2px]">
+                                    <LinearGradient
+                                        colors={['#e5e7eb', '#ffffff']}
+                                    >
+                                        <View className="flex-row px-3 py-2">
+                                        <Icon
+                                    icon="PlusCircle"
+                                    className="mr-2 drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.2)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-2xl "
+                                />
+                                <Text className="my-auto  drop-shadow-[0_1px_0.5px_rgba(0,0,0,0.2)] font-semibold text-base dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
+                                        </View>
+                                    </LinearGradient>
+                                </View>
+                            </LinearGradient>
+                        </View>
+                        <View className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
+                            <View className="flex-row gap-x-1 items-center bg-gradient-to-b from-neutral-200/50 to-white dark:from-neutral-900/50 dark:to-neutral-700/50 rounded-lg px-1.5 py-1">
+                                <Icon
+                                    icon="PlusCircle"
+                                    className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
+                                />
+                                <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
+                                    Special Button
+                                </Text>
                             </View>
-           
+                        </View>
 
                         <View className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
-                                <View className="flex-row gap-x-1 items-center bg-gradient-to-b from-neutral-200/50 to-white dark:from-neutral-900/50 dark:to-neutral-700/50 rounded-lg px-1.5 py-1">
-                                    <Icon
-                                        icon="PlusCircle"
-                                        className="drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900 text-lg "
-                                    />
-                                    <Text className="my-auto drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)] font-semibold text-xs dark:text-neutral-300 dark:group-hover:text-neutral-100 text-neutral-700 group-hover:text-neutral-900">
-                                        Special Button
-                                    </Text>
-                                </View>
-                            </View>
-
-                    <View className="mr-auto group p-[2px] overflow-hidden rounded-[10px] bg-gradient-to-b from-white/80 to-neutral-200/50 dark:from-neutral-700/80 dark:to-neutral-800/80 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100">
                             <View className="flex-row gap-x-1.5 items-center bg-gradient-to-b  from-neutral-200/50   to-white dark:from-neutral-900/50   dark:to-neutral-700/50 rounded-lg px-2.5 py-1.5">
                                 <Icon
                                     icon="PlusCircle"
@@ -656,6 +672,8 @@ function ComponentsSplash(props) {
                                 </Text>
                             </View>
                         </View>
+
+                        
                         <View className=" group p-[2px] rounded-[10px] bg-gradient-to-b from-primary-500 to-primary-600 shadow-[0_1px_2px_rgba(0,0,0,0.4)]  dark:shadow-[0_1px_2px_rgba(0,0,0,1)] dark:hover:shadow-[0_2px_4px_rgba(0,0,0,1)] hover:shadow-[0_2px_4px_rgba(0,0,0,0.4)] active:shadow-[0_1px_2px_rgba(0,0,0,0.4)] dark:active:shadow-[0_1px_2px_rgba(0,0,0,1)] opacity-90 hover:opacity-100 active:opacity-80 hover:scale-[1.01] active:scale-[0.995] duration-100 mr-auto">
                             <View className="flex-row gap-x-2 items-center bg-gradient-to-b  from-primary-600 to-primary-500 rounded-lg px-3 py-2 ">
                                 <Icon
@@ -680,7 +698,6 @@ function ComponentsSplash(props) {
                         </View>
                     </Card>
                 </View>
-           
             </View>
         </View>
     )
