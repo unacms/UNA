@@ -84,6 +84,7 @@ export default function Layout(props) {
         return offsetTop;
     }
 
+    // Sticky columns
     useEffect(() => {
         const handleScroll = () => {
             let elements = document.getElementsByClassName("fixed-process");
@@ -97,15 +98,22 @@ export default function Layout(props) {
                 let marginTop = parseInt(style.marginTop, 10);
                 let marginBottom = parseInt(style.marginBottom, 10);
                 let elementHeight = elements[i].offsetHeight;
-                let height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
-                elements[i].style.top = offset + 'px';
-                console.log("offset", innerHeight - offset, elementHeight + marginTop + marginBottom + offset1)
-                if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
-                    let topValue = height > h ? -h : -height;
-                    elements[i].style.top = `${topValue}px`;
-                    if (height > h) {
-                        elements[i].setAttribute('a', `${topValue}px`);
+
+                let elementHeightParent = elements[i].parentNode.parentNode.offsetHeight;
+                if (elementHeightParent > elementHeight){
+                    elements[i].classList.add('fixed');
+                    let height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
+                    elements[i].style.top = offset + 'px';
+                    if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
+                        let topValue = height > h ? -h : -height;
+                        elements[i].style.top = `${topValue}px`;
+                        if (height > h) {
+                            elements[i].setAttribute('a', `${topValue}px`);
+                        }
                     }
+                }
+                else{
+                    elements[i].classList.remove('fixed');
                 }
             }
         };
