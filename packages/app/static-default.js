@@ -348,27 +348,26 @@ function ComponentsSplash(props) {
                             <Path
                                 d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
                                 className="opacity-80 "
-                                fill="#E2554F"
+                                fill="#ef4444"
                             />
                             <Path
                                 d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
                                 className="opacity-80 "
-                                fill="#E2554F"
+                                fill="#ef4444"
                             />
                             <Path
                                 d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-                                className="text-neutral-950 dark:text-neutral-50   group-hover:text-accent dark:group-hover:text-accent-d"
-                                fill="#E2554F"
+                                fill="#ef4444"
                             />
                             <Path
                                 d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-                                className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-                                fill="currentColor"
+                                className="opacity-80 "
+                                fill="#f59e0b"
                             />
                             <Path
                                 d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-                                className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-                                fill="currentColor"
+                                className="opacity-80 "
+                                fill="#f59e0b"
                             />
                         </Svg>
                     </View>

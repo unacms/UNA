@@ -624,7 +624,7 @@ let settingsDefault = {
             },
         },
 
-        //############ DISCUSSION PAGES ############
+        //############ DISCUSSIONS PAGES ############
         'discussions-home': {
             layout: 'navigator',
             blocks: {
@@ -756,11 +756,11 @@ let settingsDefault = {
             bdrModal: 'rgba(55,65,81,0.4)',
         },
         button_styles: {
-            'u-btn-default-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm hover:shadow active:shadow-none ',
+            'u-btn-default-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:sm:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d sm:hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
             'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': ' duration-200 ',
 
-            'u-btn-primary-cnt': ' bg-primary-500 dark:bg-primary-600 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 border border-transparent  shadow-sm sm:hover:shadow-md active:opacity-80 active:shadow-none active:scale-[0.99] ',
+            'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 border border-transparent  shadow-sm sm:hover:shadow-md active:opacity-50 active:shadow-none  ',
             'u-btn-primary-text': '  font-medium text-primary-50 sm:group-hover:text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 

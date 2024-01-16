@@ -169,7 +169,7 @@ export default function AtomProfile(oProps) {
         case 'unit_wo_info':
             let name = oProps.display_name ? oProps.display_name.substr(0,1) : ''
             const content = <View className="relative flex-row">
-                <View className={sSize +" aspect-square overflow-hidden   border border-transparent bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
+                <View className={sSize +" aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
                     {/*!oProps.url_avatar && <View>
                         <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
                         <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>

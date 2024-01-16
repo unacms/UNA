@@ -553,7 +553,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
-                    <View className={isRightCol? 'flex-auto  pt-4 border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
+                    <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden lg:block w-96  ">

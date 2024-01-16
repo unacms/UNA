@@ -17,7 +17,7 @@ if(Platform.OS === 'android') {
 //import { Dropdown as DropdownDef} from 'react-native-element-dropdown';
 
 /* inputs */
-export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto     px-3   placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
+export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto     px-3   placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[46px] ' )
 export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 ')
 export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px] ' )
 
@@ -198,9 +198,9 @@ export function Button (props) {
         break
 
         case 'base':
-            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
+            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2.5  ';
             sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
-            sClassText += ' text-sm leading-6  '
+            sClassText += ' text-base leading-6  '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? ' mx-2   ' : '' // Conditionally add 'mx-2' class
 
