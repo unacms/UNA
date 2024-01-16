@@ -199,7 +199,7 @@ export function Button (props) {
 
         case 'base':
             sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
-            sIconContainer = 'h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-sm leading-6  '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? ' mx-2   ' : '' // Conditionally add 'mx-2' class
@@ -208,7 +208,7 @@ export function Button (props) {
 
         case 'lg':
             sClassContainer += buttonRounded ? ' rounded-full px-2.5 py-2 ' : ' rounded-xl px-2.5 py-2 ';
-            sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? ' mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
+            sIconContainer = ' h-7 w-7 ' + (buttonTitle !== '' ? ' mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' mt-[1px] text-lg '
             iIconSize = 28;
             sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' // Conditionally add 'mx-2' class
