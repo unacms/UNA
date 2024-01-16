@@ -7,6 +7,7 @@ import Profile from 'app/ui/molecules/profile';
 import { useState } from 'react'
 import EventSource from "react-native-sse";
 import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -18,9 +19,9 @@ export default function AppLayout() {
   let iconHeight = 24;
 
   let profile = null
-  const [notifCount, setNotifCount] = useState(currentUser? currentUser.notifications : null)
+  const [notifCount, setNotifCount] = useState(currentUser ? currentUser.notifications : null)
 
-  if (currentUser){
+  if (currentUser) {
     let dUser = Object.assign({}, currentUser);
     dUser.url_avatar = dUser.avatar
     dUser.url = '/dashboard'
@@ -37,42 +38,50 @@ export default function AppLayout() {
 
 
   return (
-    <Tabs
-    screenOptions={({ navigation, route  }) => ({
-      tabBarStyle: {
-          backgroundColor: colors.barsBackground, 
-          height:60
-      },
-      headerStyle: {
-          backgroundColor: colors.barsBackground,
-      },
-      tabBarItemStyle: {
-          marginBottom: 15, 
-          height: 40,
-          marginTop: 5,
-      },
-      tabBarInactiveTintColor: colors.barsColor,
-      freezeOnBlur: true,
-      unmountOnBlur: false,
-  })}
-    >
-      {
-        TabList.map((tab, index) => (
+    <SafeAreaView edges={['left', 'right']} style={{
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      height: '100%'
+    }}>
+      <Tabs
+        screenOptions={({ navigation, route }) => ({
+          tabBarStyle: {
+            backgroundColor: colors.barsBackground,
+            height: 60
+          },
+          headerStyle: {
+            backgroundColor: colors.barsBackground,
+          },
+          tabBarItemStyle: {
+            marginBottom: 15,
+            height: 40,
+            marginTop: 5,
+          },
+          tabBarInactiveTintColor: colors.barsColor,
+          freezeOnBlur: true,
+          unmountOnBlur: false,
+        })}
+      >
+        {
+          TabList.map((tab, index) => (
             <Tabs.Screen
-            key={`tab${index}`}
-            name={`tab${index}`}
-            initialParams={{ url2: tab.url}}
-            options={{
-              tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
-              title: t(tab.title),
-              headerShown: false,
-              tabBarIcon: ({color}) => (
-                (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />  
-              )
-          
-            }}
+              key={`tab${index}`}
+              name={`tab${index}`}
+              initialParams={{ url2: tab.url }}
+              options={{
+                tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
+                title: t(tab.title),
+                headerShown: false,
+                tabBarIcon: ({ color }) => (
+                  (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                )
+
+              }}
             />
-    ))}
-    </Tabs>
+          ))}
+      </Tabs>
+    </SafeAreaView>
   );
 }

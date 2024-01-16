@@ -556,7 +556,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
-                    {isRightCol && <View className="hidden lg:block w-96  ">
+                    {isRightCol && <View className="hidden xl:block w-96  ">
                         <View className="fixed-process w-96 pt-4 pl-4 ">
                             {route?.sidebar?.content.map((item, index ) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
@@ -644,7 +644,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto ">{/*min-h-screen???*/}
-
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>

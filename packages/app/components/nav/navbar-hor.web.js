@@ -15,7 +15,6 @@ import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
 import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import Tooltip from 'app/ui/atoms/tooltip';
 import { useTranslation } from 'react-i18next';
 
 export default function (props) {

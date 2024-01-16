@@ -8,6 +8,7 @@ import { appSetting, isEmoji } from 'app/lib/util'
 import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
+import { useWindowDimensions } from 'react-native';
 
 let h11 = '';
 if(Platform.OS === 'android') {
@@ -218,6 +219,9 @@ export function Button (props) {
         
     }
     const { colors } = Theme()
+    const { width } = useWindowDimensions();
+    if (width < 1024)
+        buttonTooltip = false;
     let colorIcon = props.variant == 'link' ? colors.primary: '';
     colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)': '';
     

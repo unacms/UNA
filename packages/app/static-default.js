@@ -12,7 +12,6 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { LinearGradient } from 'expo-linear-gradient'
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;

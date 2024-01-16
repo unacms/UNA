@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from 'expo-router';
@@ -235,27 +234,18 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         );
     }, [scroll, headerMaxHeight]);
 
-    let edges = ['left', 'right'];
-
     return (
-        <SafeAreaView edges={edges} style={{
-                width: '100%',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                height: '100%'
-            }}>
-            <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                lazy
-                renderScrollHeader={renderHeader}
-                minHeaderHeight={minHeaderHeight}
-                animationHeaderPosition={animationHeaderPosition}
-                animationHeaderHeight={animationHeaderHeight}
-                renderTabBar={renderTabBar}
-            />
-        </SafeAreaView>
+       
+        <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            lazy
+            renderScrollHeader={renderHeader}
+            minHeaderHeight={minHeaderHeight}
+            animationHeaderPosition={animationHeaderPosition}
+            animationHeaderHeight={animationHeaderHeight}
+            renderTabBar={renderTabBar}
+        />
     );
 }

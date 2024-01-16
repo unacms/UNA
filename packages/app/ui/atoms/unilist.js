@@ -7,16 +7,16 @@ import { useRouter } from 'expo-router';
 export default function UniList(props) {
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const routerExpo = useRouter();
+   // console.log("propsprops", props)
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
 
     const [refreshing, setRefreshing] = useState(false);
 
-    const onRefresh = () => {
-        routerExpo.replace(props.url)
+   /* const onRefresh = () => {
         //setRefreshing(true);
-        
+        routerExpo.replace(props.url)
         //setRefreshing(false);
-    };
+    };*/
 
     if (props.unit == 'feed'){
         if(layoutData && layoutData?.type == 'feed:new_content'){
@@ -55,11 +55,6 @@ export default function UniList(props) {
                 onEndReached = {onEndReached} 
                 ListFooterComponent={ListFooterComponent}
                 {...rest}
-                refreshControl={
-                    props.url ? (
-                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-                    ) : null
-                }
             />
         )
     }
@@ -76,12 +71,14 @@ export default function UniList(props) {
                 onEndReached = {onEndReached} 
                 ListFooterComponent={ListFooterComponent}
                 {...rest}
-                refreshControl={
-                    props.url ? (
-                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-                    ) : null
-                }
+                
             />
         )
     }
 }
+/*
+refreshControl={
+                    props.url ? (
+                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                    ) : null
+                }*/
