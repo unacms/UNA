@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef, useMemo, useContext } from "react";
+import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable, ScrollView  } from 'app/design/view';
@@ -510,6 +510,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     });
     const tabBarObj = renderTabBar();
     const headerObj = renderHeader(tabBarObj);
+    const BlockByNameMemo = memo(BlockByName);
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
@@ -549,26 +550,22 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (route.blocks?.browse_sidebar?.unitType){
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
-            console.log("hasNextPage", hasNextPage, isFetchingNextPage, route.data.length, route.inited, rqtStatus)
-
+           
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
                     <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
-                        <View className="fixed-process w-96 pt-4 pl-4 ">
+                        <View className="fixed-process w-96 pl-4 ">
                             {route?.sidebar?.content.map((item, index ) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
                             })}
-                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                            <BlockByNameMemo data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                         </View>
                     </View>}
                 </Row>
             )}
-    // can be the problem (freeze data im lists)
-                    //    }, [dataItems.length, route.index]);
-                      //  return b;
                         
 };
     
@@ -643,7 +640,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80  border-r  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className=" flex-auto bg-red-500">{/*min-h-screen???*/}
+                        <View className=" flex-auto">{/*min-h-screen???*/}
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>
@@ -657,7 +654,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen '}>
+            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen mt-4'}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>

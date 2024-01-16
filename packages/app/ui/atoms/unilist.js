@@ -12,11 +12,11 @@ export default function UniList(props) {
 
     const [refreshing, setRefreshing] = useState(false);
 
-   /* const onRefresh = () => {
-        //setRefreshing(true);
+    const onRefresh = () => {
+        setRefreshing(true);
         routerExpo.replace(props.url)
         //setRefreshing(false);
-    };*/
+    };
 
     if (props.unit == 'feed'){
         if(layoutData && layoutData?.type == 'feed:new_content'){
@@ -55,6 +55,11 @@ export default function UniList(props) {
                 onEndReached = {onEndReached} 
                 ListFooterComponent={ListFooterComponent}
                 {...rest}
+                refreshControl={
+                    props.url ? (
+                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                    ) : null
+                }
             />
         )
     }
@@ -71,14 +76,12 @@ export default function UniList(props) {
                 onEndReached = {onEndReached} 
                 ListFooterComponent={ListFooterComponent}
                 {...rest}
-                
+                refreshControl={
+                    props.url ? (
+                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
+                    ) : null
+                }
             />
         )
     }
 }
-/*
-refreshControl={
-                    props.url ? (
-                        <RefreshControl progressViewOffset={100} size={'large'} refreshing={refreshing} onRefresh={onRefresh} />
-                    ) : null
-                }*/

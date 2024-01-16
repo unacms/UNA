@@ -273,45 +273,45 @@ export default function ElementCover(props) {
                 </View>}
 
                 <View className="relative  flex-col md:flex-row gap-x-2 px-2   ">
-                    
-                {bPerson && <View className=" w-full h-24  md:h-44 lg:h-28 md:w-52 lg:mb-2 items-center  ">
+
+                    {bPerson && <View className=" w-full h-24  md:h-44 lg:h-28 md:w-52 lg:mb-2 items-center  ">
                         <View className='rounded-full absolute w-min p-1 z-50 duration-200 bottom-0  flex-none bg-bgrcard-h dark:bg-bgrcard-dh '>
                             <Profile
                                 {...data.profile}
                                 displayType="unit_wo_info"
                                 displaySize='4xl'
                             />
-                            { data.allow_edit && <View className='p-4 absolute -bottom-2 right-0'><Button rounded  startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
-                        </View>    
+                            {data.allow_edit && <View className='p-4 absolute -bottom-2 right-0'><Button rounded startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
+                        </View>
                     </View>
                     }
                     <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto">
-                            <View className=" flex-col  items-center md:items-start     flex-auto gap-y-2 ">
-                                <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
-                                    {data.profile.display_name}
-                                </Text>
-                                
-                                    <Row className='gap-x-2'>
-                                        <CoverMenuMeta {...data.meta_menu} />
-                                    </Row>
-                                
-                                
-                            </View>
-                    
-                            <View className="flex-none mt-auto lg:mt-6 max-w-3xl overflow-hidden ">
-                                <ScrollView horizontal={true} className={(data.actions_menu.items.length > (width > 640? 3: 100) ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
-                                    <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                                </ScrollView>
-                            </View>
+                        <View className=" flex-col  items-center md:items-start     flex-auto gap-y-2 ">
+                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
+                                {data.profile.display_name}
+                            </Text>
 
-                            { bPerson && 
-                                <Text
-                                    numberOfLines={3}
-                                    className="lg:hidden  w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
-                                >
+                            <Row className='gap-x-2'>
+                                <CoverMenuMeta {...data.meta_menu} />
+                            </Row>
+
+
+                        </View>
+
+                        <View className="flex-none mt-auto lg:mt-6 max-w-3xl overflow-hidden ">
+                            <ScrollView horizontal={true} className={(data.actions_menu.items.length > (width > 640 ? 3 : 100) ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
+                                <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                            </ScrollView>
+                        </View>
+
+                        {bPerson &&
+                            <Text
+                                numberOfLines={3}
+                                className="lg:hidden  w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                            >
                                 {stripTags(data.profile.info.description)}
                             </Text>
-                    }
+                        }
                     </View>
                 </View>
             </View>

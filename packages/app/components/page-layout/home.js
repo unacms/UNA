@@ -477,7 +477,7 @@ export default function PageLayout(props) {
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
                             return (
-                                <View key={'view' + index}>
+                                <View key={'view' + index} className='w-full h-full'>
                                     <Conductor
                                         minHeaderHeight={0}
                                         isHideDefaultHeader={false}

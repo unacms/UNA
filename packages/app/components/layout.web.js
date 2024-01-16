@@ -190,7 +190,7 @@ export default function Layout(props) {
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser }) => {
     return (
-        <View className="w-full items-stretch " >
+        <View className="w-full items-stretch" >
             <View className=" w-full mx-auto flex-row -top-[1px] " >
                 <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                     <View className='w-full mx-auto'>

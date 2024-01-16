@@ -15,12 +15,14 @@ import Link from 'app/ui/atoms/link'
 import Search from 'app/ui/molecules/search';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
+import { useRouter } from 'expo-router';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { t } = useTranslation();
+    const routerExpo = useRouter();
     const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
-
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu,menuState)){
@@ -103,6 +105,11 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
+    const onStartRefresh = async () => {
+        setIsRefreshing(true);
+        routerExpo.replace(routes[index].link);
+        setIsRefreshing(false);
+    };
 
     const TabScene = ({ route, index }) => {
       
@@ -116,7 +123,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 <TabFlashList
                     index={route.index}
                     data={route.data}
-                    url={route?.link}
+                    
                     unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                     ListFooterComponent={
@@ -247,6 +254,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             animationHeaderPosition={animationHeaderPosition}
             animationHeaderHeight={animationHeaderHeight}
             renderTabBar={renderTabBar}
+            onStartRefresh={onStartRefresh}
+                isRefreshing={isRefreshing}
+                enableGestureRunOnJS={false}
         />
     );
 }

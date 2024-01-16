@@ -708,7 +708,7 @@ const ComponentsFullFooter = () => {
     const { t } = useTranslation()
     return (
         <>
-            <View className=" w-full p-3 flex-row justify-center  border-t border-bdr dark:border-bdr-d  ">
+            <View className=" w-full p-3 flex-row justify-center  border-t border-bdr dark:border-bdr-d fixed bottom-0 ">
                 <Link href="/">
                     <Button
                         variant="text"

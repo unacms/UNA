@@ -65,6 +65,8 @@ export default function ElementImage(props) {
 
     if (rest.view == "cover"){
         rest.fill = 'fill'
+        if (Platform.OS != 'web')
+            rest.contentFit="cover" 
     }
     else{     
         rest.height = props.pref_height ? props.pref_height : height;
