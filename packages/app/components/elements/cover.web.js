@@ -66,6 +66,7 @@ function CoverMenu(props) {
             {...propsCopy}
             displayType="button"
             params={{ 
+                button_hide_title_on_small: false,
                 show_action: true,
                 show_counter: true,
                 show_combined: true, 
@@ -74,7 +75,7 @@ function CoverMenu(props) {
                 button_rounded: false,
             }}
         />
-        {isSplitMenu && <View className='ml-2'>
+        {(isSplitMenu && propsCopy.items.length > 0) && <View className='ml-2'>
             <DropdownMenu items={aMenuManageItems}>
                 <Button variant="default" size={size} tooltip="Settings" startDecorator="Gear" onPress={() => { FeedbackHaptics('Medium'); }}  />
             </DropdownMenu>

@@ -643,7 +643,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80  border-r  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
-                        <View className=" flex-auto ">{/*min-h-screen???*/}
+                        <View className=" flex-auto bg-red-500">{/*min-h-screen???*/}
                             <RenderScene route={currentRoute}/>
                         </View>
                     </Row>

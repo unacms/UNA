@@ -3,7 +3,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { useNavigation } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
@@ -165,7 +165,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                         )
                     }
                 });
-                updateRightHeaderObj(addButtons, navigation);
+                //TODO FIX
+               // updateRightHeaderObj(addButtons, navigation);
                 //updateRightHeader(menuSettings?.add, navigation);
             }, 300);
 
