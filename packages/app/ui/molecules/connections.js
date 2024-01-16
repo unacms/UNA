@@ -30,6 +30,8 @@ export default function ElementConnections(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
     const isElementVar = (sName) => {
         return elementData && elementData[sName] != undefined;
@@ -112,10 +114,10 @@ export default function ElementConnections(oProps) {
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
     const icon = oParams.icons[oProps.o +  '_' + sAction];
-    if(icon){
+    if(icon) {
         oButtonProps.startDecorator = icon;
-        oButtonProps.hideTitleOnSmall = true;
     }
+
     return (
         <>
             <ButtonAction title={sTitle} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
