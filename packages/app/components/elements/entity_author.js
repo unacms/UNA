@@ -14,7 +14,7 @@ export default function ElementEntityAuthor(oProps) {
     const sInfo = (
         <Row className='items-center'>
             <Time ts={oProps.data.entry_date}></Time>
-            {oProps.data?.entry_context?.id && <><Text className="text-neutral-500  text-xs"> in </Text><Profile {...oProps.data.entry_context} displayType="unit" displaySize="xs" /><Link href={oProps.data.entry_context.url}></Link></>}
+            {oProps.data?.entry_context?.id && <><Text className="text-neutral-500 dark:text-neutral-400 font-normal text-sm ">· </Text><Profile {...oProps.data.entry_context} displayType="unit" displaySize="xs" /><Link href={oProps.data.entry_context.url}></Link></>}
         </Row>
     );
 

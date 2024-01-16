@@ -323,9 +323,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
                     {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
                         <Row className="items-center">
-                        <View className="ml-4 "></View>
+                        <View className="ml-3 sm:ml-4 "></View>
                         { headerSettings.header && getBackButtonWeb() }
-                        { headerSettings.header == false && headerSettings.menu == true &&  <View className="lg:hidden mr-4"><Pressable  onPress={showMenu}>
+                        { headerSettings.header == false && headerSettings.menu == true &&  <View className="lg:hidden mr-3 sm:mr-4"><Pressable  onPress={showMenu}>
                     <Button
                       variant="outline"
                       startDecorator="List"

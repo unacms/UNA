@@ -24,7 +24,7 @@ export function ContentMore({content, numberOfLines, textStyle, openSmall, textC
             <View className={!showFull ? 'hidden' : ''}>
                 <Html data={content} htmlStyles={textStyle}  />
             </View>
-            {!showFull && <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d "><Button
+            {!showFull && <View className=" items-start w-full  "><Button
                 title="More"
                 
                 startDecorator="ArrowFatLineDown"

@@ -81,7 +81,7 @@ export default function PageLayout(props) {
     if (actionsItemIndex !== -1) {
         if(windowWidthOr < 1024){
             header = (
-                <><Row className='py-2 px-2 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
+                <><Row className='py-2 px-3 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
                     {getBackButtonWeb()}
                     <View style={{width:windowWidth-92}}>
                         {aItems[actionsItemIndex].data}
@@ -104,7 +104,7 @@ export default function PageLayout(props) {
     return ( 
         <>
             {header}
-            <View className=" py-0 mt-11 lg:mt-4 ">
+            <View className=" py-0 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full  border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
                     <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 36: 16, heightx:sizes.otherHeight}} className='  w-full pb-20'>
                         <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData?.content[0].url} />

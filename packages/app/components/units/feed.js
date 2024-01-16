@@ -103,12 +103,12 @@ function DefaultUnit(data) {
         let inList = <></>
         if (data.owners?.length > 0){
             inList = <Row>
-                <Text className="text-neutral-500  text-xs"> in </Text>
+                <Text className="text-neutral-500 dark:text-neutral-400 font-normal text-sm ">· </Text>
                 {
                     data.owners.map((item, index) => {
                         return (
                             <Link key = {'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500  text-xs hover:text-linkhover">{item.title}</Text>
+                                <Text className="text-neutral-500 dark:text-neutral-400 font-semibold text-sm  hover:text-linkhover">{item.title}</Text>
                             </Link>
                         );
                     })
@@ -121,7 +121,7 @@ function DefaultUnit(data) {
             if (l != ' ')
                 return (
                     <Row className="ml-1">
-                        <Text className="text-neutral-500  text-xs">
+                        <Text className="text-neutral-500 dark:text-neutral-400 font-semibold text-sm ">
                         {l}
                         </Text>
                         {inList}
@@ -210,7 +210,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-2 sm:mb-4 sm:mx-4 '>
+            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
                 <View className="flex-auto flex-row items-top px-4 py-3.5">
                     <Profile
                         {...data.author_data}
@@ -489,7 +489,7 @@ function DefaultUnit(data) {
                             <>
                             <View className="  flex-col md:flex-row-reverse ">
                                 {data.mainImage && (
-                                <View className="w-full px-0.5 sm:px-4 md:w-2/5 mb-3  md:mb-auto md:pr-4 ">
+                                <View className="w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 ">
                                     <View
                                     className="w-full aspect-video    "
                                     style={styles.card_image}
@@ -522,7 +522,7 @@ function DefaultUnit(data) {
                                         <View className={tlContent && content_attach.length >0 ? 'pb-3' : ''}>
                                             <HtmlMemo tlContent={tlContent} />
                                             {data.showMore && !showFull && bIsLong && (
-                                            <View className=" items-start w-full border-b py-2 border-bdr dark:border-bdr-d ">
+                                            <View className=" items-start w-full  ">
                                                 <Button
                                                 title="More"
                                                 onPress={(e) => {
@@ -542,7 +542,7 @@ function DefaultUnit(data) {
                                         {!bIsTimelineContent && (
                                         <Text
                                             className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
-                                            numberOfLines={3}
+                                            numberOfLines={2}
                                         >
                                             {data.content.text}
                                         </Text>

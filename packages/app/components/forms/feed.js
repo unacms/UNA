@@ -86,14 +86,15 @@ export default function FormFeed(props) {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 mb-2 sm:mb-4 sm:mx-4 '>                
+            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 lg:px-6  mb-2 sm:mb-4 sm:mx-4 ' >                
             <View className=" flex-row ">
-                    <View className='mr-2'>{profile}</View>
+                    <View className='mr-2 my-auto'>{profile}</View>
                     <Button
                         size="base"
                         variant="text"
                         startDecorator="Plus"
                         fullWidth
+                        rounded
                         title={t("Create new Post") + "..."}
                         align="start"
                         onPress={() => {
