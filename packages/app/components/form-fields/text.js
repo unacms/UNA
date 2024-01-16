@@ -27,6 +27,7 @@ export default function FormFieldText(props) {
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
+                
         />
         </Field>
     );

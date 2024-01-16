@@ -104,7 +104,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className={(Platform.OS == 'web' ? 'gap-y-3' : '') +' flex-col w-full'}>
+        <View className=' w-full'>
             {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d opacity-70 z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}> 

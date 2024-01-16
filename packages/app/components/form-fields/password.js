@@ -19,6 +19,7 @@ export default function FormFieldPassword(props) {
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
+                
         />
         </Field>
     );
