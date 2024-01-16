@@ -71,7 +71,7 @@ export default function Unit(props) {
                 <View className="px-3 sm:px-4 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
                     <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
                         {data.image && (
-                            <View className=" aspect-video flex-none rounded-lg overflow-hidden md:mb-auto w-full md:w-2/5 ">
+                            <View className=" aspect-video flex-none mb-2 rounded-lg overflow-hidden md:mb-auto w-full md:w-2/5 ">
                                 <Image
                                     {...data.image}
                                     alt={data.title}
@@ -82,11 +82,11 @@ export default function Unit(props) {
                             </View>
                         )}
 
-                        <View className="flex-auto px-2">
+                        <View className="flex-auto px-2 md:mr-2">
                             <Link href={data.url}>
                                 <Text
                                     numberOfLines={2}
-                                    className="text-neutral-950 my-2 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg sm:text-xl font-bold"
+                                    className="text-neutral-950  my-2 tracking-tight leading-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg sm:text-xl font-bold"
                                 >
                                     {data.title}</Text>
                                     <Text
