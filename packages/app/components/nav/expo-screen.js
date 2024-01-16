@@ -58,10 +58,10 @@ console.log('------------', _path);*/
             _path = item ? item.url : null;
     }
 
-   /* const backButtonPresented = useNavigationState((state) => {
+    const backButtonPresented = useNavigationState((state) => {
         return state.routes.length > 1;
     });
-*/
+
     const isFocused2 = true;//useIsFocused();
 
     useEffect(() => {
@@ -102,7 +102,7 @@ console.log('------------', _path);*/
                         profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="sm" /></View>
                     }
                     //settings?.icon
-                  //  updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
+                    updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
                
             }

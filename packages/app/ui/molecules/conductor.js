@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
-import { updateRightHeaderObj } from 'app/lib/native-handlers';
+import { updateRightHeaderObj, updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery } from  '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
@@ -173,8 +173,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                     }
                 });
                 //TODO FIX
-               // updateRightHeaderObj(addButtons, navigation);
-                //updateRightHeader(menuSettings?.add, navigation);
+                //updateRightHeaderObj(addButtons, navigation);
+                updateRightHeader(menuSettings?.add, navigation);
             }, 300);
 
             return (
