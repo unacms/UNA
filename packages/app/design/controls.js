@@ -181,7 +181,7 @@ export function Button (props) {
 
     switch (buttonSize) {
         case 'xs':
-            sClassContainer += buttonRounded ? 'rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
+            sClassContainer += buttonRounded ? ' rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
             sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
             sClassText += ' text-xs '
             iIconSize = 16;
@@ -189,7 +189,7 @@ export function Button (props) {
         break
 
         case 'sm':
-            sClassContainer += buttonRounded ? 'rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
+            sClassContainer += buttonRounded ? ' rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'mx-0.5 ' : '');
             sClassText += ' text-sm leading-5  '
             iIconSize = 20;
@@ -198,7 +198,7 @@ export function Button (props) {
         break
 
         case 'base':
-            sClassContainer += buttonRounded ? 'rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
+            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-'+props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
             sIconContainer = 'h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-sm leading-6  '
             iIconSize = 24;
@@ -207,7 +207,7 @@ export function Button (props) {
         break
 
         case 'lg':
-            sClassContainer += buttonRounded ? 'rounded-full px-2.5 py-2 ' : ' rounded-xl px-2.5 py-2 ';
+            sClassContainer += buttonRounded ? ' rounded-full px-2.5 py-2 ' : ' rounded-xl px-2.5 py-2 ';
             sIconContainer = 'h-7 w-7 ' + (buttonTitle !== '' ? ' mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' mt-[1px] text-lg '
             iIconSize = 28;

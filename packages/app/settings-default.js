@@ -760,11 +760,11 @@ let settingsDefault = {
             'u-btn-default-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-default-trans': ' duration-200 ',
 
-            'u-btn-primary-cnt': ' bg-primary/90 hover:bg-primary border border-primary/50  shadow-sm hover:shadow active:opacity-50 active:shadow-none',
-            'u-btn-primary-text': ' font-medium text-primary-50 group-hover:text-white ',
+            'u-btn-primary-cnt': ' bg-primary-500 dark:bg-primary-600 sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 border border-transparent  shadow-sm sm:hover:shadow-md active:opacity-80 active:shadow-none active:scale-[0.99] ',
+            'u-btn-primary-text': '  font-medium text-primary-50 sm:group-hover:text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 
-            'u-btn-danger-cnt': ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none ',
+            'u-btn-danger-cnt': ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none  ',
             'u-btn-danger-text': ' font-medium text-neutral-100 group-hover:text-white ',
             'u-btn-danger-trans': ' duration-200',
 
