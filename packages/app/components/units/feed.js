@@ -23,6 +23,7 @@ import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
 import { CommentsBrowse } from 'app/lib/comments-helpers'
 import { Pressable } from 'dripsy'
+import { ContentMore } from 'app/ui/molecules/contentmore';
 
 function DefaultUnit(data) {
     const { t } = useTranslation();
@@ -60,11 +61,8 @@ function DefaultUnit(data) {
     let bIsMarketContent = (data.type == 'bx_market') &&  data.action == 'added'
     let bIsAddContent = (data.type == 'bx_ads') &&  data.action == 'added'
     let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
-    let sShort = truncateHTML(data.content.text, 380)
-    let sLong = truncateHTML(data.content.text, 10000000)
-
-    let bIsLong = data?.content?.text && stripTags(sShort.trim()) != stripTags(sLong.trim())
-    //TODO EDIT TIMELINE
+    
+ 
     let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,
@@ -103,12 +101,12 @@ function DefaultUnit(data) {
         let inList = <></>
         if (data.owners?.length > 0){
             inList = <Row>
-                <Text className="text-neutral-500 dark:text-neutral-400 font-normal text-sm ">· </Text>
+                <Text className="text-neutral-500  text-xs"> in </Text>
                 {
                     data.owners.map((item, index) => {
                         return (
                             <Link key = {'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500 dark:text-neutral-400 font-semibold text-sm  hover:text-linkhover">{item.title}</Text>
+                                <Text className="text-neutral-500  text-xs hover:text-linkhover">{item.title}</Text>
                             </Link>
                         );
                     })
@@ -121,7 +119,7 @@ function DefaultUnit(data) {
             if (l != ' ')
                 return (
                     <Row className="ml-1">
-                        <Text className="text-neutral-500 dark:text-neutral-400 font-semibold text-sm ">
+                        <Text className="text-neutral-500  text-xs">
                         {l}
                         </Text>
                         {inList}
@@ -141,26 +139,7 @@ function DefaultUnit(data) {
             }
             }
         ) : []
-
-   
-
-    let tlContent = sShort;
-
-    useEffect(() => {
-        if (bIsTimelineContent) {
-            tlContent = showFull ? sLong: sShort;
-        }
-    }, [showFull]);
-  
-    if (bIsTimelineContent) {
-        
-        if (data?.content?.images_attach?.length == 0) {
-            let link = linkify2(data.content.text)
-            if (link) {
-                tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
-            }
-        }
-    }
+    
 
     let commentsData = null;
     let isShowMoreComments = false;
@@ -519,24 +498,8 @@ function DefaultUnit(data) {
                                     <View>
                                     <View className="flex-col gap-y-3 relative">
                                         {bIsTimelineContent && (
-                                        <View className={tlContent && content_attach.length >0 ? 'pb-3' : ''}>
-                                            <HtmlMemo tlContent={tlContent} />
-                                            {data.showMore && !showFull && bIsLong && (
-                                            <View className=" items-start w-full  ">
-                                                <Button
-                                                title="More"
-                                                onPress={(e) => {
-                                                    setShowFull(true)
-                                                    e.preventDefault()
-                                                }}
-                                                startDecorator="ArrowFatLineDown"
-                                                size="xs"
-                                                solid
-                                                rounded
-                                                variant="outline"
-                                                />
-                                            </View>
-                                            )}
+                                        <View className={'bg-red-500 ' + data.content.text && content_attach.length >0 ? 'pb-3' : ''}>
+                                            <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400"/>
                                         </View>
                                         )}
                                         {!bIsTimelineContent && (

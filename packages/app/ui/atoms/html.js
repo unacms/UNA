@@ -22,7 +22,6 @@ const renderers = {
         );
       },
   };
-  
 
   const customHTMLElementModels = {
     iframe: iframeModel,
@@ -127,6 +126,10 @@ export default function ElementHtml(props) {
                 heightIfr = item[0];
             }
 
+            if (item && !capture.includes('oembed.php')){
+                heightIfr = widthIfr*0.3;
+            }
+
             return (
                 '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + absoluteApiUrl("embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
               );
@@ -141,7 +144,7 @@ export default function ElementHtml(props) {
         b = event.nativeEvent.data;
         let data = JSON.parse(event.nativeEvent.data)
         a[data[0]] = [data[1], data[2]];
-        setIframeH({...iframeH, ...a})
+        //setIframeH({...iframeH, ...a})
     };
     
     if (data)

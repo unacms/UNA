@@ -26,11 +26,11 @@ export function updateRightHeader(items, navigation, routerExpo, path) {
         )
     });
 
-    let newButton = <Button key="Repeat" onPress={() => {routerExpo.replace(path)}} startDecorator="Repeat" variant='text' size="sm" />; // replace with your button
+    /*let newButton = <Button key="Repeat" onPress={() => {routerExpo.replace(path)}} startDecorator="Repeat" variant='text' size="sm" />; // replace with your button
     if (!items)
         addButtons = [];
     addButtons.push(newButton);
-
+    */
     if (addButtons) {
         navigation.setOptions({ headerRight: () => (addButtons) });
     }

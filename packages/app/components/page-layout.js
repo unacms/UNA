@@ -21,9 +21,9 @@ export default function PageLayout(props) {
 
     if (!data || !data.elements)
         return <></>
-    
+   
     cells = Object.keys(data.elements).map(key => {
-        return <Cell key={key} uri={props.data.uri} blocks={data.elements[key]} />
+        return <Cell key={key} uri={props.data.uri} url={props.url} blocks={data.elements[key]} />
     });
     // return data web layouts
     return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>);

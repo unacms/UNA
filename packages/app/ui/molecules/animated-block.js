@@ -9,7 +9,7 @@ const AnimatedContainer = (props) => {
 
     useEffect(() => {
         // Start the animations
-        opacity.value = withTiming(1, { duration: 500 });
+        opacity.value = withTiming(1, { duration: 100 });
         translateY.value = withSpring(0);
     }, []); // <-- Empty dependency array ensures this runs only once on mount
 

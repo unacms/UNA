@@ -92,7 +92,7 @@ console.log('------------', _path);*/
                     setPageData(data.props);
 
                     let settings = appSetting('layouts', data.props.data.uri)
-                   // updateRightHeader(settings?.header, navigation, routerExpo, path2);
+                    updateRightHeader(settings?.header, navigation, routerExpo, path2);
                     let isProfile = appSetting('layout', 'show_user_icon');
                     let profile=<></>
                     if (isProfile && currentUser ){

@@ -11,7 +11,7 @@ export default function Cell (props) {
             return null;
         else{
             return (
-                <Block key={block.id} uri={props.uri} block={block} />
+                <Block key={block.id} uri={props.uri} url={props.url} block={block} />
             );
         }
     }) : null;

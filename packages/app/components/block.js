@@ -35,7 +35,7 @@ export function BlockByName(props) {
         });
     }
     if (b)
-        return <Block key={b.id} uri={data.uri} block={b} showTitle={name.showTitle} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest}  />;
+        return <Block key={b.id} uri={data.uri} url={data.url} block={b} showTitle={name.showTitle} showPad={name.showPad} showBg={name.showBg} unitType={name.unitType} {...rest}  />;
 }
 
 export function DataByName(data, name) {

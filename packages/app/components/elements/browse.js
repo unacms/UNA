@@ -223,6 +223,7 @@ export default function ElementBrowse(props) {
                     storagekey={storageKeyValue}
                     useWindowScroll
                     height={props?.height}
+                    url={props?.url}
                     contentContainerStyle={props?.contentContainerStyle}
                     refer={uniRef}
                     no_scroll={props.no_scroll}

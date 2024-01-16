@@ -171,7 +171,7 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
         return (
-            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto bg-red-500'}>
+            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                 <Row className='w-full flex-col lg:flex-row-reverse '>
                     <View className='w-full lg:w-[calc(100%-20rem)]'>
                         <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>

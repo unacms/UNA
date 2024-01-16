@@ -40,7 +40,7 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
         return (
             <>
                 <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
-                {showButton && <Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} ><View className=" items-start w-full  pt-2  "><Button
+                {showButton && <Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} ><View className=" items-start w-full  py-2  "><Button
                     title="More"
                     startDecorator="ArrowFatLineDown"
                     size="xs"

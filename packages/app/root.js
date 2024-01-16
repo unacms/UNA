@@ -9,8 +9,10 @@ import { fetcher } from 'app/lib/fetcher';
 import { appSetting, getURI } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
+import Layouts from 'app/components/layouts'
 
-const Layouts = React.lazy(() => import('app/components/layouts'));
+
+//const Layouts = React.lazy(() => import('app/components/layouts'));
 
 const metaAdder = (queryProperty, value) => {
     let element = document.querySelector(`meta[${queryProperty}]`);
@@ -88,8 +90,9 @@ export function Root (props) {
         return <Page403/>
     }
 
+
     return (
-        <Layouts path={props?.path} data={data} uri={data?.uri}/>
+        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url}/>
     );
 }
 
@@ -99,7 +102,6 @@ export async function getData(path, token, origin, headers, callback, params) {
 	    path = 'home';
 
     path = path.startsWith('/') ? path.substr(1) : path;    
-    console.log('------------------');
     path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
 
 	const uri = getURI(path);

@@ -6,15 +6,17 @@ export default function ElementHtml(props) {
     let sClass = "u-vanilla-html font-default " + props.className;
     const scheme = useColorScheme();
     window.addEventListener("message", function(event) {
+       // if (event.origin !== 'https://ci.una.io') // replace example.com with your iframe's origin
+        //    return;
        
-        if (event.origin !== 'https://ci.una.io') // replace example.com with your iframe's origin
-            return;
-       
-        let data = JSON.parse(event.data)
-
-        const iframe = document.querySelector(`iframe[id="${data[0]}"]`);
-        if (iframe) {
-            iframe.style.height = `${data[1]}px`;
+        let data = false;
+        if (event?.data && typeof event?.data === 'string')
+            data = JSON.parse(event?.data)
+        if (data){
+            const iframe = document.querySelector(`iframe[id="${data[0]}"]`);
+            if (iframe) {
+                iframe.style.height = `${data[1]}px`;
+            }
         }
 
     }, false);
