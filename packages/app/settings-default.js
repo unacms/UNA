@@ -18,10 +18,8 @@ let settingsDefault = {
         switch_theme: true,
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        //background_image : `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239ca3af' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-
-        //background_cover: 'rgba(107, 114, 128, 0.5)',
         background_cover_color: 'rgba(107, 114, 128, 0.5)',
+        background_native:false,
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
@@ -459,8 +457,8 @@ let settingsDefault = {
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [
-                { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false },
-                { icon: 'MagnifyingGlass', name: 'Search', link: '?keyword=' },
+                { icon: 'Plus', name: 'Add', link: '/create-post', nonlogged: false, section:'' },
+                { icon: 'MagnifyingGlass', name: 'Search', link: 'search' },
             ],
             headerSettings: {header: true, backButton: false, menu: true, title: false },
         },
@@ -812,6 +810,14 @@ let settingsDefault = {
             { key: 'bx_forum', title: 'Discussions', icon: 'Chats', link: '/discussions-home', link2: '/create-discussion', action: 'views', action_icon: 'ChartBar' },
             { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'UsersFour' },
             { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'UsersFour' },
+        ],
+        dashboard_manage: [
+            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-administration' },
+            { key: 'bx_timeline', title: 'Timeline', icon: 'CalendarCheck', link: '/timeline-administration' },
+            { key: 'bx_posts', title: 'Posts', icon: 'ChatCenteredText', link: '/posts-administration' },
+            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-administration' },
+            { key: 'bx_persons', title: 'Persons', icon: 'Users', link: '/persons-administration' },
+            { key: 'bx_ads', title: 'Ads', icon: 'Megaphone', link: '/ads-administration' },
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},

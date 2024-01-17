@@ -75,7 +75,6 @@ function CoverMenu(props) {
 }
 
 function CoverMenuMeta(props) {
-    console.log('-*--', props)
     return (
         <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm', button_hide_title_on_small: false  }} />
     )
@@ -170,7 +169,7 @@ export default function ElementCover(props) {
                             {data.profile.display_name}
                         </Text>
 
-                        <Row >
+                        <Row className='mb-2'>
                             <CoverMenuMeta {...data.meta_menu} />
                         </Row>
                     </View>

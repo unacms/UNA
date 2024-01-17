@@ -157,21 +157,21 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
-                const addButtons = menuSettings?.add?.map((button) => {
+                /*const addButtons = menuSettings?.add?.map((button) => {
                     if(currentUser || (!currentUser && button.nonlogged != false)){
                         let btn = undefined;
                         if(button.section)
                             btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
                         else {
-                            btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" />;
+                            btn = <Button rounded title={button.title} variant='outline' startDecorator={button.icon} size="sm" />;
                             btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
                         }
 
                         return (
-                            <View className="w-8"  key={`add-${button.icon}`} >{btn}</View>
+                            <View className="w-8 ml-2"  key={`add-${button.icon}`} >{btn}</View>
                         )
                     }
-                });
+                });*/
                 //TODO FIX
                 //updateRightHeaderObj(addButtons, navigation);
                 updateRightHeader(menuSettings?.add, navigation);

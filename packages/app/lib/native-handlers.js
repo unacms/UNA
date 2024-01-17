@@ -5,6 +5,7 @@ import { View, Row, Pressable } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
 import { appStatic } from 'app/lib/app-static';
+import Search from 'app/ui/molecules/search';
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -17,32 +18,33 @@ export function SvgLogoNative() {
 };
 
 export function updateRightHeader(items, navigation, routerExpo, path) {
-
     let addButtons = items?.map((button) => {
-        let btn = <Button title={button.title} variant='text' startDecorator={button.icon} size="sm" />;
-        btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+        let btn = undefined;
+        if(button.section || button.link == 'search')
+            btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
+        else {
+            btn = <Button rounded title={button.title} variant='outline' startDecorator={button.icon} size="sm" />;
+            btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
+        }
+
         return (
-            <View key={`add-${button.icon}`} >{btn}</View>
+            <View className="w-8 ml-2"  key={`add-${button.icon}`} >{btn}</View>
         )
     });
 
-    /*let newButton = <Button key="Repeat" onPress={() => {routerExpo.replace(path)}} startDecorator="Repeat" variant='text' size="sm" />; // replace with your button
-    if (!items)
-        addButtons = [];
-    addButtons.push(newButton);
-    */
+   
     if (addButtons) {
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
 };
-
+/*
 export function updateRightHeaderObj(addButtons, navigation) {
 
     if (addButtons){
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
 };
-
+*/
 export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent) {
     let type = typeof header;
     const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={routerExpo.back} >

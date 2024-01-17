@@ -8,6 +8,7 @@ import { useState } from 'react'
 import EventSource from "react-native-sse";
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomSheetDataContext from 'app/context/bottomsheet';
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -45,6 +46,7 @@ export default function AppLayout() {
       alignItems: 'center',
       height: '100%'
     }}>
+      <BottomSheetDataContext>
       <Tabs
         screenOptions={({ navigation, route }) => ({
           tabBarStyle: {
@@ -82,6 +84,7 @@ export default function AppLayout() {
             />
           ))}
       </Tabs>
+      </BottomSheetDataContext>
     </SafeAreaView>
   );
 }

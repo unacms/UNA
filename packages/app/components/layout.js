@@ -15,15 +15,12 @@ export default function Layout(props) {
         return null;
     }
 
-    const image = { uri: 'https://legacy.reactjs.org/logo-og.png' };
-
     const styles = StyleSheet.create({
 
         image: {
             flex: 1,
             justifyContent: 'center',
         },
-
     });
 
     return (
@@ -31,7 +28,7 @@ export default function Layout(props) {
             <Suggestions />
             <AsyncWorker />
             <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">
-                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+                <ImageBackground source={require('app/background.png')} resizeMode="cover" style={styles.image}>
                     {props.children}
                 </ImageBackground>
                 <BottomSheet />

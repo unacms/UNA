@@ -510,7 +510,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     });
     const tabBarObj = renderTabBar();
     const headerObj = renderHeader(tabBarObj);
-    const BlockByNameMemo = memo(BlockByName);
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
@@ -557,11 +556,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
-                        <View className="fixed-process w-96 pl-4 ">
+                        <View className="fixed-process w-96 pl-4 pt-4">
                             {route?.sidebar?.content.map((item, index ) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
                             })}
-                            <BlockByNameMemo data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
                         </View>
                     </View>}
                 </Row>

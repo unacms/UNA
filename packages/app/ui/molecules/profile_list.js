@@ -34,7 +34,7 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
     if (showEmpty)
         data = fillArrayToLength(data, maxCount, '');
     return  (
-        <Row className='items-center flex-auto overflow-hidden'>
+        <Row className='items-center overflow-hidden'>
             {
                 data?.length > 0 && data?.map((profile, index) => {
                     if (profile?.id){

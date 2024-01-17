@@ -202,7 +202,8 @@ export default function ElementBrowse(props) {
         return Preload 
 
     if (props.sidebar){
-        return dataItems.data.map((item, index) => (
+        let data2 = dataItems.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+        return data2.map((item, index) => (
             <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>
         ));
     }

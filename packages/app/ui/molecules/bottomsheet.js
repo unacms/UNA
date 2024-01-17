@@ -7,9 +7,9 @@ import { Text } from 'app/design/typography'
 
 export default function ElementCommentForm(props) {
     const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => ['25%', '100%'], []);
+    const snapPoints = useMemo(() => (props.snapPoints? props.snapPoints : ['25%', '90%']), []);
     const handleSheetChanges = useCallback((index) => {
-        console.log('handleSheetChanges', index);
+       // console.log('handleSheetChanges', index);
     }, []);
 
 

@@ -12,6 +12,7 @@ import Link from 'app/ui/atoms/link'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
+import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
     const { t } = useTranslation()

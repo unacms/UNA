@@ -1,12 +1,12 @@
 import { Root, getData } from 'app/root'
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useContext } from 'react'
 import { useRoute, useNavigationState  } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
-import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
+import { updateRightHeader, updateCenterHeader, updateRightHeaderObj } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
 import * as Linking from 'expo-linking';
 import { MMKVLoader } from "react-native-mmkv-storage";
@@ -15,7 +15,12 @@ import { Redirect } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import {Loading} from 'app/loading'
 
+import { BottomSheetData } from 'app/context/bottomsheet';  
+
+
+
 export function Screen(params) {
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const { t } = useTranslation();
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
@@ -90,7 +95,7 @@ console.log('------------', _path);*/
 
                 if (data?.props) {
                     setPageData(data.props);
-
+                    setBottomSheetData(false);
                     let settings = appSetting('layouts', data.props.data.uri)
                     updateRightHeader(settings?.header, navigation, routerExpo, path2);
                     let isProfile = appSetting('layout', 'show_user_icon');
@@ -99,7 +104,7 @@ console.log('------------', _path);*/
                         let dUser = Object.assign({}, currentUser);
                         dUser.url_avatar = dUser.avatar
                         //dUser.url = '/dashboard'
-                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="sm" /></View>
+                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
                     }
                     //settings?.icon
                     updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);

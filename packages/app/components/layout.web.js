@@ -13,6 +13,7 @@ import { getHeaderSettings } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import { storageGet } from 'app/lib/util'
+import BottomSheetDataContext from 'app/context/bottomsheet';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -157,13 +158,13 @@ export default function Layout(props) {
 
     if(appSetting('layout', 'format') == 'hor'){
         return (
-            <>
+            <BottomSheetDataContext>
                 <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 <Suggestions/>
                 <AsyncWorker/>
-                { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
+                <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
                 <BottomSheet/>
-            </>
+            </BottomSheetDataContext>
         );
     }
 
@@ -171,19 +172,21 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
         return (
-            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                <Row className='w-full flex-col lg:flex-row-reverse '>
-                    <View className='w-full lg:w-[calc(100%-20rem)]'>
-                        <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
-                        <Suggestions/>
-                        <AsyncWorker/>
-                    </View>
-                    <View className='w-full lg:w-80'>
-                        { <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} /> }
-                    </View>
-                </Row>
-                <BottomSheet/>
-            </View>
+            <BottomSheetDataContext>
+                <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+                    <Row className='w-full flex-col lg:flex-row-reverse '>
+                        <View className='w-full lg:w-[calc(100%-20rem)]'>
+                            <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
+                            <Suggestions/>
+                            <AsyncWorker/>
+                        </View>
+                        <View className='w-full lg:w-80'>
+                            <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
+                        </View>
+                    </Row>
+                    <BottomSheet/>
+                </View>
+            </BottomSheetDataContext>
         );
     }
 }

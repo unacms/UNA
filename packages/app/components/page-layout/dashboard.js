@@ -10,9 +10,7 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import { useState } from 'react';
 import { Modal } from 'app/design/controls'
 import Card from 'app/ui/molecules/card'
-import Nfc from 'app/ui/molecules/nfc'
 import { appSetting } from 'app/lib/util'
-import JitSi from 'app/ui/molecules/jitsi'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';

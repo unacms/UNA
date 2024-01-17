@@ -111,8 +111,7 @@ const ActionButton = React.memo(({ id, index, itemAction, setShowConfirm, delete
     };
 
     let icon = getActionButtonIcon(itemAction.name);
-
-    if (itemAction.name == 'set_role' || hide){
+    if (itemAction.name == 'set_role' || itemAction.name == 'clear_reports' || itemAction.name == 'set_acl_level' ||  hide){
         return <></>;
     }
 

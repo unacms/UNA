@@ -1,5 +1,5 @@
 
-import { View, ScrollView } from 'app/design/view'
+import { View } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import {componentsMap} from './menu-items/_map';
 
