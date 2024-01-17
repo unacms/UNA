@@ -50,7 +50,7 @@ export default function ElementReactions(oProps) {
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
-    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
+    const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both') && !!oAction && !!oAction?.title;
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
@@ -243,91 +243,93 @@ export default function ElementReactions(oProps) {
             setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
     }
 
-    //--- show action    
-    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
-    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
-
-    const bShowActionUndo = oAction?.is_undo === true;
-
-    let bShowActionVoted = oAction?.is_voted === true || false;
-    if(isContextVar('is_voted'))
-        bShowActionVoted = getContextVar('is_voted') === true;
-
-    let bShowActionDisabled = oAction?.is_disabled === true || false;
-    if(isContextVar('is_disabled'))
-        bShowActionDisabled = getContextVar('is_disabled') === true;
-
-    let sReaction = oAction?.reaction || '';
-    if(isContextVar('reaction'))
-        sReaction = getContextVar('reaction');
-
-    let sTitle = oAction?.title || '';
-    if(isContextVar('title'))
-        sTitle = getContextVar('title');
-
-    const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
-
+    //--- show action
     let sActionButton = undefined;
     let sActionPopup = undefined;
-    if(bShowActionUndo && bShowActionVoted) {
-        sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} />
-        );
-    }
-    else {
-        if(bWeb) {
-            const aItems = oItems.map((oItem) => {
-                return {
-                    id: oItem.id ? oItem.id : oItem.name,
-                    name: oItem.name,
-                    icon: getIconAlias(oItem.name),
-                    class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
-                    class_item_icon: 'text-2xl'
-                };
-            });
+    if(bShowAction) {
+        const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+        const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
-            sActionButton = oItems.length > 1 ? (
-                <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
-                    <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                        <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
-                    </DropdownMenu>
-                </Pressable>
-            ) : (
-                <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} />
+        const bShowActionUndo = oAction?.is_undo === true;
+
+        let bShowActionVoted = oAction?.is_voted === true || false;
+        if(isContextVar('is_voted'))
+            bShowActionVoted = getContextVar('is_voted') === true;
+
+        let bShowActionDisabled = oAction?.is_disabled === true || false;
+        if(isContextVar('is_disabled'))
+            bShowActionDisabled = getContextVar('is_disabled') === true;
+
+        let sReaction = oAction?.reaction || '';
+        if(isContextVar('reaction'))
+            sReaction = getContextVar('reaction');
+
+        let sTitle = oAction?.title || '';
+        if(isContextVar('title'))
+            sTitle = getContextVar('title');
+
+        const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
+
+        if(bShowActionUndo && bShowActionVoted) {
+            sActionButton = (
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} />
             );
         }
         else {
-            const oReactionStyles = StyleSheet.create({
-                cardStyle: {
-                    backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal'),
-                    shadowOpacity: 0.1,
-                    shadowRadius: 5,
-                    bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
-                    borderWidth: 1,
-                },
-            });
+            if(bWeb) {
+                const aItems = oItems.map((oItem) => {
+                    return {
+                        id: oItem.id ? oItem.id : oItem.name,
+                        name: oItem.name,
+                        icon: getIconAlias(oItem.name),
+                        class_item: 'transition active:scale-150 duration-300 active:-translate-y-4',
+                        class_item_icon: 'text-2xl'
+                    };
+                });
 
-            const aReactionItems = oItems.map(oItem => {
-                return {
-                    id: oItem.id,
-                    name: oItem.name,
-                    emoji: getIconAlias(oItem.name),
-                    title: t('rvote_' + oItem.name + '_title')
+                sActionButton = oItems.length > 1 ? (
+                    <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
+                        <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
+                        </DropdownMenu>
+                    </Pressable>
+                ) : (
+                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} />
+                );
+            }
+            else {
+                const oReactionStyles = StyleSheet.create({
+                    cardStyle: {
+                        backgroundColor: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bgrmodal'),
+                        shadowOpacity: 0.1,
+                        shadowRadius: 5,
+                        bdr: appSetting('theme', sTheme == 'dark' ? 'dark' : 'light', 'bdrModal'),
+                        borderWidth: 1,
+                    },
+                });
+
+                const aReactionItems = oItems.map(oItem => {
+                    return {
+                        id: oItem.id,
+                        name: oItem.name,
+                        emoji: getIconAlias(oItem.name),
+                        title: t('rvote_' + oItem.name + '_title')
+                    };
+                });
+
+                const onDoSelect = (item) => {
+                    FeedbackHaptics(oParams.haptics_type);
+                    handleDo(undefined, item);
                 };
-            });
 
-            const onDoSelect = (item) => {
-                FeedbackHaptics(oParams.haptics_type);
-                handleDo(undefined, item);
-            };
-
-            sActionButton = sActionButton = oItems.length > 1 ? (
-                <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                    <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} />
-                </Reaction>
-            ) : (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} />
-            );
+                sActionButton = sActionButton = oItems.length > 1 ? (
+                    <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
+                        <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} />
+                    </Reaction>
+                ) : (
+                    <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} />
+                );
+            }
         }
     }
 
@@ -487,7 +489,11 @@ export default function ElementReactions(oProps) {
     let sResult = undefined;
 
     if(bShowCombined) {
-        let aButtonsGroup = [sActionButton];
+        let aButtonsGroup = [];
+
+        if(bShowAction)
+            aButtonsGroup.push(sActionButton)
+
         if(!!aCounter[0])
             aCounter[0].forEach(aItem => {
                 aButtonsGroup.push(aItem);
