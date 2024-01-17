@@ -315,6 +315,6 @@ export function ButtonMenuCounterDefault(props) {
 }
 
 export function ButtonMenuCounterText(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
     return <Button variant={!!variant ? variant : 'outline'} size={!!size ? size : 'sm'} title={title} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false} />
 }
