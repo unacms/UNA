@@ -25,7 +25,7 @@ export default function ElementScore(oProps) {
     const oParams = {...appSetting('social_actions', 'score'), ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
-    console.log(oAction, oCounter);
+
     //--- default display type: action, counter, both.
     const sDisplayType = oProps.displayType ? oProps.displayType : 'both';
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
