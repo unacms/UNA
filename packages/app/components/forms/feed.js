@@ -50,7 +50,7 @@ export default function FormFeed(props) {
     return (
         <View className="w-full ">
             <Modal
-                title= {t("Create new Post")}
+                title= {t("Create new post")}
                 onVisible={showImage}
                 onClose={() => {
                     setShowImage(null)
@@ -95,7 +95,7 @@ export default function FormFeed(props) {
                         startDecorator="Plus"
                         fullWidth
                         rounded
-                        title={t("Create new Post") + "..."}
+                        title={t("Create new post") + "..."}
                         align="start"
                         onPress={() => {
                             FeedbackHaptics('Medium')
