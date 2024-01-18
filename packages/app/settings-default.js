@@ -146,15 +146,14 @@ let settingsDefault = {
         },
         connection: {
             show_action_as_button: true,
-            icons: {   
-                'sys_profiles_subscriptions_add':   'UserPlus',  
-                'sys_profiles_subscriptions_remove':   'UserMinus',
-                'bx_events_fans_add':   'SignIn',
-                'bx_events_fans_remove':   'SignOut',
-                'bx_groups_fans_add':   'SignIn',
-                'bx_groups_fans_remove':   'SignOut',
-                'sys_profiles_friends_add':   'UserCirclePlus',  
-                'sys_profiles_friends_remove':   'UserCircleMinus',  
+            sys_profiles_friends: {
+                icons: {add: 'UserCirclePlus', remove: 'UserCircleMinus'}
+            },
+            bx_events_fans: {
+                icons: {add: 'SignIn', remove: 'SignOut'}
+            },
+            bx_groups_fans: {
+                icons: {add: 'SignIn', remove: 'SignOut'}
             }
         },
         recommendation: {

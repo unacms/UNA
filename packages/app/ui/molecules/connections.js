@@ -15,7 +15,13 @@ export default function ElementConnections(oProps) {
     const { layoutData, setLayoutData } = useContext(LayoutData)
     const { t } = useTranslation();
 
-    const oParams = {...appSetting('social_actions', 'connection'), ...oProps.params};
+    const oSettings = appSetting('social_actions', 'connection');
+    const oParams = {...oSettings, ...oProps.params};
+
+    const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
+        add: 'UserPlus', 
+        remove: 'UserMinus'
+    };
 
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
 
@@ -113,10 +119,8 @@ export default function ElementConnections(oProps) {
         sTitle = getElementVar('title');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
-    const icon = oParams.icons[oProps.o +  '_' + sAction];
-    if(icon) {
-        oButtonProps.startDecorator = icon;
-    }
+    if(oIcons && !!oIcons[sAction])
+        oButtonProps.startDecorator = oIcons[sAction];
 
     return (
         <>
