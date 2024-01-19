@@ -73,12 +73,11 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                             <Pressable  onPress={showMenu}>
                                 <ScrollView style={styles} onPress={handleHideMenu} className="backdrop-blur xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d flex-col gap-y-2 ">
                                     <View className="flex-col gap-y-0.5">
-                                        {menuItemsByName('main_menu', menu_top).map((item, index) => (
-                                            (currentUser || (!currentUser && item.nonlogged != false)) && (
+                                        {menuItemsByName('main_menu', menu_top, currentUser).map((item, index) => (
+                                      
                                             <Link key={`menu-${index}`} href= {item.link}>
                                                 <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
                                             </Link>
-                                            )
                                         ))}
                                     </View>
                                 </ScrollView>

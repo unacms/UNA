@@ -1,4 +1,4 @@
-import { View, Row, Pressable } from 'app/design/view'
+import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
@@ -18,6 +18,7 @@ import { Appearance } from 'react-native';
 import { Platform } from 'react-native'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
+import Bluetooth from 'app/ui/molecules/bluetooth'
 
 export default function PageLayout(props) {
     const { t } = useTranslation();
@@ -73,7 +74,7 @@ export default function PageLayout(props) {
         currentTheme = 'auto';
 
     return (
-        <>
+        <ScrollView className='bg-red-500'>
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
@@ -199,6 +200,11 @@ export default function PageLayout(props) {
                 <View className=" w-full ">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
                 </View>
+                { appSetting('layout', 'bluetooth') && <View className=" w-full  p-2">
+                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
+                        <Bluetooth/>
+                    </Card>
+                </View> }
              
                 { /*<View className=" w-full p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
@@ -217,6 +223,6 @@ export default function PageLayout(props) {
                     </Card>
                 </View> */}
             </View>
-        </>
+        </ScrollView>
     )
 }

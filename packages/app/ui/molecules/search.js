@@ -6,7 +6,7 @@ import { Text } from 'app/design/typography'
 import { Pressable, View, Row, ScrollView } from 'app/design/view'
 import { Button, ButtonRef, Input, InputRounded, Modal } from 'app/design/controls';
 import Redirect from 'app/ui/atoms/redirect';
-import {UnitSearchResultsSmall as SearchResults} from 'app/components/units/search-results';
+import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/search-results';
 import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
 import { BottomSheetData } from 'app/context/bottomsheet';
@@ -18,26 +18,28 @@ export default function ElementSearch(oProps) {
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
 
-    const [popupOpen, setPopupOpen] = useState(false);
+  //  const [popupOpen, setPopupOpen] = useState(false);
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (popupOpen) {
-            setBottomSheetData({ title: '', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
+            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
         }
-        else{
+        else {
             setBottomSheetData(false);
         }
-    }, [popupOpen]);
+    }, [popupOpen]);*/
 
     let sResult = undefined;
-    switch(sType) {
+    switch (sType) {
         case 'input':
         case 'button':
         case 'default':
         default:
             const handleOpenPopupDefault = () => {
-                
-                setPopupOpen(!popupOpen); 
+                if (!bottomSheetData)
+                    setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
+                else
+                    setBottomSheetData(false);  
             }
 
             const sTrigger = sType == 'input' ? (
@@ -55,20 +57,20 @@ export default function ElementSearch(oProps) {
     }
 
     return sResult;
- }
+}
 
- export function  SearchPanel(props) {
+export function SearchPanel(props) {
     const { t } = useTranslation();
-    const [inputValue, setInputValue] = useState(props.value);    return (
+    const [inputValue, setInputValue] = useState(props.value); return (
         <View className=' backdrop-blur  bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View className={appSetting('layout', 'max_width') + '  mx-auto w-full px-4 py-2'}>
                 <Row className='gap-x-2 justify-center items-center'>
-                    <Input name="search" placeholder={t("Search")+'...'} defaultValue={inputValue} role="textbox" aria-label="Search" 
+                    <Input name="search" placeholder={t("Search") + '...'} defaultValue={inputValue} role="textbox" aria-label="Search"
                         onChangeText={(value) => {
                             setInputValue(value)
                         }}
-                     />
-                    <Link href={'/search-keyword?keyword=' + inputValue + '&section='+ props.section}><Button variant="outline" size="base"  endDecorator="MagnifyingGlass"  /></Link>
+                    />
+                    <Link href={'/search-keyword?keyword=' + inputValue + '&section=' + props.section}><Button variant="outline" size="base" endDecorator="MagnifyingGlass" /></Link>
                 </Row>
             </View>
         </View>
@@ -79,7 +81,7 @@ export function ElementSearchData(oProps) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const redirectdRef = useRef();
     const sSection = oProps?.section ? oProps.section : '';
-    const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section='+ sSection : '');
+    const sUrlRedirect = '/search-keyword?keyword={keyword}' + (!!sSection ? '&section=' + sSection : '');
 
     const oParams = oProps?.params ? oProps.params : {};
 
@@ -90,23 +92,23 @@ export function ElementSearchData(oProps) {
     const sTxtTitle = t("Search");
     const sTxtViewExtended = t("Extended");
     const sType = oProps?.type ? oProps.type : 'default';
-    
+
     const inputRef = useRef();
 
     const getSkeleton = () => {
         return (
             <View className="w-full mt-1">
-            {[...Array(1, 2, 3)].map( i => 
-                <View key={i} className="flex-col my-2 p-2 bg-neutral-500/5 sm:rounded-lg">
-                    <View className="animate-pulse flex-row items-center gap-y-1">
-                        <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
-                        <View className="flex-1 gap-y-1">
-                            <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>    
-                            <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                {[...Array(1, 2, 3)].map(i =>
+                    <View key={i} className="flex-col my-2 p-2 bg-neutral-500/5 sm:rounded-lg">
+                        <View className="animate-pulse flex-row items-center gap-y-1">
+                            <View className="rounded-full bg-neutral-600/20 h-10 w-10"></View>
+                            <View className="flex-1 gap-y-1">
+                                <View className="h-4 w-1/2 bg-neutral-600/20 rounded-full"></View>
+                                <View className="h-3 w-1/3 bg-neutral-600/20 rounded-full"></View>
+                            </View>
                         </View>
                     </View>
-                </View>
-            )}
+                )}
             </View>
         );
     };
@@ -133,10 +135,10 @@ export function ElementSearchData(oProps) {
 
     const handleSetPopupContent = (sContent) => {
         setPopupContent(sContent);
-        if(sType == 'default') {
-          //  setPopupOpen(!!sContent);
+        if (sType == 'default') {
+            //  setPopupOpen(!!sContent);
 
-            if(!!sContent) {
+            if (!!sContent) {
                 setPopupOpenHandle(false);
 
                 inputRef.current && inputRef.current.focus();
@@ -147,46 +149,46 @@ export function ElementSearchData(oProps) {
     const handleSearch = async (sValue) => {
         setInputValue(sValue);
 
-        if(!sValue || sValue.length < 3)
+        if (!sValue || sValue.length < 3)
             return;
 
         handleSetPopupContent(getSkeleton());
 
-        const aParams = {params: {
+        const aParams = {
+            params: {
                 keyword: sValue,
                 section: sSection
             }
         };
 
         const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
-        if(!sResponse?.data) {
+        if (!sResponse?.data) {
             handleSetPopupContent('');
         }
 
         const oBlock = sResponse.data.shift();
-        if(oBlock.data?.unit != 'search-results' || !oBlock.data?.data || !oBlock.data.data.length) {
+        if (oBlock.data?.unit != 'search-results' || !oBlock.data?.data || !oBlock.data.data.length) {
             handleSetPopupContent('');
         }
 
         const sContent = (
             <View className="w-full mt-1">
-                {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()}  />)}
+                {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()} />)}
             </View>
         );
 
         handleSetPopupContent(sContent);
     }
 
-    return (<View >
+    return (<View className=''>
         <Redirect ref={redirectdRef} />
-        <View className="flex-row items-center mb-2">
-            <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">{sTxtTitle}</Text>
+        <View className="flex-row items-center mb-2 justify-end">
             {
                 !!inputValue && <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
             }
         </View>
         <View className="flex-row">
-            <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue}  ref={inputRef} onChangeText={(value) => handleSearch(value)}/>
+            <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
         </View>
         <ScrollView className="max-h-72">
             {!!popupContent && popupContent}

@@ -3,6 +3,7 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
+import { appSetting, stripTags, stripTagsWithLinks } from 'app/lib/util'
 
 function replaceLinks(htmlString) {
     const linkRegex = /<a href="(.*?)".*?>(.*?)<\/a>/g;
@@ -47,7 +48,7 @@ export default function FormField(props) {
             }
             {!!props.error && !Array.isArray(props.error) && 
                 <View className="label" >
-                    <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{replaceLinks(props.error)}</Text>
+                    <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{replaceLinks(stripTagsWithLinks(props.error))}</Text>
                 </View>
             }
             {!!props.info &&

@@ -39,6 +39,9 @@ export default function UniList(props) {
                 }
             }
         }
+        if(layoutData && layoutData?.type == 'feed:remove_content'){
+            data = data.filter(item => item.id !== layoutData.data);
+        }
     }
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     

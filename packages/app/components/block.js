@@ -79,7 +79,6 @@ export default function Block(props) {
 
     let type = block.content && Array.isArray(block.content) ? 'array' : typeof block.content;
     const BlockType = componentsMap[type];
-    console.log('BlockType', type);
     const aAllowTypes = ['html', 'raw', 'lang'];
     if (type == 'string' && !aAllowTypes.includes(block.type))
         return null;

@@ -2,9 +2,10 @@
 import { View } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
 import {componentsMap} from './menu-items/_map';
+import { useCurrentUser } from 'app/context/user'
 
 export default function ElementMenu(oProps) {
-
+    const { currentUser, setCurrentUser } = useCurrentUser();
     /*
      * Display type specified in menu can be overwritten with display type specified in item.
      * default display types: mixed, link, button, element, etc.
@@ -59,7 +60,7 @@ export default function ElementMenu(oProps) {
     if (!oProps?.items?.length)
         return [];
 
-    const sItemsSrc = bAutoFilter ? menuItemsByName(oProps.object, oProps.items) : oProps.items;
+    const sItemsSrc = bAutoFilter ? menuItemsByName(oProps.object, oProps.items, currentUser) : oProps.items;
     const sItems = sItemsSrc.map((aItem, iKey) => {
         if(bShowMatched && aItem.display_type != sDisplayType)
             return;

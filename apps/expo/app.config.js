@@ -29,6 +29,8 @@ const expoConfig = {
         "NSMicrophoneUsageDescriptionin": "This app uses the mic allow calls in Jitsi.",
         "NSCalendarsUsageDescription": "See your scheduled meetings in Jitsi.",
         "NFCReaderUsageDescription":  "Quick contacts between users.",
+        "NSBluetoothAlwaysUsageDescription": "Quick contacts between users.",
+        "NSBluetoothPeripheralUsageDescription": "Quick contacts between users."
       }
     },
     "android": {
@@ -47,7 +49,14 @@ const expoConfig = {
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
-        "android.permission.NFC"
+        "android.permission.NFC",
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.BLUETOOTH_ADVERTISE",
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

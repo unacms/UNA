@@ -140,9 +140,8 @@ export default function (props) {
                             </View>
                         </Link>
                         <View className='hidden lg:block'>
-                            {menuItemsByName('main_menu', menu_top).map(
-                                (item, index) =>
-                                (currentUser || (!currentUser && item.nonlogged != false)) && (
+                            {menuItemsByName('main_menu', menu_top, currentUser).map(
+
                                     <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                         <ButtonRef
                                             variant="text"
@@ -157,7 +156,6 @@ export default function (props) {
                                             title={item.title}
                                         />
                                     </Link>
-                                )
                             )}
                             </View>
                             </View>
@@ -213,9 +211,9 @@ export default function (props) {
                         {!!currentUser && (
                             <Row className='lg:hidden lg:w-full justify-end flex-auto'>
                                 {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
-                                { menuItemsByName('', menu_add).length > 0 && <View className="ml-2">
+                                { menuItemsByName('', menu_add, currentUser).length > 0 && <View className="ml-2">
                                     <DropdownMenu
-                                        items={menuItemsByName('', menu_add).map(
+                                        items={menuItemsByName('', menu_add, currentUser).map(
                                             (item, index) => {
                                             return (
                                                 {

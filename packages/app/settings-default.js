@@ -23,7 +23,7 @@ let settingsDefault = {
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
-        nfc: true,
+        bluetooth: true,
         use_custom_font: false,
         lock_unconfirmed: true,
         entity_info_icon: 'Info',
@@ -183,7 +183,6 @@ let settingsDefault = {
             'edit': 'Pencil',
             'delete': 'Trash',
             'messenger': 'ChatTeardropDots', 
-            
         },
         menu_top: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
@@ -195,7 +194,7 @@ let settingsDefault = {
         ],
         menu_drawer: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
-            { name: 'friends', title: 'Friends1', link: '/friends', icon: 'Users', nonlogged: false }, 
+            { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
@@ -225,6 +224,7 @@ let settingsDefault = {
         ],
         menu_account: [
             { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour'},
+            { title: 'Studio', link: '{studio}', icon: 'MagicWand', nonoperator: false },
             { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},

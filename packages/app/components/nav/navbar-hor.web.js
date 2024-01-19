@@ -110,9 +110,9 @@ export default function (props) {
                     </View>
                     <Row className="hidden xl:flex flex-auto">
                         <Row className='w-full mx-auto gap-x-0.5 max-w-lg justify-between'>
-                            {menuItemsByName('main_menu', menu_top).map(
+                            {menuItemsByName('main_menu', menu_top, currentUser).map(
                             (item, index) =>
-                            (currentUser || (!currentUser && item.nonlogged != false)) && (
+                           
                                 <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
                                     <ButtonRef
                                         variant="text"
@@ -129,7 +129,7 @@ export default function (props) {
                                         align="center"
                                     />
                                 </Link>
-                                )
+                     
                             )}
                             
                         </Row>
@@ -140,8 +140,8 @@ export default function (props) {
                             <View className=" flex-row my-auto gap-x-2 ml-2">
                                 {bSearch && <View className=""><Search /></View>}
                                 {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu  items={menuItemsByName('', menu_top_more)
-                                        .filter(item => currentUser || (!currentUser && item.nonlogged !== false))
+                                <DropdownMenu  items={menuItemsByName('', menu_top_more, currentUser)
+                                       
                                         .map((item, index) => ({
                                             id: 'menu-' + index,
                                             link: item.link,
@@ -164,9 +164,9 @@ export default function (props) {
                                 </DropdownMenu>
                             </View>}
                             
-                            { menuItemsByName('', menu_add).length > 0 && <View>
+                            { menuItemsByName('', menu_add, currentUser).length > 0 && <View>
                                 <DropdownMenu
-                                    items={menuItemsByName('', menu_add).map(
+                                    items={menuItemsByName('', menu_add, currentUser).map(
                                         (item, index) => {
                                         return (
                                             {
@@ -210,12 +210,12 @@ export default function (props) {
                             </View>
                             {profile ? (
                                 <View className="hidden sm:flex flex-row justify-center">
-                                    <DropdownMenu items={menuItemsByName('', menu_account).map(
+                                    <DropdownMenu items={menuItemsByName('', menu_account, currentUser).map(
                                         (item, index) => {
                                             return (
                                             {
                                                 id: 'menu-' + index,
-                                                link: item.link.replace('{profile}', currentUser.url),
+                                                link: item.link,
                                                 title: t(item.title),
                                                 icon:
                                                 item.icon.indexOf(' ') == -1
@@ -248,8 +248,7 @@ export default function (props) {
                         <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
                             {bSearch && <View><Search /></View>}
                             {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu  items={menuItemsByName('', menu_top_more)
-                                        .filter(item => currentUser || (!currentUser && item.nonlogged !== false))
+                                <DropdownMenu  items={menuItemsByName('', menu_top_more, currentUser)
                                         .map((item, index) => ({
                                             id: 'menu-' + index,
                                             link: item.link,

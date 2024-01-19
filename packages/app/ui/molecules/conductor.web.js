@@ -39,7 +39,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setMenuPopup(!menuPopup)
     }
 
-    const initedTabs = fillTabs(menu, data, blocks, useSectionAsMenu);
+    const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
    
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
@@ -297,7 +297,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (routes.length > 1){
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                if(currentUser || (!currentUser && button.nonlogged != false)) {
                     let btn = undefined;
                     if(button.section)
                         btn = <Search section={button.section} />
@@ -309,7 +308,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     return (
                         <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
                     )
-                }
             });
 
             let styles={}
@@ -552,7 +550,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
            
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
-                    <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed ': 'w-full p-2'}>
+                    <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
@@ -577,7 +575,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
-            if(currentUser || (!currentUser && button.nonlogged != false)){
+
                 let btn = undefined;
                 if(button.section)
                     btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
@@ -589,7 +587,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 return (
                     <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
                 )
-            }
         });
         return  <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process top-16 fixed w-80 lg:px-4 lg:py-3 '>
             <Row className="justify-between items-center mt-1 mb-4 ">
@@ -653,7 +650,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen mt-4'}>
+            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen'}>
                 <RenderScene route={currentRoute}/>
             </View>
        </View>

@@ -265,7 +265,7 @@ export default function ElementCover(props) {
                             src={coverUrl}
                         />
                     )}
-                    { data.allow_edit && <View className='p-4 items-end'><Button rounded startDecorator="Gear" onPress={() => handleUpload('cover')} /></View>}
+                    { data.allow_edit && <View className='p-4 items-end'><Button rounded startDecorator="Camera" onPress={() => handleUpload('cover')} /></View>}
                   
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}

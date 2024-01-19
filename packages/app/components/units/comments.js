@@ -95,7 +95,7 @@ export default function UnitComments(props) {
     </View>)
     };   
 
-    const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items);
+    const aMenuManageItems = menuItemsByName('comments_manage_menu', data.menu_manage.items, currentUser);
 
     let aImg = files.map(obj => {
         return {

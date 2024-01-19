@@ -129,7 +129,7 @@ function DefaultUnit(data) {
         return <>{inList}</>
     }
 
-    const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items).map(
+    const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items, currentUser).map(
             (aItem) => {
             return {
                 id: aItem.id ? aItem.id : aItem.name,

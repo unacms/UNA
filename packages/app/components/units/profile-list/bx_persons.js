@@ -53,7 +53,7 @@ export default function Unit(props) {
                     <View className="flex-auto my-auto ">
                         <View className="flex-row justify-between">
                             <View className="justify-center flex-auto ">
-                                <Text className="text-sm mr-2 font-semibold truncate text-neutral-900  dark:text-neutral-100">
+                                <Text numberOfLines={2} className="text-sm mr-2 font-semibold text-neutral-900  dark:text-neutral-100">
                                     {data.title}
                                 </Text>
                             </View>

@@ -541,7 +541,7 @@ export function stripTags(s) {
 }
 
 export function stripTagsWithLinks(s) {
-    var allowed = ['a', 'p'];
+    var allowed = ['a'];
     if (s)
         return s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
             return allowed.includes(tag.toLowerCase()) ? _ : '';
@@ -660,7 +660,7 @@ const getNameFromSetting = (setting) => {
     return null;
 };
   
-export function menuItemsByName(name, items, url = '')
+export function menuItemsByName(name, items, currentUser, url = '')
 {
     if (!items)
         return [];
@@ -705,6 +705,25 @@ export function menuItemsByName(name, items, url = '')
     if (!items)
         items =[{link: url, title: ''}];
     
+    if (!currentUser){
+        items = items.filter(item => item.nonlogged !== false && item.nonoperator !== false);
+    }
+    else{
+        if (!currentUser.operator){
+            items = items.filter(item => item.nonoperator !== false);
+        }
+    }
+
+    items = items.map(item => {
+        if (item.link === '{studio}') {
+          return {...item, link: appSetting('urls', 'root') + 'studio/launcher.php'};
+        }
+        if (item.link === '{profile}') {
+            return {...item, link: currentUser.url};
+          }
+        return item;
+      });
+
     return items;
 }
 
