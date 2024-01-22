@@ -8,12 +8,13 @@ import { useTranslation } from 'react-i18next';
 import { Dimensions, Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user'
 
-export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
+export default function ElementMainMenu({menuPopup, showMenu, cssClass, items}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const handleHideMenu = (params) => {}
-    const menu_top = appSetting('menu_items', 'menu_drawer')
+   
     const { t } = useTranslation();
-
+   // const menu_top = appSetting('menu_items', 'menu_drawer')
+    let menu_top_items = items;
     let windowHeight = Dimensions.get('window').height
     let windowWidth = Dimensions.get('window').width
     let styles = {}
@@ -42,12 +43,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                             duration: 0,
                         }}
                     >
-                        <Pressable onPress={showMenu}>
-                            <ScrollView className={(menuPopup? 'h-screen': '') +" bg-white/50 dark:bg-black/50 w-full backdrop-blur absolute top-0 h-screen z-50"}>
-                                <View className='h-screen '></View>
-                                <View className='h-screen '></View>
-                            </ScrollView>
-                        </Pressable>
+                        
                     </MotiView>
                     <MotiView
                         style={{ width: 288 }}
@@ -69,11 +65,11 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                             overshootClamping: true,
                         }}
                     >
-                        <View  className="w-72 h-screen m-menu">
+                        {menu_top_items.length > 0 && <View  className="w-72 h-screen m-menu">
                             <Pressable  onPress={showMenu}>
                                 <ScrollView style={styles} onPress={handleHideMenu} className="backdrop-blur xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d flex-col gap-y-2 ">
                                     <View className="flex-col gap-y-0.5">
-                                        {menuItemsByName('main_menu', menu_top, currentUser).map((item, index) => (
+                                        {menu_top_items.map((item, index) => (
                                       
                                             <Link key={`menu-${index}`} href= {item.link}>
                                                 <Button variant="text" size="lg" startDecorator={item.icon.indexOf(' ') == -1 ? item.icon : item.icon.split(' ')[0]} fullWidth solid align='start' title = {t(item.title)} />
@@ -82,7 +78,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass}) {
                                     </View>
                                 </ScrollView>
                             </Pressable>
-                        </View>
+                        </View> }
                     </MotiView>
                 </View>
             )}

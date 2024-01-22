@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView  } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert,menuItemsByName } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -27,6 +27,10 @@ import Location from 'app/components/form-fields/location'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
     const { currentUser, setCurrentUser } = useCurrentUser();
+
+    const menu_drawer = appSetting('menu_items', 'menu_drawer')
+    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
+
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     let uniRef = useRef();
@@ -323,7 +327,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         <Row className="items-center">
                         <View className="ml-3 sm:ml-4 "></View>
                         { headerSettings.header && getBackButtonWeb() }
-                        { headerSettings.header == false && headerSettings.menu == true &&  <View className="lg:hidden mr-3 sm:mr-4"><Pressable  onPress={showMenu}>
+                        { headerSettings.header == false && headerSettings.menu == true && menu_drawer_items.length > 0 &&  <View className="lg:hidden mr-3 sm:mr-4"><Pressable  onPress={showMenu}>
                     <Button
                       variant="outline"
                       startDecorator="List"
@@ -628,7 +632,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     if (leftSideBar){
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
+                <MainMenu items = {menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >

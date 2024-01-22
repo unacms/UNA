@@ -94,6 +94,10 @@ export default function (props) {
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
 
+    const menu_drawer = appSetting('menu_items', 'menu_drawer')
+    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
+    
+
     const windowWidth = useWindowDimensions().width + 17;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
 
@@ -119,7 +123,7 @@ export default function (props) {
                 }} 
                 className=" backdrop-blur fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
                     <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
-                        {headerSettings.menu && (
+                        {headerSettings.menu && menu_drawer_items.length > 0 && (
                             <View className="lg:hidden mr-4">
                                 <Pressable  onPress={showMenu}>
                                     <Button
@@ -141,7 +145,7 @@ export default function (props) {
                         </Link>
                         <View className='hidden lg:block'>
                             {menuItemsByName('main_menu', menu_top, currentUser).map(
-
+                                 (item, index) =>
                                     <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                         <ButtonRef
                                             variant="text"
@@ -243,7 +247,7 @@ export default function (props) {
                             </Row>)
                         }
                 </View>
-                <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
+                <MainMenu showMenu={showMenu} menuPopup={menuPopup} items={menu_drawer_items} cssClass="" />
             </ScrollView>
         </>
     )

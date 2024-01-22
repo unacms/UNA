@@ -51,6 +51,9 @@ export default function (props) {
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
     const menu_account = appSetting('menu_items', 'menu_account');
+
+    const menu_drawer = appSetting('menu_items', 'menu_drawer')
+    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
     
     const windowWidth = useWindowDimensions().width;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
@@ -80,7 +83,7 @@ export default function (props) {
                   <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center"}>
                     <View className="flex-row flex-auto xl:flex-none w-80 my-auto items-center">
                         {
-                            headerSettings.menu && (
+                            headerSettings.menu && menu_drawer_items.length > 0 && (
                                 <View className="lg:hidden mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button
@@ -286,7 +289,7 @@ export default function (props) {
                     </Row>
                     </View>
                 </View>
-                <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
+                <MainMenu showMenu={showMenu} menuPopup={menuPopup} items = {menu_drawer_items} cssClass="" />
             </View>
         </>
     )
