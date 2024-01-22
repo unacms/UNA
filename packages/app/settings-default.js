@@ -24,6 +24,7 @@ let settingsDefault = {
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
         bluetooth: true,
+        bluetooth_device_name_prefix: "NEO",
         use_custom_font: false,
         lock_unconfirmed: true,
         entity_info_icon: 'Info',

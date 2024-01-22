@@ -37,7 +37,6 @@ const expoConfig = {
       "package": "com.una.neo",
       "permissions":  [
         "android.permission.ACCESS_NETWORK_STATE", 
-        "android.permission.BLUETOOTH", 
         "android.permission.CAMERA", 
         "android.permission.INTERNET", 
         "android.permission.MANAGE_OWN_CALLS", 
@@ -49,6 +48,7 @@ const expoConfig = {
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.NFC",
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",

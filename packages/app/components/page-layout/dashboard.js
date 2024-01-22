@@ -21,6 +21,7 @@ import { fetcher } from 'app/lib/fetcher';
 import Bluetooth from 'app/ui/molecules/bluetooth'
 
 export default function PageLayout(props) {
+    
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser()
     
@@ -74,7 +75,7 @@ export default function PageLayout(props) {
         currentTheme = 'auto';
 
     return (
-        <ScrollView className='bg-red-500'>
+        <ScrollView className=''>
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
@@ -197,31 +198,17 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                <View className=" w-full ">
-                    <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
-                </View>
                 { appSetting('layout', 'bluetooth') && <View className=" w-full  p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <Bluetooth/>
                     </Card>
                 </View> }
+                <View className=" w-full ">
+                    <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
+                </View>
+     
              
-                { /*<View className=" w-full p-2">
-                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
-                        <View className="justify-between flex-auto gap-x-2 flex-row my-auto">
-                            <View className="flex-row gap-x-2 lg:flex">
-                                <Button
-                                    variant="text"
-                                    title= {t("Meet *alpha")}
-                                    startDecorator="UsersFour"
-                                    fullWidth
-                                    onPress = {() => setShowImage2(true)}
-                                    align="left"
-                                />
-                            </View>
-                        </View>
-                    </Card>
-                </View> */}
+                
             </View>
         </ScrollView>
     )
