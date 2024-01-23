@@ -198,7 +198,7 @@ export default function PageLayout(props) {
                         </View>
                     </Card>
                 </View>
-                { appSetting('layout', 'bluetooth') && <View className=" w-full  p-2">
+                { appSetting('layout', 'bluetooth') && Platform.OS != 'web' && <View className=" w-full  p-2">
                     <Card rounded=" rounded-2xl " addClassName="w-full p-4 flex-row ">
                         <Bluetooth/>
                     </Card>
