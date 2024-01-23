@@ -316,7 +316,7 @@ export function ComponentsIntro(props) {
 
     return (
         <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4 ">
-            <View className="flex-row gap-y-2 ">
+            <View className="flex-row gap-y-2 overflow-hidden">
                 <ProfilesList data={data2} showEmpty={true} maxCount={12} />
                 <CounterText data={data} />
             </View>

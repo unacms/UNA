@@ -174,7 +174,7 @@ export default function Layout(props) {
         return (
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                    <Row className='w-full flex-col lg:flex-row-reverse '>
+                    <Row className='w-full flex-col lg:flex-row-reverse lg:border-l lg:border-r border-dashed border-bdr dark:border-bdr-d'>
                         <View className='w-full lg:w-[calc(100%-20rem)]'>
                             <Content headerSettings={headerSettings} children={children}  currentUser={currentUser}/>
                             <Suggestions/>

@@ -252,8 +252,10 @@ export default function ElementCover(props) {
 
     data.profile.url_avatar = pictureUrl;
 
+    const isUseBg = appSetting('layout', 'use_background');
+
     return (
-        <View className=" backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
+        <View className={ isUseBg ? " backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d " : "" }>
             <View className={appSetting('layout', 'max_width') + ' sm:p-4 mx-auto w-full'}>
                 {mode != 'min' && <View className={" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:"+appSetting('layout', 'cover_aspect')+" w-auto sm:rounded-xl overflow-hidden"}>
                     {!!data.cover && (

@@ -1,15 +1,15 @@
 import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { View, Row, Pressable, ScrollView  } from 'app/design/view';
+import { View, Row, Pressable, ScrollView } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert,menuItemsByName } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery } from  '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
@@ -19,13 +19,13 @@ import { useTranslation } from 'react-i18next';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 import useDaemon from 'app/lib/hooks/daemon'
-import  { LayoutData } from 'app/context/layout';
+import { LayoutData } from 'app/context/layout';
 import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton='', onChangeRoute, keyword, cover, layoutName}) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
 
     const menu_drawer = appSetting('menu_items', 'menu_drawer')
@@ -36,6 +36,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
 
+    const isUseBg = appSetting('layout', 'use_background');
+
     const [maxId, setMaxId] = useState(0);
     const toasterRef = useRef();
 
@@ -44,29 +46,29 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
-   
-    const windowDimen =  useWindowDimensions();
+
+    const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
-    
+
     useEffect(() => {
         setRoutes(initedTabs);
     }, [keyword, data.url, data.elements]);
 
     const scrollValue = useSharedValue(1);
     const { colors } = Theme();
-    const [ index, setIndex ] = useState(routes.findIndex(function(item) {
+    const [index, setIndex] = useState(routes.findIndex(function (item) {
         if (useSectionAsMenu)
             return data.url == item.key;
         else
             return (data.url).includes(item.key);
     }));
-    
+
     //console.log("routes", routes)
 
-     /* DAEMON PART */
-     const setToasterVisible = (val) => {
+    /* DAEMON PART */
+    const setToasterVisible = (val) => {
         const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
@@ -75,31 +77,31 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     let maxIdLocal = 0;
     const currentRoute = routes.find((item) => item.index === index);
-    
+
     let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
-    const bUseDaemon =  (currentRoute?.endpoint?.unit == 'feed');
+    const bUseDaemon = (currentRoute?.endpoint?.unit == 'feed');
     let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
     params.start = 0;
-    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': params})+'&params[]=0&params[]=0', false, bUseDaemon);
-    if (bUseDaemon){
-        maxIdLocal = currentRoute?.data.length > 0 
+    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]=' + JSON.stringify({ 'params': params }) + '&params[]=0&params[]=0', false, bUseDaemon);
+    if (bUseDaemon) {
+        maxIdLocal = currentRoute?.data.length > 0
             ? currentRoute?.data.reduce((max, item) => {
                 const idNumber = parseFloat(item.id);
                 return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
-                }, parseFloat(currentRoute?.data[0].id) || 0)
+            }, parseFloat(currentRoute?.data[0].id) || 0)
             : 0;
-        if (daemonData  && maxId > 0 && maxId < daemonData){
+        if (daemonData && maxId > 0 && maxId < daemonData) {
             setTimeout(() => {
                 setToasterVisible(true);
             }, 100);
-        
+
         }
     }
-   // }, [index]);
-    
+    // }, [index]);
+
 
     useEffect(() => {
-        if (maxIdLocal >0 && maxIdLocal != maxId){
+        if (maxIdLocal > 0 && maxIdLocal != maxId) {
             setMaxId(maxIdLocal)
         }
     }, [maxIdLocal]);
@@ -108,7 +110,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const showNewContent = async () => {
         setToasterVisible(false);
         let params = JSON.parse(JSON.stringify(currentRoute.endpoint.params));
-        params.start = 0; 
+        params.start = 0;
         const sRequest = currentRoute.endpoint.request_url + JSON.stringify({ params });
 
         const sResponse = await fetcher(sRequest);
@@ -124,8 +126,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const indicatorOffset = useSharedValue(0);
 
     const getUnitType = (currentRoute) => {
-        let blocksroutes =  currentRoute?.blocks;
-        if (blocksroutes){
+        let blocksroutes = currentRoute?.blocks;
+        if (blocksroutes) {
             const blockKeys = Object.keys(blocksroutes);
             for (const key of blockKeys) {
                 if (!blocksroutes[key].sidebar && blocksroutes[key].unitType) {
@@ -135,14 +137,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
 
     }
-    
+
     const getNumCols = (width) => {
 
-        let blocksroutes =  currentRoute?.blocks;
+        let blocksroutes = currentRoute?.blocks;
         width = windowWidth;
-       // if (!blocksroutes)
+        // if (!blocksroutes)
         //    return 1;
-        if (blocksroutes){
+        if (blocksroutes) {
             const blockKeys = Object.keys(blocksroutes);
             for (const key of blockKeys) {
                 if (blocksroutes[key].perLine > 0) {
@@ -152,10 +154,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
 
         let perLineSettings = appSetting('browse', 'per_line');
-        if (currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')){
+        if (currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')) {
             perLineSettings = appSetting('browse', 'per_line_profile');
         }
-        if (leftSideBar){
+        if (leftSideBar) {
             perLineSettings = appSetting('browse', 'per_line_left_side_bar');
         }
 
@@ -175,24 +177,24 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-        
-    } = useInfiniteQuery({
-            queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)], 
-            queryFn:  ({ pageParam }) => parseData(routes, index, setRoutes),	
-            getNextPageParam: (lastPage, pages) => { 
-                if (lastPage?.data?.length > 0){
-                    return lastPage?.endpoint; 
-                }
 
-                return;
-            },
-            enabled: currentRoute?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
+    } = useInfiniteQuery({
+        queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)],
+        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage?.data?.length > 0) {
+                return lastPage?.endpoint;
+            }
+
+            return;
+        },
+        enabled: currentRoute?.endpoint?.params?.start == 0//routes[index]?.data?.length == 0
     });
 
     const scrollToCover = (cover, windowWidth, offset) => {
         const baseScroll = windowWidth < 1024 ? 280 : offset;
         const adjustment = cover === 'group' ? -100 : -200;
-        if (cover!= 'min'){
+        if (cover != 'min') {
             window.scroll({
                 top: baseScroll + adjustment,
                 behavior: "smooth",
@@ -207,11 +209,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         values.forEach(function (value) {
             const name = value.name;
             const val = value.value;
-            if (newRoutes[index].endpoint.params.filters){
+            if (newRoutes[index].endpoint.params.filters) {
                 newRoutes[index].endpoint.params.filters[name] = val;
             }
-            else{
-                newRoutes[index].endpoint.params.filters = {[name]: val};
+            else {
+                newRoutes[index].endpoint.params.filters = { [name]: val };
             }
         })
         newRoutes[index].endpoint.finished = false;
@@ -234,9 +236,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [currentRoute?.endpoint?.params?.filters]);
 */
     const handleEndReached = useCallback(async (lastItemIndex) => {
-        if (isFetchingNextPage) 
+        if (isFetchingNextPage)
             return;
-        if (!hasNextPage) 
+        if (!hasNextPage)
             return;
         if (currentRoute?.endpoint.finished)
             return;
@@ -246,19 +248,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
     let offset = header ? (windowWidth < 1024 ? 600 : 600) : 50;
-    if (cover == 'min' && header > 50){
+    if (cover == 'min' && header > 50) {
         offset = windowWidth < 1024 ? 80 : 200
     }
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > offset && scrollValue.value != 0){
+            if (window.scrollY > offset && scrollValue.value != 0) {
                 scrollValue.value = 0;
             }
-            if (window.scrollY < offset && scrollValue.value != 1){
+            if (window.scrollY < offset && scrollValue.value != 1) {
                 scrollValue.value = 1;
             }
         };
-    
+
         // Add the event listener when the component mounts
         window.addEventListener('scroll', handleScroll);
         if (appSetting('layout', 'cover_scroll'))
@@ -266,17 +268,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         // Clean up the event listener when the component unmounts
         return () => {
-          window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', handleScroll);
         };
-        
-    }, []); 
+
+    }, []);
 
     useEffect(() => {
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
-    const renderTabBar = (props) => {
-        
+    const renderTabBar = (isSmall = false) => {
+
         const tabWidth = 120; //windowWidth > 800 ? 120 : (windowWidth - 64)/routes.length ;
         indicatorOffset.value = withTiming(index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
@@ -284,132 +286,133 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return {
                 transform: [{ translateX: indicatorOffset.value }],
             };
-        },[indicatorOffset]);
+        }, [indicatorOffset]);
 
         const styles = StyleSheet.create({
             indicator: {
                 width: tabWidth,
-                height:2.5,
-                bottom:0,
-                position:'absolute',
+                height: 2.5,
+                bottom: 0,
+                position: 'absolute',
                 justifyContent: 'center',
                 alignItems: 'center',
-                display:'none'
+                display: 'none'
             },
         });
 
-        if (routes.length > 1){
+        if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
             const addButtons = menuSettings?.add?.map((button) => {
-                    let btn = undefined;
-                    if(button.section)
-                        btn = <Search section={button.section} />
-                    else {
-                        btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded />;
-                        btn = button.link ? <Link href = { button.link } >{btn}</Link> : btn
-                    }
+                let btn = undefined;
+                if (button.section)
+                    btn = <Search section={button.section} />
+                else {
+                    btn = <Button title={button.title} startDecorator={button.icon} variant="outline" rounded />;
+                    btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+                }
 
-                    return (
-                        <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-                    )
+                return (
+                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+                )
             });
 
-            let styles={}
-            if (windowWidth > 600 && appSetting('layout', 'format') == 'ver'){
-                styles = {width: 1536 - 20*16}
+            let styles = {}
+            if (windowWidth > 600 && appSetting('layout', 'format') == 'ver') {
+                styles = { width: 1536 - 20 * 16 }
             }
 
             return (
-                
-                <View  style={styles} className={ (leftSideBar ? 'lg:hidden': '') + " w-full  items-left justify-center bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur"}  >
-                    <View  className={ (leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
-                    {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
-                        <Row className="items-center">
-                        <View className="ml-3 sm:ml-4 "></View>
-                        { headerSettings.header && getBackButtonWeb() }
-                        { headerSettings.header == false && headerSettings.menu == true && menu_drawer_items.length > 0 &&  <View className="lg:hidden mr-3 sm:mr-4"><Pressable  onPress={showMenu}>
-                    <Button
-                      variant="outline"
-                      startDecorator="List"
-                      rounded
-                      align="start"
-                    />
-                  
-                  </Pressable></View>}
-                        { headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{t(menuSettings?.name)}</Text>}
-                        </Row> 
-                        <Row className="pr-4">
-                            {addButtons}
+
+                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur" : (isSmall ? " bg-bgrbody dark:bg-bgrbody-d border-b border-dashed border-bdr dark:border-bdr-d": " border-t border-b border-dashed border-bdr dark:border-bdr-d"))}  >
+                    <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
+                        {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
+                            <Row className="items-center">
+                                <View className="ml-3 sm:ml-4 "></View>
+                                {headerSettings.header && getBackButtonWeb()}
+                                {headerSettings.header == false && headerSettings.menu == true && menu_drawer_items.length > 0 && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
+                                    <Button
+                                        variant="outline"
+                                        startDecorator="List"
+                                        rounded
+                                        align="start"
+                                    />
+
+                                </Pressable></View>}
+                                {headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{t(menuSettings?.name)}</Text>}
+                            </Row>
+                            <Row className="pr-4">
+                                {addButtons}
+                            </Row>
                         </Row>
-                    </Row>
-                    }
-                    <Row className="items-center ">
-                        {menuSettings?.name ? <Text  className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
-                        <ScrollView horizontal={true} className="items-center gap-0 " >
-                            <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
-                                {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
-                                   <Pressable  className={" py-2 items-center " + a?.menu_settings?.class}
-                                        key={`tab-${a.index}`}
-                                        onPress={() => {
-                                            setIndex(a.index);
-                                            getNumCols(windowWidth)
-                                            window.history.pushState({ }, '', '/' + a.key);
-                                            if (onChangeRoute) {
-                                                onChangeRoute(a);
-                                            }
-                                        }}
-                                    >
-                                        <Button fullWidth={true} id="tab" pressed={a.index ==index ? true : false } variant={a.index ==index ? 'outline': "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
-                                    </Pressable>
-                                ))}
-                                <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth:100}}></View></Animated.View>
-                            </Row> 
-                        </ScrollView>
-                        <Row className="hidden lg:flex px-4">
-                            {addButtons}
+                        }
+                        <Row className="items-center ">
+                            {menuSettings?.name ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
+                            <ScrollView horizontal={true} className="items-center gap-0 " >
+                                <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
+                                    {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
+                                        <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
+                                            key={`tab-${a.index}`}
+                                            onPress={() => {
+                                                setIndex(a.index);
+                                                getNumCols(windowWidth)
+                                                window.history.pushState({}, '', '/' + a.key);
+                                                if (onChangeRoute) {
+                                                    onChangeRoute(a);
+                                                }
+                                            }}
+                                        >
+                                            <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                                        </Pressable>
+                                    ))}
+                                    <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
+                                </Row>
+                            </ScrollView>
+                            <Row className="hidden lg:flex px-4">
+                                {addButtons}
+                            </Row>
                         </Row>
-                    </Row>
+                    </View>
                 </View>
-            </View>
-        )}
+            )
+        }
     };
 
-    const renderHeader =  useCallback((tabBarObj) => {
+    const renderHeader = useCallback((tabBarObj, tabBarObjSmall) => {
         const d = 200;
 
         const animatedStyle5 = useAnimatedStyle(() => {
             const opacityValue = withTiming(scrollValue.value, { duration: d });
             return {
-                opacity:opacityValue
+                opacity: opacityValue
             };
-        },[scrollValue]);
+        }, [scrollValue]);
 
         const animatedStyle6 = useAnimatedStyle(() => {
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
-                opacity:opacityValue
+                opacity: opacityValue
             };
-        },[scrollValue]);
+        }, [scrollValue]);
 
-       /* if (!header){
-            if (tabBarObj)
-                return <>
-                    <View className="w-full h-12 lg:h-12"></View>
-                    <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
-                </>
-        }*/
-        let tOffset = appSetting('layout', 'format') =='ver' ? 0: 63;
+        /* if (!header){
+             if (tabBarObj)
+                 return <>
+                     <View className="w-full h-12 lg:h-12"></View>
+                     <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
+                 </>
+         }*/
+        let tOffset = appSetting('layout', 'format') == 'ver' ? 0 : 63;
         return (
             <>
-                <Animated.View style={[{ width: '100%',  position:'fixed', overflow: 'hidden', zIndex:40, top:windowWidth >= 1024 ? tOffset: 0 }, animatedStyle6]}>
+                <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= 1024 ? tOffset : 0 }, animatedStyle6]}>
                     {smallHeader}
-                    {tabBarObj}
+                    {tabBarObjSmall}
                 </Animated.View>
-                <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex:50  }, animatedStyle5]}  >
+                <Animated.View style={[{ width: '100%', overflow: 'hidden', zIndex: 50 }, animatedStyle5]}  >
                     <View className="w-full" >
-                        <View style={[{ width: '100%',  overflow: 'hidden'  }]}>
+                        <View style={[{ width: '100%', overflow: 'hidden' }]}>
                             <View>
-                                {header}     
+                                {header}
                             </View>
                         </View>
                     </View>
@@ -423,16 +426,16 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
 
-    
-    const RenderScene = useCallback(({ route, status }) => { 
+
+    const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
         return (
             <>
                 {
                     inputs && (
-                     
+
                         <Row className={appSetting('layout', 'max_width') + " mx-auto w-full p-3 sm:p-4 pb-1 sm:pb-0 w-full gap-x-4 items-center "}>
-                           
+
                             {Object.keys(inputs).map((key, index) => {
                                 if (inputs[key].type == 'radio_set') {
                                     let values = [];
@@ -444,12 +447,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     }
                                     return (
                                         <Row key={index} className="items-center">
-                                           {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
+                                            {/* <Text className="text-neutral-800 dark:text-neutral-200 text-base">{inputs[key].caption}: </Text>*/}
                                             <Dropdown
                                                 labelField="label"
                                                 valueField="value"
                                                 value={route?.endpoint?.params?.filters?.[inputs[key].name]}
-                                                onChange={(value) => setFilterValue([{name:inputs[key].name, value:value}])}
+                                                onChange={(value) => setFilterValue([{ name: inputs[key].name, value: value }])}
                                                 data={values}
                                             />
                                         </Row>
@@ -461,7 +464,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                                 name="search"
                                                 placeholder={inputs[key].caption}
                                                 value={route?.endpoint?.params?.filters?.[inputs[key].name]}
- 
+
                                                 onChangeText={(value) => setFilterValue(inputs[key].name, value)}
                                             />
                                         </Row>
@@ -470,9 +473,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     return (
                                         <Row key={index} className="items-center">
                                             <Location
-                                               name="search"
-                                               value = {{location_string: route?.endpoint?.params?.filters?.[inputs[key].name]}}
-                                               onChange={(value) => {setFilterValue([{name:inputs[key].name, value:value.location_string}, {name:inputs[key].name+'_country', value:value.country},{name:inputs[key].name+'_state', value:value.state}, {name:inputs[key].name+'_city', value:value.city}])}}
+                                                name="search"
+                                                value={{ location_string: route?.endpoint?.params?.filters?.[inputs[key].name] }}
+                                                onChange={(value) => { setFilterValue([{ name: inputs[key].name, value: value.location_string }, { name: inputs[key].name + '_country', value: value.country }, { name: inputs[key].name + '_state', value: value.state }, { name: inputs[key].name + '_city', value: value.city }]) }}
                                             />
                                         </Row>
                                     );
@@ -480,64 +483,65 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 return null; // Return null if none of the conditions are met
                             })}
                         </Row>
-                     
+
                     )
                 }
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
             </>
         )
     }
-        , [numColumns, windowWidth, rqtStatus, index]);  
+        , [numColumns, windowWidth, rqtStatus, index]);
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
         if (getNumCols(0) != numColumns)
             setNumColumns(getNumCols(0));
 
-        if (props.data.length == 1 && !props.endpoint){
-           let a =  props.data.map((item, index ) => {
-                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-"+index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
+        if (props.data.length == 1 && !props.endpoint) {
+            let a = props.data.map((item, index) => {
+                return <View className={appSetting('layout', 'max_width_block') + " mx-auto w-full"} key={"tab-" + index}><ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} /></View>
             });
             return a;
         }
-        
+
         return (
-           <UniList
+            <UniList
                 {...props}
                 useWindowScroll
-                numColumns={numColumns}     
+                numColumns={numColumns}
                 onEndReached={handleEndReached}
             />
         );
     });
     const tabBarObj = renderTabBar();
-    const headerObj = renderHeader(tabBarObj);
+    const tabBarObjSmall = renderTabBar(true);
+    const headerObj = renderHeader(tabBarObj, tabBarObjSmall);
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
         //let b = useMemo(() => {
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit), numColumns);
-        if (!route.inited){
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
+        if (!route.inited) {
             return <></>
         }
-        if (route.inited){
+        if (route.inited) {
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
             let unitType = getUnitModeBySource(route?.endpoint?.request_url)
             if (unitType == 'default')
                 unitType = getUnitType(route);
 
-            let TabFlashListM = useMemo(() => {  
+            let TabFlashListM = useMemo(() => {
                 return <TabFlashList
                     index={route.index}
                     data={dataItems}
                     endpoint={route.endpoint}
-                    listState = {route?.state}
+                    listState={route?.state}
                     storagekey={route.storageKeyValue}
                     refer={uniRef}
                     route={route}
                     unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
-                    ListFooterComponent = {
+                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                    ListFooterComponent={
                         <View className='m-4'>
                             {(hasNextPage && isFetchingNextPage) ? (
                                 Preload
@@ -548,51 +552,52 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }, [dataItems]);
             //
             let sidebarUnitType = 'default';
-            if (route.blocks?.browse_sidebar?.unitType){
+            if (route.blocks?.browse_sidebar?.unitType) {
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
-           
+            //border-r border-bdr dark:border-bdr-d border-dashed
             return (
-                <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}> 
-                    <View className={isRightCol? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
-                        {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload :appStatic('components_content_empty'))}
+                <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
+                     <View className={isRightCol && headerSettings.columns != "reverse" ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
+                        {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
                         <View className="fixed-process w-96 pl-4 pt-4">
-                            {route?.sidebar?.content.map((item, index ) => {
-                                return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''}/>
+                            {route?.sidebar?.content.map((item, index) => {
+                                return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
-                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1}/>
+                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
                         </View>
                     </View>}
                 </Row>
-            )}
-                        
-};
-    
+            )
+        }
+
+    };
+
     const handleLayoutTop = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         if (getNumCols(containerWidth) != numColumns)
-        setNumColumns(getNumCols(containerWidth));
+            setNumColumns(getNumCols(containerWidth));
     };
-    
+
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.map((button) => {
 
-                let btn = undefined;
-                if(button.section)
-                    btn = <Search section={button.section} params={{trigger: {size: 'sm'}}} />
-                else {
-                    btn = <Button title={t(button.title)} startDecorator={button.icon} variant="outline" rounded size="sm"/>;
-                    btn = button.link ? <Link href={button.link } >{btn}</Link> : btn
-                }
+            let btn = undefined;
+            if (button.section)
+                btn = <Search section={button.section} params={{ trigger: { size: 'sm' } }} />
+            else {
+                btn = <Button title={t(button.title)} startDecorator={button.icon} variant="outline" rounded size="sm" />;
+                btn = button.link ? <Link href={button.link} >{btn}</Link> : btn
+            }
 
-                return (
-                    <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
-                )
+            return (
+                <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
+            )
         });
-        return  <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process top-16 fixed w-80 lg:px-4 lg:py-3 '>
+        return <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process top-16 fixed w-80 lg:px-4 lg:py-3 '>
             <Row className="justify-between items-center mt-1 mb-4 ">
                 <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
@@ -604,59 +609,60 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className=' hidden flex-col gap-y-1 lg:flex '>
                 {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                     let settings = appSetting('layouts', a.key)
-                    let icon = !a.ident ? (settings?.icon? settings?.icon : a?.icon) : a.icon;
+                    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon) : a.icon;
                     return (
-                    <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-10': ''} onPress={(event) => {
-                            setIndex(a.index);
-                            window.history.pushState({ }, '', a.key);
-                            event.preventDefault()
-                        }}>
-                          <Button
-                                variant={a.index == index ? 'outline' : "text"}
-                                size={!a.ident ? "base" : "sm"}
-                                pressed={a.index == index ? true : false}
-                                fullWidth
-                                title = {(a.title)}
-                                align="start"
-                                startDecorator={icon}
-                                addon={a.addon}
-                            />
-                        </Pressable>
-                    </Link>
-                )})}
+                        <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
+                            <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
+                                setIndex(a.index);
+                                window.history.pushState({}, '', a.key);
+                                event.preventDefault()
+                            }}>
+                                <Button
+                                    variant={a.index == index ? 'outline' : "text"}
+                                    size={!a.ident ? "base" : "sm"}
+                                    pressed={a.index == index ? true : false}
+                                    fullWidth
+                                    title={(a.title)}
+                                    align="start"
+                                    startDecorator={icon}
+                                    addon={a.addon}
+                                />
+                            </Pressable>
+                        </Link>
+                    )
+                })}
             </View>
-            </View></View>
+        </View></View>
     }, [routes, index]);
 
-    if (leftSideBar){
+    if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                <MainMenu items = {menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
+                <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-                <View style={{minHeight:(windowHeight-64)}} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
+                <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{minHeight:(windowHeight-64)}} className={'hidden lg:block w-80  border-r  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80  border-r  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
-                            <RenderScene route={currentRoute}/>
+                            <RenderScene route={currentRoute} />
                         </View>
                     </Row>
-                 </View>
+                </View>
             </View>
-         );
+        );
 
     }
     return (
-       <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
+        <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            <View className={appSetting('layout', 'max_width') +' mx-auto w-full min-h-screen'}>
-                <RenderScene route={currentRoute}/>
+            <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
+                <RenderScene route={currentRoute} />
             </View>
-       </View>
+        </View>
     );
 }

@@ -30,7 +30,8 @@ let settingsDefault = {
         entity_info_icon: 'Info',
         disable_screenshots: true,
         redirect_on_forbidden: '/home',
-        split_action_menu: true
+        split_action_menu: true,
+        use_background: true,
     },
     sockets: {
         host: 'ci.una.io',

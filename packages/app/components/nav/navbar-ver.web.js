@@ -90,6 +90,8 @@ export default function (props) {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
+    const isUseBg = appSetting('layout', 'use_background');
+
     const menu_top = appSetting('menu_items', 'menu_top');
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
@@ -121,7 +123,7 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }} 
-                className=" backdrop-blur fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d ">
+                className={(isUseBg? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm":" xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen    "}>
                     <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
                         {headerSettings.menu && menu_drawer_items.length > 0 && (
                             <View className="lg:hidden mr-4">
