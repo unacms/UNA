@@ -509,7 +509,7 @@ let settingsDefault = {
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
                 col5: { name: 'bx_events:sessions', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col2: { name: 'bx_events:entity_info', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
-                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: false },
+                col3: { name: 'bx_events:entity_text_block', showTitle: false, showBg: true, perLine: 1, sidebar: true, showPad: true },
                 col4: { name: 'system:locations_map', showTitle: true, showBg: true, perLine: 1, sidebar: true, showPad: true },
                
             },
