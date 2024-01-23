@@ -86,7 +86,7 @@ function CoverMenu(props) {
 
 function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
-
+    
     return (
         <DropdownPopup
             open={ntfsOpen}
@@ -121,7 +121,7 @@ function CoverMenuMeta(props) {
 export function CoverSmall(props) {
     const router = useRouter();
     const data = props.data
-
+    const isUseBg = appSetting('layout', 'use_background');
     const windowDimen =  useWindowDimensions();
     const windowWidth = windowDimen.width;
 
@@ -131,7 +131,7 @@ export function CoverSmall(props) {
     }
 
     return (
-        <View style={styles} className=" backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d    w-full ">
+        <View style={styles} className={(isUseBg ? " backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d" : "bg-bgrbody dark:bg-bgrbody-d border-b border-dashed border-bdr dark:border-bdr-d") + " w-full "}>
             <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">
