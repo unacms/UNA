@@ -11,6 +11,8 @@ import { Switch } from 'app/design/controls'
 import { Theme } from 'app/design/theme';
 import { BleManager } from 'react-native-ble-plx';
 import { BottomSheetData } from 'app/context/bottomsheet';
+import { FeedbackHaptics } from 'app/lib/util';
+import * as Location from 'expo-location';
 import {
     Platform,
     NativeModules,
@@ -25,16 +27,20 @@ import Peripheral, {
     Permission,
     Property,
 } from 'react-native-multi-ble-peripheral';
-import { Buffer } from 'buffer';
 
+import { Buffer } from 'buffer';
+import Msg from 'app/ui/molecules/msg';
 
 export default function Bluetooth(props) {
     const { colors } = Theme();
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [hasPerm, setHasPerm] = React.useState(false);
+    const [isEnabled, setIsEnabled] = React.useState({ bt: false, gps: false });
     const [advertising, setAdvertising] = React.useState(false);
     const peripheral = React.useRef();
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const manager = new BleManager();
+
 
     const hrService = Platform.select({
         ios: '180d',
@@ -88,17 +94,17 @@ export default function Bluetooth(props) {
         } else {
             setHasPerm(true);
         }
+
     }, []);
 
     React.useEffect(() => {
-        if (!hasPerm) return;
+        if (!hasPerm || !isEnabled) return;
         Peripheral.setDeviceName(appSetting('layout', 'bluetooth_device_name_prefix') + "-" + currentUser.id).catch((err) =>
             console.error('SET NAME', err)
         );
-    }, [hasPerm]);
+    }, [hasPerm, isEnabled]);
 
     const startAdv = () => {
-        console.log("advertising", advertising);
         if (!hasPerm) return;
 
         if (advertising) {
@@ -130,9 +136,8 @@ export default function Bluetooth(props) {
 
 
             ble.on('ready', async () => {
-               
+
                 try {
-                    //console.log('Currect State:', await ble.checkState());
                     await ble.addService(hrService, true);
                     await ble.addCharacteristic(
                         hrService,
@@ -150,18 +155,18 @@ export default function Bluetooth(props) {
                             [hrService]: Buffer.from(''),
                         }
                     );
-                    
+
                     setAdvertising(true);
                 } catch (err) {
                     setAdvertising(false);
-                    console.error('START', err);
+                    //console.error('START', err);
                 }
             });
             ble.on('error888', console.error);
         }
     }
 
-    const manager = new BleManager();
+
     function scan() {
         manager.startDeviceScan(null, { allowDuplicates: true }, (error, device) => {
             if (error) {
@@ -181,44 +186,120 @@ export default function Bluetooth(props) {
             }
             //console.log("Discovered device:", device.name, device.id, device.rssi, distance);
 
+            currentUser?.settings?.forgotted_users
             if (device?.name?.includes(appSetting('layout', 'bluetooth_device_name_prefix') + "-") && distance < 1) {
-                manager.stopDeviceScan();
-                manager.connectToDevice(device.id)
-                    .then(async (device) => {
-                        let userId = device.name.replace(appSetting('layout', 'bluetooth_device_name_prefix') + "-", '');
-                      //  userId = 22;
-                        //console.log(userId);
-                        let request_url = '/api.php?r=system/befriend/TemplServiceProfiles&params[]=' + userId;
-                        const sResponse = await fetcher(request_url);
-                       // console.log(sResponse);
+                let userId = device.name.replace(appSetting('layout', 'bluetooth_device_name_prefix') + "-", '');
+                //console.log("----", currentUser?.settings?.forgotted_users, userId, "----")
+                if (!currentUser?.settings?.forgotted_users || !currentUser?.settings?.forgotted_users.includes(parseInt(userId))) {
+                    manager.stopDeviceScan();
+                    manager.connectToDevice(device.id)
+                        .then(async (device) => {
+                            //FeedbackHaptics('Heavy')
+                            let request_url = '/api.php?r=system/befriend/TemplServiceProfiles&params[]={"profile_id":' + userId + ',"action":"info"}';
+                            const sResponse = await fetcher(request_url);
 
-                        setBottomSheetData({ content: <FriendInfo data={sResponse.data} />, showClose: false, snapPoints: ['40%', '50%'] });
-                        setTimeout(() => {
-                            setBottomSheetData(false);
-                        }, 3000);
-                        return device.discoverAllServicesAndCharacteristics();
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                            setBottomSheetData({ content: <FriendInfo data={sResponse.data} type="info" />, showClose: false, snapPoints: ['40%', '50%'] });
+
+                            return device.discoverAllServicesAndCharacteristics();
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
             }
         });
     }
 
-    const FriendInfo = ({ data }) => (
+    const setConn = async (id) => {
+        let request_url = '/api.php?r=system/befriend/TemplServiceProfiles&params[]={"profile_id":' + id + ',"action":"add"}';
+        const sResponse = await fetcher(request_url);
+        //FeedbackHaptics('Success');
+        setBottomSheetData({ content: <FriendInfo data={sResponse.data} type="finished" />, showClose: false, snapPoints: ['40%', '50%'] });
+    }
+
+    const forgot = async (id) => {
+        
+        let forgottedUsers = currentUser?.settings?.forgotted_users ? currentUser.settings.forgotted_users : [];
+        forgottedUsers.push(id);
+        forgottedUsers = Array.from(new Set(forgottedUsers));
+        //console.log("----------",forgottedUsers )
+        const updatedUser = {
+            ...currentUser,
+            settings: {
+                ...currentUser.settings,
+                forgotted_users: forgottedUsers,
+            },
+        };
+        console.log(updatedUser);
+        let request_url = '/api.php?r=system/update_settings/TemplServiceProfiles&params[]={user_id}&params[]='.replace('{user_id}', currentUser.id) + JSON.stringify(updatedUser.settings);
+        await fetcher(request_url);
+
+        setCurrentUser(updatedUser);
+        setBottomSheetData(false);
+    }
+
+    const FriendInfo = ({ data, type }) => (
         <>
             <View className='pb-4 justify-end items-center mx-auto w-full'>
                 <View className='mb-4'>
-                    <Text className={"text-lg font-bold text-neutral-800 dark:text-neutral-200 "}>{data.result ? 'You have a new friend' : 'You are already friends with'}</Text>
+                    <Text className={"text-lg font-bold text-neutral-800 dark:text-neutral-200 "}>{data.result ? 'You are already friends!' : 'Do you want to add a new friend?'}</Text>
                 </View>
                 <Profile {...data.profile} displayType="unit_wo_info" displaySize="2xl" />
                 <View className='my-4'>
                     <Text className={"text-lg font-bold text-neutral-800 dark:text-neutral-200 "}>{data.profile.display_name}</Text>
                 </View>
-                {/*<Button onPress={() => setBottomSheetData(false)} title="Close" />*/}
+                {type == 'info' && !data.result && <Row className='gap-x-4'>
+                    <Button variant="primary" onPress={() => setConn(data.profile.id)} title="Add new friend" />
+                    <Button variant="default" onPress={() => forgot(data.profile.id)} title="Ignore" />
+                </Row>
+                }
+                {(type == 'finished' || (data.result && type == 'info')) && <Row>
+                    <Button variant="primary" onPress={() => setBottomSheetData(false)} title="Close" />
+
+                </Row>
+                }
             </View>
         </>
     )
+
+    manager.onStateChange((state) => {
+        setIsEnabled((prevState) => ({
+            ...prevState,
+            bt: state === 'PoweredOn',
+        }));
+    }, true);
+
+    let intervalId = null;
+
+    const checkGps = async () => {
+        let gpsServiceStatus = await Location.getProviderStatusAsync();
+        setIsEnabled((prevState) => ({
+            ...prevState,
+            gps: gpsServiceStatus.locationServicesEnabled
+        }));
+        if (gpsServiceStatus.locationServicesEnabled && intervalId) {
+            clearInterval(intervalId);
+        }
+    }
+
+    useEffect(() => {
+        async () => {
+            await checkGps();
+        }
+        intervalId = setInterval(async () => {
+            await checkGps();
+        }, 5000);
+    }, []);
+
+    //            <Msg onVisible={!isEnabled} title={"Bluetooth is not activated"} text={"To use smart friendliness, activate Bluetooth."} handleOk={() => { }} />
+
+    if (!isEnabled.bt || !isEnabled.gps) {
+        return (
+            <>
+                <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">To use smart friendliness, activate Bluetooth and Location services.</Text>
+            </>
+        )
+    }
 
     return (
         <Row className='justify-between w-full '>

@@ -322,7 +322,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
 
             return (
-
                 <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur" : (isSmall ? " bg-bgrbody dark:bg-bgrbody-d border-b border-dashed border-bdr dark:border-bdr-d": " border-t border-b border-dashed border-bdr dark:border-bdr-d"))}  >
                     <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
                         {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
@@ -423,9 +422,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </>
         );
     }, [windowWidth]);
-
-
-
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
@@ -558,7 +554,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             //border-r border-bdr dark:border-bdr-d border-dashed
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                     <View className={isRightCol && headerSettings.columns != "reverse" ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
+                     <View className={isRightCol ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
@@ -639,7 +635,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
-                {headerObj}
+                    {headerObj}
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
@@ -653,7 +649,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </View>
             </View>
         );
-
     }
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>

@@ -356,7 +356,7 @@ export default function ElementGrid({data}) {
                 </Modal>
             )
         }
-        <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => {showConfirm.cb(); setShowConfirm({show:false, cb:null})}} />
+        <Confirm onVisible={showConfirm.show} title={t("Are you sure?")}  handleCancel ={() => setShowConfirm({show:false, cb:null})} handleOk ={() => { setShowConfirm({show:false, cb:null}); showConfirm.cb();}} />
         <Row className='xl:justify-between mt-2 mb-4 '>
             {Object.keys(settings.filters).length > 0 && 
                 <Row className="gap-x-2 ">

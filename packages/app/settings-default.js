@@ -822,7 +822,7 @@ let settingsDefault = {
         ],
         bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'Messages', url: '/posts-home',icon: 'ChatTeardropDots'},
+            {key: '/tab1', title: 'Messages', url: '/event-questionnaire/code-jam-mastering-una-s-customization',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
