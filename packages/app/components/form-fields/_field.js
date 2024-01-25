@@ -28,7 +28,8 @@ export default function FormField(props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
-    let sClassName = ' my-2 w-full form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
+    let sClassName = ' my-2 '+(props?.width ? ' ' + props?.width : 'w-full')+' form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
+    
     if (Platform.OS != 'web')
         sClassName += '  ';
     return (

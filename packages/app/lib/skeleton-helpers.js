@@ -72,7 +72,26 @@ const bx_forum = <>
     ))}
 </>
 
-function browse_item(num) {
+const bx_posts = <>
+    {items.map((item, index) => (
+        <View
+            key={index}
+            className="flex-col p-4 mb-2 sm:mb-4 sm:mx-4 bg-bgrcard dark:bg-bgrcard-d sm:rounded-2xl"
+        >
+             <View className=" mt-3 sm:mt-4 flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-2/5"></View>
+                <View className="flex-auto p-2 flex-col md:mr-2">
+                        <View className="w-4/5 h-5 mt-2 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-full h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-4/5 h-3.5 mt-2 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-1/3 h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
+                </View>
+            </View>
+        </View>
+    ))}
+</>
+
+/*function browse_item(num) {
     return (<View className={Platform.OS === 'web' ? 'mt-0' : 'mt-16'}>{items.map((item, index) => (
         <View key={'browse_item' + index} className="flex-row lg:gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto px-3 sm:px-4">
             <View className=" mt-3 sm:mt-4 flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
@@ -84,6 +103,33 @@ function browse_item(num) {
                         <View className="w-1/3 h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
                 </View>
             </View>
+            {num > 1 &&
+                <View className=" mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                    <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+                </View>
+            }
+            {num > 2 &&
+                <View className=" mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                    <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+                </View>
+            }
+            {num > 3 && <View className="mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+            </View>
+            }
+
+        </View>
+    ))}
+    </View>
+    )
+}*/
+
+function browse_item(num) {
+    return (<View className={Platform.OS === 'web' ? 'mt-0' : 'mt-16'}>{items.map((item, index) => (
+        <View key={'browse_item' + index} className="flex-row lg:gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto px-3 sm:px-4">
+           <View className=" mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                    <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
+                </View>
             {num > 1 &&
                 <View className=" mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
                     <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
@@ -260,6 +306,8 @@ export function getSkeleton(name, num = 5) {
 
     if (name == 'bx_forum')
         return bx_forum;
+    if (name == 'bx_posts')
+        return bx_posts;
 
     return browse_item(num)
 }

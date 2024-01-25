@@ -45,6 +45,9 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu){
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
             i.addon = item.addon;
+            if (i.link == 'friend-requests'){
+                i.addon = {text: item.addon, variant: 'primary'};
+            }
             i.menu_settings = item.settings;
             i.icon = item.icon;
             i.endpoint = contentAndEndpoint.endpoint;
@@ -72,6 +75,9 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu){
             i.hideInTop = item.hideInTop;
             i.ident = item.ident;
             i.addon = item.addon;
+            if (i.link == 'friend-requests'){
+                i.addon = {text: item.addon, variant: 'primary'};
+            }
             i.menu_settings = item.settings;
             i.icon = item.icon;
             i.inited = false;

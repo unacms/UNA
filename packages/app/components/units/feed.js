@@ -189,7 +189,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border= " sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
                 <View className="flex-auto flex-row items-top px-4 py-3.5">
                     <Profile
                         {...data.author_data}
