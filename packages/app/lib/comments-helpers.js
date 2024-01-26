@@ -80,7 +80,7 @@ export function parseData (browse, dynamicData) {
     return browse;
 }
 
-export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort=false}) {
+export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort=false, maxCount}) {
 
 
     const { t } = useTranslation();
@@ -99,6 +99,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         orderWay: browse?.data?.order,
         view: browse?.data?.view,
         objectId: browse?.data?.object_id,
+        maxLevel: browse?.data?.max_level,
         formText: '',
         formAuthor: '',
         postData: null,
@@ -159,6 +160,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             lvls[level] = (last_child_in != item.id ? true: false);
             item.lvls = lvls.slice();
 
+            item.parent = dataOut.filter(item2 => (item2.data.cmt_id == item.data.cmt_parent_id) )[0];
             dataOut.push(item)
             if (item.items && viewMode != 'flat'){
                 DataForList(item.items, level + 1, last_child, lvls.slice());
@@ -252,8 +254,10 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     const dataArrayRef = useRef([]);
 
     if (isShort){
+        if (maxCount)
+            dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => <View className='mx-4' key={index}>
-        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+        <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
     </View>) 
     }
 
@@ -304,7 +308,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
                     }
                     return (
                     <View className='mx-4' key={index}>
-                        <UnitComments module={commentData.moduleName} {...item} view={viewMode}  handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
+                        <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                     </View>
                 )}}
                 

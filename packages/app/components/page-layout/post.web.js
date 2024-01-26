@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view';
 import { BlockByName, DataByName } from 'app/components/block';
-import { useRouter } from  'next/navigation';
-import { useState, useRef} from 'react';
+import { useRouter } from 'next/navigation';
+import { useState, useRef } from 'react';
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Dimensions } from 'react-native';
@@ -13,20 +13,20 @@ import { useWindowDimensions } from 'react-native'
 export default function PageLayout(props) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
-    const [sizes, setSizes] = useState({cntHeight:0, listHeight:100, formHeight:0, formWidth:100});
-    
+    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 100 });
+
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
-    const handleReply =  async (id, author, text) => {
-        setFormData({text:stripTags(text), parent_id:id, author:author})
+    const handleReply = async (id, author, text) => {
+        setFormData({ text: stripTags(text), parent_id: id, author: author })
         document.getElementsByClassName("form-control-cmt_text")[0].getElementsByClassName("ProseMirror")[0].focus();
     }
-    
-    const handleForm =  async (data) => {
+
+    const handleForm = async (data) => {
         setAddData(data)
         calculateSize();
-    }   
+    }
 
     const handleWindowSizeChange = () => {
         calculateSize();
@@ -36,25 +36,25 @@ export default function PageLayout(props) {
 
     const handleLayout = () => {
         calculateSize();
-    }; 
+    };
 
     const router = useRouter();
     const windowWidth = useWindowDimensions().width + 24;
     const windowWidthOr = useWindowDimensions().width;
-   
+
     const calculateSize = () => {
-        if (viewFormRef.current){
+        if (viewFormRef.current) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
-                let  FormH = height
+                let FormH = height
                 let offset = 90;
-                if (Dimensions.get('window').width < 1024){
-                    FormH = FormH 
+                if (Dimensions.get('window').width < 1024) {
+                    FormH = FormH
                     offset = 128;
                 }
                 let otherH = Dimensions.get('window').height;
                 otherH = otherH - FormH - offset
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
-                    setSizes({formHeight: FormH, formWidth: width, otherHeight:otherH, cntHeight:height})             
+                    setSizes({ formHeight: FormH, formWidth: width, otherHeight: otherH, cntHeight: height })
                 });
             });
         }
@@ -79,18 +79,18 @@ export default function PageLayout(props) {
     let header = <></>
     actionsItemIndex = aItems.findIndex(item => item.id === 'block_author');
     if (actionsItemIndex !== -1) {
-        if(windowWidthOr < 1024){
+        if (windowWidthOr < 1024) {
             header = (
                 <><Row className='py-2 px-3 w-full items-center fixed top-0 z-50 border-b  bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d flex-row justify-start'>
                     {getBackButtonWeb()}
-                    <View style={{width:windowWidth-92}}>
+                    <View style={{ width: windowWidth - 92 }}>
                         {aItems[actionsItemIndex].data}
                     </View>
                 </Row></>
             );
             aItems.splice(actionsItemIndex, 1);
         }
-        else{
+        else {
             aItems[actionsItemIndex].data = (
                 <View className='pt-4 px-4 lg:pt-4'>
                     {aItems[actionsItemIndex].data}
@@ -99,20 +99,24 @@ export default function PageLayout(props) {
         }
 
     }
-   
+    let offset = "pb-20"
+    if (commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html == 2){ 
+        offset = "pb-36"
+    }
+
     let isStycky = Dimensions.get('window').width < 1024 || sizes.otherHeight < sizes.cntHeight;
-    return ( 
+    return (
         <>
             {header}
             <View className=" py-0 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full  border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
-                    <Row><View ref={viewCntRef} style ={{marginBottom: isStycky ? /*sizes.formHeight +*/ 36: 16, heightx:sizes.otherHeight}} className='  w-full pb-20'>
-                        <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData?.content[0].url} />
+                    <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 36 : 16, heightx: sizes.otherHeight }} className={'  w-full '+ (Dimensions.get('window').width < 1024 ? '' : offset)}>
+                        <CommentsBrowse addItems={aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData?.content[0].url} />
                     </View>
                     </Row>
-                    <View ref={viewFormRef} style={{width:sizes.formWidth}} onLayout={handleLayout} className={isStycky? ' bg-bgrcard dark:bg-bgrcard-d border-bdr dark:border-bdr-d fixed bottom-0 w-full border-t border-bdr dark:border-bdr-d' : ' w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} > 
+                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' bg-bgrcard dark:bg-bgrcard-d border-bdr dark:border-bdr-d fixed bottom-0 w-full border-t border-bdr dark:border-bdr-d' : ' w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
                         <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                            <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />         
+                            <CommentsForm handleForm={handleForm} browse={commentsData?.content[0].browse} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} form={commentsData?.content[0].form} formData={formData} requestUrl={commentsData?.content[0].url} />
                         </KeyboardAvoidingView>
                     </View>
                 </View>

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useContext } from 'react';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { StyleSheet } from "react-native";
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
@@ -7,21 +8,29 @@ import { Text } from 'app/design/typography'
 
 export default function ElementCommentForm(props) {
     const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => (props.snapPoints? props.snapPoints : ['25%', '90%']), []);
+    const snapPoints = useMemo(() => (props.snapPoints ? props.snapPoints : ['50%', '90%']), []);
     const handleSheetChanges = useCallback((index) => {
-       // console.log('handleSheetChanges', index);
+        // console.log('handleSheetChanges', index);
     }, []);
 
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+        },
 
+    });
+    
     return (
-        props.open && <BottomSheet backgroundStyle={{backgroundColor: 'rgba(255,255,255,1)'}}   
+        props.open && <BottomSheet backgroundStyle={{ backgroundColor: 'rgba(255,255,255,1)' }}
             ref={bottomSheetRef}
             index={1}
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
             detached={true}
         >
-           {props.children}
+            <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+                {props.children}
+            </BottomSheetScrollView>
         </BottomSheet>
     )
 }

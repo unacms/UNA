@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { menuItemsByName, linkify, FeedbackHaptics } from 'app/lib/util';
 import { Text} from 'app/design/typography'
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Button } from 'app/design/controls'
 import Html from 'app/ui/atoms/html';
 import Time from 'app/ui/atoms/time';
@@ -18,6 +18,7 @@ import Form from 'app/components/elements/form';
 import useSWR from "swr";
 import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
+import { stripTags } from 'app/lib/util';
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
@@ -39,6 +40,8 @@ export default function UnitComments(props) {
     let items = props.items;
     let view = props.view;
     let files = props.files;
+    let maxLevel = props.max_level;
+    let parent = props.parent;
 
     // request form for reply
     const handleReply = async (id, author, text) => {
@@ -88,7 +91,9 @@ export default function UnitComments(props) {
     }
 
     let cells = [];
-    for (let i = 0; i < level; i++){
+    
+    let l = level< maxLevel ? level : maxLevel;
+    for (let i = 0; i < l; i++){
         cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
         {(lvls[i+1]) && <View className="ml-[19px] w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View> }
         {(i == level - 1) && <View className="ml-[19px] h-[21px] w-8 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
@@ -119,8 +124,6 @@ export default function UnitComments(props) {
         );
     });
 
-    
-
     if (viewState.view == 'deleted')
         return (<></>);
 
@@ -132,18 +135,23 @@ export default function UnitComments(props) {
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
                 </View>
-                <View className='flex-1 flex-col gap-y-1 mb-2'>
+                <View className='flex-1 flex-col gap-y-1 mb-2 '>
                     <View className={sCommentClass + ' py-2'} >
-                        <View className="flex-row flex-1 items-center mb-0.5">
+                        <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
-                            <Link href={data.cmt_url} className="flex items-center"><Time className="" ts={data.cmt_time}></Time></Link>
+                            <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
+                            {maxLevel < data.cmt_level && <Row>
+                                    <Text className="text-neutral-500 px-1 text-sm">· In reply to</Text>
+                                    <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                                    <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>
+                                </Row>}
                         </View>
                         {
                             (view == 'flat' && data.cmt_parent_id > 0) && <View   className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
                                 <View  className="flex-row items-baseline" >
                                     <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
-                                    <View className=" "><Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" /></View>
+                                    <View className=" "></View>
                                 </View>
                                 <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400"/>
                             </View>

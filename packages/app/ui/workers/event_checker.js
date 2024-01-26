@@ -43,7 +43,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 export default function WorkerEventChecker(oProps) {
-    return<></>
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
 
     const redirectdRef = useRef();

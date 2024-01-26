@@ -32,6 +32,7 @@ let settingsDefault = {
         redirect_on_forbidden: '/home',
         split_action_menu: true,
         use_background: true,
+        show_modal: 5000,
     },
     sockets: {
         host: 'ci.una.io',
@@ -73,9 +74,9 @@ let settingsDefault = {
     },
     suggestion: {
         list: [
-           /* {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
+            {name: 'friends', request_url: '/api.php?r=system/browse_recommendations_friends/TemplServiceProfiles&params[]={user_id}&params[]=', title: 'Recommended friends', unitType:'person_friends_suggestion', perLine:3},
             {name: 'groups', request_url: '/api.php?r=bx_groups/browse_recommendations_fans&params[]={user_id}', title: 'Recommended groups', unitType:'person_friends_recommendations', perLine:3}
-        */],
+        ],
     },
     browse: {
         per_line: [
@@ -658,7 +659,7 @@ let settingsDefault = {
             },
         },
         'view-discussion': {
-            layout: 'discussion',
+            layout: 'post',
             top:true,
             blocks: {
                 author: { name: 'bx_forum:entity_author', showTitle: false, showBg: false, forList: true, forHeader: true },

@@ -558,7 +558,7 @@ function DefaultUnit(data) {
                 </View>
                 { !!commentsData && (
                     <View>
-                        <CommentsBrowse browse={commentsData}  module={data?.cmts.module} isShort={true}  />
+                        <CommentsBrowse maxCount={2} browse={commentsData}  module={data?.cmts.module}   />
                         { isShowMoreComments && <View className='px-4 pb-4'><Link href={url}><Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>{t('View more comments...')}</Text></Link></View> }
                     </View>
                     )

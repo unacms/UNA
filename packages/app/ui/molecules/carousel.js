@@ -31,7 +31,7 @@ export default function ElementCarousel(props) {
         if (event.nativeEvent.layout.width != width)
             setWidth(event.nativeEvent.layout.width);
     };
-
+console.log('consolehandleShowImage', data, currentImageIndex, data[currentImageIndex])  ;
     useEffect(() => {
         if (currentImageIndex !== false) {
             ImageOr.getSize(
@@ -107,7 +107,7 @@ export default function ElementCarousel(props) {
                 <View className='px-0.5 sm:px-4 '>
                     <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
                         <Row className='gap-x-0.5  ' style={{ width: widthIm, height: heightIm }}>
-                            <Image2 row={0} key={0} src={data[0].src} />
+                            <Image2 row={0} index={0} key={0} src={data[0].src} />
                         </Row>
                     </View>
                 </View>
@@ -137,8 +137,8 @@ export default function ElementCarousel(props) {
 
 
     return <>
-        <Modal visible={currentImageIndex !== false} >
-            <Row className='h-screen w-screen  items-center justify-center'>
+        <Modal  visible={currentImageIndex !== false}   title={"xczxz"} outerClickClose={true} transparent={true} >
+            <Row className='aspect-video w-1/2 mx-auto items-center justify-center bg-bgrbody dark:bg-bgrbody-d'>
                 {
                     currentImageIndex > 0 && <View className='mr-2'><Button variant ="outline" size="base" onPress={() => setCurrentImageIndex(currentImageIndex-1)} startDecorator="ArrowLeft"/></View>
                 }

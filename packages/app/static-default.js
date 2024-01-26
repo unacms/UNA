@@ -266,6 +266,7 @@ export function ComponentsIntro(props) {
                 useNativeDriver: false,
             }).start()
 
+
             const listener = animatedValue.addListener(({ value }) => {
                 setDisplayValue(Math.round(value))
             })
@@ -324,6 +325,32 @@ export function ComponentsIntro(props) {
                 {t('Community Intro')}
             </Text>
         </Card>
+    )
+}
+
+function ComponentModal(props) {
+    return (
+        <View>
+            <View className='mb-4'>
+                <Text>Bla bla bal....</Text>
+            </View>
+            <Row className='gap-x-4'>
+                <Button
+                    title="Create account"
+                    startDecorator="UserCirclePlus"
+                    size="base"
+                    fullWidth
+                />
+
+                <Button
+                    title="Log in with email"
+                    variant="outline"
+                    startDecorator="SignIn"
+                    size="base"
+                    fullWidth
+                />
+            </Row>
+        </View>
     )
 }
 
@@ -767,6 +794,7 @@ export const staticDefault = {
     components_content_empty: ComponentsContentEmpty,
     components_intro: ComponentsIntro,
     components_splash: ComponentsSplash,
+    components_modal:ComponentModal,
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,

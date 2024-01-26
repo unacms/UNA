@@ -3,7 +3,6 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls'
 
 export default function FormFieldSubmit(props) {
-    console.log(props);
     const formContext = useFormContext();
     const { formState } = formContext;
     let rules = {};

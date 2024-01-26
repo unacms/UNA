@@ -54,6 +54,11 @@ export default function ElementBrowse(props) {
     const windowHeight = Dimensions.get('window').height;
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
    
+    useEffect(() => {
+        if (getNumCols(windowWidth) != numColumns)
+            setNumColumns(getNumCols(windowWidth));
+    }, [windowWidth]);
+
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
         if (getNumCols(containerWidth) != numColumns)

@@ -1,10 +1,10 @@
-import { useWindowDimensions, useColorScheme, View} from 'react-native'
+import { useWindowDimensions, useColorScheme, View } from 'react-native'
 import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import RenderHtml, {
     HTMLContentModel,
     HTMLElementModel,
-  } from 'react-native-render-html'
+} from 'react-native-render-html'
 import { mergeDeep } from 'app/lib/util';
 import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
@@ -17,41 +17,41 @@ const renderers = {
         let link = obj1["tnode"].domNode?.attribs?.src ? obj1["tnode"].domNode.attribs.src : obj1["tnode"].domNode.children[0].attribs.src;
         return (
             <View className='w-full aspect-video'>
-                <Video src={ link } />
+                <Video src={link} />
             </View>
         );
-      },
-  };
+    },
+};
 
-  const customHTMLElementModels = {
+const customHTMLElementModels = {
     iframe: iframeModel,
     video: HTMLElementModel.fromCustomModel({
         tagName: "video",
         mixedUAStyles: {
-          alignSelf: "center",
+            alignSelf: "center",
         },
         contentModel: HTMLContentModel.block,
-      }),
-  };
+    }),
+};
 
 function onElement(element) {
     if (element?.parent?.children[0] === 'p') {
-        element.parent.children[0] = {class: 'firstP'}
+        element.parent.children[0] = { class: 'firstP' }
     }
-    if (element?.parent?.children[element.parent.children.length-1] === 'p') {
-        element.parent.children[element.parent.children.length-1].attribs = {class: 'lastP'}
+    if (element?.parent?.children[element.parent.children.length - 1] === 'p') {
+        element.parent.children[element.parent.children.length - 1].attribs = { class: 'lastP' }
     }
 }
 
 const domVisitors = {
- /* onElement: onElement*/
+    /* onElement: onElement*/
 };
 
 export default function ElementHtml(props) {
     const { colors } = Theme();
     const [iframeH, setIframeH] = useState({});
     let { width } = useWindowDimensions();
-    
+
     const theme = useColorScheme();
     let tagsStyles = {
         body: {
@@ -63,43 +63,43 @@ export default function ElementHtml(props) {
             marginRight: 0,
             marginTop: 0,
             marginBottom: 0,
-            paddingTop:0
+            paddingTop: 0
         },
         a: {
             color: colors.primary,
             textDecorationLine: 'none',
         },
-        h1:{
+        h1: {
             color: colors.default
         },
-        h2:{
+        h2: {
             color: colors.default
         },
-        h3:{
+        h3: {
             color: colors.default
         },
-        h4:{
+        h4: {
             color: colors.default
         },
-        p:{
+        p: {
             marginTop: 0
         },
-        ul:{
+        ul: {
             margin: 0,
-            padding:0
+            padding: 0
         },
-        ol:{
-            padding:0
+        ol: {
+            padding: 0
         }
     };
-    
+
     const classesStyles = {
         firstP: {
             marginTop: 0,
             color: 'red'
         },
-        lastP:{
-            marginBottom: 0, 
+        lastP: {
+            marginBottom: 0,
         }
     }
 
@@ -109,36 +109,36 @@ export default function ElementHtml(props) {
 
     let data = props.data;
 
-    if (data){
+    if (data) {
         var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
-        data = data.replace(pattern,'');
+        data = data.replace(pattern, '');
         const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
         //data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');  
         data = data.replace(regex, function (match, capture) {
             // Customize the className based on the captured value
-            let widthIfr = width-32
-            let heightIfr = widthIfr * 9/16 + 4;
+            let widthIfr = width - 32
+            let heightIfr = widthIfr * 9 / 16 + 4;
 
             let hash = md5(capture);
             let item = iframeH[hash];
-  
-            if (item && !capture.includes('youtube.com')){
+            heightIfr = 120;
+            if (item && !capture.includes('youtube.com')) {
                 heightIfr = item[0];
             }
 
-            if (item && !capture.includes('oembed.php')){
-                heightIfr = widthIfr*0.3;
+            if (item && !capture.includes('oembed.php')) {
+                heightIfr = widthIfr * 0.3;  
             }
 
             return (
-                '<iframe scrolling="no" width="'+widthIfr+'" height="'+heightIfr+'"  src="' + absoluteApiUrl("embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
-              );
-            });  
+                '<iframe scrolling="no" width="' + widthIfr + '" height="' + heightIfr + '"  src="' + absoluteApiUrl("embeds") + capture + '&theme=' + theme + '&hash=' + hash + '"></iframe>'
+            );
+        });
     }
 
     if (!data)
         return <></>
-    
+
     const onMessage = (event) => {
         let a = {};
         b = event.nativeEvent.data;
@@ -146,42 +146,42 @@ export default function ElementHtml(props) {
         a[data[0]] = [data[1], data[2]];
         //setIframeH({...iframeH, ...a})
     };
-    
+
     if (data)
         data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
-   
+
     return (
-            <RenderHtml
-                renderers={renderers}
-                ignoredDomTags={[]}
-                WebView={WebView}
-                customHTMLElementModels={customHTMLElementModels}
-                defaultWebViewProps={
-                    {
-                        bounces:false,         // IOS Only
-                        dataDetectorTypes:'link',
-                        scalesPageToFit:true,
-                        scrollEnabled:true,
-                        automaticallyAdjustContentInsets:true,
-                        mediaPlaybackRequiresUserAction:true,
-                    
-                    }
+        <RenderHtml
+            renderers={renderers}
+            ignoredDomTags={[]}
+            WebView={WebView}
+            customHTMLElementModels={customHTMLElementModels}
+            defaultWebViewProps={
+                {
+                    bounces: false,         // IOS Only
+                    dataDetectorTypes: 'link',
+                    scalesPageToFit: true,
+                    scrollEnabled: true,
+                    automaticallyAdjustContentInsets: true,
+                    mediaPlaybackRequiresUserAction: true,
+
                 }
-                renderersProps={{
-                    iframe: {
+            }
+            renderersProps={{
+                iframe: {
                     scalesPageToFit: true,
                     webViewProps: {
                         onMessage: onMessage
                         /* Any prop you want to pass to iframe WebViews */
                     }
-                    }
-                }}
-                contentWidth={width}
-                tagsStyles={tagsStyles}
-                classesStyles={classesStyles} 
-                source={{html: data}}
-                domVisitors={domVisitors}
-            />
-      
+                }
+            }}
+            contentWidth={width}
+            tagsStyles={tagsStyles}
+            classesStyles={classesStyles}
+            source={{ html: data }}
+            domVisitors={domVisitors}
+        />
+
     );
 }
