@@ -147,8 +147,10 @@ export default function ElementHtml(props) {
         //setIframeH({...iframeH, ...a})
     };
 
-    if (data)
-        data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
+    if (data){
+        data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
+        data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
+    }
 
     return (
         <RenderHtml

@@ -31,7 +31,8 @@ export default function ElementHtml(props) {
                 '<iframe scrolling="no" id=' + hash + ' height=auto class="w-full max-w-xl h-30 mx-auto " src="' + absoluteApiUrl("embeds") + capture + '&theme=' + scheme + '&hash=' + hash + '"></iframe>'
             );
           });
-          data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)|<br>/g, '');
+          data = data.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
+          data = data.replace('/(<br\s*\/?>\s*){2,}/i', '<br>', data);
     }
 
     return (<div>
