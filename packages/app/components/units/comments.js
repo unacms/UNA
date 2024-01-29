@@ -144,7 +144,7 @@ export default function UnitComments(props) {
                             {maxLevel < data.cmt_level && <Row>
                                     <Text className="text-neutral-500 px-1 text-sm">· In reply to</Text>
                                     <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                    <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>
+                                    {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                                 </Row>}
                         </View>
                         {
