@@ -75,7 +75,7 @@ export function Modal({
                                 </Row>
                                 {(title && onClose) && <View className='mb-auto absolute top-2.5 right-1'><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose} /></View>}
                                 
-                                <View className="gap-y-0 overflow-y-auto px-4 pt-4">{children}</View>
+                                <View className="gap-y-0 overflow-y-auto p-4">{children}</View>
                             </View>
                         </Pressable>
                     </View>
