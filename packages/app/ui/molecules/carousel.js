@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
-import { Modal } from 'react-native';
+import { Modal } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 
@@ -20,8 +20,8 @@ export default function ElementCarousel(props) {
     
     const [width, setWidth] = useState(400);
 
-    const windowWidth = useWindowDimensions().width - 40;
-    const windowHeight = useWindowDimensions().height - 40;
+    const windowWidth = useWindowDimensions().width - 200;
+    const windowHeight = useWindowDimensions().height - 200;
 
     const handleShowImage = (img) => {
         setCurrentImageIndex(img.index);
@@ -31,7 +31,7 @@ export default function ElementCarousel(props) {
         if (event.nativeEvent.layout.width != width)
             setWidth(event.nativeEvent.layout.width);
     };
-console.log('consolehandleShowImage', data, currentImageIndex, data[currentImageIndex])  ;
+
     useEffect(() => {
         if (currentImageIndex !== false) {
             ImageOr.getSize(
@@ -134,13 +134,11 @@ console.log('consolehandleShowImage', data, currentImageIndex, data[currentImage
         )
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
-
-
     return <>
-        <Modal  visible={currentImageIndex !== false}   title={"xczxz"} outerClickClose={true} transparent={true} >
-            <Row className='aspect-video w-1/2 mx-auto items-center justify-center bg-bgrbody dark:bg-bgrbody-d'>
+        {currentImageIndex !== false && <Modal  visible={currentImageIndex !== false} outerClickClose={true} transparent={true} >
+            <Row className=' w-full mx-auto items-center justify-center'>
                 {
-                    currentImageIndex > 0 && <View className='mr-2'><Button variant ="outline" size="base" onPress={() => setCurrentImageIndex(currentImageIndex-1)} startDecorator="ArrowLeft"/></View>
+                    currentImageIndex > 0 ? <View className='mr-2'><Button variant ="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex-1)} startDecorator="ArrowLeft"/></View> : <View className='mr-1 w-10'></View>
                 }
                 {
                     imageSize2[0] > 0 && <Pressable style={{width:imageSize2[0], height:imageSize2[1], maxWidth: windowWidth, maxHeight: windowHeight}} onPress={() => setCurrentImageIndex(false)}> 
@@ -148,10 +146,10 @@ console.log('consolehandleShowImage', data, currentImageIndex, data[currentImage
                     </Pressable>
                 }
                 {
-                    (currentImageIndex!=data.length-1) && <View className='ml-2'><Button variant ="outline" size="base" onPress={() => setCurrentImageIndex(currentImageIndex+1)} startDecorator="ArrowRight"/></View>
+                    (currentImageIndex!=data.length-1) ? <View className='ml-2'><Button variant ="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex+1)} startDecorator="ArrowRight"/></View> : <View className='mr-1 w-10'></View>
                 }
             </Row>
-        </Modal>
+        </Modal>}
         <Gallery data2={data2} imageSize={imageSize} width={width} handleLayout={handleLayout} />
     </>
 }

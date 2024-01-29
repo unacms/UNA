@@ -33,6 +33,7 @@ let settingsDefault = {
         split_action_menu: true,
         use_background: true,
         show_modal: 5000,
+        extended_search: false,
     },
     sockets: {
         host: 'ci.una.io',

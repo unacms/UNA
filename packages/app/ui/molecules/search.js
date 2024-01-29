@@ -184,7 +184,7 @@ export function ElementSearchData(oProps) {
         <Redirect ref={redirectdRef} />
         <View className="flex-row items-center mb-2 justify-end">
             {
-                !!inputValue && <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                (!!inputValue && appSetting('layout', 'extended_search')) && <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
             }
         </View>
         <View className="flex-row">
