@@ -20,27 +20,27 @@ export default function (props) {
     const [notifCount, setNotifCount] = useState(currentUser.notifications);
 
     const { t } = useTranslation();
-    
+
     const sTxtNtfsTitle = t("Notifications")
     const sTxtNtfsViewAll = t("View all")
 
     useEffect(() => {
-       if (daemonData && daemonData != notifCount) {
+        if (daemonData && daemonData != notifCount) {
             setNotifCount(daemonData)
-       }
-    }, [daemonData]); 
+        }
+    }, [daemonData]);
 
     useEffect(() => {
         if (currentUser.notifications != notifCount) {
-             setNotifCount(currentUser.notifications)
+            setNotifCount(currentUser.notifications)
         }
-     }, [currentUser.notifications]); 
+    }, [currentUser.notifications]);
 
     const handleClick = (sUrl) => {
         redirectdRef.current.redirect(sUrl)
     }
 
-    let data = {request_url : "/api.php?r=bx_notifications/get_data/&params[]=", "type" : "obj_own_and_con", unit:"notifications"}
+    let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
 
     const memoizedBrowse = useMemo(() => {
         return <Browse cachePrefix={Date.now()} height={400} data={data} />;
@@ -60,8 +60,8 @@ export default function (props) {
                     endDecorator="CaretDoubleRight"
                     title={sTxtNtfsViewAll}
                     onPress={() => {
-                    setNtfsOpen(false)
-                    handleClick(appSetting('layout', 'notifications'))
+                        setNtfsOpen(false)
+                        handleClick(appSetting('layout', 'notifications'))
                     }}
                 />
             </View>
@@ -69,7 +69,30 @@ export default function (props) {
         </View>
     )
 
-    return <DropdownPopup
+    let ntfsTrigger = <View key="ddp-trigger3">
+        <ButtonRef
+            variant="outline"
+            tooltip="Notifications"
+            rounded
+            startDecorator="Bell"
+            id="m1"
+        />
+        {(notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+
+    </View>
+
+    if (props.children) {
+        ntfsTrigger = props.children
+    }
+
+    if (props.buttonProps) {
+        ntfsTrigger = <View className='w-full'><ButtonRef
+            addon={{ text: notifCount, variant: 'primary' }}
+            {...props.buttonProps}
+        /></View>
+    }
+
+    const dd = <DropdownPopup
         open={ntfsOpen}
         onOpenChange={async (bOpen) => {
             await fetcher('/api.php?r=bx_notifications/mark_as_read/')
@@ -79,19 +102,13 @@ export default function (props) {
         title={t(sTxtNtfsTitle)}
     >
         {[
-            <View key="ddp-trigger3">
-                <ButtonRef
-                    variant="outline"
-                    tooltip="Notifications"
-                    rounded
-                    startDecorator="Bell"
-                    id="m1"
-                />
-                {( notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
-        
-            </View>,
+            ntfsTrigger,
             ntfsContent
         ]}
     </DropdownPopup>
 
+    if (props.buttonProps)
+        return <View className='w-full'>{dd}</View>
+
+    return dd
 }

@@ -18,16 +18,23 @@ export default function ElementSearch(oProps) {
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
 
-  //  const [popupOpen, setPopupOpen] = useState(false);
+    //  const [popupOpen, setPopupOpen] = useState(false);
 
-   /* useEffect(() => {
-        if (popupOpen) {
+    /* useEffect(() => {
+         if (popupOpen) {
+             setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
+         }
+         else {
+             setBottomSheetData(false);
+         }
+     }, [popupOpen]);*/
+
+    const handleOpenPopupDefault = () => {
+        if (!bottomSheetData)
             setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
-        }
-        else {
+        else
             setBottomSheetData(false);
-        }
-    }, [popupOpen]);*/
+    }
 
     let sResult = undefined;
     switch (sType) {
@@ -35,25 +42,23 @@ export default function ElementSearch(oProps) {
         case 'button':
         case 'default':
         default:
-            const handleOpenPopupDefault = () => {
-                if (!bottomSheetData)
-                    setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
-                else
-                    setBottomSheetData(false);  
-            }
 
-            const sTrigger = sType == 'input' ? (
+
+            let sTrigger = sType == 'input' ? (
                 <Text>TODO</Text>
             ) : (
                 <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             );
-
             sResult = (
                 <Row>
                     <View key="ddp-trigger" className="flex-row">{sTrigger}</View>
                 </Row>
             );
             break;
+    }
+
+    if (oProps.children) {
+        return <Pressable onPress={() => handleOpenPopupDefault()}>{oProps.children}</Pressable>;
     }
 
     return sResult;
@@ -157,7 +162,7 @@ export function ElementSearchData(oProps) {
         const aParams = {
             params: {
                 keyword: sValue,
-                section: sSection
+                section: sSection.trim(),
             }
         };
 
@@ -182,11 +187,13 @@ export function ElementSearchData(oProps) {
 
     return (<View className=''>
         <Redirect ref={redirectdRef} />
-        <View className="flex-row items-center mb-2 justify-end">
-            {
-                (!!inputValue && appSetting('layout', 'extended_search')) && <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
-            }
-        </View>
+        {
+            (!!inputValue && appSetting('layout', 'extended_search')) && (
+                <View className="flex-row items-center mb-2 justify-end">
+                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                </View>
+            )
+        }
         <View className="flex-row">
             <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
         </View>

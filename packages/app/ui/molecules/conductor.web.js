@@ -652,7 +652,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            <MainMenu showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
+            <MainMenu showMenu={showMenu} items={menu_drawer_items} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>

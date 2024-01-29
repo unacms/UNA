@@ -1,6 +1,6 @@
 let settingsDefault = {
     layout: {
-        format:'hor',
+        format:'ver',
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         cover_aspect: 'aspect-5/1',
@@ -855,7 +855,7 @@ if (settingsDefault.layout.format == 'ver') {
         { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
         { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
         { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-        { name: 'notifications-view', title: 'Notifications', link: '/notifications-view', icon: 'Bell' }, 
+      
         { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots' }, 
     ];
     delete settingsDefault.layouts.home.blocks.menu
