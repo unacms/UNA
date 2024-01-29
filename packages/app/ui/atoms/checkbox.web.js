@@ -5,8 +5,8 @@ import { Theme } from 'app/design/theme';
 export default function CheckBox(props){
     const { colors } = Theme();
     return <CheckBoxDef 
-        tintColors={{ true: colors.primary, false: colors.primary }} 
-        color= {colors.primary}
+        tintColors={{ true: colors.checkbox, false: colors.checkbox }} 
+        color= {colors.checkbox}
         {...props} 
     />
 }
