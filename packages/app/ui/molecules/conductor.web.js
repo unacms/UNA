@@ -366,7 +366,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
                                 </Row>
                             </ScrollView>
-                            <Row className="hidden lg:flex px-4">
+                            <Row className="hidden lg:flex px-4 cond-buttons-add">
                                 {addButtons}
                             </Row>
                         </Row>
