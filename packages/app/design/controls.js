@@ -41,6 +41,8 @@ export function Modal({
     outerClickClose = true,
     onVisible,
     title,
+    textAlign = 'start',
+    headerBorder = false,
     children
 }) {
     const Wrapper = onClose && outerClickClose !== false ? Pressable : View;
@@ -64,15 +66,16 @@ export function Modal({
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
-                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
-                    <View className="relative w-full h-full max-w-2xl md:h-auto">
+                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden  overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
+                    <View className="relative w-full h-full max-w-2xl md:h-auto ">
                         <Pressable onPress={() => { }} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
-                            <View className="p-4">
-                                <Row className={'items-center ' + (title ? 'justify-between' : 'justify-end') + ' ml-1  '}>
-                                    {title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold mb-4 '>{title}</Text></View>}
-                                    {(title && onClose) && <View className='mb-auto -translate-y-2 translate-x-2'><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose} /></View>}
+                            <View className="">
+                                <Row className={'items-center ' +  'justify-' +textAlign + ' px-4 pt-4 '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + ' pt-4'}>
+                                    {title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-4 '>{title}</Text></View>}
                                 </Row>
-                                <View className="gap-y-0 overflow-y-auto ">{children}</View>
+                                {(title && onClose) && <View className='mb-auto absolute top-2.5 right-1'><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose} /></View>}
+                                
+                                <View className="gap-y-0 overflow-y-auto px-4 pt-4">{children}</View>
                             </View>
                         </Pressable>
                     </View>

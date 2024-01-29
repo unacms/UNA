@@ -18,8 +18,9 @@ export default function FormFieldSubmit(props) {
                 variant={!!props.variant ? props.variant : 'primary'} 
                 onPress={props.handleSubmit}
                 startDecorator={props.icon}
+                size={!!props.size ? props.size : 'base'} 
+                disabled={props.disabled ? props.disabled : false}
                 fullWidth={props.form_name == 'sys_account_create' || props.form_name == 'sys_login'}
-
                 
             />
             <Hidden 

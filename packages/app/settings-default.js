@@ -742,6 +742,7 @@ let settingsDefault = {
             screenBackground: '#E5E7EB',
             bgrmodal: 'rgba(255,255,255,1)',
             bdrModal: 'rgba(229,231,235,1)',
+            checkbox: '#0284c7',
         },
         dark: {
             default: '#D1D5DB', //fix for icons color in iOS
@@ -757,6 +758,7 @@ let settingsDefault = {
             screenBackground: '#030407',
             bgrmodal: 'rgba(31,41,55,1)',
             bdrModal: 'rgba(55,65,81,0.4)',
+            checkbox: '#0ea5e9',
         },
         button_styles: {
             'u-btn-default-cnt': ' bg-bgrbutton dark:bg-bgrbutton-d hover:bg-bgrbutton-h dark:sm:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d sm:hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
