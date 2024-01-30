@@ -122,7 +122,7 @@ export default function Layout(props) {
 
         // Add the event listener when the component mounts
         window.addEventListener('scroll', handleScroll);
-
+        handleScroll();
         // Clean up the event listener when the component unmounts
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -182,16 +182,36 @@ export default function Layout(props) {
         setIsModal(false)
     }
 
-    if (appSetting('layout', 'format') == 'hor') {
+ 
+    if (appSetting('layout', 'format') == 'hor' ) {
         return (
             <BottomSheetDataContext>
                 <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                {layoutName == 'default' && appStatic('components_fullfooter', '')}
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
                 <BottomSheet />
                 <ModalPopup/>
             </BottomSheetDataContext>
+        );
+    }
+
+    if (appSetting('layout', 'format') == 'mixed') {
+        return (
+            <BottomSheetDataContext>
+                
+                <Suggestions />
+                <AsyncWorker />
+                <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} >
+                    <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                </NavbarMemo>
+              
+                <BottomSheet />
+                <ModalPopup/>
+               
+            </BottomSheetDataContext>
+            
         );
     }
 

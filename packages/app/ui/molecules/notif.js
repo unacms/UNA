@@ -86,7 +86,7 @@ export default function (props) {
     }
 
     if (props.buttonProps) {
-        ntfsTrigger = <View className='w-full'><ButtonRef
+        ntfsTrigger = <View className='w-full' key="ddp-trigger3"><ButtonRef
             addon={{ text: notifCount, variant: 'primary' }}
             {...props.buttonProps}
         /></View>

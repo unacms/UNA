@@ -1,8 +1,9 @@
 let settingsDefault = {
     layout: {
-        format:'ver',
+        format:'mixed', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        use_background: false,
         cover_aspect: 'aspect-5/1',
         cell_gap: 4,
         cell_style: '',
@@ -31,7 +32,7 @@ let settingsDefault = {
         disable_screenshots: true,
         redirect_on_forbidden: '/home',
         split_action_menu: true,
-        use_background: true,
+       
         show_modal: 5000,
         extended_search: false,
     },
@@ -232,6 +233,50 @@ let settingsDefault = {
             { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet' }, 
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
+        ],
+        menu_left: [
+            { title: 'Profile', link: '{profile}', icon: 'User' },
+            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
+            { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
+            { title: 'Friends', link: '/friends', icon: 'Link' },
+            { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+            { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
+            { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
+            { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
+            { title: 'People', link: '/persons-home', icon: 'UsersFour' },
+            { title: 'About', link: '/about', icon: 'Info' },
+            { title: 'Terms', link: '/terms', icon: 'Question' },
+            { title: 'Contact', link: '/contact', icon: 'AddressBook' },
+        ],
+        menu_dashboard: [
+            { key: 'friends', title: 'Friends',icon: 'UsersFour' , link: '/friends' },
+            { key: 'followers', title: 'Followers', icon: 'UsersFour', link: '/followers' },
+            { key: 'bx_posts', title: 'Posts', icon: 'ChatCenteredText', link: '/posts-home', link2: '/create-post', action: 'score', action_icon: 'ThumbsUp' },
+            { key: 'bx_forum', title: 'Discussions', icon: 'Chats', link: '/discussions-home', link2: '/create-discussion', action: 'views', action_icon: 'ChartBar' },
+            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'UsersFour' },
+            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'UsersFour' },
+        ],
+        menu_dashboard_manage: [
+            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-administration' },
+            { key: 'bx_timeline', title: 'Timeline', icon: 'CalendarCheck', link: '/timeline-administration' },
+            { key: 'bx_posts', title: 'Posts', icon: 'ChatCenteredText', link: '/posts-administration' },
+            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-administration' },
+            { key: 'bx_persons', title: 'Persons', icon: 'Users', link: '/persons-administration' },
+            { key: 'bx_ads', title: 'Ads', icon: 'Megaphone', link: '/ads-administration' },
+        ],
+        menu_bottom_tabs_logged: [
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
+            {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
+            {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
+            {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
+            {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
+        ],
+        menu_bottom_tabs_non_logged: [
+            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
+            {key: '/tab1', title: 'News', url: '/posts-home',icon: 'ChatCenteredText'},
+            {key: '/tab2', title: 'About', url: '/about',icon: 'Info'},
+            {key: '/tab3', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
+            {key: '/tab4', title: 'Login', url: '/login',icon: 'SignIn'},
         ],
         profile_menu: [
             'view-persons-profile',
@@ -793,70 +838,47 @@ let settingsDefault = {
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
         },
     },
-    menu: {
-        left: [
-            { title: 'Profile', link: '{profile}', icon: 'User' },
-            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
-            { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
-            { title: 'Friends', link: '/friends', icon: 'Link' },
-            { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
-            { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
-            { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
-            { title: 'Discussions', link: '/discussions-home', icon: 'Chats' },
-            { title: 'People', link: '/persons-home', icon: 'UsersFour' },
-            { title: 'About', link: '/about', icon: 'Info' },
-            { title: 'Terms', link: '/terms', icon: 'Question' },
-            { title: 'Contact', link: '/contact', icon: 'AddressBook' },
-        ],
-        dashboard: [
-            { key: 'friends', title: 'Friends',icon: 'UsersFour' , link: '/friends' },
-            { key: 'followers', title: 'Followers', icon: 'UsersFour', link: '/followers' },
-            { key: 'bx_posts', title: 'Posts', icon: 'ChatCenteredText', link: '/posts-home', link2: '/create-post', action: 'score', action_icon: 'ThumbsUp' },
-            { key: 'bx_forum', title: 'Discussions', icon: 'Chats', link: '/discussions-home', link2: '/create-discussion', action: 'views', action_icon: 'ChartBar' },
-            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-home', link2: '/create-group-profile', action: 'members', action_icon: 'UsersFour' },
-            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-home', link2: '/create-event-profile', action: 'members', action_icon: 'UsersFour' },
-        ],
-        dashboard_manage: [
-            { key: 'bx_events', title: 'Events', icon: 'CalendarCheck', link: '/events-administration' },
-            { key: 'bx_timeline', title: 'Timeline', icon: 'CalendarCheck', link: '/timeline-administration' },
-            { key: 'bx_posts', title: 'Posts', icon: 'ChatCenteredText', link: '/posts-administration' },
-            { key: 'bx_groups', title: 'Groups', icon: 'UsersThree', link: '/groups-administration' },
-            { key: 'bx_persons', title: 'Persons', icon: 'Users', link: '/persons-administration' },
-            { key: 'bx_ads', title: 'Ads', icon: 'Megaphone', link: '/ads-administration' },
-        ],
-        bottom_tabs_logged: [
-            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'Messages', url: '/event-questionnaire/code-jam-mastering-una-s-customization',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
-            {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
-            {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
-        ],
-        bottom_tabs_non_logged: [
-            {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'News', url: '/posts-home',icon: 'ChatCenteredText'},
-            {key: '/tab2', title: 'About', url: '/about',icon: 'Info'},
-            {key: '/tab3', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
-            {key: '/tab4', title: 'Login', url: '/login',icon: 'SignIn'},
-        ],
-    },
 }
 
-if (settingsDefault.layout.format == 'ver') {
+if (settingsDefault.layout.format == 'ver' ) {
     // Override settings for vertical layout
     settingsDefault.menu_items.menu_top = [
-        { name: 'home', title: 'Home', link: '/', icon: 'House'},
+      
         { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
         { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
         { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
-        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
-        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
-        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
-        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
-        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-      
-        { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots' }, 
+        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
+        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },
+        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar', nonlogged: false }, 
+        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour', nonlogged: false }, 
+        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront', nonlogged: false }, 
+        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats', nonlogged: false }, 
+        { name: 'About', title: 'About', link: '/about', icon: '', logged: false }, 
+        { name: 'Contact', title: 'Contact', link: '/contact', icon: '', logged: false }, 
+        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
+        { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
+        
+        { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots', nonlogged: false }, 
+    ];
+    delete settingsDefault.layouts.home.blocks.menu
+}
+
+
+if (settingsDefault.layout.format == 'mixed') {
+    // Override settings for vertical layout
+    settingsDefault.menu_items.menu_top = [
+        { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
+        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
+        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },
+        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar', nonlogged: false }, 
+        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour', nonlogged: false }, 
+        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront', nonlogged: false }, 
+        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats', nonlogged: false }, 
+        { name: 'About', title: 'About', link: '/about', icon: '', logged: false }, 
+        { name: 'Contact', title: 'Contact', link: '/contact', icon: '', logged: false }, 
+        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
+        { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
     ];
     delete settingsDefault.layouts.home.blocks.menu
 }

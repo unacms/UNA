@@ -2,7 +2,7 @@ import { View } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
 import { Button } from 'app/design/controls'
 import { Dimensions, Platform } from 'react-native'
-import { appSetting } from 'app/lib/util'
+import { appSetting, menuItemsByName } from 'app/lib/util'
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 
@@ -19,7 +19,7 @@ export default function ElementProfileMenu(props) {
     return (
         <View className=" px-4  profile-menu    overflow-hidden    ">
             <View className="flex-col ">
-                {appSetting('menu', 'left').map((item, index) => (
+                {menuItemsByName('main_menu', appSetting('menu_items', 'menu_left'), currentUser).map((item, index) => (
                     <Link key={`menu-${index}`} href={item.link.replace('{profile}', currentUser.url)}>
                         <Button
                             variant="text"

@@ -247,7 +247,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         fetchNextPage();
     }, [routes, index, isFetchingNextPage, hasNextPage]);
 
-    let offset = header ? (windowWidth < 1024 ? 600 : 600) : 50;
+    let offset = header ? (windowWidth < 1024 ? 400 : 400) : 50;
     if (cover == 'min' && header > 50) {
         offset = windowWidth < 1024 ? 80 : 200
     }
@@ -317,14 +317,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
 
             let styles = {}
-            if (windowWidth > 600 && appSetting('layout', 'format') == 'ver') {
+            if (windowWidth > 600 && appSetting('layout', 'format') != 'hor') {
                 styles = { width: 1536 - 20 * 16 }
             }
 
             return (
-                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b backdrop-blur" : (isSmall ? " bg-bgrbody dark:bg-bgrbody-d border-b border-dashed border-bdr dark:border-bdr-d": " border-t border-b border-dashed border-bdr dark:border-bdr-d"))}  >
+                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " bg-bgrbody dark:bg-bgrbody-d border-b border-r border-dashed border-bdr dark:border-bdr-d" : " border-t border-b border-dashed border-bdr dark:border-bdr-d"))}  >
                     <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
-                        {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b border-bdrnavbar dark:border-bdrnavbar-d">
+                        {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b  border-bdrnavbar dark:border-bdrnavbar-d">
                             <Row className="items-center">
                                 <View className="ml-3 sm:ml-4 "></View>
                                 {headerSettings.header && getBackButtonWeb()}
@@ -366,9 +366,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
                                 </Row>
                             </ScrollView>
-                            <Row className="hidden lg:flex px-4 cond-buttons-add">
+                            { appSetting('layout', 'format') != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                                 {addButtons}
-                            </Row>
+                            </Row>}
                         </Row>
                     </View>
                 </View>
@@ -378,7 +378,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const renderHeader = useCallback((tabBarObj, tabBarObjSmall) => {
         const d = 200;
-
         const animatedStyle5 = useAnimatedStyle(() => {
             const opacityValue = withTiming(scrollValue.value, { duration: d });
             return {
@@ -554,7 +553,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             //border-r border-bdr dark:border-bdr-d border-dashed
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                     <View className={isRightCol ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4': 'w-full p-2 pt-4'}>
+                    <View className={isRightCol ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4' : 'w-full p-2 pt-4'}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">
@@ -593,7 +592,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )
         });
-        return <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process top-16 fixed w-80 lg:px-4 lg:py-3 '>
+        return <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
             <Row className="justify-between items-center mt-1 mb-4 ">
                 <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                     {t(menuSettings?.name)}
@@ -635,7 +634,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
-                    {headerObj}
+                {headerObj}
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>

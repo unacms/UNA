@@ -16,7 +16,6 @@ import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
     const { t } = useTranslation()
-    const [showImage, setShowImage] = useState(false)
 
     const isWeb = Platform.OS == 'web'
     const [isDesktop, setIsDesktop] = useState(false)
@@ -121,7 +120,7 @@ export default function PageLayout(props) {
                     }
                 >
                     {appStatic('components_splash', p)}
-                    {appStatic('components_fullfooter', p)}
+                    {appSetting('layout', 'format') =='ver ' && appStatic('components_fullfooter', p)}
                 </View>
             )
         }
@@ -144,24 +143,24 @@ export default function PageLayout(props) {
                     }
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
-                        {appSetting('layout', 'format') != 'ver' && (
-                            <View className="hidden lg:block  w-80  duration-200">
+                        {appSetting('layout', 'format') == 'hor' && (
+                            <View className="hidden lg:block  w-80  duration-200 lg:border-r  border-dashed border-bdr dark:border-bdr-d ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'
                                     ) && (
-                                        <View className="flex-col w-full pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
-                                            <Link
-                                                href={currentUser.url}
-                                                className="flex-auto"
-                                            >
-                                                <Row className="flex-row w-full gap-x-2 items-center">
-                                                    <View className="flex-none mx-0.5 items-start">
-                                                        {profile}
-                                                    </View>
-                                                    
-                                                        
+                                            <View className="flex-col w-full pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
+                                                <Link
+                                                    href={currentUser.url}
+                                                    className="flex-auto"
+                                                >
+                                                    <Row className="flex-row w-full gap-x-2 items-center">
+                                                        <View className="flex-none mx-0.5 items-start">
+                                                            {profile}
+                                                        </View>
+
+
                                                         <Text className="text-xl flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                                             {
                                                                 currentUser.display_name
@@ -171,29 +170,29 @@ export default function PageLayout(props) {
                                                             'layout',
                                                             'allow_switch_profile'
                                                         ) && (
-                                                            <View className="flex-none">
-                                                                <ProfileSwitcher
-                                                                    hideTitle={
-                                                                        true
-                                                                    }
-                                                                >
-                                                                    <Button
-                                                                        variant="text"
-                                                                        tooltip={t(
-                                                                            'Switch profile'
-                                                                        )}
-                                                                        size="sm"
-                                                                        startDecorator="UserSwitch"
-                                                                        rounded
-                                                                        align="right"
-                                                                    />
-                                                                </ProfileSwitcher>
-                                                            </View>
-                                                        )}
-                                                </Row>
-                                            </Link>
-                                        </View>
-                                    )}
+                                                                <View className="flex-none">
+                                                                    <ProfileSwitcher
+                                                                        hideTitle={
+                                                                            true
+                                                                        }
+                                                                    >
+                                                                        <Button
+                                                                            variant="text"
+                                                                            tooltip={t(
+                                                                                'Switch profile'
+                                                                            )}
+                                                                            size="sm"
+                                                                            startDecorator="UserSwitch"
+                                                                            rounded
+                                                                            align="right"
+                                                                        />
+                                                                    </ProfileSwitcher>
+                                                                </View>
+                                                            )}
+                                                    </Row>
+                                                </Link>
+                                            </View>
+                                        )}
                                     {navBarBlocks.map((item, index) => {
                                         return (
                                             <BlockByName
@@ -209,7 +208,7 @@ export default function PageLayout(props) {
                         )}
 
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto   lg:border-l xl:border-r border-dashed border-bdr dark:border-bdr-d ">
+                            <View className="flex-auto xl:border-r border-dashed border-bdr dark:border-bdr-d ">
                                 <View className="flex-auto   w-full mx-auto">
                                     <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&
@@ -234,7 +233,7 @@ export default function PageLayout(props) {
                                                             }
                                                             variant={
                                                                 feedType ==
-                                                                item.name
+                                                                    item.name
                                                                     ? 'link'
                                                                     : 'text'
                                                             }
@@ -248,37 +247,37 @@ export default function PageLayout(props) {
                                             'feed',
                                             'show_selector_view'
                                         ) && (
-                                            <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                                                <Button
-                                                    startDecorator="Rows"
-                                                    tooltip={t('Full')}
-                                                    rounded
-                                                    variant={
-                                                        unitMode == ''
-                                                            ? 'link'
-                                                            : 'text'
-                                                    }
-                                                    size="sm"
-                                                    onPress={() => {
-                                                        setUnitModeEx('')
-                                                    }}
-                                                />
-                                                <Button
-                                                    startDecorator="ListBullets"
-                                                    rounded
-                                                    tooltip={t('Short')}
-                                                    variant={
-                                                        unitMode == 'small'
-                                                            ? 'link'
-                                                            : 'text'
-                                                    }
-                                                    size="sm"
-                                                    onPress={() => {
-                                                        setUnitModeEx('small')
-                                                    }}
-                                                />
-                                            </Row>
-                                        )}
+                                                <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                                    <Button
+                                                        startDecorator="Rows"
+                                                        tooltip={t('Full')}
+                                                        rounded
+                                                        variant={
+                                                            unitMode == ''
+                                                                ? 'link'
+                                                                : 'text'
+                                                        }
+                                                        size="sm"
+                                                        onPress={() => {
+                                                            setUnitModeEx('')
+                                                        }}
+                                                    />
+                                                    <Button
+                                                        startDecorator="ListBullets"
+                                                        rounded
+                                                        tooltip={t('Short')}
+                                                        variant={
+                                                            unitMode == 'small'
+                                                                ? 'link'
+                                                                : 'text'
+                                                        }
+                                                        size="sm"
+                                                        onPress={() => {
+                                                            setUnitModeEx('small')
+                                                        }}
+                                                    />
+                                                </Row>
+                                            )}
                                     </Row>
                                     <View className="relative w-full mx-auto max-w-3xl">
                                         {feedList.map((item, index) => {
@@ -310,8 +309,8 @@ export default function PageLayout(props) {
                                                             data={props.data}
                                                             name={
                                                                 props.blocks[
-                                                                    item.name +
-                                                                        '_feed_form'
+                                                                item.name +
+                                                                '_feed_form'
                                                                 ]
                                                             }
                                                         />
@@ -319,8 +318,8 @@ export default function PageLayout(props) {
                                                             data={props.data}
                                                             name={
                                                                 props.blocks[
-                                                                    item.name +
-                                                                        '_feed'
+                                                                item.name +
+                                                                '_feed'
                                                                 ]
                                                             }
                                                             unitMode={unitMode}
@@ -339,7 +338,7 @@ export default function PageLayout(props) {
                             </View>
                         </View>
                         <View className="hidden xl:block  w-96   ">
-                            <View className="top-16 fixed fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200">
+                            <View className="fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

@@ -27,7 +27,7 @@ function getMenu(props) {
 }
 
 export default function PageLayout(props) {
-    const leftSideBar = appSetting('layout', 'format') == 'ver' ? false : true
+    const leftSideBar = appSetting('layout', 'format') != 'hor' ? false : true
     const menu = useMemo(() => getMenu(props), [leftSideBar]);
     const isNamePresent = menu.items.some(item => item.name === props.uri);
     if (!isNamePresent){

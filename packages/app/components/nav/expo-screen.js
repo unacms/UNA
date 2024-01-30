@@ -57,8 +57,8 @@ return <Redirect href="/tab1" />;
 console.log('------------', _path);*/
     if (!_path || _path.includes('/tab')){
         const tabList = currentUser
-            ? appSetting('menu', 'bottom_tabs_logged')
-            : appSetting('menu', 'bottom_tabs_non_logged');
+            ? appSetting('menu_items', 'menu_bottom_tabs_logged')
+            : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
             const item = tabList.find((item) => item.key === pathname);
             _path = item ? item.url : null;
     }

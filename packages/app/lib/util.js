@@ -709,6 +709,7 @@ export function menuItemsByName(name, items, currentUser, url = '')
         items = items.filter(item => item.nonlogged !== false && item.nonoperator !== false);
     }
     else{
+        items = items.filter(item => item.logged !== false);
         if (!currentUser.operator){
             items = items.filter(item => item.nonoperator !== false);
         }
@@ -719,7 +720,7 @@ export function menuItemsByName(name, items, currentUser, url = '')
           return {...item, link: appSetting('urls', 'root') + 'studio/launcher.php'};
         }
         if (item.link === '{profile}') {
-            return {...item, link: currentUser.url};
+            return {...item, link: currentUser?.url};
           }
         return item;
       });

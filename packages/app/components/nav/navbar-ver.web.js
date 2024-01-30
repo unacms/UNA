@@ -167,18 +167,18 @@ export default function (props) {
                             )}
                             {!!currentUser && (
                                 <>
-                                {bNotifs && <NotificationButton buttonProps={{ variant: "text", size: "lg", fullWidth: true, startDecorator: "Bell", align: "start", title: "Notifications" }}></NotificationButton>}
-                                {bSearch && <Search>
-                                    <Button
-                                        variant="text"
-                                        size="lg"
-                                        fullWidth={true}
-                                        startDecorator="MagnifyingGlass"
-                                        align="start"
-                                        title={"Search"}
-                                    />
+                                    {bNotifs && <NotificationButton buttonProps={{ variant: "text", size: "lg", fullWidth: true, startDecorator: "Bell", align: "start", title: "Notifications" }}></NotificationButton>}
+                                    {bSearch && <Search>
+                                        <Button
+                                            variant="text"
+                                            size="lg"
+                                            fullWidth={true}
+                                            startDecorator="MagnifyingGlass"
+                                            align="start"
+                                            title={"Search"}
+                                        />
                                     </Search>
-                                }
+                                    }
                                 </>)}
                         </View>
                     </View>

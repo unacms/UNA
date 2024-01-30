@@ -220,9 +220,6 @@ export default function FormFieldFiles(props) {
     function getImg(img, sizes) {
 
     }
-
-    console.log("props.variant", props)
-
     function getButton(imagesList) {
         let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} onPress={selectImage} />
 

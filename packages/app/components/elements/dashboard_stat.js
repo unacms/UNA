@@ -45,9 +45,9 @@ export default function ElementDashboardStat(props) {
         fetchData();
     }, []);
 
-    let menu = appSetting('menu', 'dashboard')
+    let menu = appSetting('menu_items', 'menu_dashboard')
 
-    let menu_manage = appSetting('menu', 'dashboard_manage')
+    let menu_manage = appSetting('menu_items', 'menu_dashboard_manage')
     if (!currentUser.moderator)
         menu_manage = [];
 
