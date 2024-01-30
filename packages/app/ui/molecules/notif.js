@@ -77,7 +77,7 @@ export default function (props) {
             startDecorator="Bell"
             id="m1"
         />
-        {(notifCount > 0) && <View className='absolute bg-red-500 border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+        {(notifCount > 0) && <View className='absolute bg-primary border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
 
     </View>
 

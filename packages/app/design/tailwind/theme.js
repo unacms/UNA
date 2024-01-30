@@ -54,6 +54,11 @@ const colors = {
         d: 'rgba(0,0,0,1)',
     },
 
+    bgrbody2: {
+        DEFAULT: 'rgba(243,244,246,0.9)',
+        d: 'rgba(0,0,0,0.9)',
+    },
+
     bgrcard: {
         DEFAULT: 'rgba(255,255,255,0.8)',
         h: 'rgba(255,255,255,1)',

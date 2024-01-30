@@ -129,7 +129,7 @@ export function CoverSmall(props) {
     }
 
     return (
-        <View style={styles} className={(isUseBg ? " backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d" : "bg-bgrbody dark:bg-bgrbody-d border-b border-dashed border-bdr dark:border-bdr-d") + " w-full "}>
+        <View style={styles} className={(isUseBg ? " backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d" : " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-dashed border-bdr dark:border-bdr-d") + " w-full "}>
             <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">
