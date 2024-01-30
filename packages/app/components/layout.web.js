@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, lazy, useMemo, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import Footer from './footer';
+import Footer from 'app/components/nav/footer';
 import { Modal } from 'app/design/controls'
 import Informer from 'app/components/elements/informer';
 import Suggestions from 'app/ui/molecules/suggestions';
@@ -157,7 +157,6 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
-        console.log(props);
         if (!currentUser && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
             setTimeout(() => {
                 setIsModal(true)
