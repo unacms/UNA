@@ -21,6 +21,7 @@ export default function Unit(props) {
 
         return (
             <>
+            <View className="  pb-3 sm:pb-4">
                 <Card margin="mr-4" rounded="rounded-2xl">
                     <View className="flex-row p-1  gap-x-1.5 ">
                         <View className="flex-auto flex-col px-2 pt-1.5 pb-1 gap-y-2">
@@ -62,6 +63,7 @@ export default function Unit(props) {
                         )}
                     </View>
                 </Card>
+                </View>
             </>
         );
     }
@@ -78,7 +80,7 @@ export default function Unit(props) {
 
         return (
             <>
-                <View className="px-4 mb-4 mx-auto w-full max-w-4xl ">
+                <View className="px-4 mt-4 mx-auto w-full max-w-4xl ">
                     <View className="flex-row pb-4  gap-x-4 border-b border-bdr dark:border-bdr-d mx-auto w-full">
                         <View className="flex-col gap-y-2 hidden sm:flex w-24 flex-none">
                             <View className="border p-1 border-primary/10 relative flex-none  h-24 w-24 flex-col gap-y-1 bg-primary/10 rounded-xl overflow-hidden items-center justify-center">

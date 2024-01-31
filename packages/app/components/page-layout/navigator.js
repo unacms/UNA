@@ -4,11 +4,11 @@ import { getLayout } from 'app/lib/util';
 import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
 
-function getMenu(props) {
+function getMenu(props, layout) {
     let menu = Object.assign({}, props.data.menu);;
     let categories = DataByName(props.data, props.blocks?.categories);
     let menuItems = [];
-    if (categories){
+    if (categories && layout == 'hor'){
         menuItems  = categories?.content[0]?.data
             .map((obj, index) => {
             const key = Object.keys(obj)[0];
@@ -29,9 +29,9 @@ function getMenu(props) {
 
 export default function PageLayout(props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-
-    const leftSideBar = getLayout(currentUser) != 'hor' ? false : true
-    const menu = useMemo(() => getMenu(props), [leftSideBar]);
+    const layout = getLayout(currentUser, 'navigator');
+    const leftSideBar = layout != 'hor' ? false : true
+    const menu = useMemo(() => getMenu(props, layout), [leftSideBar]);
     const isNamePresent = menu.items.some(item => item.name === props.uri);
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});

@@ -322,7 +322,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
 
             return (
-                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : " border-t border-b border-dashed border-bdr dark:border-bdr-d"))}  >
+                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >
                     <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
                         {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b  border-bdrnavbar dark:border-bdrnavbar-d">
                             <Row className="items-center">
@@ -423,7 +423,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </Animated.View>
             </>
         );
-    }, [windowWidth]);
+    }, [windowWidth, currentUser]);
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
@@ -556,7 +556,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             //border-r border-bdr dark:border-bdr-d border-dashed
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                    <View className={isRightCol ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed pt-4' : 'w-full p-2 pt-4'}>
+                    <View className={(isRightCol ? 'flex-auto border-r border-bdr dark:border-bdr-d border-dashed' : 'w-full p-2') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-96  ">

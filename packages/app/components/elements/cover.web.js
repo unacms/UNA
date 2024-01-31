@@ -288,7 +288,7 @@ export default function ElementCover(props) {
                     </View>
                     }
                     <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto">
-                        <View className=" flex-col  items-center md:items-start     flex-auto gap-y-2 ">
+                        <View className=" flex-col  items-center md:items-start  overflow-hidden   flex-auto gap-y-2 ">
                             <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>

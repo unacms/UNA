@@ -19,7 +19,7 @@ export default function Unit(props) {
 
         return (
             <>
-           <View className=" pr-4 pb-2 w-full max-w-4xl">
+           <View className=" pb-3 sm:pb-4 pr-4 w-full max-w-4xl">
                     <Card addClassName=" p-4 flex-auto  mx-auto w-full flex-col gap-y-4  ">
                         {data.image && (
                             <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full  ">
