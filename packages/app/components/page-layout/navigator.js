@@ -1,7 +1,8 @@
 import { DataByName } from 'app/components/block'
 import { Conductor } from 'app/ui/molecules/conductor';
-import { appSetting } from 'app/lib/util';
-import { useEffect, useMemo} from 'react';
+import { getLayout } from 'app/lib/util';
+import { useMemo} from 'react';
+import { useCurrentUser } from 'app/context/user'
 
 function getMenu(props) {
     let menu = Object.assign({}, props.data.menu);;
@@ -27,7 +28,9 @@ function getMenu(props) {
 }
 
 export default function PageLayout(props) {
-    const leftSideBar = appSetting('layout', 'format') != 'hor' ? false : true
+    const { currentUser, setCurrentUser } = useCurrentUser();
+
+    const leftSideBar = getLayout(currentUser) != 'hor' ? false : true
     const menu = useMemo(() => getMenu(props), [leftSideBar]);
     const isNamePresent = menu.items.some(item => item.name === props.uri);
     if (!isNamePresent){

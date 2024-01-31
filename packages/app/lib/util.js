@@ -660,6 +660,14 @@ const getNameFromSetting = (setting) => {
     return null;
 };
   
+export function getLayout(currentUser, layoutName = '')
+{
+    if (layoutName != 'profile' && layoutName != 'navigator')
+        return currentUser ? appSetting('layout', 'format') :  appSetting('layout', 'format_guest');
+
+    return appSetting('layout', 'format');
+}
+
 export function menuItemsByName(name, items, currentUser, url = '')
 {
     if (!items)

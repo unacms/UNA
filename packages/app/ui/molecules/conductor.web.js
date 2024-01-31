@@ -5,7 +5,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName, getLayout  } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -317,7 +317,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
 
             let styles = {}
-            if (windowWidth > 600 && appSetting('layout', 'format') != 'hor') {
+            if (windowWidth > 600 && getLayout(currentUser) != 'hor') {
                 styles = { width: 1536 - 20 * 16 }
             }
 
@@ -366,7 +366,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
                                 </Row>
                             </ScrollView>
-                            { appSetting('layout', 'format') != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
+                            { getLayout(currentUser) != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                                 {addButtons}
                             </Row>}
                         </Row>
@@ -402,7 +402,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                      <Animated.View style={[{ width: '100%',  overflow: 'hidden', zIndex: 50  }]}>{tabBarObj}</Animated.View>
                  </>
          }*/
-        let tOffset = appSetting('layout', 'format') == 'ver' ? 0 : 63;
+        let tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
         return (
             <>
                 <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= 1024 ? tOffset : 0 }, animatedStyle6]}>
@@ -540,7 +540,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
                     ListFooterComponent={
-                        <View className='m-4'>
+                        <View>
                             {(hasNextPage && isFetchingNextPage) ? (
                                 Preload
                             ) : null}

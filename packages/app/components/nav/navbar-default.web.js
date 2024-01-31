@@ -1,16 +1,19 @@
 import NavbarHor from 'app/components/nav/navbar-hor'
 import NavbarVer from 'app/components/nav/navbar-ver'
 import NavbarMixed from 'app/components/nav/navbar-mixed'
-import { appSetting } from 'app/lib/util'
+import { getLayout } from 'app/lib/util'
+import { useCurrentUser } from 'app/context/user'
 
 export default function (props) {
-    
-    if(appSetting('layout', 'format') == 'ver')
+    let { currentUser, setCurrentUser } = useCurrentUser()
+
+    const layout = getLayout(currentUser);
+    if(layout == 'ver')
         return <NavbarVer {...props}/>
 
-    if(appSetting('layout', 'format') == 'hor')
+    if(layout == 'hor')
         return <NavbarHor {...props}/>
 
-    if(appSetting('layout', 'format') == 'mixed')
+    if(layout == 'mixed')
         return <NavbarMixed {...props}/>
 }

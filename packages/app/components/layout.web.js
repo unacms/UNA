@@ -9,7 +9,7 @@ import { View, Row } from 'app/design/view';
 import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
-import { getHeaderSettings } from 'app/lib/util';
+import { getHeaderSettings, getLayout } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import BottomSheetDataContext from 'app/context/bottomsheet';
@@ -182,8 +182,7 @@ export default function Layout(props) {
         setIsModal(false)
     }
 
- 
-    if (appSetting('layout', 'format') == 'hor' ) {
+    if (getLayout(currentUser, layoutName) == 'hor' ) {
         return (
             <BottomSheetDataContext>
                 <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
@@ -197,7 +196,7 @@ export default function Layout(props) {
         );
     }
 
-    if (appSetting('layout', 'format') == 'mixed') {
+    if (getLayout(currentUser, layoutName) == 'mixed') {
         return (
             <BottomSheetDataContext>
                 
@@ -215,7 +214,7 @@ export default function Layout(props) {
         );
     }
 
-    if (appSetting('layout', 'format') == 'ver') {
+    if (getLayout(currentUser, layoutName) == 'ver') {
         if (width > 1024)
             headerSettings.offset = false;
         return (

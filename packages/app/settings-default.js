@@ -1,6 +1,7 @@
 let settingsDefault = {
     layout: {
         format:'mixed', //hor, ver, mixed
+        format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         use_background: false,
@@ -879,8 +880,7 @@ if (settingsDefault.layout.format == 'mixed') {
         { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
         { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
     ];
-    settingsDefault.menu_items.menu_top = [
-    ];
+    settingsDefault.menu_items.menu_top = [];
     delete settingsDefault.layouts.home.blocks.menu
 }
 

@@ -2,7 +2,7 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { appSetting, filterContent, storageSet, storageGet } from 'app/lib/util'
+import { appSetting, filterContent, storageSet, storageGet, getLayout } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Conductor } from 'app/ui/molecules/conductor'
 import { Text } from 'app/design/typography'
@@ -120,7 +120,7 @@ export default function PageLayout(props) {
                     }
                 >
                     {appStatic('components_splash', p)}
-                    {appSetting('layout', 'format') =='ver ' && appStatic('components_fullfooter', p)}
+                    {getLayout(currentUser) =='ver ' && appStatic('components_fullfooter', p)}
                 </View>
             )
         }
@@ -143,7 +143,7 @@ export default function PageLayout(props) {
                     }
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
-                        {appSetting('layout', 'format') == 'hor' && (
+                        {getLayout(currentUser) == 'hor' && (
                             <View className="hidden lg:block  w-80  duration-200 lg:border-r  border-dashed border-bdr dark:border-bdr-d ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(

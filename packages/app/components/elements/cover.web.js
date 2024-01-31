@@ -12,12 +12,13 @@ import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import { uploadImage, md5 } from 'app/lib/util';
-import { genRnd } from 'app/lib/util';
+import { genRnd, getLayout } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import * as ImageManipulator from 'expo-image-manipulator'
 import { Image as ImageNative } from 'react-native';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { FeedbackHaptics } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user'
 
 function CoverMenu(props) {
     let { width } = useWindowDimensions();
@@ -121,12 +122,13 @@ function CoverMenuMeta(props) {
 
 export function CoverSmall(props) {
     const data = props.data
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const isUseBg = appSetting('layout', 'use_background');
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
 
     let styles = {}
-    if (windowWidth > 1024 && appSetting('layout', 'format') != 'hor') {
+    if (windowWidth > 1024 && getLayout(currentUser) != 'hor') {
         styles = { width: 1536 - 20 * 16 }
     }
 

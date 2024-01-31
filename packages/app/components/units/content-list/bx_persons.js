@@ -22,7 +22,7 @@ export default function Unit(props) {
     const [popupVisible, setPopupVisible] = useState(false);
 
     const { cardData, setCardData } = useContext(CardData);
-    
+
     const handleClick = (event, sUrl) => {
         event.preventDefault();
 
@@ -183,7 +183,7 @@ export default function Unit(props) {
         props.unitType == "person_friends_recommendations"
     )
         return;
-        
+
 
     return (
         <>
@@ -200,66 +200,69 @@ export default function Unit(props) {
                                 sizes={imageSizes}
                             />
                         </View>
-                        <View className="flex-col p-3 gap-y-3 flex-auto ">
-                            <Text
-                                numberOfLines={1}
-                                className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                            >
-                                {data.title}
-                            </Text>
-                            <Row className="items-center h-6">
-                                {props.unitType == "person_followers" ||
-                                props.unitType == "person_following" ||
-                                props.unitType ==
-                                    "person_following_recommendations" ? (
-                                    <>
-                                        <View className="mr-2">
-                                            <ProfilesList
-                                                data={data.followers_list}
-                                                showEmpty={false}
-                                                maxCount={3}
-                                                displaySize="xs"
-                                            />
-                                        </View>
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                            {data?.followers_count +
-                                                " followers"}
-                                        </Text>
-                                    </>
-                                ) : (
-                                    <>
-                                        <View className="mr-2 h-6">
-                                            {data.mutual_friends_count > 0 ? (
+                        <View className="flex-col p-3  flex-auto items-between justify-between ">
+                            <View>
+                                <Text
+                                    numberOfLines={1}
+                                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                >
+                                    {data.title}
+                                </Text>
+                                <Row className="items-center h-6 my-3">
+                                    {props.unitType == "person_followers" ||
+                                        props.unitType == "person_following" ||
+                                        props.unitType ==
+                                        "person_following_recommendations" ? (
+                                        <>
+                                            <View className="mr-2">
                                                 <ProfilesList
-                                                    data={
-                                                        data.mutual_friends_list
-                                                    }
+                                                    data={data.followers_list}
                                                     showEmpty={false}
                                                     maxCount={3}
                                                     displaySize="xs"
                                                 />
-                                            ) : (
-                                                <ProfilesList
-                                                    data={data.friends_list}
-                                                    showEmpty={false}
-                                                    maxCount={3}
-                                                    displaySize="xs"
-                                                />
-                                            )}
-                                        </View>
-                                        {
+                                            </View>
                                             <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                                {friendsLabel}
+                                                {data?.followers_count +
+                                                    " followers"}
                                             </Text>
-                                        }
-                                    </>
-                                )}
-                            </Row>
-                            <View className="flex-row w-full gap-x-2 ">
+                                        </>
+                                    ) : (
+                                        <>
+                                            <View className="mr-2 h-6">
+                                                {data.mutual_friends_count > 0 ? (
+                                                    <ProfilesList
+                                                        data={
+                                                            data.mutual_friends_list
+                                                        }
+                                                        showEmpty={false}
+                                                        maxCount={3}
+                                                        displaySize="xs"
+                                                    />
+                                                ) : (
+                                                    <ProfilesList
+                                                        data={data.friends_list}
+                                                        showEmpty={false}
+                                                        maxCount={3}
+                                                        displaySize="xs"
+                                                    />
+                                                )}
+                                                
+                                            </View>
+                                            {
+                                                <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                                    {friendsLabel}
+                                                </Text>
+                                            }
+                                        </>
+                                    )}
+                                </Row>
+                            </View>
+                            <View className="flex-row w-full ">
                                 {oMenuItemPrimary}
                                 {bMenuItemsMoreShow && !!oMenuItemsMore &&
                                     oMenuItemsMore.items.length > 0 && (
-                                        <>
+                                        <View className='ml-2'>
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -298,7 +301,7 @@ export default function Unit(props) {
                                                     </View>
                                                 </View>
                                             </Modal>
-                                        </>
+                                        </View>
                                     )}
                             </View>
                         </View>
