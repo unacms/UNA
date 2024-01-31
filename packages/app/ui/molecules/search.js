@@ -17,7 +17,7 @@ export default function ElementSearch(oProps) {
     const { t } = useTranslation();
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
-
+    const [inputValue, setInputValue] = useState('');
     //  const [popupOpen, setPopupOpen] = useState(false);
 
     /* useEffect(() => {
@@ -36,26 +36,18 @@ export default function ElementSearch(oProps) {
             setBottomSheetData(false);
     }
 
-    let sResult = undefined;
-    switch (sType) {
-        case 'input':
-        case 'button':
-        case 'default':
-        default:
 
-
-            let sTrigger = sType == 'input' ? (
-                <Text>TODO</Text>
-            ) : (
+    let sResult = sType == 'input' ? (
+        <Pressable onPress={() => handleOpenPopupDefault()}>
+            <InputRounded name="search" value={inputValue} onChangeText={(value) => { handleSearch(value); handleOpenPopupDefault() }} placeholder={t("Search") + '...'} role="textbox" aria-label="Search" />
+        </Pressable>
+    ) : (
+        <Row>
+            <View key="ddp-trigger" className="flex-row">
                 <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
-            );
-            sResult = (
-                <Row>
-                    <View key="ddp-trigger" className="flex-row">{sTrigger}</View>
-                </Row>
-            );
-            break;
-    }
+            </View>
+        </Row>
+    );
 
     if (oProps.children) {
         return <Pressable onPress={() => handleOpenPopupDefault()}>{oProps.children}</Pressable>;

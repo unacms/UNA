@@ -85,14 +85,14 @@ function CoverMenu(props) {
 
 function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
-
+    console.log("propsprops", props)
     return (
         <DropdownPopup
             open={ntfsOpen}
             onOpenChange={(bOpen) => {
                 setNtfsOpen(bOpen)
             }}
-            title="Test"
+            size="small"
         >
             {[
                 <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutline" />,
@@ -101,9 +101,11 @@ function CoverMenuSmall(props) {
                     displayType="button"
                     params={{
                         showVertical: true,
-                        button_variant: 'default',
+                        button_variant: 'text',
                         button_rounded: false,
-                        button_full_width: true,
+                        
+                        button_full_width: false,
+                        button_hide_title_on_small: false,
                     }}
                 />
             ]}
@@ -124,7 +126,7 @@ export function CoverSmall(props) {
     const windowWidth = windowDimen.width;
 
     let styles = {}
-    if (windowWidth > 600 && appSetting('layout', 'format') != 'hor') {
+    if (windowWidth > 1024 && appSetting('layout', 'format') != 'hor') {
         styles = { width: 1536 - 20 * 16 }
     }
 
@@ -305,7 +307,7 @@ export default function ElementCover(props) {
                         {bPerson &&
                             <Text
                                 numberOfLines={3}
-                                className="lg:hidden  w-full text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                                className="lg:hidden w-full lg:TODO text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
                             >
                                 {stripTags(data.profile.info.description)}
                             </Text>

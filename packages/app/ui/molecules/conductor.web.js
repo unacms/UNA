@@ -380,15 +380,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         const d = 200;
         const animatedStyle5 = useAnimatedStyle(() => {
             const opacityValue = withTiming(scrollValue.value, { duration: d });
+            const zIndexValue = withTiming(scrollValue.value, { duration: d });
             return {
                 opacity: opacityValue
+                
             };
         }, [scrollValue]);
 
         const animatedStyle6 = useAnimatedStyle(() => {
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
-                opacity: opacityValue
+                opacity: opacityValue,
+                zIndex: scrollValue.value ? 40:60
             };
         }, [scrollValue]);
 

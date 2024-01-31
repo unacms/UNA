@@ -48,6 +48,7 @@ export default function (props) {
     }
 
     const menu_top = appSetting('menu_items', 'menu_top');
+    const menu_left = appSetting('menu_items', 'menu_left');
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
     const menu_account = appSetting('menu_items', 'menu_account');
@@ -80,7 +81,7 @@ export default function (props) {
                     <View className='hidden lg:block w-full lg:w-80 lg:border-r border-dashed border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>
                             <View className='pt-4 pr-4 pl-4'>
-                                {menuItemsByName('main_menu', menu_top, currentUser).map(
+                                {menuItemsByName('main_menu', menu_left, currentUser).map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                             <ButtonRef
@@ -110,7 +111,7 @@ export default function (props) {
             <View className={(props.layoutName== 'profile' ? 'hidden lg:flex ': '' ) + " fixed -top-[1px] w-full "}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center"}>
-                        <View className="flex-row flex-auto xl:flex-none flex-auto my-auto items-center">
+                        <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
                             {
                                 headerSettings.menu && menu_drawer_items.length > 0 && (
                                     <View className="lg:hidden mr-4">
@@ -136,18 +137,42 @@ export default function (props) {
                             }
                             {headerSettings.backButton && getBackButtonWeb()}
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
-
-                            {bSearch && <View className="hidden"><Search type="input" /></View>}
-
                         </View>
-                        <Row className="hidden xl:flex flex-auto">
+                        <Row className="hidden lg:flex flex-auto items-center justify-center ">
+                            {bSearch && <Row className='w-full overflow-hidden items-center justify-center '>
+                                { menuItemsByName('main_menu', menu_top, currentUser).length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden'>
+                                    {menuItemsByName('main_menu', menu_top, currentUser).map(
+                                        (item, index) =>
 
+                                            <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
+                                                <ButtonRef
+                                                    variant="text"
+                                                    size="lg"
+                                                    tooltip={t(item.title)}
+                                                    alt={t(item.title)}
+                                                    aria-label={t(item.title)}
+                                                    fullWidth
+                                                    startDecorator={
+                                                        item.icon.indexOf(' ') == -1
+                                                            ? item.icon
+                                                            : item.icon.split(' ')[0]
+                                                    }
+                                                    align="center"
+                                                />
+                                            </Link>
+
+                                    )}
+                                </Row>}
+                                <View className='w-full max-w-lg hidden lg:block flex-auto'>
+                                    <Search type="input" />
+                                </View>
+                            </Row>}
                         </Row>
                         <Row className="flex-row xl:flex-none justify-end">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end">
                                     <View className=" flex-row my-auto gap-x-2 ml-2">
-                                        {bSearch && <View className=""><Search /></View>}
+                                        {bSearch && <View className="lg:hidden"><Search /></View>}
                                         {bApps && <View className="relative hidden lg:flex flex-row">
                                             <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)
 
@@ -255,7 +280,7 @@ export default function (props) {
                             )}
                             {!currentUser && (
                                 <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
-                                    {bSearch && <View><Search /></View>}
+                                    
                                     {bApps && <View className="relative hidden lg:flex flex-row">
                                         <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)
                                             .map((item, index) => ({

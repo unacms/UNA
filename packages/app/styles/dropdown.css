@@ -15,6 +15,9 @@
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
 }
+.DropdownMenuContentSmall{
+  width: 16rem;
+}
 .DropdownMenuContent[data-side='top'],
 .DropdownMenuSubContent[data-side='top'] {
   animation-name: slideDownAndFade;

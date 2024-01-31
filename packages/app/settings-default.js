@@ -32,9 +32,8 @@ let settingsDefault = {
         disable_screenshots: true,
         redirect_on_forbidden: '/home',
         split_action_menu: true,
-       
         show_modal: 5000,
-        extended_search: false,
+        extended_search: true,
     },
     sockets: {
         host: 'ci.una.io',
@@ -867,7 +866,7 @@ if (settingsDefault.layout.format == 'ver' ) {
 
 if (settingsDefault.layout.format == 'mixed') {
     // Override settings for vertical layout
-    settingsDefault.menu_items.menu_top = [
+    settingsDefault.menu_items.menu_left = [
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
         { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },
@@ -879,6 +878,8 @@ if (settingsDefault.layout.format == 'mixed') {
         { name: 'Contact', title: 'Contact', link: '/contact', icon: '', logged: false }, 
         { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
         { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
+    ];
+    settingsDefault.menu_items.menu_top = [
     ];
     delete settingsDefault.layouts.home.blocks.menu
 }
