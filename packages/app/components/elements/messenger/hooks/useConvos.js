@@ -58,9 +58,10 @@ export default function useConvos(menuItem, onSelect) {
     const queryClient = useQueryClient();
 
     return useInfiniteQuery(ConvoKeys.convoByMenu(menuItem), ({ pageParam = 0}) => Services.getList(menuItem, pageParam), {
-        //keepPreviousData: true,
+        keepPreviousData: true,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        staleTime: Infinity,
         select: (data) => data?.pages.flatMap(page => page),
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage)
@@ -71,7 +72,7 @@ export default function useConvos(menuItem, onSelect) {
 
             return lastPage.length * allPages.length;
         },
-        onSuccess: (data) => data.forEach((item) => queryClient.setQueryData(ConvoKeys.convoByMenuWithId(menuItem, item.id), item)),
+        //onSuccess: (data) => data.forEach((item) => queryClient.setQueryData(ConvoKeys.convoByMenuWithId(menuItem, item.id), item)),
         enabled: !!currentUser && !!menuItem
     });
 }

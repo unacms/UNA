@@ -3,6 +3,8 @@ import { useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-q
 import { useCurrentUser } from 'app/context/user';
 import { stripTags } from 'app/lib/util';
 import { ConvoKeys } from './useConvos';
+import {useContext} from "react";
+import { MenuData, PageData } from "app/components/elements/messenger/context/messenger-сontext";
 
 const HistoryKeys = {
     all: ['get_convo_messages'],
@@ -12,195 +14,227 @@ const HistoryKeys = {
 
 export { HistoryKeys };
 
-const updateMessage = async(iConvoId, iMessageId) => {
+export const updateHistoryPageCache = async ()  => {
     const queryClient = useQueryClient();
-    const oData = await queryClient.fetchQuery(HistoryKeys.messagesByConvoWithId(iConvoId, iMessageId), Services.getMessage(iMessageId));
-}
+    const { convoId } = useContext(PageData);
+
+    return await queryClient.invalidateQueries({
+        queryKey: HistoryKeys.messagesByConvo(convoId),
+        exact: true,
+        refetchType: 'active',
+    });
+};
+
+export const updateMessageCache = (iMessageId) => {
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries(HistoryKeys.messagesByConvo(convoId), {
+        predicate: (query) => {
+            return query.pageParams === page;
+        },
+    });
+};
 
 export default function useHistory(convoId, onSuccess) {
    const { currentUser } = useCurrentUser(),
          { iPerPage } = Services;
 
-   const queryClient = useQueryClient();
    return useInfiniteQuery(HistoryKeys.messagesByConvo(convoId), ({ pageParam = 0}) => Services.getMessages(convoId, pageParam), {
-        enabled: !!convoId && !!currentUser,
-        keepPreviousData: true,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-       /* staleTime: 20 * 1000,*/
-        cacheTime: 25 * 1000,
-        select: (data) => data?.pages.flatMap(page => page),
-        getPreviousPageParam: (firstPage, allPages) => {
-            if (!firstPage || firstPage.length < iPerPage || ( allPages.length > 1 && allPages[allPages.length - 1].length !== firstPage.length ))
-                return false;
+            enabled: !!convoId && !!currentUser,
+            //keepPreviousData: true,
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+           /* staleTime: 20 * 1000,*/
+            staleTime: Infinity,
+            //cacheTime: 25 * 1000,
+            select: (data) => data?.pages.flatMap(page => page),
+            getPreviousPageParam: (firstPage, allPages) => {
+                if (!firstPage || firstPage.length < iPerPage || ( allPages.length > 1 && allPages[allPages.length - 1].length !== firstPage.length ))
+                    return false;
 
-            return firstPage[0].id;
-        },
-       /* getNextPageParam: (lastPage, allPages) => {
-            if (!lastPage || !lastPage.length || allPages[0].length !== lastPage.length)
-                return false;
-
-            return lastPage[lastPage.length-1].id;
-        },*/
-       onSuccess:(data) => {
-            data.forEach((item) => {
-                queryClient.setQueryData(HistoryKeys.messagesByConvoWithId(convoId, item.id), item)
-            });
-
-           if (typeof onSuccess === 'function')
-                onSuccess(data);
-       },
-       /*notifyOnChangeProps: ['data', 'isLoading']*/
+                return firstPage[0].id;
+            },
+           onSuccess:(data) => {
+                if (typeof onSuccess === 'function')
+                    onSuccess(data);
+           },
+           /*notifyOnChangeProps: ['data', 'isLoading']*/
     });
 }
 
-export const useHistoryMessageAction = function(convoId, menuItem){
-    const client = useQueryClient();
+function removeCacheMessage(queryClient, convoId, iMessageId){
+    queryClient.setQueryData(HistoryKeys.messagesByConvo(convoId), (currentData) => {
+        const { pages } = currentData || {},
+              newPages = pages?.map((page) => page.filter(({ id }) => +id !== +iMessageId));
 
-    let oLastMessage = null;
+        return {...currentData, pages: newPages };
+    });
+}
+
+function updateConvoCache(queryClient, menuItem, oMessage, bDecrease = true){
+    if (!oMessage)
+        return;
+
+    const { message, lot_id:convoId, created } = oMessage;
+
+    queryClient.setQueryData(ConvoKeys.convoByMenu(menuItem), (currentData) => {
+        const { pages } = currentData;
+
+        const oNewList = pages.map((page) => {
+            return page.map((oItem) => {
+                const { total_messages, id } = oItem;
+                if (id === convoId) {
+                    const iTotal = bDecrease ? +total_messages - 1 : +total_messages + 1;
+
+                    return Object.assign({}, oItem, {
+                        total_messages: iTotal > 0 ? iTotal : 0,
+                        message: stripTags(message),
+                        date: created
+                    });
+                }
+                return oItem;
+            })
+        });
+
+        return { ...currentData, pages: [...oNewList] };
+    });
+}
+
+function addNewMessage(queryClient, convoId, sMessage, currentUser, iTmpId){
+    queryClient.setQueryData(HistoryKeys.messagesByConvo(convoId), (oldData) => {
+        const { pages } = oldData || { pages: [undefined]},
+            userData = { url_avatar: currentUser.avatar,
+                display_name: currentUser.display_name,
+                display_type: "unit",
+                module: "bx_persons"};
+
+        const oLastPage = [...pages];
+        oLastPage[oLastPage.length - 1] = [...oLastPage[oLastPage.length - 1], { id: iTmpId, created:iTmpId, lot_id: convoId, message: sMessage, author_data: userData }];
+
+        return {...oldData, pages:[...oLastPage] };
+    });
+
+}
+
+function getLastMessage(queryClient, convoId){
+    const { pages } = queryClient.getQueryData(HistoryKeys.messagesByConvo(convoId));
+
+    if (!pages || pages.length === 0)
+        return;
+
+    return pages[0][pages[0].length - 1];
+}
+
+export const useHistoryMessageAction = function(convoId, menuItem){
+    const queryClient = useQueryClient();
+
     const { mutateAsync: executeAction, isSuccess } =  useMutation({
         mutationFn: async ({ action, messageId }) => await Services.performAction(action, messageId),
-        onMutate: async ({ messageId }) => {
+        onMutate: async (oData) => {
+            const { action, messageId } = oData;
 
-            await client.cancelQueries(HistoryKeys.messagesByConvo(convoId));
-            await client.cancelQueries(ConvoKeys.convoByMenu(menuItem));
+            await queryClient.cancelQueries({ queryKey: HistoryKeys.messagesByConvo(convoId), exact: true });
+            await queryClient.cancelQueries({ queryKey: ConvoKeys.convoByMenu(menuItem), exact: true });
 
-            // Convos History
-            const prevHistoryData = client.getQueryData(HistoryKeys.messagesByConvo(convoId));
-            client.setQueryData(HistoryKeys.messagesByConvo(convoId), (oldData) => {
-                const { pages } = oldData;
-                const oNewMessages = pages.map((page) => page.filter(({ id }) => +id !== +messageId));
+            // Remove message and update the cache. Remove the last message.
+            const prevHistoryData = queryClient.getQueryData(HistoryKeys.messagesByConvo(convoId));
 
-               if (oNewMessages?.length)
-                    oLastMessage = oNewMessages[oNewMessages.length-1].slice(-1).pop(); // get the last message of history
+            if (action === 'remove')
+                removeCacheMessage(queryClient, convoId, messageId);
 
-               return {...oldData, pages: oNewMessages };
-            });
+            // Find the latest message to use its data for talks briefs
+            const prevConvoListData = queryClient.getQueryData(ConvoKeys.convoByMenu(menuItem)),
+                  lastMessage = getLastMessage(queryClient, convoId);
 
-            const prevConvoListData = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
-            if (oLastMessage) {
-                const { lot_id, message, created } = oLastMessage,
-                      prevConvoData = client.getQueryData(ConvoKeys.convoByMenuWithId(menuItem, lot_id));
-
-                const iItemsCount = prevConvoData?.total_messages && (prevConvoData?.total_messages - 1);
-
-                client.setQueryData(ConvoKeys.convoByMenuWithId(menuItem, lot_id), Object.assign({}, prevConvoData, {
-                    total_messages: +iItemsCount,
-                    message: stripTags(message),
-                    date: created
-                }));
-            }
-
-            client.setQueryData(ConvoKeys.convoByMenu(menuItem), (oldData) => {
-                const { pages } = oldData;
-
-                const oNewList = pages.map((page) => {
-                    return page.map((oItem) => {
-                        const { total_messages, id, created } = oItem;
-                        if (id === convoId) {
-                            return Object.assign({}, oItem, {
-                                total_messages: total_messages > 0 ? total_messages - 1 : 0,
-                                message: stripTags(oLastMessage.message),
-                                date: oLastMessage.created
-                            });
-                        }
-                        return oItem;
-                    })
-                });
-
-                return {...oldData, pages: [...oNewList] };
-            });
+            // Update talk's from which last message is in talks briefs area
+            updateConvoCache(queryClient, menuItem, lastMessage, action === 'remove');
 
             return { prevHistoryData, prevConvoListData };
         },
         onError: (error, data, { prevHistoryData, prevConvoListData }) => {
-            client.setQueryData(ConvoKeys.convoByMenu(menuItem), prevConvoListData);
-            client.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
+            queryClient.setQueryData(ConvoKeys.convoByMenu(menuItem), prevConvoListData);
+            queryClient.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
         },
-        onSettled: (data) => {
-            //client.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)});
-            //client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId) });
-        }
+        onSuccess:(data) => {
+
+        },
     });
 
     return { executeAction, isSuccess };
 }
 
-export const useSendData = function(convoId, menuItem){
-    const client = useQueryClient();
-    const { currentUser } = useCurrentUser();
-    const { mutate: sendMessage } = useMutation({
-        mutationFn: ({ oFormData }) => Services.sendMessage(convoId, oFormData),
-        onMutate: async ( { oData: { message } }) => {
+async function updateMessage (queryClient, convoId, { jot_id: iId, time}) {
+    return await Services.getMessage(iId).then((data) => {
+        queryClient.setQueryData(HistoryKeys.messagesByConvo(convoId), (currentData) => {
+            const { pages } = currentData;
 
-            const iTime = parseInt((new Date()).getTime()/1000);
-
-            await client.cancelQueries(HistoryKeys.messagesByConvo(convoId));
-            await client.cancelQueries(ConvoKeys.convoByMenu(menuItem));
-
-            // Convos History
-            const prevHistoryData = client.getQueryData(HistoryKeys.messagesByConvo(convoId));
-    
-            if (!prevHistoryData)
-                return;
-
-            client.setQueryData(HistoryKeys.messagesByConvo(convoId), (oldData) => {
-                const { pages } = oldData || { pages: [undefined]};
-                pages[pages.length - 1] = [...pages[pages.length - 1], { id: iTime, created:iTime, lot_id: convoId, message, author_data: currentUser }];
-                return {...oldData, pages };
-            });
-
-            const prevConvoListData = client.getQueryData(ConvoKeys.convoByMenu(menuItem));
-            client.setQueryData(ConvoKeys.convoByMenu(menuItem), (oldData) => {
-                const { pages } = oldData || {};
-
-                let oModifiedItem = Object.create({});
-                const oNewList = pages?.length && pages.map((page) => {
-                    return page.filter((oItem) => {
-                        const { total_messages, id } = oItem;
-                        if (id === convoId) {
-                            oModifiedItem = Object.assign({}, oItem, {
-                                total_messages: +total_messages + 1,
-                                message: stripTags(message)
-                            });
-                            return false;
-                        }
-                        return true;
-                    })
+            const oNewList = pages.map((page) => {
+                return page.map((oItem) => {
+                    const {id} = oItem;
+                    if (+id === +iId || +id === +time) {
+                        return {...data};
+                    }
+                    return oItem;
                 });
-
-                oNewList[0] = [oModifiedItem, ...oNewList[0]];
-                return {...oldData, pages: [...oNewList] };
             });
+            return {...currentData, pages: [...oNewList]};
+        });
+    });
+}
+
+
+export const useSendData = function(){
+    const queryClient = useQueryClient();
+    const { currentUser } = useCurrentUser();
+
+    const { convoInfo: { item }, historyArea } = useContext(PageData),
+        { menuItem } = useContext(MenuData),
+        { id: convoId } = item || {},
+        { action: historyAction, profile: actionProfile } = historyArea || {};
+
+    const { mutate: sendMessage } = useMutation({
+        mutationFn: ({ oFormData }) => {
+            const aParams = Object.create(null);
+
+            if (oFormData.has('id') && historyAction !== 'create-convo')
+                oFormData.set('id', convoId);
+
+            if (actionProfile && actionProfile.id)
+                aParams.participants = [actionProfile.id];
+
+            if (historyAction && oFormData.has('action'))
+                aParams.action = historyAction;
+
+            if (oFormData.has('payload') && Object.keys(aParams).length)
+                oFormData.set('payload', JSON.stringify(aParams));
+
+            return Services.sendMessage(oFormData);
+        },
+        onMutate: async ( { oData: { message, payload, message_id } }) => {
+            await queryClient.cancelQueries({ queryKey: HistoryKeys.messagesByConvo(convoId), exact: true });
+            await queryClient.cancelQueries({ queryKey: ConvoKeys.convoByMenu(menuItem), exact: true });
+
+            const prevHistoryData = queryClient.getQueryData(HistoryKeys.messagesByConvo(convoId));
+            if (!prevHistoryData)
+                return {};
+
+            // add new message, if it is not edit mode
+            if (!message_id)
+                addNewMessage(queryClient, convoId, message, currentUser, payload);
+
+            // Find the latest message to use its data for talks briefs
+            const lastMessage = getLastMessage(queryClient, convoId);
+            const prevConvoListData = queryClient.getQueryData(ConvoKeys.convoByMenu(menuItem));
+
+            // Update talk's from which last message is, in talks briefs area
+            updateConvoCache(queryClient, menuItem, lastMessage, false);
 
             return { prevHistoryData, prevConvoListData };
         },
         onError: (error, data, { prevHistoryData, prevConvoListData }) => {
-            client.setQueryData(ConvoKeys.convoByMenu(menuItem), prevConvoListData);
-            client.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
+            queryClient.setQueryData(ConvoKeys.convoByMenu(menuItem), prevConvoListData);
+            queryClient.setQueryData(HistoryKeys.messagesByConvo(convoId), prevHistoryData);
         },
-        onSettled: (data) => {
-            client.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(convoId)});
-            //client.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)});
-        },
-        onSuccess: (oData) => {
-            //const { jot_id } = oData;
-           /// console.log('----- on sucess data -----', jot_id);
-            //if (jot_id) {
-                //const oData = updateMessage(convoId, jot_id);
-                //client.setQueryData(HistoryKeys.messagesByConvoWithId(convoId, jot_id));
-                /*client.setQueryData(HistoryKeys.messagesByConvo(convoId), (data) => {
-                    const { pages } = oldData || {};
-                    pages[pages.length - 1] = [...pages[pages.length - 1], { id: iTime, created:iTime, lot_id: convoId, message, author_data: currentUser }];
-                    return {...oldData, pages };
-                });*/
-
-              //  const oMessage = async () => await client.fetchQuery(HistoryKeys.messagesByConvoWithId(convoId, jot_id), Services.getMessage(jot_id));
-                //client.setQueryData(HistoryKeys.messagesByConvoWithId(convoId, jot_id), prevHistoryData);
-                //console.log('----- data message -----', oMessage());
-
-           // }
-        }
+        onSuccess: async (oData) => await updateMessage (queryClient, convoId, oData)
     });
 
     return { sendMessage };

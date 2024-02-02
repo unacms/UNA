@@ -6,7 +6,6 @@ import { ConvosList } from 'app/components/elements/messenger/convos-list';
 import { HistoryComponent as History }  from 'app/components/elements/messenger/history';
 import { PageContext, PageData, MenuContext, MenuData } from './context/messenger-сontext';
 import { getGrid, getSpace, isPhone, isDesktop }  from './grid-utils';
-import { fetcher } from "app/lib/fetcher";
 import useBrowserHistory from './hooks/useBrowserHistory';
 import { useCurrentUser } from 'app/context/user';
 import {useQueryClient} from "@tanstack/react-query";
@@ -30,14 +29,17 @@ function PageLayout() {
 
     { action:sUriAction, profile:aUriProfile, convoId:iConvoIdUri, menuItem:sMenuUri, updateState }  = useBrowserHistory(handlerOnPopState),
 
-    { currentUser } = useCurrentUser(),
+    { currentUser } = useCurrentUser();
 
-    handlerNewMessage = useCallback((oData) => {
-        const { id, convo, user_id } = oData;
-        if (id) {
+    const handlerNewMessage = useCallback((oData) => {
+        const { id, convo, user_id, lot_id } = oData;
+
+        console.log('------- incomming data ------', oData);
+
+        /*if (id) {
             queryClient.invalidateQueries({ queryKey: ConvoKeys.convoByMenu(menuItem)} );
             queryClient.invalidateQueries({ queryKey: HistoryKeys.messagesByConvo(id)} );
-        }
+        }*/
     }, [convoId, menuItem, queryClient]);
 
     useEffect(() => {
@@ -84,7 +86,6 @@ function PageLayout() {
          if (iConvoIdUri) {
              setConvoId(iConvoIdUri);
              if (!convoId && isPhone(screenMode)) {
-                 console.log('------ set history area -------');
                  setPanel('history');
              }
          }

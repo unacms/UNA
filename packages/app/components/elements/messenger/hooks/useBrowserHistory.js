@@ -47,10 +47,10 @@ function useBrowserHistory(onPopState){
                             setStateData({ convoId: 0, action: 'create-convo', profile });
                         }
                     });
-                } else
-                if (oData.length === 2) {
-                    setStateData({ menuItem: oData[0], convoId: oData[1], isBack: isPopState });
                 }
+                else
+                    if (oData.length === 2)
+                        setStateData({ menuItem: oData[0], convoId: oData[1], isBack: isPopState });
             }
         };
 

@@ -4,10 +4,11 @@ import { getData, getUrl } from "./utils";
 const iPerPage = 20;
 
 const oUriList = {
-  'list': 'get_convo_messages',
-  'message': 'get_convo_message',
-  'form': 'get_send_form',
-  'search_users': 'search_users',
+  list: 'get_convo_messages',
+  message: 'get_convo_message',
+  form: 'get_send_form',
+  search_users: 'search_users',
+  clear_ghost: 'clear_ghost',
 };
 
 export default {
@@ -25,9 +26,10 @@ export default {
 
         return data;
     },
-    getForm: async () => await getData(oUriList.form),
-    sendMessage: async(id, formData) => {
-        const { data } = await fetcher([getUrl(oUriList.form, { id }), '' , formData]);
+    getForm: async (data) => await getData(oUriList.form, data),
+    clearGhost: async (data) => await getData(oUriList.clear_ghost, data),
+    sendMessage: async(formData) => {
+        const { data } = await fetcher([getUrl(oUriList.form), '' , formData]);
         return data;
     },
     getMessage: async (id) => await getData(oUriList.message, { id }),

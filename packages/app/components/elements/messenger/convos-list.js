@@ -85,9 +85,8 @@ const ConvosListHeader = memo(({ menuItem, onClickMenu, onCreateConvo }) => {
 });
 
 const Convos = memo(({ menuItem, onSelect, height, convo: { item }, selectedConvoId }) => {
-    const { status, isFetchingNextPage, hasNextPage, isLoading, error, fetchNextPage, data: convosList } = useConvos(menuItem);
-
-    const handlerGetSelectedConvo = useCallback(() => convosList.find((oItem) => oItem.id === selectedConvoId), [convosList, selectedConvoId]);
+    const { status, isFetchingNextPage, hasNextPage, isLoading, error, fetchNextPage, data: convosList } = useConvos(menuItem),
+          handlerGetSelectedConvo = useCallback(() => convosList.find((oItem) => oItem.id === selectedConvoId), [convosList, selectedConvoId]);
 
     let iActiveItem = item && item.id;
 
@@ -150,7 +149,6 @@ export const ConvosList = () => {
           { screenMode, pageHeight, setConvoItem, convoInfo, convoId, setHistoryArea, setPanel, historyArea } = useContext(PageData),
 
           handlerMenuClick = useCallback(() => setMenuView(viewMenu => !viewMenu), []),
-
           handlerCreate = useCallback(() => {
               setHistoryArea((prev) => !prev && { action: 'create-convo' });
               if (isPhone(screenMode))

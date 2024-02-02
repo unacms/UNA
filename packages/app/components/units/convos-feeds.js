@@ -2,15 +2,17 @@ import Time from 'app/ui/atoms/time';
 import Profile from 'app/ui/molecules/profile';
 import { Text } from 'app/design/typography';
 import { Pressable, View } from 'app/design/view';
-import { memo, useMemo } from 'react';
+import React, { memo, useEffect, useMemo, useState, useCallback } from 'react';
 import dynamic from "next/dynamic";
 import {useCurrentUser} from "app/context/user";
 import {FeedbackHaptics, linkify} from "app/lib/util";
 import Html from "app/ui/atoms/html";
 import {Button} from "app/design/controls";
-import Menu from "app/components/menu";
+import { HistoryServices as Services } from "app/components/elements/messenger/services";
 import DropdownMenu from "app/ui/atoms/dropdown-menu";
 import Reactions from 'app/ui/molecules/reactions';
+import Form from "../elements/form";
+import { useSendData, updateHistoryPageCache } from "../elements/messenger/hooks/useHistory";
 
 const ListFeed = memo((data)  => {
   const { author_data, message, date, title, count, onPress, isActive } = data || {};
@@ -56,26 +58,46 @@ const ListFeed = memo((data)  => {
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
         const Carousel = memo(dynamic(() => import('app/ui/molecules/carousel')));
-        return  <Carousel data={aImg} onComplete={() => console.log('----- carusel is complete ------')}/>
+        return  <Carousel data={aImg}/>
     }, [b]);
+
+
     return computedData;
 }
 
-const MsgFeed = memo(({ item, handlerMenuSelect }) => {
-    const { currentUser } = useCurrentUser();
+const ImagesComponent = ({files}) => {
+    if (!files || !files.length)
+        return;
 
-    const { author_data, created, count, files, message, menu, id, reactions } = item,
-        sCommentClass = "bg-neutral-500/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small";
+    const aImg = files?.map(({src}) => ({ src, type: 'image' }));
+
+    return <View className='w-full aspect-auto pb-6 pt-4'>
+                <CarouselMemo aImg={aImg} b={files}/>
+           </View>
+}
+
+const MsgFeed = memo(({ item, handlerMenuSelect }) => {
+    const { currentUser } = useCurrentUser(),
+         { author_data, created, count, files, message, menu, id, reactions } = item,
+         sCommentClass = "bg-neutral-500/10 rounded-tl-none rounded-2xl px-4 u-vanilla-html-small",
+         { sendMessage } = useSendData();
+
+    const [mode, setMode] = useState(''),
+          [formData, setFormData] = useState();
+
+    const handlerClearGhost = useCallback((id) => Services.clearGhost({ id }), []);
 
     if (!created)
         return (<View></View>);
 
-    const aImg = files?.map(({src}) => {
-        return {
-            src,
-            type: 'image'
-        };
-    });
+    useEffect(() => {
+        if (mode === 'edit')
+            (async() => await Services.getForm({ action: mode, id })
+                .catch((e) => { console.log(e.toString()) })
+                .then((data) => setFormData(data)))
+            ();
+
+    }, [mode]);
 
     return (
         <View className='w-full pt-3'>
@@ -86,14 +108,38 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                             <Profile {...author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <Text className="text-neutral-500 px-1">·</Text>
                             <Time className="" ts={created}></Time>
+                            {
+                                mode === 'edit' && <View className="absolute right-0">
+                                                                    <Button
+                                                                    title="Cancel"
+                                                                    size="xs"
+                                                                    startDecorator="X"
+                                                                    variant="outline"
+                                                                    onPress={() => {
+                                                                        setMode('');
+                                                                        handlerClearGhost(id);
+                                                                        //updateHistoryPageCache();
+                                                                    }}
+                                                                />
+                                                </View>
+                            }
                         </View>
                         <View>
-                            <Html data={linkify(message)} />
+                           { mode === 'edit' && formData ? (
+                                <View className="w-full py-2">
+                                    <Form data={ formData } name={'bx_messenger'} resetOnSubmit={true}
+                                          classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                          onFormSubmit={ (oFormData, oData) => { return sendMessage({ oFormData, oData }, {
+                                                  onSuccess: ({ code }) => {
+                                                     if (!+code) {
+                                                         setMode('');
+                                                     }
+                                                  }
+                                          })} } />
+                                </View>
+                            ) : <Html data={linkify(message)} className="" /> }
                         </View>
-                        { aImg && aImg.length > 0 && <View className='w-full aspect-auto pb-6'>
-                            <CarouselMemo aImg={aImg}/>
-                        </View>
-                        }
+                        { mode !== 'edit' && <ImagesComponent files={files}/>}
                     </View>
                     <View className="flex-row w-full justify-between items-center">
                         { !!currentUser ? <View className='mr-2'>
@@ -112,7 +158,6 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                                                 }} />
                                           </View> : <></> }
                         { !!currentUser && menu && menu.length && <View className='flex-row'>
-                            {/*<Menu items={ menu } displayType="element" showMatched={ true } params={{ show_action: true, show_counter: true, show_combined: true, display_size: 'xs' }} />*/}
                             <View className="ml-2">
                                 <DropdownMenu items={menu.map((aItem) => {
                                     return {
@@ -121,7 +166,10 @@ const MsgFeed = memo(({ item, handlerMenuSelect }) => {
                                         link: aItem.link,
                                         title: aItem.title
                                     };
-                                })} onSelect={(oItem, event) => handlerMenuSelect(oItem, item)}>
+                                })} onSelect={(oItem) => {
+                                    setMode(oItem.name);
+                                    return handlerMenuSelect(oItem, item);
+                                }}>
                                     <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" rounded onPress={() => {FeedbackHaptics('Medium');}} />
                                 </DropdownMenu>
                             </View>

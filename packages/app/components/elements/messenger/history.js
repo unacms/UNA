@@ -16,7 +16,7 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import CreateConvo from './create-convo';
 import { isPhone } from "./grid-utils";
 import Profile from "app/ui/molecules/profile";
-import {SendForm} from "./send-form";
+import { SendForm } from "./send-form";
 
 const ConvoHeader = memo(({ title, onPress, profile }) => {
     let sTitle = title;
@@ -74,13 +74,14 @@ export function HistoryComponent(){
 
            }, [menuItem, item, client]),
            handlerUpdateSelectedConvo = useCallback(() => {
-               const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem)) || {};
+               return;
+               /*const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem)) || {};
                         pages?.flatMap(page => page).some((oItem) => {
                         if (oItem.id === item.id) {
                             setConvoItem((prev) => ({ item: oItem, manually: prev.manually }));
                             return true;
                         }
-                    });
+                    });*/
              }, [menuItem, item, client]),
             handlerSendForm = useCallback(() => {
                 const { pages } = client.getQueryData(ConvoKeys.convoByMenu(menuItem)),
@@ -102,10 +103,7 @@ export function HistoryComponent(){
                     <CreateConvo onClose={ handlerCloseArea } viewButtons={ isPhone(screenMode) } onSave={ handlerSaveList }/> }
              </View>
              <View className="w-full pt-2 flex-0 border-t border-bdr dark:border-bdr-d" >
-                 { id && <SendForm convoId={ historyAction !== 'create-convo' ? id : 0 }
-                   iSelectedProfile={ actionProfile && actionProfile.id }
-                   menuItem={ menuItem }
-                   onSubmit={ handlerUpdateSelectedConvo }/> }
+                 { id && <SendForm onSubmit={ handlerUpdateSelectedConvo }/> }
              </View>
            </View>
 }
@@ -113,27 +111,25 @@ export function HistoryComponent(){
 const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
     const { id: convoId, total_messages: total } = convo || {},
           { isLoading, error, isFetchingPreviousPage, fetchPreviousPage, data: messages, hasPreviousPage } =  useHistory(convoId, (data) => {
-              setFirstItemIndex({ index: getIndex(data), id: convoId });
+              setFirstItemIndex(getIndex());
           }),
           { iPerPage } = Services,
           { executeAction } = useHistoryMessageAction(convoId, menuItem),
           refList = useRef(null),
-          getIndex = useCallback((messages) => {
-              let iIndex = total > iPerPage ? total - iPerPage: 0;
-              if (messages?.length > iPerPage)
-                  iIndex = total - messages.length;
-
-              return iIndex;
-          }, [total]),
-
-        [firstItemIndex, setFirstItemIndex] = useState({ index: 0, id: convoId }),
+          getIndex = useCallback(() => {
+              const iPages = messages?.length > iPerPage ? messages.length : iPerPage;
+              return total > iPages ? total - iPages: 0;
+          }, [total, messages]),
+        [firstItemIndex, setFirstItemIndex] = useState(getIndex()),
         [topReached, setTopReached] = useState(false),
 
         handleTopReached = useCallback(() => {
             if (!isFetchingPreviousPage && hasPreviousPage)
                 fetchPreviousPage();
 
-        }, [isFetchingPreviousPage, hasPreviousPage, fetchPreviousPage]),
+            //setFirstItemIndex( (prev) => {...prev, index:getIndex()})
+
+        }, [isFetchingPreviousPage, hasPreviousPage, fetchPreviousPage, convoId]),
         /*handleTopPositionReached = useCallback(() => {
             const newReachedPos = topReached && false;
             setTopReached(newReachedPos);
@@ -142,66 +138,91 @@ const History = memo(({ convo, height, menuItem, onHistoryUpdate }) => {
         handlerMenuSelect = useCallback(async ({ name }, item) => {
             const { id: messageId, lot_id: convoId } = item;
             switch(name) {
+                case 'share':
                 case 'edit':
-                case 'remove':
+                    break;
+
                 case 'save':
+                case 'remove':
                    await executeAction({ action: name, messageId }, { onSuccess: ( data ) => {
                        if (data?.code === 0) {
                            onHistoryUpdate();
                        }
                     }});
-                case 'share':
             }
 
         }, [messages, refList.current]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         const { current } = refList;
-        if (messages && current && typeof current.scrollToEnd === 'function') {
+        if (messages && current && typeof current.scrollToIndex === 'function') {
+
+            console.log('------ scrolling to the end ----', convo, messages, total);
+            //setFirstItemIndex({ index: getIndex(messages), id: convoId });
             setTimeout(() => {
-                refList.current.scrollToEnd();
+                refList.current.scrollToIndex({ index: messages.length - 1,
+                    align: 'end',
+                    behavior: 'auto'});
             }, 200);
         }
-    }, [messages]);
+
+    }, [messages]);*/
 
     useEffect(() => {
+        setFirstItemIndex(getIndex());
+        const { current } = refList;
+        if (total && typeof current?.scrollToIndex === 'function') {
+            console.log('------ scrolling to the end ----', convo, messages, total);
+            setTimeout(() => {
+                refList.current.scrollToIndex({ index: messages?.length - 1,
+                    align: 'end',
+                    behavior: 'auto'});
+            }, 300);
+        }
+
+    }, [convoId]);
+
+    /*useEffect(() => {
         if (topReached) {
             handleTopReached();
             setTimeout(() => {
                 refList.current.scrollToIndex({ index: messages.length - iPerPage, animated: true });
             }, 500);
         }
-    }, [topReached]);
+    }, [topReached]);*/
 
+    /*useEffect(() =>{
+        console.log('---- берем данные -----', messages);
+    }, [isFetched]);*/
 
-    const renderItem = ({ item, index }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>,
+    const renderItem = ({ item }) => <MsgFeed key={ item.id } item={item} handlerMenuSelect={handlerMenuSelect}/>,
         keyExtractor = (item) => item.id;
 
     if (error)
         return <View className='m-2'><Text>{error}</Text></View>;
 
-    if (isLoading || firstItemIndex.id !== convoId)
+    if (isLoading || !messages)
         return getSkeleton('notifications');
 
     return <View className="w-full h-full flex-1">
                 <ReactionContext>
                     <UniList
-                        firstItemIndex={ +firstItemIndex.index }
+                        firstItemIndex={ firstItemIndex }
                         initialTopMostItemIndex={ messages.length - 1 }
-                        initialScrollIndex={ messages.length - 1 }
+                        /*initialScrollIndex={ messages.length - 1 }*/
                         /* listState={ `convo-history-${convoId}` }*/
                         refer={ refList }
                         data={ messages }
                         renderItem={ renderItem }
                         startReached={ handleTopReached }
-                        onScroll={({ nativeEvent }) => {
+                        /*onScroll={({ nativeEvent }) => {
                             const { contentOffset } = nativeEvent;
                             if (contentOffset) {
                                 const { y } = contentOffset;
                                 if (y <= 0)
                                     setTopReached(true);
                             }
-                        }}
+                        }}*/
                         /*maintainVisibleContentPosition={{
                             minIndexForVisible: 0,
                         }}*/
