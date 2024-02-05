@@ -1,5 +1,12 @@
-import { BlockByName } from 'app/components/block';
+import { ScrollView, View } from 'app/design/view';
+import { getPageWidth } from 'app/lib/util'
+import { appStatic } from 'app/lib/app-static'
+import { Platform } from 'react-native'
 
-export default function PageLayout({ data , blocks: { main } }) {
-    return <BlockByName data={ data } name={ main } fullWidth={ true } />;
+export default function PageLayout(props) {
+    return (
+        <View className={getPageWidth(props.uri) + '  mx-auto w-full '}>
+            {props.children}
+        </View>
+    )
 }

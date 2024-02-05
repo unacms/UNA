@@ -438,10 +438,11 @@ let settingsDefault = {
     layouts: {
         messenger: {
             layout: 'messenger',
-            blocks: {
+          /*  blocks: {
                 main: { name: 'bx_messenger:get_main_messenger_page', showTitle: false },
-            },
-            headerSettings: { offset: false, header: false }
+            },*/
+            /*headerSettings: { offset: false, header: false }*/
+            headerSettings: {  backButton: false, footer: false,  }
         },
         login: {
             layout: 'login',

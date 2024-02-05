@@ -69,13 +69,16 @@ export default function ElementCommentForm(props) {
     console.log(bottomSheetData);
     return (
         <BottomSheet2 {...bottomSheetProps} >
+         
             {bottomSheetData.title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2 '>{bottomSheetData.title}</Text></View>}
             <View className={"max-w-lg mx-auto w-full flex-1 " + (isWeb ? 'px-4' : 'px-4')}>
                 <ScrollView className=''>
                     {bottomSheetData.content}
                 </ScrollView>
             </View>
-
+            {isShowClose && <View className={'absolute right-2 z-50 ' + (isWeb ? 'top-2' : 'top-0')}>
+                <Button startDecorator="X" tooltip={('Close')} variant='text' size='sm' onPress={() => onClose()} />
+            </View>}
         </BottomSheet2>
     )
 }

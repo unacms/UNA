@@ -176,9 +176,9 @@ export default function Unit(props) {
                                         />
                                     </View>
                                     {
-                                        <> <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        <><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                             {friendsLabel}
-                                        </Text>
+                                            </Text>
                                             <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                                 {friendsLabel1}
                                             </Text>

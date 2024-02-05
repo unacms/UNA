@@ -216,7 +216,6 @@ export default function FormFieldFiles(props) {
 
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
-
     function getImg(img, sizes) {
 
     }

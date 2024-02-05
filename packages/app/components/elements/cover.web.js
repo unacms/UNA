@@ -86,7 +86,6 @@ function CoverMenu(props) {
 
 function CoverMenuSmall(props) {
     const [ntfsOpen, setNtfsOpen] = useState(false)
-    console.log("propsprops", props)
     return (
         <DropdownPopup
             open={ntfsOpen}

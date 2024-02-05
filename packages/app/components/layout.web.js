@@ -143,8 +143,8 @@ export default function Layout(props) {
         stylesBg = { backgroundColor: appSetting('layout', 'background_color_dark') }
     }
 
-    if (layoutName === 'messenger')
-        stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
+   // if (layoutName === 'messenger')
+    //    stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
 
     useEffect(() => {
         for (let style in stylesBgImage) {
@@ -185,8 +185,8 @@ export default function Layout(props) {
     if (getLayout(currentUser, layoutName) == 'hor' ) {
         return (
             <BottomSheetDataContext>
-                <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
-                {layoutName == 'default' && appStatic('components_fullfooter', '')}
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+               
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
@@ -203,7 +203,7 @@ export default function Layout(props) {
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} >
-                    <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 </NavbarMemo>
               
                 <BottomSheet />
@@ -222,7 +222,7 @@ export default function Layout(props) {
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse lg:border-l lg:border-r border-dashed border-bdr dark:border-bdr-d'>
                         <View className='w-full lg:w-[calc(100%-20rem)]'>
-                            <Content headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />
                             <AsyncWorker />
                         </View>
@@ -238,7 +238,7 @@ export default function Layout(props) {
     }
 }
 
-const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser }) => {
+const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName }) => {
     return (
         <>
             
@@ -252,6 +252,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                         </View>
                     </View>
                 </View>
+                {layoutName == 'default' && appStatic('components_fullfooter', '')}
                 {(headerSettings?.footer !== false || !currentUser) && <Footer />}
             </View>
         </>
