@@ -331,8 +331,10 @@ export function ComponentsIntro(props) {
 function ComponentModal(props) {
     return (
         <View>
-            <View className='mb-4'>
-                <Text>Bla bla bal....</Text>
+            <View className='mb-8'>
+                <Text className="text-3xl mb-4 font-bold text-center text-neutral-900 dark:text-neutral-100">Create account or login...</Text>
+
+                <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">Members can create posts, react, comment and communicate with each other.</Text>
             </View>
             <Row className='gap-x-4'>
                 <Button
