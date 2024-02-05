@@ -84,5 +84,15 @@ const expoConfig = {
       "HOST": process.env.HOST,
       "PORT": process.env.PORT
     },
+    plugins: [
+      [
+        'expo-build-properties',
+        {
+          ios: {
+            deploymentTarget: '13.4',
+          },
+        },
+      ],
+    ],
 };
 module.exports = merge(expoConfig, expoConfigCustom);
