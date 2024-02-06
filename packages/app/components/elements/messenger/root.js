@@ -19,6 +19,7 @@ import { Platform } from 'react-native'
 import useSWR from "swr";
 import Loading from 'app/ui/atoms/loading'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import Reactions from 'app/ui/molecules/reactions';
 import { useCurrentUser } from 'app/context/user';
 import { subscribe } from 'app/ui/atoms/socket';
 
@@ -469,7 +470,10 @@ function JotItem({ item, index }) {
                         </View>
                     </View>
                 </View>
-                <View className="ml-2 justify-end items-end">
+                <View className="flex-row justify-between items-center ml-2">
+                    <View className="pl-10">
+                        <Reactions key={'reactions_' + item.id} {...item.reactions} />
+                    </View>
                     <DropdownMenu items={item.menu.filter(item => ['remove', 'edit'].includes(item.name)).map((aItem) => {
                         return {
                             id: aItem.id + '-' + aItem.name,
