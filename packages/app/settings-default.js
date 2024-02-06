@@ -1,6 +1,6 @@
 let settingsDefault = {
     layout: {
-        format:'ver', //hor, ver, mixed
+        format:'mixed', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -440,11 +440,11 @@ let settingsDefault = {
     layouts: {
         messenger: {
             layout: 'messenger',
-          /*  blocks: {
+            blocks: {
                 main: { name: 'bx_messenger:get_main_messenger_page', showTitle: false },
-            },*/
+            },
             /*headerSettings: { offset: false, header: false }*/
-            headerSettings: {  backButton: false, footer: false,  }
+         
         },
         login: {
             layout: 'login',

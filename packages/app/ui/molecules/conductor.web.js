@@ -6,7 +6,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName, getLayout } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb,LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { Button, ButtonRef } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery } from '@tanstack/react-query'
@@ -37,15 +37,15 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
+    const showMenu = (params) => {
+        setMenuPopup(!menuPopup)
+    }
 
-    const isUseBg = appSetting('layout', 'use_background');
 
     const [maxId, setMaxId] = useState(0);
     const toasterRef = useRef();
 
-    const showMenu = (params) => {
-        setMenuPopup(!menuPopup)
-    }
+  
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
 
@@ -326,39 +326,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
              }
  */
             return (
-                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lala3" + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >
-                    <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
-                        {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b  border-bdrnavbar dark:border-bdrnavbar-d">
-                            <Row className="items-center">
-                                <View className="ml-3 sm:ml-4 "></View>
-                                {headerSettings.header && getBackButtonWeb()}
-                                {headerSettings.header == false && headerSettings.menu == true && menu_drawer_items.length > 0 && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
-                                    <Button
-                                        variant="outline"
-                                        startDecorator="List"
-                                        rounded
-                                        align="start"
-                                    />
-
-                                </Pressable></View>}
-                                {headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{t(menuSettings?.name)}</Text>}
-                            </Row>
-                            <Row className="pr-4">
-                                {addButtons}
-                            </Row>
-                        </Row>
-                        }
-                        <Row className="items-center ">
-                            {menuSettings?.name ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
-
-                            <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
-
-                            {getLayout(currentUser) != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
-                                {addButtons}
-                            </Row>}
-                        </Row>
-                    </View>
-                </View>
+                <TopSidebar style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+                      <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                </TopSidebar>
+                    
             )
         }
     };
@@ -586,17 +557,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )
         });
-        return <View className="hidden lg:block w-80 t-0 "><View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
-            <Row className="justify-between items-center mt-1 mb-4 ">
-                <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
-                    {t(menuSettings?.name)}
-                </Text>
-                <Row className=" ">
-                    {addButtons}
-                </Row>
-            </Row>
-            <View className=' hidden flex-col gap-y-1 lg:flex '>
-                {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+        return <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons}>
+            {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                     let settings = appSetting('layouts', a.key)
                     let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon) : a.icon;
                     return (
@@ -620,8 +582,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </Link>
                     )
                 })}
-            </View>
-        </View></View>
+            </LeftSidebar>
     }, [routes, index]);
 
     if (leftSideBar) {

@@ -164,10 +164,13 @@ export function getBlocksFromData(data) {
 }
 
 export function getHeaderSettings(uri, width, layout) {
-    let settings = appSetting('layouts', uri)
+    let settings = appSetting('layouts', uri);
     if (!settings?.headerSettings){
         if (layout == 'navigator'){
             settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true }}
+        }
+        if (layout == 'messenger'){
+            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false}}
         }
         if (layout == 'profile'){
             settings = {headerSettings: { offset: false, header: false }}
@@ -178,7 +181,7 @@ export function getHeaderSettings(uri, width, layout) {
     
     let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
     
-    let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.header: true;
+    let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer: true;
     if (width > 1024)
         bHeader = true;
 
