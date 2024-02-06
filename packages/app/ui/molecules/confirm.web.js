@@ -15,6 +15,7 @@ export default function ElementConfirm(props) {
         props.handleOk();
     }
 
+    if (props.onVisible){
     return (
         <>
             <Modal id={'file-preview'} onVisible={props.onVisible} >
@@ -29,4 +30,7 @@ export default function ElementConfirm(props) {
            
         </>
     );
+    }
+
+    return <></>
 }

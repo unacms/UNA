@@ -157,10 +157,10 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
-        if (!currentUser && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
+        if (currentUser=== false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
             setTimeout(() => {
                 setIsModal(true)
-            }, appSetting('layout', 'show_modal'));
+            }, appSetting('layout', 'show_login_modal'));
         }
     }, []);
 

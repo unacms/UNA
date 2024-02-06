@@ -33,8 +33,10 @@ let settingsDefault = {
         disable_screenshots: true,
         redirect_on_forbidden: '/home',
         split_action_menu: true,
-        show_modal: 5000,
+        show_login_modal: 5000,
         extended_search: true,
+        show_in_reply_comments: false,
+
     },
     sockets: {
         host: 'ci.una.io',

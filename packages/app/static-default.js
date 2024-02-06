@@ -337,20 +337,20 @@ function ComponentModal(props) {
                 <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">Members can create posts, react, comment and communicate with each other.</Text>
             </View>
             <Row className='gap-x-4'>
-                <Button
+                <Link href="/create-account"><Button
                     title="Create account"
                     startDecorator="UserCirclePlus"
                     size="base"
                     fullWidth
-                />
+                /></Link>
 
-                <Button
+                <Link href="/login"><Button
                     title="Log in with email"
                     variant="outline"
                     startDecorator="SignIn"
                     size="base"
                     fullWidth
-                />
+                /></Link>
             </Row>
         </View>
     )
@@ -796,7 +796,7 @@ export const staticDefault = {
     components_content_empty: ComponentsContentEmpty,
     components_intro: ComponentsIntro,
     components_splash: ComponentsSplash,
-    components_modal:ComponentModal,
+    components_modal: ComponentModal,
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,

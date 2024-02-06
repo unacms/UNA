@@ -74,10 +74,10 @@ export function Root (props) {
             }
         }
         else{
-            if (currentUser != null){
-                setCurrentUser(null);
+           // if (currentUser != null){
+                setCurrentUser(false);
                 storageClear();
-            }
+            //}
         }
 
     }, [data?.user]);
