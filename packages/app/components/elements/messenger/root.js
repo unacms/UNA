@@ -20,7 +20,7 @@ import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
 
 export default function (props) {
 
-    console.log(props);
+
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
     const aAllowedList = ['inbox', 'direct', 'saved'];
@@ -62,7 +62,7 @@ export default function (props) {
 
 
     let { data: dynamicData, error } = useSWR(
-        commentForm ? ['/api.php?r=bx_messenger/get_send_form/&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
+        commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -75,7 +75,7 @@ export default function (props) {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
             if (menuItem) {
-                let request_url = '/api.php?r=bx_messenger/get_convos_list/&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
+                let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
                 const sResponse = await fetcher(request_url);
                 let convos = sResponse.data;
                
@@ -85,12 +85,27 @@ export default function (props) {
     }
 
     const fetchItems = async (convoId) => {
+<<<<<<< HEAD
         let request_url = '/api.php?r=bx_messenger/get_convo_messages/&params=' + JSON.stringify({ lot: convoId, jot: 0 });
         const sResponse = await fetcher(request_url);
         setJots({ data: sResponse.data, index: 0 });
         setTimeout(() => {
             scrolTo();
         }, 500);
+=======
+        //if (convos) {
+           // const convoId = convos?.data[selectedConvoIndex].id;
+           // if (convoId) {
+                let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
+                const sResponse = await fetcher(request_url);
+                setJots({ data: sResponse.data, index: 0 });
+                setTimeout(() => {
+                    scrolTo();
+                }, 500);
+               
+          //  }
+      //  }
+>>>>>>> fce4b961e409576364770be838fa8c810d258d0b
     }
 
     const updateState = () => {
@@ -280,3 +295,233 @@ export default function (props) {
         </View>
     );
 }
+<<<<<<< HEAD
+=======
+
+const User = ({ data, onSelect }) => {
+    return <Pressable onPress={() => onSelect(data)}>
+        <View className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
+                hover:bg-bgritem-h dark:hover:bg-bgritem-dh max-w-5xl self-center w-full border border-bdrnavbar dark:border-bdrnavbar-d mb-2">
+            <Profile displaySize="xs" {...data.author_data} url="" />
+        </View>
+    </Pressable>
+};
+
+const CreateConvo = memo(({ onSave }) => {
+    const [users, setUsers] = useState([]);
+    const [susers, setSUsers] = useState([]);
+    const [showLoading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const handleSearchUsers = useCallback(async (sValue) => {
+        setLoading(true);
+        let request_url = '/api.php?r=bx_messenger/search_users/Services&params=' + JSON.stringify({ term: sValue });
+        const sResponse = await fetcher(request_url);
+        setUsers(sResponse.data);
+        setLoading(false);
+
+    }, [users]);
+
+    const handlerOnSelect = useCallback((oData) => {
+        if (susers.find((user) => user.id === oData.id) === undefined)
+            setSUsers((prev) => ([...prev, oData]));
+
+        setUsers(users.filter((user) => user.id !== oData.id));
+    }, [users]);
+
+    const handlerOnRemove = useCallback((oData) => {
+        if (users.find((user) => user.id === oData.id) === undefined)
+            setUsers((prev) => [...prev, oData]);
+
+        setSUsers(susers.filter((user) => user.id !== oData.id));
+
+    }, [users, susers]);
+
+    const handleSave = async () => {
+        let request_url = '/api.php?r=bx_messenger/save_parts_list/Services&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
+        const sResponse = await fetcher(request_url);
+        if (sResponse.data.code == 0) {
+            onSave(sResponse.data)
+        }
+        else {
+            setMessage(sResponse.data.message)
+        }
+    };
+
+    return <View className="">
+        <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
+            {susers && susers.map((oItem) => <User key={oItem.id} data={oItem} onSelect={handlerOnRemove} />)}
+        </Row>
+        <Row className="gap-x-2">
+            <InputRounded
+                placeholder={"Select users..."}
+                className="px-2 w-full"
+                onChangeText={handleSearchUsers}
+                role="textbox" aria-label="Select users..."
+            />
+            <Button variant="outline" disabled={susers.length == 0} startDecorator="Check" rounded align="start" onPress={() => handleSave()} />
+
+        </Row>
+        <Row>
+            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{message}</Text>
+        </Row>
+        <Row className="text-center py-2 w-full  flex-wrap gap-x-2 ">
+            {users && !showLoading && users.map((oItem) => <User key={oItem.id} data={oItem} onSelect={handlerOnSelect} />)}
+            {showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
+        </Row>
+    </View>
+});
+
+function JotItem({ item, index }) {
+    const [postData, setPostData] = useState(null)
+    const [viewState, setViewState] = useState({ view: '' })
+    const handleManageMenuSelect = async (oItem, event) => {
+
+        switch (oItem.name) {
+            case 'edit':
+                const result = await fetcher('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ 'action': 'edit', id: item.id }));
+                setViewState({ view: 'edited', data: result });
+                break;
+
+            case 'remove':
+                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
+                break;
+        }
+    }
+
+    let { data: dynamicData, error } = useSWR(
+        postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
+        fetcher,
+        !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
+    )
+
+    let aImg = item?.files.map((obj) => {
+        return {
+            src: obj.src,
+            type: 'image',
+        }
+    });
+
+    const onFormSubmit = (formData, d) => {
+        formData.set("id", item.lot_id);
+        setViewState({ view: '' })
+        setPostData(formData);
+    }
+
+    let aManageItems = item.menu?.items ? item.menu.items.filter(item => ['remove', 'edit'].includes(item.name)) : [];
+
+    return (
+        <AnimatedBlock key={'jot' + index}>
+            <View className='w-full mb-4'>
+                <View className="flex-row gap-x-2 ">
+                    <View className="w-10 flex-0 ">
+                        <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+                    </View>
+                    <View className='flex-1 flex-col gap-y-1 mb-2 '>
+                        <View className={'bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small  py-2'} >
+                            <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
+                                <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                                <View><Text className="text-neutral-500 px-1">·{index}</Text></View>
+                                <Time ts={item.created}></Time>
+                            </View>
+
+                            {viewState.view == 'edited' ? (
+                                <View className="w-full">
+                                    <Form
+                                        name='bx_messenger'
+                                        {...viewState.data}
+                                        classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                        onFormSubmit={onFormSubmit}
+                                    />
+                                    <View className="mx-4 mb-4">
+                                        <Button
+                                            title="Cancel"
+                                            fullWidth
+                                            size="base"
+                                            startDecorator="X"
+                                            variant="outline"
+                                            onPress={() => setViewState({ view: '' })}
+                                        />
+                                    </View>
+                                </View>
+                            ) : <><Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} /></>}
+                        </View>
+                    </View>
+                </View>
+                <View className="flex-row justify-between items-center ml-2">
+                    <View className="pl-10">
+                        <Reactions key={'reactions_' + item.id} {...item.reactions} />
+                    </View>
+                    {aManageItems.length > 0 && <DropdownMenu items={aManageItems.map((aItem) => {
+                        return {
+                            id: aItem.id + '-' + aItem.name,
+                            name: aItem.name,
+                            link: aItem.link,
+                            title: aItem.title
+                        };
+                    })} onSelect={handleManageMenuSelect}>
+                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
+                    </DropdownMenu>
+                    }
+                </View>
+            </View>
+
+
+        </AnimatedBlock>
+    )
+}
+
+function ConvosItem({ item, index, changeConvo, selectedIndex }) {
+    return (
+        <AnimatedBlock key={'convos' + index}>
+            <Pressable onPress={() => changeConvo(item)}>
+                <Card addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
+                    <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+                        <Profile
+                            {...item.author_data}
+                            displayType="unit_wo_info"
+                            displaySize="base"
+                        />
+                    </View>
+                    <View className="flex-auto flex-col my-auto ">
+                        <View className="flex-row gap-x-2">
+                            <Text className="text-xs flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
+                                {item.author_data.display_name}
+                            </Text>
+                            <Time className="text-xs flex-none" ts={item.date}></Time>
+                        </View>
+                        <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
+                            {item.title}
+                        </Text>
+                        <View className="flex-row w-full items-end content-end">
+                            <Text
+                                className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                                numberOfLines={1}
+                            >
+                                {stripTags(item.message)}
+                            </Text>
+                            <View className="flex-none bg-primary dark:bg-primary-d rounded-full    my-auto h-min px-1.5">
+                                {item.unread > 0 && (
+                                    <Text className="text-xs text-white dark:text-black font-medium">
+                                        {item.unread}
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+                    </View>
+                </Card>
+            </Pressable>
+        </AnimatedBlock>
+    )
+}
+
+function CarouselMemo({ aImg, b }) {
+    const computedData = useMemo(() => {
+        const Carousel = React.memo(
+            dynamic(() => import('app/ui/molecules/carousel'))
+        )
+        return <Carousel data={aImg} />
+    }, [b])
+    return computedData
+}
+>>>>>>> fce4b961e409576364770be838fa8c810d258d0b

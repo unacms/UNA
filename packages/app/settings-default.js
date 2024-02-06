@@ -849,7 +849,7 @@ if (settingsDefault.layout.format == 'ver' ) {
       
         { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
         { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
-        { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'Chats', nonlogged: false }, 
+        { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour', nonlogged: false }, 
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
         { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
         { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },

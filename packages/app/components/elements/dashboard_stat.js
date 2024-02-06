@@ -60,7 +60,7 @@ export default function ElementDashboardStat(props) {
                         if (item?.type != 'growth') {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
                                 <Link href={item2.link}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" >
+                                    <Card rounded=" rounded-2xl " addClassName="sm:hover:scale-105 w-full p-4 gap-y-2" >
                                         <Row className='space-x-1 w-full justify-between'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
@@ -85,7 +85,7 @@ export default function ElementDashboardStat(props) {
                         return (
                             <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-2 duration-300 " key={index}>
                                 <Link href={item2.link} key={index}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" margin="a">
+                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2 sm:hover:scale-105 " margin="a">
                                         <Row className=''>
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
@@ -110,15 +110,15 @@ export default function ElementDashboardStat(props) {
                 })}
             </Row>
 
-            {menu_manage.length > 0 && <View className='mt-4'>
+            {menu_manage.length > 0 && <View className='mt-8'>
                 <View className='ml-4 mb-2'>
-                    <Text className="text-lg  text-neutral-800 dark:text-neutral-200  font-semibold">Manage tools</Text>
+                    <Text className="text-2xl  text-neutral-800 dark:text-neutral-200 font-semibold">Admin Tools</Text>
                 </View>
                 <Row className="flex-wrap flex-auto mb-auto ">
                     {menu_manage.map((item2, index) => {
                         return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
                             <Link href={item2.link}>
-                                <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2" >
+                                <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2 sm:hover:scale-105" >
 
                                     <Row className="w-full my-auto gap-x-2 items-center">
                                         <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
