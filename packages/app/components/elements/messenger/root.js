@@ -66,7 +66,7 @@ export default function (props) {
     const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
 
     let { data: dynamicData, error } = useSWR(
-        commentForm ? ['/api.php?r=bx_messenger/get_send_form/&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
+        commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -79,7 +79,7 @@ export default function (props) {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
             if (menuItem) {
-                let request_url = '/api.php?r=bx_messenger/get_convos_list/&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
+                let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
                 const sResponse = await fetcher(request_url);
                 let convos = sResponse.data;
                
@@ -92,7 +92,7 @@ export default function (props) {
         //if (convos) {
            // const convoId = convos?.data[selectedConvoIndex].id;
            // if (convoId) {
-                let request_url = '/api.php?r=bx_messenger/get_convo_messages/&params=' + JSON.stringify({ lot: convoId, jot: 0 });
+                let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
                 const sResponse = await fetcher(request_url);
                 setJots({ data: sResponse.data, index: 0 });
                 setTimeout(() => {
@@ -334,7 +334,7 @@ const CreateConvo = memo(({ onSave }) => {
 
     const handleSearchUsers = useCallback(async (sValue) => {
         setLoading(true);
-        let request_url = '/api.php?r=bx_messenger/search_users/&params=' + JSON.stringify({ term: sValue });
+        let request_url = '/api.php?r=bx_messenger/search_users/Services&params=' + JSON.stringify({ term: sValue });
         const sResponse = await fetcher(request_url);
         setUsers(sResponse.data);
         setLoading(false);
@@ -357,7 +357,7 @@ const CreateConvo = memo(({ onSave }) => {
     }, [users, susers]);
 
     const handleSave = async () => {
-        let request_url = '/api.php?r=bx_messenger/save_parts_list/&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
+        let request_url = '/api.php?r=bx_messenger/save_parts_list/Services&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
         const sResponse = await fetcher(request_url);
         if (sResponse.data.code == 0) {
             onSave(sResponse.data)
@@ -398,18 +398,18 @@ function JotItem({ item, index }) {
 
         switch (oItem.name) {
             case 'edit':
-                const result = await fetcher('/api.php?r=bx_messenger/get_send_form/&params=' + JSON.stringify({ 'action': 'edit', id: item.id }));
+                const result = await fetcher('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ 'action': 'edit', id: item.id }));
                 setViewState({ view: 'edited', data: result });
                 break;
 
             case 'remove':
-                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
+                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
                 break;
         }
     }
 
     let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=bx_messenger/get_send_form/&params[]=', '', postData] : null,
+        postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
     )
@@ -428,6 +428,8 @@ function JotItem({ item, index }) {
         setViewState({ view: '' })
         setPostData(formData);
     }
+
+    let aManageItems = item.menu?.items ? item.menu.items.filter(item => ['remove', 'edit'].includes(item.name)) : [];
 
     return (
         <AnimatedBlock key={'jot' + index}>
@@ -464,9 +466,6 @@ function JotItem({ item, index }) {
                                     </View>
                                 </View>
                             ) : <><Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} /></>}
-
-
-
                         </View>
                     </View>
                 </View>
@@ -474,7 +473,7 @@ function JotItem({ item, index }) {
                     <View className="pl-10">
                         <Reactions key={'reactions_' + item.id} {...item.reactions} />
                     </View>
-                    <DropdownMenu items={item.menu.filter(item => ['remove', 'edit'].includes(item.name)).map((aItem) => {
+                    {aManageItems.length > 0 && <DropdownMenu items={aManageItems.map((aItem) => {
                         return {
                             id: aItem.id + '-' + aItem.name,
                             name: aItem.name,
@@ -484,6 +483,7 @@ function JotItem({ item, index }) {
                     })} onSelect={handleManageMenuSelect}>
                         <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
                     </DropdownMenu>
+                    }
                 </View>
             </View>
 
