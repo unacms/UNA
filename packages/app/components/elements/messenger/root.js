@@ -414,8 +414,6 @@ function JotItem({ item, index }) {
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
     )
 
-
-
     let aImg = item?.files.map((obj) => {
         return {
             src: obj.src,

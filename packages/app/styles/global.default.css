@@ -356,3 +356,10 @@ div::-webkit-scrollbar {
             transform: translateY(0);
         }
     }
+
+    .item-overlap{
+        position: absolute !important;
+        z-index: 0;
+        top:-10000px;
+        left:-10000px;
+    }

@@ -5,9 +5,9 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName, getLayout  } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName, getLayout } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb } from 'app/lib/conductor-helpers';
-import { Button } from 'app/design/controls';
+import { Button, ButtonRef } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
@@ -24,6 +24,8 @@ import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -51,6 +53,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const windowWidth = windowDimen.width;
     const windowHeight = windowDimen.height;
     const [routes, setRoutes] = useState(initedTabs);
+    const [cntWidth, setCntWidth] = useState(0);
+
 
     useEffect(() => {
         setRoutes(initedTabs);
@@ -317,12 +321,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
 
             let styles = {}
-            if (windowWidth > 600 && getLayout(currentUser) != 'hor') {
-                styles = { width: 1536 - 20 * 16 }
-            }
-
+            /* if (windowWidth > 600 && getLayout(currentUser) != 'hor') {
+                 styles = { width: 1536 - 20 * 16 }
+             }
+ */
             return (
-                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center " + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >
+                <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lala3" + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >
                     <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
                         {!header && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b  border-bdrnavbar dark:border-bdrnavbar-d">
                             <Row className="items-center">
@@ -346,27 +350,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         }
                         <Row className="items-center ">
                             {menuSettings?.name ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex h-9">{menuSettings?.name}</Text> : <></>}
-                            <ScrollView horizontal={true} className="items-center gap-0 " >
-                                <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
-                                    {routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
-                                        <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
-                                            key={`tab-${a.index}`}
-                                            onPress={() => {
-                                                setIndex(a.index);
-                                                getNumCols(windowWidth)
-                                                window.history.pushState({}, '', '/' + a.key);
-                                                if (onChangeRoute) {
-                                                    onChangeRoute(a);
-                                                }
-                                            }}
-                                        >
-                                            <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
-                                        </Pressable>
-                                    ))}
-                                    <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
-                                </Row>
-                            </ScrollView>
-                            { getLayout(currentUser) != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
+
+                            <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+
+                            {getLayout(currentUser) != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                                 {addButtons}
                             </Row>}
                         </Row>
@@ -383,7 +370,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const zIndexValue = withTiming(scrollValue.value, { duration: d });
             return {
                 opacity: opacityValue
-                
+
             };
         }, [scrollValue]);
 
@@ -391,7 +378,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
                 opacity: opacityValue,
-                zIndex: scrollValue.value ? 40:60
+                zIndex: scrollValue.value ? 40 : 60
             };
         }, [scrollValue]);
 
@@ -405,11 +392,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         let tOffset = getLayout(currentUser) == 'ver' ? 0 : 63;
         return (
             <>
-                <Animated.View style={[{ width: '100%', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= 1024 ? tOffset : 0 }, animatedStyle6]}>
+                <Animated.View style={[{ width: cntWidth + 'px', position: 'fixed', overflow: 'hidden', zIndex: 40, top: windowWidth >= 1024 ? tOffset : 0 }, animatedStyle6]}>
                     {smallHeader}
                     {tabBarObjSmall}
                 </Animated.View>
-                <Animated.View style={[{ width: '100%', overflow: 'hidden', zIndex: 50 }, animatedStyle5]}  >
+                <Animated.View style={[{ width: cntWidth + 'px', overflow: 'hidden', zIndex: 50 }, animatedStyle5]}  >
                     <View className="w-full" >
                         <View style={[{ width: '100%', overflow: 'hidden' }]}>
                             <View>
@@ -423,7 +410,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 </Animated.View>
             </>
         );
-    }, [windowWidth, currentUser]);
+    }, [windowWidth, currentUser, cntWidth]);
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
@@ -573,10 +560,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     };
 
+    useEffect(() => {
+        if (getNumCols(cntWidth) != numColumns)
+            setNumColumns(getNumCols(cntWidth));
+    }, [cntWidth]);
+
     const handleLayoutTop = (event) => {
-        const containerWidth = event.nativeEvent.layout.width;
-        if (getNumCols(containerWidth) != numColumns)
-            setNumColumns(getNumCols(containerWidth));
+        setCntWidth(event.nativeEvent.layout.width)
+
     };
 
     const leftSideBarObj = useCallback(() => {
@@ -662,4 +653,88 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             </View>
         </View>
     );
+}
+function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
+    let items = routes.filter((aItem) => aItem.hideInTop != true);
+    const itemRefs = useRef([]);
+    const menuRef = useRef(null);
+    const [visibleItemsCount, setVisibleItemsCount] = useState(0);
+    const [width, setWidth] = useState(0);
+    const [ntfsOpen, setNtfsOpen] = useState(false)
+
+    useEffect(() => {
+        const menuWidth = width;
+        let visibleWidth = 0;
+        let visibleCount = 0;
+        for (let i = 0; i < itemRefs.current.length; i++) {
+            const itemWidth = itemRefs.current[i].offsetWidth;
+            if (!itemRefs.current[i].className.includes('hidden')) {
+                if (visibleWidth + itemWidth > menuWidth) break;
+                visibleWidth += itemWidth;
+                visibleCount++;
+            }
+        }
+        if (visibleCount != visibleItemsCount) {
+            setVisibleItemsCount(visibleCount);
+        }
+
+    }, [width]);
+
+    const handleLayoutTop = (event) => {
+        setWidth(event.nativeEvent.layout.width - 30);
+    };
+    return (
+        <>
+            <ScrollView onLayout={handleLayoutTop} horizontal={true} className="w-full " >
+                <Row className="mr-auto ml-3 sm:ml-4" >
+                    {items.map((a, index2) => (
+                        <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+                            key={`tab-${a.index}`}
+                            onPress={() => {
+                                setIndex(a.index);
+                                getNumCols(windowWidth)
+                                window.history.pushState({}, '', '/' + a.key);
+                                if (onChangeRoute) {
+                                    onChangeRoute(a);
+                                }
+                            }}
+                        >
+                            <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                        </Pressable>
+                    ))}
+                </Row>
+            </ScrollView>
+            {visibleItemsCount < items.length && <DropdownPopup
+                open={ntfsOpen}
+                onOpenChange={(bOpen) => {
+                    setNtfsOpen(bOpen)
+                }}
+                size="small"
+            >
+                {[
+                    <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutline" />,
+                    <><View className="mr-auto ml-3 sm:ml-4 items-end" >
+                        {items.slice(visibleItemsCount).map((a, index2) => (
+                            <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
+                                key={`tab-${a.index}`}
+                                onPress={() => {
+                                    setNtfsOpen(false)
+                                    setIndex(a.index);
+                                    getNumCols(windowWidth)
+                                    window.history.pushState({}, '', '/' + a.key);
+                                    if (onChangeRoute) {
+                                        onChangeRoute(a);
+                                    }
+                                }}
+                            >
+                                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                            </Pressable>
+                        ))}
+                    </View></>
+                ]}
+            </DropdownPopup>}
+        </>
+    )
+    /* <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
+       */
 }
