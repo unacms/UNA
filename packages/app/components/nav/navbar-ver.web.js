@@ -128,6 +128,7 @@ export default function (props) {
                 }}
                 className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen    "}>
                 <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
+                    <Row>
                     {headerSettings.menu && menu_drawer_items.length > 0 && (
                         <View className="lg:hidden mr-4">
                             <Pressable onPress={showMenu}>
@@ -183,6 +184,7 @@ export default function (props) {
                                 </>)}
                         </View>
                     </View>
+                    </Row>
                     <View className='hidden lg:block mt-4'>
                         {!!currentUser ? (
                             <View>

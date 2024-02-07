@@ -6,6 +6,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'; 
 import { appStatic } from 'app/lib/app-static';
 import Search from 'app/ui/molecules/search';
+import { FeedbackHaptics } from 'app/lib/util';
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -17,7 +18,7 @@ export function SvgLogoNative() {
     }
 };
 
-export function updateRightHeader(items, navigation, routerExpo, path) {
+export function updateRightHeader(items, navigation) {
     let addButtons = items?.map((button) => {
         let btn = undefined;
         if(button.section || button.link == 'search')
@@ -47,7 +48,7 @@ export function updateRightHeaderObj(addButtons, navigation) {
 */
 export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent) {
     let type = typeof header;
-    const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={routerExpo.back} >
+    const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>
     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
     if (type == 'string'){
         header = (

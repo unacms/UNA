@@ -6,15 +6,11 @@ import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
-import { updateRightHeader, updateCenterHeader, updateRightHeaderObj } from 'app/lib/native-handlers'
+import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
 import * as Linking from 'expo-linking';
-import { MMKVLoader } from "react-native-mmkv-storage";
-import { Text } from 'app/design/typography';
-import { Redirect } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import {Loading} from 'app/loading'
-
 import { BottomSheetData } from 'app/context/bottomsheet';  
 
 
@@ -63,11 +59,11 @@ console.log('------------', _path);*/
             _path = item ? item.url : null;
     }
 
-    const backButtonPresented = useNavigationState((state) => {
+   /* const backButtonPresented = useNavigationState((state) => {
         console.log("------", state.routes)
         return state.routes.length > 1;
-    });
-
+    });*/
+    const backButtonPresented = false;
     const isFocused2 = true;//useIsFocused();
 
     useEffect(() => {
@@ -80,7 +76,7 @@ console.log('------------', _path);*/
                     path2 = b.path;
                     params = JSON.stringify(parseQueryString(b.queryString));
                 }
-                const MMKV = new MMKVLoader().withInstanceID("userId" + (currentUser ? currentUser.id : '0')).initialize();
+               /* const MMKV = new MMKVLoader().withInstanceID("userId" + (currentUser ? currentUser.id : '0')).initialize();
                     
                 let cacheData = await MMKV.getStringAsync('page-' + path2);
                 let data = null;
@@ -92,13 +88,16 @@ console.log('------------', _path);*/
                 else{
                     //console.log('------------------- from cache :' + _path)
                     data = JSON.parse(cacheData);
-                }
+                }*/
+
+                let data = await getData(path2, null, null, null, null, params);
 
                 if (data?.props) {
                     setPageData(data.props);
-                    setBottomSheetData(false);
+                    if (bottomSheetData !== false)
+                        setBottomSheetData(false);
                     let settings = appSetting('layouts', data.props.data.uri)
-                    updateRightHeader(settings?.header, navigation, routerExpo, path2);
+                    updateRightHeader(settings?.header, navigation);
                     let isProfile = appSetting('layout', 'show_user_icon');
                     let profile=<></>
                     if (isProfile && currentUser ){

@@ -23,12 +23,17 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const routerExpo = useRouter();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [routes, setRoutes] = useState(initedTabs);
+    const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
     if (!deepEqual(menu,menuState)){
         setMenuState(menu)
         setRoutes(initedTabs);
     }
+
+    const setRoutes = (a) => {
+        //console.log('+++++++++++++++++++', isRefreshing)
+        setRoutes1(a);
+    };
         
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
@@ -44,29 +49,40 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
 
+    const currentRoute = routes.find((item) => item.index === index);
     const {
-        status,
+        status: rqtStatus,
         data: newData,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useInfiniteQuery([routes[index]?.endpoint?.request_url, index], 
-        ({ pageParam }) => parseData(routes, index, setRoutes),
-        {
-            getNextPageParam: lastPage => {
-                if (lastPage?.data?.length == 0)
-                    return;
+
+    } = useInfiniteQuery({
+        queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)],
+        queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
+        getNextPageParam: (lastPage, pages) => {
+            if (lastPage?.data?.length > 0) {
                 return lastPage?.endpoint;
-            },
+            }
+
+            return;
+        },
+        enabled: currentRoute?.endpoint?.params?.start == 0 && !isRefreshing//routes[index]?.data?.length == 0
     });
 
-    const handleEndReached = useCallback(async () => {
-       
-        if (isFetchingNextPage) 
+    const handleEndReached = async (lastItemIndex) => {
+            if (isFetchingNextPage  || isRefreshing)
+            return;
+        if (!hasNextPage)
+            return;
+        if (currentRoute?.endpoint.finished)
+            return;
+            if (lastItemIndex == false)
             return;
         fetchNextPage();
-    }, [routes, index, isFetchingNextPage, status]);
+    };
 
+    
     if (isHideDefaultHeader) {
         setTimeout(() => {
             navigation.setOptions({ headerShown: false });
@@ -88,6 +104,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
+        /*if (props.data.length == 1 && !props.endpoint) {
+           // let a = <ItemRenderer route={props.route}  numColumns={1} item={props.data[0]} />;
+            let a = props.data.map((item, index) => {
+                return <ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} />
+            });
+            return a;
+        }*/
+
         return (
             <UniList
                 {...props}
@@ -117,17 +141,20 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         if (!route.inited){
             return Preload
         }
+
+        
+
         const unitType = getUnitModeBySource(route?.endpoint?.request_url);
         if (route.inited)
             return (
                 <TabFlashList
                     index={route.index}
                     data={route.data}
-                    
+                    route={route}
                     unit={route.endpoint?.unit}
                     renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
                     ListFooterComponent={
-                        (route.data.length > 0 && route?.endpoint?.finished === false) ? (
+                        (hasNextPage && isFetchingNextPage) ? (
                             Preload
                         ) : null
                     }
@@ -164,7 +191,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 /* gap-x-2*/
             return (
                 <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
-                    <Row className="pl-4 gap-x-2" >
+                    <Row className="pl-4 gap-x-2 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
