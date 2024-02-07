@@ -14,7 +14,7 @@ export default function CreateConvo({ onSave}) {
 
     const handleSearchUsers = useCallback(async (sValue) => {
         setLoading(true);
-        let request_url = '/api.php?r=bx_messenger/search_users/&params=' + JSON.stringify({ term: sValue });
+        let request_url = '/api.php?r=bx_messenger/search_users/Services&params=' + JSON.stringify({ term: sValue });
         const sResponse = await fetcher(request_url);
         setUsers(sResponse.data);
         setLoading(false);
@@ -37,7 +37,7 @@ export default function CreateConvo({ onSave}) {
     }, [users, susers]);
 
     const handleSave = async () => {
-        let request_url = '/api.php?r=bx_messenger/save_parts_list/&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
+        let request_url = '/api.php?r=bx_messenger/save_parts_list/Services&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
         const sResponse = await fetcher(request_url);
         if (sResponse.data.code == 0) {
             onSave(sResponse.data)
