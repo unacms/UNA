@@ -288,7 +288,6 @@ export function LeftSidebar({ title, addButtons, children }) {
 }
 
 export function TopSidebar({ styles, leftSideBar, header, headerSettings, menu_drawer_items, addButtons, children, isSmall, title, layout, showMenu  }) {
-    console.log('headerSettings', menu_drawer_items);
     const isUseBg = appSetting('layout', 'use_background');
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lala3" + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >

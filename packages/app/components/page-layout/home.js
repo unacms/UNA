@@ -120,7 +120,7 @@ export default function PageLayout(props) {
                     }
                 >
                     {appStatic('components_splash', p)}
-                    {getLayout(currentUser) =='ver ' && appStatic('components_fullfooter', p)}
+                    {getLayout(currentUser) == 'ver ' && appStatic('components_fullfooter', p)}
                 </View>
             )
         }

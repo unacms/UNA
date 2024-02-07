@@ -150,7 +150,7 @@ export default function Unit(props) {
             <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-video w-1/3 sm:w-full rounded-xl ">
+                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden ">
                             <Image
                                 {...data.cover}
                                 alt={data.title}

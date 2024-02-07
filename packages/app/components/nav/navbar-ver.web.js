@@ -92,8 +92,8 @@ export default function (props) {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
-    const isUseBg = appSetting('layout', 'use_background');
-
+    let isUseBg = appSetting('layout', 'use_background');
+    
     const menu_top = appSetting('menu_items', 'menu_top');
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
@@ -104,7 +104,8 @@ export default function (props) {
 
     const windowWidth = useWindowDimensions().width + 17;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
-
+    if (windowWidth < 1024)
+        isUseBg = true;
     useEffect(() => {
         const handleClick = () => {
             hideMenu();

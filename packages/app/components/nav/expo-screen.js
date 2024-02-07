@@ -64,6 +64,7 @@ console.log('------------', _path);*/
     }
 
     const backButtonPresented = useNavigationState((state) => {
+        console.log("------", state.routes)
         return state.routes.length > 1;
     });
 

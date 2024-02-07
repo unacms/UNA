@@ -27,7 +27,7 @@ function getCounter(num, icon = '', add = '') {
 
     return (
         <Row className={'mb-auto    text-' + sColor + '-800 bg-' + sColor + '-200 dark:bg-' + sColor + '-950 gap-x-1 py-1 px-2 rounded-full mb-auto dark:text-' + sColor + '-200 '}>
-            <Icon className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon} width={16} height={16} />
+            <Icon className={"text-" + sColor + "-600 dark:text-" + sColor + "-400"} icon={icon}  size={16} />
             <Text className={"flex-none text-" + sColor + "-800 dark:text-" + sColor + "-200 text-xs"}>{num}{add}</Text>
         </Row>
     )
@@ -60,8 +60,8 @@ export default function ElementDashboardStat(props) {
                         if (item?.type != 'growth') {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
                                 <Link href={item2.link}>
-                                    <Card rounded=" rounded-2xl " addClassName="sm:hover:scale-105 w-full p-4 gap-y-2" >
-                                        <Row className='space-x-1 w-full justify-between'>
+                                    <Card rounded=" rounded-2xl " addClassName="sm:hover:scale-105 w-full p-4 " >
+                                        <Row className='space-x-1 w-full justify-between mb-2'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                     {item.count}
@@ -85,7 +85,7 @@ export default function ElementDashboardStat(props) {
                         return (
                             <View className=" w-1/2 lg:w-1/3  xl:w-1/4 p-2 duration-300 " key={index}>
                                 <Link href={item2.link} key={index}>
-                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4 gap-y-2 sm:hover:scale-105 " margin="a">
+                                    <Card rounded=" rounded-2xl " addClassName="w-full p-4  sm:hover:scale-105 " margin="a">
                                         <Row className=''>
                                             <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                 {item.current}
@@ -93,7 +93,7 @@ export default function ElementDashboardStat(props) {
                                             {getCounter(item.growth, '', '%')}
 
                                         </Row>
-                                        <Row className="w-full my-auto gap-x-2 ">
+                                        <Row className="w-full my-auto gap-x-2 mb-2">
 
                                             <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
                                                 {t(item2.title)}

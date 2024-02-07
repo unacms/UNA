@@ -113,7 +113,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const TabScene = ({ route, index }) => {
       
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module? data.module : data.unit));
+        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited){
             return Preload
         }
@@ -161,10 +161,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 //updateRightHeaderObj(addButtons, navigation);
                 updateRightHeader(menuSettings?.add, navigation);
             }, 300);
-
+/* gap-x-2*/
             return (
                 <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
-                    <Row className="pl-4 gap-x-4" >
+                    <Row className="pl-4 gap-x-2" >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}

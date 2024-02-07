@@ -23,19 +23,12 @@ export default function (props) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
 
-    let defaultMenuName = 'inbox';
-    let defaultConvoId = '';
-    const aUrl = props.url.split('/');
-    if (aUrl.length > 1)
-        defaultMenuName = aUrl[1];
-    if (aUrl.length > 2)
-        defaultConvoId = aUrl[2];
-
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    const menu = props.menu
-    console.log('menu', menu);
-    const [convos, setConvos] = useState(false);
-    const [convoId, setConvoId] = useState(defaultConvoId);
+    const selectedMenu = props.selectedMenu;
+    const convos = props.convos
+    console.log('menu', selectedMenu, convos, props.defaultConvoId);
+ 
+   // const [convos, setConvos] = useState(false);
+    const [convoId, setConvoId] = useState(props.defaultConvoId);
     const [jots, setJots] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < 768);
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
@@ -47,17 +40,14 @@ export default function (props) {
 
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
-   
+
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const layoutHeight = height - 64;
     const layoutHeightLeft = layoutHeight;
     const layoutHeightRight = layoutHeight - 64 - formHeight;
-    const allowChangeMenu = true;
 
     const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
-
-
 
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
@@ -68,19 +58,6 @@ export default function (props) {
             revalidateOnReconnect: false
         }
     );
-
-    const fetchConvos = async () => {
-        if (menu) {
-            const menuItem = menu?.data[menu?.index].name;
-            if (menuItem) {
-                let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
-                const sResponse = await fetcher(request_url);
-                let convos = sResponse.data;
-               
-                setConvos({ data: convos});
-            }
-        }
-    }
 
     const fetchItems = async (convoId) => {
         let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
@@ -94,8 +71,8 @@ export default function (props) {
     const updateState = () => {
         if (!isWeb)
             return;
-        if (menu && convos) {
-            window.history.pushState(null, null, "/messenger/" + menu.data[menu.index].name + '/' + selectedConvo.id + '/');
+        if (selectedMenu &&  selectedConvo) {
+            window.history.pushState(null, null, "/messenger/" + selectedMenu + '/' + selectedConvo.id + '/');
         }
     }
 
@@ -103,44 +80,36 @@ export default function (props) {
         setIsSmallScreen(width < 768);
     }, [width]);
 
+
+    useEffect(() => {
+        setConvoId(props.defaultConvoId);
+    }, [selectedMenu, props.defaultConvoId]);
+
+    useEffect(() => {
+        if (selectedConvo){
+        fetchItems(selectedConvo.id);
+
+        updateState()
+        if (currentUser) {
+            subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
+            subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
+        }
+        }
+    }, [convoId]);
+
+
     useEffect(() => {
         setPanelsVisible({ convos: true, jots: isSmallScreen ? false : true });
     }, [isSmallScreen]);
 
-    useEffect(() => {
-        fetchConvos();
-    }, [menu]);
 
     useEffect(() => {
         if (convoId == '' && convos){
-            //console.log("convos?.data[0]convos?.data[0]", convos)
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);
 
-    useEffect(() => {
-        updateState()
-    }, [menu.index]);
-
-    useEffect(() => {
-        console.log("convoId", convoId)
-        fetchItems(selectedConvo.id);
-
-        updateState()
-        if (currentUser) {
-            subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-            subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-        }
-
-    }, [convoId]);
-
-    useEffect(() => {
-        fetchItems(selectedConvo.id);
-        if (currentUser) {
-            subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-            subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-        }
-    }, []);
+ 
 
     const onNewMessage = (data) => {
         setJotUpdated(data);
@@ -196,7 +165,7 @@ export default function (props) {
         }
     }, [jotUpdated]);
 
-    if (!menu || !selectedConvo)
+    if (!selectedMenu || !selectedConvo)
         return <></>
 
     const changeConvo = (convo) => {
@@ -208,11 +177,6 @@ export default function (props) {
     const showConvo = () => {
         setPanelsVisible({ convos: true, jots: false })
     }
-   
-    const getIcon = (icon) => {
-        const sIcon = icon && icon.split(' ')[0];
-        return sIcon && ~Object.keys(aIconsAliases).indexOf(sIcon) ? aIconsAliases[sIcon] : sIcon;
-    }
 
     const onFormSubmit = (formData, d) => {
         formData.set("id", convos?.data[selectedConvoIndex].id);
@@ -223,8 +187,6 @@ export default function (props) {
     const handleLayout = (event) => {
         setFormHeight(event.nativeEvent.layout.height)
     };
-
-    
 
     return (
         <View className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>

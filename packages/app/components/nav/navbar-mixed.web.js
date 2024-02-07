@@ -171,7 +171,7 @@ export default function (props) {
                         <Row className="flex-row xl:flex-none justify-end">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end">
-                                    <View className=" flex-row my-auto gap-x-2 ml-2">
+                                    <View className=" flex-row my-auto gap-x-2 ml-2 bg-red-500">
                                         {bSearch && <View className="lg:hidden"><Search /></View>}
                                         {bApps && <View className="relative hidden lg:flex flex-row">
                                             <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)

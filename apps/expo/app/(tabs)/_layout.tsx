@@ -39,7 +39,7 @@ export default function AppLayout() {
 
 
   return (
-    <SafeAreaView edges={['left', 'right']} style={{
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={{
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -47,43 +47,43 @@ export default function AppLayout() {
       height: '100%'
     }}>
       <BottomSheetDataContext>
-      <Tabs
-        screenOptions={({ navigation, route }) => ({
-          tabBarStyle: {
-            backgroundColor: colors.barsBackground,
-            height: 60
-          },
-          headerStyle: {
-            backgroundColor: colors.barsBackground,
-          },
-          tabBarItemStyle: {
-            marginBottom: 15,
-            height: 40,
-            marginTop: 5,
-          },
-          tabBarInactiveTintColor: colors.barsColor,
-          freezeOnBlur: true,
-          unmountOnBlur: false,
-        })}
-      >
-        {
-          TabList.map((tab, index) => (
-            <Tabs.Screen
-              key={`tab${index}`}
-              name={`tab${index}`}
-              initialParams={{ url2: tab.url }}
-              options={{
-                tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
-                title: t(tab.title),
-                headerShown: false,
-                tabBarIcon: ({ color }) => (
-                  (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
-                )
+        <Tabs
+          screenOptions={({ navigation, route }) => ({
+            tabBarStyle: {
+              backgroundColor: colors.barsBackground,
+              height: 60
+            },
+            headerStyle: {
+              backgroundColor: colors.barsBackground,
+            },
+            tabBarItemStyle: {
+              marginBottom: 15,
+              height: 40,
+              marginTop: 5,
+            },
+            tabBarInactiveTintColor: colors.barsColor,
+            freezeOnBlur: true,
+            unmountOnBlur: false,
+          })}
+        >
+          {
+            TabList.map((tab, index) => (
+              <Tabs.Screen
+                key={`tab${index}`}
+                name={`tab${index}`}
+                initialParams={{ url2: tab.url }}
+                options={{
+                  tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
+                  title: t(tab.title),
+                  headerShown: false,
+                  tabBarIcon: ({ color }) => (
+                    (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                  )
 
-              }}
-            />
-          ))}
-      </Tabs>
+                }}
+              />
+            ))}
+        </Tabs>
       </BottomSheetDataContext>
     </SafeAreaView>
   );

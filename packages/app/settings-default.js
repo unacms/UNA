@@ -1,6 +1,6 @@
 let settingsDefault = {
     layout: {
-        format:'mixed', //hor, ver, mixed
+        format:'ver', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -8,7 +8,7 @@ let settingsDefault = {
         cover_aspect: 'aspect-5/1',
         cell_gap: 4,
         cell_style: '',
-        show_user_icon: true,
+        show_user_icon: false,
         search: true,
         messenger: '/chat',
         notifications: '/notifications-view',
@@ -25,7 +25,7 @@ let settingsDefault = {
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: ['EventChecker'],
         async_workers_interval: 10,
-        bluetooth: true,
+        bluetooth: false,
         bluetooth_device_name_prefix: "NEO",
         use_custom_font: false,
         lock_unconfirmed: true,
