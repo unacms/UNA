@@ -34,7 +34,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
 
     const aAllowedList = ['inbox', 'direct', 'saved'];
     const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
-    const menuDefaultList = data2.content[0].data.menu.filter(item => aAllowedList.includes(item.name));
+    const menuDefaultList = data2.content[0].data.menu.items.filter(item => aAllowedList.includes(item.name));
     const [menu, setMenu] = useState({ data: menuDefaultList, index: menuDefaultList.findIndex(item => item.name == defaultMenuName) });
 
 

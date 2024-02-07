@@ -34,7 +34,7 @@ export default function (props) {
         defaultConvoId = aUrl[2];
 
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    const menuDefaultList = props.data.menu.filter(item => aAllowedList.includes(item.name));
+    const menuDefaultList = props.data.menu.items.filter(item => aAllowedList.includes(item.name));
     const menu = props.menu
     const [convos, setConvos] = useState(false);
     const [convoId, setConvoId] = useState(defaultConvoId);
@@ -62,7 +62,7 @@ export default function (props) {
 
 
     let { data: dynamicData, error } = useSWR(
-        commentForm ? ['/api.php?r=bx_messenger/get_send_form/&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
+        commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -75,7 +75,7 @@ export default function (props) {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
             if (menuItem) {
-                let request_url = '/api.php?r=bx_messenger/get_convos_list/&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
+                let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
                 const sResponse = await fetcher(request_url);
                 let convos = sResponse.data;
                
@@ -85,7 +85,7 @@ export default function (props) {
     }
 
     const fetchItems = async (convoId) => {
-        let request_url = '/api.php?r=bx_messenger/get_convo_messages/&params=' + JSON.stringify({ lot: convoId, jot: 0 });
+        let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
         const sResponse = await fetcher(request_url);
         setJots({ data: sResponse.data, index: 0 });
         setTimeout(() => {

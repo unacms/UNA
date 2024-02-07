@@ -21,18 +21,18 @@ export default function JotItem({ item, index }) {
 
         switch (oItem.name) {
             case 'edit':
-                const result = await fetcher('/api.php?r=bx_messenger/get_send_form/&params=' + JSON.stringify({ 'action': 'edit', id: item.id }));
+                const result = await fetcher('/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ 'action': 'edit', id: item.id }));
                 setViewState({ view: 'edited', data: result });
                 break;
 
             case 'remove':
-                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
+                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
                 break;
         }
     }
 
     let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=bx_messenger/get_send_form/&params[]=', '', postData] : null,
+        postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
     )
@@ -49,6 +49,10 @@ export default function JotItem({ item, index }) {
         setViewState({ view: '' })
         setPostData(formData);
     }
+
+    let aManageMenu = [];
+    if(item.menu?.items) 
+        aManageMenu = item.menu.items.filter(item => ['remove', 'edit'].includes(item.name));
 
     return (
         <AnimatedBlock key={'jot' + index}>
@@ -95,16 +99,18 @@ export default function JotItem({ item, index }) {
                     <View className="pl-10">
                         <Reactions key={'reactions_' + item.id} {...item.reactions} />
                     </View>
-                    <DropdownMenu items={item.menu.filter(item => ['remove', 'edit'].includes(item.name)).map((aItem) => {
-                        return {
-                            id: aItem.id + '-' + aItem.name,
-                            name: aItem.name,
-                            link: aItem.link,
-                            title: aItem.title
-                        };
-                    })} onSelect={handleManageMenuSelect}>
-                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
-                    </DropdownMenu>
+                    {aManageMenu.length > 0 && 
+                        <DropdownMenu items={aManageMenu.map((aItem) => {
+                            return {
+                                id: aItem.id + '-' + aItem.name,
+                                name: aItem.name,
+                                link: aItem.link,
+                                title: aItem.title
+                            };
+                        })} onSelect={handleManageMenuSelect}>
+                            <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
+                        </DropdownMenu>
+                    }
                 </View>
             </View>
 
