@@ -1,6 +1,6 @@
 import { Root, getData } from 'app/root'
-import { useState, useEffect,useContext } from 'react'
-import { useRoute, useNavigationState  } from '@react-navigation/native';
+import { useState, useEffect, useContext } from 'react'
+import { useRoute, useNavigationState } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
@@ -10,10 +10,8 @@ import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
 import * as Linking from 'expo-linking';
 import { useTranslation } from 'react-i18next';
-import {Loading} from 'app/loading'
-import { BottomSheetData } from 'app/context/bottomsheet';  
-
-
+import { Loading } from 'app/loading'
+import { BottomSheetData } from 'app/context/bottomsheet';
 
 export function Screen(params) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -21,50 +19,41 @@ export function Screen(params) {
     const pathname = params.tabname;
     const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
-   
     const route = useRoute();
     const [pageData, setPageData] = useState(null);
-
     const routerExpo = useRouter();
     const { colors } = Theme();
 
     let _path = route?.params?.path && Array.isArray(route?.params?.path) ? '/' + route?.params?.path?.join('/') : null;//route?.path;
-    if (route?.params){
+    if (route?.params) {
         let p = JSON.parse(JSON.stringify(route?.params))
         delete p.path;
         if (Object.keys(p).length > 0)
-            _path = _path +  '&params[]=&params[]=' + JSON.stringify(p);
+            _path = _path + '&params[]=&params[]=' + JSON.stringify(p);
     }
-
-    //console.log('*** update screen ***--' + _path, params)
 
     // DEEP LINKING
     const url = Linking.useURL();
-    if (url &&  typeof url !== 'undefined'){
+    if (url && typeof url !== 'undefined') {
         let a = parseUrl(url);
-        _path = '/'+ a.path + (a.queryString ? '?' + a.queryString : '')
+        _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
         if (_path == '/')
             _path = '/home';
     }
     // DEEP LINKING
-   /* console.log('------------', _path);
-if (_path == '/home')
-return <Redirect href="/tab1" />;
-console.log('------------', _path);*/
-    if (!_path || _path.includes('/tab')){
+    /* console.log('------------', _path);
+ if (_path == '/home')
+ return <Redirect href="/tab1" />;
+ console.log('------------', _path);*/
+    if (!_path || _path.includes('/tab')) {
         const tabList = currentUser
             ? appSetting('menu_items', 'menu_bottom_tabs_logged')
             : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
-            const item = tabList.find((item) => item.key === pathname);
-            _path = item ? item.url : null;
+        const item = tabList.find((item) => item.key === pathname);
+        _path = item ? item.url : null;
     }
-
-   /* const backButtonPresented = useNavigationState((state) => {
-        console.log("------", state.routes)
-        return state.routes.length > 1;
-    });*/
     const backButtonPresented = false;
-    const isFocused2 = true;//useIsFocused();
+    const isFocused2 = true;
 
     useEffect(() => {
         const fetchPageData = async () => {
@@ -72,51 +61,41 @@ console.log('------------', _path);*/
                 let path2 = _path;
                 let b = parseUrl(_path);
                 let params = null;
-                if (b.queryString){
+                if (b.queryString) {
                     path2 = b.path;
                     params = JSON.stringify(parseQueryString(b.queryString));
                 }
-               /* const MMKV = new MMKVLoader().withInstanceID("userId" + (currentUser ? currentUser.id : '0')).initialize();
-                    
-                let cacheData = await MMKV.getStringAsync('page-' + path2);
-                let data = null;
-
-                if (!cacheData || true){
-                    data = await getData(path2, null, null, null, null, params);
-                    await MMKV.setStringAsync('page-' + path2, JSON.stringify(data));
-                }
-                else{
-                    //console.log('------------------- from cache :' + _path)
-                    data = JSON.parse(cacheData);
-                }*/
-
                 let data = await getData(path2, null, null, null, null, params);
-
                 if (data?.props) {
                     setPageData(data.props);
-                    if (bottomSheetData !== false)
-                        setBottomSheetData(false);
-                    let settings = appSetting('layouts', data.props.data.uri)
-                    updateRightHeader(settings?.header, navigation);
-                    let isProfile = appSetting('layout', 'show_user_icon');
-                    let profile=<></>
-                    if (isProfile && currentUser ){
-                        let dUser = Object.assign({}, currentUser);
-                        dUser.url_avatar = dUser.avatar
-                        //dUser.url = '/dashboard'
-                        profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
-                    }
-                    //settings?.icon
-                    updateCenterHeader(_path, t(data.props.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
                 }
-               
+
             }
-      };
-  
-      fetchPageData();
+        };
+        //console.log('!!!!!!!!!!', _path)
+        fetchPageData();
     }, [_path]);
-    //console.log('-----------------', pageData?.data?.uri)
+
+    useEffect(() => {
+        //console.log('--------------')
+        if (pageData) {
+            if (bottomSheetData !== false)
+                setBottomSheetData(false);
+            let settings = appSetting('layouts', pageData.data.uri)
+            updateRightHeader(settings?.header, navigation);
+            let isProfile = appSetting('layout', 'show_user_icon');
+            let profile = <></>
+            if (isProfile && currentUser) {
+                let dUser = Object.assign({}, currentUser);
+                dUser.url_avatar = dUser.avatar
+                profile = <View className="mr-2"><Profile {...dUser} displayType="unit_wo_info" displaySize="xs" /></View>
+            }
+            updateCenterHeader(_path, t(pageData.data.title), backButtonPresented, navigation, routerExpo, colors, '', profile);
+        }
+    }, [pageData]);
+
+
     return pageData?.data ? (
         <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
-    ) : <Loading/>;
+    ) : <Loading />;
 }

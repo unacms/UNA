@@ -109,11 +109,15 @@ export async function parseData(routes, index, setRoutes, newData) {
 
         const sResponse = await fetcher(sRequest);
         const newData = sResponse.data[0]?.data?.data ? sResponse.data[0]?.data?.data : [];
-        const finished = newData?.length === 0 || !newData;
+        let finished = newData?.length === 0 || !newData;
+        if (params?.per_page && newData?.length < params.per_page){
+            finished = true;
+        }
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
         endpoint.finished = finished;
 
+        
         let ld = sResponse.data[0]?.data.params;
 
         if (ld) {

@@ -7,12 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
-import { updateRightHeaderObj, updateRightHeader } from 'app/lib/native-handlers';
+import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
-import Link from 'app/ui/atoms/link'
-import Search from 'app/ui/molecules/search';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter } from 'expo-router';
@@ -49,7 +47,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const currentRoute = routes.find((item) => item.index === index);
     const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
-
     const queryClient = useQueryClient();
     const {
         status: rqtStatus,
@@ -72,14 +69,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     const handleEndReached = async (lastItemIndex) => {
+       // console.log("handleEndReached", isFetchingNextPage, isRefreshing, currentRoute?.endpoint.finished)
         if (isFetchingNextPage || isRefreshing)
             return;
-        if (!hasNextPage)
-            return;
-        if (lastItemIndex == false)
+        if (currentRoute?.endpoint.finished)
             return;
         fetchNextPage();
     };
+
 
     if (isHideDefaultHeader) {
         setTimeout(() => {
@@ -102,14 +99,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const TabFlashList = React.forwardRef((props, ref) => {
         const { scrollViewPaddingTop } = useHeaderTabContext();
-        /*if (props.data.length == 1 && !props.endpoint) {
-           // let a = <ItemRenderer route={props.route}  numColumns={1} item={props.data[0]} />;
-            let a = props.data.map((item, index) => {
-                return <ItemRenderer route={props.route} key={'item' + index} numColumns={1} item={item} />
-            });
-            return a;
-        }*/
-
         return (
             <UniList
                 {...props}
@@ -129,17 +118,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     useEffect(() => {
         if (isRefreshing) {
+            routerExpo.replace(routes[index].link);
             queryClient.removeQueries(qKey);
-            const updatedRoutes = routes.map((route) => {
-                if (route.index === index) {
-                    route = initedTabs[index];
-
-
-                }
-
-                return route;
-            });
-            setRoutes1(initedTabs)
         }
     }, [isRefreshing]);
 
@@ -149,13 +129,14 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     };
 
     const TabScene = ({ route, index }) => {
-
         const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
-            return Preload
+            //Preload
+            return <></>
         }
 
         const unitType = getUnitModeBySource(route?.endpoint?.request_url);
+
         return (
             <TabFlashList
                 index={route.index}
@@ -163,38 +144,32 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 route={route}
                 unit={route.endpoint?.unit}
                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
-            /*TODO ListFooterComponent={
-                (rqtStatus == 'loading') ? (
-                    Preload
-                ) : null
-            }*/
+                ListFooterComponent={
+                    (route?.endpoint?.finished) ? null : Preload
+                }
             />
         )
     };
 
-    const renderScene = useCallback((props) => {
-        return <TabScene route={props.route} index={props.route.index} />
-    },
-        []);
-
+    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
 
     const renderTabBar = (props) => {
 
         const tabWidth = props.layout.width / props.navigationState.routes.length;
         indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
-        const indicatorStyle = useAnimatedStyle(() => {
+       /* const indicatorStyle = useAnimatedStyle(() => {
             return {
                 transform: [{ translateX: indicatorOffset.value }],
             };
         }, [indicatorOffset]);
-
-        const styles = StyleSheet.create({
+*/
+       /* const styles = StyleSheet.create({
             indicator: {
                 width: tabWidth
             },
         });
-
+*/
         if (props.navigationState.routes.length > 1) {
 
             const menuSettings = appSetting('menu_items', menu.object);

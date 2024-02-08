@@ -9,7 +9,7 @@ const maxWidth = appSetting('layout', 'max_width')
 const one_column_browse = <>
     {items.map((item, index) => (
         <View key={'one_column_browse' + index}>
-            <View className=" p-2 flex-row gap-x-2 w-full animate-pulse ">
+            <View className=" p-2 flex-row gap-x-2 w-full animate-pulse">
                 <View className="w-10 h-10 bg-neutral-500/10 rounded-full flex-none "></View>
                 <View className="h-4 w-12 flex-auto mr-8 my-auto rounded-full   bg-neutral-500/20"></View>
                 <View className="py-1.5 px-2 flex-none my-auto rounded-lg border border-neutral-500/10  ">
@@ -79,7 +79,7 @@ const bx_posts = <>
             className="flex-col p-4 mb-2 sm:mb-4 sm:mx-4 bg-bgrcard dark:bg-bgrcard-d sm:rounded-2xl"
         >
              <View className=" mt-3 sm:mt-4 flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-2/5"></View>
+                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-2/5 "></View>
                 <View className="flex-auto p-2 flex-col md:mr-2">
                         <View className="w-4/5 h-5 mt-2 rounded-full bg-neutral-500/20"></View>
                         <View className="w-full h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
@@ -125,7 +125,7 @@ const bx_posts = <>
 }*/
 
 function browse_item(num) {
-    return (<View className={Platform.OS === 'web' ? 'mt-0' : 'mt-16'}>{items.map((item, index) => (
+    return (<View className={Platform.OS === 'web' ? 'mt-0' : 'mt-0'}>{items.map((item, index) => (
         <View key={'browse_item' + index} className="flex-row lg:gap-x-4 w-full animate-pulse max-w-screen-xl mx-auto px-3 sm:px-4">
            <View className=" mt-3 sm:mt-4 flex-auto aspect-square rounded-2xl p-1 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
                     <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
