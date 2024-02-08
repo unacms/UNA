@@ -86,6 +86,14 @@ const expoConfig = {
     },
     plugins: [
       [
+        "@config-plugins/react-native-ble-plx",
+        {
+          "isBackgroundEnabled": true,
+          "modes": ["peripheral", "central"],
+          "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
+        }
+      ],
+      [
         'expo-build-properties',
         {
           ios: {
