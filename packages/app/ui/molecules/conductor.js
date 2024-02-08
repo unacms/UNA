@@ -1,14 +1,14 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
-import { View, ScrollView, Row, Pressable  } from 'app/design/view';
+import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { updateRightHeaderObj, updateRightHeader } from 'app/lib/native-handlers';
-import { useInfiniteQuery } from  '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter } from 'expo-router';
 
-export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu=false, unitMode='', skeleton='', onChangeRoute, keyword }) {
+export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu = false, unitMode = '', skeleton = '', onChangeRoute, keyword }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { t } = useTranslation();
     const routerExpo = useRouter();
@@ -25,31 +25,32 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [routes, setRoutes1] = useState(initedTabs);
     const [menuState, setMenuState] = useState(menu);
-    if (!deepEqual(menu,menuState)){
+    if (!deepEqual(menu, menuState)) {
         setMenuState(menu)
         setRoutes(initedTabs);
     }
 
     const setRoutes = (a) => {
-        //console.log('+++++++++++++++++++', isRefreshing)
         setRoutes1(a);
     };
-        
+
     const scroll = useSharedValue(1);
     const navigation = useNavigation();
-    const [ index, setIndex ] = useState(routes.findIndex(function(item) {
+    const [index, setIndex] = useState(routes.findIndex(function (item) {
         if (useSectionAsMenu)
             return data.url == item.key;
         else
-            return ('/'+data.url).includes('/'+item.key);
+            return ('/' + data.url).includes('/' + item.key);
     }));
-   // const [index, setIndex] = useState(routes[0].index);
     const animationHeaderPosition = useSharedValue(0);
     const animationHeaderHeight = useSharedValue(0);
     const indicatorOffset = useSharedValue(0);
     const headerMaxHeight = useSharedValue(100);
 
     const currentRoute = routes.find((item) => item.index === index);
+    const qKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
+
+    const queryClient = useQueryClient();
     const {
         status: rqtStatus,
         data: newData,
@@ -58,7 +59,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         isFetchingNextPage,
 
     } = useInfiniteQuery({
-        queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)],
+        queryKey: qKey,
         queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage?.data?.length > 0) {
@@ -71,18 +72,15 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     const handleEndReached = async (lastItemIndex) => {
-            if (isFetchingNextPage  || isRefreshing)
+        if (isFetchingNextPage || isRefreshing)
             return;
         if (!hasNextPage)
             return;
-        if (currentRoute?.endpoint.finished)
-            return;
-            if (lastItemIndex == false)
+        if (lastItemIndex == false)
             return;
         fetchNextPage();
     };
 
-    
     if (isHideDefaultHeader) {
         setTimeout(() => {
             navigation.setOptions({ headerShown: false });
@@ -95,10 +93,10 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
 
     const TabFlashListScrollView = React.forwardRef((props, ref) => (
         <SceneComponent
-        {...props}
-        useExternalScrollView
-        forwardedRef = {ref}
-        ContainerView = {Animated.ScrollView}
+            {...props}
+            useExternalScrollView
+            forwardedRef={ref}
+            ContainerView={Animated.ScrollView}
         />
     ));
 
@@ -115,12 +113,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         return (
             <UniList
                 {...props}
-                renderScrollComponent = {TabFlashListScrollView}
-                contentContainerStyle = {{ paddingTop: scrollViewPaddingTop + 4, paddingBottom:20 }}
-                refer = {ref}
-                
-                onScroll = {handleLayout}
-                onEndReached = {handleEndReached}
+                renderScrollComponent={TabFlashListScrollView}
+                contentContainerStyle={{ paddingTop: scrollViewPaddingTop + 4, paddingBottom: 20 }}
+                refer={ref}
+
+                onScroll={handleLayout}
+                onEndReached={handleEndReached}
             />
         );
     });
@@ -129,50 +127,67 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
         fetchAndUpdateData(routes, index, setRoutes);
     }, [index]);
 
+    useEffect(() => {
+        if (isRefreshing) {
+            queryClient.removeQueries(qKey);
+            const updatedRoutes = routes.map((route) => {
+                if (route.index === index) {
+                    route = initedTabs[index];
+
+
+                }
+
+                return route;
+            });
+            setRoutes1(initedTabs)
+        }
+    }, [isRefreshing]);
+
     const onStartRefresh = async () => {
         setIsRefreshing(true);
-        routerExpo.replace(routes[index].link);
         setIsRefreshing(false);
     };
 
     const TabScene = ({ route, index }) => {
-      
+
         const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
-        if (!route.inited){
+        if (!route.inited) {
             return Preload
         }
 
-        
-
         const unitType = getUnitModeBySource(route?.endpoint?.request_url);
-        if (route.inited)
-            return (
-                <TabFlashList
-                    index={route.index}
-                    data={route.data}
-                    route={route}
-                    unit={route.endpoint?.unit}
-                    renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route}  item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module}/>}
-                    ListFooterComponent={
-                        (hasNextPage && isFetchingNextPage) ? (
-                            Preload
-                        ) : null
-                    }
-                />
-    )};
+        return (
+            <TabFlashList
+                index={route.index}
+                data={route.data}
+                route={route}
+                unit={route.endpoint?.unit}
+                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+            /*TODO ListFooterComponent={
+                (rqtStatus == 'loading') ? (
+                    Preload
+                ) : null
+            }*/
+            />
+        )
+    };
 
-    const renderScene = useCallback(({ route }) => <TabScene route={route} index={route.index} />, [unitMode]);
+    const renderScene = useCallback((props) => {
+        return <TabScene route={props.route} index={props.route.index} />
+    },
+        []);
+
 
     const renderTabBar = (props) => {
-      
-        const tabWidth = props.layout.width/props.navigationState.routes.length;
+
+        const tabWidth = props.layout.width / props.navigationState.routes.length;
         indicatorOffset.value = withTiming(props.navigationState.index * tabWidth, { duration: 200, easing: Easing.inOut(Easing.ease) });
 
         const indicatorStyle = useAnimatedStyle(() => {
             return {
                 transform: [{ translateX: indicatorOffset.value }],
             };
-        },[indicatorOffset]);
+        }, [indicatorOffset]);
 
         const styles = StyleSheet.create({
             indicator: {
@@ -180,7 +195,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             },
         });
 
-        if (props.navigationState.routes.length > 1){
+        if (props.navigationState.routes.length > 1) {
 
             const menuSettings = appSetting('menu_items', menu.object);
             setTimeout(() => {
@@ -188,25 +203,25 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 //updateRightHeaderObj(addButtons, navigation);
                 updateRightHeader(menuSettings?.add, navigation);
             }, 300);
-/* gap-x-2*/
+            /* gap-x-2*/
             return (
-                <ScrollView  horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
+                <ScrollView horizontal={true} className="bg-white dark:bg-neutral-900  min-w-full">
                     <Row className="pl-4 gap-x-2 " >
                         {props.navigationState.routes.filter((aItem) => aItem.hideInTop != true).map((a) => (
                             <Pressable className="items-center justify-center py-2.5"
                                 key={`tab-${a.index}`}
                             >
-                            <View > 
-                                <Button onPress={() => {
-                                    setIndex(a.index)
-                                    if (onChangeRoute) {
-                                        onChangeRoute(a);
-                                    }
-                                }} fullWidth={false} variant={props.navigationState.index === a.index  ? 'primary': "text"} rounded size='sm' title={t(a.title)} />
-                            </View>
+                                <View >
+                                    <Button onPress={() => {
+                                        setIndex(a.index)
+                                        if (onChangeRoute) {
+                                            onChangeRoute(a);
+                                        }
+                                    }} fullWidth={false} variant={props.navigationState.index === a.index ? 'primary' : "text"} rounded size='sm' title={t(a.title)} />
+                                </View>
                             </Pressable>
                         ))}
-                      
+
                     </Row>
                 </ScrollView>
                 /*  <Animated.View className="absolute bottom-0 left-0 h-1 flex items-center justify-center " style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1" style={{borderRadius: 2, height: 2.5, backgroundColor: colors.primary, maxWidth:120}}></View></Animated.View>*/
@@ -219,20 +234,20 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return {
                 opacity: withTiming(scroll.value, { duration: 500 }),
             };
-        },[scroll]);
+        }, [scroll]);
 
 
         const animatedStyleB = useAnimatedStyle(() => {
             return {
                 opacity: withTiming(1 - scroll.value, { duration: 500 }),
             };
-        },[scroll]);
+        }, [scroll]);
 
         const parentAnimatedStyle = useAnimatedStyle(() => {
             return {
                 height: headerMaxHeight.value,
             };
-        },[headerMaxHeight]);
+        }, [headerMaxHeight]);
 
         const handleHeaderMaxLayout = useCallback((event) => {
             headerMaxHeight.value = event.nativeEvent.layout.height;
@@ -242,12 +257,12 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             return <></>
         return (
             <Animated.View className='w-full h-80' style={parentAnimatedStyle}>
-                <Animated.View style={[{ width: '100%', position: 'absolute', zIndex:500 }, animatedStyleA]}>
-                <View onLayout={handleHeaderMaxLayout}>
-                    {header}
-                </View>
+                <Animated.View style={[{ width: '100%', position: 'absolute', zIndex: 500 }, animatedStyleA]}>
+                    <View onLayout={handleHeaderMaxLayout}>
+                        {header}
+                    </View>
                 </Animated.View>
-                <Animated.View style={[{ width: '100%', position: 'absolute', bottom:0 }, animatedStyleB]}>
+                <Animated.View style={[{ width: '100%', position: 'absolute', bottom: 0 }, animatedStyleB]}>
                     {smallHeader}
                 </Animated.View>
             </Animated.View>
@@ -255,7 +270,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     }, [scroll, headerMaxHeight]);
 
     return (
-       
+
         <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
@@ -267,8 +282,8 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             animationHeaderHeight={animationHeaderHeight}
             renderTabBar={renderTabBar}
             onStartRefresh={onStartRefresh}
-                isRefreshing={isRefreshing}
-                enableGestureRunOnJS={false}
+            isRefreshing={isRefreshing}
+            enableGestureRunOnJS={false}
         />
     );
 }

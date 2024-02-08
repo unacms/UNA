@@ -240,6 +240,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [currentRoute?.endpoint?.params?.filters]);
 */
     const handleEndReached = useCallback(async (lastItemIndex) => {
+        console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&handleEndReached',  routes[index].data.length);
+        
         if (isFetchingNextPage)
             return;
         if (!hasNextPage)
