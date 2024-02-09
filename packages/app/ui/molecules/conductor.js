@@ -69,7 +69,6 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     });
 
     const handleEndReached = async (lastItemIndex) => {
-       // console.log("handleEndReached", isFetchingNextPage, isRefreshing, currentRoute?.endpoint.finished)
         if (isFetchingNextPage || isRefreshing)
             return;
         if (currentRoute?.endpoint.finished)

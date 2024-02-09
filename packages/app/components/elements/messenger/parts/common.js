@@ -12,7 +12,7 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import useSWR from "swr";
 import { useCurrentUser } from 'app/context/user';
-import { subscribe } from 'app/ui/atoms/socket';
+import { subscribe,unbind } from 'app/ui/atoms/socket';
 
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
@@ -25,9 +25,8 @@ export default function (props) {
 
     const selectedMenu = props.selectedMenu;
     const convos = props.convos
-    console.log('menu', selectedMenu, convos, props.defaultConvoId);
- 
-   // const [convos, setConvos] = useState(false);
+    //console.log('menu', selectedMenu, convos, props.defaultConvoId);
+
     const [convoId, setConvoId] = useState(props.defaultConvoId);
     const [jots, setJots] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < 768);
@@ -37,17 +36,17 @@ export default function (props) {
     const [formHeight, setFormHeight] = useState(74);
     const refListConvos = useRef();
     const refListJots = useRef();
-
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
-
     let { currentUser, setCurrentUser } = useCurrentUser();
 
-    const layoutHeight = height - 64;
+    console.log("selectedConvoselectedConvo", selectedConvo?.total_messages, selectedConvo?.unread, jots.data?.jots?.length)
+
+    const [numMessages, setNumMessages] = useState(0);
+
+    const layoutHeight = props.height;
     const layoutHeightLeft = layoutHeight;
     const layoutHeightRight = layoutHeight - 64 - formHeight;
-
-    const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
 
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
@@ -63,15 +62,12 @@ export default function (props) {
         let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
         const sResponse = await fetcher(request_url);
         setJots({ data: sResponse.data, index: 0 });
-        setTimeout(() => {
-            scrolTo();
-        }, 500);
     }
 
     const updateState = () => {
         if (!isWeb)
             return;
-        if (selectedMenu &&  selectedConvo) {
+        if (selectedMenu && selectedConvo) {
             window.history.pushState(null, null, "/messenger/" + selectedMenu + '/' + selectedConvo.id + '/');
         }
     }
@@ -86,14 +82,18 @@ export default function (props) {
     }, [selectedMenu, props.defaultConvoId]);
 
     useEffect(() => {
-        if (selectedConvo){
-        fetchItems(selectedConvo.id);
+        if (selectedConvo) {
+            fetchItems(selectedConvo.id);
 
-        updateState()
-        if (currentUser) {
-            subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-            subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-        }
+            updateState()
+            if (currentUser) {
+                console.log("selectedConvo.idselectedConvo.id", selectedConvo.id)
+                currentUser.pusher.allChannels().forEach(channel => console.log("selectedConvo.idselectedConvo.id===", channel.name));
+                unbind(currentUser.pusher, 'bx_messenger');
+                subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
+                //
+                subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
+            }
         }
     }, [convoId]);
 
@@ -104,28 +104,40 @@ export default function (props) {
 
 
     useEffect(() => {
-        if (convoId == '' && convos){
+        if (convoId == '' && convos) {
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);
 
- 
+
 
     const onNewMessage = (data) => {
-        setJotUpdated(data);
+        console.log("datadatadata", data);
+        if (data.id == convoId) {
+      
+            setJotUpdated(data);
+        }
     }
 
     const onCheckConvos = (data) => {
+        console.log("convoId != data.id", convoId, data.id)
         if (convoId != data.id) {
-            fetchConvos();
+           // props.fetchConvos();
         }
     }
 
     const scrolTo = () => {
-        //TODO
-        if (refListJots && refListJots?.current) {
-            refListJots.current.scrollToIndex({ animated: true, align: "end", behavior: "auto", index: selectedConvo.total_messages - selectedConvo.unread -1 });
-        }
+        setTimeout(() => {
+            if (refListJots && refListJots?.current && jots.data?.jots?.length > 0) {
+                console.log("scrolTo", jots.data?.jots?.length, selectedConvo.unread)
+                let offset = 0;
+                if (selectedConvo.unread > 0)
+                    offset = selectedConvo.unread -1;
+                refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "auto", index: jots.data?.jots?.length - offset -1 });
+            }
+        }, 500);
+
+
     }
 
     useEffect(() => {
@@ -138,7 +150,6 @@ export default function (props) {
                         jots: [...prevJots.data.jots, ...jotUpdated.data.jots]
                     }
                 }));
-                scrolTo();
             }
             if (jotUpdated.action == 'edited') {
                 let newJots = jots.data.jots.map(item => item.id === jotUpdated.data.jots[0].id ? jotUpdated.data.jots[0] : item);
@@ -152,7 +163,9 @@ export default function (props) {
             }
             if (jotUpdated.action == 'deleted') {
                 let idToRemove = jotUpdated.data; // The id of the item you want to remove
+               
                 let newJots = jots.data.jots.filter(item => item.id !== idToRemove);
+                console.log("jots.data.jots", jots.data.jots, newJots)
                 setJots(prevJots => ({
                     ...prevJots,
                     data: {
@@ -165,10 +178,12 @@ export default function (props) {
         }
     }, [jotUpdated]);
 
-    if (!selectedMenu || !selectedConvo)
-        return <></>
+    useEffect(() => {
+        scrolTo();
+    }, [selectedConvo, jots.data?.jots?.length]);
 
     const changeConvo = (convo) => {
+        //props.fetchConvos();
         setConvoId(convo.id);
         if (isSmallScreen)
             setPanelsVisible({ convos: false, jots: true })
@@ -189,8 +204,8 @@ export default function (props) {
     };
 
     return (
-        <View className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
-            <Row style={{ height: layoutHeight }} className='items-stretch '>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch'}>
+            <Row className='items-stretch '>{/*style={{ height: layoutHeight }}*/}
                 {panelsVisible.convos && <View className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 md:pr-2 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
                     <View style={{ height: layoutHeightLeft }}>
                         {convos?.data?.length > 0 && <UniList
@@ -202,7 +217,7 @@ export default function (props) {
                         />}
                     </View>
                 </View>}
-                {panelsVisible.jots && <View className={' w-full md:w-3/5 sm:pl-2 bg-bgrcard dark:bg-bgrcard-d'}>
+                {(panelsVisible.jots && selectedConvo) && <View className={' w-full md:w-3/5 sm:pl-2 bg-bgrcard dark:bg-bgrcard-d'}>
                     <Row className='px-2 py-2 gap-x-2 h-16 items-center px-2 md:px-0'>
                         {convos && (
                             <>
@@ -217,7 +232,7 @@ export default function (props) {
                             data={jots.data.jots}
                             height={layoutHeightRight}
                             useWindowScroll
-                            renderItem={({ item, index }) => <ItemJot item={item} index={index}  />}
+                            renderItem={({ item, index }) => <ItemJot item={item} index={index} />}
                         />}
                     </View>
                     <Row className='bg-bgrcard dark:bg-bgrcard-d border-bdr dark:border-bdr-d  border-t border-bdr dark:border-bdr-d pr-2 ' onLayout={handleLayout}>

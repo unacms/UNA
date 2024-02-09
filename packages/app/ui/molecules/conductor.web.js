@@ -648,11 +648,11 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     };
     return (
         <>
-            <ScrollView onLayout={handleLayoutTop} horizontal={true} className="w-full " >
+            <ScrollView onLayout={handleLayoutTop} horizontal={true} className="w-full" >
                 <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
                     {items.map((a, index2) => (
-                        <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
-                            key={`tab-${a.index}`}
+                        <Pressable  ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+                            key={`tab-${index2}`}
                             onPress={() => {
                                 setIndex(a.index);
                                 getNumCols(windowWidth)

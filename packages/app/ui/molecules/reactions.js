@@ -56,7 +56,7 @@ export default function ElementReactions(oProps) {
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
     
     const getName = (sName) => {
-        let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
+        let aName = [oProps.type, oProps?.system?.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
             aName.push(sName);
 

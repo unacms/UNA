@@ -82,8 +82,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const addButtons = [
         <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
     ]
-    const windowDimen = useWindowDimensions();
-    const windowWidth = windowDimen.width;
+    const { width:windowWidth, height:windowWHeight } = useWindowDimensions();
 
     let headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
     const menu_drawer = appSetting('menu_items', 'menu_drawer')
@@ -93,6 +92,22 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         setMenuPopup(!menuPopup)
     }
     const sTitle = 'Messenger';
+
+    let height = windowWHeight;
+    
+    if (layout == 'ver'){
+        height = windowWHeight - 51;
+    }
+    if (layout == 'hor'){
+        height = windowWHeight - 64;
+    }
+    if (layout == 'mixed'){
+        height = windowWHeight - 64 - 51;
+    }
+    if (windowWidth < 1024){
+        height = windowWHeight - 64 - 51;
+    }
+    
     return (
         <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
             {isLeftMenu && <LeftSidebar title={sTitle} addButtons={addButtons}>
@@ -115,14 +130,14 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
                     )
                 })}
             </LeftSidebar>}
-            <View className='flex-auto'>
-                {isTopMenu && <TopSidebar leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
+            <View className='flex-auto items-stretch'>
+                {isTopMenu && <View className=''><TopSidebar leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
                     <View className='ml-3 sm:ml-4 mr-auto '>
                     <Row className="gap-x-2" >
                         {menu.data.map((a, index2) => {
                             const isCurrent = menu.index == index2;
                             return (
-                                <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
+                                <Pressable key={"menu-"+index2} className={" py-2 items-center " + a?.menu_settings?.class}
                                     onPress={(event) => {
                                         changeMenu(index2)
                                     }}
@@ -134,8 +149,8 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
                         })}
                     </Row>
                     </View>
-                </TopSidebar>}
-                {(menu && convos) && <Messenger {...data2.content[0]} url={url} selectedMenu={menu?.data[menu?.index].name} convos={convos} defaultConvoId={initedConvoId} />}
+                </TopSidebar></View>}
+                {(menu && convos) && <Messenger fetchConvos={fetchConvos} height={height} {...data2.content[0]} url={url} selectedMenu={menu?.data[menu?.index].name} convos={convos} defaultConvoId={initedConvoId} />}
                 <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
             </View>
         </Row>

@@ -74,6 +74,8 @@ export default function (props) {
     const menuSettings = appSetting('menu_items', props?.menu?.object);
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
+
+    const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
             <View className={appSetting('layout', 'max_width') + "   w-full flex-row flex-auto  mx-auto lg:border-r  lg:border-l border-dashed border-bdr dark:border-bdr-d"}>
@@ -108,9 +110,9 @@ export default function (props) {
                     </View>
                 </Row>
             </View>
-            <View className={(props.layoutName== 'profile' ? 'hidden lg:flex ': '' ) + " fixed -top-[1px] w-full "}>
+            {!bIsHideHeader && <View className={(props.layoutName== 'profile' ? 'hidden lg:flex ': '' ) + " fixed -top-[1px] w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
-                    <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center"}>
+                    <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center "}>
                         <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
                             {
                                 headerSettings.menu && menu_drawer_items.length > 0 && (
@@ -168,10 +170,10 @@ export default function (props) {
                                 </View>
                             </Row>}
                         </Row>
-                        <Row className="flex-row xl:flex-none justify-end">
+                        <Row className="flex-row xl:flex-none justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end">
-                                    <View className=" flex-row my-auto gap-x-2 ml-2 bg-red-500">
+                                    <View className=" flex-row my-auto gap-x-2 ml-2 ">
                                         {bSearch && <View className="lg:hidden"><Search /></View>}
                                         {bApps && <View className="relative hidden lg:flex flex-row">
                                             <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)
@@ -321,7 +323,7 @@ export default function (props) {
                     </View>
                 </View>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} items={menu_drawer_items} cssClass="" />
-            </View>
+            </View>}
 
         </>
     )

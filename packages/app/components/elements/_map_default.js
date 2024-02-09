@@ -14,7 +14,7 @@ import CategoriesList from './categories_list';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
-import MessengerPage from './messenger/root';
+//import MessengerPage from './messenger/root';
 import ProfileContacts from './contacts';
 import SimpleList from './simple_list';
 import Lang from './lang';
@@ -51,7 +51,7 @@ export const componentsMapDefault = {
     html: Lang,
     custom: Lang,
     get_block_contacts_messenger: ProfileContacts,
-    messenger_main_page: MessengerPage,
+    //messenger_main_page: MessengerPage,
     simple_list: SimpleList
 };
 

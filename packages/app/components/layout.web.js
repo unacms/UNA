@@ -143,7 +143,7 @@ export default function Layout(props) {
         stylesBg = { backgroundColor: appSetting('layout', 'background_color_dark') }
     }
 
-   // if (layoutName === 'messenger')
+    // if (layoutName === 'messenger')
     //    stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
 
     useEffect(() => {
@@ -157,20 +157,20 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
-        if (currentUser=== false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
+        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
             setTimeout(() => {
                 setIsModal(true)
             }, appSetting('layout', 'show_login_modal'));
         }
     }, []);
 
-    const ModalPopup =  ({ }) => {
+    const ModalPopup = ({ }) => {
         let p = {
             blocks: props.blocks,
             data: props.data,
         }
         if (!isModal)
-        return <></>
+            return <></>
         return (<Modal title=" " onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
             {appStatic('components_modal', p)}
         </Modal>);
@@ -182,16 +182,16 @@ export default function Layout(props) {
         setIsModal(false)
     }
 
-    if (getLayout(currentUser, layoutName) == 'hor' ) {
+    if (getLayout(currentUser, layoutName) == 'hor') {
         return (
             <BottomSheetDataContext>
                 <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
-               
+
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
                 <BottomSheet />
-                <ModalPopup/>
+                <ModalPopup />
             </BottomSheetDataContext>
         );
     }
@@ -199,18 +199,18 @@ export default function Layout(props) {
     if (getLayout(currentUser, layoutName) == 'mixed') {
         return (
             <BottomSheetDataContext>
-                
+
                 <Suggestions />
                 <AsyncWorker />
                 <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} >
                     <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 </NavbarMemo>
-              
+
                 <BottomSheet />
-                <ModalPopup/>
-               
+                <ModalPopup />
+
             </BottomSheetDataContext>
-            
+
         );
     }
 
@@ -231,7 +231,7 @@ export default function Layout(props) {
                         </View>
                     </Row>
                     <BottomSheet />
-                    <ModalPopup/>
+                    <ModalPopup />
                 </View>
             </BottomSheetDataContext>
         );
@@ -241,10 +241,10 @@ export default function Layout(props) {
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName }) => {
     return (
         <>
-            
+
             <View className="w-full items-stretch" >
                 <View className=" w-full mx-auto flex-row -top-[1px] " >
-                    <View className={'  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
+                    <View className={(layoutName != 'messenger' ? 'mb-16' : '') + '  w-full  relative overflow-hidden mb-16 sm:mb-0 mx-auto'}>
                         <View className='w-full mx-auto'>
                             {headerSettings.offset && <View className='w-full h-16' />}
                             <Informer />

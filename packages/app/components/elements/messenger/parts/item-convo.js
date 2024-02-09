@@ -36,7 +36,7 @@ export default function ConvosItem({ item, index, changeConvo, selectedIndex }) 
                                 {stripTags(item.message)}
                             </Text>
                             <View className="flex-none bg-primary dark:bg-primary-d rounded-full    my-auto h-min px-1.5">
-                                {item.unread > 0 && (
+                                {(item.unread > 0 && selectedIndex != index) && (
                                     <Text className="text-xs text-white dark:text-black font-medium">
                                         {item.unread}
                                     </Text>

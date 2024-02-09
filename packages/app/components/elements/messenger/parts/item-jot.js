@@ -13,8 +13,10 @@ import Form from 'app/components/elements/form';
 import useSWR from "swr";
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
+import { useTranslation } from 'react-i18next';
 
 export default function JotItem({ item, index }) {
+    const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
     const handleManageMenuSelect = async (oItem, event) => {
@@ -26,7 +28,7 @@ export default function JotItem({ item, index }) {
                 break;
 
             case 'remove':
-                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id }));
+                const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id, lot_hash: item.lot_hash }));
                 break;
         }
     }
@@ -53,6 +55,11 @@ export default function JotItem({ item, index }) {
     let aManageMenu = [];
     if(item.menu?.items) 
         aManageMenu = item.menu.items.filter(item => ['remove', 'edit'].includes(item.name));
+
+    const handleReply = async (item) => {
+        FeedbackHaptics('Medium');
+       // props.handleReply(item);
+    };
 
     return (
         <AnimatedBlock key={'jot' + index}>
@@ -97,8 +104,10 @@ export default function JotItem({ item, index }) {
                 </View>
                 <View className="flex-row justify-between items-center ml-2">
                     <View className="pl-10">
-                        <Reactions key={'reactions_' + item.id} {...item.reactions} />
+                        <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(item)} rounded />
                     </View>
+                    <Row className='gap-x-2'>
+                    <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions}  />
                     {aManageMenu.length > 0 && 
                         <DropdownMenu items={aManageMenu.map((aItem) => {
                             return {
@@ -111,6 +120,7 @@ export default function JotItem({ item, index }) {
                             <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
                         </DropdownMenu>
                     }
+                    </Row>
                 </View>
             </View>
 
