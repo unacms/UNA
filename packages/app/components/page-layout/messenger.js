@@ -1,6 +1,6 @@
 
 import { View, Row, Pressable } from 'app/design/view'
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { memo, useState, useEffect, useContext, useMemo } from 'react';
 import { appSetting, getLayout, menuItemsByName, getHeaderSettings, getURI } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { DataByName } from 'app/components/block';
@@ -15,6 +15,7 @@ import { fetcher } from 'app/lib/fetcher';
 
 export default function PageLayout({ url, data, layoutName, blocks: { main } }) {
 
+    const sTitle = 'Messenger';
     let defaultMenuName = 'inbox';
     let defaultConvoId = '';
     const aUrl = url.split('/');
@@ -27,16 +28,15 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const layout = getLayout(currentUser, 'navigator');
     const isLeftMenu = layout != 'hor' ? false : true;
-    const isTopMenu = true;
     const data2 = DataByName(data, main);
+    const menuDefaultList = useMemo(() => {
+        return data2.content[0].data.menu.items.filter(item => ['inbox', 'direct'].includes(item.name));
+    }, [data2]);
 
-    const aAllowedList = ['inbox', 'direct']; //, 'saved'
-    const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
-    const menuDefaultList = data2.content[0].data.menu.items.filter(item => aAllowedList.includes(item.name));
-    
     const [menu, setMenu] = useState({ data: menuDefaultList, index: menuDefaultList.findIndex(item => item.name == defaultMenuName) });
     const [convos, setConvos] = useState(false);
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
+    const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
 
     const fetchConvos = async () => {
         if (menu) {
@@ -45,9 +45,9 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
                 let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
                 const sResponse = await fetcher(request_url);
                 let convos = sResponse.data;
-               
-                setConvos({ data: convos});
-               
+
+                setConvos({ data: convos });
+
             }
         }
     }
@@ -57,17 +57,12 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     }, [menu.index]);
 
     const onSave = (data) => {
-         setConvos(prevConvos => ({
-             ...prevConvos,
-             data: [data.convo, ...prevConvos.data]
-         }));
+        setConvos(prevConvos => ({
+            ...prevConvos,
+            data: [data.convo, ...prevConvos.data]
+        }));
         setInitedConvoId(data.convo.id)
         setBottomSheetData(false);
-    }
-
-    const getIcon = (icon) => {
-        const sIcon = icon && icon.split(' ')[0];
-        return sIcon && ~Object.keys(aIconsAliases).indexOf(sIcon) ? aIconsAliases[sIcon] : sIcon;
     }
 
     const changeMenu = (index) => {
@@ -79,42 +74,123 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSave} />, showClose: true, snapPoints: ['25%', '70%'] });
     }
 
-    const addButtons = [
-        <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
-    ]
-    const { width:windowWidth, height:windowWHeight } = useWindowDimensions();
+    const addButtons = useMemo(() => {
+        return [
+            <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
+        ]
+    }, []);
 
-    let headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
+    return (
+        <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+            <LeftMenu
+                isLeftMenu={isLeftMenu}
+                sTitle={sTitle}
+                addButtons={addButtons}
+                menu={menu} changeMenu={changeMenu}
+            />
+            <View className='flex-auto items-stretch'>
+                <TopMenu
+                    url={url}
+                    windowWidth={windowWidth}
+                    isLeftMenu={isLeftMenu}
+                    addButtons={addButtons}
+                    layoutName={layoutName}
+                    sTitle={sTitle}
+                    menu={menu}
+                    changeMenu={changeMenu}
+                    currentUser={currentUser}
+                />
+                {(menu && convos) && <MessengerContainer
+                    fetchConvos={fetchConvos}
+                    convos={convos}
+                    data={data2.content[0]}
+                    selectedMenu={menu?.data[menu?.index].name}
+                    defaultConvoId={initedConvoId}
+                    windowWidth={windowWidth}
+                    windowWHeight={windowWHeight}
+                    layout={layout}
+                />}
+            </View>
+        </Row>
+    )
+}
+
+const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId }) => {
+    let height = useMemo(() => {
+        let heightInit = windowWHeight;
+        if (layout == 'ver') {
+            heightInit = windowWHeight - 51;
+        }
+        if (layout == 'hor') {
+            heightInit = windowWHeight - 64;
+        }
+        if (layout == 'mixed') {
+            heightInit = windowWHeight - 64 - 51;
+        }
+        if (windowWidth < 1024) {
+            heightInit = windowWHeight - 64 - 51;
+        }
+        return heightInit;
+    }, [windowWHeight, layout])
+
+    return (
+        <Messenger fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
+    );
+});
+
+
+const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, layoutName, sTitle, menu, changeMenu }) => {
     const menu_drawer = appSetting('menu_items', 'menu_drawer')
     let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
     const [menuPopup, setMenuPopup] = useState(false)
-    const showMenu = (params) => {
+
+    const showMenu = () => {
         setMenuPopup(!menuPopup)
     }
-    const sTitle = 'Messenger';
 
-    let height = windowWHeight;
-    
-    if (layout == 'ver'){
-        height = windowWHeight - 51;
-    }
-    if (layout == 'hor'){
-        height = windowWHeight - 64;
-    }
-    if (layout == 'mixed'){
-        height = windowWHeight - 64 - 51;
-    }
-    if (windowWidth < 1024){
-        height = windowWHeight - 64 - 51;
-    }
-    
+    const headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
     return (
-        <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+        <>
+            <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
+            <View className=''><TopSidebar leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
+                <View className='ml-3 sm:ml-4 mr-auto '>
+                    <Row className="gap-x-2" >
+                        {menu.data.map((a, index2) => {
+                            const isCurrent = menu.index == index2;
+                            return (
+                                <Pressable key={"menu-" + index2} className={" py-2 items-center " + a?.menu_settings?.class}
+                                    onPress={(event) => {
+                                        changeMenu(index2)
+                                    }}
+
+                                >
+                                    <Button id="tab" pressed={isCurrent ? true : false} variant={isCurrent ? 'outline' : "text"} rounded size='sm' title={(a.title)} />
+                                </Pressable>
+                            )
+                        })}
+                    </Row>
+                </View>
+            </TopSidebar></View>
+        </>);
+});
+
+
+const LeftMenu = memo(({ isLeftMenu, sTitle, addButtons, menu, changeMenu }) => {
+    const aIconsAliases = { 'inbox': 'House', 'comment': 'Chats', 'reply': 'Bell', 'bookmark': 'Bookmarks' };
+
+    const getIcon = (icon) => {
+        const sIcon = icon && icon.split(' ')[0];
+        return sIcon && ~Object.keys(aIconsAliases).indexOf(sIcon) ? aIconsAliases[sIcon] : sIcon;
+    }
+
+    return (
+        <>
             {isLeftMenu && <LeftSidebar title={sTitle} addButtons={addButtons}>
                 {menu.data.map((a, index2) => {
                     const isCurrent = menu.index == index2;
                     return (
                         <Button
+                            key={"menu-" + index2}
                             variant={isCurrent ? 'outline' : "text"}
                             size={'base'}
                             pressed={isCurrent ? true : false}
@@ -130,30 +206,5 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
                     )
                 })}
             </LeftSidebar>}
-            <View className='flex-auto items-stretch'>
-                {isTopMenu && <View className=''><TopSidebar leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
-                    <View className='ml-3 sm:ml-4 mr-auto '>
-                    <Row className="gap-x-2" >
-                        {menu.data.map((a, index2) => {
-                            const isCurrent = menu.index == index2;
-                            return (
-                                <Pressable key={"menu-"+index2} className={" py-2 items-center " + a?.menu_settings?.class}
-                                    onPress={(event) => {
-                                        changeMenu(index2)
-                                    }}
-
-                                >
-                                    <Button  id="tab" pressed={isCurrent ? true : false} variant={isCurrent ? 'outline' : "text"} rounded size='sm' title={(a.title)} />
-                                </Pressable>
-                            )
-                        })}
-                    </Row>
-                    </View>
-                </TopSidebar></View>}
-                {(menu && convos) && <Messenger fetchConvos={fetchConvos} height={height} {...data2.content[0]} url={url} selectedMenu={menu?.data[menu?.index].name} convos={convos} defaultConvoId={initedConvoId} />}
-                <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
-            </View>
-        </Row>
-    )
-
-}
+        </>)
+});

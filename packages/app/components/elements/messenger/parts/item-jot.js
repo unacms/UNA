@@ -14,8 +14,9 @@ import useSWR from "swr";
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
 import { useTranslation } from 'react-i18next';
+import { FeedbackHaptics } from 'app/lib/util';
 
-export default function JotItem({ item, index }) {
+export default function JotItem({ item, index, handleReply }) {
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
@@ -53,12 +54,12 @@ export default function JotItem({ item, index }) {
     }
 
     let aManageMenu = [];
-    if(item.menu?.items) 
+    if (item.menu?.items)
         aManageMenu = item.menu.items.filter(item => ['remove', 'edit'].includes(item.name));
 
-    const handleReply = async (item) => {
+    const handleReplyInner = async (item) => {
         FeedbackHaptics('Medium');
-       // props.handleReply(item);
+        handleReply(item);
     };
 
     return (
@@ -95,41 +96,43 @@ export default function JotItem({ item, index }) {
                                         />
                                     </View>
                                 </View>
-                            ) : <><Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} /></>}
-
-
-
+                            ) : <>
+                                {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
+                                    <View className="flex-row items-baseline" >
+                                        <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
+                                        <View className=" "></View>
+                                    </View>
+                                    <Html data={linkify(item?.reply_message)} />
+                                </View>}
+                                <Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} />
+                            </>}
                         </View>
                     </View>
                 </View>
                 <View className="flex-row justify-between items-center ml-2">
                     <View className="pl-10">
-                        <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(item)} rounded />
+                        <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="outline" onPress={() => handleReplyInner(item)} rounded />
                     </View>
                     <Row className='gap-x-2'>
-                    <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions}  />
-                    {aManageMenu.length > 0 && 
-                        <DropdownMenu items={aManageMenu.map((aItem) => {
-                            return {
-                                id: aItem.id + '-' + aItem.name,
-                                name: aItem.name,
-                                link: aItem.link,
-                                title: aItem.title
-                            };
-                        })} onSelect={handleManageMenuSelect}>
-                            <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
-                        </DropdownMenu>
-                    }
+                        <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions} />
+                        {aManageMenu.length > 0 &&
+                            <DropdownMenu items={aManageMenu.map((aItem) => {
+                                return {
+                                    id: aItem.id + '-' + aItem.name,
+                                    name: aItem.name,
+                                    link: aItem.link,
+                                    title: aItem.title
+                                };
+                            })} onSelect={handleManageMenuSelect}>
+                                <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
+                            </DropdownMenu>
+                        }
                     </Row>
                 </View>
             </View>
-
-
         </AnimatedBlock>
     )
 }
-
-
 
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {

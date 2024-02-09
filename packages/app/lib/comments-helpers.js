@@ -410,7 +410,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
-                                <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to:</Text>
+                                <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
                                 <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{ commentData.formAuthor}</Text>
                             </Row>
                             <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
