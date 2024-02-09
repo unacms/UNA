@@ -22,6 +22,7 @@ const expoConfig = {
     ],
     "ios": {
       "supportsTablet": true,
+      "associatedDomains": ["neo.so"],
       "bundleIdentifier": "com.una.neo",
       "backgroundColor": "#000000",
       "infoPlist": {
