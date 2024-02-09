@@ -4,14 +4,20 @@ import { useCurrentUser } from 'app/context/user';
 import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import Profile from 'app/ui/molecules/profile';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomSheetDataContext from 'app/context/bottomsheet';
 import { FeedbackHaptics } from 'app/lib/util';
+import * as Linking from 'expo-linking';
+import { useRouter, useNavigation } from 'expo-router';
+import { parseUrl } from 'app/lib/util'
+
 export default function AppLayout() {
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser();
+    const navigation = useNavigation();
+    const router = useRouter();
     //let currentUser =1;
     const { colors } = Theme();
     const TabList = currentUser ? appSetting('menu_items', 'menu_bottom_tabs_logged') : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
@@ -20,6 +26,28 @@ export default function AppLayout() {
 
     let profile = null
     const [notifCount, setNotifCount] = useState(currentUser ? currentUser.notifications : null)
+
+    // DEEP LINKING
+    const url = Linking.useURL();
+    useEffect(() => {
+        if (url && typeof url !== 'undefined') {
+            let a = parseUrl(url);
+            let _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
+            if (_path == '/')
+                _path = '/home';
+            const index = TabList.findIndex((item) => {
+                if (item.url == _path) {
+                    return true;
+                }
+            });
+            if (index !== null && index > -1) {
+                navigation.navigate('tab' + index);
+            }
+        }
+        
+
+    }, [url, currentUser]);
+    // DEEP LINKING
 
     if (currentUser) {
         let dUser = Object.assign({}, currentUser);

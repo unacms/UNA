@@ -32,19 +32,7 @@ export function Screen(params) {
             _path = _path + '&params[]=&params[]=' + JSON.stringify(p);
     }
 
-    // DEEP LINKING
-    const url = Linking.useURL();
-    if (url && typeof url !== 'undefined') {
-        let a = parseUrl(url);
-        _path = '/' + a.path + (a.queryString ? '?' + a.queryString : '')
-        if (_path == '/')
-            _path = '/home';
-    }
-    // DEEP LINKING
-    /* console.log('------------', _path);
- if (_path == '/home')
- return <Redirect href="/tab1" />;
- console.log('------------', _path);*/
+    // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabList = currentUser
             ? appSetting('menu_items', 'menu_bottom_tabs_logged')
@@ -52,6 +40,8 @@ export function Screen(params) {
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;
     }
+    // BOTTOM TABS NAVIGATION
+
     const backButtonPresented = false;
     const isFocused2 = true;
 
@@ -72,7 +62,6 @@ export function Screen(params) {
 
             }
         };
-        //console.log('!!!!!!!!!!', _path)
         fetchPageData();
     }, [_path]);
 
