@@ -410,7 +410,7 @@ export default function PageLayout(props) {
             )}
             {!!currentUser && (
                 <>
-                    <Row className="px-auto justify-center gap-x-1 ">
+                    <Row className="px-auto justify-center gap-x-1 bg-bgrtabbar dark:bg-bgrtabbar-d pl-2 pr-4">
                         {feedList.length > 1 &&
                             feedList.map((item, index) => {
                                 return (

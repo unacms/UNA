@@ -296,7 +296,7 @@ export default function Bluetooth(props) {
     if (!isEnabled.bt || !isEnabled.gps) {
         return (
             <>
-                <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">To use smart friendliness, activate Bluetooth and Location services.</Text>
+                <Text className="text-base font-semibold text-neutral-800 dark:text-neutral-200 ">Activate Bluetooth and Location Services to use proximity friend requests.</Text>
             </>
         )
     }

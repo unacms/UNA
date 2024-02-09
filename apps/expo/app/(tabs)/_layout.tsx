@@ -71,20 +71,21 @@ export default function AppLayout() {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            height: '100%'
+            height: '100%',
+            backgroundColor: colors.barsBackground,
         }}>
             <BottomSheetDataContext>
                 <Tabs
                     screenOptions={({ navigation, route }) => ({
                         tabBarStyle: {
                             backgroundColor: colors.barsBackground,
-                            height: 60
+                            height: 55
                         },
                         headerStyle: {
                             backgroundColor: colors.barsBackground,
                         },
                         tabBarItemStyle: {
-                            marginBottom: 15,
+                            marginBottom: 5,
                             height: 40,
                             marginTop: 5,
                         },

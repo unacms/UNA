@@ -1,6 +1,6 @@
 let settingsDefault = {
     layout: {
-        format:'ver', //hor, ver, mixed
+        format:'hor', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -30,7 +30,7 @@ let settingsDefault = {
         use_custom_font: false,
         lock_unconfirmed: true,
         entity_info_icon: 'Info',
-        disable_screenshots: true,
+        disable_screenshots: false,
         redirect_on_forbidden: '/home',
         split_action_menu: true,
         show_login_modal: 5000,
@@ -268,7 +268,7 @@ let settingsDefault = {
         ],
         menu_bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'Messages', url: '/posts-home',icon: 'ChatTeardropDots'},
+            {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
