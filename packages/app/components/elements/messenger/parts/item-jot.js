@@ -73,7 +73,7 @@ export default function JotItem({ item, index, handleReply }) {
                         <View className={'bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small  py-2'} >
                             <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
                                 <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                <View><Text className="text-neutral-500 px-1">·{index}</Text></View>
+                                <View><Text className="text-neutral-500 px-1">·</Text></View>
                                 <Time ts={item.created}></Time>
                             </View>
 

@@ -220,7 +220,7 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
     };
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
             <Row className='items-stretch '>
                 <Convos
                     isVisible={panelsVisible.convos}
