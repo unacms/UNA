@@ -39,10 +39,10 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    const layoutHeightRight = layoutHeight - 64 - formHeight;
+    const layoutHeightRight = layoutHeight - 48 - formHeight;
 
     let { data: dynamicData, error } = useSWR(
-        commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id }), '', commentForm] : null,
+        commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id,  convo_id: selectedConvo.id, reply_id: replyItem? replyItem.id : 0 }), '', commentForm] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -51,10 +51,29 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
         }
     );
 
-    const fetchItems = async (convoId) => {
-        let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0 });
+    useEffect(() => {
+        setReplyItem(false);
+        setCommentForm(false)
+    }, [dynamicData]);
+    
+
+    const fetchItems = async (convoId, isAddJots ) => {
+        let start = 0;
+      
+        if (jots?.data?.params?.limit && isAddJots )
+            start = jots?.data?.params?.start + jots?.data?.params?.limit;
+
+        let request_url = '/api.php?r=bx_messenger/get_convo_messages/Services&params=' + JSON.stringify({ lot: convoId, jot: 0, start: start});
         const sResponse = await fetcher(request_url);
-        setJots({ data: sResponse.data, index: 0 });
+
+        setJots(prevJots => ({
+            ...prevJots,
+            data: {
+                params:sResponse.data.params,
+                jots: prevJots && isAddJots ? [...sResponse.data.jots, ...prevJots?.data?.jots] : sResponse.data.jots
+            },
+            index: prevJots && isAddJots? prevJots.index : 0
+        }));
     }
 
     const updateState = () => {
@@ -76,7 +95,7 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
 
     useEffect(() => {
         if (selectedConvo) {
-            fetchItems(selectedConvo.id);
+            fetchItems(selectedConvo.id, false);
 
             updateState()
             if (currentUser) {
@@ -149,13 +168,13 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
                 let idToRemove = jotUpdated.data; // The id of the item you want to remove
 
                 let newJots = jots.data.jots.filter(item => item.id !== idToRemove);
-                console.log("jots.data.jots", jots.data.jots, newJots)
                 setJots(prevJots => ({
                     ...prevJots,
                     data: {
                         ...prevJots.data,
                         jots: newJots
-                    }
+                    },
+                    index:0
                 }));
             }
 
@@ -163,8 +182,10 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
     }, [jotUpdated]);
 
     useEffect(() => {
-        scrolTo();
-    }, [selectedConvo, jots.data?.jots?.length]);
+        if (jots?.index == 0){
+            scrolTo();
+        }
+    }, [selectedConvo, jots?.index]);
 
     const changeConvo = (convo) => {
         setConvoId(convo.id);
@@ -177,13 +198,8 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
     }
 
     const onFormSubmit = (formData, d) => {
-        formData.set("id", convos?.data[selectedConvoIndex].id);
-        if (replyItem) {
-            formData.set("reply", replyItem.id);
-        }
         setCommentForm(formData);
         Keyboard.dismiss();
-        setReplyItem(false)
     }
 
     const handleLayout = (event) => {
@@ -198,8 +214,13 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
         setReplyItem(false)
     };
 
+    const handleStartReached = () => {
+        if (selectedConvo)
+            fetchItems(selectedConvo.id, true);
+    };
+
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch'}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
             <Row className='items-stretch '>
                 <Convos
                     isVisible={panelsVisible.convos}
@@ -209,7 +230,7 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
                     selectedConvoIndex={selectedConvoIndex}
                     changeConvo={changeConvo}
                 />
-                {(panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 sm:pl-2 bg-bgrcard dark:bg-bgrcard-d'}>
+                {(panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5  bg-bgrcard dark:bg-bgrcard-d'}>
                     <Jots
                         isSmallScreen={isSmallScreen}
                         title={selectedConvo.title}
@@ -218,6 +239,7 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
                         refListJots={refListJots}
                         showConvo={showConvo}
                         handleReply={handleReply}
+                        startReached={handleStartReached}
                     />
                     <FormContainer
                         form={data.form}
@@ -234,7 +256,7 @@ export default function ({defaultConvoId, selectedMenu, convos, layoutHeight, fe
 }
 
 const Convos = memo(({ isVisible, layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo }) => {
-    return <>{isVisible && <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 md:pr-2 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
+    return <>{isVisible && <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
         {data.length > 0 && <UniList
             refer={refListConvos}
             height={layoutHeightLeft}
@@ -244,16 +266,21 @@ const Convos = memo(({ isVisible, layoutHeightLeft, data, refListConvos, selecte
         />}
     </View>}</>
 });
-
-const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, handleReply }) => {
+/*bg-neutral-500/10 border-b border-neutral-500/10*/
+const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, handleReply, startReached }) => {
     return (<>
-        <Row className='px-2 py-2 gap-x-2 h-16 items-center px-2 md:px-0'>
-            {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
-            <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
-        </Row>
+        <View className='md:px-0 border-dashed border-bdrcard dark:border-bdrcard-d border-b'>
+            <Row  className='pl-4 items-center justify-start h-12'>
+                {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
+                <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
+            </Row>
+        </View>
         <View style={{ height: layoutHeightRight }} className='mx-2'>
             {data.length > 0 && <UniList
                 refer={refListJots}
+                overscan={900}
+                startReached={startReached}
+                firstItemIndex={999999999999 - data.length}
                 data={data}
                 height={layoutHeightRight}
                 useWindowScroll
@@ -265,7 +292,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
     return (
-        <View className='bg-bgrcard dark:bg-bgrcard-d border-bdr dark:border-bdr-d  border-t border-bdr dark:border-bdr-d pr-2 ' onLayout={handleLayout}>
+        <View className='bg-bgrcard dark:bg-bgrcard-d border-bdr dark:border-bdr-d  border-t border-bdr dark:border-bdr-d pr-2 border-dashed' onLayout={handleLayout}>
             {
                 replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50  py-1 pl-2 mt-2 mx-2'>
                     <Row className='items-start justify-between max-w-full relative'>

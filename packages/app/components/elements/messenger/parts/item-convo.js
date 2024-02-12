@@ -10,7 +10,7 @@ export default function ConvosItem({ item, index, changeConvo, selectedIndex }) 
     return (
         <AnimatedBlock key={'convos' + index}>
             <Pressable onPress={() => changeConvo(item)}>
-                <Card addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
+                <Card border="border-b border-dashed border-t border-bdrcard dark:border-bdrcard-d" addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
                     <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...item.author_data}
