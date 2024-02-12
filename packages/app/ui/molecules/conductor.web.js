@@ -675,7 +675,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 size="small"
             >
                 {[
-                    <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutline" />,
+                    <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutlineVertical" />,
                     <><View className="mr-auto ml-3 sm:ml-4 items-end" >
                         {items.slice(visibleItemsCount).map((a, index2) => (
                             <Pressable className={" py-2 items-center " + a?.menu_settings?.class}

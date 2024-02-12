@@ -15,8 +15,10 @@ import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
 import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
+import { Platform } from 'react-native'
 
 export default function JotItem({ item, index, handleReply }) {
+    const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
@@ -62,74 +64,81 @@ export default function JotItem({ item, index, handleReply }) {
         handleReply(item);
     };
 
-    return (
-        <AnimatedBlock key={'jot' + index}>
-            <View className='w-full mb-4'>
-                <View className="flex-row gap-x-2 ">
-                    <View className="w-10 flex-0 ">
-                        <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+    const Jot = <View className='w-full mb-4'>
+        <View className="flex-row gap-x-2 ">
+            <View className="w-10 flex-0 ">
+                <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
+            </View>
+            <View className='flex-1 flex-col gap-y-1 mb-2 '>
+                <View className={'bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small  py-2'} >
+                    <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
+                        <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                        <View><Text className="text-neutral-500 px-1">·</Text></View>
+                        <Time ts={item.created}></Time>
                     </View>
-                    <View className='flex-1 flex-col gap-y-1 mb-2 '>
-                        <View className={'bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small  py-2'} >
-                            <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
-                                <Profile {...item.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
-                                <View><Text className="text-neutral-500 px-1">·</Text></View>
-                                <Time ts={item.created}></Time>
-                            </View>
 
-                            {viewState.view == 'edited' ? (
-                                <View className="w-full">
-                                    <Form
-                                        name='bx_messenger'
-                                        {...viewState.data}
-                                        classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
-                                        onFormSubmit={onFormSubmit}
-                                    />
-                                    <View className="mx-4 mb-4">
-                                        <Button
-                                            title="Cancel"
-                                            fullWidth
-                                            size="base"
-                                            startDecorator="X"
-                                            variant="outline"
-                                            onPress={() => setViewState({ view: '' })}
-                                        />
-                                    </View>
-                                </View>
-                            ) : <>
-                                {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
-                                    <View className="flex-row items-baseline" >
-                                        <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
-                                        <View className=" "></View>
-                                    </View>
-                                    <Html data={linkify(item?.reply_message)} />
-                                </View>}
-                                <Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} />
-                            </>}
+                    {viewState.view == 'edited' ? (
+                        <View className="w-full">
+                            <Form
+                                name='bx_messenger'
+                                {...viewState.data}
+                                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                onFormSubmit={onFormSubmit}
+                            />
+                            <View className="mx-4 mb-4">
+                                <Button
+                                    title="Cancel"
+                                    fullWidth
+                                    size="base"
+                                    startDecorator="X"
+                                    variant="outline"
+                                    onPress={() => setViewState({ view: '' })}
+                                />
+                            </View>
                         </View>
-                    </View>
-                </View>
-                <View className="flex-row justify-between items-center ml-2">
-                    <View className="pl-10">
-                        <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="outline" onPress={() => handleReplyInner(item)} rounded />
-                    </View>
-                    <Row className='gap-x-2'>
-                        <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions} />
-                        {aManageMenu.length > 0 &&
-                            <DropdownMenu items={aManageMenu.map((aItem) => {
-                                return {
-                                    id: aItem.id + '-' + aItem.name,
-                                    name: aItem.name,
-                                    link: aItem.link,
-                                    title: aItem.title
-                                };
-                            })} onSelect={handleManageMenuSelect}>
-                                <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
-                            </DropdownMenu>
-                        }
-                    </Row>
+                    ) : <>
+                        {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
+                            <View className="flex-row items-baseline" >
+                                <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
+                                <View className=" "></View>
+                            </View>
+                            <Html data={linkify(item?.reply_message)} />
+                        </View>}
+                        <Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} />
+                    </>}
                 </View>
             </View>
+        </View>
+        <View className="flex-row justify-between items-center ml-2">
+            <View className="pl-10">
+                <Button align="start" title={t("Reply")} size="xs" startDecorator="ArrowBendLeftUp" variant="outline" onPress={() => handleReplyInner(item)} rounded />
+            </View>
+            <Row className=''>
+                <View className='mr-2'>
+                    <Reactions displaySize="xs" key={'reactions_' + item.id} {...item.reactions} />
+                </View>
+                {aManageMenu.length > 0 &&
+                    <DropdownMenu items={aManageMenu.map((aItem) => {
+                        return {
+                            id: aItem.id + '-' + aItem.name,
+                            name: aItem.name,
+                            link: aItem.link,
+                            title: aItem.title
+                        };
+                    })} onSelect={handleManageMenuSelect}>
+                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
+                    </DropdownMenu>
+                }
+            </Row>
+        </View>
+    </View>
+
+    if (!isWeb)
+        return Jot;
+
+    return (
+        <AnimatedBlock key={'jot' + index}>
+            {Jot}
         </AnimatedBlock>
     )
 }

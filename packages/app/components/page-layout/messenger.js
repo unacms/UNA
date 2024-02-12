@@ -10,11 +10,12 @@ import { Button } from 'app/design/controls'
 import Messenger from 'app/components/elements/messenger/parts/common'
 import { BottomSheetData } from 'app/context/bottomsheet';
 import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
+import Nav from 'app/components/elements/messenger/parts/nav';
 import MainMenu from 'app/components/nav/mainmenu'
 import { fetcher } from 'app/lib/fetcher';
+import { Platform } from 'react-native'
 
 export default function PageLayout({ url, data, layoutName, blocks: { main } }) {
-
     const sTitle = 'Messenger';
     let defaultMenuName = 'inbox';
     let defaultConvoId = '';
@@ -23,6 +24,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         defaultMenuName = aUrl[1];
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
+
 
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -38,6 +40,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
     const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
 
+    console.log('heightheightheight', windowWHeight)
     const fetchConvos = async () => {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
@@ -80,6 +83,8 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         ]
     }, []);
 
+
+
     return (
         <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
             <LeftMenu
@@ -116,6 +121,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
 }
 
 const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId }) => {
+    const isWeb = Platform.OS == 'web'
     let height = useMemo(() => {
         let heightInit = windowWHeight;
         if (layout == 'ver') {
@@ -128,7 +134,10 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
             heightInit = windowWHeight - 64 - 51;
         }
         if (windowWidth < 1024) {
-            heightInit = windowWHeight - 64 - 51;
+            heightInit = windowWHeight - 64 - 51 - 64;
+        }
+        if (!isWeb){
+            heightInit = windowWHeight - 64 - 51 - 48;
         }
         return heightInit;
     }, [windowWHeight, layout])
@@ -140,6 +149,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
 
 
 const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, layoutName, sTitle, menu, changeMenu }) => {
+    const isWeb = Platform.OS == 'web'
     const menu_drawer = appSetting('menu_items', 'menu_drawer')
     let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
     const [menuPopup, setMenuPopup] = useState(false)
@@ -151,28 +161,32 @@ const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, l
     const headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
     return (
         <>
+            <Nav addButtons={addButtons} />
             <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
-            <View className=''><TopSidebar leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
-                <View className='ml-3 sm:ml-4 mr-auto '>
-                    <Row className="gap-x-2" >
-                        {menu.data.map((a, index2) => {
-                            const isCurrent = menu.index == index2;
-                            return (
-                                <Pressable key={"menu-" + index2} className={" py-2 items-center " + a?.menu_settings?.class}
-                                    onPress={(event) => {
-                                        changeMenu(index2)
-                                    }}
+            <View className=''>
+                <TopSidebar isWeb={isWeb} leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
+                    <View className='ml-3 sm:ml-4 mr-auto '>
+                        <Row className="gap-x-2" >
+                            {menu.data.map((a, index2) => {
+                                const isCurrent = menu.index == index2;
+                                return (
+                                    <Pressable key={"menu-" + index2} className={" py-2 items-center " + a?.menu_settings?.class}
+                                        onPress={(event) => {
+                                            changeMenu(index2)
+                                        }}
 
-                                >
-                                    <Button id="tab" pressed={isCurrent ? true : false} variant={isCurrent ? 'outline' : "text"} rounded size='sm' title={(a.title)} />
-                                </Pressable>
-                            )
-                        })}
-                    </Row>
-                </View>
-            </TopSidebar></View>
+                                    >
+                                        <Button id="tab" pressed={isCurrent ? true : false} variant={isCurrent ? 'outline' : "text"} rounded size='sm' title={(a.title)} />
+                                    </Pressable>
+                                )
+                            })}
+                        </Row>
+                    </View>
+                </TopSidebar>
+            </View>
         </>);
-});
+}
+);
 
 
 const LeftMenu = memo(({ isLeftMenu, sTitle, addButtons, menu, changeMenu }) => {

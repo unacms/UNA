@@ -170,7 +170,7 @@ export function getHeaderSettings(uri, width, layout) {
             settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true }}
         }
         if (layout == 'messenger'){
-            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false}}
+            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true}}
         }
         if (layout == 'profile'){
             settings = {headerSettings: { offset: false, header: false }}
@@ -667,8 +667,11 @@ export function getLayout(currentUser, layoutName = '')
 {
    // if (layoutName != 'profile' && layoutName != 'navigator')
      //   return currentUser ? appSetting('layout', 'format') :  appSetting('layout', 'format_guest');
-
-    return appSetting('layout', 'format');
+    let a = storageGet('layout:format','', true);
+    if(!a)
+        return appSetting('layout', 'format');
+    
+    return a;
 }
 
 export function menuItemsByName(name, items, currentUser, url = '')

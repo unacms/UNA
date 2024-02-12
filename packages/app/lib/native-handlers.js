@@ -38,14 +38,14 @@ export function updateRightHeader(items, navigation) {
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
 };
-/*
+
 export function updateRightHeaderObj(addButtons, navigation) {
 
     if (addButtons){
         navigation.setOptions({ headerRight: () => (addButtons) });
     }
 };
-*/
+
 export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent) {
     let type = typeof header;
     const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>

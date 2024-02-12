@@ -1,5 +1,6 @@
 let settingsDefault = {
     layout: {
+        format_list:['hor', 'ver', 'mixed'],
         format:'mixed', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl

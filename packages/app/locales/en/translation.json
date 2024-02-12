@@ -37,6 +37,10 @@
     "theme_light": "Dark mode off",
     "theme_auto": "Dark mode auto",
 
+    "format_hor": "Horisontal",
+    "format_ver": "Vertical",
+    "format_mixed": "Mixed",
+
     "rvote_like_title": "Like",
     "rvote_love_title": "Love",
     "rvote_joy_title": "Joy",

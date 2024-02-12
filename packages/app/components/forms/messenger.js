@@ -37,8 +37,8 @@ export default function FormMessenger(props) {
 
     // execution submit time, uses as temporary message id for new message.
     props.data.inputs['payload'].value = parseInt((new Date()).getTime()/1000);
-
-    return <View className="w-full my-1 flex items-center" ref={viewFormRef} onLayout={handleLayout} style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}>
+//style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}
+    return <View className="w-full items-center" ref={viewFormRef} onLayout={handleLayout} >
         <Row className="w-full flex flex-row items-center">
             <View className="flex-0">
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, icon: 'Image'})}
@@ -49,7 +49,7 @@ export default function FormMessenger(props) {
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { submitOnEnter: true, styles: { minHeight: "auto" }, placeholder: 'Message ...' })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
- { getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom') }
+                { getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom') }
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
             </View>
             <View className="flex-0">{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>

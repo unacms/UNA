@@ -198,7 +198,7 @@ function DefaultUnit(data) {
                         displayType="unit"
                         displaySize="base"
                         showInfo={
-                            <Row className="items-center justify-center">
+                            <Row className="items-center">
                                 <Link href={url}>
                                     <Time stylesNameAdd="hover:text-linkhoverneutral" ts={data.date}></Time>
                                 </Link>

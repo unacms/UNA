@@ -70,9 +70,21 @@ export default function PageLayout(props) {
             Appearance.setColorScheme(item);
         }
     }
+    const handleFormat =  async (item) => { 
+        storageSet('layout:format', '', item, true);
+        window.location.href = window.location.href
+    }
+    
+
     let currentTheme =  storageGet('layout:theme','', true);
     if (!currentTheme)
         currentTheme = 'auto';
+
+    let currentFormat =  storageGet('layout:format','', true);
+    if (!currentFormat)
+        currentFormat = appSetting('layout', 'format');
+
+
 
     return (
         <ScrollView className=''>
@@ -115,6 +127,7 @@ export default function PageLayout(props) {
                                                 </Pressable>
                                         </DropdownMenu></View>)
                                 }
+                                
                                 {
                                     appSetting('layout', 'switch_theme') && (
                                         <View><DropdownMenu items={['dark', 'light','auto'].map(theme => ({
@@ -186,6 +199,27 @@ export default function PageLayout(props) {
                                                     />
                                                 </Pressable>
                                         </DropdownMenu>)
+                                }
+                                {
+                                    appSetting('layout', 'format_list').length > 1 && (
+                                        <View><DropdownMenu 
+                                            items={appSetting('layout', 'format_list').map(lang => ({
+                                                id: lang,
+                                                key: lang,
+                                                name: lang,
+                                                title: t('format_' + lang)
+                                            }))} 
+                                            onSelect={(oItem) => {handleFormat(oItem.id)}}>
+                                                <Pressable>
+                                                    <Button
+                                                        variant="text"
+                                                        title= {t('format_' + currentFormat)}
+                                                        startDecorator="Layout"
+                                                        fullWidth
+                                                        align="left"
+                                                    />
+                                                </Pressable>
+                                        </DropdownMenu></View>)
                                 }
                                 <Link href="/logout"><Button
                                     variant="text"
