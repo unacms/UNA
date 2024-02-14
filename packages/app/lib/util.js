@@ -184,7 +184,6 @@ export function getHeaderSettings(uri, width, layout) {
     let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer: true;
     if (width > 1024){
         bHeader = true;
-
     }
 
     const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' ? settings.headerSettings.menu : false;

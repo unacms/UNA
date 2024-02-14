@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, Row, ScrollView } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
+import Badges from 'app/ui/atoms/badges'
 import { Text } from 'app/design/typography'
 import { stripTags } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers';
@@ -287,12 +288,15 @@ export default function ElementCover(props) {
                         </View>
                     </View>
                     }
-                    <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto">
-                        <View className=" flex-col  items-center md:items-start  overflow-hidden   min-w-80 gap-y-2 ">
-                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
+                    <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto justify-between">
+                        <View className=" flex-col  items-center md:items-start  overflow-hidden min-w-80 gap-y-2 ">
+                            <Row className='items-center justity-center'><Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>
-
+                            <View className='ml-2'><Badges badges={data.badges} /></View>
+                            </Row>
+                            
+                            
                             <Row className='gap-x-2'>
                                 <CoverMenuMeta {...data.meta_menu} />
                             </Row>
