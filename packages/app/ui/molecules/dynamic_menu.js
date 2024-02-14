@@ -9,7 +9,7 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
     const [visibleItemsCount, setVisibleItemsCount] = useState(0);
     const [width, setWidth] = useState(0);
     const [ntfsOpen, setNtfsOpen] = useState(false);
-
+    //console.log("menuWidth", width, items[0])
     useEffect(() => {
         const menuWidth = width;
         let visibleWidth = 0;
@@ -18,7 +18,11 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
             const itemWidth = itemRefs.current[i].offsetWidth;
             if (!itemRefs.current[i].className.includes('hidden')) {
                 if (visibleWidth + itemWidth > menuWidth) break;
+                console.log("visibleWidth"+ items[0].key, visibleWidth, i, menuWidth)
                 visibleWidth += itemWidth;
+                visibleCount++;
+            }
+            else{
                 visibleCount++;
             }
         }
@@ -46,7 +50,7 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
 
     return (
         <>
-            <ScrollView horizontal={true} className={containerClasses} onLayout={handleLayout}>
+            <ScrollView horizontal={true} className={containerClasses+" bg-red-500"} onLayout={handleLayout}>
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
