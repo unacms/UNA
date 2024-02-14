@@ -658,7 +658,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(() => {
-        return <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutlineVertical" />;
+        return <View key="btn" className='ml-2'><Button variant="text" size="sm" rounded startDecorator="DotsThreeOutline" /></View>;
     });
     
     return <DynamicMenu 
@@ -667,7 +667,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         MenuItem={MenuItem} 
         containerClasses = "w-full" 
         items={filteredItems} 
-        isButtonOutside = {true}
+        isButtonOutside = {false}
         menuClasses = "mr-auto ml-3 sm:ml-4 gap-x-2 flex-row"  
         menuExClasses ="mr-auto ml-3 sm:ml-4 items-end"
         />

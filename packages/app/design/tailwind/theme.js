@@ -32,6 +32,10 @@ const colors = {
         900: 'rgba(30, 58, 138, 1)',
         950: 'rgba(23, 37, 84, 1)',
     },
+    contrast: {
+        DEFAULT: 'rgba(255, 0, 0, 1)',
+        d: 'rgba(255, 0, 0, 1)',
+    },
     linkhover: {
         DEFAULT: 'rgba(37, 99, 235, 1)',
         d: 'rgba(96, 165, 250, 1)',

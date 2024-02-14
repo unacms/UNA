@@ -223,7 +223,7 @@ function DefaultUnit(data) {
                                         variant="text"
                                         size="sm"
                                         rounded
-                                        startDecorator="DotsThreeOutline"
+                                        startDecorator="DotsThreeOutlineVertical"
                                         onPress={() => {
                                             FeedbackHaptics('Medium')
                                         }}

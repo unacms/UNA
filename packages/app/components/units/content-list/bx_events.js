@@ -13,6 +13,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
+import Letter from 'app/ui/atoms/letter'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -145,7 +146,7 @@ export default function Unit(props) {
             <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden">
+                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
                             <Image
                                 {...data.cover}
                                 alt={data.title}
@@ -153,6 +154,7 @@ export default function Unit(props) {
                                 className="absolute u-cover rounded-xl"
                                 sizes={imageSizes}
                             />
+                            {!data?.cover?.src && <Letter title={data.title}/>}
                         </View>
                         <View className="flex-col p-3  flex-auto items-between justify-between ">
                             <View>

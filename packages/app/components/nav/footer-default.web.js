@@ -13,6 +13,12 @@ export default function () {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const TabList = currentUser ? appSetting('menu_items', 'menu_bottom_tabs_logged') : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
     const notifCount = currentUser ? currentUser.notifications : 0;
+    let frCount = 0;
+    if (currentUser?.counters) {
+        frCount = currentUser.counters.respects + currentUser.counters.trust
+        if (frCount == 0)
+            frCount = currentUser.counters.requests;
+    }
     const { t } = useTranslation();
     const pathname = usePathname()
 
@@ -35,7 +41,8 @@ export default function () {
                                     <View className='flex-col gap-1 items-center'>
                                         {tab.url == '/dashboard' && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
                                         <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap ' + (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300' : 'text-primary')}>{tab.title}</Text>
-                                        {(tab.url == appSetting('layout', 'notifications') && notifCount > 0) && <View className='absolute bg-primary border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+                                        {(tab.url == appSetting('layout', 'notifications') && notifCount > 0) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
+                                        {(tab.url == '/friends-all' && frCount > 0) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{frCount}</Text></View>}
                                     </View>
                                 </Link>
                             </View>

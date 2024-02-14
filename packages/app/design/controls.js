@@ -263,7 +263,7 @@ export function Button(props) {
     if (typeof buttonAddon === 'object') {
         sButtonAddonText = buttonAddon.text;
         if (buttonAddon.variant == 'primary')
-            sButtonAddonBg = 'bg-primary dark:bg-primary-d';
+            sButtonAddonBg = 'bg-contrast dark:bg-contrast-d';
     }
     else {
         sButtonAddonText = buttonAddon;
