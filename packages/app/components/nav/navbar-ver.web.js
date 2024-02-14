@@ -209,7 +209,8 @@ export default function (props) {
                             </View>
 
                         ) : <></>
-                           {/* (
+                        }
+{/* (
                                 <View className='space-y-4 mx-4 '>
                                     <Link href="/login">
                                         <Button
@@ -231,8 +232,7 @@ export default function (props) {
                                     </Link>
                                 </View>
 
-                           )*/}
-
+)*/}
                     </View>
                     {!!currentUser && (
                         <Row className='lg:hidden lg:w-full justify-end flex-auto'>
