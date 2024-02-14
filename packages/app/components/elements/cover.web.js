@@ -65,6 +65,7 @@ function CoverMenu(props) {
         <><Menu
             {...propsCopy}
             displayType="button"
+            autoSize={true}
             params={{
                 show_action: true,
                 show_counter: true,
@@ -287,7 +288,7 @@ export default function ElementCover(props) {
                     </View>
                     }
                     <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto">
-                        <View className=" flex-col  items-center md:items-start  overflow-hidden   flex-auto gap-y-2 ">
+                        <View className=" flex-col  items-center md:items-start  overflow-hidden   min-w-80 gap-y-2 ">
                             <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>
@@ -299,10 +300,8 @@ export default function ElementCover(props) {
 
                         </View>
 
-                        <View className="flex-none mt-auto lg:mt-6 max-w-3xl overflow-hidden ">
-                            <ScrollView horizontal={true} className={(data.actions_menu.items.length > (width > 640 ? 3 : 100) ? '' : 'mx-auto md:ml-0') + ' items-center md:items-start'}>
-                                <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                            </ScrollView>
+                        <View className="flex-auto mt-auto lg:mt-6 max-w-3xl overflow-hidden">
+                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
                         </View>
 
                         {bPerson &&

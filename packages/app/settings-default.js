@@ -33,7 +33,7 @@ let settingsDefault = {
         entity_info_icon: 'Info',
         disable_screenshots: false,
         redirect_on_forbidden: '/home',
-        split_action_menu: true,
+        split_action_menu: false,
         show_login_modal: 5000,
         extended_search: true,
         show_in_reply_comments: true,

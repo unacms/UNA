@@ -1,8 +1,11 @@
 
-import { View } from 'app/design/view'
+import { View, ScrollView, Row } from 'app/design/view'
 import { appSetting, menuItemsByName } from 'app/lib/util';
-import {componentsMap} from './menu-items/_map';
+import { componentsMap } from './menu-items/_map';
 import { useCurrentUser } from 'app/context/user'
+import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
+import { Button } from 'app/design/controls';
+import DynamicMenu from 'app/ui/molecules/dynamic_menu';
 
 export default function ElementMenu(oProps) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -17,6 +20,8 @@ export default function ElementMenu(oProps) {
 
     //--- show only items which match with menu's display_type
     const bShowMatched = oProps?.showMatched === true;
+
+    const bAutoSize = oProps?.autoSize ? oProps?.autoSize : false;
 
     //--- show only items with selected display_type and doesn't take in account the menu's display_type
     const sShowSelected = oProps?.showSelected || false;
@@ -34,7 +39,7 @@ export default function ElementMenu(oProps) {
 
     //--- horizontal menu items alignment
     const sAlignItems = oProps?.alignItems ? oProps?.alignItems : (oProps?.params && oProps.params?.align_items ? oProps.params.align_items : 'left');
-    switch(sAlignItems) {
+    switch (sAlignItems) {
         case 'left':
             sClassName += ' justify-start';
             break;
@@ -49,52 +54,95 @@ export default function ElementMenu(oProps) {
     }
 
     //--- show menu's content only
-    const bShowContent = oProps?.params && oProps.params?.showContent === 'true';   
+    const bShowContent = oProps?.params && oProps.params?.showContent === 'true';
 
     //--- use iconset if available
-    let iconset = {...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset')};
+    let iconset = { ...appSetting('menu_items', 'iconset'), ...appSetting('menu_items', oProps.object, 'iconset') };
 
-    if(!!iconset)
+    if (!!iconset)
         oProps.params.iconset = iconset;
 
     if (!oProps?.items?.length)
         return [];
 
     const sItemsSrc = bAutoFilter ? menuItemsByName(oProps.object, oProps.items, currentUser) : oProps.items;
-    const sItems = sItemsSrc.map((aItem, iKey) => {
-        if(bShowMatched && aItem.display_type != sDisplayType)
-            return;
+    const filteredItems = sItemsSrc.filter((aItem) => {
+        // Check if item should be shown based on `bShowMatched` and `sDisplayType`
+        if (bShowMatched && aItem.display_type !== sDisplayType) {
+            return false;
+        }
 
-        if(sShowSelected !== false && ((aItem.display_type == undefined && sShowSelected != 'undefined') || (aItem.display_type != undefined && aItem.display_type != sShowSelected)))
-            return;
+        // Check if item should be shown based on `sShowSelected`
+        if (sShowSelected !== false && ((aItem.display_type === undefined && sShowSelected !== 'undefined') || (aItem.display_type !== undefined && aItem.display_type !== sShowSelected))) {
+            return false;
+        }
 
-        if(!(aItem.id || aItem.name) || aExcept.includes(aItem.name) || aExceptTitle.includes(aItem.title))
-            return;
+        // Ensure the item has an id or name, and is not in the except lists
+        if (!(aItem.id || aItem.name) || aExcept.includes(aItem.name) || aExceptTitle.includes(aItem.title)) {
+            return false;
+        }
 
+        // Check if the `display_type` of the item is supported by `componentsMap`
         const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
-        if(!componentsMap[sDisplayTypeItem])
-            return;
+        if (!componentsMap[sDisplayTypeItem]) {
+            return false;
+        }
 
-        const ItemType = componentsMap[sDisplayTypeItem];
-        return (
-            <View key={'menu' +  iKey} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
-                <ItemType key={aItem.id ? aItem.id : aItem.name} {...aItem} params={oProps.params} />
-            </View>
-        );
+        // If all checks pass, the item should be included in the filtered list
+        return true;
     });
+    
+    const isUseStaticWidth = bShowContent || !bAutoSize;
 
-    if(bShowContent)
+    if (isUseStaticWidth){
+        const sItems = sItemsSrc.map((item, index) => {
+            const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+            return (
+                <View key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>
+                    <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+                </View>
+            )
+        });
+
+        if (bShowContent)
         return sItems;
 
-    const oMenu = (
-        <View className={sClassName}>{oProps.unitType}{sItems}</View>
-    );
-
-    if (bShowVertical){
-        return oMenu;
+        if (!bAutoSize) {
+            return <View className={sClassName}>{sItems}</View>;
+        }
     }
+
+    const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount }) => {
+        const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+        return (
+            <View ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
+                <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
+            </View>
+        )
+    });
+
+    const MenuItemEx = memo(({ item, index }) => {
+        const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
+        let modifiedParams = { ...oProps.params, button_variant: 'text', button_full_width:true, button_size: 'sm'};
+        return (
+            <View key={'menu' + index} className='w-full items-end'>
+                <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
+            </View>
+        )
+    });
+
+    const ButtonEx = memo(() => {
+        return <View key="btn" className='ml-2'><Button size={oProps.params.button_size} variant="default" startDecorator="DotsThreeOutlineVertical" /></View>;
+    });
     
-    return (
-        oMenu
-    );
+    return <DynamicMenu 
+        ButtonEx={ButtonEx} 
+        MenuItemEx={MenuItemEx} 
+        MenuItem={MenuItem} 
+        containerClasses = "justify-center sm:justify-start lg:justify-end w-full"
+        items={filteredItems} 
+        menuClasses={sClassName} 
+        isButtonOutside = {false}
+        menuExClasses ="mr-auto ml-3 sm:ml-4 items-end gap-y-2"
+        />
 }

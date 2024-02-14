@@ -26,6 +26,7 @@ import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import DynamicMenu from 'app/ui/molecules/dynamic_menu';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -240,8 +241,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [currentRoute?.endpoint?.params?.filters]);
 */
     const handleEndReached = useCallback(async (lastItemIndex) => {
-        console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&handleEndReached',  routes[index].data.length);
-        
         if (isFetchingNextPage)
             return;
         if (!hasNextPage)
@@ -618,7 +617,62 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     );
 }
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
-    let items = routes.filter((aItem) => aItem.hideInTop != true);
+    let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
+
+    const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
+        return (
+            <Pressable  ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+                key={`tab-${index2}`}
+                onPress={() => {
+                    setIndex(a.index);
+                    getNumCols(windowWidth)
+                    window.history.pushState({}, '', '/' + a.key);
+                    if (onChangeRoute) {
+                        onChangeRoute(a);
+                    }
+                }}
+            >
+                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+            </Pressable>
+        )
+    });
+
+    const MenuItemEx = memo(({ item:a , index:index2 }) => {
+     
+        return (
+            <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
+                key={`tab-${a.index}`}
+                onPress={() => {
+                    setNtfsOpen(false)
+                    setIndex(a.index);
+                    getNumCols(windowWidth)
+                    window.history.pushState({}, '', '/' + a.key);
+                    if (onChangeRoute) {
+                        onChangeRoute(a);
+                    }
+                }}
+            >
+                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+            </Pressable>
+        )
+    });
+
+    const ButtonEx = memo(() => {
+        return <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutlineVertical" />;
+    });
+    
+    return <DynamicMenu 
+        ButtonEx={ButtonEx} 
+        MenuItemEx={MenuItemEx} 
+        MenuItem={MenuItem} 
+        containerClasses = "w-full" 
+        items={filteredItems} 
+        isButtonOutside = {true}
+        menuClasses = "mr-auto ml-3 sm:ml-4 gap-x-2 flex-row"  
+        menuExClasses ="mr-auto ml-3 sm:ml-4 items-end"
+        />
+
+   /*;
     const itemRefs = useRef([]);
     const menuRef = useRef(null);
     const [visibleItemsCount, setVisibleItemsCount] = useState(0);
@@ -651,23 +705,12 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
             <ScrollView onLayout={handleLayoutTop} horizontal={true} className="w-full" >
                 <Row className="mr-auto ml-3 sm:ml-4 gap-x-2" >
                     {items.map((a, index2) => (
-                        <Pressable  ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
-                            key={`tab-${index2}`}
-                            onPress={() => {
-                                setIndex(a.index);
-                                getNumCols(windowWidth)
-                                window.history.pushState({}, '', '/' + a.key);
-                                if (onChangeRoute) {
-                                    onChangeRoute(a);
-                                }
-                            }}
-                        >
-                            <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
-                        </Pressable>
+                        
                     ))}
                 </Row>
             </ScrollView>
             {visibleItemsCount < items.length && <DropdownPopup
+                
                 open={ntfsOpen}
                 onOpenChange={(bOpen) => {
                     setNtfsOpen(bOpen)
@@ -676,7 +719,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
             >
                 {[
                     <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutlineVertical" />,
-                    <><View className="mr-auto ml-3 sm:ml-4 items-end" >
+                    <View key='view' className="mr-auto ml-3 sm:ml-4 items-end" >
                         {items.slice(visibleItemsCount).map((a, index2) => (
                             <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
                                 key={`tab-${a.index}`}
@@ -693,11 +736,11 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                                 <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
                             </Pressable>
                         ))}
-                    </View></>
+                    </View>
                 ]}
             </DropdownPopup>}
         </>
+        
     )
-    /* <Animated.View style={[styles.indicator, indicatorStyle]} ><View className="w-full h-1 " style={{ borderRadius: 3, height: 2.5, backgroundColor: colors.primary, maxWidth: 100 }}></View></Animated.View>
-       */
+    */
 }
