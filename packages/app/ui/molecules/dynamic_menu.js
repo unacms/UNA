@@ -50,7 +50,7 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
 
     return (
         <>
-            <ScrollView horizontal={true} className={containerClasses+" bg-red-500"} onLayout={handleLayout}>
+            <ScrollView horizontal={true} className={containerClasses+" "} onLayout={handleLayout}>
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
