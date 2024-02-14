@@ -208,8 +208,8 @@ export default function (props) {
                                 </ProfileSwitcher>}
                             </View>
 
-                        ) :
-                            (
+                        ) : <></>
+                           {/* (
                                 <View className='space-y-4 mx-4 '>
                                     <Link href="/login">
                                         <Button
@@ -231,7 +231,7 @@ export default function (props) {
                                     </Link>
                                 </View>
 
-                            )}
+                           )*/}
 
                     </View>
                     {!!currentUser && (
