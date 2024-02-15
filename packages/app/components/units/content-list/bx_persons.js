@@ -199,7 +199,7 @@ export default function Unit(props) {
                                 className="absolute u-cover rounded-xl"
                                 sizes={imageSizes}
                             />
-                            {!data?.image?.src && <Letter title={data.title}/>}
+                            {!data?.image?.src && <Letter title={data.fullname}/>}
                         </View>
                         <View className="flex-col p-3  flex-auto items-between justify-between ">
                             <View>

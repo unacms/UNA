@@ -5,7 +5,7 @@ import { Button } from 'app/design/controls'
 
 export default function ({ badges }) {
     if (!badges)
-    return <></>
+        return <></>
     return (
         <Row className='items-center gap-x-1'>
             {badges.map((item, index) => (
