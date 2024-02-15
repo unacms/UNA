@@ -80,7 +80,7 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + "   w-full flex-row flex-auto  mx-auto lg:border-r  lg:border-l border-dashed border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    <View className='hidden lg:block w-full lg:w-80 lg:border-r border-dashed border-bdr dark:border-bdr-d'>
+                    {menuItemsByName('main_menu', menu_left, currentUser).length > 0 && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-dashed border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>
                             <View className='pt-4 pr-4 pl-4'>
                                 {menuItemsByName('main_menu', menu_left, currentUser).map(
@@ -104,7 +104,7 @@ export default function (props) {
 
                         </View>
 
-                    </View>
+                    </View>}
                     <View className='flex-auto'>
                         {props.children}
                     </View>
@@ -141,8 +141,8 @@ export default function (props) {
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
                         </View>
                         <Row className="hidden lg:flex flex-auto items-center justify-center ">
-                            {bSearch && <Row className='w-full overflow-hidden items-center justify-center '>
-                                { menuItemsByName('main_menu', menu_top, currentUser).length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden'>
+                            <Row className='w-full overflow-hidden items-center justify-center '>
+                                { menuItemsByName('main_menu', menu_top, currentUser).length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden px-4'>
                                     {menuItemsByName('main_menu', menu_top, currentUser).map(
                                         (item, index) =>
 
@@ -153,6 +153,7 @@ export default function (props) {
                                                     tooltip={t(item.title)}
                                                     alt={t(item.title)}
                                                     aria-label={t(item.title)}
+                                                    title={t(item.title)}
                                                     fullWidth
                                                     startDecorator={
                                                         item.icon.indexOf(' ') == -1
@@ -165,10 +166,10 @@ export default function (props) {
 
                                     )}
                                 </Row>}
-                                <View className='w-full max-w-lg hidden lg:block flex-auto'>
+                                {(bSearch && currentUser) && <View className='w-full max-w-lg hidden lg:block flex-auto'>
                                     <Search type="input" />
-                                </View>
-                            </Row>}
+                                </View>}
+                            </Row>
                         </Row>
                         <Row className="flex-row xl:flex-none justify-end ">
                             {!!currentUser && (
