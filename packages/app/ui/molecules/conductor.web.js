@@ -327,7 +327,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
              }
  */
             return (
-                <TopSidebar style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+                <TopSidebar isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                       <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
                     

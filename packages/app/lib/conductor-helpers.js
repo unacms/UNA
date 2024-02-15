@@ -295,7 +295,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
     const isUseBg = appSetting('layout', 'use_background');
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lala3" + (isUseBg ? " bg-white border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  backdrop-blur" : (isSmall ? " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-r border-dashed border-bdr dark:border-bdr-d  " : "  border-b border-dashed border-bdr dark:border-bdr-d"))}  >
-            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
+            <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b  border-bdrnavbar dark:border-bdrnavbar-d">
                     <Row className="items-center">
                         <View className="ml-3 sm:ml-4 "></View>
