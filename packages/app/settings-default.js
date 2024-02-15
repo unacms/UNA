@@ -457,7 +457,8 @@ let settingsDefault = {
         'create-account': {
             layout: 'create-account',
             blocks: {
-                form: { name: 'system:create_account_form', showTitle: false },
+                form_join: { name: 'system:create_account_form', showTitle: false },
+                form_invitation: { name: 'bx_invites:get_block_form_request', showTitle: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
