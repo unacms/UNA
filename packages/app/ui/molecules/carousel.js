@@ -56,7 +56,7 @@ export default function ElementCarousel(props) {
     }, [currentImageIndex]);
 
     const Image2 = (item) => (
-        <View className='flex-auto h-full'>
+        <View className='flex-auto h-full border border-bdr dark:border-bdr-d'>
             <Pressable style={{
                     flex: 1,
                     justifyContent: 'center',
