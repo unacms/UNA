@@ -40,7 +40,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
                 <View  ref={itemRefsMore} key={name + 'trigger'}><ButtonEx /></View>,
                 <View key={name + '-view'} className={menuExClasses} >
                     {items.slice(visibleItemsCount).map((aItem, iKey) => {
-                        return <MenuItemEx key={name +'menuex'+ iKey} item={aItem} index={iKey}  />
+                        return <MenuItemEx setNtfsOpen={setNtfsOpen} key={name +'menuex'+ iKey} item={aItem} index={iKey}  />
                     })}
                 </View>
             ]}

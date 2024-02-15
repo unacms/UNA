@@ -637,7 +637,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         )
     });
 
-    const MenuItemEx = memo(({ item:a , index:index2 }) => {
+    const MenuItemEx = memo(({ item:a , index:index2, setNtfsOpen }) => {
      
         return (
             <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
