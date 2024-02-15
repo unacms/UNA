@@ -3,22 +3,21 @@ import { View, ScrollView } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback} from "react";
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
-export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside }) {
+export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside }) {
 
     const itemRefs = useRef([]);
+    const itemRefsMore = useRef();
     const [visibleItemsCount, setVisibleItemsCount] = useState(0);
     const [width, setWidth] = useState(0);
     const [ntfsOpen, setNtfsOpen] = useState(false);
-    //console.log("menuWidth", width, items[0])
     useEffect(() => {
         const menuWidth = width;
-        let visibleWidth = 0;
+        let visibleWidth = 50 + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
         let visibleCount = 0;
         for (let i = 0; i < itemRefs.current.length; i++) {
             const itemWidth = itemRefs.current[i].offsetWidth;
             if (!itemRefs.current[i].className.includes('hidden')) {
                 if (visibleWidth + itemWidth > menuWidth) break;
-                console.log("visibleWidth"+ items[0].key, visibleWidth, i, menuWidth)
                 visibleWidth += itemWidth;
                 visibleCount++;
             }
@@ -32,16 +31,16 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
     }, [width]);
 
     const handleLayout = useCallback((event) => {
-        setWidth(event.nativeEvent.layout.width - 60);
+        setWidth(event.nativeEvent.layout.width );
     }, []);
     
     let ExMenu = visibleItemsCount < items.length && (
         <DropdownPopup open={ntfsOpen} size="small" onOpenChange={(bOpen) => { setNtfsOpen(bOpen) }} >
             {[
-                <ButtonEx/>,
-                <View key='view' className={menuExClasses} >
+                <View  ref={itemRefsMore} key={name + 'trigger'}><ButtonEx /></View>,
+                <View key={name + '-view'} className={menuExClasses} >
                     {items.slice(visibleItemsCount).map((aItem, iKey) => {
-                        return <MenuItemEx item={aItem} index={iKey}  />
+                        return <MenuItemEx key={name +'menuex'+ iKey} item={aItem} index={iKey}  />
                     })}
                 </View>
             ]}
@@ -54,7 +53,7 @@ export default function DynamicMenu({ MenuItem, MenuItemEx, ButtonEx, containerC
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
-                            return <MenuItem item={aItem} itemRefs={itemRefs} index={iKey} visibleItemsCount={visibleItemsCount}/>
+                            return <MenuItem key={name +'menu'+ iKey} item={aItem} itemRefs={itemRefs} index={iKey} visibleItemsCount={visibleItemsCount}/>
                         })
                     }
                 </View>

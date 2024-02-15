@@ -662,6 +662,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
     
     return <DynamicMenu 
+        name = "main-menu"
         ButtonEx={ButtonEx} 
         MenuItemEx={MenuItemEx} 
         MenuItem={MenuItem} 

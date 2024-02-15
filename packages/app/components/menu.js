@@ -136,6 +136,7 @@ export default function ElementMenu(oProps) {
     });
     
     return <DynamicMenu 
+        name = "menu"
         ButtonEx={ButtonEx} 
         MenuItemEx={MenuItemEx} 
         MenuItem={MenuItem} 
