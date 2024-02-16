@@ -240,9 +240,6 @@ export default function PageLayout(props) {
                 <View className=" w-full ">
                     <BlockByName name={props.blocks.stat_block} data={props.data} hideTitle={true} />
                 </View>
-     
-             
-                
             </View>
         </ScrollView>
     )

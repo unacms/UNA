@@ -37,7 +37,7 @@ let settingsDefault = {
         show_login_modal: 5000,
         extended_search: true,
         show_in_reply_comments: true,
-        show_nav_counters: false,
+        show_nav_counters: true,
     },
     sockets: {
         host: 'ci.una.io',
