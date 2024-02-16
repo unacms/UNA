@@ -386,6 +386,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
+        const counter = route.addon? (route.addon.text ? route.addon.text : route.addon):0;
         return (
             <>
                 {
@@ -443,7 +444,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
                     )
                 }
-                <View className="m-4 mb-0"><Text className="text-lg font-bold">All Friends - 555</Text></View>
+                {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-lg font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} - {counter}</Text></View>}
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
             </>
         )
@@ -563,6 +564,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                     let settings = appSetting('layouts', a.key)
                     let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon) : a.icon;
+                   
                     return (
                         <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
                             <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
@@ -578,7 +580,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                     title={(a.title)}
                                     align="start"
                                     startDecorator={icon}
-                                    addon={a.addon}
+                                    addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon}
                                 />
                             </Pressable>
                         </Link>
@@ -621,6 +623,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
 
     const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
+
         return (
             <Pressable  ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
@@ -633,7 +636,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                     }
                 }}
             >
-                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
             </Pressable>
         )
     });

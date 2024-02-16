@@ -37,7 +37,7 @@ let settingsDefault = {
         show_login_modal: 5000,
         extended_search: true,
         show_in_reply_comments: true,
-
+        show_nav_counters: false,
     },
     sockets: {
         host: 'ci.una.io',
@@ -463,7 +463,7 @@ let settingsDefault = {
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
         dashboard: {
-            layout: 'dashboard',
+            layout: 'navigator',
             top:true,
             blocks: {
                 stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: false },

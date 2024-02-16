@@ -42,7 +42,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    const layoutHeightRight = layoutHeight - 48 - formHeight;
+    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight : layoutHeight - formHeight;
 
 
     let { data: dynamicData, error } = useSWR(
@@ -294,10 +294,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     const isWeb = Platform.OS == 'web'
     return (<>
         <View className='md:px-0 border-dashed border-bdrcard dark:border-bdrcard-d border-b'>
-            <Row className='pl-4 items-center justify-start h-12'>
+            {isWeb && <Row className='pl-4 items-center justify-start h-12'>
                 {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
                 <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
-            </Row>
+            </Row>}
         </View>
         <View style={{ height: layoutHeightRight }} className='mx-2'>
             {data.length > 0 && <UniList
