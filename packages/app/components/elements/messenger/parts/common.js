@@ -15,6 +15,9 @@ import { subscribe, unbind } from 'app/ui/atoms/socket';
 import { KeyboardAvoidingView } from 'react-native';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
+import { useTheme } from '@react-navigation/native';
+import {Nav2} from 'app/components/elements/messenger/parts/nav';
+import Nav from './nav.web';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data }) {
 
@@ -35,7 +38,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
     let { currentUser, setCurrentUser } = useCurrentUser();
-
 
     const [replyItem, setReplyItem] = useState(false);
 
@@ -98,7 +100,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     useEffect(() => {
         if (selectedConvo) {
             fetchItems(selectedConvo.id, false);
-
             updateState()
             if (currentUser) {
                 unbind(currentUser.pusher, 'bx_messenger');
@@ -226,48 +227,59 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             fetchItems(selectedConvo.id, true);
     };
 
+    const convosComponent = panelsVisible.convos && <Convos
+        layoutHeightLeft={layoutHeightLeft}
+        data={convos?.data}
+        refListConvos={refListConvos}
+        selectedConvoIndex={selectedConvoIndex}
+        changeConvo={changeConvo}
+    />
+
+    const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
+        <View className='flex-1 flex-auto'>
+            <Jots
+                isSmallScreen={isSmallScreen}
+                title={selectedConvo.title}
+                layoutHeightRight={layoutHeightRight}
+                data={jots?.data?.jots}
+                refListJots={refListJots}
+                showConvo={showConvo}
+                handleReply={handleReply}
+                startReached={handleStartReached}
+            />
+        </View>
+        <FormContainer
+            form={data.form}
+            formHeight={formHeight}
+            replyItem={replyItem}
+            onFormSubmit={onFormSubmit}
+            handleCancelReply={handleCancelReply}
+            handleLayout={handleLayout}
+        />
+    </View>
+
+    if (!isWeb) {
+        return (
+            <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full h-full items-stretch flex-1'}>
+                {convosComponent}
+                {jotsComponent}
+                <Nav2 text={panelsVisible.convos? "Messenger" : selectedConvo.title} onPress={showConvo} backButton={!panelsVisible.convos} />
+            </View>
+        );
+    }
+
     return (
         <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
             <Row className='items-stretch '>
-                <Convos
-                    isVisible={panelsVisible.convos}
-                    layoutHeightLeft={layoutHeightLeft}
-                    data={convos?.data}
-                    refListConvos={refListConvos}
-                    selectedConvoIndex={selectedConvoIndex}
-                    changeConvo={changeConvo}
-                />
-                {(panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5  bg-bgrcard dark:bg-bgrcard-d'}>
-                    <View className='flex-1 flex-auto'>
-                        <Jots
-                            isSmallScreen={isSmallScreen}
-                            title={selectedConvo.title}
-                            layoutHeightRight={layoutHeightRight}
-                            data={jots?.data?.jots}
-                            refListJots={refListJots}
-                            showConvo={showConvo}
-                            handleReply={handleReply}
-                            startReached={handleStartReached}
-                        />
-                    </View>
-                    <View >
-                        <FormContainer
-                            form={data.form}
-                            formHeight={formHeight}
-                            replyItem={replyItem}
-                            onFormSubmit={onFormSubmit}
-                            handleCancelReply={handleCancelReply}
-                            handleLayout={handleLayout}
-                        />
-                    </View>
-                </View>}
+                {convosComponent}
+                {jotsComponent}
             </Row>
         </View>
     );
 }
 
-const Convos = memo(({ isVisible, layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo }) => {
-    return <>{isVisible && <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
+const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo }) => {
+    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
         {data.length > 0 && <UniList
             refer={refListConvos}
             height={layoutHeightLeft}
@@ -275,7 +287,7 @@ const Convos = memo(({ isVisible, layoutHeightLeft, data, refListConvos, selecte
             data={data}
             renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
         />}
-    </View>}</>
+    </View>
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, handleReply, startReached }) => {
@@ -304,33 +316,32 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     </>);
 });
 
-const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout, formHeight }) => {
+const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
+    let padding = 8;
+    const { colors } = useTheme();
     return (
-
-
-        <View className=' ' onLayout={handleLayout}>
-            <View className=' ' >
-                {
-                    replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
-                        <Row className='items-start justify-between max-w-full relative'>
-                            <View className=' flex-auto pr-4'>
-                                <Row className='max-w-full '>
-                                    <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                    <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
-                                </Row>
-                                <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{replyItem.message}</Text>
-                            </View>
-                            <View className=" right-0 t-0">
-                                <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />
-                            </View>
-                        </Row>
-                    </View>)
-                }
-                <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+        <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+            <View className='bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d' onLayout={handleLayout} style={{ backgroundColor: colors.barsBackground, paddingTop: padding, paddingBottom: padding }}>
+                <View className=' ' >
+                    {
+                        replyItem && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50 py-1 pl-2 mt-2 mx-2'>
+                            <Row className='items-start justify-between max-w-full relative'>
+                                <View className=' flex-auto pr-4'>
+                                    <Row className='max-w-full '>
+                                        <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
+                                        <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
+                                    </Row>
+                                    <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{replyItem.message}</Text>
+                                </View>
+                                <View className=" right-0 t-0">
+                                    <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />
+                                </View>
+                            </Row>
+                        </View>)
+                    }
                     <Form {...form} name='bx_messenger' resetOnSubmit={true} classContainerName={" flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
-                </KeyboardAvoidingView>
+                </View>
             </View>
-        </View>
-
+        </KeyboardAvoidingView>
     )
 });

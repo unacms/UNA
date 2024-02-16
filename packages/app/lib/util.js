@@ -2,11 +2,13 @@ import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
 import { settings } from 'app/settings';
-import { stringMd5 } from 'react-native-quick-md5'; 
+import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
+import { Text } from 'app/design/typography'
+import Link from 'app/ui/atoms/link'
 
 export function appSetting(section, name, path) {
     if (path)
@@ -23,7 +25,7 @@ export async function getClipboard() {
     if (Platform.OS !== 'web') {
         return await Clipboard.getString();
     }
-    else{
+    else {
         return await navigator.clipboard.readText();
     }
 }
@@ -32,17 +34,17 @@ export async function setClipboard(str) {
     if (Platform.OS !== 'web') {
         Clipboard.setString(str);
     }
-    else{
+    else {
         await navigator.clipboard.writeText(str);
     }
 }
 
 export function absoluteApiUrl(url_name) {
-    return appSetting("urls", "root")+appSetting("urls", url_name);
+    return appSetting("urls", "root") + appSetting("urls", url_name);
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {
-    if (appSetting('cache', 'list')){
+    if (appSetting('cache', 'list')) {
         return storageGet(pref, storageKeyValue);
     }
     return false;
@@ -53,7 +55,7 @@ export function storageSet(pref, key, data, isLocal = false) {
         /*const MMKV = new MMKVLoader().initialize(); 
         await MMKV.setStringAsync(`${pref}-${key}`, JSON.stringify(data));*/
     }
-    else{
+    else {
         const storage = isLocal ? localStorage : sessionStorage;
         const serializedData = appSetting('cache', 'compress') ? compress(data) : JSON.stringify(data);
 
@@ -62,16 +64,16 @@ export function storageSet(pref, key, data, isLocal = false) {
 }
 
 export function storageGet(pref, key, isLocal = false) {
-    if (Platform.OS !== 'web'){
-      /*  const MMKV = new MMKVLoader().initialize(); 
-        let storedData = await MMKV.getStringAsync(`${pref}-${key}`);
-        console.log(storedData);
-        console.log('----------------------------');
-        console.log(JSON.parse(storedData));
-        if (!storedData) return null;
-        return JSON.parse(storedData);*/
+    if (Platform.OS !== 'web') {
+        /*  const MMKV = new MMKVLoader().initialize(); 
+          let storedData = await MMKV.getStringAsync(`${pref}-${key}`);
+          console.log(storedData);
+          console.log('----------------------------');
+          console.log(JSON.parse(storedData));
+          if (!storedData) return null;
+          return JSON.parse(storedData);*/
     }
-    else{
+    else {
         const storage = isLocal ? localStorage : sessionStorage;
         const storedData = storage.getItem(`${pref}-${key}`);
         if (!storedData) return null;
@@ -81,22 +83,22 @@ export function storageGet(pref, key, isLocal = false) {
 
 export function storageKey(url, useUrl = true) {
     //stringMd5
-    if ( Platform.OS !== 'web')
-        return ;
-    
+    if (Platform.OS !== 'web')
+        return;
+
     let s = url;
     if (!useUrl)
         s = url;
-        //stringMd5
+    //stringMd5
     return (s);
-} 
+}
 
 export function storageClear(pref, key) {
-    if ( Platform.OS !== 'web')
-        return ;
-    
+    if (Platform.OS !== 'web')
+        return;
+
     sessionStorage.clear();
-} 
+}
 
 
 function compress(data) {
@@ -134,12 +136,12 @@ export function getAlert(type, data) {
     сonnections:action
     feed:new_content
     */
-    return {type : type, data: data};
+    return { type: type, data: data };
 }
 
 export function getRandomColor(str) {
     if (!str)
-        str ='a';
+        str = 'a';
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
@@ -154,8 +156,8 @@ export function getBlocksFromData(data) {
     let blocks = {};
     Object.keys(data?.elements).forEach(key => {
         Object.keys(data.elements[key]).forEach(key2 => {
-            blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true}
-            if(data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse'){
+            blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true }
+            if (data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse') {
                 blocks['block' + data.elements[key][key2].id].perLine = 1
             }
         })
@@ -165,24 +167,24 @@ export function getBlocksFromData(data) {
 
 export function getHeaderSettings(uri, width, layout) {
     let settings = appSetting('layouts', uri);
-    if (!settings?.headerSettings){
-        if (layout == 'navigator'){
-            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true }}
+    if (!settings?.headerSettings) {
+        if (layout == 'navigator') {
+            settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true } }
         }
-        if (layout == 'messenger'){
-            settings = {headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true}}
+        if (layout == 'messenger') {
+            settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
         }
-        if (layout == 'profile'){
-            settings = {headerSettings: { offset: false, header: false }}
+        if (layout == 'profile') {
+            settings = { headerSettings: { offset: false, header: false } }
         }
     }
 
     const bBackButton = typeof settings?.headerSettings?.backButton !== 'undefined' ? settings.headerSettings.backButton : true;
-    
-    let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header: true;
-    
-    let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer: true;
-    if (width > 1024){
+
+    let bHeader = typeof settings?.headerSettings?.header !== 'undefined' ? settings.headerSettings.header : true;
+
+    let bFooter = typeof settings?.headerSettings?.footer !== 'undefined' ? settings.headerSettings.footer : true;
+    if (width > 1024) {
         bHeader = true;
     }
 
@@ -211,17 +213,17 @@ export function getHeaderSettings(uri, width, layout) {
     }
 }
 
-export function getUnitModeBySource(source){
+export function getUnitModeBySource(source) {
     if (!source)
         return 'default';
 
     let unit_by_source = appSetting('menu_meta', 'unit_by_source');
-    
+
     for (let key in unit_by_source) {
         if (source.includes(key))
             return unit_by_source[key];
     }
-    
+
     return 'default';
 }
 
@@ -231,7 +233,7 @@ export function truncateHTML(text, length) {
         return '';
     var truncated = text.substring(0, length);
     // Remove line breaks and surrounding whitespace
-    truncated = truncated.replace(/(\r\n|\n|\r)/gm,"").trim();
+    truncated = truncated.replace(/(\r\n|\n|\r)/gm, "").trim();
     // If the text ends with an incomplete start tag, trim it off
     truncated = truncated.replace(/<(\w*)(?:(?:\s\w+(?:={0,1}(["']{0,1})\w*\2{0,1})))*$/g, '');
     // If the text ends with a truncated end tag, fix it.
@@ -289,7 +291,7 @@ function reverseHtml(str) {
     var ph = String.fromCharCode(206);
     var result = str.split('').reverse().join('');
     while (result.indexOf('<') > -1) {
-        result = result.replace('<',ph);
+        result = result.replace('<', ph);
     }
     while (result.indexOf('>') > -1) {
         result = result.replace('>', '<');
@@ -304,16 +306,16 @@ export function parseUrl(url) {
     let withoutProtocol = url;
     let parts = withoutProtocol.split('/');
 
-    if (url.includes('//')){
+    if (url.includes('//')) {
         withoutProtocol = url.split('//')[1];
         parts = withoutProtocol.split('/');
         parts.shift(); // remove the domain
     }
-   
+
     const pathParts = parts.join('/').split('?');
     return {
-      path: pathParts[0],
-      queryString: pathParts[1],
+        path: pathParts[0],
+        queryString: pathParts[1],
     };
 }
 
@@ -347,60 +349,99 @@ export function parseQueryString(queryString) {
 
     const pairs = queryString?.split('&');
     const obj = {};
-  
-    pairs.forEach(pair => {
-      const [key, value] = pair.split('=');
-      obj[key] = value;
-    });
-  
-    return obj;
-  }
 
-export function getImageSizes(){
+    pairs.forEach(pair => {
+        const [key, value] = pair.split('=');
+        obj[key] = value;
+    });
+
+    return obj;
+}
+
+export function getImageSizes() {
     const perLineSettings = appSetting('browse', 'per_line');
-    let str ="";
+    let str = "";
     for (let i = perLineSettings.length - 1; i >= 0; i--) {
 
         if (i == perLineSettings.length - 1)
             str += " (max-width:" + perLineSettings[i].width + "px) 100vw, ";
-        else{
+        else {
 
-            str += "(max-width:" + perLineSettings[i].width + "px) "+Math.round(100/perLineSettings[i+1].count)+"vw, ";
+            str += "(max-width:" + perLineSettings[i].width + "px) " + Math.round(100 / perLineSettings[i + 1].count) + "vw, ";
         }
     }
-    str += '' + (1280/perLineSettings[0].count) + 'px';
+    str += '' + (1280 / perLineSettings[0].count) + 'px';
     return str
 }
 
 function getPlural(key, count) {
-    
+
     let lastDigit = count % 10;
     let lastTwoDigits = count % 100;
 
     if (count == 0)
-        return key + '_0'; 
+        return key + '_0';
 
     if (count == 1) {
-        return key+ '_1'; 
+        return key + '_1';
     }
     if ([2, 3, 4].includes(lastDigit) && ![12, 13, 14].includes(lastTwoDigits)) {
-        return key + '_2'; 
+        return key + '_2';
     }
-    return key + '_plural'; 
+    return key + '_plural';
 }
 
 export function tp(key, count, isHideData = false) {
     const { t: _t } = useTranslation();
     let ct = count;
     if (isHideData)
-        ct ='';
-    return _t(getPlural(key, count), {count: ct});
+        ct = '';
+    return _t(getPlural(key, count), { count: ct });
 }
 
 export function linkify2(text) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
     return matches[0] ? matches[0][0] : null;
+}
+
+function replaceLinks(htmlString, hoverClass="") {
+    const linkRegex = /<a [^>]*href="(.*?)".*?>(.*?)<\/a>/g;
+    if (!htmlString)
+        return htmlString;
+    const parts = htmlString.split(linkRegex);
+
+    return parts.map((part, index) => {
+        if (index % 3 === 0) {
+            // This part is not a link
+            return <Text key={index}>{part}</Text>;
+        } else if (index % 3 === 1) {
+            // This part is a link URL
+            const linkText = parts[index + 1];
+            part = part.replace(appSetting('urls', 'root'), '/');
+            return <Link className={hoverClass} key={index} href={part}><Text>{linkText}</Text></Link>;
+        }
+        // Skip link text parts because they're handled in the link URL parts
+        return null;
+    }).filter(Boolean);
+}
+
+function stripTagsWithLinks(s) {
+    var allowed = ['a'];
+    if (s)
+        s = s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
+            return allowed.includes(tag.toLowerCase()) ? _ : '';
+        });
+
+        s = s.replace(/\s\s+/g, ' ');
+
+        return s.trim(); // Remove leading and trailing spaces
+
+    return s;
+}
+
+export function linkedText(s, hoverClass) {
+    return replaceLinks(stripTagsWithLinks(s), hoverClass)
 }
 
 export function linkify3(inputText) {
@@ -437,41 +478,41 @@ export function linkify(text, attrs = '', htmlSpecialChars = false) {
     return clearLinks(text);
     // todo improve
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
-  
-  const anchorRegex = /<a [^>]*>[^<]*<\/a>/g;
-  
-  const anchors = [...text.matchAll(anchorRegex)];
-  
-  if (htmlSpecialChars)
-    text = text.replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
 
-  let matches = Array.from(text.matchAll(urlRegex)).reverse();
+    const anchorRegex = /<a [^>]*>[^<]*<\/a>/g;
 
-  matches.forEach(match => {
-    let url = match[0];
-    let attrsLocal = attrs;
+    const anchors = [...text.matchAll(anchorRegex)];
 
-    let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
-    if(withinAnchor) return;
-    
-    if (!/^https?:\/\//.test(url)) {
-      url = 'http://' + url;
-    }
+    if (htmlSpecialChars)
+        text = text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 
-    text = text.slice(0, match.index) + '<a ' + attrsLocal + ' href="' + url + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
-  });
+    let matches = Array.from(text.matchAll(urlRegex)).reverse();
 
-  // email pattern
-  const mailPattern = /([A-z0-9._-]+@[A-z0-9_-]+\.[A-z0-9_.-]+)/g;
-  matches = Array.from(text.matchAll(mailPattern)).reverse();
-  matches.forEach(match => {
-    let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
-    if(withinAnchor) return;
-    text = text.slice(0, match.index) + '<a href="mailto:' + match[0] + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
-  });
+    matches.forEach(match => {
+        let url = match[0];
+        let attrsLocal = attrs;
 
-  return text;
-  }
+        let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
+        if (withinAnchor) return;
+
+        if (!/^https?:\/\//.test(url)) {
+            url = 'http://' + url;
+        }
+
+        text = text.slice(0, match.index) + '<a ' + attrsLocal + ' href="' + url + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
+    });
+
+    // email pattern
+    const mailPattern = /([A-z0-9._-]+@[A-z0-9_-]+\.[A-z0-9_.-]+)/g;
+    matches = Array.from(text.matchAll(mailPattern)).reverse();
+    matches.forEach(match => {
+        let withinAnchor = anchors.some(anchor => match.index > anchor.index && match.index < anchor.index + anchor[0].length);
+        if (withinAnchor) return;
+        text = text.slice(0, match.index) + '<a href="mailto:' + match[0] + '">' + match[0] + '</a>' + text.slice(match.index + match[0].length);
+    });
+
+    return text;
+}
 
 export function mergeDeep(target, ...sources) {
     if (!sources.length) return target;
@@ -481,19 +522,19 @@ export function mergeDeep(target, ...sources) {
         for (const key in source) {
             if (isObject(source[key])) {
                 if (!target[key]) Object.assign(target, { [key]: {} });
-                    mergeDeep(target[key], source[key]);
-          } else {
-            Object.assign(target, { [key]: source[key] });
-          }
+                mergeDeep(target[key], source[key]);
+            } else {
+                Object.assign(target, { [key]: source[key] });
+            }
+        }
     }
-  }
 
-  return mergeDeep(target, ...sources);
+    return mergeDeep(target, ...sources);
 }
 
 export function FeedbackHaptics(type) {
     const bWeb = Platform.OS === 'web';
-    if (bWeb) return ;
+    if (bWeb) return;
     //https://docs.expo.dev/versions/latest/sdk/haptics/
     switch (type) {
         case 'Success':
@@ -540,24 +581,14 @@ export function isEmoji(s) {
 export function stripTags(s) {
     if (s)
         return String(s).replace(/(<([^>]+)>)/ig, '');
-    
+
     return s;
 }
 
-export function stripTagsWithLinks(s) {
-    var allowed = ['a'];
-    if (s)
-        return s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
-            return allowed.includes(tag.toLowerCase()) ? _ : '';
-        });
-        
-    return s;
-}
-
-function urltoFile(url, filename, mimeType){
+function urltoFile(url, filename, mimeType) {
     return (fetch(url)
-        .then(function(res){return res.arrayBuffer();})
-        .then(function(buf){return new File([buf], filename,{type:mimeType});})
+        .then(function (res) { return res.arrayBuffer(); })
+        .then(function (buf) { return new File([buf], filename, { type: mimeType }); })
     );
 }
 
@@ -567,10 +598,10 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
 
     formData.append("file", file);
     const result = await fetcher([fetchUrl, null, formData]);
-    if (result?.data?.link){
+    if (result?.data?.link) {
         calback(result?.data?.link, extraVar);
     }
-    else{
+    else {
         calback(result, extraVar)
     }
 }
@@ -578,38 +609,38 @@ export const uploadImageFile = async (file, fetchUrl, calback, extraVar) => {
 export const uploadImage = async (uri, fetchUrl, calback, extraVar) => {
     const isWeb = Platform.OS == 'web'
     const formData = new FormData();
-    if (isWeb){
+    if (isWeb) {
         const fileExt = uri.split(';').shift().split('/').pop();
         const fileType = uri.split(';').shift().split(':').pop();
         urltoFile(uri, genRnd(8) + '.' + fileExt, fileType)
-        .then(async function(file){
-            formData.append("file", file);
-            const result = await fetcher([fetchUrl, null, formData]);
-            if (result?.data?.link){
-                calback(result?.data?.link, extraVar);
-            }
-            else{
-                calback(result, extraVar)
-            }
-                
-        });
+            .then(async function (file) {
+                formData.append("file", file);
+                const result = await fetcher([fetchUrl, null, formData]);
+                if (result?.data?.link) {
+                    calback(result?.data?.link, extraVar);
+                }
+                else {
+                    calback(result, extraVar)
+                }
+
+            });
     }
-    else{
+    else {
         const formData = new FormData();
         const fileName = uri.split('/').pop();
         const fileType = uri.match(/\.([a-z]+)$/i)[1];
 
-        formData.append("file",  {
+        formData.append("file", {
             uri,
             name: fileName,
             type: `image/${fileType}`,
         });
 
         const result = await fetcher([fetchUrl, null, formData]);
-        if (result?.data?.link){
+        if (result?.data?.link) {
             calback(result?.data?.link, extraVar);
         }
-        else{
+        else {
             calback(result, extraVar)
         }
     }
@@ -621,17 +652,17 @@ export function genRnd(length) {
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
     }
     return result;
 }
 
 export function getIconByNameFromIconset(iconset, name) {
     let icon = iconset[name];
-    if (!icon){
+    if (!icon) {
         Object.keys(iconset).find((item) => {
-            if (name.includes(item)){
+            if (name.includes(item)) {
                 icon = iconset[item];
                 return true;
             }
@@ -641,16 +672,16 @@ export function getIconByNameFromIconset(iconset, name) {
 }
 
 export function getURI(url) {
-    if(!url || !url.length || typeof(url) !== 'string')
+    if (!url || !url.length || typeof (url) !== 'string')
         return false;
 
     let questionMarkIndex = url.indexOf("?");
 
     if (questionMarkIndex !== -1) {
-      url = url.substring(0, questionMarkIndex);
+        url = url.substring(0, questionMarkIndex);
     }
 
-    let u = url.replace('page','').split('/');
+    let u = url.replace('page', '').split('/');
     u = u.filter(Boolean);
     return u[0]
 }
@@ -663,34 +694,32 @@ const getNameFromSetting = (setting) => {
     }
     return null;
 };
-  
-export function getLayout(currentUser, layoutName = '')
-{
-   // if (layoutName != 'profile' && layoutName != 'navigator')
-     //   return currentUser ? appSetting('layout', 'format') :  appSetting('layout', 'format_guest');
-    let a = storageGet('layout:format','', true);
-    if(!a)
+
+export function getLayout(currentUser, layoutName = '') {
+    // if (layoutName != 'profile' && layoutName != 'navigator')
+    //   return currentUser ? appSetting('layout', 'format') :  appSetting('layout', 'format_guest');
+    let a = storageGet('layout:format', '', true);
+    if (!a)
         return appSetting('layout', 'format');
-    
+
     return a;
 }
 
-export function menuItemsByName(name, items, currentUser, url = '')
-{
+export function menuItemsByName(name, items, currentUser, url = '') {
     if (!items)
         return [];
     const menuSettings = appSetting('menu_items', name)
     let menuSettingNames = []
-    
-    if (menuSettings){
-        if (menuSettings.items){
+
+    if (menuSettings) {
+        if (menuSettings.items) {
             if (typeof menuSettings.items[0] === 'string') {
                 items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettings.items.includes(item.name)) || (!!item.link && menuSettings.items.includes(getURI(item.link)))));
             }
-            else{
+            else {
                 menuSettingNames = menuSettings.items.map(getNameFromSetting);
                 items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
-               
+
                 menuSettingNames = [];
                 items = items.map(item1 => {
                     const item2 = menuSettings.items.find(item2 => item2.name === item1.name);
@@ -698,13 +727,13 @@ export function menuItemsByName(name, items, currentUser, url = '')
                 });
             }
         }
-        else{
+        else {
             menuSettingNames = menuSettings.map(getNameFromSetting);
             items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
         }
-        if (menuSettingNames){
+        if (menuSettingNames) {
             items.forEach(item => {
-                if (menuSettingNames.includes(item.name)){
+                if (menuSettingNames.includes(item.name)) {
                     let matchedSettings = menuSettings.filter(item2 => item.name === item2.name);
 
                     if (matchedSettings.length > 0) {
@@ -718,27 +747,27 @@ export function menuItemsByName(name, items, currentUser, url = '')
         return items;
     }
     if (!items)
-        items =[{link: url, title: ''}];
-    
-    if (!currentUser){
+        items = [{ link: url, title: '' }];
+
+    if (!currentUser) {
         items = items.filter(item => item.nonlogged !== false && item.nonoperator !== false);
     }
-    else{
+    else {
         items = items.filter(item => item.logged !== false);
-        if (!currentUser.operator){
+        if (!currentUser.operator) {
             items = items.filter(item => item.nonoperator !== false);
         }
     }
 
     items = items.map(item => {
         if (item.link === '{studio}') {
-          return {...item, link: appSetting('urls', 'root') + 'studio/launcher.php'};
+            return { ...item, link: appSetting('urls', 'root') + 'studio/launcher.php' };
         }
         if (item.link === '{profile}') {
-            return {...item, link: currentUser?.url};
-          }
+            return { ...item, link: currentUser?.url };
+        }
         return item;
-      });
+    });
 
     return items;
 }

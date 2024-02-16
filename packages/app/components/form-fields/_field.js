@@ -3,26 +3,7 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
-import { appSetting, stripTags, stripTagsWithLinks } from 'app/lib/util'
-
-function replaceLinks(htmlString) {
-    const linkRegex = /<a href="(.*?)".*?>(.*?)<\/a>/g;
-    const parts = htmlString.split(linkRegex);
-  
-    return parts.map((part, index) => {
-      if (index % 3 === 0) {
-        // This part is not a link
-        return <Text key={index}>{part}</Text>;
-      } else if (index % 3 === 1) {
-        // This part is a link URL
-        const linkText = parts[index + 1];
-        part = part.replace(appSetting('urls', 'root'), '/');
-        return <Link key={index} href={part}>{linkText}</Link>;
-      }
-      // Skip link text parts because they're handled in the link URL parts
-      return null;
-    }).filter(Boolean);
-  }
+import { appSetting, stripTags, linkedText } from 'app/lib/util'
 
 export default function FormField(props) {
     let caption = props.caption;
@@ -48,7 +29,7 @@ export default function FormField(props) {
             }
             {!!props.error && !Array.isArray(props.error) && 
                 <View className="label" >
-                    <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{replaceLinks(stripTagsWithLinks(props.error))}</Text>
+                    <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{linkedText(props.error)}</Text>
                 </View>
             }
             {!!props.info &&

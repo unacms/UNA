@@ -406,7 +406,7 @@ export function CommentsForm({form, requestUrl, module, browse, formData, handle
 
         <View className={className} style={{backgroundColor: colors.barsBackground, paddingTop:padding, paddingBottom:padding}}>
             {
-                form.data.inputs.cmt_parent_id.value >0 && (<View className='bg-bgrcard dark:bg-bgrcard-d rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
+                form.data.inputs.cmt_parent_id.value >0 && (<View className=' rounded-sm border-l-2 border-primary/50  py-1 pl-2 mx-3 mb-2'>
                     <Row className='items-start justify-between max-w-full relative'>
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>

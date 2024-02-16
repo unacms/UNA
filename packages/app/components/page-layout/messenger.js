@@ -10,12 +10,13 @@ import { Button } from 'app/design/controls'
 import Messenger from 'app/components/elements/messenger/parts/common'
 import { BottomSheetData } from 'app/context/bottomsheet';
 import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
-import Nav from 'app/components/elements/messenger/parts/nav';
+import { Nav } from 'app/components/elements/messenger/parts/nav';
 import MainMenu from 'app/components/nav/mainmenu'
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 
 export default function PageLayout({ url, data, layoutName, blocks: { main } }) {
+    const isWeb = Platform.OS == 'web'
     const sTitle = 'Messenger';
     let defaultMenuName = 'inbox';
     let defaultConvoId = '';
@@ -74,7 +75,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     }
 
     const newConvo = () => {
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSave} />, showClose: true, snapPoints: ['25%', '70%'] });
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSave} />, showClose: true, snapPoints: ['25%', '50%'] });
     }
 
     const addButtons = useMemo(() => {
@@ -83,41 +84,57 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         ]
     }, []);
 
+    const messengerContainer = (menu && convos) && <><Nav addButtons={addButtons} /><MessengerContainer
+        fetchConvos={fetchConvos}
+        convos={convos}
+        data={data2.content[0]}
+        selectedMenu={menu?.data[menu?.index].name}
+        defaultConvoId={initedConvoId}
+        windowWidth={windowWidth}
+        windowWHeight={windowWHeight}
+        layout={layout}
+    /></>
 
+    if (!isWeb) {
+        return messengerContainer;
+    }
 
-    return (
-        <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-            <LeftMenu
-                isLeftMenu={isLeftMenu}
-                sTitle={sTitle}
-                addButtons={addButtons}
-                menu={menu} changeMenu={changeMenu}
-            />
-            <View className='flex-auto items-stretch'>
-                <TopMenu
-                    url={url}
-                    windowWidth={windowWidth}
+    if (!isWeb)
+        return (menu && convos) && <MessengerContainer
+            fetchConvos={fetchConvos}
+            convos={convos}
+            data={data2.content[0]}
+            selectedMenu={menu?.data[menu?.index].name}
+            defaultConvoId={initedConvoId}
+            windowWidth={windowWidth}
+            windowWHeight={windowWHeight}
+            layout={layout}
+        />
+
+        return (
+            <Row className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+                <LeftMenu
                     isLeftMenu={isLeftMenu}
-                    addButtons={addButtons}
-                    layoutName={layoutName}
                     sTitle={sTitle}
-                    menu={menu}
-                    changeMenu={changeMenu}
-                    currentUser={currentUser}
+                    addButtons={addButtons}
+                    menu={menu} changeMenu={changeMenu}
                 />
-                {(menu && convos) && <MessengerContainer
-                    fetchConvos={fetchConvos}
-                    convos={convos}
-                    data={data2.content[0]}
-                    selectedMenu={menu?.data[menu?.index].name}
-                    defaultConvoId={initedConvoId}
-                    windowWidth={windowWidth}
-                    windowWHeight={windowWHeight}
-                    layout={layout}
-                />}
-            </View>
-        </Row>
-    )
+                <View className='flex-auto items-stretch'>
+                    <TopMenu
+                        url={url}
+                        windowWidth={windowWidth}
+                        isLeftMenu={isLeftMenu}
+                        addButtons={addButtons}
+                        layoutName={layoutName}
+                        sTitle={sTitle}
+                        menu={menu}
+                        changeMenu={changeMenu}
+                        currentUser={currentUser}
+                    />
+                   {messengerContainer}
+                </View>
+            </Row>
+        )
 }
 
 const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId }) => {
@@ -137,7 +154,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
             heightInit = windowWHeight - 64 - 51 - 64;
         }
         if (!isWeb){
-            heightInit = windowWHeight - 64 - 51 - 48;
+            heightInit = windowWHeight - 64 - 51;
         }
         return heightInit;
     }, [windowWHeight, layout])
@@ -161,7 +178,6 @@ const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, l
     const headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
     return (
         <>
-            <Nav addButtons={addButtons} />
             <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
             <View className=''>
                 <TopSidebar isWeb={isWeb} leftSideBar={isLeftMenu} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >

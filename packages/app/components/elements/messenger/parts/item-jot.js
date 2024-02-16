@@ -14,7 +14,7 @@ import useSWR from "swr";
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
 import { useTranslation } from 'react-i18next';
-import { FeedbackHaptics } from 'app/lib/util';
+import { FeedbackHaptics, linkedText } from 'app/lib/util';
 import { Platform } from 'react-native'
 
 export default function JotItem({ item, index, handleReply }) {
@@ -78,33 +78,29 @@ export default function JotItem({ item, index, handleReply }) {
                     </View>
 
                     {viewState.view == 'edited' ? (
-                        <View className="w-full">
+                        <View className='-translate-y-6'>
+                            <View className='ml-auto mb-2'>
+
+                                <Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded />
+                            </View>
                             <Form
                                 name='bx_messenger'
                                 {...viewState.data}
                                 classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
                                 onFormSubmit={onFormSubmit}
                             />
-                            <View className="mx-4 mb-4">
-                                <Button
-                                    title="Cancel"
-                                    fullWidth
-                                    size="base"
-                                    startDecorator="X"
-                                    variant="outline"
-                                    onPress={() => setViewState({ view: '' })}
-                                />
-                            </View>
                         </View>
+
                     ) : <>
                         {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
                             <View className="flex-row items-baseline" >
                                 <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
                                 <View className=" "></View>
                             </View>
-                            <Html data={linkify(item?.reply_message)} />
+                            <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
                         </View>}
-                        <Html data={linkify(item?.message)} /><CarouselMemo aImg={aImg} />
+                        <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
+                        <CarouselMemo aImg={aImg} />
                     </>}
                 </View>
             </View>
