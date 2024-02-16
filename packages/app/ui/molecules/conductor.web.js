@@ -563,8 +563,24 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons}>
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
                     let settings = appSetting('layouts', a.key)
-                    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon) : a.icon;
-                   
+                    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+                    let btn =<Button
+                        variant={a.index == index ? 'outline' : "text"}
+                        size={!a.ident ? "base" : "sm"}
+                        pressed={a.index == index ? true : false}
+                        fullWidth
+                        title={(a.title)}
+                        align="start"
+                        startDecorator={icon}
+                        addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon}
+                    />
+                    if (a?.icon == '*'){
+                        return (
+                            <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
+                                {btn}
+                            </Link>
+                        );
+                    }
                     return (
                         <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
                             <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
@@ -572,16 +588,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                                 window.history.pushState({}, '', a.key);
                                 event.preventDefault()
                             }}>
-                                <Button
-                                    variant={a.index == index ? 'outline' : "text"}
-                                    size={!a.ident ? "base" : "sm"}
-                                    pressed={a.index == index ? true : false}
-                                    fullWidth
-                                    title={(a.title)}
-                                    align="start"
-                                    startDecorator={icon}
-                                    addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon}
-                                />
+                                {btn}
                             </Pressable>
                         </Link>
                     )
@@ -623,9 +630,13 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
 
     const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
 
+        if (a.icon=='*'){
+            return <View className="justify-center" ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
+        }
         return (
-            <Pressable  ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
+            <Pressable ref={el => itemRefs.current[index2] = el} className={" py-2 items-center " + a?.menu_settings?.class + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')}
                 key={`tab-${index2}`}
                 onPress={() => {
                     setIndex(a.index);
@@ -636,13 +647,19 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                     }
                 }}
             >
-                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
+            {btn}   
             </Pressable>
         )
     });
 
     const MenuItemEx = memo(({ item:a , index:index2, setNtfsOpen }) => {
      
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+           
+        if (a.icon=='*'){
+            return <View className="justify-center" ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
+        }
+        else{
         return (
             <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
                 key={`tab-${a.index}`}
@@ -656,9 +673,10 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                     }
                 }}
             >
-                <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+                {btn}   
             </Pressable>
         )
+        }
     });
 
     const ButtonEx = memo(() => {
