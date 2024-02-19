@@ -55,13 +55,16 @@ export async function fetcherRaw (host, mixed) {
     if (undefined === headers)
         headers = {};
 
+    
+
     // add token and origin headers when necessary
-    if (token || 'web' ==! Platform.OS)
+    if (token)
         headers['Authorization'] = 'Bearer ' + token;
     if (origin)
         headers['Origin'] = origin;
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
+
 
     // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
     // headers['Pragma'] = "no-cache";

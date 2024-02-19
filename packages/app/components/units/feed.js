@@ -106,7 +106,7 @@ function DefaultUnit(data) {
                     data.owners.map((item, index) => {
                         return (
                             <Link key={'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500 hover:text-linkhover">{item.title}</Text>
+                                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden " numberOfLines={1} >{item.title}</Text>
                             </Link>
                         );
                     })
@@ -120,7 +120,7 @@ function DefaultUnit(data) {
             return (
                 <>
                     <Text className="text-neutral-500"> · </Text>
-                    <Text className="text-neutral-500">
+                    <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap nowrap">
                         {l}
                     </Text>
                     {inList}
@@ -192,20 +192,26 @@ function DefaultUnit(data) {
         <AnimatedBlock>
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
                 <View className="flex-auto flex-row items-top px-4 py-3.5">
-                    <Profile
-                        {...data.author_data}
-                        showLink={true}
-                        displayType="unit"
-                        displaySize="base"
-                        showInfo={
-                            <Row className="items-center">
-                                <Link href={url}>
-                                    <Time stylesNameAdd="hover:text-linkhoverneutral" ts={data.date}></Time>
-                                </Link>
-                                <ItemInfo data={data} />
-                            </Row>
-                        }
-                    />
+                    <View className=' w-3/4 overflow-hidden'>
+                        <Profile
+                            {...data.author_data}
+                            showLink={true}
+                            displayType="unit"
+                            displaySize="base"
+                            showInfo={
+                                <Row className="items-center">
+                                    <View>
+                                        <Link href={url}>
+                                            <Time stylesNameAdd="hover:text-linkhoverneutral" ts={data.date}></Time>
+                                        </Link>
+                                    </View>
+                                    <Row className='  '>
+                                        <ItemInfo data={data} />
+                                    </Row>
+                                </Row>
+                            }
+                        />
+                    </View>
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
                             const Element = componentsMap[item.type]

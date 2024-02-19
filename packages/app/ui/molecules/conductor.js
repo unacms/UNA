@@ -175,7 +175,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             setTimeout(() => {
                 //TODO FIX
                 //updateRightHeaderObj(addButtons, navigation);
-                updateRightHeader(menuSettings?.add, navigation);
+                updateRightHeader(currentUser?menuSettings?.add:null, navigation, );
             }, 300);
             /* gap-x-2*/
             return (

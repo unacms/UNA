@@ -41,7 +41,6 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
     const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
 
-    console.log('heightheightheight', windowWHeight)
     const fetchConvos = async () => {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
