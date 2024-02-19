@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { env } from 'app/lib/env';
 import i18n from 'i18next';
-import { appSetting , UNA_URL } from 'app/config';
+import { appSetting , UNA_URL, APP_URL } from 'app/config';
 
 const USE_PROXY = appSetting('config', 'use_proxy'); // TODO: move to some setting 
 
@@ -14,7 +14,7 @@ export async function fetcher (mixed) {
    
     let prefix = UNA_URL;
     if ('web' === Platform.OS && (USE_PROXY || IsSafeEndpoint(mixed[0]))){
-        prefix =  appSetting('config', 'app_url') + "/api";
+        prefix =  APP_URL + "/api";
     }
    /* if ('web' !== Platform.OS ){
         prefix =  appSetting('config', 'app_url_real') + "/api";
