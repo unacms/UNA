@@ -2,7 +2,7 @@ let settingsDefault = {
     config: {
         una_url: 'https://ci.una.io/test3',
         app_url: 'https://neo.so',
-        debug: true,
+        debug: false,
         use_proxy: true,
         safe_endpoints: [
             'system/login_form/TemplServiceLogin', 
