@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { UNA_URL } from 'app/config';
 import { env } from 'app/lib/env';
 import * as Icons from  "@phosphor-icons/react/dist/ssr";
 import ReactDOMServer from 'react-dom/server';
@@ -77,7 +78,7 @@ export function middleware(request) {
             q = '?r=q&q=' + b.q + '&t=' + b.t;
         }*/
         
-        return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + q,
+        return NextResponse.rewrite(UNA_URL + request.nextUrl.pathname.replace('/api/','/') + q,
         {
             request: {
                 headers: tmpHeaders,
