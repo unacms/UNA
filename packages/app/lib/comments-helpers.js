@@ -50,7 +50,6 @@ export function findParent (data, c, o, insert) {
 }
 
 export function parseData (browse, dynamicData) {
-    console.log("dynamicData", dynamicData)
     if (!dynamicData?.data?.browse?.data?.data)
         return;
     dynamicData.data.browse.data.data.map(function(c, kc){
@@ -168,8 +167,10 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         })
     }
 
-
     const handleMore = async (force = false) => {
+        if (maxCount)
+            return;
+
         if (!commentData.objectId)
             return;
 
