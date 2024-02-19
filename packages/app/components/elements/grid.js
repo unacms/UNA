@@ -139,7 +139,7 @@ const Cell = React.memo(({ cell, indexRow, id, toggleSwitch, setSelection, selec
             return <Link href={cell.data.url}><Text>{cell.data.text}</Text></Link>
         case 'text':
             return <Text className="text-neutral-800 dark:text-neutral-200">{stripTags(cell.value)}</Text>
-        case 'order': // TODO
+        case 'order': //TODO
             return <Text></Text>
         case 'switcher':
             return <>

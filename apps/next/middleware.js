@@ -71,11 +71,12 @@ export function middleware(request) {
         tmpHeaders.set('cookie', cookieString)
 
         let q = url.search;
-        if (url.searchParams.get('r') == 'q'){
+       /* if (url.searchParams.get('r') == 'q'){
             let a = {'accounts_count': {q: 'SELECT Count(*) FROM sys_accounts', t: 'One'}}
             let b = a[url.searchParams.get('q')];
             q = '?r=q&q=' + b.q + '&t=' + b.t;
-        }
+        }*/
+        
         return NextResponse.rewrite(env('UNA_URL') + request.nextUrl.pathname.replace('/api/','/') + q,
         {
             request: {

@@ -1,4 +1,24 @@
 let settingsDefault = {
+    config: {
+        una_url: 'https://ci.una.io/test3',
+        app_url: 'http://localhost:3000',
+        app_url_real: 'https://neo.so',
+        debug: true,
+        use_proxy: false,
+        safe_endpoints: [
+            'system/login_form/TemplServiceLogin', 
+            'system/create_account_form/TemplServiceAccount'
+        ],
+        sockets: {
+            host: 'ci.una.io',
+            port: '443',
+            key: 'app-key',
+        },
+        api_keys: {
+            google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
+            open_ai: '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'
+        },
+    },
     layout: {
         format_list:['hor', 'ver', 'mixed'],
         format:'mixed', //hor, ver, mixed
@@ -39,22 +59,11 @@ let settingsDefault = {
         show_in_reply_comments: true,
         show_nav_counters: true,
     },
-    sockets: {
-        host: 'ci.una.io',
-        port: '443',
-        key: 'app-key',
-    },
-    api_keys: {
-        google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',//TODO
-        open_ai: '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'
-    },
     jitsi: {
         prefix: 'prefix_',
         domain: 'https://meet.jit.si/',
     },
     urls: {
-        site: 'http://localhost:3000',
-        root: 'https://ci.una.io/test3/',
         embeds: 'oembed.php?html=1&a=get_link&l=',
     },
     cache: {
@@ -272,7 +281,7 @@ let settingsDefault = {
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
-            {key: '/tab4', title: 'Menu', url: '/posts-home',icon: 'UserList'},
+            {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
         menu_bottom_tabs_non_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
@@ -887,6 +896,13 @@ if (settingsDefault.layout.format == 'mixed') {
     ];
     settingsDefault.menu_items.menu_top = [];
     delete settingsDefault.layouts.home.blocks.menu
+}
+
+export function appSetting(section, name, path) {
+    if (path)
+        return settings[section] && settings[section][name] ? settings[section][name][path] : '';
+
+    return settings[section] ? settings[section][name] : '';
 }
 
 export { settingsDefault };

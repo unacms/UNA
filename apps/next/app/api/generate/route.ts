@@ -1,8 +1,11 @@
 import { Configuration, OpenAIApi } from "openai-edge";
 import { OpenAIStream, StreamingTextResponse } from "ai";
+import { appSetting } from 'app/config';
+
+const API_KEY = appSetting('config', 'api_keys', 'open_ai');
 
 const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey:API_KEY,
 });
 const openai = new OpenAIApi(config);
 
@@ -10,9 +13,9 @@ export const runtime = "edge";
 
 export async function POST(req: Request): Promise<Response> {
   // Check if the OPENAI_API_KEY is set, if not return 400
-  if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === "") {
+  if (!API_KEY) {
     return new Response(
-      "Missing OPENAI_API_KEY – make sure to add it to your .env file.",
+      "Missing open_ai – make sure to add it to your config file",
       {
         //status: 400,
       },
