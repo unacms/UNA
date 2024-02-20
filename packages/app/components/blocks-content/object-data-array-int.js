@@ -6,8 +6,10 @@ import SimpleList from 'app/components/elements/simple_list';
 import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
+import Msg from 'app/components/elements/msg';
 
 export function BlockByData(props) {
+    console.log(props.block.type);
     return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props}  />
 }
 
@@ -74,6 +76,7 @@ export default function BlockContentObjectDataArray(props) {
     const components = {
         'simple_list': SimpleList,
         'form': Form,
+        'msg': Msg
         // Add other component types here
     };
 
