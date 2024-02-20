@@ -2,7 +2,6 @@ import { Text} from 'app/design/typography'
 import { View } from 'app/design/view'
 
 export default function ElementMsg({data, msg_type}) {
-    console.log(msg_type);
     if (!data.length)
         return null;
 

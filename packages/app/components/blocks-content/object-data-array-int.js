@@ -9,7 +9,6 @@ import { Platform } from 'react-native'
 import Msg from 'app/components/elements/msg';
 
 export function BlockByData(props) {
-    console.log(props.block.type);
     return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props}  />
 }
 
@@ -45,7 +44,7 @@ export default function BlockContentObjectDataArray(props) {
     //if (postData && !dynamicData) return <Text className="text-black dark:text-white">&nbsp;</Text>;
     
 
- const setInputValueByName = (data, inputName, newValue) => {
+    const setInputValueByName = (data, inputName, newValue) => {
         for (const item of data) {
             if (item.type === "form" && item.data.inputs[inputName]) {
                 item.data.inputs[inputName].value = newValue;
@@ -80,9 +79,8 @@ export default function BlockContentObjectDataArray(props) {
         // Add other component types here
     };
 
-    const Component = components[props.block.content[0].type];
+    const Component = components[!dynamicData ? props.block.content[0].type : realData[0].type];
 
-    
     // display each block element from static data or from dynamic data
     return (
         <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>
