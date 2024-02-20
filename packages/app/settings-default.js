@@ -57,6 +57,7 @@ let settingsDefault = {
         extended_search: true,
         show_in_reply_comments: true,
         show_nav_counters: true,
+        allow_edit_covers: true
     },
     jitsi: {
         prefix: 'prefix_',
@@ -422,6 +423,15 @@ let settingsDefault = {
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
             ],
         },
+        sys_account_dashboard: {
+            name: 'Groups',
+            icon: 'UsersThree',
+            
+            add: [
+                { icon: 'Plus', name: 'Add', link: '/create-group-profile', nonlogged: false },
+                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
+            ],
+        },
         bx_forum_submenu: {
             name: 'Discussions',
             icon: 'comments',
@@ -470,14 +480,14 @@ let settingsDefault = {
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
-        dashboard: {
+      /*  dashboard: {
             layout: 'navigator',
             top:true,
             blocks: {
                 stat_block: { name: 'system:get_stat_block', showTitle: false, showBg: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
-        },
+        },*/
         'search-keyword': {
             layout: 'navigator_search',
             blocks: {

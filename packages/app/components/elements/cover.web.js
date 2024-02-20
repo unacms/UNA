@@ -255,6 +255,7 @@ export default function ElementCover(props) {
 
     const isUseBg = appSetting('layout', 'use_background');
 
+    const bAllowEdit = data.allow_edit && appSetting('layout', 'allow_edit_covers');
     return (
         <View className={isUseBg ? " backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d " : ""}>
             <View className={appSetting('layout', 'max_width') + ' sm:p-4 mx-auto w-full'}>
@@ -268,7 +269,7 @@ export default function ElementCover(props) {
                             src={coverUrl}
                         />
                     )}
-                    {data.allow_edit && <View className='p-4 items-end'><Button rounded startDecorator="Camera" onPress={() => handleUpload('cover')} /></View>}
+                    {bAllowEdit && <View className='p-4 items-end'><Button rounded startDecorator="Camera" onPress={() => handleUpload('cover')} /></View>}
 
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}
@@ -284,7 +285,7 @@ export default function ElementCover(props) {
                                 displayType="unit_wo_info"
                                 displaySize='4xl'
                             />
-                            {data.allow_edit && <View className='p-4 absolute -bottom-2 right-0'><Button rounded startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
+                            {(bAllowEdit && appSetting('layout', 'hide_edit_covers')) && <View className='p-4 absolute -bottom-2 right-0'><Button rounded startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
                         </View>
                     </View>
                     }

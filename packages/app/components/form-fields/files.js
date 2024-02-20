@@ -224,7 +224,7 @@ export default function FormFieldFiles(props) {
 
         if (!bMultiple) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
-            let w = props.name == 'picture' ? 'w-48' : 'w-full';
+            let w = props.name == 'picture' ? 'w-48 h-48' : 'w-full';
             if (!props.viewClasses) {
                 w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
             }
@@ -235,7 +235,7 @@ export default function FormFieldFiles(props) {
             let isImage = img?.file_type?.includes('image/');
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={w + '  items-center justify-center bg-primary/5 w-full ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-16')}>
+                    <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-16')}>
                         {img == null ?
                             <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View>
                             : (<>
