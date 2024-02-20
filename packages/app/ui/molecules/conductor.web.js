@@ -653,7 +653,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
     const MenuItemEx = memo(({ item:a , index:index2, setNtfsOpen }) => {
      
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={a.addon} />
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
            
         if (a.icon=='*'){
             return <View className="justify-center"><Link href={a.link}>{btn}</Link></View>
