@@ -62,7 +62,7 @@ export function UnitSearchResultsSmall({data, onPress}) {
                         </View>
                         <View className='flex-row items-center'>
                             {data?.module_title &&
-                                <Text className='ml-1 text-xs flex-none text-neutral-500' numberOfLines={1}>{data.module_title}</Text>
+                                <Text className='text-xs flex-none text-neutral-500' numberOfLines={1}>{data.module_title}</Text>
                             }
                         </View>
                     </View>
