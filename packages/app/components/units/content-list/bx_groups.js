@@ -18,7 +18,6 @@ import Letter from 'app/ui/atoms/letter'
 export default function Unit(props) {
     const { t } = useTranslation();
     const data = props.data;
-    console.log(data);
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);

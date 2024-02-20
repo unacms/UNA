@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import { StyleSheet, PixelRatio } from 'react-native';
 import { env } from 'app/lib/env'
 import { appSetting } from 'app/lib/util';
-
+import { APP_URL2 } from 'app/config';
 export const SolitoImageStyled = styled(SolitoImage)
 
 function extractStyleWidth(style) {
@@ -83,7 +83,7 @@ export default function ElementImage(props) {
         if (w > 256)
             w = 640;
 
-        src = env('API_PROXY_URL').replace('/api', '/') +    "_next/image?url=" + src + "&w=" + w + "&q=75"
+        src = APP_URL2 +    "/_next/image?url=" + src + "&w=" + w + "&q=75"
 
         srcImIn = src;
     }

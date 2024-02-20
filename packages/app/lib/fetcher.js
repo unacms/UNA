@@ -1,37 +1,25 @@
 import { Platform } from 'react-native';
 import { env } from 'app/lib/env';
 import i18n from 'i18next';
+import { appSetting , UNA_URL, APP_URL } from 'app/config';
 
-const USE_PROXY = true; // TODO: move to some setting 
+const USE_PROXY = appSetting('config', 'use_proxy'); // TODO: move to some setting 
 
-function getUrlPrefix() {    
-    let s, proto, host, port;
-    if (typeof(window) !== 'undefined')
-        [proto, host, port] = [window.location.protocol, window.location.hostname, window.location.port];
-    else
-        [proto, host, port] = [env('PROTO'), env('HOST'), env('PORT')];
-
-    s = `${proto}//${host}`;
-    if (port && 80 !== port && 443 !== port)
-        s += ":" + port;
-    return s;
+function IsSafeEndpoint(url) {
+    return appSetting('config', 'safe_endpoints').some(substring => url.includes(substring));
 }
 
 export async function fetcher (mixed) {
-    let prefix = env('UNA_URL'); // by default we don't use proxy
-    if (USE_PROXY) { 
-        // since we have proxy setup in NextJS, then for web we use curent site url, 
-        // for native we have no standalone server, so we have to set URL of external NextJS app (there no no CORS problem in native)
-        if ('web' === Platform.OS)
-            prefix =  getUrlPrefix() + "/api";
-        else
-            prefix = env('API_PROXY_URL');
+    const t1 = Date.now();
+   
+    let prefix = UNA_URL;
+    if ('web' === Platform.OS && (USE_PROXY || IsSafeEndpoint(mixed[0]))){
+        prefix =  APP_URL + "/api";
     }
-
-    return await fetcherRaw(prefix, mixed).then(async (r) => {
-        // console.log("----------- Response headers ");
-        // console.log(r.headers);
-        // console.log("----------- END -------------");
+   /* if ('web' !== Platform.OS ){
+        prefix =  appSetting('config', 'app_url_real') + "/api";
+    }*/
+    const r = await fetcherRaw(prefix, mixed).then(async (r) => {
 
         let a;
         try {
@@ -48,14 +36,16 @@ export async function fetcher (mixed) {
         }
         return a;
     });
+
+    const diff = Date.now() - t1;
+    if (appSetting('config', 'debug'))
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
+    return r;
 }
 
 export async function fetcherRaw (host, mixed) {
-    if (true)
-        console.log("fetcherRaw: ", host + mixed);
     let path, token, data, origin, headers, callback;
 
-    // gen incoming variables
     if (Array.isArray(mixed)){
         [path, token, data, origin, headers, callback] = mixed;
     }
@@ -65,13 +55,7 @@ export async function fetcherRaw (host, mixed) {
     if (undefined === headers)
         headers = {};
 
-    // when fetcher isn't using proxy then when user login 
-    // we need to set cookies on UNA domain (for CSR) and NEO domain (for SSR), so need to make second calls to different domain
-    if (!USE_PROXY && 'web' === Platform.OS && env('UNA_URL') === host && data && path.includes('system/login_form/') && !env('UNA_API_KEY')) {
-        const dataResubmit = await fetcherRaw (getUrlPrefix() + "/api", mixed).then(r => {
-            return r.text();
-        });
-    }
+    
 
     // add token and origin headers when necessary
     if (token)
@@ -81,11 +65,13 @@ export async function fetcherRaw (host, mixed) {
     else if ('web' !== Platform.OS)
         headers['Origin'] = 'neo://app';
 
+
     // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
     // headers['Pragma'] = "no-cache";
     // headers['Expires'] = "0";
     // perform fetch
     const lang = i18n.language;
+
     return fetch(host + path + "&lang=" + lang, {
         method: data ? 'POST' : 'GET',
         body: data ? data : null,

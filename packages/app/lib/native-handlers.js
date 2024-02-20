@@ -7,6 +7,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { appStatic } from 'app/lib/app-static';
 import Search from 'app/ui/molecules/search';
 import { FeedbackHaptics } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user';
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();

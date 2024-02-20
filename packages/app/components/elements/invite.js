@@ -3,11 +3,12 @@ import { View, Row } from 'app/design/view'
 import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
-import { appSetting, setClipboard } from 'app/lib/util'
+import { setClipboard } from 'app/lib/util'
+import { APP_URL } from 'app/config';
+
 
 export default function ElementInvite({data}) {
     const [showModal, setShowModal] = useState(false);
-   
     const handleClick = async () => {
         const sResponse = await fetcher('/api.php?r='+data.request_url);
         console.log(sResponse)
@@ -15,14 +16,14 @@ export default function ElementInvite({data}) {
     }
 
     const handleCopy = async () => {
-        setClipboard(appSetting("urls", "site") + showModal);
+        setClipboard(APP_URL + showModal);
     }
 
     return (
         <>
             <Modal id={'file-preview'} title="Invitation link" onVisible={!!showModal} onClose={() => {setShowModal(null)}}>
                 <Row className='gap-x-4'>
-                    <Input value={appSetting("urls", "site") + showModal}/>
+                    <Input value={APP_URL + showModal}/>
                     <Button variant="text" size="base" rounded  startDecorator="Clipboard" onPress={() => handleCopy()} />
                 </Row>
             </Modal>

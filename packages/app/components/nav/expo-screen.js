@@ -71,7 +71,7 @@ export function Screen(params) {
             if (bottomSheetData !== false)
                 setBottomSheetData(false);
             let settings = appSetting('layouts', pageData.data.uri)
-            updateRightHeader(settings?.header, navigation);
+            updateRightHeader(currentUser? settings?.header : null, navigation);
             let isProfile = appSetting('layout', 'show_user_icon');
             let profile = <></>
             if (isProfile && currentUser) {

@@ -1,7 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native'
 import { fetcher } from 'app/lib/fetcher';
-import { settings } from 'app/settings';
 import { stringMd5 } from 'react-native-quick-md5';
 import pako from 'pako';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +8,10 @@ import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
+import { appSetting as setting, UNA_URL } from 'app/config';
 
 export function appSetting(section, name, path) {
-    if (path)
-        return settings[section] && settings[section][name] ? settings[section][name][path] : '';
-
-    return settings[section] ? settings[section][name] : '';
+   return setting(section, name, path);
 }
 
 export function decodeText(str) {
@@ -40,7 +37,7 @@ export async function setClipboard(str) {
 }
 
 export function absoluteApiUrl(url_name) {
-    return appSetting("urls", "root") + appSetting("urls", url_name);
+    return appSetting("config", "una_url") + appSetting("urls", url_name);
 }
 
 export const getDataFromCache = (pref, storageKeyValue) => {
@@ -418,7 +415,7 @@ function replaceLinks(htmlString, hoverClass="") {
         } else if (index % 3 === 1) {
             // This part is a link URL
             const linkText = parts[index + 1];
-            part = part.replace(appSetting('urls', 'root'), '/');
+            part = part.replace(UNA_URL, '/');
             return <Link className={hoverClass} key={index} href={part}><Text>{linkText}</Text></Link>;
         }
         // Skip link text parts because they're handled in the link URL parts
@@ -469,8 +466,7 @@ function escapeRegExp(string) {
 export function clearLinks(text) {
     if (!text)
         return text;
-    const rootUrl = appSetting('urls', 'root');
-    const regex = new RegExp(escapeRegExp(rootUrl), 'g');
+    const regex = new RegExp(escapeRegExp(UNA_URL), 'g');
     return text.replace(regex, '/');
 }
 
@@ -761,7 +757,7 @@ export function menuItemsByName(name, items, currentUser, url = '') {
 
     items = items.map(item => {
         if (item.link === '{studio}') {
-            return { ...item, link: appSetting('urls', 'root') + 'studio/launcher.php' };
+            return { ...item, link: UNA_URL + 'studio/launcher.php' };
         }
         if (item.link === '{profile}') {
             return { ...item, link: currentUser?.url };

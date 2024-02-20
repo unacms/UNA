@@ -29,7 +29,7 @@ export default function FormFieldLocation(props) {
             language:'en',
            
         },
-        apiKey: appSetting('api_keys', 'google_maps'),
+        apiKey: appSetting('config', 'api_keys', 'google_maps'),
 
         language:'en',
         onPlaceSelected: (place) => {

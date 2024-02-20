@@ -20,9 +20,10 @@ export function unbind(pusher, channel_name) {
 };
 
 export function connect(channel_name, event_name, cb) {
-    return new Pusher(appSetting('sockets', 'key'), {
-        wsHost: appSetting('sockets', 'host'),
-        wsPort: appSetting('sockets', 'port'),
+    const conf = appSetting('config', 'sockets');
+    return new Pusher(conf.key, {
+        wsHost: conf.host,
+        wsPort: conf.port,
         forceTLS: false,
         enabledTransports: ['ws', 'wss'],
         cluster: '',

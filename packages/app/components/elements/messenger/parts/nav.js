@@ -7,11 +7,13 @@ import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon';
 import { FeedbackHaptics } from 'app/lib/util';
-export function Nav({ addButtons }) {
+import { useCurrentUser } from 'app/context/user';
 
+export function Nav({ addButtons }) {
+    const { currentUser } = useCurrentUser();
     const navigation = useNavigation();
     setTimeout(() => {
-        updateRightHeaderObj(addButtons, navigation);
+        updateRightHeaderObj(currentUser ? addButtons : null, navigation);
     }, 300);
 
     return <></>

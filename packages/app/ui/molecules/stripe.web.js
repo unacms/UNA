@@ -6,7 +6,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { useState, useEffect } from 'react';
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting } from 'app/lib/util';
+import { APP_URL } from 'app/config';
 
 export default function ElementStripe(oProps) {
     const sProvider = 'stripe_v3';
@@ -53,7 +53,7 @@ export default function ElementStripe(oProps) {
         stripePromise = loadStripe(publicKey);
 
     useEffect(() => {
-        performAction('stripe_v3_create_session_api', {type: 'single', seller_id: oProps.seller_id, items: oProps.items.join('&'), return_url: appSetting("urls", "site")}, (oData) => {
+        performAction('stripe_v3_create_session_api', {type: 'single', seller_id: oProps.seller_id, items: oProps.items.join('&'), return_url: APP_URL}, (oData) => {
             setClientSecret(oData.clientSecret)
         });
       }, []);
