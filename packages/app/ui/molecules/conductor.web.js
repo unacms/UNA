@@ -444,7 +444,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
                     )
                 }
-                {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-lg font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} - {counter}</Text></View>}
+                {counter > 0 && <View className="mx-4 mb-0 mt-2"><Text className="text-lg font-bold text-neutral-800  dark:text-neutral-200 ">{route.title} ({counter})</Text></View>}
                 <TabScene status={status} route={route} width={windowWidth} index={index} />
             </>
         )
