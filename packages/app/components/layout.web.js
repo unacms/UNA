@@ -15,6 +15,7 @@ import { appSetting } from 'app/lib/util'
 import BottomSheetDataContext from 'app/context/bottomsheet';
 import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
+import { menuItemsByName } from 'app/lib/util'
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -217,18 +218,21 @@ export default function Layout(props) {
     if (getLayout(currentUser, layoutName) == 'ver') {
         if (width > 1024)
             headerSettings.offset = false;
+
+        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_top'), currentUser);
+
         return (
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse lg:border-l lg:border-r border-dashed border-bdr dark:border-bdr-d'>
-                        <View className='w-full lg:w-[calc(100%-20rem)]'>
+                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '' ) +' w-full '}>
                             <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />
                             <AsyncWorker />
                         </View>
-                        <View className='w-full lg:w-80'>
+                        {menuItems.length > 0 && <View className='w-full lg:w-80'>
                             <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
-                        </View>
+                        </View>}
                     </Row>
                     <BottomSheet />
                     <ModalPopup />

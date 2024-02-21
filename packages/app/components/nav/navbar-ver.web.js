@@ -93,7 +93,7 @@ export default function (props) {
     }
 
     let isUseBg = appSetting('layout', 'use_background');
-    
+
     const menu_top = appSetting('menu_items', 'menu_top');
     const menu_top_more = appSetting('menu_items', 'menu_top_more');
     const menu_add = appSetting('menu_items', 'menu_add');
@@ -126,91 +126,92 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0 lg:px-4 items-start lg:h-screen    "}>
-                <View className=' flex-row lg:flex-col w-full justify-between w-screen px-2 lg:w-full lg:h-screen py-[11px] ' >
-                    <Row>
-                    {headerSettings.menu && menu_drawer_items.length > 0 && (
-                        <View className="lg:hidden mr-4">
-                            <Pressable onPress={showMenu}>
-                                <Button
-                                    variant="outline"
-                                    startDecorator="List"
-                                    rounded
-                                    align="start"
-                                />
+                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
+                <View className=' flex-row lg:flex-col w-full  w-screen  lg:w-full ' >
+                    <View className=' justify-between  lg:h-screen lg:w-80 '>
+                    <View className='px-4 pt-8'>
+                        {headerSettings.menu && menu_drawer_items.length > 0 && (
+                            <View className="lg:hidden mr-4">
+                                <Pressable onPress={showMenu}>
+                                    <Button
+                                        variant="outline"
+                                        startDecorator="List"
+                                        rounded
+                                        align="start"
+                                    />
 
-                            </Pressable>
-                        </View>
-                    )}
-                    <View className='justify-center'>
-                        <Link href="/home" aria-label="Logo">
-                            <View className="group  mr-auto flex-row flex-none items-center rounded-lg my-auto lg:mx-2 lg:mb-4">
-                                {appStatic('logo_mark')}
-                                {appStatic('logo_text')}
+                                </Pressable>
                             </View>
-                        </Link>
-                        <View className='hidden lg:block'>
-                            {menuItemsByName('main_menu', menu_top, currentUser).map(
-                                (item, index) =>
-                                    <Link href={item.link} key={`menu-${index}`} alt={item.title}>
-                                        <ButtonRef
-                                            variant="text"
-                                            size="lg"
-                                            fullWidth
-                                            startDecorator={
-                                                item.icon.indexOf(' ') == -1
-                                                    ? item.icon
-                                                    : item.icon.split(' ')[0]
-                                            }
-                                            align="start"
-                                            title={item.title}
-                                        />
-                                    </Link>
-                            )}
-                            {!!currentUser && (
-                                <>
-                                    {bNotifs && <NotificationButton buttonProps={{ variant: "text", size: "lg", fullWidth: true, startDecorator: "Bell", align: "start", title: "Notifications" }}></NotificationButton>}
-                                    {bSearch && <Search>
-                                        <Button
-                                            variant="text"
-                                            size="lg"
-                                            fullWidth={true}
-                                            startDecorator="MagnifyingGlass"
-                                            align="start"
-                                            title={"Search"}
-                                        />
-                                    </Search>
-                                    }
-                                </>)}
+                        )}
+                        <View className='justify-center'>
+                            <Link href="/home" aria-label="Logo">
+                                <View className="group  mr-auto flex-row flex-none items-center rounded-lg my-auto lg:mx-2 lg:mb-4">
+                                    {appStatic('logo_mark')}
+                                    {appStatic('logo_text')}
+                                </View>
+                            </Link>
+                            <View className='hidden lg:block'>
+                                {menuItemsByName('main_menu', menu_top, currentUser).map(
+                                    (item, index) =>
+                                        <Link href={item.link} key={`menu-${index}`} alt={item.title}>
+                                            <Button
+                                                variant="text"
+                                                size="lg"
+                                                fullWidth = {true}
+                                                startDecorator={
+                                                    item.icon.indexOf(' ') == -1
+                                                        ? item.icon
+                                                        : item.icon.split(' ')[0]
+                                                }
+                                                align="start"
+                                                title={item.title}
+                                            />
+                                        </Link>
+                                )}
+                                {!!currentUser && (
+                                    <>
+                                        {bNotifs && <NotificationButton buttonProps={{ variant: "text", size: "lg", fullWidth: true, startDecorator: "Bell", align: "start", title: "Notifications" }}></NotificationButton>}
+                                        {bSearch && <Search>
+                                            <Button
+                                                variant="text"
+                                                size="lg"
+                                                fullWidth={true}
+                                                startDecorator="MagnifyingGlass"
+                                                align="start"
+                                                title={"Search"}
+                                            />
+                                        </Search>
+                                        }
+                                    </>)}
+                            </View>
                         </View>
-                    </View>
-                    </Row>
+                        </View>
                     <View className='hidden lg:block mt-4'>
                         {!!currentUser ? (
-                            <View>
-                                {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} >
-                                    <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                        <Row className='flex-row gap-x-2 items-center'>
-                                            <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                                {profile}
-                                            </View>
-                                            <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </Row><View className='flex-none '><Button
-                                            variant="text"
-                                            size="sm"
-                                            tooltip={t('Switch profile')}
-                                            startDecorator="UserSwitch"
-                                            fullWidth
-                                            align="right"
-                                        /></View></Row>
-                                </ProfileSwitcher>}
-                            </View>
+
+                            <Link href="/dashboard">
+                                <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                    <Row className='flex-row gap-x-2 items-center'>
+                                        <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                            {profile}
+                                        </View>
+                                        <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                            {currentUser.display_name}
+                                        </Text>
+                                    </Row><View className='flex-none '><Button
+                                        variant="text"
+                                        size="sm"
+                                        tooltip={t('Switch profile')}
+                                        startDecorator="UserSwitch"
+                                        fullWidth
+                                        align="right"
+                                    /></View></Row>
+                            </Link>
+
 
                         ) : <></>
                         }
-{/* (
+                        {/* (
                                 <View className='space-y-4 mx-4 '>
                                     <Link href="/login">
                                         <Button
@@ -233,6 +234,7 @@ export default function (props) {
                                 </View>
 
 )*/}
+                    </View>
                     </View>
                     {!!currentUser && (
                         <Row className='lg:hidden lg:w-full justify-end flex-auto'>
@@ -268,6 +270,7 @@ export default function (props) {
                             </View>}
                         </Row>)
                     }
+                    
                 </View>
                 <MainMenu showMenu={showMenu} menuPopup={menuPopup} items={menu_drawer_items} cssClass="" />
             </ScrollView>

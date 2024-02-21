@@ -17,8 +17,6 @@ export default function FormField(props) {
 
     const isShowOptional = appSetting('layout', 'form_fields_optional');
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
-
-    console.log(props)
     return (
         <View className={sClassName}>
             {isShowCaption &&

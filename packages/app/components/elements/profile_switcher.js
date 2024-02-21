@@ -1,13 +1,12 @@
 import { View, Pressable, Row } from 'app/design/view'
 import Link from 'app/ui/atoms/link'
-import { useState, useEffect, Children } from 'react'
+import { useState, Children, useRef, useEffect } from 'react'
 import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import Profile from 'app/ui/molecules/profile'
 import { useCurrentUser } from 'app/context/user'
 import { fetcher } from 'app/lib/fetcher';
 import Redirect from 'app/ui/atoms/redirect';
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
 import { appSetting } from 'app/lib/util';
@@ -16,6 +15,7 @@ export default function ElementProfileSwitcher(props) {
     const { t } = useTranslation();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [data, setData] = useState(false)
+    const [show, setShow] = useState(false)
     const redirectdRef = useRef();
 
     const handleSwitch = async (id) => {
@@ -23,17 +23,32 @@ export default function ElementProfileSwitcher(props) {
         redirectdRef.current.redirect('/home');
     };
 
-    const handleClick = async (id) => {
+    async function fetchData() {
         const sResponse = await fetcher('/api.php?r=system/account_profile_switcher/TemplServiceProfiles');
         setData(sResponse.data[0].data);
+    }
+
+    useEffect(() => {  
+       
+       
+        fetchData()
+    }, []);
+        
+
+    const handleClick = async (id) => {
+        setShow(true)
     };
+
+    const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
+    if (!profileList)
+        return null;
 
     return (
         <>  
             <Pressable onPress = {() => handleClick()}>
                 {props.children}
             </Pressable>
-            {(data  ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={data} onClose={() => {setData(false)}}>
+            {(show  ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={show} onClose={() => {setShow(false)}}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">
@@ -42,7 +57,7 @@ export default function ElementProfileSwitcher(props) {
                         </Text>
                     </View>
                     }
-                    {data.profiles && data.profiles.filter((item) => (item.id != currentUser.id)).map((item, index) => {
+                    {profileList && profileList.map((item, index) => {
                         let dUser = {...item}
                         dUser.url_avatar = dUser.avatar
                         let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
