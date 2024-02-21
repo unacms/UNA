@@ -2,7 +2,7 @@ let settingsDefault = {
     config: {
         una_url: 'https://ci.una.io/test3',
         app_url: 'https://neo.so',
-        debug: false,
+        debug: true,
         use_proxy: true,
         safe_endpoints: [
             'system/login_form/TemplServiceLogin', 
@@ -20,7 +20,7 @@ let settingsDefault = {
     },
     layout: {
         format_list:['hor', 'ver', 'mixed'],
-        format:'mixed', //hor, ver, mixed
+        format:'ver', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -57,7 +57,10 @@ let settingsDefault = {
         extended_search: true,
         show_in_reply_comments: true,
         show_nav_counters: true,
-        allow_edit_covers: true
+        allow_edit_covers: true,
+        allow_create_new_profile: true,
+        form_fields_optional: false,
+        form_without_captions: ['sys_account_create', 'sys_login']
     },
     jitsi: {
         prefix: 'prefix_',

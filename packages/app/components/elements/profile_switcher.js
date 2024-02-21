@@ -10,6 +10,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from 'app/design/controls'
+import { appSetting } from 'app/lib/util';
 
 export default function ElementProfileSwitcher(props) {
     const { t } = useTranslation();
@@ -61,7 +62,7 @@ export default function ElementProfileSwitcher(props) {
                         )
                     })}
                     <Row className='justity-between mt-4 w-full'>
-                        <View className='w-1/2 pr-2'>
+                        {appSetting('layout', 'allow_create_new_profile') && <View className='w-1/2 pr-2'>
                         <Link href="/create-persons-profile">
                             <Button
                                 variant="outline"
@@ -71,7 +72,7 @@ export default function ElementProfileSwitcher(props) {
                   
                             />
                         </Link>
-                        </View>
+                        </View>}
                         <View className='w-1/2 pl-2'>
                         <Link href="/logout">
                             <Button

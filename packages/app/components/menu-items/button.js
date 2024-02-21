@@ -5,6 +5,7 @@ import React from 'react';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 import ProfilesList from "app/ui/molecules/profile_list";
+import { Text } from 'app/design/typography'
 import { getIconByNameFromIconset } from 'app/lib/util';
 
 export default function MenuItemButton(oProps) {
@@ -67,7 +68,10 @@ export default function MenuItemButton(oProps) {
                     sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
             }
 
-            const buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
+            let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
+            if (oProps?.list?.length > 0){
+                buttonAction = <Text className="hover:text-linkhover px-2 text-neutral-700 font-medium">{oProps.title}</Text>
+            }
             sContent = (
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
                     { (oProps.list && oProps.list.length> 0) && <ProfilesList data ={oProps.list} showEmpty={false} maxCount={3} displaySize="sm"/> }

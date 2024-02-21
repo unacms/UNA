@@ -106,7 +106,7 @@ function DefaultUnit(data) {
                     data.owners.map((item, index) => {
                         return (
                             <Link key={'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden " numberOfLines={1} >{item.title}</Text>
+                                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden font-medium " numberOfLines={1} >{item.title}</Text>
                             </Link>
                         );
                     })

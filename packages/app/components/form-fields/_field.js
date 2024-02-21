@@ -1,9 +1,11 @@
 
-import { View } from 'app/design/view'
+import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
-import { appSetting, stripTags, linkedText } from 'app/lib/util'
+import { linkedText } from 'app/lib/util'
+import { appSetting } from 'app/config';
+import { Icon } from 'app/ui/atoms/icon';
 
 export default function FormField(props) {
     let caption = props.caption;
@@ -12,15 +14,23 @@ export default function FormField(props) {
     let sClassName = ' my-2 w-full form-control form-control-' + props.name + (props?.classes ? ' ' + props?.classes : '') ;
     if (Platform.OS != 'web')
         sClassName += '  ';
+
+    const isShowOptional = appSetting('layout', 'form_fields_optional');
+    const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
+
+    console.log(props)
     return (
         <View className={sClassName}>
-            { (!!props.caption && props.format == 'default') &&
-            <View >
+            {isShowCaption &&
+            <>
                 <Text className="label-text block ml-0.5 mb-1 text-sm text-neutral-700 dark:text-neutral-200">
+                <Row className='items-center gap-x-1' >
                     <Text className="font-medium">{caption}</Text> 
-                    {(props.checker || props.required) ? '' : ' (Optional)'}
+                    {isShowOptional && ((props.checker || props.required) ? '' : ' (Optional)')}
+                    {!isShowOptional && ((props.checker || props.required) ? <Text className="text-red-600"><Icon icon="Asterisk"/></Text> : '')}
+                    </Row >
                 </Text>
-            </View> }
+            </> }
             {props.children}
             {!!props.error && Array.isArray(props.error) && 
                 <View className="label" >

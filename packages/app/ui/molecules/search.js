@@ -10,7 +10,7 @@ import { UnitSearchResultsSmall as SearchResults } from 'app/components/units/se
 import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
 import { BottomSheetData } from 'app/context/bottomsheet';
-
+import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
 export default function ElementSearch(oProps) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -36,11 +36,11 @@ export default function ElementSearch(oProps) {
             setBottomSheetData(false);
     }
 
-
-    let sResult = sType == 'input' ? (
-        <Pressable onPress={() => handleOpenPopupDefault()}>
+/*<Pressable onPress={() => handleOpenPopupDefault()}>
             <InputRounded name="search" value={inputValue} onChangeText={(value) => { handleSearch(value); handleOpenPopupDefault() }} placeholder={t("Search") + '...'} role="textbox" aria-label="Search" />
-        </Pressable>
+        </Pressable>*/
+    let sResult = sType == 'input' ? (
+        <ElementSearchData {...oProps} resInPopup={true} />
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
@@ -177,6 +177,33 @@ export function ElementSearchData(oProps) {
         handleSetPopupContent(sContent);
     }
 
+    const cnt = (
+        <ScrollView className="max-h-72">
+            {!!popupContent && popupContent}
+        </ScrollView>
+    )
+
+    if (oProps.resInPopup){
+        const dd = <DropdownPopup
+        open={!!popupContent}
+        onOpenChange={async (bOpen) => {
+           // setNtfsOpen(bOpen);
+        }}
+        title={'hz'}
+    >
+        {[
+            <></>,
+            cnt
+        ]}
+    </DropdownPopup>
+        return (
+            <>
+            <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+            <View className='w-full'>{dd}</View>
+            </>
+        )
+    }
+
     return (<View className=''>
         <Redirect ref={redirectdRef} />
         {
@@ -189,8 +216,6 @@ export function ElementSearchData(oProps) {
         <View className="flex-row">
             <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
         </View>
-        <ScrollView className="max-h-72">
-            {!!popupContent && popupContent}
-        </ScrollView>
+        {cnt}
     </View>);
 }

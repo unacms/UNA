@@ -91,11 +91,12 @@ export default function ElementMenu(oProps) {
         // If all checks pass, the item should be included in the filtered list
         return true;
     });
+
     
     const isUseStaticWidth = bShowContent || !bAutoSize;
 
     if (isUseStaticWidth){
-        const sItems = sItemsSrc.map((item, index) => {
+        const sItems = filteredItems.map((item, index) => {
             const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
             return (
                 <View key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '')}>

@@ -17,6 +17,8 @@ export default function FormFieldText(props) {
            formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
+    if (props.use_caption_as_placeholder)
+        props.placeholder = props.caption;
 
     return (
         <Field {...props}>

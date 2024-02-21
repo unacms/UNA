@@ -5,6 +5,7 @@ import { View } from 'app/design/view'
 import { componentsMap } from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import {  Platform  } from 'react-native';
+import { appSetting } from 'app/config';
 
 function getFormType(name){
     return componentsMap[name];
@@ -88,10 +89,23 @@ export default function Form(props) {
         }, 100);
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
-     let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
+    
+    let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
+
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true);
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
+
+    console.log("namename", name)
+    if (appSetting('layout', 'form_without_captions').includes(name)){
+        inputs = inputs.map(input => ({
+            ...input,
+            props: {
+                ...input.props,
+                use_caption_as_placeholder: true
+              },
+            }));
+    }
 
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm){
