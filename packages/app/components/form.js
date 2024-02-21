@@ -96,7 +96,6 @@ export default function Form(props) {
     if (inputs?.length > 0)
         inputs = inputs.filter(item => item.key !== null && item.key.toString() !== '')
 
-    console.log("namename", name)
     if (appSetting('layout', 'form_without_captions').includes(name)){
         inputs = inputs.map(input => ({
             ...input,
