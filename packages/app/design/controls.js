@@ -43,6 +43,7 @@ export function Modal({
     title,
     textAlign = 'start',
     headerBorder = false,
+    fullWidth = true,
     children
 }) {
     const Wrapper = onClose && outerClickClose !== false ? Pressable : View;
@@ -67,7 +68,7 @@ export function Modal({
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
                 <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden  overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
-                    <View className="relative w-full h-full max-w-2xl md:h-auto ">
+                    <View className={(fullWidth ? 'w-full': '')+ " relative h-full max-w-2xl md:h-auto "}>
                         <Pressable onPress={() => { }} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
                             <View className="">
                                 <Row className={'items-center ' +  'justify-' +textAlign + ' px-4 pt-4 '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + ' pt-4'}>

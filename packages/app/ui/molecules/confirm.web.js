@@ -18,7 +18,7 @@ export default function ElementConfirm(props) {
     if (props.onVisible){
     return (
         <>
-            <Modal id={'file-preview'} onVisible={props.onVisible} >
+            <Modal id={'file-preview'} onVisible={props.onVisible} fullWidth={false}>
                 <View className='gap-y-4'>
                     <View className='text-center w-full'><Text className="text-center text-base">{props.title}</Text></View>
                     <Row className='gap-x-4 justify-center'>
