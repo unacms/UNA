@@ -36,9 +36,9 @@ export default function ElementSearch(oProps) {
             setBottomSheetData(false);
     }
 
-/*<Pressable onPress={() => handleOpenPopupDefault()}>
-            <InputRounded name="search" value={inputValue} onChangeText={(value) => { handleSearch(value); handleOpenPopupDefault() }} placeholder={t("Search") + '...'} role="textbox" aria-label="Search" />
-        </Pressable>*/
+    /*<Pressable onPress={() => handleOpenPopupDefault()}>
+                <InputRounded name="search" value={inputValue} onChangeText={(value) => { handleSearch(value); handleOpenPopupDefault() }} placeholder={t("Search") + '...'} role="textbox" aria-label="Search" />
+            </Pressable>*/
     let sResult = sType == 'input' ? (
         <ElementSearchData {...oProps} resInPopup={true} />
     ) : (
@@ -183,39 +183,57 @@ export function ElementSearchData(oProps) {
         </ScrollView>
     )
 
-    if (oProps.resInPopup){
+    const cnt2 = (
+        <>
+            <Redirect ref={redirectdRef} />
+            {
+                (!!inputValue && appSetting('layout', 'extended_search')) && (
+                    <View className="flex-row items-center justify-end">
+                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                    </View>
+                )
+            }
+        </>
+    );
+
+
+    if (oProps.resInPopup) {
         const dd = <DropdownPopup
-        open={!!popupContent}
-        onOpenChange={async (bOpen) => {
-           // setNtfsOpen(bOpen);
-        }}
-        title={'hz'}
-    >
-        {[
-            <></>,
-            cnt
-        ]}
-    </DropdownPopup>
+            open={!!popupContent}
+            onOpenChange={async (bOpen) => {
+                setPopupContent(false);
+            }}
+        >
+            {[
+                <></>,
+                <View className=''>
+                    {cnt2}
+                    {cnt}
+                </View>
+            ]}
+        </DropdownPopup>
         return (
-            <>
-            <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
-            <View className='w-full'>{dd}</View>
-            </>
+            <View className=''>
+                <InputRounded name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                {dd}
+            </View>
         )
     }
 
-    return (<View className=''>
-        <Redirect ref={redirectdRef} />
-        {
-            (!!inputValue && appSetting('layout', 'extended_search')) && (
-                <View className="flex-row items-center mb-2 justify-end">
-                    <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
-                </View>
-            )
-        }
-        <View className="flex-row">
-            <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+    return (
+        <View className=''>
+            <Redirect ref={redirectdRef} />
+            {
+                (!!inputValue && appSetting('layout', 'extended_search')) && (
+                    <View className="flex-row items-center mb-2 justify-end">
+                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+                    </View>
+                )
+            }
+            <View className="flex-row">
+                <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+            </View>
+            {cnt}
         </View>
-        {cnt}
-    </View>);
+    );
 }
