@@ -8,7 +8,6 @@ import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { fetcher } from 'app/lib/fetcher'
 import { useTranslation } from 'react-i18next';
 import Browse from 'app/components/elements/browse'
-import Notifications from 'app/components/units/notifications'
 import useDaemon from 'app/lib/hooks/daemon'
 import Redirect from 'app/ui/atoms/redirect'
 
@@ -31,9 +30,9 @@ export default function (props) {
     }, [daemonData]);
 
     useEffect(() => {
-        if (currentUser.notifications != notifCount) {
+      /*  if (currentUser.notifications != notifCount) {
             setNotifCount(currentUser.notifications)
-        }
+        }*/
     }, [currentUser.notifications]);
 
     const handleClick = (sUrl) => {
