@@ -2,6 +2,12 @@ import {Loading} from 'app/loading'
 import { View } from 'app/design/view'
 export default function ElementRedirect({data}) {
     if (data?.uri) {
+        /*console.log("data.timeout)", data)
+        if (data?.timeout){
+            setTimeout(() => document.location = data.uri, data.timeout);
+        }
+        else{
+            */
         document.location = data.uri;
     }
     if (data?.timeout)

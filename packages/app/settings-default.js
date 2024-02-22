@@ -1,9 +1,10 @@
 let settingsDefault = {
     config: {
         una_url: 'https://ci.una.io/test3',
-        app_url: 'https://neo.so',
-        debug: false,
-        use_proxy: true,
+        app_url: 'https://neo.so',//'https://neo0.ru'
+        native_app_images_url: 'https://neo.so',
+        debug: true,
+        use_proxy: false,
         safe_endpoints: [
             'system/login_form/TemplServiceLogin', 
             'system/create_account_form/TemplServiceAccount'
@@ -427,13 +428,8 @@ let settingsDefault = {
             ],
         },
         sys_account_dashboard: {
-            name: 'Groups',
+            name: 'Dashboard',
             icon: 'UsersThree',
-            
-            add: [
-                { icon: 'Plus', name: 'Add', link: '/create-group-profile', nonlogged: false },
-                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
-            ],
         },
         bx_forum_submenu: {
             name: 'Discussions',

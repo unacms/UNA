@@ -9,18 +9,21 @@ function IsSafeEndpoint(url) {
     return appSetting('config', 'safe_endpoints').some(substring => url.includes(substring));
 }
 
-export async function fetcher (mixed) {
+export async function fetcher (mixed, useProxy = false) {
     const t1 = Date.now();
    
     let prefix = UNA_URL;
-    if ('web' === Platform.OS && (USE_PROXY || IsSafeEndpoint(mixed[0]))){
+    if (('web' === Platform.OS && (USE_PROXY)) || useProxy){
         prefix =  APP_URL + "/api";
     }
+
    /* if ('web' !== Platform.OS ){
         prefix =  appSetting('config', 'app_url_real') + "/api";
     }*/
     const r = await fetcherRaw(prefix, mixed).then(async (r) => {
+        console.log('*****************************', r.headers);
 
+        
         let a;
         try {
             a = await r.json();
@@ -37,9 +40,17 @@ export async function fetcher (mixed) {
         return a;
     });
 
+
+    
+
     const diff = Date.now() - t1;
     if (appSetting('config', 'debug'))
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
+
+    if (!USE_PROXY && r.session_key && !useProxy && 'web' === Platform.OS){
+        await fetcher ('/api.php?ses_sync=' + r.session_key, true) 
+    }
+
     return r;
 }
 
