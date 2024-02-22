@@ -118,7 +118,7 @@ export default function PageLayout(props) {
                 <View className={appSetting('layout', 'max_width_block') +" w-full p-2  mx-auto flex-col"}>
                     <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto gap-x-8 sm:flex-row  sm:flex-wrap my-auto w-full items-center">
-                            <View className="flex-row gap-x-2 my-auto items-center mb-4 sm:mb-0">
+                            <View className="flex-row gap-x-2 items-center mb-4 sm:mb-0">
                                 {profile}
                                 <Link href={currentUser.url}>
                                     <Text className="my-auto text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">

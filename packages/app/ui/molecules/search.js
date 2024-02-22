@@ -205,8 +205,8 @@ export function ElementSearchData(oProps) {
             }}
         >
             {[
-                <></>,
-                <View className=''>
+                <View key="search-dbg"></View>,
+                <View key="search-data">
                     {cnt2}
                     {cnt}
                 </View>
