@@ -46,10 +46,6 @@ export async function fetcher (mixed, useProxy = false) {
     if (appSetting('config', 'debug'))
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
 
-    if (Platform.OS === 'web' && !USE_PROXY_WEB && r.session_key && !useProxy ){
-        await fetcher ('/api.php?ses_sync=' + r.session_key, true) 
-    }
-
     return r;
 }
 
