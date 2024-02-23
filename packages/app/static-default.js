@@ -12,6 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
+import BlockByUrl from 'app/ui/molecules/block';
 // import Aaa from "./aaa.svg";
 
 // const AaaExample = () => <Aaa />;
@@ -330,28 +331,100 @@ export function ComponentsIntro(props) {
 
 function ComponentModal(props) {
     return (
-        <View>
-            <View className='mb-8'>
-                <Text className="text-3xl mb-4 font-bold text-center text-neutral-900 dark:text-neutral-100">Create account or login...</Text>
+        <View
+            className={
+                'flex-col w-full mx-auto ' +
+                appSetting('layout', 'max_width')
+            }
+        >
+            <View className=" md:flex-row  duration-300 ml-4">
+                <View className=" flex-col  mx-auto my-auto justify-center sm:justify-start items-center md:items-start  gap-x-12 flex-auto   ">
+                    <View className="flex-col mb-6 w-40  aspect-square rounded-full   ">
+                        <Svg
+                            aria-label="Logo Mark"
+                            viewBox="0 0 2400 2400"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <Path
+                                d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
+                                className="opacity-80 "
+                                fill="#ef4444"
+                            />
+                            <Path
+                                d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
+                                className="opacity-80 "
+                                fill="#ef4444"
+                            />
+                            <Path
+                                d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
+                                fill="#ef4444"
+                            />
+                            <Path
+                                d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
+                                className="opacity-80 "
+                                fill="#f59e0b"
+                            />
+                            <Path
+                                d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
+                                className="opacity-80 "
+                                fill="#f59e0b"
+                            />
+                        </Svg>
+                    </View>
 
-                <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">Members can create posts, react, comment and communicate with each other.</Text>
+                    <View className=" flex-auto ">
+                        <Text className="text-4xl mb-6  tracking-tight text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
+                            Welcome to the community!
+                        </Text>
+                        <Text className="text-base  text-center md:text-left text-neutral-700 dark:text-neutral-300 ">
+                            Connect with like-minded people - create, discover, share knowledge and grow together.
+                        </Text>
+                    </View>
+                </View>
+
+                <View className="mx-auto w-full md:w-1/2  my-auto mx-auto items-center ">
+                    <View className=" flex-auto w-full max-w-md  p-2 ">
+                        <Card
+                            rounded=" rounded-2xl "
+                            addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
+                        >
+                            <View className=""><BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin"/></View>
+                        </Card>
+
+                        <Link
+                            className=" mx-auto  w-full "
+                            href="/forgot-password"
+                        >
+                            <Button
+                                title="Forgot password?"
+                                variant="link"
+                                fullWidth
+                                size="sm"
+                            />
+                        </Link>
+
+                        <View className="pb-2">
+                            <Card addClassName="border  p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
+                                <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                                    Don't have an account?
+                                </Text>
+                                <Link
+                                    className=" w-full "
+                                    href="/create-account"
+                                >
+                                    <Button
+                                        title="Create account"
+                                        startDecorator="UserCirclePlus"
+                                        size="base"
+                                        fullWidth
+                                    />
+                                </Link>
+                            </Card>
+                        </View>
+                    </View>
+                </View>
             </View>
-            <Row className='gap-x-4'>
-                <Link href="/create-account"><Button
-                    title="Create account"
-                    startDecorator="UserCirclePlus"
-                    size="base"
-                    fullWidth
-                /></Link>
-
-                <Link href="/login"><Button
-                    title="Log in with email"
-                    variant="outline"
-                    startDecorator="SignIn"
-                    size="base"
-                    fullWidth
-                /></Link>
-            </Row>
         </View>
     )
 }

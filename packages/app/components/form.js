@@ -19,6 +19,10 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
         return ;
     }
 
+    if (!inputs){
+        return ;
+    }
+
     return  Object.keys(inputs).map(function (key) {
         return getFormFieldByData(inputs[key], handleSubmit, 'default', {form_name:name})
     });  
@@ -30,13 +34,15 @@ export default function Form(props) {
     let onFormSubmit = props.onFormSubmit;
 
     const defaultValues = {}
-    Object.keys(data.inputs).forEach(function (key) {  
-        if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
-            data.inputs[key].value = 0;
-       
-        if (data.inputs[key].value || data.inputs[key].value == 0)      
-            defaultValues[key] = data.inputs[key].value;
-    });
+    if(data.inputs){
+        Object.keys(data.inputs).forEach(function (key) {  
+            if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
+                data.inputs[key].value = 0;
+        
+            if (data.inputs[key].value || data.inputs[key].value == 0)      
+                defaultValues[key] = data.inputs[key].value;
+        });
+    }
 
     const onSubmit = async d => {
 

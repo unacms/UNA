@@ -256,7 +256,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
                         </View>
                     </View>
                 </View>
-                {layoutName == 'default' && appStatic('components_fullfooter', '')}
+                {/*layoutName == 'default' && appStatic('components_fullfooter', '')*/}
                 {(headerSettings?.footer !== false || !currentUser) && <Footer />}
             </View>
         </>

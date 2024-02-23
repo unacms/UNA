@@ -95,12 +95,19 @@ export function storageClear(pref, key) {
     sessionStorage.clear();
 }
 
+function replacer(key, value) {
+    if (value === this) {
+      return undefined;
+    }
+    return value;
+  }
 
 function compress(data) {
     try {
-        return Buffer.from(pako.deflate(JSON.stringify(data))).toString('base64');
+        let a= JSON.stringify(data, replacer)
+        return Buffer.from(pako.deflate(a)).toString('base64');
     } catch (error) {
-        console.error('Compression error:', error);
+        console.log('Compression error:', data);
         return null;
     }
 }

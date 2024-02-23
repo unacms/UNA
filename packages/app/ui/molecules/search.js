@@ -111,7 +111,8 @@ export function ElementSearchData(oProps) {
     };
 
     useEffect(() => {
-        inputRef.current && inputRef.current.focus()
+        if (!oProps.resInPopup)
+            inputRef.current && inputRef.current.focus()
     }, []);
 
     const handleKeyPress = (event) => {
@@ -175,6 +176,8 @@ export function ElementSearchData(oProps) {
         );
 
         handleSetPopupContent(sContent);
+        inputRef.current && inputRef.current.focus();
+       
     }
 
     const cnt = (

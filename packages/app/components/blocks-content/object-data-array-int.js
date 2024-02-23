@@ -1,4 +1,4 @@
-import { useState,  } from 'react';
+import { useState, } from 'react';
 import useSWR from "swr";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
@@ -7,9 +7,11 @@ import { View } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Platform } from 'react-native'
 import Msg from 'app/components/elements/msg';
+import Redirect from 'app/components/elements/redirect';
 
 export function BlockByData(props) {
-    return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props}  />
+    console.log("propspropsprops", props)
+    return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props} />
 }
 
 export default function BlockContentObjectDataArray(props) {
@@ -42,7 +44,7 @@ export default function BlockContentObjectDataArray(props) {
     // handle errors and loading 
     if (error || dynamicData?.error) return <Text className="text-black dark:text-white">An error has occurred: {error ? error : dynamicData?.error}</Text>;
     //if (postData && !dynamicData) return <Text className="text-black dark:text-white">&nbsp;</Text>;
-    
+
 
     const setInputValueByName = (data, inputName, newValue) => {
         for (const item of data) {
@@ -54,20 +56,20 @@ export default function BlockContentObjectDataArray(props) {
         return false;  // Input with the given name was not found
     };
 
-    if (postData && Array.isArray(postData) && !dynamicData){
+    if (postData && Array.isArray(postData) && !dynamicData) {
         postData.forEach((value, key) => {
             setInputValueByName(props.data, key, value);
         });
     }
 
     let realData = props.data;
-    if (dynamicData){
+    if (dynamicData) {
         realData = dynamicData.data;
     }
 
-    if (dynamicData && dynamicData.data?.length == 0){
-      
-        if (props.onFormEmpty){
+    if (dynamicData && dynamicData.data?.length == 0) {
+
+        if (props.onFormEmpty) {
             props.onFormEmpty();
         }
     }
@@ -75,16 +77,27 @@ export default function BlockContentObjectDataArray(props) {
     const components = {
         'simple_list': SimpleList,
         'form': Form,
-        'msg': Msg
-        // Add other component types here
+        'msg': Msg,
+        'redirect': Redirect
     };
 
-    const Component = components[!dynamicData ? props.block.content[0].type : realData[0].type];
+
+
+    console.log("realDatarealData", realData);
+
+
 
     // display each block element from static data or from dynamic data
     return (
         <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>
-           {realData?.map(a => <Component key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />)}
+            {realData?.map(a => {
+                const type = !dynamicData ? props.block.content[0].type : a?.type;
+                if (!type)
+                    return <></>
+                const Component = components[type];
+                return <Component key={a.id + a?.type} type={a?.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />
+            }
+            )}
         </View>
     );
 }

@@ -2,9 +2,9 @@ let settingsDefault = {
     config: {
         una_url: 'https://api.neo.so',
         app_url: 'https://neo.so',
-        //app_url: 'https://local.neo.so',
+       // app_url: 'https://local.neo.so',
         native_app_images_url: 'https://neo.so',
-        debug:  false,
+        debug:  true,
         use_proxy_web: false,
         use_proxy_native: false,
         sockets: {
@@ -874,10 +874,7 @@ if (settingsDefault.layout.format == 'ver' ) {
         { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour', nonlogged: false }, 
         { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront', nonlogged: false }, 
         { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats', nonlogged: false }, 
-        { name: 'About', title: 'About', link: '/about', icon: '', logged: false }, 
-        { name: 'Contact', title: 'Contact', link: '/contact', icon: '', logged: false }, 
-        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
-        { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
+       
         
         { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots', nonlogged: false }, 
     ];
@@ -889,19 +886,20 @@ if (settingsDefault.layout.format == 'mixed') {
     // Override settings for vertical layout
     settingsDefault.menu_items.menu_left = [
         { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
-        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
-        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },
-        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar', nonlogged: false }, 
-        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour', nonlogged: false }, 
-        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront', nonlogged: false }, 
-        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats', nonlogged: false }, 
-        { name: 'About', title: 'About', link: '/about', icon: '', logged: false }, 
-        { name: 'Contact', title: 'Contact', link: '/contact', icon: '', logged: false }, 
-        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: '', logged: false }, 
-        { name: 'Terms', title: 'Terms', link: '/terms', icon: '', logged: false }, 
+        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText'  }, 
+        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
+        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
+        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
+        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
+        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats'}, 
+        { name: 'About', title: 'About', link: '/about', icon: 'Info'}, 
+        { name: 'Contact', title: 'Contact', link: '/contact', icon: 'Info' }, 
+        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: 'Info' }, 
+        { name: 'Terms', title: 'Terms', link: '/terms', icon: 'Info' }, 
     ];
     settingsDefault.menu_items.menu_top = [];
-    delete settingsDefault.layouts.home.blocks.menu
+    settingsDefault.layouts.home.headerSettings.menu = false;
+    delete settingsDefault.layouts.home.blocks.menu;
 }
 
 export function appSetting(section, name, path) {
