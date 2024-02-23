@@ -3,7 +3,7 @@ import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
-import { linkedText } from 'app/lib/util'
+import { linkedText } from 'app/lib/text-helpers';
 import { appSetting } from 'app/config';
 import { Icon } from 'app/ui/atoms/icon';
 

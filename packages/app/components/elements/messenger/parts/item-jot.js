@@ -14,7 +14,8 @@ import useSWR from "swr";
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import Reactions from 'app/ui/molecules/reactions';
 import { useTranslation } from 'react-i18next';
-import { FeedbackHaptics, linkedText } from 'app/lib/util';
+import { FeedbackHaptics } from 'app/lib/util';
+import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
 
 export default function JotItem({ item, index, handleReply }) {

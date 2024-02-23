@@ -3,7 +3,8 @@ import { env } from 'app/lib/env';
 import i18n from 'i18next';
 import { appSetting , UNA_URL, APP_URL } from 'app/config';
 
-const USE_PROXY = appSetting('config', 'use_proxy'); // TODO: move to some setting 
+const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
+const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
 
 function IsSafeEndpoint(url) {
     return appSetting('config', 'safe_endpoints').some(substring => url.includes(substring));
@@ -13,15 +14,16 @@ export async function fetcher (mixed, useProxy = false) {
     const t1 = Date.now();
    
     let prefix = UNA_URL;
-    if (('web' === Platform.OS && (USE_PROXY)) || useProxy){
+    if ((Platform.OS === 'web'  && USE_PROXY_WEB) || useProxy){
         prefix =  APP_URL + "/api";
     }
 
-   /* if ('web' !== Platform.OS ){
-        prefix =  appSetting('config', 'app_url_real') + "/api";
-    }*/
+    if ((Platform.OS != 'web'  && USE_PROXY_NATIVE)){
+        prefix =  APP_URL + "/api";
+    }
+
     const r = await fetcherRaw(prefix, mixed).then(async (r) => {
-        console.log('*****************************', r.headers);
+       // console.log('*****************************', r.headers);
 
         
         let a;
@@ -40,14 +42,11 @@ export async function fetcher (mixed, useProxy = false) {
         return a;
     });
 
-
-    
-
     const diff = Date.now() - t1;
     if (appSetting('config', 'debug'))
         console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~ load time:", parseFloat(diff/1000), "sec (", prefix + mixed, ")");
 
-    if (!USE_PROXY && r.session_key && !useProxy && 'web' === Platform.OS){
+    if (Platform.OS === 'web' && !USE_PROXY_WEB && r.session_key && !useProxy ){
         await fetcher ('/api.php?ses_sync=' + r.session_key, true) 
     }
 

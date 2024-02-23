@@ -6,8 +6,6 @@ import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
-import { Text } from 'app/design/typography'
-import Link from 'app/ui/atoms/link'
 import { appSetting as setting, UNA_URL } from 'app/config';
 
 export function appSetting(section, name, path) {
@@ -400,45 +398,6 @@ export function linkify2(text) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
     return matches[0] ? matches[0][0] : null;
-}
-
-function replaceLinks(htmlString, hoverClass="") {
-    const linkRegex = /<a [^>]*href="(.*?)".*?>(.*?)<\/a>/g;
-    if (!htmlString)
-        return htmlString;
-    const parts = htmlString.split(linkRegex);
-
-    return parts.map((part, index) => {
-        if (index % 3 === 0) {
-            // This part is not a link
-            return <Text key={index}>{part}</Text>;
-        } else if (index % 3 === 1) {
-            // This part is a link URL
-            const linkText = parts[index + 1];
-            part = part.replace(UNA_URL, '/');
-            return <Link className={hoverClass} key={index} href={part}><Text>{linkText}</Text></Link>;
-        }
-        // Skip link text parts because they're handled in the link URL parts
-        return null;
-    }).filter(Boolean);
-}
-
-function stripTagsWithLinks(s) {
-    var allowed = ['a'];
-    if (s)
-        s = s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
-            return allowed.includes(tag.toLowerCase()) ? _ : '';
-        });
-
-        s = s.replace(/\s\s+/g, ' ');
-
-        return s.trim(); // Remove leading and trailing spaces
-
-    return s;
-}
-
-export function linkedText(s, hoverClass) {
-    return replaceLinks(stripTagsWithLinks(s), hoverClass)
 }
 
 export function linkify3(inputText) {
