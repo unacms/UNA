@@ -105,7 +105,7 @@ function CoverMenuSmall(props) {
                         showVertical: true,
                         button_variant: 'text',
                         button_rounded: false,
-                        
+
                         button_full_width: false,
                         button_hide_title_on_small: false,
                     }}
@@ -259,7 +259,7 @@ export default function ElementCover(props) {
     return (
         <View className={isUseBg ? " backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d " : ""}>
             <View className={appSetting('layout', 'max_width') + ' sm:p-4 mx-auto w-full'}>
-                {mode != 'min' && <View className={" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:" + appSetting('layout', 'cover_aspect') + " w-auto sm:rounded-xl overflow-hidden"}>
+                {mode != 'min' ? <View className={" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:" + appSetting('layout', 'cover_aspect') + " w-auto sm:rounded-xl overflow-hidden"}>
                     {!!data.cover && (
                         <Image
                             alt={data.group_name}
@@ -274,7 +274,15 @@ export default function ElementCover(props) {
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}
                     </View>
-                </View>}
+                </View>: 
+                <View className={" h-24 w-auto sm:rounded-xl overflow-hidden"}>
+                
+                <View className='absolute lg:hidden top-4 left-4 z-50'>
+                    {getBackButtonWeb()}
+                </View>
+            </View>
+                
+                }
 
                 <View className="relative  flex-col md:flex-row gap-x-2 px-2   ">
 
@@ -294,10 +302,10 @@ export default function ElementCover(props) {
                             <Row className='items-center justity-center'><Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>
-                            <View className='ml-2'><Badges badges={data.badges} /></View>
+                                <View className='ml-2'><Badges badges={data.badges} /></View>
                             </Row>
-                            
-                            
+
+
                             <Row className='gap-x-2'>
                                 <CoverMenuMeta {...data.meta_menu} />
                             </Row>

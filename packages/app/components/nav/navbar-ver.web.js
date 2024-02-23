@@ -41,8 +41,6 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
-console.log("menuPopupmenuPopup", menuPopup)
-
     const hideMenu = (params) => {
         // setMenuPopup(false)
     }
