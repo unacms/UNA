@@ -41,6 +41,8 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
+console.log("menuPopupmenuPopup", menuPopup)
+
     const hideMenu = (params) => {
         // setMenuPopup(false)
     }
@@ -127,9 +129,9 @@ export default function (props) {
                     width: '100%',
                 }}
                 className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
-                <View className=' flex-row lg:flex-col w-full  w-screen  lg:w-full ' >
+                <View className=' flex-row lg:flex-col w-full  w-screen  lg:w-full bg-red-500 h-16 lg:h-auto items-center lg:items-start pr-4 lg:pr-0' >
                     <View className=' justify-between  lg:h-screen lg:w-80 '>
-                    <View className='px-4 pt-8'>
+                    <View className='px-4 lg:pt-8 flex-row lg:flex-col'>
                         {headerSettings.menu && menu_drawer_items.length > 0 && (
                             <View className="lg:hidden mr-4">
                                 <Pressable onPress={showMenu}>

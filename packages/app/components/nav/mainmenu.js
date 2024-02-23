@@ -53,7 +53,7 @@ export default function ElementMainMenu({menuPopup, showMenu, cssClass, items}) 
                         }}
                         animate={{
                             translateX: 0,
-
+                            height: windowHeight,
                             overshootClamping: false,
                         }}
                         exit={{
