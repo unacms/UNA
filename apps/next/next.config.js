@@ -60,7 +60,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ci.una.io',
+        hostname: 'api.neo.so',
         pathname: '**',
       },
       {

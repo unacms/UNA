@@ -1,16 +1,12 @@
 let settingsDefault = {
     config: {
-        una_url: 'https://ci.una.io/test3',
+        una_url: 'https://api.neo.so',
         app_url: 'https://neo.so',
         //app_url: 'https://local.neo.so',
         native_app_images_url: 'https://neo.so',
         debug:  false,
-        use_proxy_web: true,
+        use_proxy_web: false,
         use_proxy_native: false,
-        /*safe_endpoints: [
-            'system/login_form/TemplServiceLogin', 
-            'system/create_account_form/TemplServiceAccount'
-        ],*/
         sockets: {
             host: 'ci.una.io',
             port: '443',

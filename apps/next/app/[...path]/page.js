@@ -63,7 +63,7 @@ export const viewport = {
 
 
 export async function generateMetadata(props) {
-    const isClientProject = UNA_URL != 'https://ci.una.io/test3';
+    const isClientProject = UNA_URL != 'https://api.neo.so';
 
     return {
         description: SITE_TITLE,

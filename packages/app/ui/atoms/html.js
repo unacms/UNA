@@ -113,7 +113,6 @@ export default function ElementHtml(props) {
         var pattern = /<p>(\s|(&nbsp))*<\/p>/gmi;
         data = data.replace(pattern, '');
         const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
-        //data = data.replace(regex, '<iframe  width="'+(width-32)+'" height="auto" src="https://ci.una.io/test3/oembed.php?html=1&a=get_link&l=$1"></iframe>');  
         data = data.replace(regex, function (match, capture) {
             // Customize the className based on the captured value
             let widthIfr = width - 32
