@@ -25,7 +25,19 @@ const metaAdder = (queryProperty, value) => {
 };
 
 export function Page404 (props) {
-    return appStatic('page_not_found')
+    const r = appSetting('layout', 'redirect_on_not_found');
+    const redirectdRef = useRef()
+    useEffect(() => {
+        if (r){
+            redirectdRef.current.redirect(r);
+        }
+    }, []);
+    return (
+        <>
+            <Redirect ref={redirectdRef} />
+            {!r && appStatic('page_not_found')}
+        </>
+    );
 }
 
 export function Page403(props) {

@@ -44,7 +44,7 @@ export default function ElementSearch(oProps) {
     ) : (
         <Row>
             <View key="ddp-trigger" className="flex-row">
-                <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip="Search" onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
+                <ButtonRef variant="outline" fullWidth startDecorator="MagnifyingGlass" rounded tooltip={oProps.tooltip === undefined ? "Search" : oProps.tooltip} onPress={() => handleOpenPopupDefault()} {...oParams?.trigger} />
             </View>
         </Row>
     );
