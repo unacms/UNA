@@ -286,16 +286,22 @@ export default function ElementGrid({data}) {
         }
     };
     const toggleSwitch = async(id, indexRow) => { 
+        let bChecked = false;
+        const oSwitcher = {active: 'hidden', hidden: 'active'};
+
         const updatedData = dataItems.data.map((item, i) => {
             if (i === indexRow) {
-                item.switcher.data = item.switcher.data == 'hidden' ? 'active' : 'hidden';
-                return item;
+                item.switcher.data = oSwitcher[item.switcher.data];
+                if(item.switcher.data == 'active')
+                    bChecked = true;
             }
+
             return item;
         });
+
         setDataItems({ ...dataItems, data: updatedData });
         
-        fetchData('enable', '&ids[]=' + id)
+        fetchData('enable', '&ids[]=' + id + (bChecked ? '&checked=1' : ''))
     }
     const setSelection = (data) => { 
         if (!selected.includes(data)) {
@@ -389,7 +395,7 @@ export default function ElementGrid({data}) {
                 }
                 {
                     data.actions.independent.add && (
-                        <Button startDecorator="Plus" size="base"  hideTitleOnSmall={true} title={t("Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
+                        <Button startDecorator="Plus" size="base"  hideTitleOnSmall={true} title={t(data.actions.independent.add?.title && data.actions.independent.add.title.length > 0 ? data.actions.independent.add.title : "Add new")} onPress={() => {handleActionBlock(data.actions.independent.add)}} />)
                 }
             </Row>
         </Row>
@@ -418,7 +424,7 @@ export default function ElementGrid({data}) {
                                 <View key={'cell_' + indexRow + '_' + index} className={`${getWidth(cellHeader.width)} py-1 p-1 xl:p-2 justify-center`}>
                                     <Cell 
                                         cell={item[cellHeader.name]} 
-                                        indexRow={indexRow + '_' + index} 
+                                        indexRow={indexRow} 
                                         id={item[settings.field_id]}
                                         toggleSwitch={toggleSwitch}
                                         setSelection={setSelection}
