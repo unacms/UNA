@@ -572,7 +572,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         title={(a.title)}
                         align="start"
                         startDecorator={icon}
-                        addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon}
+                        addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
                     />
                     if (a?.icon == '*'){
                         return (
@@ -629,7 +629,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
     const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon  ? null : a.addon} />
 
         if (a.icon=='*'){
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>

@@ -94,7 +94,7 @@ export function Root (props) {
 
     }, [data?.user]);
 
-    if (props.code == 404) {
+    if (props.code == 404 || data?.page_status == 404) {
         return <Page404/>
     }
 
