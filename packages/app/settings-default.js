@@ -2,7 +2,7 @@ let settingsDefault = {
     config: {
         una_url: 'https://api.neo.so',
         app_url: 'https://neo.so',
-       // app_url: 'https://local.neo.so',
+        //app_url: 'http://localhost:3000',
         native_app_images_url: 'https://neo.so',
         debug:  true,
         use_proxy_web: false,
@@ -58,7 +58,8 @@ let settingsDefault = {
         show_nav_counters: true,
         allow_edit_covers: true,
         allow_create_new_profile: true,
-        form_fields_optional: false,
+        form_fields_optional_text: 'Optional',
+        form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login']
     },
     jitsi: {
@@ -415,11 +416,6 @@ let settingsDefault = {
         bx_groups_submenu: {
             name: 'Groups',
             icon: 'UsersThree',
-            items: [
-                { name:'groups-home', icon:'UsersThree'},
-                { name:'groups-joined', icon:'Link'},
-                { name:'groups-followed', icon:'Binoculars'}
-            ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-group-profile', nonlogged: false },
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_groups'},
