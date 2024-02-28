@@ -2,7 +2,6 @@ import { appSetting } from 'app/lib/util';
 import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
-
 import { useState, useContext, useRef, useEffect } from 'react';
 import UnitComments from 'app/components/units/comments';
 import { Button, Modal } from 'app/design/controls'
@@ -14,7 +13,6 @@ import { useTheme } from '@react-navigation/native';
 import { Keyboard } from 'react-native'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { subscribe } from 'app/ui/atoms/socket'; 
-import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
 import Toaster from 'app/ui/atoms/toaster';
 import { useTranslation } from 'react-i18next';
