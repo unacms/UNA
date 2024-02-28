@@ -88,6 +88,10 @@ export function getLayoutName(data, uri, isWeb) {
     let layoutKey = '';
     let layoutBlocks = '';
 
+    if (data.page_status){
+        return {layoutName : 'default'};
+    }
+
     if (layoutCustomKey){
         layoutKey = layoutCustomKey.layout;
         layoutBlocks = layoutCustomKey.blocks
