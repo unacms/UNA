@@ -1,11 +1,13 @@
+import { env } from 'app/lib/env';
+
 let settingsDefault = {
     config: {
-        una_url: 'https://api.neo.so',
-        app_url: 'https://neo.so',
-        //app_url: 'http://localhost:3000',
+        una_url: env('UNA_URL'),
+        app_url: env('APP_URL'),
+        una_api_key: env('UNA_API_KEY'),
         native_app_images_url: 'https://neo.so',
         debug:  true,
-        use_proxy_web: false,
+        use_proxy_web: true,
         use_proxy_native: false,
         sockets: {
             host: 'ci.una.io',
@@ -896,13 +898,6 @@ if (settingsDefault.layout.format == 'mixed') {
     settingsDefault.menu_items.menu_top = [];
     settingsDefault.layouts.home.headerSettings.menu = false;
     delete settingsDefault.layouts.home.blocks.menu;
-}
-
-export function appSetting(section, name, path) {
-    if (path)
-        return settings[section] && settings[section][name] ? settings[section][name][path] : '';
-
-    return settings[section] ? settings[section][name] : '';
 }
 
 export { settingsDefault };

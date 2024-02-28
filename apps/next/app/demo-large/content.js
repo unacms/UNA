@@ -1,6 +1,5 @@
 "use client"
 
-import { Root } from 'app/root'
 import 'raf/polyfill'
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

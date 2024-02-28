@@ -4,6 +4,7 @@ import { Theme } from 'app/design/theme'
 import { ThemeProvider } from "@react-navigation/native";
 import { CurrentUserProvider } from 'app/context/user';
 import { useColorScheme } from 'react-native';
+import { useEffect } from 'react'
 import {
     QueryClient,
     QueryClientProvider,
@@ -15,9 +16,10 @@ import * as RNLocalize from "react-native-localize";
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
-
 import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
+import { remoteSettings } from 'app/settings-remote';
+import { getRemoteSettings } from 'app/config';
 
 export default function Root(props) {
 
@@ -25,6 +27,12 @@ export default function Root(props) {
         RNScreenshotPrevent.enableSecureView();
         RNScreenshotPrevent.enabled(true);
     }
+
+    useEffect(() => {
+        (async () => {
+            remoteSettings.data = await getRemoteSettings();
+        })();
+    }, []);
 
     const languageDetector = {
         type: 'languageDetector',

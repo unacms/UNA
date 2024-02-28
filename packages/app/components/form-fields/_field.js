@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
 import { linkedText } from 'app/lib/text-helpers';
-import { appSetting } from 'app/config';
+import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
 
 export default function FormField(props) {
@@ -15,7 +15,7 @@ export default function FormField(props) {
     if (Platform.OS != 'web')
         sClassName += '  ';
 
-    const isShowOptional = appSetting('layout', 'form_fields_optional_text');
+    const isShowOptional =  appSetting('layout', 'form_fields_optional_text') ? '(' + appSetting('layout', 'form_fields_optional_text') + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
     return (
         <View className={sClassName}>
@@ -24,8 +24,8 @@ export default function FormField(props) {
                 <Text className="label-text block ml-0.5 mb-1 text-sm text-neutral-700 dark:text-neutral-200">
                 <Row className='items-center gap-x-1' >
                     <Text className="font-medium">{caption}</Text> 
-                    {((props.checker || props.required) ? '' : ' ('+appSetting('layout', 'form_fields_optional_text')+')')}
-                    {((props.checker || props.required) ? <Text className="text-red-600"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')}/></Text> : '')}
+                    {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
+                    {((props.checker || props.required) ? <Text className="text-red-600"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')}/></Text> : <></>)}
                     </Row >
                 </Text>
             </> }

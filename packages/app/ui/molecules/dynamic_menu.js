@@ -46,7 +46,6 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
             ]}
         </DropdownPopup>
     )
-            console.log('items', items);
     return (
         <>
             <ScrollView horizontal={true} className={containerClasses+" "} onLayout={handleLayout}>

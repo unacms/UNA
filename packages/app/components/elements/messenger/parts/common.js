@@ -101,11 +101,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (selectedConvo) {
             fetchItems(selectedConvo.id, false);
             updateState()
-            if (currentUser) {
-                unbind(currentUser.pusher, 'bx_messenger');
-                subscribe(currentUser.pusher, 'bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
-                subscribe(currentUser.pusher, 'bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-            }
+            subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
+            subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
+            
         }
     }, [convoId]);
 

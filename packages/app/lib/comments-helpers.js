@@ -247,10 +247,8 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
     }, [commentData.lastInserted]);
     
     useEffect(() => {
-        if (currentUser){
-            subscribe(currentUser.pusher, commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
-        }
-    }, [currentUser])
+        subscribe(commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+    }, [])
 
     const dataArrayRef = useRef([]);
 

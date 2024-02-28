@@ -162,8 +162,7 @@ export default function ElementScore(oProps) {
 
     let { currentUser, setCurrentUser } = useCurrentUser();
     useEffect(() => {
-        if (currentUser)
-            subscribe(currentUser.pusher, oProps.system + '_scores_' + oProps.object_id, 'voted', cb);
+        subscribe( oProps.system + '_scores_' + oProps.object_id, 'voted', cb);
     }, [])
 
     const cb = (data) => {

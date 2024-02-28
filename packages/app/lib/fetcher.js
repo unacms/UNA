@@ -1,14 +1,9 @@
 import { Platform } from 'react-native';
-import { env } from 'app/lib/env';
 import i18n from 'i18next';
 import { appSetting , UNA_URL, APP_URL } from 'app/config';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
-
-function IsSafeEndpoint(url) {
-    return appSetting('config', 'safe_endpoints').some(substring => url.includes(substring));
-}
 
 export async function fetcher (mixed, useProxy = false) {
     const t1 = Date.now();

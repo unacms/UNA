@@ -1,8 +1,8 @@
-import { Root, getData } from 'app/root'
+import { Root } from 'app/root'
 import { useState, useEffect, useContext } from 'react'
 import { useRoute, useNavigationState } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
-import { appSetting, parseUrl, parseQueryString } from 'app/lib/util'
+import { appSetting, parseUrl, parseQueryString, getURI} from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
 import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
@@ -12,6 +12,35 @@ import * as Linking from 'expo-linking';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
+import { fetcher } from 'app/lib/fetcher';
+
+// this function is called in Next as serverSideProps and in Expo to get data dynamically
+export async function getData(path, token, origin, headers, callback, params) {
+    if (!path || path.startsWith('expo-development-client'))
+	    path = 'home';
+
+    path = path.startsWith('/') ? path.substr(1) : path;    
+    path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
+
+	const uri = getURI(path);
+    let settings = appSetting('layouts', uri)
+    if (settings && settings?.blocks){
+        path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
+    }
+    else{
+        if (params)
+            path = path + '&params[]=';
+    }
+
+    if (params){
+        path = path + '&params[]=' + params
+    }
+    // TODO: pass GET&POST params
+    const t1 = Date.now();
+    const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
+    const diff = Date.now() - t1;
+    return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
+}
 
 export function Screen(params) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);

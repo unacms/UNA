@@ -2,15 +2,15 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useCurrentUser } from 'app/context/user';
-import { connect } from 'app/ui/atoms/socket'; 
 import { Platform } from 'react-native'
-import { storageClear,decodeText } from 'app/lib/util';
-import { fetcher } from 'app/lib/fetcher';
+import { storageClear, decodeText } from 'app/lib/util';
 import { appSetting, getURI } from 'app/lib/util';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import Layouts from 'app/components/layouts'
-
+import { remoteSettings } from 'app/settings-remote';
+import { subscribe } from 'app/ui/atoms/socket';
+import { getRemoteSettings } from 'app/config';
 
 //const Layouts = React.lazy(() => import('app/components/layouts'));
 
@@ -24,11 +24,11 @@ const metaAdder = (queryProperty, value) => {
     }
 };
 
-export function Page404 (props) {
+export function Page404(props) {
     const r = appSetting('layout', 'redirect_on_not_found');
     const redirectdRef = useRef()
     useEffect(() => {
-        if (r){
+        if (r) {
             redirectdRef.current.redirect(r);
         }
     }, []);
@@ -41,11 +41,11 @@ export function Page404 (props) {
 }
 
 export function Page403(props) {
-  
+
     const r = appSetting('layout', 'redirect_on_forbidden');
     const redirectdRef = useRef()
     useEffect(() => {
-        if (r){
+        if (r) {
             redirectdRef.current.redirect(r);
         }
     }, []);
@@ -57,82 +57,68 @@ export function Page403(props) {
     );
 }
 
-export function Root (props) {
+export function Root(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     let data = props?.data;
-   
+
     const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
-        if (isWeb){
-            document.title = decodeText(data?.title);  
+        if (isWeb) {
+            document.title = decodeText(data?.title);
             metaAdder('property="og:title"', decodeText(data?.title))
         }
-      }, []);
+        if (props.settings)
+            remoteSettings.data = props.settings;
+
+    }, []);
+
 
     useEffect(() => {
-        if (data?.user){
-            if (currentUser?.id != data.user.id){
+        subscribe('sys_api_0' , 'config_changed', updateSettings);
+    }, [])
+
+    const updateSettings = (data) => {
+        (async () => {
+            remoteSettings.data = await getRemoteSettings();
+        })();
+    }
+
+
+    useEffect(() => {
+        if (data?.user) {
+            if (currentUser?.id != data.user.id) {
                 let b = Object.assign({}, data.user)
-                b.pusher = connect();
+
                 setCurrentUser(b);
                 storageClear();
             }
-            if (currentUser?.notifications && currentUser?.notifications != data.user.notifications){
+            if (currentUser?.notifications && currentUser?.notifications != data.user.notifications) {
                 let b = currentUser;
                 b.notifications = data.user.notifications
                 setCurrentUser(b);
             }
         }
-        else{
-           // if (currentUser != null){
-                setCurrentUser(false);
-                storageClear();
+        else {
+            // if (currentUser != null){
+            setCurrentUser(false);
+            storageClear();
             //}
         }
 
     }, [data?.user]);
 
     if (props.code == 404 || data?.page_status == 404) {
-        return <Page404/>
+        return <Page404 />
     }
 
     if (data?.page_status == 403) {
-        return <Page403/>
+        return <Page403 />
     }
 
 
     return (
-        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url}/>
+        <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />
     );
 }
-
-// this function is called in Next as serverSideProps and in Expo to get data dynamically
-export async function getData(path, token, origin, headers, callback, params) {
-    if (!path || path.startsWith('expo-development-client'))
-	    path = 'home';
-
-    path = path.startsWith('/') ? path.substr(1) : path;    
-    path = '/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
-
-	const uri = getURI(path);
-    let settings = appSetting('layouts', uri)
-    if (settings && settings?.blocks){
-        path = path + '&params[]=' + (Object.values(settings.blocks).map(block => block.name)).join(',')
-    }
-    else{
-        if (params)
-            path = path + '&params[]=';
-    }
-
-    if (params){
-        path = path + '&params[]=' + params
-    }
-    // TODO: pass GET&POST params
-    const t1 = Date.now();
-    const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
-    const diff = Date.now() - t1;
-    return { props: { uri:(path.length ? path[0] : 'home'), ...data } }
-}
-

@@ -1,29 +1,25 @@
-import { env, isCustom } from 'app/lib/env';
+import { UNA_URL, UNA_API_KEY, getRemoteSettings } from 'app/config';
 import { cache } from 'react'
 import { Root } from 'app/root'
 import { Suspense } from 'react'
 import { Loading } from 'app/loading'
 import 'app/styles/global.default.css'
 import 'app/styles/global.css'
-import { UNA_URL } from 'app/config';
 
 const SITE_TITLE = 'NEO';
-
+let remote_config = null;
 //export const runtime = 'edge'
 
 const getData = cache(async (props) => {
-
     let path = props.params.path.join('/');
-
     let cookieString = props.searchParams.cookieString;
 
     const opts = {
         headers: {
             cookie: cookieString,
-            authorization: 'Bearer ' + env('UNA_API_KEY'),
+            authorization: 'Bearer ' + UNA_API_KEY,
         },
         cache: 'no-store'
-        //next: { revalidate: 0 } 
     };
 
     let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
@@ -50,6 +46,7 @@ const getData = cache(async (props) => {
     //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()
 });
+
 
 export const viewport = {
     width: 'device-width',
@@ -79,9 +76,18 @@ export async function generateMetadata(props) {
     }
 }
 
-export default async function Path(props) {
+export default async function Page(props) {
+    if (props.params.path == '_upd_conf'){
+        remote_config = await getRemoteSettings(true);   
+        return <></> 
+    }
+    if (!remote_config)
+        remote_config = await getRemoteSettings(true);   
+    
+    
     const data = await getData(props);
+
     return <Suspense fallback={<Loading />}>
-        <Root path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
+        <Root settings={remote_config} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
     </Suspense>
 }

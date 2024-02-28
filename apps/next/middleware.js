@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
-import { UNA_URL } from 'app/config';
-import { env } from 'app/lib/env';
+import { UNA_URL, UNA_API_KEY } from 'app/config';
 import * as Icons from  "@phosphor-icons/react/dist/ssr";
 import ReactDOMServer from 'react-dom/server';
 export const config = {
@@ -59,16 +58,12 @@ export function middleware(request) {
             cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
         });
 
-        const headers = {
-            authorization: `Bearer ${env('UNA_API_KEY')}`,
-            cookie: cookieString,
-        };
         const url = new URL(request.url);
 
         const tmpHeaders = new Headers(request.headers)
 
         tmpHeaders.set('x-hello-from-middleware1', 'hello')
-        tmpHeaders.set('authorization', `Bearer ${env('UNA_API_KEY')}`)
+        tmpHeaders.set('authorization', `Bearer ${UNA_API_KEY}`)
         tmpHeaders.set('cookie', cookieString)
 
         let q = url.search;

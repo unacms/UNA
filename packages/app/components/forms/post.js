@@ -1,4 +1,3 @@
-import { env } from 'app/lib/env';
 import { View, Row } from 'app/design/view'
 import React from 'react'
 import dynamic from 'next/dynamic'

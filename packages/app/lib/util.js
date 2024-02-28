@@ -6,10 +6,11 @@ import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
-import { appSetting as setting, UNA_URL } from 'app/config';
+import { appSetting as setting, UNA_URL, UNA_API_KEY } from 'app/config';
+import { remoteSettings } from 'app/settings-remote';
 
 export function appSetting(section, name, path) {
-   return setting(section, name, path);
+   return setting(section, name, path, remoteSettings.data);
 }
 
 export function decodeText(str) {
