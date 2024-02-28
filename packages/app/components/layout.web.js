@@ -76,7 +76,7 @@ export default function Layout(props) {
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }
-    }, [data.url]);
+    }, [data?.url]);
 
     function getFullOffsetTop(element) {
         let offsetTop = 0;
@@ -203,10 +203,9 @@ export default function Layout(props) {
 
                 <Suggestions />
                 <AsyncWorker />
-                <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} >
+                <NavbarMemo layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
                     <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                 </NavbarMemo>
-
                 <BottomSheet />
                 <ModalPopup />
 

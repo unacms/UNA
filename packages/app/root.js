@@ -1,12 +1,9 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText } from 'app/lib/util';
-import { appSetting, getURI } from 'app/lib/util';
-import { appStatic } from 'app/lib/app-static'
-import Redirect from 'app/ui/atoms/redirect'
 import Layouts from 'app/components/layouts'
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
@@ -23,39 +20,6 @@ const metaAdder = (queryProperty, value) => {
         document.head.insertAdjacentHTML("beforeend", element);
     }
 };
-
-export function Page404(props) {
-    const r = appSetting('layout', 'redirect_on_not_found');
-    const redirectdRef = useRef()
-    useEffect(() => {
-        if (r) {
-            redirectdRef.current.redirect(r);
-        }
-    }, []);
-    return (
-        <>
-            <Redirect ref={redirectdRef} />
-            {!r && appStatic('page_not_found')}
-        </>
-    );
-}
-
-export function Page403(props) {
-
-    const r = appSetting('layout', 'redirect_on_forbidden');
-    const redirectdRef = useRef()
-    useEffect(() => {
-        if (r) {
-            redirectdRef.current.redirect(r);
-        }
-    }, []);
-    return (
-        <>
-            <Redirect ref={redirectdRef} />
-            {!r && appStatic('page_not_allowed')}
-        </>
-    );
-}
 
 export function Root(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
@@ -109,14 +73,9 @@ export function Root(props) {
 
     }, [data?.user]);
 
-    if (props.code == 404 || data?.page_status == 404) {
-        return <Page404 />
+    if (props.code == 404 && !data?.page_status ) {
+         data.page_status = 404
     }
-
-    if (data?.page_status == 403) {
-        return <Page403 />
-    }
-
 
     return (
         <Layouts path={props?.path} data={data} uri={data?.uri} url={data?.url} />

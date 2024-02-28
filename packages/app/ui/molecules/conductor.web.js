@@ -679,7 +679,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({visibleItemsCount}) => {
-        return <View key="btn" className='ml-2'><Button title={'More'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded endDecorator="DotsThreeOutline" /></View>;
+        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded  /></View>;
     });
     
     return <DynamicMenu 
