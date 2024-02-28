@@ -21,7 +21,6 @@ export function subscribe(channel_name, event_name, cb) {
         if (!boundEvents[channel_name]) {
             boundEvents[channel_name] = [];
             boundEvents[channel_name].push(event_name);
-            console.log("bindbindbindbind", channel_name, event_name)
             channel.bind(event_name, function (data) {
                 cb(data)
             });

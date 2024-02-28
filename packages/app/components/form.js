@@ -5,7 +5,7 @@ import { View } from 'app/design/view'
 import { componentsMap } from 'app/components/forms/_map';
 import { FeedbackHaptics } from 'app/lib/util';
 import {  Platform  } from 'react-native';
-import { appSetting } from 'app/config';
+import { appSetting } from 'app/lib/util';
 
 function getFormType(name){
     return componentsMap[name];

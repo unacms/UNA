@@ -1,6 +1,6 @@
 import { Text } from 'app/design/typography'
 import Link from 'app/ui/atoms/link'
-import { appSetting as setting, UNA_URL } from 'app/config';
+import { UNA_URL } from 'app/config';
 
 function replaceLinks(htmlString, hoverClass="") {
     const linkRegex = /<a [^>]*href="(.*?)".*?>(.*?)<\/a>/g;
