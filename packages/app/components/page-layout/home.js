@@ -15,16 +15,6 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
-
-    return (
-        <Text>
-        {appSetting(
-            'layout',
-            'form_fields_optional_text'
-        )}
-</Text>
-    );
-
     const { t } = useTranslation()
 
     const isWeb = Platform.OS == 'web'
