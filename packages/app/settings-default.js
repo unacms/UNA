@@ -686,7 +686,7 @@ let settingsDefault = {
         'posts-popular': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false,  },
+                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false, unitType:'small'  },
             },
         },
 
