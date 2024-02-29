@@ -93,7 +93,10 @@ export default function ElementMenu(oProps) {
     });
 
     
-    const isUseStaticWidth = bShowContent || !bAutoSize;
+    let isUseStaticWidth = bShowContent || !bAutoSize;
+    if (oProps.persistent > 0){
+        isUseStaticWidth = false;
+    }
 
     if (isUseStaticWidth){
         const sItems = filteredItems.map((item, index) => {
@@ -139,9 +142,10 @@ export default function ElementMenu(oProps) {
     return <DynamicMenu 
         name = "menu"
         ButtonEx={ButtonEx} 
-        MenuItemEx={MenuItemEx} 
+        MenuItemEx={MenuItemEx}
+        persistent={oProps.persistent} 
         MenuItem={MenuItem} 
-        containerClasses = "justify-center sm:justify-start lg:justify-end w-full"
+        containerClasses = "justify-center md:justify-start lg:justify-end w-full"
         items={filteredItems} 
         menuClasses={sClassName} 
         isButtonOutside = {false}

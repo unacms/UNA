@@ -108,7 +108,7 @@ function compress(data) {
         let a= JSON.stringify(data, replacer)
         return Buffer.from(pako.deflate(a)).toString('base64');
     } catch (error) {
-        console.log('Compression error:', data);
+        console.log('!!!-Compression error:', data, error);
         return null;
     }
 }
@@ -117,7 +117,7 @@ function decompress(data) {
     try {
         return JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(data, 'base64')), { to: 'string' }));
     } catch (error) {
-        console.error('Decompression error:', error);
+        console.log('!!!-Decompression error:', error, error);
         return null;
     }
 }

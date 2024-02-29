@@ -3,7 +3,7 @@ import { View, ScrollView } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback} from "react";
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 
-export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50 }) {
+export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
@@ -25,6 +25,8 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
                 visibleCount++;
             }
         }
+        if (visibleCount > persistent && persistent > 0)
+            visibleCount = persistent;
         if (visibleCount != visibleItemsCount) {
             setVisibleItemsCount(visibleCount);
         }
