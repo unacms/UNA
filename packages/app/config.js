@@ -33,7 +33,7 @@ export async function getRemoteSettings(isServer = false) {
         };
     }
     const cnf = await(await fetch(UNA_URL + url, opts)).json();
-    const cnfData = JSON.parse(cnf.data);
+    const cnfData = cnf && typeof cnf.data !== 'undefined' ? JSON.parse(cnf.data) : {};
 
     if (isServer)
         return {hash: cnf.hash, data: cnfData}
