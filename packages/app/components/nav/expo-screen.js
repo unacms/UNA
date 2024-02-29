@@ -1,5 +1,5 @@
 import { Root } from 'app/root'
-import { useState, useEffect, useContext } from 'react'
+import { memo, useState, useEffect, useContext } from 'react'
 import { useRoute, useIsFocused } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI} from 'app/lib/util'
@@ -42,6 +42,7 @@ export async function getData(path, token, origin, headers, callback, params) {
 }
 
 export function Screen(params) {
+    const isFocused = useIsFocused();
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const { t } = useTranslation();
     const pathname = params.tabname;
@@ -59,7 +60,7 @@ export function Screen(params) {
         if (Object.keys(p).length > 0)
             _path = _path + '&params[]=&params[]=' + JSON.stringify(p);
     }
-    //const isFocused = useIsFocused();
+  
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabList = currentUser
@@ -69,7 +70,7 @@ export function Screen(params) {
         _path = item ? item.url : null;
     }
     // BOTTOM TABS NAVIGATION
-   // console.log("isFocused", isFocused, params);
+
     const backButtonPresented = false;
 
     useEffect(() => {
@@ -89,12 +90,12 @@ export function Screen(params) {
 
             }
         };
-        fetchPageData();
+        if (isFocused)
+            fetchPageData();
     }, [_path]);
 
     useEffect(() => {
-        //console.log('--------------')
-        if (pageData) {
+        if (pageData && isFocused) {
             if (bottomSheetData !== false)
                 setBottomSheetData(false);
             let settings = appSetting('layouts', pageData.data.uri)
@@ -111,7 +112,15 @@ export function Screen(params) {
     }, [pageData]);
 
 
+    if (!isFocused)
+        return  <Loading />;
+
     return pageData?.data ? (
-        <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
+        <Convo path={_path} pageData={pageData} />
     ) : <Loading />;
 }
+
+const Convo = memo(({ _path, pageData }) => {
+    console.log("pageData", pageData)
+    return <Root path={_path} data={pageData.data} uri={pageData.data.uri} />
+});
