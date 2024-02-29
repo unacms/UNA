@@ -69,7 +69,7 @@ let settingsDefault = {
         domain: 'https://meet.jit.si/',
     },
     urls: {
-        embeds: 'oembed.php?html=1&a=get_link&l=',
+        embeds: '/oembed.php?html=1&a=get_link&l=',
     },
     cache: {
         list: true,
