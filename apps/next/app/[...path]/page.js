@@ -7,7 +7,7 @@ import 'app/styles/global.default.css'
 import 'app/styles/global.css'
 
 const SITE_TITLE = 'NEO';
-let remote_config = null;
+let remote_config = {hash: null, data: null};
 //export const runtime = 'edge'
 
 const getData = cache(async (props) => {
@@ -77,17 +77,11 @@ export async function generateMetadata(props) {
 }
 
 export default async function Page(props) {
-    if (props.params.path == '_upd_conf'){
+    const data = await getData(props);    
+    if (!remote_config.data || data.hash != remote_config.hash){
         remote_config = await getRemoteSettings(true);   
-        return <></> 
     }
-    if (!remote_config)
-        remote_config = await getRemoteSettings(true);   
-    
-    
-    const data = await getData(props);
-
     return <Suspense fallback={<Loading />}>
-        <Root settings={remote_config} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
+        <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
     </Suspense>
 }

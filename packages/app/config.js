@@ -32,5 +32,11 @@ export async function getRemoteSettings(isServer = false) {
             }
         };
     }
-    return await(await fetch(UNA_URL + url, opts)).json();
+    const cnf = await(await fetch(UNA_URL + url, opts)).json();
+    const cnfData = JSON.parse(cnf.data);
+
+    if (isServer)
+        return {hash: cnf.hash, data: cnfData}
+
+    return cnfData;
 };
