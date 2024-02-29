@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText } from 'app/lib/util';
@@ -23,9 +23,7 @@ const metaAdder = (queryProperty, value) => {
 
 export function Root(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
-
     let data = props?.data;
-
     const isWeb = Platform.OS == 'web'
 
     useEffect(() => {
@@ -43,11 +41,9 @@ export function Root(props) {
         subscribe('sys_api_0' , 'config_changed', updateSettings);
     }, [])
 
-    const updateSettings = (data) => {
-        (async () => {
-            remoteSettings.data = await getRemoteSettings();
-        })();
-    }
+    const updateSettings = useCallback(async () => {
+        remoteSettings.data = await getRemoteSettings();
+    }, []);
 
 
     useEffect(() => {

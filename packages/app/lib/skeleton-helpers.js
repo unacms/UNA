@@ -325,9 +325,6 @@ export function getSkeleton(name, num = 5) {
     if (Array.isArray(name))
         name = name.join('_');
 
-    if (name == 'one_column_browse')
-        return one_column_browse;
-
     if (typeof skelentons[name] !== 'undefined')
         return skelentons[name];
 

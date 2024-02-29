@@ -1,36 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Pressable, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import { Button } from 'app/design/controls';
 import { Modal } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
-
 import { useWindowDimensions } from 'react-native';
 
-export default function ElementCarousel(props) {
-    let data = props.data;
-    if (data.length == 0)
-        return <></>
-    
+export default function ElementCarousel({ data = [] }) {
+    if (!data.length) return null;
+
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
 
-    const [imageSize, setImageSize] = useState([0,0]);
-    const [imageSize2, setImageSize2] = useState([0,0]);
-    
+    const [imageSize, setImageSize] = useState([0, 0]);
+    const [imageSize2, setImageSize2] = useState([0, 0]);
+
     const [width, setWidth] = useState(400);
 
     const windowWidth = useWindowDimensions().width - 200;
     const windowHeight = useWindowDimensions().height - 200;
 
-    const handleShowImage = (img) => {
+    const handleShowImage = useCallback((img) => {
         setCurrentImageIndex(img.index);
-    } 
+    }, []);
 
-    const handleLayout = (event) => {
-        if (event.nativeEvent.layout.width != width)
+    const handleLayout = useCallback((event) => {
+        if (event.nativeEvent.layout.width !== width)
             setWidth(event.nativeEvent.layout.width);
-    };
+    }, [width]);
 
     useEffect(() => {
         if (currentImageIndex !== false) {
@@ -58,26 +55,20 @@ export default function ElementCarousel(props) {
     const Image2 = (item) => (
         <View className='flex-auto h-full border border-bdr dark:border-bdr-d'>
             <Pressable style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                }} className=" " onPress={() => handleShowImage(item)} >
+                flex: 1,
+                justifyContent: 'center',
+            }} className=" " onPress={() => handleShowImage(item)} >
                 <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
                 {item.row == 1 && item?.index2 == 1 && data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{data.length - 3}</Text></View>}
             </Pressable>
         </View>
     );
 
-    let data2 = data.slice(0, 3);
-    const len = data2.length;
+    const data2 = useMemo(() => data.slice(0, 3), [data]);
+    const len = useMemo(() => data2.length, [data2]);
 
-    let dataR1 = data2.slice(0, 2);
-    let dataR2 = data2.slice(2, 4);
-    if (len == 3) {
-        dataR1 = data2.slice(0, 1);
-        dataR2 = data2.slice(1, 3);
-    }
-
-
+    const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
+    const dataR2 = useMemo(() => (len === 3 ? data2.slice(1, 3) : data2.slice(2, 4)), [data2, len]);
 
     useEffect(() => {
         if (data2.length === 1 && imageSize[0] === 0) {
@@ -127,7 +118,7 @@ export default function ElementCarousel(props) {
                             dataR2?.map((item, index) => (
                                 <Image2 row={1} index={dataR1.length + index} index2={index} key={index} src={item.src} />
                             ))}
-                        
+
                     </Row>
                 </View>
             </View>
@@ -135,18 +126,18 @@ export default function ElementCarousel(props) {
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
     return <>
-        {currentImageIndex !== false && <Modal visible={currentImageIndex !== false} onClose={() => {setCurrentImageIndex(false)}} outerClickClose={true} transparent={true} >
+        {currentImageIndex !== false && <Modal visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} outerClickClose={true} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center'>
                 {
-                    currentImageIndex > 0 ? <View className='mr-2'><Button variant ="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex-1)} startDecorator="ArrowLeft"/></View> : <View className='mr-1 w-10'></View>
+                    currentImageIndex > 0 ? <View className='mr-2'><Button variant="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /></View> : <View className='mr-1 w-10'></View>
                 }
                 {
-                    imageSize2[0] > 0 && <Pressable style={{width:imageSize2[0], height:imageSize2[1], maxWidth: windowWidth, maxHeight: windowHeight}} onPress={() => setCurrentImageIndex(false)}> 
-                        { currentImageIndex !== false &&  <Image width={imageSize2[0]} height={imageSize2[1]} sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 "    /> }
+                    imageSize2[0] > 0 && <Pressable style={{ width: imageSize2[0], height: imageSize2[1], maxWidth: windowWidth, maxHeight: windowHeight }} onPress={() => setCurrentImageIndex(false)}>
+                        {currentImageIndex !== false && <Image width={imageSize2[0]} height={imageSize2[1]} sizes="(max-width:1280px) 100vw, 1280px" src={data[currentImageIndex].src} alt='' className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />}
                     </Pressable>
                 }
                 {
-                    (currentImageIndex!=data.length-1) ? <View className='ml-2'><Button variant ="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex+1)} startDecorator="ArrowRight"/></View> : <View className='mr-1 w-10'></View>
+                    (currentImageIndex != data.length - 1) ? <View className='ml-2'><Button variant="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex + 1)} startDecorator="ArrowRight" /></View> : <View className='mr-1 w-10'></View>
                 }
             </Row>
         </Modal>}

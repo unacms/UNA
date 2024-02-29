@@ -15,20 +15,15 @@ export default function Layout(props) {
         return null;
     }
 
-    const styles = StyleSheet.create({
-
-        image: {
-            flex: 1,
-            justifyContent: 'center',
-        },
-    });
-
     return (
         <>
             <Suggestions />
             <AsyncWorker />
             <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">
-                <ImageBackground source={require('app/background.png')} resizeMode="cover" style={styles.image}>
+                <ImageBackground source={require('app/background.png')} resizeMode="cover" style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                }}>
                     {props.children}
                 </ImageBackground>
                 <BottomSheet />

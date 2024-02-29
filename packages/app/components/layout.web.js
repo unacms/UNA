@@ -69,8 +69,6 @@ export default function Layout(props) {
         let element = document.querySelector('.animated-view');
         if (element) {
             element.classList.remove('page-fade-out');
-            // disbled: header not sticky issue
-            //element.classList.add('page-fade-in');
         }
 
         if (navigator.serviceWorker) {
@@ -90,45 +88,46 @@ export default function Layout(props) {
     // Sticky columns
     useEffect(() => {
         const handleScroll = () => {
-            let elements = document.getElementsByClassName("fixed-process");
-            for (let i = 0; i < elements.length; i++) {
-                const offset = getFullOffsetTop(elements[i].parentNode);
-                const offset1 = 24;
-                const scrollY = window.scrollY;
-                const innerHeight = window.innerHeight;
-                let h = scrollY - offset;
-                let style = window.getComputedStyle(elements[i]);
-                let marginTop = parseInt(style.marginTop, 10);
-                let marginBottom = parseInt(style.marginBottom, 10);
-                let elementHeight = elements[i].offsetHeight;
+            const elements = Array.from(document.getElementsByClassName("fixed-process"));
+            const scrollY = window.scrollY;
+            const innerHeight = window.innerHeight;
 
-                let elementHeightParent = elements[i].parentNode.parentNode.offsetHeight;
+            elements.forEach(element => {
+                const offset = getFullOffsetTop(element.parentNode);
+                const offset1 = 24;
+                const h = scrollY - offset;
+                const style = window.getComputedStyle(element);
+                const marginTop = parseInt(style.marginTop, 10);
+                const marginBottom = parseInt(style.marginBottom, 10);
+                const elementHeight = element.offsetHeight;
+                const elementHeightParent = element.parentNode.parentNode.offsetHeight;
+
                 if (elementHeightParent > elementHeight) {
-                    elements[i].classList.add('fixed');
-                    let height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
-                    elements[i].style.top = offset + 'px';
+                    element.classList.add('fixed');
+                    const height = elementHeight + marginTop + marginBottom - innerHeight + offset1;
+                    element.style.top = `${offset}px`;
+
                     if (innerHeight - offset < elementHeight + marginTop + marginBottom + offset1) {
-                        let topValue = height > h ? -h : -height;
-                        elements[i].style.top = `${topValue}px`;
+                        const topValue = height > h ? -h : -height;
+                        element.style.top = `${topValue}px`;
+
                         if (height > h) {
-                            elements[i].setAttribute('a', `${topValue}px`);
+                            element.setAttribute('a', `${topValue}px`);
                         }
                     }
+                } else {
+                    element.classList.remove('fixed');
                 }
-                else {
-                    elements[i].classList.remove('fixed');
-                }
-            }
+            });
         };
 
-        // Add the event listener when the component mounts
+
         window.addEventListener('scroll', handleScroll);
         handleScroll();
-        // Clean up the event listener when the component unmounts
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-
     }, []);
 
     const { layoutName } = getLayoutName(data, uri, true);
@@ -137,25 +136,25 @@ export default function Layout(props) {
     if (data?.empty)
         return <>{children}</>
 
-    let stylesBgImage = { backgroundAttachment: 'fixed', backgroundImage: appSetting('layout', 'background_image') }
-    let stylesBg = { backgroundColor: appSetting('layout', 'background_color') }
-    if (theme === 'dark') {
-        stylesBgImage = { backgroundAttachment: 'fixed', backgroundImage: appSetting('layout', 'background_image_dark') }
-        stylesBg = { backgroundColor: appSetting('layout', 'background_color_dark') }
-    }
-
-    // if (layoutName === 'messenger')
-    //    stylesBgImage = Object.assign(stylesBgImage, { minHeight: 'auto', bottom: 0, position: 'fixed' });
+    const themeSuffix = theme === 'dark' ? '_dark' : '';
+    const stylesBgImage = {
+        backgroundAttachment: 'fixed',
+        backgroundImage: appSetting('layout', `background_image${themeSuffix}`)
+    };
+    const stylesBg = {
+        backgroundColor: appSetting('layout', `background_color${themeSuffix}`)
+    };
 
     useEffect(() => {
-        for (let style in stylesBgImage) {
-            document.body.style[style] = stylesBgImage[style];
-        }
-        for (let style in stylesBg) {
-            document.body.style[style] = stylesBg[style];
-        }
+        const applyStyles = styles => {
+            for (const style in styles) {
+                document.body.style[style] = styles[style];
+            }
+        };
 
-    }, []);
+        applyStyles(stylesBgImage);
+        applyStyles(stylesBg);
+    }, [stylesBgImage, stylesBg]);
 
     useEffect(() => {
         if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login'].includes(props.uri)) {
@@ -224,7 +223,7 @@ export default function Layout(props) {
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse lg:border-l lg:border-r border-dashed border-bdr dark:border-bdr-d'>
-                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '' ) +' w-full '}>
+                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '') + ' w-full '}>
                             <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />
                             <AsyncWorker />
