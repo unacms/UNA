@@ -1,6 +1,6 @@
 import { Root } from 'app/root'
 import { useState, useEffect, useContext } from 'react'
-import { useRoute, useNavigationState } from '@react-navigation/native';
+import { useRoute, useIsFocused } from '@react-navigation/native';
 import { useCurrentUser } from 'app/context/user';
 import { appSetting, parseUrl, parseQueryString, getURI} from 'app/lib/util'
 import { useRouter, useNavigation } from 'expo-router';
@@ -8,11 +8,11 @@ import { Theme } from 'app/design/theme';
 import { View } from 'app/design/view';
 import { updateRightHeader, updateCenterHeader } from 'app/lib/native-handlers'
 import Profile from 'app/ui/molecules/profile';
-import * as Linking from 'expo-linking';
 import { useTranslation } from 'react-i18next';
 import { Loading } from 'app/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { fetcher } from 'app/lib/fetcher';
+
 
 // this function is called in Next as serverSideProps and in Expo to get data dynamically
 export async function getData(path, token, origin, headers, callback, params) {
@@ -35,7 +35,6 @@ export async function getData(path, token, origin, headers, callback, params) {
     if (params){
         path = path + '&params[]=' + params
     }
-    // TODO: pass GET&POST params
     const t1 = Date.now();
     const data = await fetcher(token || origin || headers || callback ? [path, token, '', origin, headers, callback] : path);
     const diff = Date.now() - t1;
@@ -60,7 +59,7 @@ export function Screen(params) {
         if (Object.keys(p).length > 0)
             _path = _path + '&params[]=&params[]=' + JSON.stringify(p);
     }
-
+    //const isFocused = useIsFocused();
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
         const tabList = currentUser
@@ -70,13 +69,12 @@ export function Screen(params) {
         _path = item ? item.url : null;
     }
     // BOTTOM TABS NAVIGATION
-
+   // console.log("isFocused", isFocused, params);
     const backButtonPresented = false;
-    const isFocused2 = true;
 
     useEffect(() => {
         const fetchPageData = async () => {
-            if (isFocused2 && _path && _path.startsWith('/') && !_path.includes('/?url=')) {
+            if (_path && _path.startsWith('/') && !_path.includes('/?url=')) {
                 let path2 = _path;
                 let b = parseUrl(_path);
                 let params = null;

@@ -140,6 +140,9 @@ export default function ElementBrowse(props) {
     let sSkeleton = data.module? data.module : data.unit
     if (props?.skeleton)
         sSkeleton = props?.skeleton;
+
+    if (props.unitType)
+        sSkeleton = [sSkeleton, props.unitType];
     const Preload = getSkeleton(sSkeleton, numColumns)
     
     let dataItems = {

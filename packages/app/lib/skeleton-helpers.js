@@ -5,8 +5,9 @@ import { Platform } from 'react-native'
 
 const items = Array(5).fill('');
 const maxWidth = appSetting('layout', 'max_width')
+const skelentons = [];
 
-const one_column_browse = <>
+skelentons['one_column_browse'] = <>
     {items.map((item, index) => (
         <View key={'one_column_browse' + index}>
             <View className=" p-2 flex-row gap-x-2 w-full animate-pulse">
@@ -23,7 +24,7 @@ const one_column_browse = <>
     ))}
 </>
 
-const notifications = <>
+skelentons['notifications']  = <>
     {items.map((item, index) => (
         <View
             key={index}
@@ -43,7 +44,7 @@ const notifications = <>
     ))}
 </>
 
-const bx_forum = <>
+skelentons['bx_forum'] = <>
     {items.map((item, index) => (
         <View
             key={index}
@@ -72,11 +73,33 @@ const bx_forum = <>
     ))}
 </>
 
-const bx_posts = <>
+skelentons['bx_posts'] = <>
     {items.map((item, index) => (
         <View
             key={index}
             className="flex-col p-2 mt-2  sm:mx-3 "
+        >
+             <View className="  flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
+                <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
+                        <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-full h-3 mt-3 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-full h-3 mt-2 rounded-full bg-neutral-500/20"></View>
+                        <View className="flex-row mt-5">
+                            <View className="w-9 h-9 rounded-full bg-neutral-500/20"></View>
+                            <View className="ml-2 w-1/4 h-3 my-auto rounded-full bg-neutral-500/20"></View>
+                        </View>
+                </View>
+            </View>
+        </View>
+    ))}
+</>
+
+skelentons['bx_posts_small'] = <>
+    {items.map((item, index) => (
+        <View
+            key={index}
+            className="flex-col p-2 mt-2  sm:mx-3 bg-red-500"
         >
              <View className="  flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
                 <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
@@ -154,7 +177,7 @@ function browse_item(num) {
     )
 }
 
-const feed = <View className="sm:px-4 sm:py-2 sm:gap-2">
+skelentons['feed'] = <View className="sm:px-4 sm:py-2 sm:gap-2">
     {appSetting('feed', 'default_view') == 'small' &&
         items.map((item, index) => (
             <View
@@ -298,19 +321,15 @@ var pageSkeletons = {
 }
 
 export function getSkeleton(name, num = 5) {
-    if (name == 'feed')
-        return feed;
+
+    if (Array.isArray(name))
+        name = name.join('_');
 
     if (name == 'one_column_browse')
         return one_column_browse;
 
-    if (name == 'notifications')
-        return notifications;
-
-    if (name == 'bx_forum')
-        return bx_forum;
-    if (name == 'bx_posts')
-        return bx_posts;
+    if (typeof skelentons[name] !== 'undefined')
+        return skelentons[name];
 
     return browse_item(num)
 }

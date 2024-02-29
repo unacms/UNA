@@ -6,8 +6,9 @@ import { useCurrentUser } from 'app/context/user'
 import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Button } from 'app/design/controls';
 import DynamicMenu from 'app/ui/molecules/dynamic_menu';
-
+import { Platform } from 'react-native' 
 export default function ElementMenu(oProps) {
+    const isWeb = Platform.OS == 'web'
     const { currentUser, setCurrentUser } = useCurrentUser();
     /*
      * Display type specified in menu can be overwritten with display type specified in item.
@@ -93,9 +94,12 @@ export default function ElementMenu(oProps) {
     });
 
     
-    let isUseStaticWidth = bShowContent || !bAutoSize;
+    let isUseStaticWidth = bShowContent || !bAutoSize || !isWeb;
     if (oProps.persistent > 0){
         isUseStaticWidth = false;
+    }
+    if (!isWeb){
+      //  isUseStaticWidth = true;
     }
 
     if (isUseStaticWidth){
@@ -119,7 +123,7 @@ export default function ElementMenu(oProps) {
     const MenuItem = memo(({ item, itemRefs, index, visibleItemsCount }) => {
         const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
         return (
-            <View ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(bShowVertical) ? 'w-full  ' : ' ' + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
+            <View ref={el => itemRefs.current[index] = el} key={'menu' + index} className={(!isWeb ? ' ml-2': ' ') + (bShowVertical ? 'w-full  ' : ' ') + (sAlignItems == 'stretch' ? 'flex-auto' : '') + ((index > visibleItemsCount - 1 && !isUseStaticWidth) ? ' item-overlap ' : '')}>
                 <ItemType key={item.id ? item.id : item.name} {...item} params={oProps.params} />
             </View>
         )

@@ -188,7 +188,7 @@ export function ElementSearchData(oProps) {
 
     const cnt2 = (
         <>
-            <Redirect ref={redirectdRef} />
+            
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
                     <View className="flex-row items-center justify-end">
@@ -216,7 +216,9 @@ export function ElementSearchData(oProps) {
             ]}
         </DropdownPopup>
         return (
+            
             <View className=''>
+                <Redirect ref={redirectdRef} />
                 <InputRounded name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
                 {dd}
             </View>

@@ -2,9 +2,12 @@
 import { View, ScrollView } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback} from "react";
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import { Platform } from 'react-native' 
 
+   
 export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, containerClasses, items, menuClasses, menuExClasses, isButtonOutside, offsetWidth=50, persistent = 0 }) {
 
+    const isWeb = Platform.OS == 'web'
     const itemRefs = useRef([]);
     const itemRefsMore = useRef();
     const [visibleItemsCount, setVisibleItemsCount] = useState(0);
@@ -16,7 +19,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         let visibleCount = 0;
         for (let i = 0; i < itemRefs.current.length; i++) {
             const itemWidth = itemRefs.current[i].offsetWidth;
-            if (!itemRefs.current[i].className.includes('hidden')) {
+            if (!itemRefs?.current[i].className?.includes('hidden')) {
                 if (visibleWidth + itemWidth > menuWidth) break;
                 visibleWidth += itemWidth;
                 visibleCount++;
@@ -50,7 +53,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     )
     return (
         <>
-            <ScrollView horizontal={true} className={containerClasses+" "} onLayout={handleLayout}>
+            <ScrollView className={isWeb ? containerClasses : ""} horizontal={true}  onLayout={handleLayout}>
                 <View className={menuClasses} >
                     {
                         items.map((aItem, iKey) => {
