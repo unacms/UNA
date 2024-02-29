@@ -99,8 +99,8 @@ let settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1024, count: 4 },
-            { width: 768, count: 3 },
+            { width: 1280, count: 3 },
+            { width: 768, count: 2 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
@@ -686,7 +686,7 @@ let settingsDefault = {
         'posts-popular': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false,  },
+                browse: { name: 'bx_posts:browse_popular', showTitle: false, showBg: false, unitType:'small'  },
             },
         },
 

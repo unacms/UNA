@@ -76,15 +76,18 @@ const bx_posts = <>
     {items.map((item, index) => (
         <View
             key={index}
-            className="flex-col p-4 mb-2 sm:mb-4 sm:mx-4 bg-bgrcard dark:bg-bgrcard-d sm:rounded-2xl"
+            className="flex-col p-2 mt-2  sm:mx-3 "
         >
-             <View className=" mt-3 sm:mt-4 flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
-                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-2/5 "></View>
-                <View className="flex-auto p-2 flex-col md:mr-2">
-                        <View className="w-4/5 h-5 mt-2 rounded-full bg-neutral-500/20"></View>
-                        <View className="w-full h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
-                        <View className="w-4/5 h-3.5 mt-2 rounded-full bg-neutral-500/20"></View>
-                        <View className="w-1/3 h-3.5 mt-4 rounded-full bg-neutral-500/20"></View>
+             <View className="  flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+                <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
+                <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
+                        <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-full h-3 mt-3 rounded-full bg-neutral-500/20"></View>
+                        <View className="w-full h-3 mt-2 rounded-full bg-neutral-500/20"></View>
+                        <View className="flex-row mt-5">
+                            <View className="w-9 h-9 rounded-full bg-neutral-500/20"></View>
+                            <View className="ml-2 w-1/4 h-3 my-auto rounded-full bg-neutral-500/20"></View>
+                        </View>
                 </View>
             </View>
         </View>

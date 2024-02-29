@@ -19,10 +19,11 @@ export default function Unit(props) {
 
         return (
             <>
-           <View className=" pb-3 sm:pb-4 pr-4 w-full max-w-4xl">
-                    <Card addClassName=" p-4 flex-auto  mx-auto w-full flex-col gap-y-4  ">
-                        {data.image && (
-                            <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full  ">
+           <View className=" px-3 pb-3  w-full h-full max-w-4xl">
+                    <Card addClassName=" p-2 flex-auto mx-auto w-full flex-col gap-y-4  ">
+                        
+                            <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+                            {data.image && (
                                 <Image
                                     {...data.image}
                                     alt={data.title}
@@ -30,10 +31,11 @@ export default function Unit(props) {
                                     className="u-cover"
                                     sizes={imageSizes}
                                 />
+                                )}
                             </View>
-                        )}
+                        
 
-                        <View className="flex-auto flex-col gap-y-2">
+                        <View className="flex-auto flex-col px-2 pb-2 gap-y-2">
                             <Link href={data.url}>
                                 <Text
                                     numberOfLines={3}
@@ -68,10 +70,10 @@ export default function Unit(props) {
 
         return (
             <>
-                <View className="px-3 sm:px-4 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
+                <View className="px-3 sm:px-5 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
                     <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
                         {data.image && (
-                            <View className=" aspect-video flex-none mb-2 rounded-lg overflow-hidden md:mb-auto w-full md:w-2/5 ">
+                            <View className=" aspect-video flex-none mb-2 rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">
                                 <Image
                                     {...data.image}
                                     alt={data.title}
