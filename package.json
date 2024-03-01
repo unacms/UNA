@@ -30,6 +30,7 @@
     "**/expo-router/**"
   ],
   "dependencies": {
+    "@million/lint": "^0.0.54",
     "dotenv-cli": "^7.0.0"
   },
   "packageManager": "yarn@3.4.1"
