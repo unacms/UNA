@@ -80,7 +80,7 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + "   w-full flex-row flex-auto  mx-auto lg:border-r  lg:border-l border-dashed border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menuItemsByName('main_menu', menu_left, currentUser).length > 0 && (props.uri !='home' || ( props.uri =='home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-dashed border-bdr dark:border-bdr-d'>
+                    {(menuItemsByName('main_menu', menu_left, currentUser).length > 0 && (props.uri !='home' || ( props.uri =='home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>
                             <View className='pt-4 pr-4 pl-4'>
                                 {menuItemsByName('main_menu', menu_left, currentUser).map(
@@ -166,8 +166,8 @@ export default function (props) {
 
                                     )}
                                 </Row>}
-                                {(bSearch && currentUser) && <View className='w-full max-w-lg hidden lg:block flex-auto'>
-                                    <Search type="input" />
+                                {(bSearch && currentUser) && <View className='w-96 ml-4 mr-auto hidden lg:block '>
+                                    <Search  type="input" placeholder="Enter search text" />
                                 </View>}
                             </Row>
                         </Row>

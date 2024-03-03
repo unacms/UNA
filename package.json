@@ -31,7 +31,8 @@
   ],
   "dependencies": {
     "@million/lint": "^0.0.54",
-    "dotenv-cli": "^7.0.0"
+    "dotenv-cli": "^7.0.0",
+    "million": "^3.0.4"
   },
   "packageManager": "yarn@3.4.1"
 }
