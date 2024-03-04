@@ -257,14 +257,14 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
             return (<View className='h-[1px]'><Text>&nbsp;</Text></View>);
 
         return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2' : 'w-full '}>
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full ' : 'w-full '}>
                 {b}
             </View>
         );
     }
     else {
         return (
-            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full mt-2 ' : 'w-full'}>
+            <View key={`${route.index}-${item.id}`} className={numColumns > 1 ? 'w-full px-2 ' : 'w-full'}>
                 <Unit unitType={unitType} module={module} unit={unit} data={item} mode={unitMode} />
             </View>
         );

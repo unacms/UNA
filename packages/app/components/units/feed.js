@@ -191,8 +191,8 @@ function DefaultUnit(data) {
     return (
         <AnimatedBlock>
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
-                <View className="flex-auto flex-row items-top px-4 py-3.5">
-                    <View className=' w-3/4 overflow-hidden'>
+                <View className="flex-auto flex-row items-top p-4">
+                    <View className='flex-auto overflow-hidden'>
                         <Profile
                             {...data.author_data}
                             showLink={true}
@@ -202,7 +202,7 @@ function DefaultUnit(data) {
                                 <Row className="items-center">
                                     <View>
                                         <Link href={url}>
-                                            <Time stylesNameAdd="hover:text-linkhoverneutral" ts={data.date}></Time>
+                                            <Time stylesNameAdd=" hover:text-linkhoverneutral" ts={data.date}></Time>
                                         </Link>
                                     </View>
                                     <Row className='  '>
@@ -547,7 +547,7 @@ function DefaultUnit(data) {
                                     )}
                                 </>
                             )}
-                            <View className="flex-col relative px-0 py-3.5">
+                            <View className="flex-col relative px-0 py-4">
                                 <View className=" flex-row    px-4 flex-auto">
                                     <Menu
                                         {...data.menu_actions}

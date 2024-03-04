@@ -516,11 +516,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             }
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr border-dashed dark:border-bdr-d border-d' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                    <View className={(isRightCol ? ' flex-auto sm:border-r border-bdr border-dashed dark:border-bdr-d border-d ' : ' w-full p-4 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
                     {isRightCol && <View className="hidden xl:block w-80 2xl:w-96  ">
-                        <View className="fixed-process w-80 2xl:w-96 p-2">
+                        <View className="fixed-process w-80 2xl:w-96 p-4">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
