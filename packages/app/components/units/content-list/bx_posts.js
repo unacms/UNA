@@ -35,7 +35,7 @@ export default function Unit(props) {
                             </View>
                         
 
-                        <View className="flex-auto sm:h-40 flex-col px-2 pb-2 gap-y-2">
+                        <View className="flex-auto sm:h-44 flex-col px-2 pb-2 gap-y-2">
                             <Link href={data.url}>
                                 <Text
                                     numberOfLines={3}
