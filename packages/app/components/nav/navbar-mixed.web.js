@@ -78,7 +78,7 @@ export default function (props) {
     const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + "   w-full flex-row flex-auto  mx-auto lg:border-r  lg:border-l border-dashed border-bdr dark:border-bdr-d"}>
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto lg:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
                     {(menuItemsByName('main_menu', menu_left, currentUser).length > 0 && (props.uri !='home' || ( props.uri =='home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>

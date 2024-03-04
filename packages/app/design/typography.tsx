@@ -47,7 +47,7 @@ export const H1C = ({ children, ...rest }) => {
   return <H1C_ {...rest}>{correctedChildren}</H1C_>;
 };
 
-export const H2_ = styled(NativeText, 'text-xl font-extrabold mb-4')
+export const H2_ = styled(NativeText, 'text-xl font-extrabold mt-2 mb-3')
 H1_.defaultProps = {
 }
 

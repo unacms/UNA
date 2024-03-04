@@ -19,7 +19,7 @@ export default function Unit(props) {
 
         return (
             <>
-           <View className=" px-3 pb-3  w-full h-full max-w-4xl">
+           <View className=" px-1 sm:px-2 pb-3  w-full h-full max-w-4xl">
                     <Card addClassName=" p-2 flex-auto mx-auto w-full flex-col gap-y-4  ">
                         
                             <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
@@ -35,7 +35,7 @@ export default function Unit(props) {
                             </View>
                         
 
-                        <View className="flex-auto flex-col px-2 pb-2 gap-y-2">
+                        <View className="flex-auto sm:h-40 flex-col px-2 pb-2 gap-y-2">
                             <Link href={data.url}>
                                 <Text
                                     numberOfLines={3}
@@ -70,7 +70,7 @@ export default function Unit(props) {
 
         return (
             <>
-                <View className="px-2 sm:px-4 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
+                <View className=" px-3 sm:px-4 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
                     <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
                         {data.image && (
                             <View className=" aspect-video flex-none mb-2 rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">

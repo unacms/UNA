@@ -5,8 +5,8 @@ import { Text } from 'app/design/typography'
 export default function ({title}) {
     const letter = title ? title.substr(0, 1) : ''
     return (
-        <View className={'items-center justify-center rounded-full h-16 w-16 xl:h-24 xl:w-24 bg-' + getRandomColor(title) + '-500 uppercase'}>
-            <Text className={' text-xl xl:text-3xl  font-bold  text-white '}>{letter}</Text>
+        <View className={'items-center opacity-80 justify-center rounded-full h-24 w-24 xl:h-32 xl:w-32 bg-' + getRandomColor(title) + '-500 uppercase'}>
+            <Text className={' text-4xl xl:text-5xl font-bold opacity-80 text-white '}>{letter}</Text>
         </View>
     );
 }

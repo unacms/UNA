@@ -41,7 +41,7 @@ let settingsDefault = {
         switch_theme: true,
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
-        background_cover_color: 'rgba(107, 114, 128, 0.5)',
+        background_cover_color: 'rgba(107, 114, 128, 0.2)',
         background_native:false,
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: [],//['EventChecker'],
@@ -104,9 +104,11 @@ let settingsDefault = {
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-            { width: 1024, count: 4 },
+            { width: 1440, count: 4 },
+            { width: 1280, count: 3 },
+            { width: 1024, count: 2 },
             { width: 768, count: 3 },
-            { width: 640, count: 3 },
+            { width: 320, count: 2 },
         ],
         per_line_left_side_bar: [
             { width: 1280, count: 4 },

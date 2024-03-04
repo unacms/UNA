@@ -188,20 +188,20 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin="sm:mx-2 mb-2 " rounded="rounded-2xl">
+            <Card margin=" mx-2 mb-2 " rounded=" rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-square w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center ">
+                    <View className="flex-col p-1">
+                        <View className=" aspect-square w-full rounded-xl overflow-hidden items-center justify-center ">
                             <Image
                                 src={data?.image?.src}
                                 alt={data.title}
                                 view="cover"
-                                className="absolute u-cover rounded-xl"
+                                className=" absolute u-cover rounded-xl"
                                 sizes={imageSizes}
                             />
                             {!data?.image?.src && <Letter title={data.fullname}/>}
                         </View>
-                        <View className="flex-col p-3  flex-auto items-between justify-between ">
+                        <View className="flex-col p-3 flex-auto items-between h-36 justify-between ">
                             <View>
                                 <Text
                                     numberOfLines={1}
