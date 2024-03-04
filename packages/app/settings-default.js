@@ -769,7 +769,7 @@ let settingsDefault = {
                 col2: { name: 'bx_persons:entity_info', showTitle: false, showBg: true, sidebar: true },
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
-            headerSettings: { offset: false, header: false, cover: 'profile', columns:'reverse' }
+            headerSettings: { offset: false, header: false, cover: 'profile' }
         },
         //############ ORGS PAGES ############
         'view-organization-profile': {

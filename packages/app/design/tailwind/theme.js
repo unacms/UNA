@@ -146,7 +146,7 @@ const colors = {
 
     bdr: {
         DEFAULT: 'rgba(229,231,235,1)',
-        d: 'rgba(31,41,55,1)',
+        d: 'rgba(31,41,55,0.5)',
     },
     bgr: {
         DEFAULT: 'rgba(255,255,255,1)',

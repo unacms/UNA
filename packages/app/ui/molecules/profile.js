@@ -64,7 +64,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-12 h-12'
             iSizeWidth = 56
             iSizeHeight = 56
-            sSizeFont = 'text-base font-semibold';
+            sSizeFont = 'text-lg font-semibold';
             sSizeFontLetter = 'text-xl  font-bold';
             break
 
@@ -72,7 +72,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-20 h-20'
             iSizeWidth = 80
             iSizeHeight = 80
-            sSizeFont = 'text-lg font-semibold';
+            sSizeFont = 'text-xl font-semibold';
             sSizeFontLetter = 'text-xl  font-bold';
             break
 
@@ -80,7 +80,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-24 h-24'
             iSizeWidth = 96
             iSizeHeight = 96
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-2xl font-semibold';
             sSizeFontLetter = 'text-2xl font-bold';
             break
 
@@ -88,7 +88,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-32 h-32'
             iSizeWidth = 128
             iSizeHeight = 128
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-3xl font-semibold';
             sSizeFontLetter = 'text-5xl font-bold';
             break
 
@@ -96,7 +96,7 @@ export default function AtomProfile(oProps) {
             sSize = 'w-48 h-48'
             iSizeWidth = 192
             iSizeHeight = 192
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-4xl font-semibold';
             sSizeFontLetter = 'text-7xl font-bold';
             break
         
@@ -104,7 +104,7 @@ export default function AtomProfile(oProps) {
             sSize = ' w-full aspect-square rounded-xl '
             iSizeWidth = 400
             iSizeHeight = 400
-            sSizeFont = 'text-xl font-semibold';
+            sSizeFont = 'text-5xl font-semibold';
             sSizeFontLetter = 'text-7xl font-bold';
             break
     }
