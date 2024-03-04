@@ -154,17 +154,21 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
             blocks = getBlocksFromData(sResponse.data);
 
         let contentAndEndpoint = processUrl(sResponse.data, settings?.blocks);
-        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, blocks, routes, contentAndEndpoint.sidebar)
+        addMoreData(contentAndEndpoint.content, contentAndEndpoint.endpoint, setRoutes, index, blocks, routes, contentAndEndpoint.sidebar, sResponse.data)
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false) {
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData= null) {
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;
 
             if (blocks && !route.blocks)
                 route.blocks = blocks
+
+            if (pageData && !route.pageData)
+                route.pageData = pageData
+
 
             if (sidebar)
                 route.sidebar = sidebar

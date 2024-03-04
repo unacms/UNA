@@ -58,8 +58,7 @@ export function DataByName(data, name) {
 }
 
 export function BlockByName2({b, name}) {
-    
-    let c = Block({uri:'', block:b, showTitle:name.showTitle, showPad:name.showPad, showBg:name.showBg, extraProps:name})
+    let c = Block({uri:'', block:b, showTitle:name.showTitle, showPad:name.showPad, showBg:name.showBg, extraProps:name, sidebar:name.sidebar})
     return c;
 }
 
@@ -84,8 +83,8 @@ export default function Block(props) {
         return null;
 
     
-    if (block.content.length == 0)
-        return null;
+  //  if (block.content.length == 0)
+   //     return null;
 
     return (
         <BlockWrapper block={block} showBg={props.showBg} showPad={props.showPad} showTitle={props.showTitle} fullWidth={props.fullWidth} extraProps={props.extraProps}>

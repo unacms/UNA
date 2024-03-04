@@ -102,7 +102,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         }
     }
-    // }, [index]);
+    
+
+    useEffect(() => {
+        if (getNumCols(cntWidth) != numColumns){
+            console.log("setNumColumns",getNumCols(cntWidth))
+            setNumColumns(getNumCols(cntWidth));
+        }
+    }, [cntWidth, currentRoute]);
 
 
     useEffect(() => {
@@ -159,7 +166,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
 
         let perLineSettings = appSetting('browse', 'per_line');
-        if (currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-')) {
+        if (currentRoute?.endpoint?.unit.includes('-profile-') || currentRoute?.endpoint?.unit.includes('-context-') || currentRoute?.endpoint?.request_url.includes('TemplServiceProfiles')) {
             perLineSettings = appSetting('browse', 'per_line_profile');
         }
         if (leftSideBar) {
@@ -453,8 +460,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const TabFlashList = React.forwardRef((props, ref) => {
 
-        if (getNumCols(0) != numColumns)
+       /* if (getNumCols(0) != numColumns){
+            console.log("setNumColumns2", getNumCols(0))
             setNumColumns(getNumCols(0));
+        }*/
 
         if (props.data.length == 1 && !props.endpoint) {
             let a = props.data.map((item, index) => {
@@ -478,17 +487,29 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
-        //let b = useMemo(() => {
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), numColumns);
+
+
         if (!route.inited) {
             return <></>
         }
         if (route.inited) {
-            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+
             let unitType = getUnitModeBySource(route?.endpoint?.request_url)
             if (unitType == 'default')
                 unitType = getUnitType(route);
 
+            let sSkeleton = data.module? data.module : data.unit
+            if (skeleton)
+                sSkeleton = skeleton;
+        
+            if (unitType)
+                sSkeleton = [sSkeleton, unitType];
+            
+            const Preload = getSkeleton(sSkeleton, numColumns);
+            
+
+            let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
+           
             let TabFlashListM = useMemo(() => {
                 return <TabFlashList
                     index={route.index}
@@ -508,7 +529,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     }
                 />
-            }, [dataItems]);
+            }, [dataItems, numColumns]);
             //
             let sidebarUnitType = 'default';
             if (route.blocks?.browse_sidebar?.unitType) {
@@ -519,12 +540,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr border-dashed dark:border-bdr-d border-d' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-80 2xl:w-96  ">
+                    {isRightCol && <View className="hidden xl:block w-80 2xl:w-96 ">
                         <View className="fixed-process w-80 2xl:w-96 p-2">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
-                            <BlockByName data={data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                            <BlockByName data={route.pageData? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
                         </View>
                     </View>}
                 </Row>
@@ -533,14 +554,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     };
 
-    useEffect(() => {
-        if (getNumCols(cntWidth) != numColumns)
-            setNumColumns(getNumCols(cntWidth));
-    }, [cntWidth]);
+
 
     const handleLayoutTop = (event) => {
         setCntWidth(event.nativeEvent.layout.width)
-
     };
 
     const leftSideBarObj = useCallback(() => {

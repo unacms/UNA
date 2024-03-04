@@ -62,7 +62,8 @@ let settingsDefault = {
         allow_create_new_profile: true,
         form_fields_optional_text: 'Optional',
         form_fields_mandatory_icon: 'Asterisk',
-        form_without_captions: ['sys_account_create', 'sys_login']
+        form_without_captions: ['sys_account_create', 'sys_login'],
+        card_amimation_duration: 0,
     },
     jitsi: {
         prefix: 'prefix_',
@@ -519,9 +520,9 @@ let settingsDefault = {
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false, leftbar: true },
                 
                 intro: { name: 'static:intro', showTitle: false, showBg: false, sidebar: true },
-                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
-                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
-                subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse", showTitleInside: true} },
+                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
+                messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
+                subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },
             },
             header: [

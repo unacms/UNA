@@ -219,7 +219,7 @@ export function ElementSearchData(oProps) {
             
             <View className=''>
                 <Redirect ref={redirectdRef} />
-                <InputRounded name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRounded name="search" placeholder={t("Search") + '...'}  onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
                 {dd}
             </View>
         )
