@@ -449,7 +449,7 @@ let settingsDefault = {
             items: ['channels-home', 'channels-top'],
             add: [
                 { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_channels' },
-                { icon: 'DotsThreeOutlineVertical', name: 'More' },
+                { icon: 'DotsThreeOutline', name: 'More' },
             ],
         },
     },

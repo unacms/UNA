@@ -123,7 +123,7 @@ export default function JotItem({ item, index, handleReply }) {
                             title: aItem.title
                         };
                     })} onSelect={handleManageMenuSelect}>
-                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutlineVertical" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
+                        <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} rounded />
                     </DropdownMenu>
                 }
             </Row>
