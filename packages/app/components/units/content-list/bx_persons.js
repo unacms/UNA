@@ -188,10 +188,10 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin=" mx-2 mb-2 " rounded=" rounded-2xl ">
+            <Card margin=" mx-1 sm:mx-0 my-1 sm:my-2 " rounded=" rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-col p-1">
-                        <View className=" aspect-square w-full rounded-xl overflow-hidden items-center justify-center ">
+                    <View className="flex-row sm:flex-col p-1">
+                        <View className=" aspect-square w-1/4 mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center ">
                             <Image
                                 src={data?.image?.src}
                                 alt={data.title}
@@ -201,11 +201,11 @@ export default function Unit(props) {
                             />
                             {!data?.image?.src && <Letter title={data.fullname}/>}
                         </View>
-                        <View className="flex-col p-3 flex-auto items-between h-36 justify-between ">
-                            <View>
+                        <View className="flex-col p-3 flex-auto items-between sm:h-36 justify-between ">
+                            <View className='flex-auto mb-auto'>
                                 <Text
                                     numberOfLines={1}
-                                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                    className=" text-xl sm:text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
                                 >
                                     {data.title}
                                 </Text>

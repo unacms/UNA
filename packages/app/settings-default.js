@@ -107,9 +107,8 @@ let settingsDefault = {
         per_line_profile: [
             { width: 1440, count: 4 },
             { width: 1280, count: 3 },
-            { width: 1024, count: 2 },
             { width: 768, count: 3 },
-            { width: 320, count: 2 },
+            { width: 640, count: 2 },
         ],
         per_line_left_side_bar: [
             { width: 1280, count: 4 },
