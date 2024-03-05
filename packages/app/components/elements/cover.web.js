@@ -127,6 +127,7 @@ export function CoverSmall(props) {
     const isUseBg = appSetting('layout', 'use_background');
     const windowDimen = useWindowDimensions();
     const windowWidth = windowDimen.width;
+    let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
 
     let styles = {}
     if (windowWidth > 1024 && getLayout(currentUser) != 'hor') {
@@ -139,11 +140,11 @@ export function CoverSmall(props) {
                 <View className=" mx-2 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
-                        <Profile
+                        {bPerson && <Profile
                             {...data.profile}
                             displayType="unit_wo_info"
                             displaySize="base"
-                        />
+                        />}
                         <View className=" flex-auto pl-2">
                             <Text className="text-lg xl:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 whitespace-nowrap text-ellipsis overflow-hidden">
                                 {data.profile.display_name}
