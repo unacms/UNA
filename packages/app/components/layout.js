@@ -10,6 +10,7 @@ export default function Layout(props) {
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
     const fontsToLoad = isUseCustomFont ? { default: require('app/design/fonts/DefaultFont.ttf') } : {};
     const [fontsLoaded] = useFonts(fontsToLoad);
+    const isUseBg = appSetting('layout', 'background_native');
 
     if (!fontsLoaded) {
         return null;
@@ -20,12 +21,12 @@ export default function Layout(props) {
             <Suggestions />
             <AsyncWorker />
             <View className=" bg-bgrbody dark:bg-bgrbody-d text-neutral-900 dark:text-neutral-50 w-full h-full flex-1">
-                <ImageBackground source={require('app/background.png')} resizeMode="cover" style={{
+                {isUseBg ? <ImageBackground source={require('app/background.png')} resizeMode="cover" style={{
                     flex: 1,
                     justifyContent: 'center',
                 }}>
                     {props.children}
-                </ImageBackground>
+                </ImageBackground> : props.children} 
                 <BottomSheet />
             </View>
         </>

@@ -1,19 +1,19 @@
-import Field from './_field';
+import Field, {getValidationRules} from './_field';
 import FormFieldMent from './textareaMent';
-import { useController } from 'react-hook-form';
+import { useController,useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
-import { useState, useRef  } from 'react';
+import { useState  } from 'react';
 
 
 export default function FormFieldText(props) {
     
-    let rules = {};
+    const rules = getValidationRules(props);
     let name = props.name;
     let defaultValue = props.value ? props.value : '';
     
     const { field } = useController({ name, rules, defaultValue });
     const [height, setHeight] = useState(null);
-    const editorRef = useRef(null);
+    const formContext = useFormContext();
     const accessibility = props.caption.length > 0 ? props.caption : 'text';
     
     let input = <InputMulti
@@ -48,6 +48,8 @@ export default function FormFieldText(props) {
     }    
 
     return (
-        input
+        <Field {...props} error2={formContext.formState.errors[name]}>
+            {input}
+        </Field>
     );
 }

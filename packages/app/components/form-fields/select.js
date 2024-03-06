@@ -1,28 +1,31 @@
 import { useState, useEffect } from 'react';
-import Field from './_field';
-import { useFormContext } from 'react-hook-form';
+import Field, {getValidationRules} from './_field';
+import { useFormContext, useController } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'
 
 export default function FormFieldSelect(props) {
-
+    const name = props.name;
+    const rules = getValidationRules(props);
     const formContext = useFormContext();
-    const { formState } = formContext;
     let defaultValue = props?.value ? props.value : '';
     const [value, setValue] = useState(defaultValue)
+    
+    const { field } = useController({ name, rules, defaultValue });
 
     useEffect(() => {
-        formContext.setValue(props.name, value)
-    }, [props.name, value]);
+        if (value != field.value)
+            field.onChange(value);
+    }, [value]);
 
     const setValueF = (val) =>
     {
         setValue(val);
-        if (props.onChange)
+        if (props.onChange){
             props.onChange(val)
+        }
     }
 
     let values = [];
-    console.log(props.values)
 
     if (!Array.isArray(props.values)){
         values = Object.keys(props.values).map(function (key) {
@@ -49,7 +52,7 @@ export default function FormFieldSelect(props) {
     }
 
     return (
-        <Field {...props}>
+        <Field {...props} error2={formContext.formState.errors[name]}>
            <Dropdown 
                 labelField="label"
                 valueField="value"

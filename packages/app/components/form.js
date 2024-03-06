@@ -60,7 +60,9 @@ export default function Form(props) {
         //TODO: gandle error
     }   
     //const {...methods} = useForm({defaultValues: defaultValues});  
-    const {...methods} = useForm();  
+    const {...methods} = useForm({
+        mode: 'onChange' // This will validate the form fields on change
+    });  
     const { formState: { isSubmitted } } = methods;
 
     useEffect(() => {
@@ -91,7 +93,7 @@ export default function Form(props) {
     if(data.reset){
         //TODO: Set Value without timeout
         setTimeout(() => {
-            methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);   
+        methods.setValue('cmt_parent_id', defaultValues['cmt_parent_id']);   
         }, 100);
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
@@ -123,7 +125,7 @@ export default function Form(props) {
     }
 
     return (
-        <View className=' w-full'>
+        <View className=' w-full py-2'>
             {props.onSubmittig && <View className='absolute w-full h-full bg-bgrcard dark:bg-bgrcard-d opacity-70 z-50'></View>}
             {methods.formState.isSubmitting}
             <FormProvider {...methods}> 

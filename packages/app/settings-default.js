@@ -42,7 +42,7 @@ let settingsDefault = {
         background_image: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_image_dark: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239ca3af' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E")`,
         background_cover_color: 'rgba(107, 114, 128, 0.2)',
-        background_native:false,
+        background_native:true,
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
         async_workers: [],//['EventChecker'],
         async_workers_interval: 10,
@@ -255,7 +255,7 @@ let settingsDefault = {
         ],
         menu_left: [
             { title: 'Profile', link: '{profile}', icon: 'User' },
-            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
+            { title: 'Notifications555', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
             { title: 'Friends', link: '/friends', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
@@ -283,10 +283,11 @@ let settingsDefault = {
             { key: 'bx_persons', title: 'Persons', icon: 'Users', link: '/persons-administration' },
             { key: 'bx_ads', title: 'Ads', icon: 'Megaphone', link: '/ads-administration' },
         ],
+        
         menu_bottom_tabs_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
+            {key: '/tab2', title: 'Friends', url: '/create-group-profile', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],

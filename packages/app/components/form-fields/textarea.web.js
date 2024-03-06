@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import Field from './_field';
+import Field, {getValidationRules} from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
 import { useState, useMemo, useEffect } from 'react';
@@ -18,10 +18,10 @@ function FormFieldFtf(props) {
 
 export default function FormFieldText(props) {
     
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    let formContext = useFormContext();
+    const rules = getValidationRules(props);
+    const name = props.name;
+    const defaultValue = props.value ? props.value : '';
+    const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
     let h = props.height ? props.height : null;
     const [height, setHeight] = useState(h);
@@ -80,10 +80,13 @@ export default function FormFieldText(props) {
     
     useEffect(() => {
         if (props.value !== undefined)
-           formContext.setValue(props.name, props.value)
+            field.onChange(props.value)
+           //formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
     return (
-        <Field {...props}>{input}</Field>
+        <Field {...props} error2={formContext.formState.errors[name]}>
+            {input}
+        </Field>
     );
 }

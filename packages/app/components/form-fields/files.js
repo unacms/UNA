@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import Field from './_field';
+import Field, {getValidationRules} from './_field';
 import { View, Row, Pressable } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,26 +10,27 @@ import { genRnd, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext,useController } from 'react-hook-form';
 import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';
 
 export default function FormFieldFiles(props) {
-
+    const name = props.name;
     const [imageSource, setImageSource] = useState({ images: null });
-
-    const isWeb = Platform.OS == 'web';
     const formContext = useFormContext();
+    const rules = getValidationRules(props);
+    let defaultValue = props?.value ? props.value : '';
+    const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
-    let name = props.name;
+
 
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
     }, [props]);
 
-    const RestoreGhosts = useCallback(async (data) => {
+    const RestoreGhosts = async (data) => {
 
         let a = [];
         let av = [];
@@ -45,10 +46,11 @@ export default function FormFieldFiles(props) {
         }
         a.forEach(function (k) {
             if (k.file_id) {
+                const val = av.join(',');
                 if (name == 'covers') {
-                    formContext.setValue('thumb', av.join(','))
+                    formContext.setValue('thumb', val)
                 }
-                formContext.setValue(name, av.join(','))
+                field.onChange(val);
             }
         });
         let filteredArr = []
@@ -57,7 +59,7 @@ export default function FormFieldFiles(props) {
 
         setImageSource({ images: [...a, ...filteredArr] });
 
-    }, [url, formContext, name, imageSource]);
+    };
 
     useEffect(() => {
         if (props.previewPlaceHolder) {
@@ -72,11 +74,12 @@ export default function FormFieldFiles(props) {
         }
         if (formContext.formState.isSubmitted) {
             setTimeout(() => {
-                RestoreGhosts(0);
+                //may be need restore
+                // RestoreGhosts(0);
             }, 100);
         }
     },
-        [RestoreGhosts, formContext.formState.isSubmitted, imageSource.images]);
+    [formContext.formState.isSubmitted, imageSource.images]);
 
     const selectImage = useCallback(async () => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
@@ -176,13 +179,13 @@ export default function FormFieldFiles(props) {
     const handleInsertImageFinish = useCallback(async (result, extraVar) => {
         RestoreGhosts({ hash: extraVar.hash, id: result?.data?.id });
     },
-        [RestoreGhosts]);
+        []);
 
     const handleDelete = useCallback(async (id) => {
         const result = await fetcher(url + "&a=delete&id=" + id);
         RestoreGhosts(0);
     },
-        [url, RestoreGhosts]);
+        [url]);
 
     function GhostsList(imagesList) {
 
@@ -191,7 +194,7 @@ export default function FormFieldFiles(props) {
 
         return (
             imagesList?.map((img, index) => (
-                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg' >
+                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1' >
                     {img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="u-cover  rounded-lg" alt='' src={img.file_url} />}
                     {(!img?.file_type?.includes('image/') && !img?.preload) && <Icon icon="File" className="w-20 h-20" size={80} />}
                     {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
@@ -237,7 +240,7 @@ export default function FormFieldFiles(props) {
                 <Pressable onPress={selectImage} >
                     <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-16')}>
                         {img == null ?
-                            <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>{props.caption}</Text></View>
+                            <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop your files or Browse</Text></View>
                             : (<>
                                 {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
                                 {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
@@ -256,11 +259,11 @@ export default function FormFieldFiles(props) {
 
 
     return (
-        <Field {...props}>
+        <Field {...props} error2={formContext.formState.errors[name]}>
             <View className={bMultiple ? "mr-2" : ""} >
                 {getButton(imageSource.images)}
             </View>
-            {!props.previewPlaceHolder && <Row className='flex-wrap gap-2'>{GhostsList(imageSource.images)}</Row>}
+            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images)}</Row>}
         </Field>
     );
 }

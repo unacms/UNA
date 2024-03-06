@@ -16,49 +16,49 @@ export default function ElementConfirmEmail(props) {
     const { t } = useTranslation();
 
     const handleConfirm = async () => {
-        const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]='+inputValue;
+        const sRequest = '/api.php?r=system/confirm_email/TemplServiceAccount&params[]=' + inputValue;
         const sResponse = await fetcher(sRequest);
-        if (sResponse.data == true){
+        if (sResponse.data == true) {
             const updatedUser = {
-                ...currentUser, 
+                ...currentUser,
                 confirmed: true,
             };
-        
+
             setCurrentUser(updatedUser);
         }
-        else{
+        else {
             setInputError(true);
-        }   
+        }
     }
 
     const pressBack = async () => {
         const sRequest = '/api.php?r=system/email_confirmation/TemplServiceAccount&resend[]=1';
         const sResponse = await fetcher(sRequest);
-        setShowMsg(true);  
+        setShowMsg(true);
     };
 
     return (
         <>
-            <Msg onVisible={showMsg} title={"letter sent"} handleOk ={() => {setShowMsg(false)}} />
+            <Msg onVisible={showMsg} title={"letter sent"} handleOk={() => { setShowMsg(false) }} />
             <View className='mx-auto max-w-xl p-4'>
-            <Card rounded margin=' p-4 '>       
-                <View className='mb-4 '>
-                    <Text className="text-base text-center">{t("Your email address is unconfirmed. Please, check your email for a confirmation letter and enter confirmation code below.")}</Text>
-                </View>
-                <View className='gap-y-4'>
-                    <Row className='w-full gap-x-4 items-start justify-between'>
-                        <View className='flex-auto w-24 lg:w-auto'>
-                            <Input  placeholder={t("Input verification code")} value={inputValue} onChangeText={(value) => {setInputValue(value)}}  />  
-                        </View>
-                        <Button variant="primary" title={t("Confirm account")} onPress={()=> handleConfirm()} />
-                    </Row>
-                    { inputError && <View className="label" >
-                        <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
-                    </View> }
-                    <Button variant="text" title={t("Send the verification letter again.")}  onPress={pressBack} />
-                </View>
-            </Card>    
-           </View>
+                <Card rounded margin=' p-4 '>
+                    <View className='mb-4 '>
+                        <Text className="text-base text-center">{t("Please check your email.")}</Text>
+                    </View>
+                    <View className='gap-y-4'>
+                        <Row className='w-full gap-x-4 items-start justify-between'>
+                            <View className='flex-auto w-24 lg:w-auto'>
+                                <Input placeholder={t("Verification code")} value={inputValue} onChangeText={(value) => { setInputValue(value) }} />
+                            </View>
+                            <Button variant="primary" title={t("Confirm")} onPress={() => handleConfirm()} />
+                        </Row>
+                        {inputError && <View className="label" >
+                            <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
+                        </View>}
+                        <Button variant="text" title={t("Resend email")} onPress={pressBack} />
+                    </View>
+                </Card>
+            </View>
         </>
     );
 }

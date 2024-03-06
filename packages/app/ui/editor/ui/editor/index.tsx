@@ -9,7 +9,7 @@ import { EditorBubbleMenu } from "./components/bubble-menu";
 import { getPrevText } from "app/ui/editor/lib/editor";
 import { ImageResizer } from "./components/image-resizer";
 
-export default function Editor({ defaultValue, formContext, name, viewClasses, contentf }) {
+export default function Editor({ defaultValue, formContext, field, name, viewClasses, contentf }) {
   const [content, setContent] = useState(defaultValue)
   const [hydrated, setHydrated] = useState(false);
 
@@ -34,8 +34,12 @@ export default function Editor({ defaultValue, formContext, name, viewClasses, c
         // complete(e.editor.storage.markdown.getMarkdown());
       } else {
         const content = formContext.watch(name)
-        if (content != e.editor.getHTML())
-          formContext.setValue(name, e.editor.getHTML());
+        let cnt = e.editor.getHTML();
+        if (cnt == '<p></p>')
+          cnt ='';
+          if (content != cnt)
+            field.onChange(cnt);
+        //formContext.setValue(name, e.editor.getHTML());
         // debouncedUpdates(e);
       }
     },

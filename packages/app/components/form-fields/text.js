@@ -1,16 +1,16 @@
-import Field from './_field';
+import Field, {getValidationRules} from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 
 export default function FormFieldText(props) {
+    const name = props.name;
+    const defaultValue = props.value ? props.value : '';
+    const rules = getValidationRules(props);
     
-    let formContext = useFormContext();
+    const formContext = useFormContext();
     
-    let rules = {};
-    let name = props.name;
-    let defaultValue = props.value ? props.value : '';
-    let { field } = useController({ name, rules, defaultValue });
+    const { field } = useController({ name, rules, defaultValue });
     
     useEffect(() => {
         if (props.value !== undefined)
@@ -21,7 +21,7 @@ export default function FormFieldText(props) {
         props.placeholder = props.caption;
 
     return (
-        <Field {...props}>
+        <Field {...props} error2={formContext.formState.errors[name]}>
             <Input 
                 name={props.name}
                 placeholder = {props.placeholder}
@@ -29,7 +29,6 @@ export default function FormFieldText(props) {
                 onBlur={field.onBlur}
                 value={String(field.value)}
                 aria-label={props.caption}
-                
         />
         </Field>
     );
