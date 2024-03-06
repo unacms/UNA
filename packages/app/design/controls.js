@@ -71,12 +71,12 @@ export function Modal({
                     <View className={(fullWidth ? 'w-full': '')+ " relative h-full max-w-2xl md:h-auto "}>
                         <Pressable onPress={() => { }} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
                             <View className="">
-                                <Row className={'items-center ' +  'justify-' +textAlign + ' px-4 pt-4 '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + ' pt-4'}>
-                                    {title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-4 '>{title}</Text></View>}
+                                <Row className={'items-center ' +  'justify-' +textAlign + '  '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + 'pt-4 px-4'}>
+                                    {title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold '>{title}</Text></View>}
                                 </Row>
-                                {(title && onClose) && <View className='mb-auto absolute top-2.5 right-1'><Button variant='text' size='base' rounded startDecorator='X' onPress={onClose} /></View>}
+                                {(title && onClose) && <View className='mb-auto absolute top-2 right-2'><Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} /></View>}
                                 
-                                <View className="gap-y-0 overflow-y-auto p-4">{children}</View>
+                                <View className=" overflow-y-auto px-4 py-2">{children}</View>
                             </View>
                         </Pressable>
                     </View>

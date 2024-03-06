@@ -63,10 +63,10 @@ export default function FormFeed(props) {
                 {getFormFieldByData( props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData( props.data.inputs['type'], props.handleSubmit, 'default')}
                 <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                    <View className="w-full flex-col gap-y-4 ">
+                    <View className="w-full flex-col  ">
                         {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
-                        <Row className=" flex-wrap border border-bdr dark:border-bdr-d rounded-xl py-2 items-center ">
-                            <Text className="px-4 flex-auto text-neutral-800 dark:text-neutral-200 text-sm font-semibold">{t("Add media")}</Text>
+                        <Row className=" flex-wrap border-b border-x border-bdr dark:border-bdr-d -translate-y-4 rounded-b-xl p-2 items-center ">
+                            
                             {props.data.inputs['photo'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}
