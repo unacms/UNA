@@ -612,7 +612,7 @@ let settingsDefault = {
             layout: 'post',
             top:true,
             blocks: {
-                author: { name: 'system:get_author_block', showTitle: false, showBg: false, forList: true, forHeader: true },
+                author: { name: 'system:get_block_author', showTitle: false, showBg: false, forList: true, forHeader: true },
                 comments: {name: 'system:get_block_view', showTitle: false, showBg: false, showHeader: false },
             },
             headerSettings: { header: false, footer: false, offset: false },
