@@ -12,7 +12,7 @@ export default function ElementLink(props) {
         props.href = '/'
     let { currentUser, setCurrentUser } = useCurrentUser();
 
-    const TabList = currentUser ? appSetting('menu_items', 'menu_bottom_tabs_logged') : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
+    const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
 
     const index = TabList.findIndex((item) => {
         if (item.url == props.href) {

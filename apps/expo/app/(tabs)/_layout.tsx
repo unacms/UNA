@@ -20,7 +20,7 @@ export default function AppLayout() {
     const router = useRouter();
     //let currentUser =1;
     const { colors } = Theme();
-    const TabList = currentUser ? appSetting('menu_items', 'menu_bottom_tabs_logged') : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
+    const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
     let iconWidth = 24;
     let iconHeight = 24;
 

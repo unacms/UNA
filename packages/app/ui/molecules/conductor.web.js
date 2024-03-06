@@ -14,7 +14,7 @@ import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
 import { Input } from 'app/design/controls'
-import MainMenu from 'app/components/nav/mainmenu'
+import MenuDrawer from 'app/components/nav/menu-drawer'
 import { useTranslation } from 'react-i18next';
 import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
@@ -25,13 +25,9 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/ui/molecules/dynamic_menu';
-import { UNA_URL } from 'app/config';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-
-    const menu_drawer = appSetting('menu_items', 'menu_drawer')
-    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
 
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -333,7 +329,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
              }
  */
             return (
-                <TopSidebar isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} menu_drawer_items={menu_drawer_items} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+                <TopSidebar isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                       <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
                     
@@ -610,7 +606,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                <MainMenu items={menu_drawer_items} showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
                 <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
@@ -628,7 +624,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            <MainMenu showMenu={showMenu} items={menu_drawer_items} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
+            <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>

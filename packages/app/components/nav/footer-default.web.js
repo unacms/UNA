@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function () {
     let { currentUser, setCurrentUser } = useCurrentUser();
-    const TabList = currentUser ? appSetting('menu_items', 'menu_bottom_tabs_logged') : appSetting('menu_items', 'menu_bottom_tabs_non_logged');
+    const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
     const notifCount = currentUser ? currentUser.notifications : 0;
     let frCount = 0;
     if (currentUser?.counters) {

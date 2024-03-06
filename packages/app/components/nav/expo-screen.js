@@ -62,7 +62,7 @@ export function Screen(params) {
 
     // BOTTOM TABS NAVIGATION
     if (!_path || _path.includes('/tab')) {
-        const tabListKey = currentUser ? 'menu_bottom_tabs_logged' : 'menu_bottom_tabs_non_logged';
+        const tabListKey = currentUser ? 'menu_tabbar_logged' : 'menu_tabbar_non_logged';
         const tabList = appSetting('menu_items', tabListKey);
         const item = tabList.find((item) => item.key === pathname);
         _path = item ? item.url : null;

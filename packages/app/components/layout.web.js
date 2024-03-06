@@ -217,7 +217,7 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
 
-        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_top'), currentUser);
+        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
 
         return (
             <BottomSheetDataContext>

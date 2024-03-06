@@ -295,7 +295,7 @@ export function LeftSidebar({ title, addButtons, children }) {
     )
 }
 
-export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, menu_drawer_items, addButtons, children, isSmall, title, layout, showMenu  }) {
+export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu  }) {
     const isUseBg = appSetting('layout', 'use_background');
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 lala3 " + (isUseBg ? " bg-bgrnavbar border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d backdrop-blur  " : "  border-b border-dashed border-bdr dark:border-bdr-d "))}  >
@@ -304,7 +304,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                     <Row className="items-center">
                         <View className="ml-3 sm:ml-4 "></View>
                         {headerSettings.header && getBackButtonWeb()}
-                        {headerSettings.header == false && headerSettings.menu == true && menu_drawer_items.length > 0 && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
+                        {headerSettings.header == false && headerSettings.menu == true && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
                             <Button
                                 variant="outline"
                                 startDecorator="List"

@@ -208,7 +208,7 @@ let settingsDefault = {
             'delete': 'Trash',
             'messenger': 'ChatTeardropDots', 
         },
-        menu_top: [
+        menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
@@ -227,7 +227,7 @@ let settingsDefault = {
             { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},
         ],
-        menu_top_more: [
+        menu_launcher: [
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
@@ -253,9 +253,9 @@ let settingsDefault = {
             { name: 'settings',title: 'Settings', link: '/account-settings-email', icon: 'Gear'},
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
-        menu_left: [
+        menu_sidebar: [
             { title: 'Profile', link: '{profile}', icon: 'User' },
-            { title: 'Notifications555', link: '/notifications-view', icon: 'Bell' },
+            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
             { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
             { title: 'Friends', link: '/friends', icon: 'Link' },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
@@ -284,14 +284,14 @@ let settingsDefault = {
             { key: 'bx_ads', title: 'Ads', icon: 'Megaphone', link: '/ads-administration' },
         ],
         
-        menu_bottom_tabs_logged: [
+        menu_tabbar_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
             {key: '/tab2', title: 'Friends', url: '/create-group-profile', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
-        menu_bottom_tabs_non_logged: [
+        menu_tabbar_non_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'News', url: '/posts-home',icon: 'ChatCenteredText'},
             {key: '/tab2', title: 'About', url: '/about',icon: 'Info'},
@@ -859,48 +859,6 @@ let settingsDefault = {
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
         },
     },
-}
-
-if (settingsDefault.layout.format == 'ver' ) {
-    // Override settings for vertical layout
-    settingsDefault.menu_items.menu_top = [
-      
-        { name: 'profile', title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false }, 
-        { name: 'payment-carts', title: 'Shopping Cart', link: '/payment-carts', icon: 'Wallet', nonlogged: false }, 
-        { name: 'dashboard', title: 'Dashboard', link: '/dashboard', icon: 'SquaresFour', nonlogged: false }, 
-        { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
-        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText', nonlogged: false  }, 
-        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree', nonlogged: false },
-        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar', nonlogged: false }, 
-        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour', nonlogged: false }, 
-        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront', nonlogged: false }, 
-        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats', nonlogged: false }, 
-       
-        
-        { name: 'messenger', title: 'Messenger', link: '/messenger', icon: 'ChatTeardropDots', nonlogged: false }, 
-    ];
-    delete settingsDefault.layouts.home.blocks.menu
-}
-
-
-if (settingsDefault.layout.format == 'mixed') {
-    // Override settings for vertical layout
-    settingsDefault.menu_items.menu_left = [
-        { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
-        { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText'  }, 
-        { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
-        { name: 'events-home', title: 'Events', link: '/events-home', icon: 'Calendar' }, 
-        { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
-        { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
-        { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats'}, 
-        { name: 'About', title: 'About', link: '/about', icon: 'Info'}, 
-        { name: 'Contact', title: 'Contact', link: '/contact', icon: 'Info' }, 
-        { name: 'Privacy', title: 'Privacy', link: '/privacy', icon: 'Info' }, 
-        { name: 'Terms', title: 'Terms', link: '/terms', icon: 'Info' }, 
-    ];
-    settingsDefault.menu_items.menu_top = [];
-    settingsDefault.layouts.home.headerSettings.menu = false;
-    delete settingsDefault.layouts.home.blocks.menu;
 }
 
 export { settingsDefault };

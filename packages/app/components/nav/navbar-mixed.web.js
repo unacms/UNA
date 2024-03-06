@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
-
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import MainMenu from 'app/components/nav/mainmenu'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderSettings } from 'app/lib/util'
@@ -14,8 +12,11 @@ import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
 import Profile from 'app/ui/molecules/profile'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
+import MenuAdd from 'app/components/nav/menu-add'
+import MenuAccount from 'app/components/nav/menu-account'
+import MenuLauncher from 'app/components/nav/menu-launcher'
+import MenuDrawer from 'app/components/nav/menu-drawer'
 
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -37,7 +38,6 @@ export default function (props) {
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('layout', 'messenger') ? true : false;
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
-    const bApps = appSetting('layout', 'apps') == true;
 
     let profile = null
     if (currentUser) {
@@ -47,15 +47,9 @@ export default function (props) {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
-    const menu_top = appSetting('menu_items', 'menu_top');
-    const menu_left = appSetting('menu_items', 'menu_left');
-    const menu_top_more = appSetting('menu_items', 'menu_top_more');
-    const menu_add = appSetting('menu_items', 'menu_add');
-    const menu_account = appSetting('menu_items', 'menu_account');
-
-    const menu_drawer = appSetting('menu_items', 'menu_drawer')
-    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
-
+    const menu_navbar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
+    const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
+    
     const windowWidth = useWindowDimensions().width;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
 
@@ -69,7 +63,7 @@ export default function (props) {
         return () => document.removeEventListener('click', handleClick)
     }, [])
 
-   
+
     let sTitle = props.title;
     const menuSettings = appSetting('menu_items', props?.menu?.object);
     if (menuSettings && menuSettings.name)
@@ -80,10 +74,10 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto lg:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menuItemsByName('main_menu', menu_left, currentUser).length > 0 && (props.uri !='home' || ( props.uri =='home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>
                             <View className='pt-4 pr-4 pl-4'>
-                                {menuItemsByName('main_menu', menu_left, currentUser).map(
+                                {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                             <ButtonRef
@@ -110,12 +104,12 @@ export default function (props) {
                     </View>
                 </Row>
             </View>
-            {!bIsHideHeader && <View className={(props.layoutName== 'profile' ? 'hidden lg:flex ': '' ) + " fixed -top-[1px] w-full"}>
+            {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed -top-[1px] w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center "}>
                         <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
                             {
-                                headerSettings.menu && menu_drawer_items.length > 0 && (
+                                headerSettings.menu && (
                                     <View className="lg:hidden mr-4">
                                         <Pressable onPress={showMenu}>
                                             <Button
@@ -141,9 +135,9 @@ export default function (props) {
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
                         </View>
                         <Row className="hidden lg:flex flex-auto items-center justify-center ">
-                            <Row className='w-full overflow-hidden items-center justify-center '>
-                                { menuItemsByName('main_menu', menu_top, currentUser).length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden px-4'>
-                                    {menuItemsByName('main_menu', menu_top, currentUser).map(
+                            <Row className='w-full overflow-hidden items-center justify-center'>
+                                {menu_navbar_items.length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden px-4'>
+                                    {menu_navbar_items.map(
                                         (item, index) =>
 
                                             <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -153,7 +147,6 @@ export default function (props) {
                                                     tooltip={t(item.title)}
                                                     alt={t(item.title)}
                                                     aria-label={t(item.title)}
-                                                    title={t(item.title)}
                                                     fullWidth
                                                     startDecorator={
                                                         item.icon.indexOf(' ') == -1
@@ -167,7 +160,7 @@ export default function (props) {
                                     )}
                                 </Row>}
                                 {(bSearch && currentUser) && <View className='w-96 ml-4 mr-auto hidden lg:block '>
-                                    <Search  type="input" placeholder="Enter search text" />
+                                    <Search type="input" placeholder="Enter search text" />
                                 </View>}
                             </Row>
                         </Row>
@@ -176,61 +169,9 @@ export default function (props) {
                                 <Row className="flex-row justify-end">
                                     <View className=" flex-row my-auto gap-x-2 ml-2 ">
                                         {bSearch && <View className="lg:hidden"><Search /></View>}
-                                        {bApps && <View className="relative hidden lg:flex flex-row">
-                                            <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)
-
-                                                .map((item, index) => ({
-                                                    id: 'menu-' + index,
-                                                    link: item.link,
-                                                    title: t(item.title),
-                                                    icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
-                                                }))
-                                            }
-                                            >
-                                                <ButtonRef
-                                                    tooltip="All Apps"
-                                                    variant="outline"
-                                                    size="base"
-                                                    fullWidth
-                                                    rounded
-                                                    alt={t("All Apps")}
-                                                    startDecorator="CirclesFour"
-                                                    aria-label="All Apps"
-                                                    onPress={() => { }}
-                                                />
-                                            </DropdownMenu>
-                                        </View>}
-
-                                        {menuItemsByName('', menu_add, currentUser).length > 0 && <View>
-                                            <DropdownMenu
-                                                items={menuItemsByName('', menu_add, currentUser).map(
-                                                    (item, index) => {
-                                                        return (
-                                                            {
-                                                                id: 'menu-' + index,
-                                                                link: item.link,
-                                                                title: t(item.title),
-                                                                icon:
-                                                                    item.icon.indexOf(' ') == -1
-                                                                        ? item.icon
-                                                                        : item.icon.split(' ')[0],
-                                                            }
-                                                        )
-                                                    }
-                                                )}
-                                            >
-
-                                                <ButtonRef
-                                                    variant="outline"
-                                                    rounded
-                                                    startDecorator="Plus"
-                                                    id="m3"
-                                                    tooltip="Create content"
-                                                    aria-label="Create new content"
-                                                    onPress={() => { }}
-                                                />
-                                            </DropdownMenu>
-                                        </View>}
+                                        <MenuLauncher />
+                                        <MenuAdd />
+                                        
                                         <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                             {bNotifs && <NotificationButton />}
                                             {bMessenger &&
@@ -245,69 +186,13 @@ export default function (props) {
                                                 </Link>
                                             }
                                         </View>
-                                        {profile ? (
-                                            <View className="hidden sm:flex flex-row justify-center">
-                                                <DropdownMenu items={menuItemsByName('', menu_account, currentUser).map(
-                                                    (item, index) => {
-                                                        return (
-                                                            {
-                                                                id: 'menu-' + index,
-                                                                link: item.link,
-                                                                title: t(item.title),
-                                                                icon:
-                                                                    item.icon.indexOf(' ') == -1
-                                                                        ? item.icon
-                                                                        : item.icon.split(' ')[0],
-                                                            }
-                                                        )
-                                                    }
-                                                )}
-                                                >
-                                                    <ButtonRef
-                                                        tooltip={t("Dashboard")}
-                                                        variant="outline"
-                                                        rounded
-                                                        padding={1}
-                                                        startDecorator={profile}
-                                                        id="m3"
-                                                        onPress={() => { }}
-                                                        aria-label="Dashboard"
-                                                    />
-                                                </DropdownMenu>
-                                            </View>
-                                        ) : (
-                                            <></>
-                                        )}
+                                        <MenuAccount />
                                     </View>
                                 </Row>
                             )}
                             {!currentUser && (
                                 <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
-                                    
-                                    {bApps && <View className="relative hidden lg:flex flex-row">
-                                        <DropdownMenu items={menuItemsByName('', menu_top_more, currentUser)
-                                            .map((item, index) => ({
-                                                id: 'menu-' + index,
-                                                link: item.link,
-                                                title: t(item.title),
-                                                'aria-label': t(item.title),
-                                                icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
-                                            }))
-                                        }
-                                        >
-                                            <ButtonRef
-                                                tooltip="All Apps"
-                                                variant="outline"
-                                                size="base"
-                                                fullWidth
-                                                rounded
-                                                alt={t("All Apps")}
-                                                startDecorator="CirclesFour"
-                                                aria-label={t("All Apps")}
-                                                onPress={() => { }}
-                                            />
-                                        </DropdownMenu>
-                                    </View>}
+                                    <MenuLauncher />
                                     <Link href="/login">
                                         <ButtonRef
                                             variant="outline"
@@ -323,7 +208,7 @@ export default function (props) {
                         </Row>
                     </View>
                 </View>
-                <MainMenu showMenu={showMenu} menuPopup={menuPopup} items={menu_drawer_items} cssClass="" />
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup}  />
             </View>}
 
         </>

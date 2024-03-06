@@ -4,7 +4,6 @@ import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import MainMenu from 'app/components/nav/mainmenu'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderSettings } from 'app/lib/util'
@@ -13,10 +12,12 @@ import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import Profile from 'app/ui/molecules/profile'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { useTranslation } from 'react-i18next';
-
+import MenuAdd from 'app/components/nav/menu-add'
+import MenuAccount from 'app/components/nav/menu-account'
+import MenuLauncher from 'app/components/nav/menu-launcher'
+import MenuDrawer from 'app/components/nav/menu-drawer'
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
@@ -37,23 +38,8 @@ export default function (props) {
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('layout', 'messenger') ? true : false;
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
-    const bApps = appSetting('layout', 'apps') == true;
 
-    let profile = null
-    if (currentUser) {
-        let dUser = Object.assign({}, currentUser)
-        dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
-    }
-
-    const menu_top = appSetting('menu_items', 'menu_top');
-    const menu_top_more = appSetting('menu_items', 'menu_top_more');
-    const menu_add = appSetting('menu_items', 'menu_add');
-    const menu_account = appSetting('menu_items', 'menu_account');
-
-    const menu_drawer = appSetting('menu_items', 'menu_drawer')
-    let menu_drawer_items = menuItemsByName('main_menu', menu_drawer, currentUser);
+    const menu_navbar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
     
     const windowWidth = useWindowDimensions().width;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
@@ -83,7 +69,7 @@ export default function (props) {
                   <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center"}>
                     <View className="flex-row flex-auto xl:flex-none w-80 my-auto items-center">
                         {
-                            headerSettings.menu && menu_drawer_items.length > 0 && (
+                            headerSettings.menu && (
                                 <View className="lg:hidden mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button
@@ -113,7 +99,7 @@ export default function (props) {
                     </View>
                     <Row className="hidden xl:flex flex-auto">
                         <Row className='w-full mx-auto gap-x-0.5 max-w-lg justify-between'>
-                            {menuItemsByName('main_menu', menu_top, currentUser).map(
+                            {menu_navbar_items .map(
                             (item, index) =>
                            
                                 <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -142,138 +128,30 @@ export default function (props) {
                             <Row className="flex-row   justify-end ">
                             <View className=" flex-row my-auto gap-x-2 ml-2">
                                 {bSearch && <View className=""><Search /></View>}
-                                {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu  items={menuItemsByName('', menu_top_more, currentUser)
-                                       
-                                        .map((item, index) => ({
-                                            id: 'menu-' + index,
-                                            link: item.link,
-                                            title: t(item.title),
-                                            icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
-                                        }))
+                                <MenuLauncher />
+                                <MenuAdd />
+                                <View className="hidden sm:flex flex-row gap-x-2 my-auto">
+                                    { bNotifs && <NotificationButton /> }
+                                    { bMessenger &&
+                                        <Link href='/messenger' alt={t("Messenger")}>
+                                                <ButtonRef
+                                                    tooltip={t("Messenger")}
+                                                    variant="outline"
+                                                    rounded
+                                                    startDecorator="ChatTeardropDots"
+                                                    id="m2"
+                                                />
+                                        </Link>
                                     }
-                                >
-                                    <ButtonRef
-                                        tooltip="All Apps"
-                                        variant="outline"
-                                        size="base"
-                                        fullWidth
-                                        rounded
-                                        alt={t("All Apps")}
-                                        startDecorator="CirclesFour"
-                                        aria-label="All Apps"
-                                        onPress={() => {}}
-                                    />
-                                </DropdownMenu>
-                            </View>}
-                            
-                            { menuItemsByName('', menu_add, currentUser).length > 0 && <View>
-                                <DropdownMenu
-                                    items={menuItemsByName('', menu_add, currentUser).map(
-                                        (item, index) => {
-                                        return (
-                                            {
-                                            id: 'menu-' + index,
-                                            link: item.link,
-                                            title: t(item.title),
-                                            icon:
-                                                item.icon.indexOf(' ') == -1
-                                                ? item.icon
-                                                : item.icon.split(' ')[0],
-                                            }
-                                        )
-                                        }
-                                    )}
-                                >
-                                   
-                                    <ButtonRef
-                                    variant="outline"
-                                    rounded
-                                    startDecorator="Plus"
-                                    id="m3"
-                                    tooltip="Create content"
-                                    aria-label="Create new content"
-                                    onPress={() => {}}
-                                    />
-                                </DropdownMenu>
-                            </View>}
-                            <View className="hidden sm:flex flex-row gap-x-2 my-auto">
-                                { bNotifs && <NotificationButton /> }
-                                { bMessenger &&
-                                    <Link href='/messenger' alt={t("Messenger")}>
-                                            <ButtonRef
-                                                tooltip={t("Messenger")}
-                                                variant="outline"
-                                                rounded
-                                                startDecorator="ChatTeardropDots"
-                                                id="m2"
-                                            />
-                                    </Link>
-                                }
-                            </View>
-                            {profile ? (
-                                <View className="hidden sm:flex flex-row justify-center">
-                                    <DropdownMenu items={menuItemsByName('', menu_account, currentUser).map(
-                                        (item, index) => {
-                                            return (
-                                            {
-                                                id: 'menu-' + index,
-                                                link: item.link,
-                                                title: t(item.title),
-                                                icon:
-                                                item.icon.indexOf(' ') == -1
-                                                    ? item.icon
-                                                    : item.icon.split(' ')[0],
-                                            }
-                                            )
-                                        }
-                                        )}
-                                    >
-                                    <ButtonRef
-                                        tooltip={t("Dashboard")}
-                                        variant="outline"
-                                        rounded
-                                        padding={1}
-                                        startDecorator={profile}
-                                        id="m3"
-                                        onPress={() => {}}
-                                        aria-label="Dashboard"
-                                    />
-                                    </DropdownMenu>
                                 </View>
-                            ) : (
-                                <></>
-                            )}
+                                <MenuAccount />
                         </View>
                     </Row>
                     )}
                     {!currentUser && (
                         <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
                             {bSearch && <View><Search /></View>}
-                            {bApps && <View className="relative hidden lg:flex flex-row">
-                                <DropdownMenu  items={menuItemsByName('', menu_top_more, currentUser)
-                                        .map((item, index) => ({
-                                            id: 'menu-' + index,
-                                            link: item.link,
-                                            title: t(item.title),
-                                            'aria-label': t(item.title),
-                                            icon: item.icon.includes(' ') ? item.icon.split(' ')[0] : item.icon,
-                                        }))
-                                    }
-                                >
-                                        <ButtonRef
-                                            tooltip="All Apps"
-                                            variant="outline"
-                                            size="base"
-                                            fullWidth
-                                            rounded
-                                            alt={t("All Apps")}
-                                            startDecorator="CirclesFour"
-                                            aria-label={t("All Apps")}
-                                            onPress={() => {}}
-                                        />
-                                </DropdownMenu>
-                            </View>}
+                            <MenuLauncher />
                             <Link href="/login">
                             <ButtonRef
                                 variant="outline"
@@ -289,7 +167,7 @@ export default function (props) {
                     </Row>
                     </View>
                 </View>
-                <MainMenu showMenu={showMenu} menuPopup={menuPopup} items = {menu_drawer_items} cssClass="" />
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
             </View>
         </>
     )
