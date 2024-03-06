@@ -141,7 +141,7 @@ export default function UnitComments(props) {
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
-                            {(maxLevel < data.cmt_level && appSetting('layout', 'show_in_reply_comments')) && <Row>
+                            {(maxLevel < data.cmt_level && appSetting('layout', 'show_in_reply_comments')) && parent?.data && <Row>
                                     <Text className="text-neutral-500 px-1 text-sm">· In reply to</Text>
                                     <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                     {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
