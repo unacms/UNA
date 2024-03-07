@@ -21,7 +21,7 @@ let settingsDefault = {
     },
     layout: {
         format_list:['hor', 'ver', 'mixed'],
-        format:'ver', //hor, ver, mixed
+        format:'mixed', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -31,8 +31,9 @@ let settingsDefault = {
         cell_style: '',
         show_user_icon: false,
         search: true,
-        messenger: '/chat',
+        messenger: '/messenger',
         notifications: '/notifications-view',
+        dashboard: '/dash',
         apps: true,
         block: 'login',
         show_profile_info: true,

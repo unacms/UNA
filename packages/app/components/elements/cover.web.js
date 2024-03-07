@@ -276,16 +276,14 @@ export default function ElementCover(props) {
                     <View className='absolute lg:hidden top-4 left-4 z-50'>
                         {getBackButtonWeb()}
                     </View>
-                </View>: 
-                <View className={" h-24 w-auto sm:rounded-xl overflow-hidden"}>
-                
-                <View className='absolute lg:hidden top-4 left-4 z-50'>
-                    {getBackButtonWeb()}
-                </View>
-            </View>
-                
-                }
+                </View> :
+                    <View className={" h-24 w-auto sm:rounded-xl overflow-hidden"}>
 
+                        <View className='absolute lg:hidden top-4 left-4 z-50'>
+                            {getBackButtonWeb()}
+                        </View>
+                    </View>
+                }
                 <View className="relative  flex-col md:flex-row gap-x-2   ">
 
                     {bPerson && <View className=" w-full h-24  md:h-44 lg:h-28 md:w-52 lg:mb-2 items-center  ">
@@ -299,34 +297,32 @@ export default function ElementCover(props) {
                         </View>
                     </View>
                     }
-                    <View className="flex-col lg:flex-row px-2 gap-x-4 gap-y-4 my-4 flex-auto justify-between">
-                        <View className=" flex-col  items-center md:items-start  overflow-hidden min-w-80 gap-y-2 ">
-                            <Row className='items-center justity-center'><Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
+                    <View className='flex-auto my-4 items-center md:items-start  '>
+                        <Row className='items-center justity-center flex-auto text-center items-center md:items-start  '>
+                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
                                 {data.profile.display_name}
                             </Text>
-                                <View className='ml-2'><Badges badges={data.badges} /></View>
-                            </Row>
+                            <View className='ml-2'><Badges badges={data.badges} /></View>
+                        </Row>
 
 
-                            <Row className='gap-x-2'>
+                        <View className="flex-col lg:flex-row gap-x-4 gap-y-4 my-4 w-full justify-between items-center  ">
+                            <View className=" items-center md:items-start  overflow-hidden gap-y-2 w-full lg:w-auto">
                                 <CoverMenuMeta {...data.meta_menu} />
-                            </Row>
+                            </View>
+                            <View className="flex-auto mt-auto  max-w-3xl overflow-hidden w-full lg:w-auto items-center md:items-start">
+                                <CoverMenu {...data.actions_menu} uri={props?.uri} />
+                            </View>
 
-
+                            {bPerson &&
+                                <Text
+                                    numberOfLines={3}
+                                    className="lg:hidden w-full lg:TODO text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                                >
+                                    {stripTags(data.profile.info.description)}
+                                </Text>
+                            }
                         </View>
-
-                        <View className="flex-auto mt-auto lg:mt-6 max-w-3xl overflow-hidden">
-                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                        </View>
-
-                        {bPerson &&
-                            <Text
-                                numberOfLines={3}
-                                className="lg:hidden w-full lg:TODO text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
-                            >
-                                {stripTags(data.profile.info.description)}
-                            </Text>
-                        }
                     </View>
                 </View>
             </View>

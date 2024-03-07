@@ -43,7 +43,7 @@ export default function (props) {
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
+        dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
@@ -174,7 +174,7 @@ export default function (props) {
                                         <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                             {bNotifs && <NotificationButton />}
                                             {bMessenger &&
-                                                <Link href='/messenger' alt={t("Messenger")}>
+                                                <Link href={appSetting('layout', 'messenger')} alt={t("Messenger")}>
                                                     <ButtonRef
                                                         tooltip={t("Messenger")}
                                                         variant="outline"

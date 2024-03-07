@@ -8,7 +8,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native'
 import { useCurrentUser } from 'app/context/user';
 import Profile from 'app/ui/molecules/profile';
-
+import { appSetting } from 'app/lib/util'
 
 export default function FormFeed(props) {
     const [showImage, setShowImage] = useState(false);
@@ -37,7 +37,7 @@ export default function FormFeed(props) {
     if (currentUser){
         let dUser = Object.assign({}, currentUser);
         dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
+        dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displayType="unit_wo_info" />
     }
 

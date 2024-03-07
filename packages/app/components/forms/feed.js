@@ -11,7 +11,7 @@ import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text } from 'app/design/typography'
+import { appSetting } from 'app/lib/util'
 
 export default function FormFeed(props) {
     const { t } = useTranslation();
@@ -44,7 +44,7 @@ export default function FormFeed(props) {
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
+        dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
     }
     return (

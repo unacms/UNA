@@ -14,6 +14,7 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
+import { appSetting } from 'app/lib/util'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -51,7 +52,7 @@ export default function Unit(props) {
                     title: t("Message"),
                     icon: "ChatTeardropDots",
                     onPress: (event) => {
-                        handleClick(event, "/messenger");
+                        handleClick(event, appSetting('layout', 'messenger'));
                     },
                 };
                 break;

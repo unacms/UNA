@@ -134,7 +134,7 @@ export default function (props) {
                                 <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                     { bNotifs && <NotificationButton /> }
                                     { bMessenger &&
-                                        <Link href='/messenger' alt={t("Messenger")}>
+                                        <Link href={appSetting('layout', 'messenger')} alt={t("Messenger")}>
                                                 <ButtonRef
                                                     tooltip={t("Messenger")}
                                                     variant="outline"

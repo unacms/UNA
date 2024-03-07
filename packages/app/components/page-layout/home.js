@@ -128,7 +128,7 @@ export default function PageLayout(props) {
         if (currentUser) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
-            dUser.url = '/dashboard'
+            dUser.url = appSetting('layout', 'dashboard')
             const profile = (
                 <Profile
                     {...dUser}

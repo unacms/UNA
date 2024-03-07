@@ -24,7 +24,6 @@ export default function (props) {
     const { t } = useTranslation();
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const [showImage, setShowImage] = useState(false);
     const [menuPopup, setMenuPopup] = useState(false)
 
     let { width } = useWindowDimensions()
@@ -36,6 +35,10 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
+    const hideMenu = (params) => {
+        // setMenuPopup(false)
+    }
+
     const bSearch = appSetting('layout', 'search') == true;
     const bNotifs = appSetting('layout', 'notifications') ? true : false;  
 
@@ -43,7 +46,7 @@ export default function (props) {
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
-        dUser.url = '/dashboard'
+        dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
@@ -136,7 +139,7 @@ export default function (props) {
                         </View>
                         <View className='hidden lg:block mt-4'>
                             {!!currentUser && (
-                                <Link href="/dashboard">
+                                <Link href={appSetting('layout', 'dashboard')}>
                                     <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                         <Row className='flex-row gap-x-2 items-center'>
                                             <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
