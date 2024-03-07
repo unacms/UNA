@@ -207,6 +207,7 @@ let settingsDefault = {
             'edit': 'Pencil',
             'delete': 'Trash',
             'messenger': 'ChatTeardropDots', 
+            'profile-confirm': 'Check',
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},

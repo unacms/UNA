@@ -41,7 +41,7 @@ export function Modal({
     outerClickClose = true,
     onVisible,
     title,
-    textAlign = 'start',
+    textAlign = 'center',
     headerBorder = false,
     fullWidth = true,
     children
@@ -60,24 +60,28 @@ export function Modal({
 
         case 'center':
         default:
-            sClassPosition = 'items-center p-4';
+            sClassPosition = 'sm:items-center items-start sm:p-4';
             break;
     }
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
-                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden  overflow-y-auto md:inset-0 h-modal md:h-full ' + sClassPosition}>
+                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden  overflow-y-auto md:inset-0 h-modal h-full ' + sClassPosition}>
                     <View className={(fullWidth ? 'w-full': '')+ " relative h-full max-w-2xl md:h-auto "}>
-                        <Pressable onPress={() => { }} className="relative bg-bgrmodal dark:bg-bgrmodal-d border border-bdrmodal dark:border-bdrmodal-d rounded-2xl shadow-sm">
-                            <View className="">
+                        <Pressable onPress={() => { }} className={'relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'}>
+                          
                                 <Row className={'items-center ' +  'justify-' +textAlign + '  '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + 'pt-4 px-4'}>
-                                    {title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold '>{title}</Text></View>}
+                                    {title && <View>
+                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold '>{title}</Text>
+                                    </View>}
                                 </Row>
-                                {(title && onClose) && <View className='mb-auto absolute top-2 right-2'><Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} /></View>}
+                                {(onClose) && <View className='mb-auto absolute top-2 right-2'>
+                                    <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
+                                </View>}
                                 
-                                <View className=" overflow-y-auto px-4 py-2">{children}</View>
-                            </View>
+                                <View className=" overflow-y-auto px-4 py-2 flex-auto md:h-auto ">{children}</View>
+                            
                         </Pressable>
                     </View>
                 </View>
@@ -193,7 +197,7 @@ export function Button(props) {
             break
 
         case 'sm':
-            sClassContainer += buttonRounded ? ' rounded-full p-1.5 ' : sClassDefaultRounding + ' px-2 py-1.5 ';
+            sClassContainer += buttonRounded ? ' rounded-full p-1.5 ' : sClassDefaultRounding + (buttonType != 'none' ? ' px-2 py-1.5 ' : ' ');
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'sm:mx-0.5 ' : '');
             sClassText += ' text-sm leading-5  '
             iIconSize = 20;

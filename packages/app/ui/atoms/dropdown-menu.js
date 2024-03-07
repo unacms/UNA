@@ -39,7 +39,6 @@ export default function DropdownMenu(oProps) {
     const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
-
         redirectdRef.current.redirect('' + oItem.link);
     }
 
@@ -66,6 +65,8 @@ export default function DropdownMenu(oProps) {
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
                 {!!sIcon && <DropdownMenu.DropdownMenuItemIcon>{sIcon}</DropdownMenu.DropdownMenuItemIcon>}
                 {!!oItem?.title && <DropdownMenu.DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenu.DropdownMenuItemTitle>}
+                {( false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenu.DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenu.DropdownMenuItemSubtitle>}
+                {(false &&  bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenu.DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenu.DropdownMenuItemSubtitleRed>}
             </DmItem>
         );
     });

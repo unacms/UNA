@@ -2,13 +2,15 @@ import Field, { FormError } from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls'
 import { View } from 'app/design/view'
+import { useWindowDimensions } from 'react-native'
+
 export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
     let rules = {};
     let name = props.name;
     let defaultValue = props.value;
-
+    let { width } = useWindowDimensions();
     const { field } = useController({ name, rules, defaultValue });
     return (
         <Field  {...props}>
@@ -19,7 +21,7 @@ export default function FormFieldSubmit(props) {
                 startDecorator={props.icon}
                 size={!!props.size ? props.size : 'base'}
                 disabled={props.disabled ? props.disabled : false}
-                fullWidth={props.form_name == 'sys_account_create' || props.form_name == 'sys_login'}
+                fullWidth={props.form_name == 'sys_account_create' || props.form_name == 'sys_login' || width < 1024}
 
             />
             <Hidden

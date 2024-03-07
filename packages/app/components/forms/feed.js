@@ -26,8 +26,8 @@ export default function FormFeed(props) {
             setShowImage(false);
             setResponseId(props.response?.id);
         }
-    }, [props.response?.id]); 
-    
+    }, [props.response?.id]);
+
 
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -48,47 +48,52 @@ export default function FormFeed(props) {
         profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
     }
     return (
-        <View className="w-full ">
+        <View className="w-full h-full ">
             <Modal
-                title= {t("Create new post")}
+                title={t("Create new post")}
                 onVisible={showImage}
                 onClose={() => {
                     setShowImage(null)
                 }}
+                presentation='fullScreen'
                 outerClickClose={false}
-                transparent={false}
+                transparent={true}
             >
-                {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default' )}
-                {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default' )}
-                {getFormFieldByData( props.data.inputs['owner_id'], props.handleSubmit, 'default')}
-                {getFormFieldByData( props.data.inputs['type'], props.handleSubmit, 'default')}
-                <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                    <View className="w-full flex-col  ">
-                    {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'notitle' )}
+                {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
+                {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
+                <View className='justify-between h-full'>
+                    <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                        <View className="w-full flex-col ">
+                            {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'notitle')}
 
-                        {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
+                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
-                            <View className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</View>
-                            {props.data.inputs['photo'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
-                            </View>}
-                            {props.data.inputs['video'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
-                            </View>}
-                            {props.data.inputs['file'] && <View className="">
-                                {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
-                            </View>}
-                        </Row>
-                        {prevList.length > 0 && prevList[0]?.key && (
-                            <Row className="flex-wrap gap-2 ">{prevList}</Row>
-                        )}
-                        {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle' )}
-                        {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
-                    </View>
-                </KeyboardAvoidingView>
+                                <View className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</View>
+                                {props.data.inputs['photo'] && <View className="">
+                                    {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                                </View>}
+                                {props.data.inputs['video'] && <View className="">
+                                    {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                                </View>}
+                                {props.data.inputs['file'] && <View className="">
+                                    {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
+                                </View>}
+                            </Row>
+                            {prevList.length > 0 && prevList[0]?.key && (
+                                <Row className="flex-wrap gap-2 ">{prevList}</Row>
+                            )}
+                            {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
+
+                        </View>
+                    </KeyboardAvoidingView>
+                    {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
+                </View>
+
             </Modal>
-            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 lg:px-6  mb-2 sm:mb-4 sm:mx-4 '  border= " sm:border border-bdrcard dark:border-bdrcard-d" >                
-            <View className=" flex-row ">
+            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 lg:px-6  mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
+                <View className=" flex-row ">
                     <View className='mr-2 my-auto'>{profile}</View>
                     <Button
                         size="base"

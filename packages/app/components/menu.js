@@ -5,7 +5,7 @@ import { componentsMap } from './menu-items/_map';
 import { useCurrentUser } from 'app/context/user'
 import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Button } from 'app/design/controls';
-import DynamicMenu from 'app/ui/molecules/dynamic_menu';
+import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { Platform } from 'react-native' 
 export default function ElementMenu(oProps) {
     const isWeb = Platform.OS == 'web'
@@ -131,9 +131,9 @@ export default function ElementMenu(oProps) {
 
     const MenuItemEx = memo(({ item, index }) => {
         const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
-        let modifiedParams = { ...oProps.params, button_variant: 'text', button_full_width:true, button_size: 'sm'};
+        let modifiedParams = { ...oProps.params, button_variant: 'none', button_size: 'sm'};
         return (
-            <View key={'menu' + index} className='w-full items-end'>
+            <View key={'menu' + index} className='w-full '>
                 <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
             </View>
         )

@@ -74,6 +74,7 @@ function CoverMenu(props) {
                 button_variant: 'default',
                 button_size: size,
                 button_rounded: false,
+                button_full_width: false,
                 button_hide_title_on_small: false,
             }}
         />

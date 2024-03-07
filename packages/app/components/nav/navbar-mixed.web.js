@@ -146,6 +146,7 @@ export default function (props) {
                                             <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
                                                 <ButtonRef
                                                     variant="text"
+                                                    pressed={index == 2 ? true : false}
                                                     size="lg"
                                                     tooltip={t(item.title)}
                                                     alt={t(item.title)}

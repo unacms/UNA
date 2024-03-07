@@ -24,7 +24,7 @@ import { useCurrentUser } from 'app/context/user'
 import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
-import DynamicMenu from 'app/ui/molecules/dynamic_menu';
+import DynamicMenu from 'app/components/nav/menu-dynamic';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -658,31 +658,46 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         )
     });
 
-    const MenuItemEx = memo(({ item:a , index:index2, setNtfsOpen }) => {
-     
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon && a.addon.variant !='primary' ? null : a.addon} />
-           
-        if (a.icon=='*'){
-            return <View className="justify-center"><Link href={a.link}>{btn}</Link></View>
+    const MenuItemEx = memo(({ item, index, setNtfsOpen, setIndex, getNumCols, windowWidth, onChangeRoute }) => {
+        const { title, addon, icon, link, menu_settings, key } = item;
+        const translatedTitle = <Text>{t(title)}</Text>;
+    
+        let addonContent = null;
+        if (addon) {
+            const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
+            const addonText = addon.variant === 'primary' ? addon.text : addon;
+            addonContent = (
+                <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
+                    {t(addonText)}
+                </Text>
+            );
         }
-        else{
+    
+        const handlePress = () => {
+            setNtfsOpen(false);
+            setIndex(index);
+            getNumCols(windowWidth);
+            window.history.pushState({}, '', '/' + key);
+            if (onChangeRoute) {
+                onChangeRoute(item);
+            }
+        };
+    
+        if (icon === '*') {
+            return <Link href={link}><Row className="justify-between items-center min-w-[200px]">{translatedTitle} {addonContent}</Row></Link>;
+        }
+    
         return (
-            <Pressable className={" py-2 items-center " + a?.menu_settings?.class}
-                key={`tab-${a.index}`}
-                onPress={() => {
-                    setNtfsOpen(false)
-                    setIndex(a.index);
-                    getNumCols(windowWidth)
-                    window.history.pushState({}, '', '/' + a.key);
-                    if (onChangeRoute) {
-                        onChangeRoute(a);
-                    }
-                }}
+            <Pressable
+                className={menu_settings?.class ?? ''}
+                onPress={handlePress}
             >
-                {btn}   
+                <Row className="justify-between items-center min-w-[200px]">
+                    {translatedTitle}
+                    {addonContent}
+                </Row>
             </Pressable>
-        )
-        }
+        );
     });
 
     const ButtonEx = memo(({visibleItemsCount}) => {

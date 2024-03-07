@@ -39,6 +39,8 @@ export default function ElementConnections(oProps) {
     if(oProps.params?.button_hide_title_on_small != undefined)
         oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
+    
+
     const isElementVar = (sName) => {
         return elementData && elementData[sName] != undefined;
     };
