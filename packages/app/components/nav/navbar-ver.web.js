@@ -15,9 +15,10 @@ import Search from 'app/ui/molecules/search'
 import Browse from 'app/components/elements/browse'
 import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+
 import { useTranslation } from 'react-i18next';
 import NotificationButton from 'app/ui/molecules/notif'
+import MenuAdd from 'app/components/nav/menu-add'
 
 export default function (props) {
     const { t } = useTranslation();
@@ -35,46 +36,8 @@ export default function (props) {
         setMenuPopup(!menuPopup)
     }
 
-    const hideMenu = (params) => {
-        // setMenuPopup(false)
-    }
-
     const bSearch = appSetting('layout', 'search') == true;
-    const bNotifs = appSetting('layout', 'notifications') ? true : false;
-
-    const sTxtNtfsTitle = t("Notifications")
-    const sTxtNtfsViewAll = t("View all")
-    const [ntfsOpen, setNtfsOpen] = useState(false)
-    let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
-    const ntfsContent = (
-        <View key="ddp-content" className="px-1.5 pb-1.5">
-            <View className="items-center mb-1">
-                <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
-                    {sTxtNtfsTitle}
-                </Text>
-                <Button
-                    variant="text"
-                    size="sm"
-                    rounded
-                    endDecorator="CaretDoubleRight"
-                    title={sTxtNtfsViewAll}
-                    onPress={() => {
-                        setNtfsOpen(false)
-                        handleClick(appSetting('layout', 'notifications'))
-                    }}
-                />
-            </View>
-            {true ? (
-                <Browse height={400} data={data} />
-            ) : (
-                oBlock.data.data.map((a) => <Notifications key={a.id} data={a} />)
-            )}
-        </View>
-    )
-
-    const handleClick = (sUrl) => {
-        redirectdRef.current.redirect(sUrl)
-    }
+    const bNotifs = appSetting('layout', 'notifications') ? true : false;  
 
     let profile = null
     if (currentUser) {
@@ -86,7 +49,6 @@ export default function (props) {
 
     let isUseBg = appSetting('layout', 'use_background');
 
-    const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser)
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
     const windowWidth = useWindowDimensions().width + 17;
@@ -198,35 +160,7 @@ export default function (props) {
                     {!!currentUser && (
                         <Row className='lg:hidden lg:w-full justify-end flex-auto'>
                             {bSearch && <View className="xl:hidden ml-2"><Search /></View>}
-                            {menu_add_items.length > 0 && <View className="ml-2">
-                                <DropdownMenu
-                                    items={menu_add_items.map(
-                                        (item, index) => {
-                                            return (
-                                                {
-                                                    id: 'menu-' + index,
-                                                    link: item.link,
-                                                    title: item.title,
-                                                    icon:
-                                                        item.icon.indexOf(' ') == -1
-                                                            ? item.icon
-                                                            : item.icon.split(' ')[0],
-                                                }
-                                            )
-                                        }
-                                    )}
-                                >
-                                    <ButtonRef
-                                        tooltip="Create content"
-                                        variant="outline"
-                                        rounded
-                                        startDecorator="Plus"
-                                        id="m3"
-
-                                        onPress={() => { }}
-                                    />
-                                </DropdownMenu>
-                            </View>}
+                            <MenuAdd />
                         </Row>)
                     }
                 </View>

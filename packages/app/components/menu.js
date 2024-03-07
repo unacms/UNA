@@ -133,9 +133,7 @@ export default function ElementMenu(oProps) {
         const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
         let modifiedParams = { ...oProps.params, button_variant: 'none', button_size: 'sm'};
         return (
-            <View key={'menu' + index} className='w-full '>
-                <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
-            </View>
+            <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
         )
     });
 

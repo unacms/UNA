@@ -54,8 +54,8 @@ export default function FormFieldLabels(props) {
             return (
                 <View className='w-full flex-wrap justify-between flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
                     <Text className="font-medium px-2 my-auto text-sm text-neutral-800 dark:text-neutral-200">{title}</Text>
-                    <View className="flex-row gap-x-2 p-2 justify-start items-center flex-wrap ">
-                        {dataFlat.map((item, index) => <View  key={item.value + index} >
+                    <Row className="gap-x-2 p-2 justify-start items-center flex-wrap flex-auto">
+                        {dataFlat.map((item, index) => <View className='my-1'  key={item.value + index} >
                             <Button 
                                 variant={selectedValues.includes(item.value) ? "primary" : "default"} 
                                 size="xs" 
@@ -64,7 +64,7 @@ export default function FormFieldLabels(props) {
                                 onPress={() => addValue(item.value)} 
                             />
                         </View>)}
-                    </View>
+                    </Row>
                 </View>
             );
         }

@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { memo, useState, useMemo, useEffect } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -187,6 +187,20 @@ function DefaultUnit(data) {
 
     if (viewState.view == 'deleted')
         return <></>
+
+    const MenuMemo = memo(() => (
+        <Menu
+            {...data.menu_actions}
+            displayType="button"
+            params={{
+                show_action: true,
+                show_counter: true,
+                show_combined: true,
+            }}
+        />
+
+    ));
+
 
     return (
         <AnimatedBlock>
@@ -549,15 +563,7 @@ function DefaultUnit(data) {
                             )}
                             <View className="flex-col relative px-0 py-4">
                                 <View className=" flex-row    px-4 flex-auto">
-                                    <Menu
-                                        {...data.menu_actions}
-                                        displayType="button"
-                                        params={{
-                                            show_action: true,
-                                            show_counter: true,
-                                            show_combined: true,
-                                        }}
-                                    />
+                                    <MenuMemo />
                                 </View>
                             </View>
                         </>

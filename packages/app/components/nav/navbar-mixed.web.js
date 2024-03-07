@@ -49,7 +49,7 @@ export default function (props) {
 
     const menu_navbar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
-    
+
     const windowWidth = useWindowDimensions().width;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
 
@@ -136,17 +136,16 @@ export default function (props) {
                         </View>
                         <Row className="hidden lg:flex flex-auto items-center justify-center ">
                             <Row className='w-full overflow-hidden items-center justify-center'>
-                            {(bSearch && currentUser) && <View className=' flex-auto max-w-sm ml-4 mr-auto hidden lg:block '>
+                                {(bSearch && currentUser) && <View className=' flex-auto max-w-sm ml-4 mr-auto hidden lg:block '>
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>}
                                 {menu_navbar_items.length > 0 && <Row className='mx-4 gap-x-2  overflow-hidden '>
                                     {menu_navbar_items.map(
                                         (item, index) =>
-
                                             <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
                                                 <ButtonRef
                                                     variant="text"
-                                                    pressed={index == 2 ? true : false}
+                                                    pressed={item.link == '/' + props.uri ? true : false}
                                                     size="lg"
                                                     tooltip={t(item.title)}
                                                     alt={t(item.title)}
@@ -163,7 +162,6 @@ export default function (props) {
 
                                     )}
                                 </Row>}
-                                
                             </Row>
                         </Row>
                         <Row className="flex-row xl:flex-none justify-end ">
@@ -173,7 +171,6 @@ export default function (props) {
                                         {bSearch && <View className="lg:hidden"><Search /></View>}
                                         <MenuLauncher />
                                         <MenuAdd />
-                                        
                                         <View className="hidden sm:flex flex-row gap-x-2 my-auto">
                                             {bNotifs && <NotificationButton />}
                                             {bMessenger &&
@@ -210,9 +207,8 @@ export default function (props) {
                         </Row>
                     </View>
                 </View>
-                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup}  />
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} />
             </View>}
-
         </>
     )
 }
