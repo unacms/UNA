@@ -12,6 +12,8 @@ export default function FormFieldSubmit(props) {
     let defaultValue = props.value;
     let { width } = useWindowDimensions();
     const { field } = useController({ name, rules, defaultValue });
+    console.log(props);
+
     return (
         <Field  {...props}>
             <Button
@@ -31,7 +33,7 @@ export default function FormFieldSubmit(props) {
                 defaultValue={defaultValue}
             />
             {
-                Object.keys(formContext.formState.errors).length > 0 &&
+                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !==true) &&
                 <View className="mt-2"><FormError errorText={"Errors:"} /><View className="ml-4">
                     {
                         Object.keys(formContext.formState.errors).map((fieldName, index) => {

@@ -174,7 +174,7 @@ export default function AtomProfile(oProps) {
                         <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
                         <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>
                         </View>*/}
-                    {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-'+getRandomColor(oProps.display_name)+'-500 uppercase'}>
+                    {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-'+getRandomColor(oProps.id)+'-500 uppercase'}>
                         <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
                         </View>}
                     {!!oProps.url_avatar && <Image
