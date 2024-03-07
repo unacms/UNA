@@ -64,9 +64,11 @@ export default function FormFeed(props) {
                 {getFormFieldByData( props.data.inputs['type'], props.handleSubmit, 'default')}
                 <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                     <View className="w-full flex-col  ">
+                    {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'notitle' )}
+
                         {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
-                        <Row className=" flex-wrap border-b border-x border-bdr dark:border-bdr-d -translate-y-4 rounded-b-xl p-2 items-center ">
-                            
+                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
+                            <View className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</View>
                             {props.data.inputs['photo'] && <View className="">
                                 {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                             </View>}
@@ -78,10 +80,9 @@ export default function FormFeed(props) {
                             </View>}
                         </Row>
                         {prevList.length > 0 && prevList[0]?.key && (
-                            <Row className="flex-wrap gap-2 mb-4">{prevList}</Row>
+                            <Row className="flex-wrap gap-2 ">{prevList}</Row>
                         )}
                         {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle' )}
-                        {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'notitle' )}
                         {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
                     </View>
                 </KeyboardAvoidingView>

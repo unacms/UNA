@@ -520,7 +520,7 @@ let settingsDefault = {
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false, leftbar: true },
                 
                 intro: { name: 'static:intro', showTitle: false, showBg: false, sidebar: true },
-                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
+                //friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },

@@ -52,9 +52,9 @@ export default function FormFieldLabels(props) {
             );
 
             return (
-                <View className='w-full'>
-                    <Text className="font-medium text-sm text-neutral-800 dark:text-neutral-200">{title}</Text>
-                    <Row className="gap-x-2 justify-start items-start mt-1.5">
+                <View className='w-full flex-wrap justify-between flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
+                    <Text className="font-medium px-2 my-auto text-sm text-neutral-800 dark:text-neutral-200">{title}</Text>
+                    <Row className="gap-x-2 p-2 justify-start items-center ">
                         {dataFlat.map((item, index) => <View  key={item.value + index} >
                             <Button 
                                 variant={selectedValues.includes(item.value) ? "primary" : "default"} 
@@ -74,7 +74,7 @@ export default function FormFieldLabels(props) {
         <Field {...props}>
             {labelsData && (
                 <View className='w-full'>
-                    {renderLabelSection(labelsData.system, "Choose labels:")}
+                    {renderLabelSection(labelsData.system, "Add labels")}
                     {renderLabelSection(labelsData.context, "Context labels")}
                 </View>
             )}

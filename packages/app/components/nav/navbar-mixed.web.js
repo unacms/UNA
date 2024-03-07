@@ -136,7 +136,10 @@ export default function (props) {
                         </View>
                         <Row className="hidden lg:flex flex-auto items-center justify-center ">
                             <Row className='w-full overflow-hidden items-center justify-center'>
-                                {menu_navbar_items.length > 0 && <Row className='mx-auto gap-x-0.5 justify-between flex-auto overflow-hidden px-4'>
+                            {(bSearch && currentUser) && <View className=' flex-auto max-w-sm ml-4 mr-auto hidden lg:block '>
+                                    <Search type="input" placeholder="Enter search text" />
+                                </View>}
+                                {menu_navbar_items.length > 0 && <Row className='mx-4 gap-x-2  overflow-hidden '>
                                     {menu_navbar_items.map(
                                         (item, index) =>
 
@@ -159,9 +162,7 @@ export default function (props) {
 
                                     )}
                                 </Row>}
-                                {(bSearch && currentUser) && <View className='w-96 ml-4 mr-auto hidden lg:block '>
-                                    <Search type="input" placeholder="Enter search text" />
-                                </View>}
+                                
                             </Row>
                         </Row>
                         <Row className="flex-row xl:flex-none justify-end ">
