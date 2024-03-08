@@ -102,7 +102,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     useEffect(() => {
         if (getNumCols(cntWidth) != numColumns){
-            console.log("setNumColumns",getNumCols(cntWidth))
             setNumColumns(getNumCols(cntWidth));
         }
     }, [cntWidth, currentRoute]);
@@ -478,6 +477,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const tabBarObjSmall = renderTabBar(true);
     const headerObj = renderHeader(tabBarObj, tabBarObjSmall);
 
+
+
+    
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
         //let b = useMemo(() => {

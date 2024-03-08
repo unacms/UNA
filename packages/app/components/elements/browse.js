@@ -1,89 +1,89 @@
 import Unit from 'app/components/unit';
-import { useState,useEffect, useRef, useContext   } from 'react';
+import { useState, useEffect, useRef, useContext, memo } from 'react';
 import { View } from 'app/design/view'
-import { useWindowDimensions} from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, storageGet, getDataFromCache,storageSet } from 'app/lib/util'
-import { Dimensions } from 'react-native';
+import { appSetting, storageKey, storageGet, getDataFromCache, storageSet } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery, useQueryClient, QueryClient  } from  '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient, QueryClient } from '@tanstack/react-query'
 import { getSkeleton } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
 
 export default function ElementBrowse(props) {
+    //console.log('ElementBrowse')
     const [maxId, setMaxId] = useState(0);
     const toasterRef = useRef();
     const { t } = useTranslation();
-    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' +  props.data.params?.type + ':' +  props.data.params?.category)
+    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' + props.data.params?.type + ':' + props.data.params?.category)
     let uniRef = useRef();
 
-    const [cachedData, setCachedData] = useState(props.cachePrefix ? false : {state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue)});
-    
+    const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
+
     let data = props.data;
-    if (data.unit == 'mixed'){
+    if (data.unit == 'mixed') {
         data.unit = 'general-profile-list';
     }
 
     let defParams = data.params;
 
-    if(props?.params)
-        defParams = {...defParams, ...props.params};
+    if (props?.params)
+        defParams = { ...defParams, ...props.params };
 
     if (defParams)
         defParams.moduleName = data.module ? data.module : '';
-    //const [browseParams, setbrowseParams] = useState(defParams);
     const browseParams = defParams;
     /* unit mode & change unit mode */
-    const unitMode = props.unitMode ? props.unitMode: appSetting('feed', 'default_view');
+    const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
 
     const getNumCols = (width) => {
         if (props.perLine)
             return props.perLine;
-        
-        if (data.unit.startsWith('general-') || data.unit.startsWith('search-')){
+
+        if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
             return width > 600 ? 4 : 1
         }
         return 1
     };
 
     const windowWidth = useWindowDimensions().width;
-    const windowHeight = Dimensions.get('window').height;
+    const windowHeight = useWindowDimensions().height;
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
-   
-    useEffect(() => {
-        if (getNumCols(windowWidth) != numColumns)
-            setNumColumns(getNumCols(windowWidth));
-    }, [windowWidth]);
+
+    /* useEffect(() => {
+         if (getNumCols(windowWidth) != numColumns)
+             setNumColumns(getNumCols(windowWidth));
+     }, [windowWidth]);*/
 
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
-        if (getNumCols(containerWidth) != numColumns)
+        if (getNumCols(containerWidth) != numColumns) {
             setNumColumns(getNumCols(containerWidth));
+        }
     };
 
     let hOffset = 0;
 
-    if(Platform.OS === 'web') {
-        if (Dimensions.get('window').width < 1024){
+    if (Platform.OS === 'web') {
+        if (windowWidth < 1024) {
             hOffset = 126;
         }
-        else{
+        else {
             hOffset = 64;
         }
     }
-    else{
+    else {
         hOffset = 106;
     }
 
-    let styles = Platform.OS === 'web' ? {} : {height: (defParams?.height ? defParams.height : windowHeight - hOffset)}
+    let styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
     const fetchData = async ({ }) => {
-       
-        let sResponse =  await fetcher(prepareUrl());
+
+        let sResponse = await fetcher(prepareUrl());
         return sResponse.data[0].data
     };
 
@@ -105,19 +105,19 @@ export default function ElementBrowse(props) {
         },
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
-   
-    function prepareUrl (isUseDefault = false) {
-        const params = getCurrentParams(isUseDefault);
-        return data.request_url + JSON.stringify({'params': params});
-    } 
 
-    const getCurrentParams = (isUseDefault = false) => { 
-        if (newData?.pages.length > 0){
+    function prepareUrl(isUseDefault = false) {
+        const params = getCurrentParams(isUseDefault);
+        return data.request_url + JSON.stringify({ 'params': params });
+    }
+
+    const getCurrentParams = (isUseDefault = false) => {
+        if (newData?.pages.length > 0) {
             let ld = newData.pages[newData.pages.length - 1].params;
             let params = Object.assign({}, browseParams, ld)
-            if (data.unit != 'notifications') 
+            if (data.unit != 'notifications')
                 params.start = parseInt(ld.start) + parseInt(ld.per_page);
-            if (isUseDefault){
+            if (isUseDefault) {
                 params.start = 0;
             }
 
@@ -126,28 +126,29 @@ export default function ElementBrowse(props) {
         return browseParams;
     }
 
-    const handleEndReached = (lastItemIndex) => { 
-
-        if(props.only_one_page == true)
+    const handleEndReached = (lastItemIndex) => {
+        if (!hasNextPage)
             return;
-        if (isFetchingNextPage) 
+        if (props.only_one_page == true)
+            return;
+        if (isFetchingNextPage)
             return;
         if (lastItemIndex == false)
             return;
 
         fetchNextPage();
     };
-    let sSkeleton = data.module? data.module : data.unit
+    let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton)
         sSkeleton = props?.skeleton;
 
     if (props.unitType)
         sSkeleton = [sSkeleton, props.unitType];
     const Preload = getSkeleton(sSkeleton, numColumns)
-    
+
     let dataItems = {
         data: [
-            ...(appSetting('cache', 'list') && cachedData?.data?.data ? cachedData.data?.data: []),
+            ...(appSetting('cache', 'list') && cachedData?.data?.data ? cachedData.data?.data : []),
             ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
         ]
     };
@@ -160,93 +161,108 @@ export default function ElementBrowse(props) {
             current.setVisible(val);
         }
     }
-    
+
     let maxIdLocal = 0;
-    const bUseDaemon =  (props.data.unit == 'feed');
-    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]='+JSON.stringify({'params': getCurrentParams(true)})+'&params[]=0&params[]=0', false, bUseDaemon);
-    if (bUseDaemon){
-        maxIdLocal = dataItems?.data.length > 0 
+    const bUseDaemon = (props.data.unit == 'feed');
+    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]=' + JSON.stringify({ 'params': getCurrentParams(true) }) + '&params[]=0&params[]=0', false, bUseDaemon);
+    if (bUseDaemon) {
+        maxIdLocal = dataItems?.data.length > 0
             ? dataItems?.data.reduce((max, item) => {
                 const idNumber = parseFloat(item.id);
                 return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
             }, parseFloat(dataItems?.data[0].id) || 0)
             : 0;
-        if (daemonData && maxId > 0 && maxId < daemonData){
+        if (daemonData && maxId > 0 && maxId < daemonData) {
             setTimeout(() => {
                 setToasterVisible(true);
             }, 100);
-           
+
         }
     }
 
     useEffect(() => {
-        if (maxIdLocal >0 && maxIdLocal != maxId){
-           setMaxId(maxIdLocal)
+        if (maxIdLocal > 0 && maxIdLocal != maxId) {
+            setMaxId(maxIdLocal)
         }
-      }, [maxIdLocal]);
-   
+    }, [maxIdLocal]);
+
 
     const showNewContent = async () => {
-        setToasterVisible(false); 
-        let sResponse =  await fetcher(prepareUrl(true));
+        setToasterVisible(false);
+        let sResponse = await fetcher(prepareUrl(true));
         maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
         setMaxId(maxIdLocal);
         uniRef.current.scrollToIndex({ animated: true, index: -1 });
-   
+
     }
     /* DAEMON PART */
 
     useEffect(() => {
-        if (dataItems.data.length > 0){
+        if (dataItems.data.length > 0) {
             storageSet('ul:data', storageKeyValue, dataItems);
         }
-    },[dataItems]);
+    }, [dataItems]);
 
     useEffect(() => {
         if (dataItems.data.length == 0)
             refetch();
     }, [storageKeyValue]);
     if (status === 'loading' && dataItems.data.length == 0)
-        return Preload 
+        return Preload
 
-    if (props.sidebar){
-        let data2 = dataItems.data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
+    if (props.sidebar) {
+        let data2 = dataItems.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
         return data2.map((item, index) => (
-            <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>
+            <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}><Unit unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item} /></View>
         ));
     }
 
+
+    const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
+        <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
+            <Unit
+                unit={data.unit ? data.unit : ''}
+                mode={unitMode}
+                module={data.module ? data.module : ''}
+                sidebar={props.sidebar}
+                object_id={data.object_id ? data.object_id : ''}
+                view={data.view ? data.view : ''}
+                {...props}
+                data={item}
+            />
+        </View>
+    ));
+
+
     return (
         <View className='w-full h-full' >
+            <View className='w-full' onLayout={handleLayout}></View>
             <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
-            { <View className='w-full ' onLayout={handleLayout}  style = {styles}>
-            {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
-            
-            <UniList 
-            
-                    numColumns={numColumns} 
-                    data={dataItems.data}
-                    viewParams={getCurrentParams()}
-                    listState = {cachedData?.state?.state}
-                    unit={data.unit}
-                    storagekey={storageKeyValue}
-                    useWindowScroll
-                    height={props?.height}
-                    url={props?.url}
-                    contentContainerStyle={props?.contentContainerStyle}
-                    refer={uniRef}
-                    no_scroll={props.no_scroll}
-                    renderItem={({item, index}) => <View key={'item' + item.id} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full': '  ') + '  '}><Unit  unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item}  /></View>}
-                    onEndReached = {handleEndReached} 
-                    ListFooterComponent={
-                        ((hasNextPage && isFetchingNextPage) ) ? (
-                            Preload
-                        ) : null
-                    }
-                /></> : <></>}
+            <View className='w-full ' style={styles} >
+                {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
+                    <UniList
+                        numColumns={numColumns}
+                        data={dataItems.data}
+                        viewParams={getCurrentParams()}
+                        listState={cachedData?.state?.state}
+                        unit={data.unit}
+                        storagekey={storageKeyValue}
+                        useWindowScroll
+                        height={props?.height}
+                        url={props?.url}
+                        contentContainerStyle={props?.contentContainerStyle}
+                        refer={uniRef}
+                        no_scroll={props.no_scroll}
+                        renderItem={({ item, index }) => <Item key={'item' + item.id} item={item} index={index} numColumns={numColumns} data={data} unitMode={unitMode} props={props} />}
+                        onEndReached={handleEndReached}
+                        ListFooterComponent={
+                            ((hasNextPage && isFetchingNextPage)) ? (
+                                Preload
+                            ) : null
+                        }
+                    /></> : <></>}
             </View>
-            }
-        </View> 
+        </View>
     );
 
 

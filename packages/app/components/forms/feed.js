@@ -6,6 +6,7 @@ import { LayoutData } from 'app/context/layout'
 import { FeedbackHaptics, getAlert } from 'app/lib/util'
 import { KeyboardAvoidingView } from 'react-native'
 import { Platform } from 'react-native'
+import { Text } from 'app/design/typography'
 import { useCurrentUser } from 'app/context/user'
 import Profile from 'app/ui/molecules/profile'
 import Card from 'app/ui/molecules/card'
@@ -70,7 +71,7 @@ export default function FormFeed(props) {
 
                             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
-                                <View className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</View>
+                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
                                 {props.data.inputs['photo'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
@@ -85,7 +86,6 @@ export default function FormFeed(props) {
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>
                             )}
                             {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
-
                         </View>
                     </KeyboardAvoidingView>
                     {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}

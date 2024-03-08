@@ -8,6 +8,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { Pressable } from 'app/design/view'
 import { Button } from 'app/design/controls';
 import { getBlocksFromData } from 'app/lib/util';
+import { memo } from 'react';
 
 export function getBackButtonWeb() {
     if (history.length > 2) {
@@ -110,14 +111,14 @@ export async function parseData(routes, index, setRoutes, newData) {
         const sResponse = await fetcher(sRequest);
         const newData = sResponse.data[0]?.data?.data ? sResponse.data[0]?.data?.data : [];
         let finished = newData?.length === 0 || !newData;
-        if (params?.per_page && newData?.length < params.per_page){
+        if (params?.per_page && newData?.length < params.per_page) {
             finished = true;
         }
         let isFinished = (currentRoute.endpoint.finished !== finished)
         let endpoint = currentRoute.endpoint
         endpoint.finished = finished;
 
-        
+
         let ld = sResponse.data[0]?.data.params;
 
         if (ld) {
@@ -158,7 +159,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
     }
 }
 
-export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData= null) {
+export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;
@@ -253,7 +254,7 @@ export function processUrl(data, blocks) {
     return contentAndEndpoint;
 }
 
-export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
+function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitType, sidebar }) {
 
     if (item?.type === 'block') {
         let b = BlockByName2({ b: item.data, name: item.block })
@@ -275,6 +276,8 @@ export function ItemRenderer({ route, numColumns, item, unit, module, unitMode, 
     }
 }
 
+export const ItemRenderer = memo(ItemRenderer_);
+
 export function LeftSidebar({ title, addButtons, children }) {
     return (
         <View className="hidden lg:block w-80 t-0 ">
@@ -295,7 +298,7 @@ export function LeftSidebar({ title, addButtons, children }) {
     )
 }
 
-export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu  }) {
+export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu }) {
     const isUseBg = appSetting('layout', 'use_background');
     return (
         <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 lala3 " + (isUseBg ? " bg-bgrnavbar border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d backdrop-blur  " : "  border-b border-dashed border-bdr dark:border-bdr-d "))}  >

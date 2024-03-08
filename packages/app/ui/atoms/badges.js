@@ -9,14 +9,8 @@ export default function ({ badges }) {
     return (
         <Row className='items-center gap-x-1'>
             {badges.map((item, index) => (
-                <Button rounded startDecorator='SealCheck' title={item.text} size="xs" variant="primary" />
+                <Button  key={`badge-${index}`} rounded startDecorator='SealCheck' title={item.text} size="xs" variant="primary" />
             ))}
         </Row>
     )
 }
-
-/*-
- <Row className='items-center justify-center gap-x-1 text-primary'>
-            <Icon icon="SealCheck" />
-            <Text className="text-primary text-xs">{item.text}</Text>
-        </Row>*/

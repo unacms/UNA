@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { isEmoji } from 'app/lib/util';
 import { Text } from 'app/design/typography';
 import { View } from 'app/design/view';
-/*import { 
+import { 
     DropdownMenuRoot, 
     DropdownMenuContentV, 
     DropdownMenuContentH, 
@@ -13,13 +13,14 @@ import { View } from 'app/design/view';
     DropdownMenuItemTitle,
     DropdownMenuItemIcon
 } from 'app/design/dropdown';
-*/
+
+//import * as DropdownMenu from 'zeego/dropdown-menu'
 import Redirect from 'app/ui/atoms/redirect';
 import { Icon } from 'app/ui/atoms/icon'
 
-export default function DropdownMenu(oProps) {
+export default function (oProps) {
 
-    const [DropdownMenu, setDropdownMenu] = useState(null);
+    /*const [DropdownMenu, setDropdownMenu] = useState(null);
     
     useEffect(() => {
         const loadComponents = async () => {
@@ -28,14 +29,14 @@ export default function DropdownMenu(oProps) {
         };
 
         loadComponents();
-    }, []);
+    }, []);*/
 
     const redirectdRef = useRef();
 
-    if (!DropdownMenu) {
+    /*if (!DropdownMenu) {
         return null; // or return a loading spinner
     }
-
+*/
     const bWeb = Platform.OS === 'web';
 
     const handleSelect = (oItem) => {
@@ -45,8 +46,8 @@ export default function DropdownMenu(oProps) {
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
     const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
 
-    const DmContent = sVariant == 'vertical' ? DropdownMenu.DropdownMenuContentV : DropdownMenu.DropdownMenuContentH;
-    const DmItem = sVariant == 'vertical' ? DropdownMenu.DropdownMenuItemV : DropdownMenu.DropdownMenuItemH;   
+    const DmContent = sVariant == 'vertical' ? DropdownMenuContentV : DropdownMenuContentH;
+    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : DropdownMenuItemH;   
 
     const aDmItems = oProps.items.map((oItem) => {
         let sIcon = undefined;
@@ -63,10 +64,10 @@ export default function DropdownMenu(oProps) {
 
         return (
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
-                {!!sIcon && <DropdownMenu.DropdownMenuItemIcon>{sIcon}</DropdownMenu.DropdownMenuItemIcon>}
-                {!!oItem?.title && <DropdownMenu.DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenu.DropdownMenuItemTitle>}
-                {( false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenu.DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenu.DropdownMenuItemSubtitle>}
-                {(false &&  bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenu.DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenu.DropdownMenuItemSubtitleRed>}
+                {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
+                {!!oItem?.title && <DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenuItemTitle>}
+                {( false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenuItemSubtitle>}
+                {(false &&  bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenuItemSubtitleRed>}
             </DmItem>
         );
     });
@@ -74,10 +75,10 @@ export default function DropdownMenu(oProps) {
     return (
         <View >
             <Redirect ref={redirectdRef} />
-            <DropdownMenu.DropdownMenuRoot >
-                <DropdownMenu.DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenu.DropdownMenuTrigger>
+            <DropdownMenuRoot >
+                <DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenuTrigger>
                 <DmContent>{aDmItems}</DmContent>
-            </DropdownMenu.DropdownMenuRoot>
+            </DropdownMenuRoot>
         </View>
     );
 }

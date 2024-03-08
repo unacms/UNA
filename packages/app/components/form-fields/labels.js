@@ -59,7 +59,7 @@ export default function FormFieldLabels(props) {
                             <Button 
                                 variant={selectedValues.includes(item.value) ? "primary" : "default"} 
                                 size="xs" 
-                                fullWidth 
+                             
                                 title={item.value} 
                                 onPress={() => addValue(item.value)} 
                             />

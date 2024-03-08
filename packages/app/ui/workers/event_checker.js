@@ -3,7 +3,6 @@ import { fetcher } from 'app/lib/fetcher';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import * as Location from 'expo-location';
-import Card from 'app/ui/molecules/card'
 import { stripTags } from 'app/lib/util';
 import { Button } from 'app/design/controls';
 import Image from 'app/ui/atoms/image'

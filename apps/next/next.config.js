@@ -65,6 +65,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'ci.una.io',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
         hostname: 'app.una.io',
         pathname: '**',
       },

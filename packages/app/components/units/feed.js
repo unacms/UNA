@@ -25,8 +25,57 @@ import { CommentsBrowse } from 'app/lib/comments-helpers'
 import { Pressable } from 'dripsy'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 
+const CommentsSection = React.memo(({ commentsData, data, isShowMoreComments, url }) => (
+    <View>
+        <CommentsBrowse maxCount={2} browse={commentsData} module={data?.cmts.module} isShort={true} />
+        {isShowMoreComments && (
+            <View className='px-4 pb-4'>
+                <Link href={url}>
+                    <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
+                        {t('View more comments...')}
+                    </Text>
+                </Link>
+            </View>
+        )}
+    </View>
+));
+
+
+const ItemInfo = ({ data }) => {
+    const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
+        <React.Fragment key={'owner' + index}>
+            <Text className="text-neutral-500"> · </Text>
+            <Link href={item.url} emulate={true}>
+                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden font-medium" numberOfLines={1}>
+                    {item.title}
+                </Text>
+            </Link>
+        </React.Fragment>
+    ));
+
+    const FeedType = () => {
+        const { t } = useTranslation();
+        const l = t('feed_type_' + data.type);
+        return l && (
+            <>
+                <Text className="text-neutral-500"> · </Text>
+                <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap nowrap">
+                    {l}
+                </Text>
+            </>
+        );
+    };
+
+    return (
+        <>
+            <FeedType />
+            <OwnersList />
+        </>
+    );
+};
+
 function DefaultUnit(data) {
-    const { t } = useTranslation();
+
 
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
@@ -96,39 +145,7 @@ function DefaultUnit(data) {
         }
     }
 
-    const ItemInfo = ({ data }) => {
 
-        let inList = <></>
-        if (data.owners?.length > 0) {
-            inList = <>
-                <Text className="text-neutral-500"> · </Text>
-                {
-                    data.owners.map((item, index) => {
-                        return (
-                            <Link key={'owner' + index} href={item.url} emulate={true}>
-                                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden font-medium " numberOfLines={1} >{item.title}</Text>
-                            </Link>
-                        );
-                    })
-                }
-            </>
-        }
-
-        let l = t('feed_type_' + data.type)
-
-        if (l != '')
-            return (
-                <>
-                    <Text className="text-neutral-500"> · </Text>
-                    <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap nowrap">
-                        {l}
-                    </Text>
-                    {inList}
-                </>
-            )
-
-        return <>{inList}</>
-    }
 
     const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items, currentUser).map(
         (aItem) => {
@@ -569,13 +586,7 @@ function DefaultUnit(data) {
                         </>
                     )}
                 </View>
-                {!!commentsData && (
-                    <View>
-                        <CommentsBrowse maxCount={2} browse={commentsData} module={data?.cmts.module} isShort={true} />
-                        {isShowMoreComments && <View className='px-4 pb-4'><Link href={url}><Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>{t('View more comments...')}</Text></Link></View>}
-                    </View>
-                )
-                }
+                {commentsData && <CommentsSection commentsData={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
             </Card>
         </AnimatedBlock>
     )

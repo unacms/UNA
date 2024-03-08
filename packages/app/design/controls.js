@@ -48,40 +48,36 @@ export function Modal({
 }) {
     const Wrapper = onClose && outerClickClose !== false ? Pressable : View;
 
-    let sClassPosition = '';
-    switch (position) {
-        case 'top':
-            sClassPosition = 'items-start py-8 px-4';
-            break;
+    const positionClasses = {
+        'top': 'items-start py-8 px-4',
+        'bottom': 'items-end py-8 px-4',
+        'center': 'sm:items-center items-start sm:p-4',
+    };
 
-        case 'bottom':
-            sClassPosition = 'items-end py-8 px-4';
-            break;
-
-        case 'center':
-        default:
-            sClassPosition = 'sm:items-center items-start sm:p-4';
-            break;
+    if (presentation == 'fullScreen'){
+        transparent = false;
     }
+    const sClassPosition = positionClasses[position] || positionClasses['center'];
 
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(onClose && { onPress: onClose })}>
-                <View className={'flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden  overflow-y-auto md:inset-0 h-modal h-full ' + sClassPosition}>
-                    <View className={(fullWidth ? 'w-full': '')+ " relative h-full max-w-2xl md:h-auto "}>
-                        <Pressable onPress={() => { }} className={'relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto  sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'}>
-                          
-                                <Row className={'items-center ' +  'justify-' +textAlign + '  '+ (headerBorder ? ' border-b border-bdrbutton dark:border-bdr ' : '') + 'pt-4 px-4'}>
-                                    {title && <View>
-                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold '>{title}</Text>
-                                    </View>}
-                                </Row>
-                                {(onClose) && <View className='mb-auto absolute top-2 right-2'>
+                <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
+                    <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto`}>
+                        <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
+                            <Row className={`items-center justify-${textAlign} ${headerBorder ? 'border-b border-bdrbutton dark:border-bdr' : ''} pt-4 px-4`}>
+                                {title && (
+                                    <View>
+                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold'>{title}</Text>
+                                    </View>
+                                )}
+                            </Row>
+                            {onClose && (
+                                <View className='mb-auto absolute top-2 right-2 z-10'>
                                     <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
-                                </View>}
-                                
-                                <View className=" overflow-y-auto px-4 py-2 flex-auto md:h-auto">{children}</View>
-                            
+                                </View>
+                            )}
+                            <View className="overflow-y-auto px-4 py-2 flex-auto md:h-auto">{children}</View>
                         </Pressable>
                     </View>
                 </View>
@@ -108,10 +104,11 @@ export function ButtonsGroup({
     let sClassContainer = ' group relative flex-row items-center  ';
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
-    let ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
+    const ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
     sClassContainer += ThemeCssClasses['u-btn-' + variant + '-cnt'];
     sClassContainer += rounded ? 'rounded-full ' : 'rounded-lg ';
     sClassContainer += className;
+
 
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
@@ -136,6 +133,34 @@ export function ButtonsGroup({
 }
 
 /* buttons */
+const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
+    if (!sIcon)
+        return;
+
+    if (typeof (sIcon) == 'object')
+        return buttonIconStart;
+
+    if (isEmoji(sIcon))
+        return (
+            <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
+        );
+    return (
+        <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
+    );
+};
+
+const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
+    if (Array.isArray(buttonInfo)) {
+        return buttonInfo.map((sIcon, iIndex) => {
+            return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
+        });
+    }
+    else {
+        return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart);
+    }
+}
+
+
 export function Button(props) {
     let { className, classTextName, classIconName, onPress, forwardedRef, ...rest } = props
     let buttonType = props.variant ? props.variant : 'default'
@@ -232,35 +257,8 @@ export function Button(props) {
     let colorIcon = props.variant == 'link' ? colors.primary : '';
     colorIcon = props.variant == 'primary' ? 'rgb(243, 244, 246)' : '';
 
-    const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) => {
-        if (!sIcon)
-            return;
-
-        if (typeof (sIcon) == 'object')
-            return buttonIconStart;
-
-        if (isEmoji(sIcon))
-            return (
-                <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
-            );
-        return (
-            <Icon key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer} size={iIconSize} color={colorIcon} icon={sIcon}></Icon>
-        );
-    };
-
-    const getIcon2 = (buttonInfo, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) => {
-        if (Array.isArray(buttonInfo)) {
-            return buttonInfo.map((sIcon, iIndex) => {
-                return getIcon(sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon);
-            });
-        }
-        else {
-            return getIcon(buttonInfo, null, classIconName, sClassText, sIconContainer, iIconSize, colorIcon);
-        }
-    }
-
-    let sButtonIconStart = buttonIconStart != '' && !buttonIconEnd ? getIcon2(buttonIconStart, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;
-    let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon) : null;/*bg-primary dark:bg-primary-d */
+    let sButtonIconStart = buttonIconStart != '' && !buttonIconEnd ? getIcon2(buttonIconStart, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) : null;
+    let sButtonIconEnd = buttonIconEnd != '' && buttonIconEnd ? getIcon2(buttonIconEnd, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) : null;/*bg-primary dark:bg-primary-d */
     let oButtonAddon = null;
 
     let sButtonAddonText = "";

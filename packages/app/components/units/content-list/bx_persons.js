@@ -1,4 +1,4 @@
-import { useState, useContext, useRef } from 'react'
+import { useState, useContext, useRef, useMemo, memo } from 'react'
 import { CardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
@@ -14,29 +14,28 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
+import { appSetting } from 'app/lib/util'
 
-export default function Unit(props) {
-    const { t } = useTranslation();
-    const data = props.data;
-    const imageSizes = getImageSizes();
-    const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
+const ProfileCnt = memo(({ title, url, image }) => (
+    <Profile
+        display_type="unit"
+        display_name={title}
+        url={url}
+        url_avatar={image}
+        showInfo={false}
+    />
+));
 
-    const { cardData, setCardData } = useContext(CardData);
+const ProfilesListCnt = memo(({ data }) => (
+    <ProfilesList
+        data={data}
+        showEmpty={false}
+        maxCount={3}
+        displaySize="xs"
+    />
+));
 
-    const handleClick = (event, sUrl) => {
-        event.preventDefault();
-
-        redirectdRef.current.redirect(sUrl);
-    };
-
-    const handleClickMore = (event) => {
-        event.preventDefault();
-
-        FeedbackHaptics("Medium");
-        setPopupVisible(true);
-    };
-
+function getMenuItemConfigs(unitType, data, handleClick, t) {
     let oMenuItemPrimary = undefined;
     let oMenuItemsMore = undefined;
     let bMenuItemsMoreShow = true;
@@ -45,13 +44,13 @@ export default function Unit(props) {
             sSecondary = "",
             sExclude = "";
 
-        switch (props.unitType) {
+        switch (unitType) {
             case "person_friends":
                 oMenuItemPrimary = {
                     title: t("Message"),
                     icon: "ChatTeardropDots",
                     onPress: (event) => {
-                        handleClick(event, "/messenger");
+                        handleClick(event, appSetting('layout', 'messenger'));
                     },
                 };
                 break;
@@ -174,15 +173,54 @@ export default function Unit(props) {
             },
         };
     }
-    const friendsLabel =
-        data.mutual_friends_count > 0
-            ? tp("mutual_friends", data?.mutual_friends_count, false)
-            : tp("friends", data?.friends_count, false);
+    return { oMenuItemPrimary: oMenuItemPrimary, oMenuItemsMore: oMenuItemsMore, bMenuItemsMoreShow: bMenuItemsMoreShow };
+}
 
-    if (
-        !!cardData?.hidden &&
-        props.unitType == "person_friends_recommendations"
-    )
+function ImageSection({ data, imageSizes }) {
+    return (
+        <View className="aspect-square w-1/4 mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center">
+            <Image
+                src={data?.image?.src}
+                alt={data.title}
+                view="cover"
+                className="absolute u-cover rounded-xl"
+                sizes={imageSizes}
+            />
+            {!data?.image?.src && <Letter title={data.fullname} />}
+        </View>
+    );
+}
+
+export default function Unit(props) {
+    const { t } = useTranslation();
+    const data = props.data;
+    const imageSizes = getImageSizes();
+    const redirectdRef = useRef();
+    const [popupVisible, setPopupVisible] = useState(false);
+    const { cardData, setCardData } = useContext(CardData);
+
+    const friendsLabel = data.mutual_friends_count > 0
+        ? tp("mutual_friends", data?.mutual_friends_count, false)
+        : tp("friends", data?.friends_count, false);
+
+    const handleClick = (event, sUrl) => {
+        event.preventDefault();
+        redirectdRef.current.redirect(sUrl);
+    };
+
+    const handleClickMore = (event) => {
+        event.preventDefault();
+        FeedbackHaptics("Medium");
+        setPopupVisible(true);
+    };
+
+    const { oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow } = useMemo(() => {
+        return getMenuItemConfigs(props.unitType, data, handleClick, t);
+    }, [props.unitType, data, handleClick, t]);
+
+    const isFollowers = props.unitType == "person_followers" || props.unitType == "person_following" || props.unitType == "person_following_recommendations" ? true : false;
+
+    if (!!cardData?.hidden && props.unitType == "person_friends_recommendations")
         return;
 
     return (
@@ -191,72 +229,19 @@ export default function Unit(props) {
             <Card margin=" mx-1 sm:mx-0 my-1 sm:my-2 " rounded=" rounded-2xl ">
                 <Link className="group " href={data.url}>
                     <View className="flex-row sm:flex-col p-1">
-                        <View className=" aspect-square w-1/4 mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center ">
-                            <Image
-                                src={data?.image?.src}
-                                alt={data.title}
-                                view="cover"
-                                className=" absolute u-cover rounded-xl"
-                                sizes={imageSizes}
-                            />
-                            {!data?.image?.src && <Letter title={data.fullname}/>}
-                        </View>
+                        <ImageSection data={data} imageSizes={imageSizes} />
                         <View className="flex-col p-3 flex-auto items-between sm:h-36 justify-between ">
                             <View className='flex-auto mb-auto'>
-                                <Text
-                                    numberOfLines={1}
-                                    className=" text-xl sm:text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                                >
+                                <Text numberOfLines={1} className=" text-xl sm:text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
                                 <Row className="items-center h-6 my-3">
-                                    {props.unitType == "person_followers" ||
-                                        props.unitType == "person_following" ||
-                                        props.unitType ==
-                                        "person_following_recommendations" ? (
-                                        <>
-                                            <View className="mr-2">
-                                                <ProfilesList
-                                                    data={data.followers_list}
-                                                    showEmpty={false}
-                                                    maxCount={3}
-                                                    displaySize="xs"
-                                                />
-                                            </View>
-                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                                {data?.followers_count +
-                                                    " followers"}
-                                            </Text>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <View className="mr-2 h-6">
-                                                {data.mutual_friends_count > 0 ? (
-                                                    <ProfilesList
-                                                        data={
-                                                            data.mutual_friends_list
-                                                        }
-                                                        showEmpty={false}
-                                                        maxCount={3}
-                                                        displaySize="xs"
-                                                    />
-                                                ) : (
-                                                    <ProfilesList
-                                                        data={data.friends_list}
-                                                        showEmpty={false}
-                                                        maxCount={3}
-                                                        displaySize="xs"
-                                                    />
-                                                )}
-
-                                            </View>
-                                            {
-                                                <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                                    {friendsLabel}
-                                                </Text>
-                                            }
-                                        </>
-                                    )}
+                                    <View className="mr-2 h-6">
+                                        <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
+                                    </View>
+                                    <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        {isFollowers ? data?.followers_count + " followers" : friendsLabel}
+                                    </Text>
                                 </Row>
                             </View>
                             <View className="flex-row w-full ">
@@ -282,16 +267,10 @@ export default function Unit(props) {
                                             >
                                                 <View className="gap-y-4">
                                                     <View className="flex-row items-center gap-x-4">
-                                                        <Profile
-                                                            display_type="unit"
-                                                            display_name={
-                                                                data.title
-                                                            }
+                                                        <ProfileCnt
+                                                            title={data.title}
                                                             url={data.url}
-                                                            url_avatar={
-                                                                data?.image?.src
-                                                            }
-                                                            showInfo={false}
+                                                            image={data?.image?.src}
                                                         />
                                                     </View>
                                                     <View>
