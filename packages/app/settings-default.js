@@ -33,7 +33,7 @@ let settingsDefault = {
         search: true,
         messenger: '/messenger',
         notifications: '/notifications-view',
-        dashboard: '/dash',
+        dashboard: '/dashboard',
         apps: true,
         block: 'login',
         show_profile_info: true,
