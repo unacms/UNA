@@ -20,7 +20,7 @@ export default function PageLayout(props) {
 
     const handleReply = async (id, author, text) => {
         setFormData({ text: stripTags(text), parent_id: id, author: author })
-        document.getElementsByClassName("form-control-cmt_text")[0].getElementsByClassName("ProseMirror")[0].focus();
+        //document.getElementsByClassName("form-control-cmt_text")[0].getElementsByClassName("ProseMirror")[0].focus();
     }
 
     const handleForm = async (data) => {

@@ -164,9 +164,8 @@ export default function UnitComments(props) {
                                 </View>
                             ) : <Html data={linkify(data.cmt_text)} /> }
                         </View>
-                        { (viewState.view != 'edited'  && aImg.length > 0) && <View className='w-full aspect-square  mb-6'>
-                                <CarouselMemo aImg={aImg}/>
-                            </View>
+                        { (viewState.view != 'edited'  && aImg.length > 0) && <CarouselMemo aImg={aImg}/>
+                            
                         }
                     </View>
                     { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>

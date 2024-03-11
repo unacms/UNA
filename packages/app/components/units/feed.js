@@ -25,14 +25,14 @@ import { CommentsBrowse } from 'app/lib/comments-helpers'
 import { Pressable } from 'dripsy'
 import { ContentMore } from 'app/ui/molecules/contentmore';
 
-const CommentsSection = React.memo(({ commentsData, data, isShowMoreComments, url }) => (
+const CommentsSection = React.memo(({ commentsData, data, isShowMoreComments, url, capt }) => (
     <View>
         <CommentsBrowse maxCount={2} browse={commentsData} module={data?.cmts.module} isShort={true} />
         {isShowMoreComments && (
             <View className='px-4 pb-4'>
                 <Link href={url}>
                     <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
-                        {t('View more comments...')}
+                        {capt}
                     </Text>
                 </Link>
             </View>
@@ -80,7 +80,8 @@ function DefaultUnit(data) {
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
     }
-
+    const { t } = useTranslation();
+    const capt = t('View more comments...');
     let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
@@ -586,7 +587,7 @@ function DefaultUnit(data) {
                         </>
                     )}
                 </View>
-                {commentsData && <CommentsSection commentsData={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
+                {commentsData && <CommentsSection capt={capt} commentsData={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
             </Card>
         </AnimatedBlock>
     )

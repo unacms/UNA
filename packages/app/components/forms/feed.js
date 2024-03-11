@@ -21,6 +21,7 @@ export default function FormFeed(props) {
     const [imageSource, setImageSource] = useState([])
     const { layoutData, setLayoutData } = useContext(LayoutData)
     let { currentUser, setCurrentUser } = useCurrentUser()
+    
     useEffect(() => {
         if (props.response?.id != responseId) {
             setLayoutData(getAlert('feed:new_content', props.response));

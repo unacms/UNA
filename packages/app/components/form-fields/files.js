@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import Field, {getValidationRules} from './_field';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import Field, { getValidationRules } from './_field';
 import { View, Row, Pressable } from 'app/design/view'
 import Image from 'app/ui/atoms/image';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,7 +10,7 @@ import { genRnd, appSetting } from 'app/lib/util';
 import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
-import { useFormContext,useController } from 'react-hook-form';
+import { useFormContext, useController } from 'react-hook-form';
 import { uploadImage, md5 } from 'app/lib/util';
 import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
@@ -79,7 +79,54 @@ export default function FormFieldFiles(props) {
             }, 100);
         }
     },
-    [formContext.formState.isSubmitted, imageSource.images]);
+        [formContext.formState.isSubmitted, imageSource.images]);
+
+    const uploadImages = async (asset) => {
+        console.log("assetasset", asset, imageSource.images)
+        let k = imageSource.images ? imageSource.images : [];
+        let objectsToAdd = Array(asset.length).fill({ preload: true });
+        k = [
+            ...k,
+            ...objectsToAdd
+        ];
+        setImageSource({ images: k });
+
+        for (const i of asset) {
+            let uri = i.uri;
+            ImageNative.getSize(uri, async (width, height) => {
+                let manipulatedWidth = 2000;
+                let manipulatedHeight = 2000;
+
+                if (width > manipulatedWidth || height > manipulatedHeight) {
+                    if (width > height) {
+                        manipulatedHeight = Math.round((height * manipulatedWidth) / width);
+                    } else {
+                        manipulatedWidth = Math.round((width * manipulatedHeight) / height);
+                    }
+
+                    const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
+                        { resize: { width: manipulatedWidth, height: manipulatedHeight } }
+                    ]);
+                    uri = resizedPhoto.uri;
+                }
+
+                let hash = md5(uri);
+                uploadImage(
+                    uri,
+                    url + '&a=upload',
+                    handleInsertImageFinish,
+                    { hash: hash }
+                );
+
+                let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
+                k = [
+                    ...k,
+                    { file_url: uri, file_type: fileType, preload: true, hash: hash }
+                ];
+            });
+        }
+        return k;
+    }
 
     const selectImage = useCallback(async () => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
@@ -103,50 +150,7 @@ export default function FormFieldFiles(props) {
             });
 
             if (!result.cancelled) {
-                let k = imageSource.images;
-
-                let objectsToAdd = Array(result.assets.length).fill({ preload: true });
-                k = [
-                    ...k,
-                    ...objectsToAdd
-                ];
-                setImageSource({ images: k });
-                for (const i of result.assets) {
-                    let uri = i.uri;
-
-                    ImageNative.getSize(uri, async (width, height) => {
-                        let manipulatedWidth = 2000;
-                        let manipulatedHeight = 2000;
-
-                        if (width > manipulatedWidth || height > manipulatedHeight) {
-                            if (width > height) {
-                                manipulatedHeight = Math.round((height * manipulatedWidth) / width);
-                            } else {
-                                manipulatedWidth = Math.round((width * manipulatedHeight) / height);
-                            }
-
-                            const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
-                                { resize: { width: manipulatedWidth, height: manipulatedHeight } }
-                            ]);
-                            uri = resizedPhoto.uri;
-                        }
-
-                        let hash = md5(uri);
-                        uploadImage(
-                            uri,
-                            url + '&a=upload',
-                            handleInsertImageFinish,
-                            { hash: hash }
-                        );
-
-                        let fileType = i.type ? i.type + '/' : uri.split(';')[0].split(':')[1];
-                        k = [
-                            ...k,
-                            { file_url: uri, file_type: fileType, preload: true, hash: hash }
-                        ];
-                    });
-                }
-
+                let k = await uploadImages(result.assets);
                 setImageSource({ images: k });
             }
         }
@@ -178,14 +182,12 @@ export default function FormFieldFiles(props) {
 
     const handleInsertImageFinish = useCallback(async (result, extraVar) => {
         RestoreGhosts({ hash: extraVar.hash, id: result?.data?.id });
-    },
-        []);
+    }, []);
 
     const handleDelete = useCallback(async (id) => {
         const result = await fetcher(url + "&a=delete&id=" + id);
         RestoreGhosts(0);
-    },
-        [url]);
+    }, [url]);
 
     function GhostsList(imagesList) {
 
@@ -219,9 +221,45 @@ export default function FormFieldFiles(props) {
 
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
-    function getImg(img, sizes) {
 
+
+
+    const drop = useRef(null);
+    useEffect(() => {
+        if (drop.current) {
+
+        drop.current.addEventListener('dragover', handleDragOver);
+        drop.current.addEventListener('drop', handleDrop);
+
+        return () => {
+            drop.current.removeEventListener('dragover', handleDragOver);
+            drop.current.removeEventListener('drop', handleDrop);
+        };
     }
+    }, []);
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const { files } = e.dataTransfer;
+
+        if (files && files.length) {
+            if (files && files.length) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadImages([{ uri: event.target.result }])
+                };
+                reader.readAsDataURL(files[0]);
+            }
+        }
+    };
+
     function getButton(imagesList) {
         let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} onPress={selectImage} />
 
@@ -239,15 +277,14 @@ export default function FormFieldFiles(props) {
             button = (
                 <Pressable onPress={selectImage} >
                     <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-16')}>
-                        {img == null ?
-                            <View className='text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Browse files...</Text></View>
-                            : (<>
-                                {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
-                                {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
-                                <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                                    <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
-                                </View>
-                            </>)
+                        <View ref={drop} className=' a0 atext-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Browse files...</Text></View>
+                        {img != null && (<>
+                            {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
+                            {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
+                            <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
+                                <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
+                            </View>
+                        </>)
                         }
                     </View>
                 </Pressable>

@@ -110,7 +110,7 @@ export default function ElementImage(props) {
     if (nobg == true){
         style={}
     }
-    console.log("srcsrc", src)
+
     return (
         <SolitoImageStyled 
             priority

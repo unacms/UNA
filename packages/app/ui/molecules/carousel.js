@@ -95,7 +95,7 @@ export default function ElementCarousel({ data = [] }) {
 
 
             return (
-                <View className='px-0.5 sm:px-4 '>
+                <View className='px-0.5 sm:px-4 max-w-xs mx-auto'>
                     <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
                         <Row className='gap-x-0.5  ' style={{ width: widthIm, height: heightIm }}>
                             <Image2 row={0} index={0} key={0} src={data[0].src} />
@@ -106,8 +106,8 @@ export default function ElementCarousel({ data = [] }) {
         }
 
         return (
-            <View className='px-0.5 sm:px-4 '>
-                <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full   gap-y-0.5 rounded sm:rounded-lg overflow-hidden max-w-lg mx-auto"} onLayout={handleLayout}>
+            <View className='px-0.5 sm:px-4 bg-red-500'>
+                <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full max-w-sm  gap-y-0.5 rounded sm:rounded-lg overflow-hidden max-w-lg mx-auto"} onLayout={handleLayout}>
                     <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
                         {dataR1?.map((item, index) => (
                             <Image2 row={0} index={index} key={index} src={item.src} />

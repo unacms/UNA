@@ -12,6 +12,7 @@ import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
+import Placeholder from '@tiptap/extension-placeholder'
 import Iframe from 'app/lib/editor-helpers'
 import { Suggestion } from 'app/lib/editor-helpers2'
 import Mention from '@tiptap/extension-mention'
@@ -194,6 +195,9 @@ export default function FormFieldFtf(props) {
             Link.configure({
                 openOnClick: false,
             }),
+            Placeholder.configure({
+                placeholder: props.placeholder,
+              }),
 
             MentionEx.configure({
                 HTMLAttributes: {
@@ -231,7 +235,6 @@ export default function FormFieldFtf(props) {
                     setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
                 }
             }
-            console.log('onUpdate');
             field.onChange(editor.getHTML());   
             //formContext.setValue(name, editor.getHTML());
         }
@@ -261,6 +264,7 @@ export default function FormFieldFtf(props) {
             <View>
                 <EditorContent 
                     editor={editor} 
+                    placeholder='DSFS'
                     className={(props?.numLines == 1 ? 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base' : 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-xl w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base ') + ' ' + (isFullHtml? 'p-4 ' : 'p-2.5 my-')}
                 />
                 <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
