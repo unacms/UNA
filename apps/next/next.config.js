@@ -1,6 +1,8 @@
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
+const MillionCompiler = require('@million/lint');
+
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,7 +14,7 @@ const nextConfig = {
   // https://github.com/necolas/react-native-web/pull/2330
   // https://github.com/nandorojo/moti/issues/224
   // once that gets fixed, set this back to true
-  reactStrictMode: false,
+  reactStrictMode: true,
   poweredByHeader: false,
   /*experimental: {
     forceSwcTransforms: true,

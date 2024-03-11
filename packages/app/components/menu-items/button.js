@@ -76,7 +76,7 @@ export default function MenuItemButton(oProps) {
                 <Row className={bShowVertical ? "flex-col flex-auto items-stretch" : "flex-auto items-center"}>
                     { (oProps.list && oProps.list.length> 0) && <ProfilesList data ={oProps.list} showEmpty={false} maxCount={3} displaySize="sm"/> }
                     {oProps?.link ? 
-                        <Link emulate={oProps.emulate} href={oProps.link[0] === '/' ? oProps.link : '/' + oProps.link}>
+                        <Link className="flex" emulate={oProps.emulate} href={oProps.link[0] === '/' ? oProps.link : '/' + oProps.link}>
                             {buttonAction}
                         </Link> 
                         : 

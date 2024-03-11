@@ -317,7 +317,7 @@ export default function ElementCover(props) {
                             {bPerson &&
                                 <Text
                                     numberOfLines={3}
-                                    className="lg:hidden w-full lg:TODO text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                                    className="lg:hidden w-full lg:TODO text-center text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
                                 >
                                     {stripTags(data.profile.info.description)}
                                 </Text>

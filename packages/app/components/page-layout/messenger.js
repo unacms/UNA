@@ -141,16 +141,16 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     let height = useMemo(() => {
         let heightInit = windowWHeight;
         if (layout == 'ver') {
-            heightInit = windowWHeight - 51;
+            heightInit = windowWHeight - 64;
         }
         if (layout == 'hor') {
             heightInit = windowWHeight - 64;
         }
         if (layout == 'mixed') {
-            heightInit = windowWHeight - 64 - 51;
+            heightInit = windowWHeight - 64 - 64;
         }
         if (windowWidth < 1024) {
-            heightInit = windowWHeight - 64 - 51 - 64;
+            heightInit = windowWHeight - 64 - 64 - 64;
         }
         if (!isWeb){
             heightInit = windowWHeight - 64 - 51;
