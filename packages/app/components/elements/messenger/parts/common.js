@@ -17,7 +17,7 @@ import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { useTheme } from '@react-navigation/native';
 import {Nav2} from 'app/components/elements/messenger/parts/nav';
-import Nav from './nav.web';
+import { linkedText } from 'app/lib/text-helpers';
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data }) {
 
@@ -32,7 +32,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
-    const [formHeight, setFormHeight] = useState(62);
+    const [formHeight, setFormHeight] = useState(96);
     const refListConvos = useRef();
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
@@ -209,7 +209,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const handleLayout = (event) => {
-        setFormHeight(event.nativeEvent.layout.height)
+        setFormHeight(event.nativeEvent.layout.height + 16)
     };
 
     const handleReply = (item) => {
@@ -234,7 +234,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <View className='flex-1 flex-auto'>
+        <View className='flex-1 flex-auto mb-4'>
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}
@@ -329,7 +329,7 @@ const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, 
                                         <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
                                         <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{replyItem.author_data.display_name}</Text>
                                     </Row>
-                                    <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{replyItem.message}</Text>
+                                    <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{linkedText(replyItem.message, "hover:text-linkhover")}</Text>
                                 </View>
                                 <View className=" right-0 t-0">
                                     <Button align="start" rounded startDecorator="X" size="xs" variant="outline" onPress={() => handleCancelReply()} />

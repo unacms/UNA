@@ -3,7 +3,7 @@ import Field, {getValidationRules} from './_field';
 import { useFormContext, useController } from 'react-hook-form';
 import Dropdown from 'app/ui/atoms/dropdown'
 
-export default function FormFieldSelect(props) {
+export default function (props) {
     const name = props.name;
     const rules = getValidationRules(props);
     const formContext = useFormContext();
@@ -25,31 +25,7 @@ export default function FormFieldSelect(props) {
         }
     }
 
-    let values = [];
-
-    if (!Array.isArray(props.values)){
-        values = Object.keys(props.values).map(function (key) {
-            
-            if (typeof props.values[key] == 'string')
-                return {label: props.values[key], value: key}
-            else{
-                return {label: props.values[key].value, value: props.values[key].key}
-            }
-                
-        }); 
-    }
-    if (Array.isArray(props.values)){
-        values = props.values.map(function (key) {
-            if (typeof key == 'string'){
-                return {label: key, value: key};
-            }
-            else{
-                return key.value ? {label: key.value, value: key.key} : null
-            }
-            
-        }); 
-        values = values.filter(Boolean);
-    }
+    const values = getVisibilityValues(props.values);
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
@@ -62,4 +38,32 @@ export default function FormFieldSelect(props) {
             />
         </Field>
     );
+}
+
+export function getVisibilityValues(valuesIn){
+    let values = [];
+    if (!Array.isArray(valuesIn)){
+        values = Object.keys(valuesIn).map(function (key) {
+            
+            if (typeof valuesIn[key] == 'string')
+                return {label: valuesIn[key], value: key}
+            else{
+                return {label: valuesIn[key].value, value: valuesIn[key].key}
+            }
+                
+        }); 
+    }
+    if (Array.isArray(valuesIn)){
+        values = valuesIn.map(function (key) {
+            if (typeof key == 'string'){
+                return {label: key, value: key};
+            }
+            else{
+                return key.value ? {label: key.value, value: key.key} : null
+            }
+            
+        }); 
+        values = values.filter(Boolean);
+    }
+    return values;
 }

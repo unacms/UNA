@@ -10,7 +10,6 @@ import Msg from 'app/components/elements/msg';
 import Redirect from 'app/components/elements/redirect';
 
 export function BlockByData(props) {
-    console.log("propspropsprops", props)
     return <BlockContentObjectDataArray data={props.block.content} type={props.block.type} {...props} />
 }
 

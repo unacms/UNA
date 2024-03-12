@@ -9,6 +9,7 @@ import { Picker as PickerDef } from '@react-native-picker/picker';
 import { Theme } from 'app/design/theme';
 import Tooltip from 'app/ui/atoms/tooltip';
 import { useWindowDimensions } from 'react-native';
+import Loading from 'app/ui/atoms/loading'
 
 let h11 = '';
 if (Platform.OS === 'android') {
@@ -136,6 +137,9 @@ export function ButtonsGroup({
 const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
     if (!sIcon)
         return;
+
+    if (sIcon == '_loading')
+        return <Loading size="small" />
 
     if (typeof (sIcon) == 'object')
         return buttonIconStart;

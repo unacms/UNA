@@ -1,7 +1,7 @@
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import dynamic from 'next/dynamic'
 import { linkify } from 'app/lib/util'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
@@ -18,12 +18,14 @@ import { FeedbackHaptics } from 'app/lib/util';
 import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
 
+
 export default function JotItem({ item, index, handleReply }) {
     const isWeb = Platform.OS == 'web'
     const { t } = useTranslation();
     const [postData, setPostData] = useState(null)
     const [viewState, setViewState] = useState({ view: '' })
-    const handleManageMenuSelect = async (oItem, event) => {
+    
+    const handleManageMenuSelect =  useCallback(async (oItem, event) => {
 
         switch (oItem.name) {
             case 'edit':
@@ -35,7 +37,7 @@ export default function JotItem({ item, index, handleReply }) {
                 const result1 = await fetcher('/api.php?r=bx_messenger/remove_jot/Services&params=' + JSON.stringify({ jot_id: item.id, lot_id: item.lot_id, lot_hash: item.lot_hash }));
                 break;
         }
-    }
+    }, [item]);
 
     let { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_messenger/get_send_form/Services&params[]=', '', postData] : null,
@@ -43,12 +45,12 @@ export default function JotItem({ item, index, handleReply }) {
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
     )
 
-    let aImg = item?.files.map((obj) => {
+    let aImg = useMemo(() => item?.files.map((obj) => {
         return {
             src: obj.src,
             type: 'image',
         }
-    });
+    }), [item]);
 
     const onFormSubmit = (formData, d) => {
         formData.set("id", item.lot_id);
@@ -56,14 +58,12 @@ export default function JotItem({ item, index, handleReply }) {
         setPostData(formData);
     }
 
-    let aManageMenu = [];
-    if (item.menu?.items)
-        aManageMenu = item.menu.items.filter(item => ['remove', 'edit'].includes(item.name));
+    const aManageMenu = useMemo(() => item.menu?.items.filter(item => ['remove', 'edit'].includes(item.name)), [item]);
 
-    const handleReplyInner = async (item) => {
+    const handleReplyInner = useCallback(async (item) => {
         FeedbackHaptics('Medium');
         handleReply(item);
-    };
+    }, [handleReply]);
 
     const Jot = <View className='w-full mb-4'>
         <View className="flex-row gap-x-2 ">
@@ -93,12 +93,11 @@ export default function JotItem({ item, index, handleReply }) {
                         </View>
 
                     ) : <>
-                        {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1'>
+                        {item.reply > 0 && <View className='   border border-bdr dark:border-bdr-d  rounded-md p-2 my-1  bg-neutral-500/20'>
                             <View className="flex-row items-baseline" >
-                                <View><Text className='text-sm text-neutral-800 dark:text-neutral-200'>In Reply to </Text></View>
-                                <View className=" "></View>
+                               {/* <View><Text className='text-xs text-neutral-800 dark:text-neutral-200 pb-1'>In Reply to </Text></View>*/}
                             </View>
-                            <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
+                            <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
                         </View>}
                         <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
                         <CarouselMemo aImg={aImg} />
@@ -130,14 +129,15 @@ export default function JotItem({ item, index, handleReply }) {
         </View>
     </View>
 
-    if (!isWeb)
-        return Jot;
+    //if (!isWeb)
+        return Jot
+        //<Jot viewState={viewState} item={item} onFormSubmit={onFormSubmit} aManageMenu={aManageMenu} handleManageMenuSelect={handleManageMenuSelect}/>;
 
-    return (
+   /* return (
         <AnimatedBlock key={'jot' + index}>
             {Jot}
         </AnimatedBlock>
-    )
+    )*/
 }
 
 function CarouselMemo({ aImg, b }) {

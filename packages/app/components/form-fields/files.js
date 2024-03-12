@@ -16,15 +16,15 @@ import Loading from 'app/ui/atoms/loading'
 import { Text } from 'app/design/typography'
 import { Image as ImageNative } from 'react-native';
 
-export default function FormFieldFiles(props) {
+export default function (props) {
     const name = props.name;
     const [imageSource, setImageSource] = useState({ images: null });
     const formContext = useFormContext();
+    const formValue = formContext.watch(name);
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
-
 
     const url = useMemo(() => {
         return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
@@ -35,15 +35,14 @@ export default function FormFieldFiles(props) {
         let a = [];
         let av = [];
 
-        if (true) {
-            const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
-            if (result && result?.data[0]) {
-                Object.keys(result.data[0]).forEach(function (k) {
-                    a.push(result.data[0][k]);
-                    av.push(result.data[0][k].file_id)
-                });
-            }
+        const result = await fetcher(url + "&a=restore_ghosts&_t=" + escape(new Date()));
+        if (result && result?.data[0]) {
+            Object.keys(result.data[0]).forEach(function (k) {
+                a.push(result.data[0][k]);
+                av.push(result.data[0][k].file_id)
+            });
         }
+
         a.forEach(function (k) {
             if (k.file_id) {
                 const val = av.join(',');
@@ -53,6 +52,9 @@ export default function FormFieldFiles(props) {
                 field.onChange(val);
             }
         });
+        if (a.length == 0 && field.value != '')
+            field.onChange('');
+
         let filteredArr = []
         if (imageSource?.images)
             filteredArr = imageSource?.images?.filter(item => item.preload === true);
@@ -63,10 +65,15 @@ export default function FormFieldFiles(props) {
 
     useEffect(() => {
         if (props.previewPlaceHolder) {
-            props.previewPlaceHolder(name, GhostsList(imageSource.images));
+            props.previewPlaceHolder(name, GhostsList(imageSource.images, bMultiple, handleDelete));
         }
-    },
-        [imageSource]);
+    }, [imageSource]);
+
+    useEffect(() => {
+        if (formValue && field.value) {
+            RestoreGhosts(0);
+        }
+    }, [formValue]);
 
     useEffect(() => {
         if (!imageSource.images) {
@@ -78,11 +85,9 @@ export default function FormFieldFiles(props) {
                 // RestoreGhosts(0);
             }, 100);
         }
-    },
-        [formContext.formState.isSubmitted, imageSource.images]);
+    }, [formContext.formState.isSubmitted, imageSource.images]);
 
     const uploadImages = async (asset) => {
-        console.log("assetasset", asset, imageSource.images)
         let k = imageSource.images ? imageSource.images : [];
         let objectsToAdd = Array(asset.length).fill({ preload: true });
         k = [
@@ -131,7 +136,6 @@ export default function FormFieldFiles(props) {
     const selectImage = useCallback(async () => {
         let bIsMedia = props.ext_deny == '' || props.ext_allow == 'mp3,m4a,m4b,wma,wav,3gp' ? true : false;
 
-        // TODO: added for case when one storage for different file types and allow to use it for media files temporary.
         if (!bIsMedia && props.ext_deny.length && !'jpg,jpeg,jpe,gif,png,svg,webp'.split(',').filter((s) => ~props.ext_deny.split(',').indexOf(s)).length)
             bIsMedia = true;
 
@@ -189,25 +193,27 @@ export default function FormFieldFiles(props) {
         RestoreGhosts(0);
     }, [url]);
 
-    function GhostsList(imagesList) {
-
-        if (!imagesList || imagesList.length == 0 || !bMultiple)
-            return;
-
-        return (
-            imagesList?.map((img, index) => (
-                <View key={'file-' + name + '-' + index} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1' >
-                    {img?.file_type?.includes('image/') && <Image view='cover' sizes="96px" className="u-cover  rounded-lg" alt='' src={img.file_url} />}
-                    {(!img?.file_type?.includes('image/') && !img?.preload) && <Icon icon="File" className="w-20 h-20" size={80} />}
-                    {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
-                    {img != '' && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
-                        <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
-                    </View>}
-                </View>
-            ))
-        )
+    if (props.view == 'button') {
+        return <ButtonCover imageSource={imageSource} selectImage={selectImage} />
     }
 
+    if (props.view == 'preview') {
+        return imageSource?.images?.length > 0 ? <ActionButton imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
+        : <></>;
+    }
+
+    return (
+        <Field {...props} error2={formContext.formState.errors[name]}>
+            <View className={bMultiple ? "mr-2" : ""} >
+                <ActionButton imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
+            </View>
+            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete)}</Row>}
+        </Field>
+    );
+}
+
+function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple }) {
+    const drop = useRef(null);
     const iconMap = {
         photo: "ImageSquare",
         cmt_image: "ImageSquare",
@@ -222,20 +228,18 @@ export default function FormFieldFiles(props) {
     let sIcon = iconMap[props.name] || "Plus";
     let sTitle = sIcon === "Plus" ? "Select " + props.name : "";
 
-
-
-    const drop = useRef(null);
+    
     useEffect(() => {
         if (drop.current) {
-
-        drop.current.addEventListener('dragover', handleDragOver);
-        drop.current.addEventListener('drop', handleDrop);
-
-        return () => {
-            drop.current.removeEventListener('dragover', handleDragOver);
-            drop.current.removeEventListener('drop', handleDrop);
-        };
-    }
+            drop.current.addEventListener('dragover', handleDragOver);
+            drop.current.addEventListener('drop', handleDrop);
+            return () => {
+                if (drop.current) {
+                    drop.current.removeEventListener('dragover', handleDragOver);
+                    drop.current.removeEventListener('drop', handleDrop);
+                }
+            };
+        }
     }, []);
 
     const handleDragOver = (e) => {
@@ -259,9 +263,7 @@ export default function FormFieldFiles(props) {
             }
         }
     };
-
-    function getButton(imagesList) {
-        let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} onPress={selectImage} />
+    let button = <Button startDecorator={props.icon ? props.icon : sIcon} title={props.title ? props.title : sTitle} size={props.size ? props.size : "base"} variant={props.variant ? props.variant : "text"} onPress={selectImage} />
 
         if (!bMultiple) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
@@ -276,8 +278,10 @@ export default function FormFieldFiles(props) {
             let isImage = img?.file_type?.includes('image/');
             button = (
                 <Pressable onPress={selectImage} >
-                    <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-16')}>
-                        <View ref={drop} className=' a0 atext-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'><Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Browse files...</Text></View>
+                    <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-32')}>
+                        <View ref={drop} className=' text-neutral-500/50 text-lg  flex-auto w-full border-neutral-300 dark:border-neutral-700 rounded-lg  justify-center  flex-col border border-dashed text-center'>
+                            <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
+                        </View>
                         {img != null && (<>
                             {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
                             {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
@@ -290,19 +294,42 @@ export default function FormFieldFiles(props) {
                 </Pressable>
             );
         }
-
         return button;
-    }
-
-
-    return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
-            <View className={bMultiple ? "mr-2" : ""} >
-                {getButton(imageSource.images)}
-            </View>
-            {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images)}</Row>}
-        </Field>
-    );
+   
 }
 
+function GhostsList(imagesList, bMultiple, handleDelete) {
 
+    if (!imagesList || imagesList.length === 0 || !bMultiple) {
+        return;
+    }
+
+    return imagesList.map((img, index) => {
+        const isImage = img?.file_type?.includes('image/');
+
+        return (
+            <View key={`file-${name}-${index}`} className='h-24 w-24 justify-center items-center dark:bg-bgrcard-d border-bdr dark:border-bdr-d border rounded-lg m-1' >
+                {isImage && <Image view='cover' sizes="96px" className="u-cover  rounded-lg" alt='' src={img.file_url} />}
+                {!isImage && !img?.preload && <Icon icon="File" className="w-20 h-20" size={80} />}
+                {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
+                {img?.file_id && <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
+                    <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
+                </View>}
+            </View>
+        );
+    });
+}
+
+function ButtonCover({ imageSource, selectImage }) {
+    let imagesList = imageSource.images;
+    let img = imagesList && imagesList.find(item => item.preload === true)
+
+    return <Button
+            title="Add Cover"
+            startDecorator={img?.preload ? "_loading" : "Image"}
+            variant="outline"
+            size="base"
+            onPress={selectImage}
+        />
+ 
+}

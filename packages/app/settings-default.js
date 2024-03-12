@@ -26,7 +26,7 @@ let settingsDefault = {
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         use_background: false,
-        cover_aspect: 'aspect-5/1',
+        cover_aspect: 'aspect-3/1',
         cell_gap: 4,
         cell_style: '',
         show_user_icon: false,

@@ -38,7 +38,11 @@ export default function Form(props) {
         Object.keys(data.inputs).forEach(function (key) {  
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
-        
+            
+            if (data.inputs[key].name == "allow_view_to"){
+                data.inputs[key].type = 'visibility'
+            }
+
             if (data.inputs[key].value || data.inputs[key].value == 0)      
                 defaultValues[key] = data.inputs[key].value;
         });

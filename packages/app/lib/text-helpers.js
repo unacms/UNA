@@ -6,7 +6,10 @@ function replaceLinks(htmlString, hoverClass="") {
     const linkRegex = /<a [^>]*href="(.*?)".*?>(.*?)<\/a>/g;
     if (!htmlString)
         return htmlString;
-    const parts = htmlString.split(linkRegex);
+    
+    // Replace <br> and <br/> tags with newline characters
+    const stringWithLineBreaks = htmlString.replace(/<br\s*\/?>/gi, '\n');
+    const parts = stringWithLineBreaks.split(linkRegex);
 
     return parts.map((part, index) => {
         if (index % 3 === 0) {
@@ -24,7 +27,7 @@ function replaceLinks(htmlString, hoverClass="") {
 }
 
 function stripTagsWithLinks(s) {
-    var allowed = ['a'];
+    var allowed = ['a', 'br'];
     if (s)
         s = s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
             return allowed.includes(tag.toLowerCase()) ? _ : '';

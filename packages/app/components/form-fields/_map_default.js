@@ -17,10 +17,11 @@ import InputSet from './input_set';
 import LocationRadius from './location_radius';
 import DoubleRange from './doublerange';
 import CheckboxSet from './checkbox_set';
-
+import Visibility from './visibility';
 
 export const componentsMapDefault = {
     input_set: InputSet,
+    visibility: Visibility,
     captcha: Captcha,
     custom: Custom,
     hidden: Hidden,

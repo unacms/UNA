@@ -2,12 +2,13 @@ import { View, Row } from 'app/design/view'
 import { useState } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
 import { Button } from 'app/design/controls'
-
+import Profile from 'app/ui/molecules/profile';
 import React from 'react'
+import { useCurrentUser } from 'app/context/user';
 
 export default function FormPost(props) {
     const [imageSource, setImageSource] = useState([])
-
+    let { currentUser, setCurrentUser } = useCurrentUser();
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
             setImageSource((prevImageSource) => ({
@@ -20,7 +21,7 @@ export default function FormPost(props) {
     let prevList = Object.values(imageSource).flat()
     if (props.data.inputs['covers']) {
         props.data.inputs['covers'].viewClasses =
-            'p-4 h-32 border-dashed border-bdrcard dark:border-bdrcard-d'
+            'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
         props.data.inputs['covers'].caption = 'Add header image'
     }
     props.data.inputs['title'].type = 'textarea'
@@ -33,25 +34,29 @@ export default function FormPost(props) {
     return (
         <View className="w-full max-w-5xl flex-col">
             <View className=" bg-bgrcard dark:bg-bgrcard-d  overflow-hidden flex-col  sm:rounded-2xl ">
-                <View className=" flex-row px-4 pt-4 pb-2 animate-pulse">
-                    <View className="h-10 w-10 bg-bgritem rounded-full"></View>
+                <View className=" flex-row px-4 pt-4 pb-2 ">
+
+                    <Profile {...currentUser} displayType="unit" displaySize="base" />
                     <View className="pl-2 flex-row flex-wrap flex-auto justify-between ">
                         <View className=" text-base font-bold text-neutral-800 my-auto mr-4">
-                            Author Name
+
                         </View>
                         <View className="my-auto gap-x-2 flex-row">
-                                <Button
-                                title="Add Cover"
-                                startDecorator="Image"
-                                variant="outline"
-                                size="base"
-                            />
-                            <Button
-                                title="Public"
-                                startDecorator="Globe"
-                                variant="outline"
-                                size="base"
-                            />
+                            {getFormFieldByData(
+                                props.data.inputs['allow_view_to'],
+                                props.handleSubmit,
+                                'nofield'
+                            )}
+
+
+                            {getFormFieldByData(
+                                props.data.inputs['covers'],
+                                props.handleSubmit,
+                                'notitle',
+                                { format: 'custom', view: 'button' }
+                            )}
+
+
                         </View>
                     </View>
                 </View>
@@ -59,8 +64,9 @@ export default function FormPost(props) {
                     props.data.inputs['covers'],
                     props.handleSubmit,
                     'notitle',
-                    { format: 'custom' }
+                    { format: 'custom', view: 'preview' }
                 )}
+
                 <View className=" px-4 pb-2 xl:pb-4 xl:px-6 ">
                     {getFormFieldByData(
                         props.data.inputs['title'],
@@ -124,11 +130,7 @@ export default function FormPost(props) {
                     props.handleSubmit,
                     'notitle'
                 )}
-                {getFormFieldByData(
-                    props.data.inputs['allow_view_to'],
-                    props.handleSubmit,
-                    'notitle'
-                )}
+
                 {getFormFieldByData(
                     props.data.inputs['allow_comments'],
                     props.handleSubmit,

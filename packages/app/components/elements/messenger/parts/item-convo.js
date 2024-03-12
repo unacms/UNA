@@ -6,11 +6,12 @@ import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
 import { Platform } from 'react-native'
+import { memo } from 'react';
 
-export default function ConvosItem({ item, index, changeConvo, selectedIndex }) {
+export default function ({ item, index, changeConvo, selectedIndex }) {
     const isWeb = Platform.OS == 'web'
 
-    const Item = <Pressable onPress={() => changeConvo(item)}>
+    const Item = memo(({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
         <Card border="mb-[1px] border-dashed sm:hover:bg-bgritem dark:sm:hover:bg-bgritem-d border-bdrcard dark:border-bdrcard-d" addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile
@@ -46,16 +47,15 @@ export default function ConvosItem({ item, index, changeConvo, selectedIndex }) 
                 </View>
             </View>
         </Card>
-    </Pressable>
+    </Pressable>));
     
-    if (!isWeb) {
-        Item
-        
-    }
+    //if (!isWeb) {
+    return <Item item={item} index={index} changeConvo={changeConvo} selectedIndex={selectedIndex} />
+    //}
 
-    return (
+   /* return (
         <AnimatedBlock key={'convos' + index}>
-            {Item}
+            <Item item={item} index={index} changeConvo={changeConvo} selectedIndex={selectedIndex} />
         </AnimatedBlock>
-    )
+    )*/
 }
