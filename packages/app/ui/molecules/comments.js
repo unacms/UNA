@@ -8,6 +8,7 @@ import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementComments(oProps) {
+    console.log("oProps", oProps)
     const redirectdRef = useRef();
 
     const oParams = {...appSetting('social_actions', 'comment'), ...oProps.params};
@@ -55,25 +56,6 @@ export default function ElementComments(oProps) {
             return actionsData[sContextKey][sName];
     };
 
-    const setContextVars = (mValue) => {
-        const sContextKey = getName();
-
-        let oValue = {};
-        oValue[sContextKey] = mValue;
-
-        if(bShowFull) {
-            if(!actionsDataState)
-                asetActionsDataState(oValue);
-            else
-                asetActionsDataState({...actionsDataState, ...oValue});
-        }
-        else {
-            if(!actionsData)
-                setActionsData(oValue);
-            else
-                setActionsData({...actionsData, ...oValue});
-        }
-    };
 
     const performAction = async (sAction, aParams, onLoad) => {
         const aParamsDefault = {s: oProps.system, o:oProps.object_id};
@@ -88,6 +70,11 @@ export default function ElementComments(oProps) {
 
     const handleDo = (event) => {
         event.preventDefault();
+
+        if (oProps.callback){
+            oProps.callback();
+            return;
+        }
 
         if(!oAction?.link)
             return;

@@ -21,85 +21,43 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
-import { Pressable } from 'dripsy'
+import { CommentsBrowse, CommentsParts } from 'app/lib/comments-helpers'
+import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
-import { Dimensions } from 'react-native';
-import BlockByUrl from 'app/ui/molecules/block';
-import { KeyboardAvoidingView } from 'react-native';
 import { BottomSheetData } from 'app/context/bottomsheet';
+import { useWindowDimensions } from 'react-native'
 
-const CommentsSection2 = ({ commentsData }) => {
-    let offset = "pb-20"
-    const [formData, setFormData] = useState({});
-    let aItems = [];
-
-    const handleReply = async (id, author, text) => {
-
-    }
-    const handleLayout = () => {
-
-    }
-
-    const handleForm = () => {
-
-    }
-
-
-    let addData = []
-    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 100 });
-
+const CommentsSection2 = ({ commentsData, initFormData }) => {
+    const windowDimensions = useWindowDimensions();
+    const CommentsPartsData = CommentsParts(commentsData, [], windowDimensions.height*0.75, initFormData);
     return (
         <View className='flex-1 w-full '>
             <View className=' w-full flex-auto'>
-                <CommentsBrowse height={500} addItems={aItems} handleReply={handleReply} browse={commentsData?.browse} addData={addData} module={commentsData?.browse?.data?.module ? commentsData?.browse.data.module : commentsData?.module} requestUrl={commentsData?.url} />
+                {CommentsPartsData[0]}
             </View>
             <View >
-            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                <CommentsForm handleForm={handleForm} browse={commentsData?.browse} module={commentsData?.browse?.data?.module ? commentsData?.browse.data.module : commentsData?.module} form={commentsData?.form} formData={formData} requestUrl={commentsData?.url} />
-            </KeyboardAvoidingView>
+                {CommentsPartsData[1]}
             </View>
         </View>);
 }
 
-const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments, url, capt }) => {
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-
-    const [commentsData, setCommentsData] = useState(null);
-
-    async function fetchData() {
-        console.log("commentsData", commentsData)
-        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"bx_posts","object_id":87}');
-
-        setBottomSheetData({ title: 'Comments', content: <CommentsSection2 commentsData={res.data} />, snapPoints: ['75%', '90%'] });
-        //    setCommentsData(res.data);
-    }
-
+const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments,  showCommentsModal }) => {
+    const { t } = useTranslation();
     return (
         <View>
-            <Button
-                variant="text"
-                size="sm"
-                rounded
-                startDecorator="DotsThreeOutline"
-                onPress={() => {
-                    fetchData();
-                }}
-            />
-            <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} />
+            <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
-                    <Link href={url}>
+                    <Pressable onPress = {() => {showCommentsModal()}} >
                         <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
-                            {capt}
+                            {t('View more comments...')}
                         </Text>
-                    </Link>
+                    </Pressable>
                 </View>
             )}
         </View>
     )
 });
-
 
 const ItemInfo = ({ data }) => {
     const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
@@ -136,18 +94,16 @@ const ItemInfo = ({ data }) => {
 
 function DefaultUnit(data) {
 
-
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
     }
-    const { t } = useTranslation();
-    const capt = t('View more comments...');
+ 
     let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const [showFull, setShowFull] = useState(false)
     const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
-
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     if (data.sFirstImg) {
         ImageNative.getSize(data.sFirstImg, (width, height) => {
             if (width > height)
@@ -208,6 +164,11 @@ function DefaultUnit(data) {
 
 
 
+    const showCommentsModal = async (initFormData) =>{
+        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+data?.cmts?.module+'","object_id":'+data?.cmts?.object_id+'}');
+        setBottomSheetData({ title: 'Comments', content: <CommentsSection2 initFormData={initFormData} commentsData={res.data} />, snapPoints: ['75%', '90%'] });
+    }
+
     const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items, currentUser).map(
         (aItem) => {
             return {
@@ -266,7 +227,12 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return <></>
 
+    //TODO FIX
+    data.menu_actions.items[0].data.callback = showCommentsModal
+    console.log(data.menu_actions);
+   
     const MenuMemo = memo(() => (
+
         <Menu
             {...data.menu_actions}
             displayType="button"
@@ -640,14 +606,14 @@ function DefaultUnit(data) {
                                 </>
                             )}
                             <View className="flex-col relative px-0 py-4">
-                                <View className=" flex-row    px-4 flex-auto">
-                                    <MenuMemo />
-                                </View>
+                                <Row className="px-4 flex-auto">
+                                    <MenuMemo showCommentsModal={showCommentsModal} />
+                                </Row>
                             </View>
                         </>
                     )}
                 </View>
-                {commentsData && <CommentsSection capt={capt} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
+                {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments}/>}
             </Card>
         </AnimatedBlock>
     )

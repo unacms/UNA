@@ -44,9 +44,9 @@ export default function UnitComments(props) {
     let parent = props.parent;
 
     // request form for reply
-    const handleReply = async (id, author, text) => {
+    const handleReply = async (data) => {
         FeedbackHaptics('Medium');
-        props.handleReply(id, author, text);
+        props.handleReply(data);
     };
 
     let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small ";
@@ -170,7 +170,7 @@ export default function UnitComments(props) {
                     </View>
                     { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser && !!props.handleReply ? <View className='mr-2'>
-                            <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data.cmt_id, data.author_data.display_name, data.cmt_text)} rounded />
+                            <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data)} rounded />
                         </View> : <View className='mr-2'></View> }
                         <View className='flex-row'>
                             <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs'}} />

@@ -59,7 +59,9 @@ export default function ({ data }) {
         }
     });
 
-    if (aImages.length === 0) return null;
+    if (aImages.length === 0) {
+        return null;
+    }
     
     return (
         <>
