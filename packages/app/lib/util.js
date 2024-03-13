@@ -10,11 +10,18 @@ import { appSetting as setting, UNA_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
 
 export function appSetting(section, name, path) {
-   return setting(section, name, path, remoteSettings.data);
+    return setting(section, name, path, remoteSettings.data);
 }
 
 export function decodeText(str) {
     return decode(str);
+}
+
+export function truncateString(str, num) {
+    if (str.length <= num) {
+        return str;
+    }
+    return str.slice(0, num) + '...';
 }
 
 export async function getClipboard() {
@@ -98,14 +105,14 @@ export function storageClear(pref, key) {
 
 function replacer(key, value) {
     if (value === this) {
-      return undefined;
+        return undefined;
     }
     return value;
-  }
+}
 
 function compress(data) {
     try {
-        let a= JSON.stringify(data, replacer)
+        let a = JSON.stringify(data, replacer)
         return Buffer.from(pako.deflate(a)).toString('base64');
     } catch (error) {
         console.log('!!!-Compression error:', data, error);

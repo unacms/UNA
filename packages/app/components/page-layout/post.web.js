@@ -110,7 +110,7 @@ export default function PageLayout(props) {
             {header}
             <View className=" py-0 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full  border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
-                    <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 36 : 16, heightx: sizes.otherHeight }} className={'  w-full '+ (Dimensions.get('window').width < 1024 ? '' : offset)}>
+                    <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 36 : 16, heightx: sizes.otherHeight }} className={'bg-greeen-500  w-full '+ (Dimensions.get('window').width < 1024 ? '' : offset)}>
                         <CommentsBrowse addItems={aItems} handleReply={handleReply} browse={commentsData?.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData?.content[0].url} />
                     </View>
                     </Row>

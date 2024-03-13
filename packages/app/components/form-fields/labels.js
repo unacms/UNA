@@ -1,89 +1,78 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import { Input } from 'app/design/controls'
-import Dropdown from 'app/ui/atoms/dropdown'
-import { fetcher } from 'app/lib/fetcher';
+import CheckBox from 'app/ui/atoms/checkbox';
 import { Hidden } from 'app/design/controls'
 import { Button } from "app/design/controls";
+import { BottomSheetData } from 'app/context/bottomsheet';
 
 export default function FormFieldLabels(props) {
 
-    let rules = {};
-    let defaultValue = props.value ? props.value : '';
+    const rules = {};
+    const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
-    let name = props.name ? props.name : '';
-    let { field } = useController({ name, rules, defaultValue });
-    const labelsData = props.values;
-    // const [labelsData, setLabelsData ] = useState(false);
-    let selectedValues = String(field.value).split(',');
-   
-    /*const fetchData = async () => {
-        const sResponse = await fetcher('/api.php?r=' + props.ajax_get_suggestions);
-        if (sResponse?.data){
-            setLabelsData(sResponse?.data)
-        }
-    };*/
-
-    const addValue = (value) => {
-        if (selectedValues.includes(value)){
-            selectedValues = selectedValues.filter(function(item) {
-                return item !== value
-            })
-        }
-        else{
-            selectedValues.push(value)
-           
-        }
-        formContext.setValue(props.name, selectedValues.join(','))
+    const name = props.name ? props.name : '';
+    const { field } = useController({ name, rules, defaultValue });
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    
+    const setFormValue = (value) => {
+        value = value.filter(item => item);
+        field.onChange(value);
+        setBottomSheetData(false);
     }
+    const dataFlat = [...props.values.system, ...props.values.context].flatMap(item =>
+        item.subitems ? [item, ...item.subitems] : item
+    );
 
-    /*useEffect(() => {
-        fetchData();
-    }, []);*/
-
-    const renderLabelSection = (data, title) => {
-        if (data.length > 0) {
-
-            let dataFlat = data.flatMap(item => 
-                item.subitems ? [item, ...item.subitems] : item
-            );
-
-            return (
-                <View className='w-full flex-wrap mb-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
-                    <Text className="font-semibold px-2 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">{title}</Text>
-                    <Row className=" gap-x-2 p-2 justify-start items-center flex-row flex-wrap ">
-                        {dataFlat.map((item, index) => <View className='my-1'  key={item.value + index} >
-                            <Button 
-                                variant={selectedValues.includes(item.value) ? "primary" : "default"} 
-                                size="xs" 
-                             
-                                title={item.value} 
-                                onPress={() => addValue(item.value)} 
-                            />
-                        </View>)}
-                    </Row>
-                </View>
-            );
-        }
+    const showSelect = (val) => {
+        setBottomSheetData({ title: 'Choose labels', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue}></ChkList> });
     }
 
     return (
-        <Field {...props}>
-            {labelsData && (
-                <View className='w-full'>
-                    {renderLabelSection(labelsData.system, "Add labels")}
-                    {renderLabelSection(labelsData.context, "Context labels")}
+        <Field {...props} error2={formContext.formState.errors[name]}>
+           <View className='w-full'>
+                    <Button
+                        title={field.value ? 'Selected: ' + field.value.length : 'Select labels'}
+                        startDecorator="Plus"
+                        variant="outline"
+                        size="sm"
+                        onPress={() => showSelect()}
+                    />
                 </View>
-            )}
-            <Hidden 
-                name={props.name}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                value={String(field.value)}
-            />
         </Field>
+    );
+}
+
+function ChkList({ values, selectedValues, setFormValue }) {
+    const [value2, setValue2] = useState(selectedValues)
+
+    const addValue2 = (value) => {
+        const selectedValues = value2.includes(value) 
+            ? value2.filter(item => item !== value)
+            : [...value2, value];
+        setValue2(selectedValues);
+    }
+
+    return (
+        <>
+            {values.map((item2, index) => (
+                <Row className='gap-x-2 items-center mb-2' key={'chk' + index}>
+                    <CheckBox
+                        value={value2.includes(item2.value)}
+                        onValueChange={() => addValue2(item2.value)}
+                    />
+                    <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                </Row>
+            ))}
+            <Button
+                title={'Save'}
+                startDecorator=""
+                variant="outline"
+                size="sm"
+                onPress={() => setFormValue(value2)}
+            />
+        </>
     );
 }

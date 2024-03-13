@@ -135,6 +135,7 @@ export function ButtonsGroup({
 
 /* buttons */
 const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIconSize, colorIcon, buttonIconStart) => {
+
     if (!sIcon)
         return;
 
@@ -144,6 +145,8 @@ const getIcon = (sIcon, iIndex, classIconName, sClassText, sIconContainer, iIcon
     if (typeof (sIcon) == 'object')
         return buttonIconStart;
 
+    sClassText=sClassText.replace('overflow-hidden', '');
+    
     if (isEmoji(sIcon))
         return (
             <Text key={iIndex} className={classIconName ? classIconName : sClassText + sIconContainer}>{sIcon}</Text>
@@ -188,7 +191,7 @@ export function Button(props) {
     let sClassContainer = ' group relative flex-row items-center '
     let sIconContainer = ' h-6 w-6 mr-2 '
 
-    sClassContainer += buttonFull ? ' flex-auto w-full ' : ' w-fit m-0 truncate '
+    sClassContainer += buttonFull ? ' flex-auto w-full ' : '  m-0 truncate w-fit '//w-fit  m-0 truncate
 
     if (buttonDisabled) sClassContainer += ' opacity-50 '
 

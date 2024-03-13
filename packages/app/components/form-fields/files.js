@@ -73,6 +73,10 @@ export default function (props) {
         if (formValue && field.value) {
             RestoreGhosts(0);
         }
+        if (!formValue)
+        {
+            setImageSource({ images: null });
+        }
     }, [formValue]);
 
     useEffect(() => {
@@ -323,12 +327,13 @@ function GhostsList(imagesList, bMultiple, handleDelete) {
 function ButtonCover({ imageSource, selectImage }) {
     let imagesList = imageSource.images;
     let img = imagesList && imagesList.find(item => item.preload === true)
+    let isImages = imagesList && imagesList.find(item => item.preload !== true)
 
-    return <Button
+    return !isImages && <Button
             title="Add Cover"
             startDecorator={img?.preload ? "_loading" : "Image"}
             variant="outline"
-            size="base"
+            size="sm"
             onPress={selectImage}
         />
  

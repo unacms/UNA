@@ -41,7 +41,7 @@ const getData = cache(async (props) => {
         l = l + '&params[]=' + sBlocks + '&params[]=' + JSON.stringify(searchParams);
     }
 
-    // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
+     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', searchParams, l);
     const res = await fetch(l, opts)
     //console.log('^^^^^^^^^^^^^^^^^^^^^^^^^', res);
     return await res.json()

@@ -13,9 +13,6 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import BlockByUrl from 'app/ui/molecules/block';
-// import Aaa from "./aaa.svg";
-
-// const AaaExample = () => <Aaa />;
 
 const LogoText = (
     <Svg

@@ -106,7 +106,7 @@ export default function ElementCarousel({ data = [] }) {
         }
 
         return (
-            <View className='px-0.5 sm:px-4 bg-red-500'>
+            <View className='px-0.5 sm:px-4 '>
                 <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full max-w-sm  gap-y-0.5 rounded sm:rounded-lg overflow-hidden max-w-lg mx-auto"} onLayout={handleLayout}>
                     <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
                         {dataR1?.map((item, index) => (

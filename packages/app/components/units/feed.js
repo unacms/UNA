@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import React, { memo, useState, useMemo, useEffect } from 'react'
+import React, { memo, useState, useMemo, useEffect, useContext } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
@@ -21,24 +21,84 @@ import { componentsMap } from 'app/ui/molecules/_map'
 import Card from 'app/ui/molecules/card'
 import AnimatedBlock from 'app/ui/molecules/animated-block'
 import { useTranslation } from 'react-i18next';
-import { CommentsBrowse } from 'app/lib/comments-helpers'
+import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { Pressable } from 'dripsy'
 import { ContentMore } from 'app/ui/molecules/contentmore';
+import { Dimensions } from 'react-native';
+import BlockByUrl from 'app/ui/molecules/block';
+import { KeyboardAvoidingView } from 'react-native';
+import { BottomSheetData } from 'app/context/bottomsheet';
 
-const CommentsSection = React.memo(({ commentsData, data, isShowMoreComments, url, capt }) => (
-    <View>
-        <CommentsBrowse maxCount={2} browse={commentsData} module={data?.cmts.module} isShort={true} />
-        {isShowMoreComments && (
-            <View className='px-4 pb-4'>
-                <Link href={url}>
-                    <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
-                        {capt}
-                    </Text>
-                </Link>
+const CommentsSection2 = ({ commentsData }) => {
+    let offset = "pb-20"
+    const [formData, setFormData] = useState({});
+    let aItems = [];
+
+    const handleReply = async (id, author, text) => {
+
+    }
+    const handleLayout = () => {
+
+    }
+
+    const handleForm = () => {
+
+    }
+
+
+    let addData = []
+    const [sizes, setSizes] = useState({ cntHeight: 0, listHeight: 100, formHeight: 0, formWidth: 100 });
+
+    return (
+        <View className='flex-1 w-full '>
+            <View className=' w-full flex-auto'>
+                <CommentsBrowse height={500} addItems={aItems} handleReply={handleReply} browse={commentsData?.browse} addData={addData} module={commentsData?.browse?.data?.module ? commentsData?.browse.data.module : commentsData?.module} requestUrl={commentsData?.url} />
             </View>
-        )}
-    </View>
-));
+            <View >
+            <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
+                <CommentsForm handleForm={handleForm} browse={commentsData?.browse} module={commentsData?.browse?.data?.module ? commentsData?.browse.data.module : commentsData?.module} form={commentsData?.form} formData={formData} requestUrl={commentsData?.url} />
+            </KeyboardAvoidingView>
+            </View>
+        </View>);
+}
+
+const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments, url, capt }) => {
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+
+    const [commentsData, setCommentsData] = useState(null);
+
+    async function fetchData() {
+        console.log("commentsData", commentsData)
+        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"bx_posts","object_id":87}');
+
+        setBottomSheetData({ title: 'Comments', content: <CommentsSection2 commentsData={res.data} />, snapPoints: ['75%', '90%'] });
+        //    setCommentsData(res.data);
+    }
+
+    return (
+        <View>
+            <Button
+                variant="text"
+                size="sm"
+                rounded
+                startDecorator="DotsThreeOutline"
+                onPress={() => {
+                    fetchData();
+                }}
+            />
+            <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} />
+            {isShowMoreComments && (
+                <View className='px-4 pb-4'>
+                    <Link href={url}>
+                        <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
+                            {capt}
+                        </Text>
+                    </Link>
+                </View>
+            )}
+        </View>
+    )
+});
 
 
 const ItemInfo = ({ data }) => {
@@ -537,7 +597,7 @@ function DefaultUnit(data) {
                                                 <View>
                                                     <View className="flex-col gap-y-3 relative">
                                                         {bIsTimelineContent && (
-                                                            <View className={'bg-red-500 ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
+                                                            <View className={' ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
                                                                 <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
                                                             </View>
                                                         )}
@@ -587,7 +647,7 @@ function DefaultUnit(data) {
                         </>
                     )}
                 </View>
-                {commentsData && <CommentsSection capt={capt} commentsData={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
+                {commentsData && <CommentsSection capt={capt} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} url={url} />}
             </Card>
         </AnimatedBlock>
     )

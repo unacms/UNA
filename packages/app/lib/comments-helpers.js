@@ -77,7 +77,7 @@ export function parseData (browse, dynamicData) {
     return browse;
 }
 
-export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort=false, maxCount}) {
+export function CommentsBrowse({browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort=false, maxCount, height=0}) {
 
 
     const { t } = useTranslation();
@@ -132,6 +132,14 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
             addCommentData({ listData: browse, total_count: commentData.total_count + 1, lastInserted:i })
         }
     }, [addData]);
+
+    useEffect(() => {
+       // flashListRef.current.scrollToIndex({ animated: true, index:  });
+       // console.log('aaaa')
+    }, []);
+
+   
+
 
     function DataForList(items, level, last_child_in, lvls){
         if (!items)
@@ -295,6 +303,7 @@ export function CommentsBrowse({browse, requestUrl, module, handleReply, handleE
         <> 
             <UniList
                 useWindowScroll
+                height={height > 0 ? height : undefined}
                 data={dataOut}
                 refer = {flashListRef}
                 //onScrollToIndex={handleScrollToIndex}
