@@ -22,7 +22,7 @@ export default function FormPost(props) {
     if (props.data.inputs['covers']) {
         props.data.inputs['covers'].viewClasses =
             'p-4 border-dashed border-bdrcard dark:border-bdrcard-d'
-        props.data.inputs['covers'].caption = 'Add header image'
+        props.data.inputs['covers'].caption = 'Add cover image'
     }
     props.data.inputs['title'].type = 'textarea'
     props.data.inputs['title'].height = 12
@@ -33,21 +33,27 @@ export default function FormPost(props) {
 
     return (
         <View className="w-full max-w-5xl flex-col">
-            <View className=" bg-bgrcard dark:bg-bgrcard-d  overflow-hidden flex-col  sm:rounded-2xl ">
-                <View className=" flex-row px-4 pt-4 pb-2 ">
+            <View className="  overflow-hidden flex-col  ">
 
-                    <Profile {...currentUser} displayType="unit" displaySize="base" />
-                    <View className="pl-2 flex-row flex-wrap flex-auto justify-between ">
-                        <View className=" text-base font-bold text-neutral-800 my-auto mr-4">
+                    <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between ">
+                        <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto ">
+                        <Profile {...currentUser} displayType="unit" displaySize="base" />
 
                         </View>
-                        <View className="my-auto gap-x-2 flex-row">
+                        <View className=" mb-4  ">
                             {getFormFieldByData(
                                 props.data.inputs['allow_view_to'],
                                 props.handleSubmit,
                                 'nofield'
                             )}
 
+                            
+                            
+
+
+                        </View>
+                        <View className=" mb-4  ">
+                           
 
                             {getFormFieldByData(
                                 props.data.inputs['covers'],
@@ -55,11 +61,16 @@ export default function FormPost(props) {
                                 'notitle',
                                 { format: 'custom', view: 'button' }
                             )}
+                            
+                            
 
 
                         </View>
                     </View>
-                </View>
+                        
+                        
+                    
+                
                 {getFormFieldByData(
                     props.data.inputs['covers'],
                     props.handleSubmit,
@@ -67,7 +78,7 @@ export default function FormPost(props) {
                     { format: 'custom', view: 'preview' }
                 )}
 
-                <View className=" px-4 pb-2 xl:pb-4 xl:px-6 ">
+                <View className="  ">
                     {getFormFieldByData(
                         props.data.inputs['title'],
                         props.handleSubmit,
@@ -82,8 +93,11 @@ export default function FormPost(props) {
                     )}
                 </View>
             </View>
-            <View className="flex-col gap-y-4 px-4 xl:px-8">
-                <Row className=" ">
+            <View className="flex-col ">
+                
+                <View className='w-full flex-wrap mb-2 flex-row border rounded-xl border-bdr dark:border-bdr-d p-1 '>
+                    <View className="font-semibold px-3 h-10 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add media</View>
+                    <Row className=" justify-start items-center flex-row flex-wrap ">
                     <View className="">
                         {getFormFieldByData(
                             props.data.inputs['pictures'],
@@ -116,26 +130,47 @@ export default function FormPost(props) {
                             { previewPlaceHolder: setPlaceHolder }
                         )}
                     </View>
-                </Row>
+                    </Row>
+                </View>
+
+
+
+
                 {prevList.length > 0 && prevList[0]?.key && (
                     <Row className="flex-wrap">{prevList}</Row>
                 )}
-                {getFormFieldByData(
-                    props.data.inputs['cat'],
-                    props.handleSubmit,
-                    'notitle'
-                )}
+                
                 {getFormFieldByData(
                     props.data.inputs['labels'],
                     props.handleSubmit,
                     'notitle'
                 )}
 
-                {getFormFieldByData(
+                <View className='w-full flex-wrap mb-2 flex-row border rounded-xl border-bdr dark:border-bdr-d p-1'>
+                    <View className="font-semibold px-2 py-1 flex-auto my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</View>
+                    <Row className=" gap-x-2 max-w-xl px-2 justify-start items-center flex-auto flex-row flex-wrap ">
+                    {getFormFieldByData(
+                    props.data.inputs['cat'],
+                    props.handleSubmit,
+                    'notitle'
+                )}
+                    </Row>
+                </View>
+
+                
+
+                <View className='w-full flex-wrap my-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
+                    <View className="font-semibold px-2 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Comments</View>
+                    <Row className=" gap-x-2 p-2 justify-start items-center flex-row flex-wrap ">
+                    {getFormFieldByData(
                     props.data.inputs['allow_comments'],
                     props.handleSubmit,
                     'default'
                 )}
+                    </Row>
+                </View>
+
+                
                 {getFormFieldByData(
                     props.data.inputs['do_publish'],
                     props.handleSubmit,
