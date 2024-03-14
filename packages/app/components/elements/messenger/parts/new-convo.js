@@ -1,12 +1,13 @@
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import Profile from 'app/ui/molecules/profile'
 import { Button, InputRounded } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
+import { BottomSheetData } from 'app/context/bottomsheet';
 
-export default function CreateConvo({ onSave}) {
+export default function CreateConvo ({ onSave }) {
     const [users, setUsers] = useState([]);
     const [susers, setSUsers] = useState([]);
     const [showLoading, setLoading] = useState(false);
@@ -79,3 +80,22 @@ const User = ({ data, onSelect }) => {
         </View>
     </Pressable>
 };
+
+export function CreateConvoButton({onSave, variant ='small'}) {
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const newConvo = () => {
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />, showClose: true, snapPoints: ['25%', '50%'] });
+    }
+
+    const onSaveHandler = (data) => {
+        setBottomSheetData(false);
+        onSave(data);
+       
+    }
+
+    if (variant == 'small')
+        return <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
+
+    return <Button startDecorator={"Plus"} variant="primary" title="Create your first conversation" rounded  onPress={() => newConvo()} />
+
+}

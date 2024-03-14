@@ -636,10 +636,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     );
 }
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
+    
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
+    
     const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
         const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon  ? null : a.addon} />
-
         if (a.icon=='*'){
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
         }
@@ -660,10 +661,9 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         )
     });
 
-    const MenuItemEx = memo(({ item, index, setNtfsOpen, setIndex, getNumCols, windowWidth, onChangeRoute }) => {
+    const MenuItemEx = memo(({item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
         const translatedTitle = <Text>{t(title)}</Text>;
-    
         let addonContent = null;
         if (addon) {
             const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
@@ -676,7 +676,6 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         }
     
         const handlePress = () => {
-            setNtfsOpen(false);
             setIndex(index);
             getNumCols(windowWidth);
             window.history.pushState({}, '', '/' + key);
@@ -703,7 +702,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
     });
 
     const ButtonEx = memo(({visibleItemsCount}) => {
-        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded  /></View>;
+        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded onPress={()=>{}}  /></View>;
     });
     
     return <DynamicMenu 

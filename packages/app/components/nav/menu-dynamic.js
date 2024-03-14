@@ -1,7 +1,5 @@
-
 import { View, ScrollView } from 'app/design/view'
 import React, { useState, useEffect, useRef, useCallback} from "react";
-import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { Platform } from 'react-native' 
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
    
@@ -12,7 +10,7 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     const itemRefsMore = useRef();
     const [visibleItemsCount, setVisibleItemsCount] = useState(0);
     const [width, setWidth] = useState(0);
-    const [ntfsOpen, setNtfsOpen] = useState(false);
+
     useEffect(() => {
         const menuWidth = width;
         let visibleWidth = offsetWidth + (itemRefsMore?.current ? itemRefsMore?.current?.offsetWidth : 0);
@@ -43,16 +41,16 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
         <DropdownMenu items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
             id: 'menu-' + iKey,
             link: aItem.link,
-            title: <MenuItemEx setNtfsOpen={setNtfsOpen} key={name +'menuex'+ iKey} item={aItem} index={iKey}  />,
+            title: <MenuItemEx  key={name +'menuex'+ iKey} item={aItem} index={iKey+visibleItemsCount}  />,
             indicator: aItem.addon,
-            onClick: () => console.log('click' + iKey),
+            onClick: () => console.log('TODO'),
         }))
         }
         >
             <ButtonEx visibleItemsCount={visibleItemsCount} />
         </DropdownMenu>
-       
     )
+
     return (
         <>
             <ScrollView contentContainerStyle={{alignItems: 'center'}} className={isWeb ? containerClasses : ""} horizontal={true}  onLayout={handleLayout}>

@@ -66,8 +66,8 @@ export default function (oProps) {
             <DmItem key={oItem.id} onSelect={(event) => !!oItem?.onClick ? oItem?.onClick(oItem, event) : onSelect(oItem, event)} {...(bWeb ? {className: oItem?.class_item} : {})}>
                 {!!sIcon && <DropdownMenuItemIcon>{sIcon}</DropdownMenuItemIcon>}
                 {!!oItem?.title && <DropdownMenuItemTitle {...(bWeb ? {className: oItem?.class_item_title} : {})}>{oItem.title}</DropdownMenuItemTitle>}
-                {( false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenuItemSubtitle>}
-                {(false &&  bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenuItemSubtitleRed>}
+                {(false && bWeb && oItem.indicator && !oItem.indicator.variant) && <DropdownMenuItemSubtitle>{ oItem.indicator }</DropdownMenuItemSubtitle>}
+                {(false && bWeb && oItem.indicator && oItem.indicator.variant) && <DropdownMenuItemSubtitleRed>{ oItem.indicator.text }</DropdownMenuItemSubtitleRed>}
             </DmItem>
         );
     });
@@ -75,7 +75,7 @@ export default function (oProps) {
     return (
         <View >
             <Redirect ref={redirectdRef} />
-            <DropdownMenuRoot >
+            <DropdownMenuRoot>
                 <DropdownMenuTrigger data-state='open'>{oProps.children}</DropdownMenuTrigger>
                 <DmContent>{aDmItems}</DmContent>
             </DropdownMenuRoot>

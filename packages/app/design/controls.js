@@ -78,7 +78,7 @@ export function Modal({
                                     <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
                                 </View>
                             )}
-                            <View className="overflow-y-auto px-4 py-2 flex-auto md:h-auto">{children}</View>
+                            <View className="overflow-y-auto px-4 pt-2 pb-4 flex-auto md:h-auto">{children}</View>
                         </Pressable>
                     </View>
                 </View>

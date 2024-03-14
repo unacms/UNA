@@ -1,7 +1,6 @@
 import { View, Row } from 'app/design/view'
 import { useState } from 'react'
 import { getFormFieldByData } from 'app/lib/form-helpers'
-import { Button } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile';
 import React from 'react'
 import { useCurrentUser } from 'app/context/user';
@@ -32,6 +31,7 @@ export default function FormPost(props) {
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     props.data.inputs['allow_comments'].caption = '';
+    
     return (
         <View className="w-full max-w-5xl flex-col">
             <View className="  overflow-hidden flex-col  ">
@@ -119,14 +119,14 @@ export default function FormPost(props) {
                     <Row className="flex-wrap">{prevList}</Row>
                 )}
 
-<View className='w-full flex-wrap my-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
+                <View className='w-full flex-wrap my-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
                     <Text className="font-semibold px-2 my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
-                    <Row className="  justify-start items-center flex-row flex-wrap ">
-                    {getFormFieldByData(
-                    props.data.inputs['labels'],
-                    props.handleSubmit,
-                    'notitle'
-                )}
+                    <Row className="justify-start items-center flex-row  flex-auto ">
+                        {getFormFieldByData(
+                            props.data.inputs['labels'],
+                            props.handleSubmit,
+                            'notitle'
+                        )}
                     </Row>
                 </View>
 

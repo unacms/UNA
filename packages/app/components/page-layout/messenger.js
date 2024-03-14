@@ -8,8 +8,8 @@ import { LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { useWindowDimensions } from 'react-native';
 import { Button } from 'app/design/controls'
 import Messenger from 'app/components/elements/messenger/parts/common'
-import { BottomSheetData } from 'app/context/bottomsheet';
-import CreateConvo from 'app/components/elements/messenger/parts/new-convo';
+
+import {CreateConvoButton} from 'app/components/elements/messenger/parts/new-convo';
 import { Nav } from 'app/components/elements/messenger/parts/nav';
 import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
@@ -28,7 +28,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
 
 
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+   
     const layout = getLayout(currentUser, 'navigator');
     const isLeftMenu = layout != 'hor' ? false : true;
     const data2 = DataByName(data, main);
@@ -65,7 +65,6 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
             data: [data.convo, ...prevConvos.data]
         }));
         setInitedConvoId(data.convo.id)
-        setBottomSheetData(false);
     }
 
     const changeMenu = (index) => {
@@ -73,13 +72,9 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         setInitedConvoId(convos.data[0].id)
     }
 
-    const newConvo = () => {
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSave} />, showClose: true, snapPoints: ['25%', '50%'] });
-    }
-
     const addButtons = useMemo(() => {
         return [
-            <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
+            <CreateConvoButton key="a" onSave={onSave}/>
         ]
     }, []);
 
@@ -92,6 +87,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         windowWidth={windowWidth}
         windowWHeight={windowWHeight}
         layout={layout}
+        onSave={onSave}
     /></>
 
     if (!isWeb) {
@@ -108,6 +104,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
             windowWidth={windowWidth}
             windowWHeight={windowWHeight}
             layout={layout}
+            onSave={onSave}
         />
 
         return (
@@ -136,7 +133,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
         )
 }
 
-const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId }) => {
+const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave }) => {
     const isWeb = Platform.OS == 'web'
     let height = useMemo(() => {
         let heightInit = windowWHeight;
@@ -159,7 +156,7 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
     }, [windowWHeight, layout])
 
     return (
-        <Messenger fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
+        <Messenger  onSave={onSave} fetchConvos={fetchConvos} layoutHeight={height} {...data} url={url} selectedMenu={selectedMenu} convos={convos} defaultConvoId={defaultConvoId} />
     );
 });
 

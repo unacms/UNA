@@ -18,9 +18,10 @@ import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { useTheme } from '@react-navigation/native';
 import {Nav2} from 'app/components/elements/messenger/parts/nav';
 import { linkedText } from 'app/lib/text-helpers';
+import {CreateConvoButton} from 'app/components/elements/messenger/parts/new-convo';
 
-export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data }) {
-
+export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
+    console.log("onSaveonSave", onSave)
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
 
@@ -118,8 +119,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);
-
-
 
     const onNewMessage = (data) => {
         if (data.id == convoId) {
@@ -231,6 +230,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         refListConvos={refListConvos}
         selectedConvoIndex={selectedConvoIndex}
         changeConvo={changeConvo}
+        onSave={onSave}
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
@@ -267,7 +267,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch '}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
             <Row className='items-stretch '>
                 {convosComponent}
                 {jotsComponent}
@@ -276,8 +276,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 }
 
-const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo }) => {
-    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
+
+const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave }) => {
+    console.log("changeConvo", onSave)
+    return data.length > 0 ?<View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
         {data.length > 0 && <UniList
             refer={refListConvos}
             height={layoutHeightLeft}
@@ -285,7 +287,16 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
             data={data}
             renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
         />}
-    </View>
+    </View>: <View className='items-center justify-center w-full h-full'><View className="pt-8">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
+                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
+                    <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                        Bla bla bal
+                    </Text>
+                    </View>
+                    <CreateConvoButton variant='full' onSave={onSave}/>
+                </View>
+            </View></View>
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, handleReply, startReached }) => {
