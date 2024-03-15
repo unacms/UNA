@@ -80,7 +80,7 @@ export function parseData(browse, dynamicData) {
     return browse;
 }
 
-export function CommentsParts(commentsData, aItems, height, initFormData) {
+export function CommentsParts(commentsData, aItems, height, initFormData, isModal = false) {
     const [formData, setFormData] = useState({});
     const [addData, setAddData] = useState({});
 
@@ -102,7 +102,7 @@ export function CommentsParts(commentsData, aItems, height, initFormData) {
     return [
         <CommentsBrowse height={height} addItems={aItems} handleReply={handleReply} browse={commentsData.browse} addData={addData} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} requestUrl={commentsData.url} />,
         <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-            <CommentsForm handleForm={handleForm} browse={commentsData.browse} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} form={commentsData.form} formData={formData} requestUrl={commentsData.url} />
+            <CommentsForm isModal={isModal} handleForm={handleForm} browse={commentsData.browse} module={commentsData.browse?.data?.module ? commentsData.browse.data.module : commentsData?.module} form={commentsData.form} formData={formData} requestUrl={commentsData.url} />
         </KeyboardAvoidingView>
     ]
 }
@@ -364,6 +364,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 }
 
 export function CommentsForm({ form, requestUrl, module, browse, formData, handleForm, isModal }) {
+
     if (!form)
         return <></>
     const [commentData, setCommentData] = useState({
@@ -458,7 +459,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " px-4 lg:py-1 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " lg:py-1 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

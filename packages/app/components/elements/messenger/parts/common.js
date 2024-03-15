@@ -11,22 +11,24 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import useSWR from "swr";
 import { useCurrentUser } from 'app/context/user';
-import { subscribe, unbind } from 'app/ui/atoms/socket';
+import { subscribe } from 'app/ui/atoms/socket';
 import { KeyboardAvoidingView } from 'react-native';
 import ItemConvo from 'app/components/elements/messenger/parts/item-convo';
 import ItemJot from 'app/components/elements/messenger/parts/item-jot';
 import { useTheme } from '@react-navigation/native';
-import {Nav2} from 'app/components/elements/messenger/parts/nav';
+import { Nav2 } from 'app/components/elements/messenger/parts/nav';
 import { linkedText } from 'app/lib/text-helpers';
-import {CreateConvoButton} from 'app/components/elements/messenger/parts/new-convo';
+import CreateConvo, { CreateConvoButton } from 'app/components/elements/messenger/parts/new-convo';
+import Msg from 'app/ui/molecules/msg';
+import { BottomSheetData } from 'app/context/bottomsheet';
+import Profile from 'app/ui/molecules/profile'
 
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
-    console.log("onSaveonSave", onSave)
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
 
     //console.log('menu', selectedMenu, convos, props.defaultConvoId);
-
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(width < 768);
@@ -34,6 +36,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
     const [formHeight, setFormHeight] = useState(96);
+    const [showMsg, setShowMsg] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
+    
     const refListConvos = useRef();
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
@@ -44,7 +49,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     const layoutHeightLeft = layoutHeight;
     const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight : layoutHeight - formHeight;
-
 
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
@@ -104,7 +108,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             updateState()
             subscribe('bx_messenger', 'convo_' + selectedConvo.id, onNewMessage);
             subscribe('bx_messenger', 'profile_' + currentUser.id, onCheckConvos);
-            
+
         }
     }, [convoId]);
 
@@ -116,6 +120,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         if (convoId == '' && convos) {
+
             setConvoId(convos?.data[0]?.id);
         }
     }, [convos]);
@@ -202,6 +207,62 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         setPanelsVisible({ convos: true, jots: false })
     }
 
+    const deleteConvo = async () => {
+        let request_url = '/api.php?r=bx_messenger/delete_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
+        const sResponse = await fetcher(request_url);
+        if (sResponse.data?.message) {
+            setShowMsg(sResponse.data?.message)
+        }
+        else {
+            fetchConvos();
+            setConvoId(convos.data[0].id);
+        }
+    }
+
+    const leaveConvo = async () => {
+        let request_url = '/api.php?r=bx_messenger/leave_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
+        const sResponse = await fetcher(request_url);
+        if (sResponse.data?.message) {
+            setShowMsg(sResponse.data?.message)
+        }
+        else {
+            fetchConvos();
+            setConvoId(convos.data[0].id);
+        }
+    }
+    const getConvo = async () => {
+        let request_url = '/api.php?r=bx_messenger/get_convo/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
+        const sResponse = await fetcher(request_url);
+        if (sResponse.data?.message) {
+            setShowMsg(sResponse.data?.message)
+        }
+        else {
+            const content = (<View className='items-center justify-center'>
+                <Row className='mb-4 gap-x-4'>
+                    <Profile {...sResponse.data.lot.author_data}  />
+                    <View>
+                        <Text>Participants: {sResponse.data.lot.parts}</Text>
+                        <Text>Messages: {sResponse.data.lot.messages}</Text>
+                        <Text>Files: {sResponse.data.lot.files}</Text>
+                    </View>
+                </Row>
+            </View>)
+            setBottomSheetData({ title: 'Conversation info', content: content, showClose: true, snapPoints: ['25%', '50%'] });
+            
+        }
+    }
+
+    const onSaveHandler = (data) => {
+        setBottomSheetData(false);
+        onSave(data);
+    }
+
+    const editConvo = async () => {
+        let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
+        const sResponse = await fetcher(request_url);
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['25%', '50%'] });   
+    }
+    
     const onFormSubmit = (formData, d) => {
         setCommentForm(formData);
         Keyboard.dismiss();
@@ -242,6 +303,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 data={jots?.data?.jots}
                 refListJots={refListJots}
                 showConvo={showConvo}
+                deleteConvo={deleteConvo}
+                leaveConvo={leaveConvo}
+                getConvo={getConvo}
+                editConvo={editConvo}
                 handleReply={handleReply}
                 startReached={handleStartReached}
             />
@@ -259,15 +324,17 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     if (!isWeb) {
         return (
             <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full h-full items-stretch flex-1'}>
+                <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
                 {convosComponent}
                 {jotsComponent}
-                <Nav2 text={panelsVisible.convos? "Messenger" : selectedConvo.title} onPress={showConvo} backButton={!panelsVisible.convos} />
+                <Nav2 text={panelsVisible.convos ? "Messenger" : selectedConvo.title} onPress={showConvo} backButton={!panelsVisible.convos} />
             </View>
         );
     }
 
     return (
         <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
+            <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
             <Row className='items-stretch '>
                 {convosComponent}
                 {jotsComponent}
@@ -278,8 +345,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
 
 const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave }) => {
-    console.log("changeConvo", onSave)
-    return data.length > 0 ?<View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
+    return data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
         {data.length > 0 && <UniList
             refer={refListConvos}
             height={layoutHeightLeft}
@@ -287,25 +353,33 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
             data={data}
             renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
         />}
-    </View>: <View className='items-center justify-center w-full h-full'><View className="pt-8">
-                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
-                    <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                        Bla bla bal
-                    </Text>
-                    </View>
-                    <CreateConvoButton variant='full' onSave={onSave}/>
-                </View>
-            </View></View>
+    </View> : <View className='items-center justify-center w-full h-full'><View className="pt-8">
+        <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
+            <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
+                <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                    Bla bla bal
+                </Text>
+            </View>
+            <CreateConvoButton variant='full' onSave={onSave} />
+        </View>
+    </View></View>
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
-const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, handleReply, startReached }) => {
+const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
     return (<>
-        <View className='md:px-0 border-dashed border-bdrcard dark:border-bdrcard-d border-b'>
-            {isWeb && <Row className='pl-4 items-center justify-start h-12'>
-                {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
-                <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
+        <View className='md:px-0 border-dashed border-bdrcard dark:border-bdrcard-d border-b  mb-2'>
+            {isWeb && <Row className='px-2 items-center justify-between w-full h-12'>
+                <Row className='lg:pl-2 items-center justify-start h-12'>           
+                    {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
+                    <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
+                </Row>
+                <Row className='items-center gap-x-2 '>
+                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="xs" onPress={() => editConvo()} />
+                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="xs"  onPress={() => leaveConvo()} />
+                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="outline" rounded size="xs" onPress={() => deleteConvo()} />
+                    <Button buttonTooltip="Info" startDecorator='Info' variant="outline" rounded size="xs" onPress={() => getConvo()} />
+                </Row>
             </Row>}
         </View>
         <View style={{ height: layoutHeightRight }} className='mx-2'>

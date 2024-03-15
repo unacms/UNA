@@ -19,7 +19,6 @@ export default function ElementCommentForm(props) {
         },
 
     });
-
     
     return (
         props.open && <BottomSheet backgroundStyle={{ backgroundColor: 'rgba(255,255,255,1)' }}
@@ -30,9 +29,10 @@ export default function ElementCommentForm(props) {
             detached={true}
            
         >
-            <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
+        {props.isListView ?  props.children :<BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
                 {props.children}
             </BottomSheetScrollView>
+        }
         </BottomSheet>
     )
 }

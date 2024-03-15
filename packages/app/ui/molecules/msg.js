@@ -1,11 +1,6 @@
-import { Text} from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { Button, Input, InputRounded, Modal } from 'app/design/controls';
 import { Alert } from 'react-native';
-import { useState } from 'react';
 
-
-export default function ElementMsg(props) {
+export default function (props) {
 
     const handleOk = async () => {
         props.handleOk();

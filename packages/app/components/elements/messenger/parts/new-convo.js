@@ -7,9 +7,9 @@ import { Button, InputRounded } from 'app/design/controls'
 import Loading from 'app/ui/atoms/loading'
 import { BottomSheetData } from 'app/context/bottomsheet';
 
-export default function CreateConvo ({ onSave }) {
+export default function CreateConvo ({ onSave, initedData=[], convoId }) {
     const [users, setUsers] = useState([]);
-    const [susers, setSUsers] = useState([]);
+    const [susers, setSUsers] = useState(initedData);
     const [showLoading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -38,7 +38,11 @@ export default function CreateConvo ({ onSave }) {
     }, [users, susers]);
 
     const handleSave = async () => {
-        let request_url = '/api.php?r=bx_messenger/save_parts_list/Services&params=' + JSON.stringify({ parts: susers.map(item => item.id) });
+        const params = {
+            parts: susers.map(item => item.id),
+            ...(convoId && { lot_id: convoId })
+        };
+        const request_url = '/api.php?r=bx_messenger/save_parts_list/Services&params=' + JSON.stringify(params);
         const sResponse = await fetcher(request_url);
         if (sResponse.data.code == 0) {
             onSave(sResponse.data)
@@ -76,7 +80,7 @@ const User = ({ data, onSelect }) => {
     return <Pressable onPress={() => onSelect(data)}>
         <View className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
                 hover:bg-bgritem-h dark:hover:bg-bgritem-dh max-w-5xl self-center w-full border border-bdrnavbar dark:border-bdrnavbar-d mb-2">
-            <Profile displaySize="xs" {...data.author_data} url="" />
+            <Profile displaySize="xs" {...data} url="" />
         </View>
     </Pressable>
 };

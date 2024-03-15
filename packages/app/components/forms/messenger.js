@@ -38,7 +38,7 @@ export default function FormMessenger(props) {
     // execution submit time, uses as temporary message id for new message.
     props.data.inputs['payload'].value = parseInt((new Date()).getTime()/1000);
 //style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}
-    return <View className="w-full items-center" ref={viewFormRef} onLayout={handleLayout} >
+    return <View className="w-full items-center  md:px-2" ref={viewFormRef} onLayout={handleLayout} >
         <Row className="w-full flex flex-row items-center">
             <View className="flex-0">
                 {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, icon: 'Image'})}

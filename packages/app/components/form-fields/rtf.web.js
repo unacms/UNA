@@ -248,7 +248,6 @@ export default function FormFieldFtf(props) {
     }, [field.value]);
 
     useEffect(() => {
-        console.log('xxxxxxxxxxx',editor, props.name, props.name == 'cmt_text')
         if (editor && props.name == 'cmt_text'){
 
             editor.commands.focus()

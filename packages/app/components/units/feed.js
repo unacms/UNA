@@ -28,13 +28,14 @@ import { useWindowDimensions } from 'react-native'
 
 const CommentsModal = ({ commentsData, initFormData }) => {
     const windowDimensions = useWindowDimensions();
+    const isWeb = Platform.OS == 'web' ? true : false;
     const CommentsPartsData = CommentsParts(commentsData, [], windowDimensions.height * 0.5, initFormData);
     return (
         <View className='flex-1 w-full '>
-            <View className=' w-full flex-auto '>
+            <View className={'w-full flex-auto '+ (isWeb ? '' : ' h-16')}>
                 {CommentsPartsData[0]}
             </View>
-            <View className=' w-full ' >
+            <View className={(isWeb ? '' : 'absolute bottom-0 ') +' w-full'} >
                 {CommentsPartsData[1]}
             </View>
         </View>
@@ -134,6 +135,7 @@ function DefaultUnit(data) {
     const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
 
+    data.content.text =stripTags(data.content.text);
     const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,
@@ -214,21 +216,26 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return <></>
 
-    const MainContent = bIsMarketContent
-        ? <MarketView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+    const getMainContent =  (isCompact = false) => {
+        return  bIsMarketContent
+        ? <MarketView isCompact={isCompact} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
         : bIsAddContent
-            ? <AdView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+            ? <AdView isCompact={isCompact}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
             : bIsGroupContent
-                ? <GroupView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
-                : <DefaultView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
+                ? <GroupView isCompact={isCompact}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+                : <DefaultView isCompact={isCompact} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
+    }
+
+
+    
     const showCommentsModal = async (initFormData) => {
         const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
-        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{MainContent}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={res.data} />, snapPoints: ['90%', '95%'] });
+        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{getMainContent(true)}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={res.data} />, snapPoints: ['95%', '95%'] });
     }
 
     //TODO FIX
-    if (Platform.OS == 'web')
+    if (appSetting('layout', 'comments_modal'))
         data.menu_actions.items[0].data.callback = showCommentsModal
 
     const MenuMemo = memo(() => (
@@ -266,7 +273,7 @@ function DefaultUnit(data) {
 
     const NotEditedView = ({ MainContent, showCommentsModal }) => (
         <>
-            {MainContent}
+            {getMainContent()}
             <View className="flex-col relative px-0 py-4">
                 <Row className="px-4 flex-auto">
                     <MenuMemo showCommentsModal={showCommentsModal} />
@@ -329,7 +336,7 @@ function DefaultUnit(data) {
                     {viewState.view == 'edited' ? (
                         <EditedView viewState={viewState} onFormSubmit={onFormSubmit} setViewState={setViewState} />
                     ) : (
-                        <NotEditedView MainContent={MainContent} showCommentsModal={showCommentsModal} />
+                        <NotEditedView  showCommentsModal={showCommentsModal} />
                     )}
                 </View>
                 {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
@@ -337,10 +344,11 @@ function DefaultUnit(data) {
         </AnimatedBlock>
     )
 
-    function GroupView({ data, styles, url }) {
-        return (<View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+    function GroupView({ data, styles, url,isCompact }) {
+        const pref = isCompact ? '' : 'md:';
+        return (<View className={isCompact?" flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" :" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1"}>
             {data.mainImage && (
-                <View className="w-full md:w-1/3  ">
+                <View className={isCompact?"w-64": "w-full md:w-1/3 "}>
                     <View
                         className="w-full aspect-video   "
                         style={styles.card_image}
@@ -355,11 +363,11 @@ function DefaultUnit(data) {
                     </View>
                 </View>
             )}
-            <View className="flex-auto px-2  pb-2 my-auto flex-col    ">
+            <View className="flex-auto px-2  pb-2 my-auto flex-col">
                 <Link href={url} className="">
                     <Text
                         numberOfLines={1}
-                        className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight"
+                        className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight overflow-hidden"
                     >
                         {data.content.visibility != '3' ? (
                             <>PRIVATE</>
@@ -402,7 +410,7 @@ function DefaultUnit(data) {
                             className="text-neutral-950 dark:text-neutral-50  text-sm "
                             numberOfLines={2}
                         >
-                            {data.content.text}
+                           {data.content.text}
                         </Text>
                     </View>
                 </View>
@@ -489,11 +497,12 @@ function DefaultUnit(data) {
             </View>
         </View>
     }
-    function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url }) {
+
+    function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url, isCompact }) {
         return <>
-            <View className="  flex-col md:flex-row-reverse ">
+            <View className={isCompact?"flex-row-reverse": " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
-                    <View className="w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 ">
+                    <View className={isCompact?"px-4 w-64 mb-auto pr-4":"w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
                         <View
                             className="w-full aspect-video    "
                             style={styles.card_image}
@@ -508,7 +517,7 @@ function DefaultUnit(data) {
                         </View>
                     </View>
                 )}
-                <View className="flex-auto px-4 my-auto flex-col    ">
+                <View className="flex-auto px-4 my-auto flex-col">
                     {bIsTitle && (
                         <Link href={url} className="">
                             <Text
@@ -520,7 +529,7 @@ function DefaultUnit(data) {
                         </Link>
                     )}
                     <View>
-                        <View className="flex-col gap-y-3 relative">
+                        <View className="flex-col gap-y-3 relative ">
                             {bIsTimelineContent && (
                                 <View className={' ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
                                     <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />

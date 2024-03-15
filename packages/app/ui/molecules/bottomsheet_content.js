@@ -93,6 +93,7 @@ export default function ElementCommentForm(props) {
     </View>
 
     if (!isWeb){
+        bottomSheetProps.isListView=isListView;
         content = <View className={" mx-auto w-full flex-1 " + (isWeb ? 'px-4 py-2' : 'px-4')/*max-w-lg */}>
         {bottomSheetData.content}
         {bottomSheetData.footer}

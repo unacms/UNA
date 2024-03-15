@@ -9,8 +9,6 @@ import { Dimensions } from 'react-native';
 import { storageSet, appSetting } from 'app/lib/util'
 
 export default function UniList(props) {
-    
-
     const { layoutData, setLayoutData } = useContext(LayoutData);
 
     let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
@@ -104,7 +102,7 @@ export default function UniList(props) {
         )
     }
     else{
-   
+        //increaseViewportBy={windowHeight - 400}
         return (
             <><Virtuoso 
                 useWindowScroll = {!height ? true : false}
@@ -116,7 +114,7 @@ export default function UniList(props) {
                 itemContent={itemContent}
                 ref = {refer}  
                 endReached={onEndReached}
-                increaseViewportBy={windowHeight - 400}
+                overscan={900}
                 components={{
                     Footer: () => {
                         return ListFooterComponent
