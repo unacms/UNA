@@ -49,8 +49,6 @@ export default function UnitComments(props) {
         props.handleReply(data);
     };
 
-    let sCommentClass = " bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-2.5 u-vanilla-html-small ";
-
     if (!data)
         return (<View></View>);
                 
@@ -136,7 +134,7 @@ export default function UnitComments(props) {
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
                 </View>
                 <View className='flex-1 flex-col gap-y-1 mb-2 '>
-                    <View className={sCommentClass + ' py-2'} >
+                    <View className='bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-1.5 u-vanilla-html-small py-1' >
                         <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
@@ -162,7 +160,7 @@ export default function UnitComments(props) {
                                     <View className='ml-auto mb-2'><Button align="start" title="Cancel"  size ="xs" startDecorator="X" variant="outline"  onPress={() =>  setViewState({view: ''})} rounded /></View>
                                     <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between"  onFormSubmit={onFormSubmit} />
                                 </View>
-                            ) : <Html data={linkify(data.cmt_text)} /> }
+                            ) : <Html htmlStyles={{fontSize:14}} data={linkify(data.cmt_text)} /> }
                         </View>
                         { (viewState.view != 'edited'  && aImg.length > 0) && <CarouselMemo aImg={aImg}/>
                             

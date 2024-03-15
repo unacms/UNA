@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useContext } from 'react';
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView,BottomSheetFooter  } from '@gorhom/bottom-sheet';
 import { StyleSheet } from "react-native";
 import { View } from 'app/design/view'
 import { Button } from 'app/design/controls'
@@ -19,6 +19,7 @@ export default function ElementCommentForm(props) {
         },
 
     });
+
     
     return (
         props.open && <BottomSheet backgroundStyle={{ backgroundColor: 'rgba(255,255,255,1)' }}
@@ -27,6 +28,7 @@ export default function ElementCommentForm(props) {
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
             detached={true}
+           
         >
             <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
                 {props.children}

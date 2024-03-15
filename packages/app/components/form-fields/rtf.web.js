@@ -247,6 +247,14 @@ export default function FormFieldFtf(props) {
 
     }, [field.value]);
 
+    useEffect(() => {
+        console.log('xxxxxxxxxxx',editor, props.name, props.name == 'cmt_text')
+        if (editor && props.name == 'cmt_text'){
+
+            editor.commands.focus()
+        }
+    }, [editor]);
+
     const isFullHtml = (props.html == 2 || props.html == 1);
 
     const computedData = useMemo(() => {

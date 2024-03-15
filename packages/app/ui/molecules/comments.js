@@ -8,7 +8,6 @@ import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
 
 export default function ElementComments(oProps) {
-    console.log("oProps", oProps)
     const redirectdRef = useRef();
 
     const oParams = {...appSetting('social_actions', 'comment'), ...oProps.params};

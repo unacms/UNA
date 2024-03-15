@@ -4,9 +4,8 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useMemo, useEffect, useContext } from 'react'
 import { useCurrentUser } from 'app/context/user'
-import Html from 'app/ui/atoms/html'
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
+import { View, Row, ScrollView } from 'app/design/view'
 import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
@@ -27,28 +26,29 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 
-const CommentsSection2 = ({ commentsData, initFormData }) => {
+const CommentsModal = ({ commentsData, initFormData }) => {
     const windowDimensions = useWindowDimensions();
-    const CommentsPartsData = CommentsParts(commentsData, [], windowDimensions.height*0.75, initFormData);
+    const CommentsPartsData = CommentsParts(commentsData, [], windowDimensions.height * 0.5, initFormData);
     return (
         <View className='flex-1 w-full '>
-            <View className=' w-full flex-auto'>
+            <View className=' w-full flex-auto '>
                 {CommentsPartsData[0]}
             </View>
-            <View >
+            <View className=' w-full ' >
                 {CommentsPartsData[1]}
             </View>
-        </View>);
+        </View>
+    );
 }
 
-const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments,  showCommentsModal }) => {
+const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments, showCommentsModal }) => {
     const { t } = useTranslation();
     return (
         <View>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
-                    <Pressable onPress = {() => {showCommentsModal()}} >
+                    <Pressable onPress={() => { showCommentsModal() }} >
                         <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
                             {t('View more comments...')}
                         </Text>
@@ -92,44 +92,49 @@ const ItemInfo = ({ data }) => {
     );
 };
 
+const LinkContent = ({ url, data }) => (
+    <Link href={url}>
+        <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+            {data.content.price ? data.content.price.replace("&#36;", "$") : 'Free'}
+        </Text>
+        <Text
+            numberOfLines={2}
+            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+        >
+            {data.content.title}
+        </Text>
+    </Link>
+);
+
 function DefaultUnit(data) {
 
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
     }
- 
+
     let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
-    const [showFull, setShowFull] = useState(false)
-    const [imageAspect, setImageAspect] = useState('aspect-square bg-blue-500/50')
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    if (data.sFirstImg) {
-        ImageNative.getSize(data.sFirstImg, (width, height) => {
-            if (width > height)
-                setImageAspect('aspect-video')
-        })
-    }
 
-    let styles = StyleSheet.create({})
+    const styles = StyleSheet.create(
+        Platform.OS !== 'web'
+            ? {
+                card_image: {
+                    borderRadius: 0,
+                },
+            }
+            : {}
+    );
 
-    if (Platform.OS != 'web') {
-        styles = StyleSheet.create({
-            card_image: {
-                borderRadius: 0,
-            },
-        })
-    }
+    const url = data.url.includes('://') ? data.url : '/' + data.url
+    const bIsTimelineContent = data?.type?.includes('timeline') ? true : false
+    const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
+    const bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
+    const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
+    const bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
 
-    let url = data.url.includes('://') ? data.url : '/' + data.url
-    let bIsTimelineContent = data?.type?.includes('timeline') ? true : false
-    let bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
-    let bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
-    let bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
-    let bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
-
-
-    let { data: dynamicData, error } = useSWR(
+    const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,
         !true ? undefined : { revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }
@@ -162,13 +167,6 @@ function DefaultUnit(data) {
         }
     }
 
-
-
-    const showCommentsModal = async (initFormData) =>{
-        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"'+data?.cmts?.module+'","object_id":'+data?.cmts?.object_id+'}');
-        setBottomSheetData({ title: 'Comments', content: <CommentsSection2 initFormData={initFormData} commentsData={res.data} />, snapPoints: ['75%', '90%'] });
-    }
-
     const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items, currentUser).map(
         (aItem) => {
             return {
@@ -180,7 +178,6 @@ function DefaultUnit(data) {
         }
     ) : []
 
-
     let commentsData = null;
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0) {
@@ -190,24 +187,14 @@ function DefaultUnit(data) {
         }
     }
 
-    let linkForAd = (
-        <Link href={url}>
-            <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                {data.content.price ? data.content.price.replace("&#36;", "$") : 'Free'}
-            </Text>
-            <Text
-                numberOfLines={2}
-                className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
-            >
-                {data.content.title}
-            </Text>
-        </Link>
+    const linkForAd = data?.content?.register_click ? (
+        <Pressable onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click) }}>
+            <LinkContent url={url} data={data} />
+        </Pressable>
+    ) : (
+        <LinkContent url={url} data={data} />
     );
-    if (data?.content?.register_click) {
-        linkForAd = <Pressable onPress={async () => { await fetcher('/api.php?r=' + data.content.register_click) }} >{linkForAd}</Pressable>
-    }
 
-    //May be improvement needed
     useEffect(() => {
         (async () => {
             if (data?.content?.register_impression) {
@@ -227,12 +214,24 @@ function DefaultUnit(data) {
     if (viewState.view == 'deleted')
         return <></>
 
-    //TODO FIX
-    data.menu_actions.items[0].data.callback = showCommentsModal
-    console.log(data.menu_actions);
-   
-    const MenuMemo = memo(() => (
+    const MainContent = bIsMarketContent
+        ? <MarketView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+        : bIsAddContent
+            ? <AdView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+            : bIsGroupContent
+                ? <GroupView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+                : <DefaultView content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
+    const showCommentsModal = async (initFormData) => {
+        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{MainContent}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={res.data} />, snapPoints: ['90%', '95%'] });
+    }
+
+    //TODO FIX
+    if (Platform.OS == 'web')
+        data.menu_actions.items[0].data.callback = showCommentsModal
+
+    const MenuMemo = memo(() => (
         <Menu
             {...data.menu_actions}
             displayType="button"
@@ -245,6 +244,36 @@ function DefaultUnit(data) {
 
     ));
 
+    const EditedView = ({ viewState, onFormSubmit, setViewState }) => (
+        <View className="w-full">
+            <Form
+                {...viewState.data}
+                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                onFormSubmit={onFormSubmit}
+            />
+            <View className="mx-4 mb-4">
+                <Button
+                    title="Cancel"
+                    fullWidth
+                    size="base"
+                    startDecorator="X"
+                    variant="outline"
+                    onPress={() => setViewState({ view: '' })}
+                />
+            </View>
+        </View>
+    );
+
+    const NotEditedView = ({ MainContent, showCommentsModal }) => (
+        <>
+            {MainContent}
+            <View className="flex-col relative px-0 py-4">
+                <Row className="px-4 flex-auto">
+                    <MenuMemo showCommentsModal={showCommentsModal} />
+                </Row>
+            </View>
+        </>
+    );
 
     return (
         <AnimatedBlock>
@@ -274,7 +303,6 @@ function DefaultUnit(data) {
                         {data.author_actions.map((item, index) => {
                             const Element = componentsMap[item.type]
                             if (!Element) return
-
                             return <Element key={`action-${index}`} {...item} />
                         })}
                         {aMenuManageItems?.length > 0 && (
@@ -297,326 +325,227 @@ function DefaultUnit(data) {
                         )}
                     </View>
                 </View>
-
                 <View className="flex-col ">
-                    {viewState.view == 'edited' && (
-                        <View className="w-full">
-                            <Form
-                                {...viewState.data}
-                                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
-                                onFormSubmit={onFormSubmit}
-                            />
-                            <View className="mx-4 mb-4">
-                                <Button
-                                    title="Cancel"
-                                    fullWidth
-                                    size="base"
-                                    startDecorator="X"
-                                    variant="outline"
-                                    onPress={() => setViewState({ view: '' })}
-                                />
-                            </View>
-                        </View>
-                    )}
-                    {bIsMarketContent && (
-                        <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
-                            {data.mainImage && (
-                                <View className="w-full md:w-1/3  ">
-                                    <View
-                                        className="w-full aspect-video   "
-                                        style={styles.card_image}
-                                    >
-                                        <Image
-                                            {...data.mainImage}
-                                            alt={data.title}
-                                            view="cover"
-                                            className=" rounded u-cover "
-                                            sizes="(max-width:768px) 100vw, 500px"
-                                        />
-                                    </View>
-                                </View>
-                            )}
-                            <View className="flex-auto p-2 my-auto flex-col    ">
-                                <Link href={url} className="">
-                                    <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
-                                        {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
-                                    </Text>
-
-                                    <Text
-                                        numberOfLines={2}
-                                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
-                                    >
-                                        {data.content.title}
-                                    </Text>
-                                </Link>
-                                {!showFull ? (
-                                    <View>
-                                        <View className="flex-col gap-y-3 relative">
-                                            <Text
-                                                className="text-neutral-950 dark:text-neutral-50  text-sm "
-                                                numberOfLines={3}
-                                            >
-                                                {data.content.text}
-                                            </Text>
-                                        </View>
-                                        {!!data.sFirstImg && (
-                                            <View
-                                                className={
-                                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
-                                                }
-                                            >
-                                                <Image
-                                                    src={data.sFirstImg}
-                                                    alt={data.title}
-                                                    view="cover"
-                                                />
-                                            </View>
-                                        )}
-                                    </View>
-                                ) : (
-                                    <View className="flex-col relative">
-                                        <Html data={data.content.text} />
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                    )
-                    }
-                    {bIsAddContent && (
-                        <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
-                            {data.mainImage && (
-                                <View className="w-full md:w-1/3  ">
-                                    <View
-                                        className="w-full aspect-video   "
-                                        style={styles.card_image}
-                                    >
-                                        <Image
-                                            {...data.mainImage}
-                                            alt={data.title}
-                                            view="cover"
-                                            className=" rounded u-cover "
-                                            sizes="(max-width:768px) 100vw, 500px"
-                                        />
-                                    </View>
-                                </View>
-                            )}
-                            <View className="flex-auto p-2 my-auto flex-col">
-                                {linkForAd}
-                                {!showFull ? (
-                                    <View>
-                                        <View className="flex-col gap-y-3 relative">
-                                            <Text
-                                                className="text-neutral-950 dark:text-neutral-50  text-sm "
-                                                numberOfLines={3}
-                                            >
-                                                {data.content.text}
-                                            </Text>
-                                        </View>
-                                        {!!data.sFirstImg && (
-                                            <View
-                                                className={
-                                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
-                                                }
-                                            >
-                                                <Image
-                                                    src={data.sFirstImg}
-                                                    alt={data.title}
-                                                    view="cover"
-                                                />
-                                            </View>
-                                        )}
-                                    </View>
-                                ) : (
-                                    <View className="flex-col relative">
-                                        <Html data={data.content.text} />
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                    )
-                    }
-                    {bIsGroupContent && (
-                        <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
-                            {data.mainImage && (
-                                <View className="w-full md:w-1/3  ">
-                                    <View
-                                        className="w-full aspect-video   "
-                                        style={styles.card_image}
-                                    >
-                                        <Image
-                                            {...data.mainImage}
-                                            alt={data.title}
-                                            view="cover"
-                                            className=" rounded u-cover "
-                                            sizes="(max-width:768px) 100vw, 500px"
-                                        />
-                                    </View>
-                                </View>
-                            )}
-                            <View className="flex-auto px-2  pb-2 my-auto flex-col    ">
-                                <Link href={url} className="">
-                                    <Text
-                                        numberOfLines={1}
-                                        className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight"
-                                    >
-                                        {data.content.visibility != '3' ? (
-                                            <>PRIVATE</>
-                                        ) : (
-                                            <>PUBLIC</>
-                                        )}
-                                        {data.content.members > -1 && (
-                                            <> · {data.content.members} MEMBERS </>
-                                        )}
-                                        {data.content.date_start && (
-                                            <>
-                                                {' '}
-                                                ·{' '}
-                                                <Time
-                                                    stylesName="text-xs flex-none"
-                                                    ts={data.content.date_start}
-                                                ></Time>
-                                                {data.content.date_end && (
-                                                    <>
-                                                        -{' '}
-                                                        <Time
-                                                            stylesName="text-xs flex-none"
-                                                            ts={data.content.date_end}
-                                                        ></Time>
-                                                    </>
-                                                )}
-                                            </>
-                                        )}
-                                    </Text>
-                                    <Text
-                                        numberOfLines={2}
-                                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
-                                    >
-                                        {data.content.title}
-                                    </Text>
-                                </Link>
-                                {!showFull ? (
-                                    <View>
-                                        <View className="flex-col gap-y-3 relative">
-                                            <Text
-                                                className="text-neutral-950 dark:text-neutral-50  text-sm "
-                                                numberOfLines={2}
-                                            >
-                                                {data.content.text}
-                                            </Text>
-                                        </View>
-                                        {!!data.sFirstImg && (
-                                            <View
-                                                className={
-                                                    imageAspect + ' w-full rounded mt-4 overflow-hidden'
-                                                }
-                                            >
-                                                <Image
-                                                    src={data.sFirstImg}
-                                                    alt={data.title}
-                                                    view="cover"
-                                                />
-                                            </View>
-                                        )}
-                                    </View>
-                                ) : (
-                                    <View className="flex-col relative">
-                                        <Html data={data.content.text} />
-                                    </View>
-                                )}
-                            </View>
-                        </View>
-                    )}
-
-                    {viewState.view != 'edited' && (
-                        <>
-                            {!bIsGroupContent && !bIsMarketContent && !bIsAddContent && (
-                                <>
-                                    <View className="  flex-col md:flex-row-reverse ">
-                                        {data.mainImage && (
-                                            <View className="w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 ">
-                                                <View
-                                                    className="w-full aspect-video    "
-                                                    style={styles.card_image}
-                                                >
-                                                    <Image
-                                                        {...data.mainImage}
-                                                        alt={data.title}
-                                                        view="cover"
-                                                        className=" u-cover rounded-xl "
-                                                        sizes="(max-width:768px) 100vw, 500px"
-                                                    />
-                                                </View>
-                                            </View>
-                                        )}
-                                        <View className="flex-auto px-4 my-auto flex-col    ">
-                                            {bIsTitle && (
-                                                <Link href={url} className="">
-                                                    <Text
-                                                        numberOfLines={2}
-                                                        className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
-                                                    >
-                                                        {data.content.title}
-                                                    </Text>
-                                                </Link>
-                                            )}
-                                            {!showFull ? (
-                                                <View>
-                                                    <View className="flex-col gap-y-3 relative">
-                                                        {bIsTimelineContent && (
-                                                            <View className={' ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
-                                                                <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
-                                                            </View>
-                                                        )}
-                                                        {!bIsTimelineContent && (
-                                                            <Text
-                                                                className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
-                                                                numberOfLines={2}
-                                                            >
-                                                                {data.content.text}
-                                                            </Text>
-                                                        )}
-                                                    </View>
-                                                    {!!data.sFirstImg && (
-                                                        <View
-                                                            className={
-                                                                imageAspect +
-                                                                ' w-full rounded mt-4 overflow-hidden'
-                                                            }
-                                                        >
-                                                            <Image
-                                                                src={data.sFirstImg}
-                                                                alt={data.title}
-                                                                view="cover"
-                                                            />
-                                                        </View>
-                                                    )}
-                                                </View>
-                                            ) : (
-                                                <View className="flex-col relative">
-                                                    <HtmlMemo tlContent={data.content.text} />
-                                                </View>
-                                            )}
-                                        </View>
-                                    </View>
-                                    {bIsTimelineContent && (
-                                        <View className="">
-                                            <UnitImages images={data.content.images_attach} />
-                                        </View>
-                                    )}
-                                </>
-                            )}
-                            <View className="flex-col relative px-0 py-4">
-                                <Row className="px-4 flex-auto">
-                                    <MenuMemo showCommentsModal={showCommentsModal} />
-                                </Row>
-                            </View>
-                        </>
+                    {viewState.view == 'edited' ? (
+                        <EditedView viewState={viewState} onFormSubmit={onFormSubmit} setViewState={setViewState} />
+                    ) : (
+                        <NotEditedView MainContent={MainContent} showCommentsModal={showCommentsModal} />
                     )}
                 </View>
-                {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments}/>}
+                {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>
     )
+
+    function GroupView({ data, styles, url }) {
+        return (<View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+            {data.mainImage && (
+                <View className="w-full md:w-1/3  ">
+                    <View
+                        className="w-full aspect-video   "
+                        style={styles.card_image}
+                    >
+                        <Image
+                            {...data.mainImage}
+                            alt={data.title}
+                            view="cover"
+                            className=" rounded u-cover "
+                            sizes="(max-width:768px) 100vw, 500px"
+                        />
+                    </View>
+                </View>
+            )}
+            <View className="flex-auto px-2  pb-2 my-auto flex-col    ">
+                <Link href={url} className="">
+                    <Text
+                        numberOfLines={1}
+                        className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight"
+                    >
+                        {data.content.visibility != '3' ? (
+                            <>PRIVATE</>
+                        ) : (
+                            <>PUBLIC</>
+                        )}
+                        {data.content.members > -1 && (
+                            <> · {data.content.members} MEMBERS </>
+                        )}
+                        {data.content.date_start && (
+                            <>
+                                {' '}
+                                ·{' '}
+                                <Time
+                                    stylesName="text-xs flex-none"
+                                    ts={data.content.date_start}
+                                ></Time>
+                                {data.content.date_end && (
+                                    <>
+                                        -{' '}
+                                        <Time
+                                            stylesName="text-xs flex-none"
+                                            ts={data.content.date_end}
+                                        ></Time>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </Text>
+                    <Text
+                        numberOfLines={2}
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                    >
+                        {data.content.title}
+                    </Text>
+                </Link>
+                <View>
+                    <View className="flex-col gap-y-3 relative">
+                        <Text
+                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            numberOfLines={2}
+                        >
+                            {data.content.text}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        </View>);
+    }
+
+    function AdView({ data, styles}) {
+        return <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+            {data.mainImage && (
+                <View className="w-full md:w-1/3  ">
+                    <View
+                        className="w-full aspect-video   "
+                        style={styles.card_image}
+                    >
+                        <Image
+                            {...data.mainImage}
+                            alt={data.title}
+                            view="cover"
+                            className=" rounded u-cover "
+                            sizes="(max-width:768px) 100vw, 500px"
+                        />
+                    </View>
+                </View>
+            )}
+            <View className="flex-auto p-2 my-auto flex-col">
+                {linkForAd}
+                <View>
+                    <View className="flex-col gap-y-3 relative">
+                        <Text
+                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            numberOfLines={3}
+                        >
+                            {data.content.text}
+                        </Text>
+                    </View>
+
+                </View>
+            </View>
+        </View>
+    }
+    function MarketView({ data, styles }) {
+        return <View className=" flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1">
+            {data.mainImage && (
+                <View className="w-full md:w-1/3  ">
+                    <View
+                        className="w-full aspect-video   "
+                        style={styles.card_image}
+                    >
+                        <Image
+                            {...data.mainImage}
+                            alt={data.title}
+                            view="cover"
+                            className=" rounded u-cover "
+                            sizes="(max-width:768px) 100vw, 500px"
+                        />
+                    </View>
+                </View>
+            )}
+            <View className="flex-auto p-2 my-auto flex-col    ">
+                <Link href={url} className="">
+                    <Text className="mr-auto  bg-primary-100 dark:bg-primary-900 rounded-lg font-semibold px-2 py-1 flex-none flex-auto text-neutral-800 dark:text-neutral-200">
+                        {data.price_recurring > 0 ? data.price_recurring + '$/' + data.duration_recurring : (data.price_single > 0 ? data.price_single + '$' : 'Free')}
+                    </Text>
+
+                    <Text
+                        numberOfLines={2}
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                    >
+                        {data.content.title}
+                    </Text>
+                </Link>
+                <View>
+                    <View className="flex-col gap-y-3 relative">
+                        <Text
+                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            numberOfLines={3}
+                        >
+                            {data.content.text}
+                        </Text>
+                    </View>
+
+                </View>
+            </View>
+        </View>
+    }
+    function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url }) {
+        return <>
+            <View className="  flex-col md:flex-row-reverse ">
+                {data.mainImage && (
+                    <View className="w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 ">
+                        <View
+                            className="w-full aspect-video    "
+                            style={styles.card_image}
+                        >
+                            <Image
+                                {...data.mainImage}
+                                alt={data.title}
+                                view="cover"
+                                className=" u-cover rounded-xl "
+                                sizes="(max-width:768px) 100vw, 500px"
+                            />
+                        </View>
+                    </View>
+                )}
+                <View className="flex-auto px-4 my-auto flex-col    ">
+                    {bIsTitle && (
+                        <Link href={url} className="">
+                            <Text
+                                numberOfLines={2}
+                                className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                            >
+                                {data.content.title}
+                            </Text>
+                        </Link>
+                    )}
+                    <View>
+                        <View className="flex-col gap-y-3 relative">
+                            {bIsTimelineContent && (
+                                <View className={' ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
+                                    <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                                </View>
+                            )}
+                            {!bIsTimelineContent && (
+                                <Text
+                                    className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
+                                    numberOfLines={2}
+                                >
+                                    {data.content.text}
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+                </View>
+            </View>
+            {bIsTimelineContent && (
+                <View className="">
+                    <UnitImages images={data.content.images_attach} />
+                </View>
+            )}
+        </>
+
+    }
 }
 
 function SmallUnit(data) {
@@ -674,13 +603,6 @@ function CarouselMemo({ aImg, b }) {
     return computedData
 }
 
-function HtmlMemo({ tlContent }) {
-    const computedData = useMemo(() => {
-        return <Html data={tlContent} />
-    }, [tlContent])
-    return computedData
-}
-
 function UnitImages(images) {
     if (images?.images?.length == 0)
         return <></>
@@ -698,6 +620,8 @@ function UnitImages(images) {
         </View>
     )
 }
+
+
 
 export default function UnitFeed(props) {
     let data = props.data

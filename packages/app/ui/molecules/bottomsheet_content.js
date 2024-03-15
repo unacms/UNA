@@ -8,14 +8,20 @@ import { Text } from 'app/design/typography'
 import { Platform, Dimensions } from 'react-native'
 import { Modal } from 'app/design/controls'
 import { ScrollView } from 'dripsy';
+import { useWindowDimensions } from 'react-native'
 
 export default function ElementCommentForm(props) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    let windowWidth = Dimensions.get('window').width
+    const windowDimensions = useWindowDimensions();
 
     let isShow = false;
     if (bottomSheetData && bottomSheetData?.content) {
         isShow = true;
+    }
+
+    let isListView = false;
+    if (bottomSheetData?.isListView) {
+        isListView = bottomSheetData.isListView;
     }
 
     const isWeb = Platform.OS == 'web';
@@ -32,11 +38,11 @@ export default function ElementCommentForm(props) {
     if (!isShow)
         return <></>
 
-    if (windowWidth > 1024) {
+    if (windowDimensions.width > 1024) {
         return (
             <Modal
                 title={bottomSheetData.title}
-                presentation = 'fullScreen'
+                presentation='fullScreen'
                 onVisible={true}
                 onClose={() => {
                     setBottomSheetData(false)
@@ -46,39 +52,62 @@ export default function ElementCommentForm(props) {
                 outerClickClose={false}
                 transparent={true}
             >
-                <View className='w-full px-1 pb-1'>
+                <View className='w-full px-1 pb-1 ' style={{maxHeight:windowDimensions.height*88}}>
                     {bottomSheetData.content}
+                    {bottomSheetData.footer}
                 </View>
             </Modal>
         )
     }
 
-    if (isWeb){
-        let k = [bottomSheetProps?.snapPoints ? parseInt(bottomSheetProps.snapPoints[0].replace('%', '')) :  50, bottomSheetProps?.snapPoints ? parseInt(bottomSheetProps.snapPoints[1].replace('%', '')) :  50]
-        bottomSheetProps.defaultSnap = ({ maxHeight }) => (maxHeight/100*k[0]) ;
-        bottomSheetProps.snapPoints=({ maxHeight }) => [
-            maxHeight/100*k[0],
-            maxHeight/100*k[1]
-          ]
+    if (isWeb) {
+        let k = [bottomSheetProps?.snapPoints ? parseInt(bottomSheetProps.snapPoints[0].replace('%', '')) : 50, bottomSheetProps?.snapPoints ? parseInt(bottomSheetProps.snapPoints[1].replace('%', '')) : 50]
+        bottomSheetProps.defaultSnap = ({ maxHeight }) => (maxHeight / 100 * k[0]);
+        bottomSheetProps.snapPoints = ({ maxHeight }) => [
+            maxHeight / 100 * k[0],
+            maxHeight / 100 * k[1]
+        ]
+
+        
+        if (bottomSheetData.footer){
+            bottomSheetProps.footer = bottomSheetData.footer
+           
+        }
     }
 
-    const onClose  = () => { 
+    bottomSheetProps.header = <>
+            {bottomSheetData.title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2 '>{bottomSheetData.title}</Text></View>}
+            {isShowClose && <View className={'absolute right-2 z-50 ' + (isWeb ? 'top-4' : 'top-0')}>
+                <Button startDecorator="X" tooltip={('Close')} variant='text' size='sm' onPress={() => onClose()} />
+            </View>}
+        </>
+
+    const onClose = () => {
         setBottomSheetData(false);
         if (bottomSheetData.onClose)
             bottomSheetData.onClose();
     }
+
+    let content = <View className={" mx-auto w-full flex-1 " + (isWeb ? 'px-4 py-2' : 'px-4')/*max-w-lg */}>
+        {bottomSheetData.content}
+    </View>
+
+    if (!isWeb){
+        content = <View className={" mx-auto w-full flex-1 " + (isWeb ? 'px-4 py-2' : 'px-4')/*max-w-lg */}>
+        {bottomSheetData.content}
+        {bottomSheetData.footer}
+    </View>
+    }
+
     return (
         <BottomSheet2 {...bottomSheetProps} >
-         
-            {bottomSheetData.title && <View><Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2 '>{bottomSheetData.title}</Text></View>}
-            <ScrollView className=' w-full'>
-                <View className={" mx-auto w-full flex-1 " + (isWeb ? 'px-4 py-2' : 'px-4')/*max-w-lg */}>
-                    {bottomSheetData.content}
-                </View>
-            </ScrollView>
-            {isShowClose && <View className={'absolute right-2 z-50 ' + (isWeb ? 'top-2' : 'top-0')}>
-                <Button startDecorator="X" tooltip={('Close')} variant='text' size='sm' onPress={() => onClose()} />
-            </View>}
+            <View className=" mx-auto w-full flex-1 flex-auto  h-full">
+                {!isWeb && bottomSheetProps.header}
+                {isListView ? content : <ScrollView className=' w-full'>
+                    {content}
+                </ScrollView>}
+
+            </View>
         </BottomSheet2>
     )
 }

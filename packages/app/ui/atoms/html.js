@@ -57,7 +57,7 @@ export default function ElementHtml(props) {
         body: {
             whiteSpace: 'normal',
             color: colors.default,
-            fontSize: 16,
+            fontSize: props?.htmlStyles?.fontSize ? props?.htmlStyles?.fontSize: 16,
             lineHeight: 23,
             marginLeft: 0,
             marginRight: 0,
