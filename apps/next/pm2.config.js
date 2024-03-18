@@ -2,11 +2,17 @@ const argEnvIndex = process.argv.indexOf('--env')
 let argEnv = (argEnvIndex !== -1 && process.argv[argEnvIndex + 1]) || ''
 const env = {
     UNA_API_KEY: process.env.UNA_API_KEY,
+
     UNA_URL: process.env.UNA_URL,
-    API_PROXY_URL: process.env.API_PROXY_URL,
+    NEXT_PUBLIC_UNA_URL = process.env.NEXT_PUBLIC_UNA_URL
+
+    APP_URL: process.env.APP_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+
     PROTO: process.env.PROTO,
     HOST: process.env.HOST,
-    PORT: process.env.PORT
+    PORT: process.env.PORT,
+    HTTPS: process.env.HTTPS,
 }
 
 const RUN_ENV_MAP = {
