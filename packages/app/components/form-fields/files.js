@@ -202,21 +202,21 @@ export default function (props) {
     }
 
     if (props.view == 'preview') {
-        return imageSource?.images?.length > 0 ? <ActionButton imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
+        return imageSource?.images?.length > 0 ? <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} bMultiple={bMultiple} props={props} selectImage={selectImage} handleDelete={handleDelete} />
         : <></>;
     }
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
             <View className={bMultiple ? "mr-2" : ""} >
-                <ActionButton imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
+                <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
             </View>
             {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete)}</Row>}
         </Field>
     );
 }
 
-function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple }) {
+function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple, uploadImages }) {
     const drop = useRef(null);
     const iconMap = {
         photo: "ImageSquare",

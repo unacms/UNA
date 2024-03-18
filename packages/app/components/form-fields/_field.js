@@ -55,7 +55,7 @@ export function FormError({ errorText, errorLink }) {
 }
 
 export function getValidationRules({ checker, caption }) {
-    const funct = checker?.func;
+    const funct = checker?.func.toLowerCase();
     if (funct) {
         if (funct == 'avail' || funct == 'date_time') {
             return {
@@ -66,7 +66,7 @@ export function getValidationRules({ checker, caption }) {
             }
         }
 
-        if (funct == 'Length') {
+        if (funct == 'length') {
             return {
                 required: {
                     value: true,
