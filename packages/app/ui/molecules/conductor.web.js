@@ -668,11 +668,13 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         if (addon) {
             const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
             const addonText = addon.variant === 'primary' ? addon.text : addon;
-            addonContent = (
-                <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
-                    {t(addonText)}
-                </Text>
-            );
+            if (addonText){
+                addonContent = (
+                    <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
+                        {t(addonText)}
+                    </Text>
+                );
+            }
         }
     
         const handlePress = () => {
