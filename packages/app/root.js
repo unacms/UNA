@@ -28,13 +28,13 @@ export function Root(props) {
 
     useEffect(() => {
         if (isWeb) {
-            document.title = decodeText(data?.title);
+            document.title = decodeText(data?.title.replace('__notification__', currentUser?.notifications > 0 ? '(' + currentUser.notifications +')' : ''));
             metaAdder('property="og:title"', decodeText(data?.title))
         }
         if (props.settings)
             remoteSettings.data = props.settings;
 
-    }, []);
+    }, [currentUser?.notifications]);
 
 
     useEffect(() => {
