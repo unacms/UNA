@@ -299,7 +299,7 @@ export default function ElementCover(props) {
                     }
                     <View className='flex-auto my-4 items-center md:items-start  '>
                         <Row className='items-center justity-center flex-auto text-center items-center md:items-start  '>
-                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50">
+                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 px-2 sm:px-0" numberOfLines={2}>
                                 {data.profile.display_name}
                             </Text>
                             <View className='ml-2'><Badges badges={data.badges} /></View>

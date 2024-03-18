@@ -5,39 +5,16 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { appSetting } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
-import { fetcher } from 'app/lib/fetcher'
 import { useTranslation } from 'react-i18next';
 import Browse from 'app/components/elements/browse'
-import useDaemon from 'app/lib/hooks/daemon'
-import Redirect from 'app/ui/atoms/redirect'
+import { ClearNotif } from 'app/ui/workers/notif_checker';
+import { Link } from 'solito/link'
 
 export default function (props) {
-    const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
-    const { daemonData, error } = useDaemon("/api.php?r=bx_notifications/get_unread_notifications_num&params[]=", false);
     const [ntfsOpen, setNtfsOpen] = useState(false);
-    const [notifCount, setNotifCount] = useState(currentUser.notifications);
-
+    const notifCount = currentUser.notifications;
     const { t } = useTranslation();
-
-    const sTxtNtfsTitle = t("Notifications")
-    const sTxtNtfsViewAll = t("View all")
-
-    useEffect(() => {
-        if (daemonData && daemonData != notifCount) {
-            setNotifCount(daemonData)
-        }
-    }, [daemonData]);
-
-    useEffect(() => {
-      /*  if (currentUser.notifications != notifCount) {
-            setNotifCount(currentUser.notifications)
-        }*/
-    }, [currentUser.notifications]);
-
-    const handleClick = (sUrl) => {
-        redirectdRef.current.redirect(sUrl)
-    }
 
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
 
@@ -47,22 +24,23 @@ export default function (props) {
 
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
-            <Redirect ref={redirectdRef} />
+            <ClearNotif/>
             <View className="flex-row items-center mb-1">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
-                    {sTxtNtfsTitle}
+                    { t("Notifications")}
                 </Text>
-                <Button
-                    variant="text"
-                    size="sm"
-                    rounded
-                    endDecorator="CaretDoubleRight"
-                    title={sTxtNtfsViewAll}
-                    onPress={() => {
-                        setNtfsOpen(false)
-                        handleClick(appSetting('layout', 'notifications'))
-                    }}
-                />
+                <Link href={appSetting('layout', 'notifications')}>
+                    <Button
+                        variant="text"
+                        size="sm"
+                        rounded
+                        endDecorator="CaretDoubleRight"
+                        title={t("View all")}
+                        onPress={() => {
+                            setNtfsOpen(false)
+                        }}
+                    />
+                </Link>
             </View>
             {memoizedBrowse}
         </View>
@@ -94,11 +72,9 @@ export default function (props) {
     const dd = <DropdownPopup
         open={ntfsOpen}
         onOpenChange={async (bOpen) => {
-            await fetcher('/api.php?r=bx_notifications/mark_as_read/')
-            setNotifCount(0)
             setNtfsOpen(bOpen);
         }}
-        title={t(sTxtNtfsTitle)}
+        title={t("Notifications")}
     >
         {[
             ntfsTrigger,

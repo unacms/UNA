@@ -4,7 +4,7 @@ import AsyncWorker from 'app/ui/molecules/async_worker';
 import { useFonts } from 'expo-font';
 import { appSetting } from 'app/lib/util'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground } from 'react-native';
 
 export default function Layout(props) {
     const isUseCustomFont = appSetting('layout', 'use_custom_font');

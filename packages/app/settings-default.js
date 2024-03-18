@@ -45,7 +45,7 @@ let settingsDefault = {
         background_cover_color: 'rgba(107, 114, 128, 0.2)',
         background_native:true,
         profile_colors: ['orange', 'yellow', 'green', 'teal', 'sky', 'indigo', 'purple', 'pink', 'rose', 'red'],
-        async_workers: [],//['EventChecker'],
+        async_workers: ['NotifChecker'],//['EventChecker'],
         async_workers_interval: 10,
         bluetooth: false,
         bluetooth_device_name_prefix: "NEO",
