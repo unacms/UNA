@@ -698,8 +698,8 @@ export function menuItemsByName(name, items, currentUser, url = '') {
             }
         }
         else {
-            //menuSettingNames = menuSettings.map(getNameFromSetting);
-            //items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
+            menuSettingNames = menuSettings.map(getNameFromSetting);
+            items = items.filter((item) => (item.hideInTop || (!!item.name && menuSettingNames.includes(item.name)) || (!!item.link && menuSettingNames.includes(getURI(item.link)))));
         }
         if (menuSettingNames) {
             items.forEach(item => {
