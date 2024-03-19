@@ -27,10 +27,11 @@ import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 
 
-const CommentsModal = ({ commentsData, initFormData }) => {
+const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
     const isWeb = Platform.OS == 'web' ? true : false;
-    const CommentsPartsData = CommentsParts(commentsData, [], windowDimensions.height * 0.5, initFormData);
+    const aItems=[itemContent];
+    const CommentsPartsData = CommentsParts(commentsData, aItems, windowDimensions.height * 0.95-136, initFormData);
     return (
         <View className='flex-1 w-full '>
             <View className={'w-full flex-auto '+ (isWeb ? '' : ' h-16')}>
@@ -238,16 +239,13 @@ if (aItem.title){
     if (viewState.view == 'deleted')
         return <></>
 
-    const getMainContent =  (isCompact = false) => {
-        return  bIsMarketContent
-        ? <MarketView isCompact={isCompact} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+    const MainContent = () => bIsMarketContent
+        ? <MarketView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
         : bIsAddContent
-            ? <AdView isCompact={isCompact}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+            ? <AdView isCompact={false}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
             : bIsGroupContent
-                ? <GroupView isCompact={isCompact}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
-                : <DefaultView isCompact={isCompact} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
-
-    }
+                ? <GroupView isCompact={false}  content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
+                : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
     useEffect(() => {
         if (appSetting('layout', 'comments_modal')){
@@ -261,7 +259,7 @@ if (aItem.title){
 
     
     const showCommentsModal = async (initFormData) => {
-        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{getMainContent(true)}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
+        setBottomSheetData({ title: ' ', showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{id:"block-comments", data:<MainContent/>}} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
     //TODO FIX
@@ -278,7 +276,6 @@ if (aItem.title){
                 show_combined: true,
             }}
         />
-
     ));
 
     const EditedView = ({ viewState, onFormSubmit, setViewState }) => (
@@ -301,9 +298,9 @@ if (aItem.title){
         </View>
     );
 
-    const NotEditedView = ({ MainContent, showCommentsModal }) => (
+    const NotEditedView = ({ showCommentsModal }) => (
         <>
-            {getMainContent()}
+            <MainContent/>
             <View className="flex-col relative px-0 py-4">
                 <Row className="px-4 flex-auto">
                     <MenuMemo showCommentsModal={showCommentsModal} />
@@ -366,7 +363,7 @@ if (aItem.title){
                     {viewState.view == 'edited' ? (
                         <EditedView viewState={viewState} onFormSubmit={onFormSubmit} setViewState={setViewState} />
                     ) : (
-                        <NotEditedView  showCommentsModal={showCommentsModal} />
+                        <NotEditedView showCommentsModal={showCommentsModal} />
                     )}
                 </View>
                 {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
