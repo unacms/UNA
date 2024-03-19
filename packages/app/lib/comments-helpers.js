@@ -392,7 +392,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions'))
-                form.data.inputs.cmt_text.value = '<a target="_blank" class="bx-mention-link" href="'+formData.author.url+'">@ '+formData.author.display_name+'</a>';
+                form.data.inputs.cmt_text.value = '<a target="_blank" class="bx-mention-link" href="'+formData.author.url+'">@ '+formData.author.display_name+'</a> ';
             form.data.reset = true;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
