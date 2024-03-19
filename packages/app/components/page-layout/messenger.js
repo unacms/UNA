@@ -40,15 +40,21 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     const [initedConvoId, setInitedConvoId] = useState(defaultConvoId);
     const { width: windowWidth, height: windowWHeight } = useWindowDimensions();
 
-    const fetchConvos = async () => {
+    const fetchConvos = async (term) => {
         if (menu) {
             const menuItem = menu?.data[menu?.index].name;
             if (menuItem) {
-                let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
-                const sResponse = await fetcher(request_url);
-                let convos = sResponse.data;
-
-                setConvos({ data: convos });
+                if (term){
+                    let request_url = '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term: term });
+                    const sResponse = await fetcher(request_url);
+                    //ANTON TO CHECK
+                    setConvos({ data: sResponse.data.lots });
+                }
+                else{
+                    let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });
+                    const sResponse = await fetcher(request_url);
+                    setConvos({ data: sResponse.data });
+                }
 
             }
         }
@@ -73,7 +79,6 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
 
     const addButtons = useMemo(() => {
         return [
-            <MessengerSearch key="b" />,
             <CreateConvoButton key="a" onSave={onSave} />
         ]
     }, []);
@@ -131,27 +136,6 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
             </View>
         </Row>
     )
-}
-
-const MessengerSearch = () => {
-    const [inputValue, setInputValue] = useState('');
-
-    const handleSearch = async (sValue) => {
-        setInputValue(sValue);
-        if (!sValue || sValue.length < 3)
-            return;
-
-        if (sValue != ''){
-            let request_url = '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term: sValue });
-            const sResponse = await fetcher(request_url);
-            //TODO: handle response
-        }
-
-    }
-
-    return <> <View  className='mr-2'>
-        <InputRoundedSmall name="search" placeholder={("Search") + '...'}   value={inputValue}  onChangeText={(value) => handleSearch(value)} />
-    </View></>
 }
 
 const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeight, windowWidth, layout, fetchConvos, defaultConvoId, onSave }) => {

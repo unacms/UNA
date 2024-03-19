@@ -6,37 +6,42 @@ import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
 import { Platform } from 'react-native'
-import { memo } from 'react';
+import { memo, useContext } from 'react';
+import { useCurrentUser } from 'app/context/user';
+
 
 export default function ({ item, index, changeConvo, selectedIndex }) {
-    const isWeb = Platform.OS == 'web'
-
+    let { currentUser, setCurrentUser } = useCurrentUser();
+    const participants = item.participants.filter(p => p.id != currentUser.id);
+    const names = participants.map(p => p.display_name).join(', ');
     const Item = memo(({item, index, changeConvo, selectedIndex }) => (<Pressable onPress={() => changeConvo(item)}>
         <Card border="mb-[1px] border-dashed sm:hover:bg-bgritem dark:sm:hover:bg-bgritem-d border-bdrcard dark:border-bdrcard-d" addClassName={(selectedIndex == index ? ' bg-neutral-500/10 ' : '') + 'group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 '} rounded="rounded-none" margin=" -mb-[1px]">
             <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
                 <Profile
-                    {...item.author_data}
+                    {...participants[0]}
                     displayType="unit_wo_info"
-                    displaySize="base"
+                    displaySize="lg"
                 />
+                
+                
+               
             </View>
             <View className="flex-auto flex-col my-auto ">
+                
+                <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
+                    {names}
+                </Text>
                 <View className="flex-row gap-x-2">
-                    <Text className="text-xs flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
-                        {item.author_data.display_name}
-                    </Text>
+                   
                     <Time className="text-xs flex-none" ts={item.date}></Time>
                 </View>
-                <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
-                    {item.title}
-                </Text>
                 <View className="flex-row w-full items-end content-end">
-                    <Text
+                   {/* <Text
                         className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                         numberOfLines={1}
                     >
                         {stripTags(item.message)}
-                    </Text>
+</Text>*/}
                     <View className="flex-none bg-primary dark:bg-primary-d rounded-full    my-auto h-min px-1.5">
                         {(item.unread > 0 && selectedIndex != index) && (
                             <Text className="text-xs text-white dark:text-black font-medium">
@@ -46,6 +51,13 @@ export default function ({ item, index, changeConvo, selectedIndex }) {
                     </View>
                 </View>
             </View>
+            {participants.length > 1 && (
+                    <View className='absolute bottom-1 left-10 bg-neutral-500 dark:bg-neutral-500 rounded-full p-1 h-6 w-6'>
+                    <Text className={` text-center items-center text-white text-xs font-semibold`}>
+                            +{participants.length-1}
+                    </Text>
+                    </View>
+                )}
         </Card>
     </Pressable>));
     

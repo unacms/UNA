@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import React, { memo, useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
 import { appSetting } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
-import { Button } from 'app/design/controls'
+import { Button, InputRounded, InputRoundedSmall  } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import { Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native';
@@ -44,7 +44,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
     const selectedConvo = convos?.data ? convos.data[selectedConvoIndex] : false;
     let { currentUser, setCurrentUser } = useCurrentUser();
-
+    const [searchValue, setSearchValue] = useState('');
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
@@ -65,6 +65,16 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         setCommentForm(false)
     }, [dynamicData]);
 
+   
+
+    const handleSearch = async (sValue) => {
+        setSearchValue(sValue);
+    }
+
+    useEffect(() => {   
+        fetchConvos(searchValue);
+        setConvoId(convos.data[0].id);
+    }, [searchValue]);
 
     const fetchItems = async (convoId, isAddJots) => {
         let start = 0;
@@ -291,6 +301,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         refListConvos={refListConvos}
         selectedConvoIndex={selectedConvoIndex}
         changeConvo={changeConvo}
+        handleSearch={handleSearch}
+        searchValue={searchValue}
         onSave={onSave}
     />
 
@@ -343,16 +355,19 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     );
 }
 
-
-const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave }) => {
+const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch }) => {
     return data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
-        {data.length > 0 && <UniList
+        {data.length > 0 && <>
+        
+            <Row  className='mr-2 p-2'>
+        <InputRounded name="search" placeholder={("Search") + '...'}   value={searchValue}  onChangeText={(value) => handleSearch(value)} />
+    </Row><UniList
             refer={refListConvos}
             height={layoutHeightLeft}
 
             data={data}
             renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
-        />}
+        /></>}
     </View> : <View className='items-center justify-center w-full h-full'><View className="pt-8">
         <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
             <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
