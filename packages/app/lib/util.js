@@ -550,7 +550,7 @@ export function isEmoji(s) {
 
 export function stripTags(s) {
     if (s)
-        return String(s).replace(/(<([^>]+)>)/ig, '');
+        return String(s).replace(/(<([^>]+)>)/ig, '').replace(/\s+/g, ' ');
 
     return s;
 }
