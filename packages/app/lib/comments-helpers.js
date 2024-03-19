@@ -86,7 +86,7 @@ export function CommentsParts(commentsData, aItems, height, initFormData, isModa
 
 
     const handleReply = async (data) => {
-        setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data.display_name })
+        setFormData({ text: stripTags(data.cmt_text), parent_id: data.cmt_id, author: data.author_data })
     }
 
     useEffect(() => {
@@ -391,8 +391,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     useEffect(() => {
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
+            if (appSetting('layout', 'comments_mentions'))
+                form.data.inputs.cmt_text.value = '<a target="_blank" class="bx-mention-link" href="'+formData.author.url+'">@ '+formData.author.display_name+'</a>';
             form.data.reset = true;
-            addCommentData({ formText: formData.text, formAuthor: formData.author, parentId: formData.parent_id })
+            addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }
     }, [formData.parent_id]);
 
@@ -418,6 +420,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
 
     const handleCancel = async () => {
         form.data.inputs.cmt_parent_id.value = 0;
+        form.data.inputs.cmt_text.value = '';
         form.data.reset = true;
         formData.parent_id = 0;
         addCommentData({ formText: '', formAuthor: '', parentId: 0 })
