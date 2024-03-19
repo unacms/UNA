@@ -41,7 +41,6 @@ export default function FormField(props) {
     );
 }
 
-
 export function FormError({ errorText, errorLink }) {
     const errorMessage = (
         <View className="label">
@@ -67,11 +66,18 @@ export function getValidationRules({ checker, caption }) {
         }
 
         if (funct == 'length') {
+            console.log(checker.params)
             return {
                 required: {
                     value: true,
-                    minLength: checker.params.min,
-                    maxLength: checker.params.max,
+                    message: caption + ' - ' + checker.error,
+                },
+                minLength: {
+                    value: checker.params.mi,
+                    message: caption + ' - ' + checker.error,
+                },
+                maxLength: {
+                    value: checker.params.max,
                     message: caption + ' - ' + checker.error,
                 }
             }

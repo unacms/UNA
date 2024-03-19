@@ -26,6 +26,7 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 
+
 const CommentsModal = ({ commentsData, initFormData }) => {
     const windowDimensions = useWindowDimensions();
     const isWeb = Platform.OS == 'web' ? true : false;
@@ -117,7 +118,7 @@ function DefaultUnit(data) {
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-
+    const [cmtsData, setCmtsData] = useState(null)
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {
@@ -180,6 +181,27 @@ function DefaultUnit(data) {
         }
     ) : []
 
+/*
+if (aItem.title){
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: aItem.link,
+                    title: aItem.title,
+                }
+            }
+            else{
+               const Element = componentsMap[aItem.data.type]
+                //if (!Element) return
+                return {
+                    id: aItem.id ? aItem.id : aItem.name,
+                    name: aItem.name,
+                    link: '',
+                    title:  <Element {...aItem.data} />
+                }
+                return 
+            }*/
+
     let commentsData = null;
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0) {
@@ -227,11 +249,19 @@ function DefaultUnit(data) {
 
     }
 
+    useEffect(() => {
+        if (appSetting('layout', 'comments_modal')){
+                async function fetchData() {
+                const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+                setCmtsData(res.data);
+            }
+            fetchData();
+        }
+    }, []);
 
     
     const showCommentsModal = async (initFormData) => {
-        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
-        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{getMainContent(true)}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={res.data} />, snapPoints: ['95%', '95%'] });
+        setBottomSheetData({ title: 'Comments', showClose: true, isListView: true, content: <View className='max-h-64 lg:max-h-32 w-full'><ScrollView>{getMainContent(true)}</ScrollView></View>, footer: <CommentsModal initFormData={initFormData} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
     //TODO FIX

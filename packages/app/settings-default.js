@@ -66,6 +66,7 @@ let settingsDefault = {
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
         comments_modal: true,
+        comments_mentions: true,
     },
     jitsi: {
         prefix: 'prefix_',

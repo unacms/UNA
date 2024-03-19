@@ -12,7 +12,7 @@ function FormFieldFtf(props) {
     const computedData = useMemo(() => {
         const FormFieldFtf_ = React.memo(dynamic(() => import('./rtf')));
             return  <FormFieldFtf_ {...props} />
-    }, [props.b]); 
+    }, [props.b, props.placeholder]); 
     return computedData;
 }
 

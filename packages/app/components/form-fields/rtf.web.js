@@ -242,7 +242,7 @@ export default function FormFieldFtf(props) {
 
 
     useEffect(() => {
-        if (editor && field.value == '')
+        if (editor )//&& field.value == ''
             editor.commands.setContent(field.value)
 
     }, [field.value]);
