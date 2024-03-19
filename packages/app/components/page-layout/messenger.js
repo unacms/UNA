@@ -142,7 +142,7 @@ const MessengerSearch = () => {
             return;
 
         if (sValue != ''){
-            let request_url = '/api.php?r=bx_messenger/find_convo/Services&params=' + JSON.stringify({ term: sValue });
+            let request_url = '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term: sValue });
             const sResponse = await fetcher(request_url);
             //TODO: handle response
         }
