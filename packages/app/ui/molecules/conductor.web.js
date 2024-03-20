@@ -1,16 +1,16 @@
 import React, { useCallback, useState, useEffect, useRef, useMemo, useContext, memo } from "react";
 import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
-import { View, Row, Pressable, ScrollView } from 'app/design/view';
+import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, menuItemsByName, getLayout } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, getBackButtonWeb,LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, getLayout } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { getSkeleton } from 'app/lib/skeleton-helpers';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { BlockByName } from 'app/components/block';
 import { appStatic } from 'app/lib/app-static';
 import { Input } from 'app/design/controls'
@@ -25,11 +25,12 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
+import { storageClear } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
 
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    //const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
@@ -37,11 +38,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setMenuPopup(!menuPopup)
     }
 
-
-    const [maxId, setMaxId] = useState(0);
-    const toasterRef = useRef();
-
-  
+    //const [maxId, setMaxId] = useState(0);
+    //const toasterRef = useRef();
+    const toasterRef2 = useRef();
 
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
 
@@ -56,8 +55,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setRoutes(initedTabs);
     }, [keyword, data.url, data.elements]);
 
+
     const scrollValue = useSharedValue(1);
-    const { colors } = Theme();
+    //const { colors } = Theme();
     const [index, setIndex] = useState(routes.findIndex(function (item) {
         if (useSectionAsMenu)
             return data.url == item.key;
@@ -65,20 +65,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (data.url).includes(item.key);
     }));
 
-    //console.log("routes", routes)
+    //let maxIdLocal = 0;
+    const currentRoute = routes.find((item) => item.index === index);
+
+    let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
 
     /* DAEMON PART */
-    const setToasterVisible = (val) => {
+    /*const setToasterVisible = (val) => {
         const current = toasterRef.current;
         if (current) {
             current.setVisible(val);
         }
     }
-
-    let maxIdLocal = 0;
-    const currentRoute = routes.find((item) => item.index === index);
-
-    let headerSettings = getHeaderSettings(getURI(currentRoute?.key), windowWidth, layoutName);
     const bUseDaemon = (currentRoute?.endpoint?.unit == 'feed');
     let params = currentRoute?.endpoint?.params ? JSON.parse(JSON.stringify(currentRoute.endpoint.params)) : {};
     params.start = 0;
@@ -97,14 +95,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         }
     }
-    // }, [index]);
 
-
-    useEffect(() => {
-        if (getNumCols(cntWidth) != numColumns){
-            setNumColumns(getNumCols(cntWidth));
-        }
-    }, [cntWidth, currentRoute]);
+   
 
     useEffect(() => {
         if (maxIdLocal > 0 && maxIdLocal != maxId) {
@@ -126,8 +118,69 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setMaxId(maxIdLocal);
         uniRef.current.scrollToIndex({ animated: true, index: -1 });
 
-    }
+    }*/
     /* DAEMON PART */
+
+    useEffect(() => {
+        if (getNumCols(cntWidth) != numColumns) {
+            setNumColumns(getNumCols(cntWidth));
+        }
+    }, [cntWidth, currentRoute]);
+
+    /* UPDATE CONTENT PART */
+    useEffect(() => {
+        setToaster2Visible(false);
+    }, [index]);
+
+    const setToaster2Visible = (val) => {
+        const current = toasterRef2.current;
+        if (current) {
+            current.setVisible(val);
+        }
+    }
+
+    const hasEndpoint = Boolean(currentRoute?.endpoint);
+    let endpointUpdateContent = '';
+    let bUpdateContent = false;
+
+    if (hasEndpoint && currentRoute.data.length > 0) {
+        const a = currentRoute.data
+            .filter(item => item.type !== 'block')
+            .map(item => item.id)
+            .slice(0, 10)
+            .join(',');
+
+        if (a) {
+            endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
+                'params': { ...currentRoute.endpoint.params, validate: a }
+            });
+            bUpdateContent = true;
+        }
+    }
+
+    const { daemonData: daemonData2 } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
+
+    useEffect(() => {
+        const data = daemonData2?.[0]?.data?.data;
+        if (data && (data == 'valid' || data == 'invalid')) {
+            setToaster2Visible(data !== 'valid');
+        }
+    }, [daemonData2]);
+
+    const showNewContent2 = async () => {
+        storageClear('ul:data', currentRoute.storageKeyValue)
+        storageClear('ul:state', currentRoute.storageKeyValue)
+        //TODO IMPROVE
+        const newRoutes = [...routes];
+        newRoutes[index].endpoint.finished = false;
+        newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
+        newRoutes[index].endpoint.params.start = 0;
+        setRoutes(newRoutes);
+        setToaster2Visible(false);
+        // uniRef.current.scrollToIndex({ animated: true, index: -1 });
+
+    }
+    /* UPDATE CONTENT PART */
 
     const indicatorOffset = useSharedValue(0);
 
@@ -176,6 +229,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         return 1;
     };
 
+    const queryKey = [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)];
+    const queryClient = useQueryClient();
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
     const {
         status: rqtStatus,
@@ -185,7 +240,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         isFetchingNextPage,
 
     } = useInfiniteQuery({
-        queryKey: [currentRoute?.endpoint?.request_url, index, keyword, JSON.stringify(currentRoute?.endpoint?.params?.filters)],
+        queryKey: queryKey,
         queryFn: ({ pageParam }) => parseData(routes, index, setRoutes),
         getNextPageParam: (lastPage, pages) => {
             if (lastPage?.data?.length > 0) {
@@ -329,9 +384,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
  */
             return (
                 <TopSidebar isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
-                      <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
+                    <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
-                    
+
             )
         }
     };
@@ -387,7 +442,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const RenderScene = useCallback(({ route, status }) => {
         let inputs = route?.endpoint?.filters?.inputs;
-        const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon? (route.addon.text ? route.addon.text : route.addon):0;
+        const counter = appSetting('layout', 'show_nav_counters') ? 0 : route.addon ? (route.addon.text ? route.addon.text : route.addon) : 0;
         return (
             <>
                 {
@@ -477,13 +532,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const tabBarObjSmall = renderTabBar(true);
     const headerObj = renderHeader(tabBarObj, tabBarObjSmall);
 
-
-
-    
     const TabScene = ({ route, width, status }) => {
         const dataItems = route?.data
         //let b = useMemo(() => {
-       
+
         if (!route.inited) {
             return <></>
         }
@@ -492,14 +544,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (unitType == 'default')
                 unitType = getUnitType(route);
 
-            let sSkeleton = data.module? data.module : data.unit
+            let sSkeleton = data.module ? data.module : data.unit
             if (skeleton)
                 sSkeleton = skeleton;
-        
+
             if (unitType)
                 sSkeleton = [sSkeleton, unitType];
-            
-            const Preload = getSkeleton(sSkeleton, numColumns);
+
+            const Preload = getSkeletonForList(sSkeleton, numColumns);
 
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
@@ -532,14 +584,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
                     <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d border-dashed' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
-                        {dataItems.length > 0 ? TabFlashListM : (rqtStatus != 'success' && route?.endpoint?.request_url ? Preload : appStatic('components_content_empty'))}
+                        {TabFlashListM}
+                        {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && appStatic('components_content_empty')))}
+
+
                     </View>
                     {isRightCol && <View className="hidden xl:block w-80 2xl:w-96  ">
                         <View className="fixed-process w-80 2xl:w-96 p-4">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
-                            <BlockByName data={route.pageData? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
+                            <BlockByName data={route.pageData ? route.pageData : data} name={route.blocks?.browse_sidebar} sidebar={true} perLine={1} maxItems={1} />
                         </View>
                     </View>}
                 </Row>
@@ -571,38 +626,38 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         });
         return <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons}>
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                    let settings = appSetting('layouts', a.key)
-                    let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
-                    let btn =<Button
-                        variant={a.index == index ? 'outline' : "text"}
-                        size={!a.ident ? "base" : "sm"}
-                        pressed={a.index == index ? true : false}
-                        fullWidth
-                        title={(a.title)}
-                        align="start"
-                        startDecorator={icon}
-                        addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
-                    />
-                    if (a?.icon == '*'){
-                        return (
-                            <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
-                                {btn}
-                            </Link>
-                        );
-                    }
+                let settings = appSetting('layouts', a.key)
+                let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+                let btn = <Button
+                    variant={a.index == index ? 'outline' : "text"}
+                    size={!a.ident ? "base" : "sm"}
+                    pressed={a.index == index ? true : false}
+                    fullWidth
+                    title={(a.title)}
+                    align="start"
+                    startDecorator={icon}
+                    addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
+                />
+                if (a?.icon == '*') {
                     return (
-                        <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                            <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
-                                setIndex(a.index);
-                                window.history.pushState({}, '', a.key);
-                                event.preventDefault()
-                            }}>
-                                {btn}
-                            </Pressable>
+                        <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
+                            {btn}
                         </Link>
-                    )
-                })}
-            </LeftSidebar>
+                    );
+                }
+                return (
+                    <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
+                        <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
+                            setIndex(a.index);
+                            window.history.pushState({}, '', a.key);
+                            event.preventDefault()
+                        }}>
+                            {btn}
+                        </Pressable>
+                    </Link>
+                )
+            })}
+        </LeftSidebar>
     }, [routes, index]);
 
     if (leftSideBar) {
@@ -610,7 +665,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
-                <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+                {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
+                <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
                         <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80  border-r  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
@@ -628,7 +684,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+            {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
+            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
                 <RenderScene route={currentRoute} />
             </View>
@@ -636,12 +693,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     );
 }
 function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, onChangeRoute }) {
-    
+
     let filteredItems = routes.filter((aItem) => aItem.hideInTop != true)
-    
-    const MenuItem = memo(({ item:a, itemRefs, index:index2, visibleItemsCount }) => {
-        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon  ? null : a.addon} />
-        if (a.icon=='*'){
+
+    const MenuItem = memo(({ item: a, itemRefs, index: index2, visibleItemsCount }) => {
+        const btn = <Button fullWidth={true} id="tab" pressed={a.index == index ? true : false} variant={a.index == index ? 'outline' : "text"} rounded size='sm' title={t(a.title)} addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon} />
+        if (a.icon == '*') {
             return <View className={"justify-center" + (index2 > visibleItemsCount - 1 ? ' item-overlap ' : '')} ref={el => itemRefs.current[index2] = el}><Link href={a.link}>{btn}</Link></View>
         }
         return (
@@ -656,19 +713,19 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                     }
                 }}
             >
-            {btn}   
+                {btn}
             </Pressable>
         )
     });
 
-    const MenuItemEx = memo(({item, index }) => {
+    const MenuItemEx = memo(({ item, index }) => {
         const { title, addon, icon, link, menu_settings, key } = item;
         const translatedTitle = <Text>{t(title)}</Text>;
         let addonContent = null;
         if (addon) {
             const addonClasses = addon.variant === 'primary' ? "bg-contrast dark:bg-contrast-d" : "bg-neutral-500 dark:bg-neutral-500";
             const addonText = addon.variant === 'primary' ? addon.text : addon;
-            if (addonText){
+            if (addonText) {
                 addonContent = (
                     <Text className={`${addonClasses} rounded-full px-2 py-0.5 mx-1 text-center items-center text-white text-xs font-semibold`}>
                         {t(addonText)}
@@ -676,7 +733,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 );
             }
         }
-    
+
         const handlePress = () => {
             setIndex(index);
             getNumCols(windowWidth);
@@ -685,11 +742,11 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
                 onChangeRoute(item);
             }
         };
-    
+
         if (icon === '*') {
             return <Link href={link}><Row className="justify-between items-center min-w-[200px]">{translatedTitle} {addonContent}</Row></Link>;
         }
-    
+
         return (
             <Pressable
                 className={menu_settings?.class ?? ''}
@@ -703,20 +760,20 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         );
     });
 
-    const ButtonEx = memo(({visibleItemsCount}) => {
-        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded onPress={()=>{}}  /></View>;
+    const ButtonEx = memo(({ visibleItemsCount }) => {
+        return <View key="btn" className='ml-2'><Button title={'More...'} variant={visibleItemsCount <= index ? 'outline' : "text"} pressed={visibleItemsCount <= index ? true : false} size="sm" rounded onPress={() => { }} /></View>;
     });
-    
-    return <DynamicMenu 
-        name = "main-menu"
+
+    return <DynamicMenu
+        name="main-menu"
         offsetWidth={80}
-        ButtonEx={ButtonEx} 
-        MenuItemEx={MenuItemEx} 
-        MenuItem={MenuItem} 
-        containerClasses = "w-full" 
-        items={filteredItems} 
-        isButtonOutside = {false}
-        menuClasses = "mr-auto ml-3 sm:ml-4 lg:ml-0 gap-x-2 flex-row"  
-        menuExClasses ="mr-auto ml-3 sm:ml-4 items-end"
-        />
+        ButtonEx={ButtonEx}
+        MenuItemEx={MenuItemEx}
+        MenuItem={MenuItem}
+        containerClasses="w-full"
+        items={filteredItems}
+        isButtonOutside={false}
+        menuClasses="mr-auto ml-3 sm:ml-4 lg:ml-0 gap-x-2 flex-row"
+        menuExClasses="mr-auto ml-3 sm:ml-4 items-end"
+    />
 }

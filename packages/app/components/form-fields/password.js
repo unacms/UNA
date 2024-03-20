@@ -29,7 +29,7 @@ export default function FormFieldPassword(props) {
                 value={field.value}
                 
             />
-            <View className="absolute bottom-0 right-0">
+            <View className="absolute bottom-[2px] right-0">
                 <Button startDecorator={isVisible?'Eye':'EyeSlash'} variant="text" onPress={()=>{setIsVisible(!isVisible)}}  />
             </View>
         </Field>

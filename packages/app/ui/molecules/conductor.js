@@ -4,12 +4,11 @@ import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { getSkeleton } from 'app/lib/skeleton-helpers';
+import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
@@ -128,7 +127,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
     };
 
     const TabScene = ({ route, index }) => {
-        const Preload = getSkeleton(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
+        const Preload = getSkeletonForList(skeleton != '' ? skeleton : (data.module ? data.module : data.unit), 1);
         if (!route.inited) {
             //Preload
             return <></>

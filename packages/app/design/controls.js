@@ -31,7 +31,6 @@ const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 
-
 /* modal */
 export function Modal({
     animation = 'fade',
@@ -69,7 +68,7 @@ export function Modal({
                             <Row className={`items-center justify-${textAlign} ${headerBorder ? 'border-b border-bdrbutton dark:border-bdr' : ''} pt-4 px-4`}>
                                 {title && (
                                     <View>
-                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold'>{title}</Text>
+                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2'>{title}</Text>
                                     </View>
                                 )}
                             </Row>

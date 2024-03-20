@@ -9,7 +9,7 @@ const items = Array(5).fill('');
 
 const Default = memo(() => (
     <Card margin=" m-2 " rounded=" rounded-2xl " addClassName="flex-auto p-1">
-        <View className="relative bg-neutral-500/20  aspect-square rounded-xl  w-full "></View>
+        <View className="relative bg-neutral-500/20  aspect-video rounded-xl  w-full "></View>
         <View className=" h-32 py-4 p-3">
             <View className="h-5  w-1/2 bg-neutral-500/20 rounded-full"></View>
         </View>
@@ -150,10 +150,13 @@ const skeletonsMap = {
 };
 
 
-export function getSkeleton(name, num = 5) {
-    
-    if (Array.isArray(name))
-        name = name.join('_');
+export function getSkeletonForList(name, num = 5) {
+    if (Array.isArray(name)){
+        if (name.includes('feed'))
+            name = 'feed';
+        else
+            name = name.join('_');
+    }
 
     const Item = skeletonsMap[name] || skeletonsMap['default'];
 

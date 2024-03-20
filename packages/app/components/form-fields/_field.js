@@ -65,6 +65,17 @@ export function getValidationRules({ checker, caption }) {
             }
         }
 
+        if (funct == 'date_range') {
+            return {
+                validate: value => {
+                    const age = Math.abs(new Date(Date.now() - new Date(value).getTime()).getUTCFullYear() - 1970);
+                    if (age< checker.params.min || age > checker.params.max) {
+                        return checker.error;
+                    }
+                }
+            }
+        }
+
         if (funct == 'length') {
             console.log(checker.params)
             return {
@@ -73,7 +84,7 @@ export function getValidationRules({ checker, caption }) {
                     message: caption + ' - ' + checker.error,
                 },
                 minLength: {
-                    value: checker.params.mi,
+                    value: checker.params.min,
                     message: caption + ' - ' + checker.error,
                 },
                 maxLength: {

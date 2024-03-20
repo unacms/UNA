@@ -208,7 +208,7 @@ export default function (props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <View className={bMultiple ? "mr-2" : ""} >
+            <View className={bMultiple ? "" : ""} >
                 <ActionButton uploadImages={uploadImages} imagesList={imageSource.images} props={props} bMultiple={bMultiple} selectImage={selectImage} handleDelete={handleDelete} />
             </View>
             {!props.previewPlaceHolder && <Row className='flex-wrap '>{GhostsList(imageSource.images, bMultiple, handleDelete)}</Row>}

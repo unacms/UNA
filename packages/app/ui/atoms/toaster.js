@@ -8,6 +8,10 @@ const ElementToster = forwardRef((props, ref) => {
     const [isVisible, setIsVisible] = useState(false);
     const sharedValue = useSharedValue(50); 
 
+    const isWeb = Platform.OS === 'web';
+    const sClassName = isWeb ? 'fixed bottom-24 left-0 w-full items-center z-50' : 'absolute top-0 w-full items-center z-50';
+    const sClassName2 = isWeb ? 'items-center' : 'w-1/2 items-center';
+        
     const indicatorStyle = useAnimatedStyle(() => {
         return {
             transform: [{ translateY: sharedValue.value }],
@@ -19,21 +23,11 @@ const ElementToster = forwardRef((props, ref) => {
         sharedValue.value = withSequence(
             withTiming(isVisible ? 25 : -50, { duration: 300 }), // fade out
           );
-        
-      
     }, [isVisible]);
 
     useImperativeHandle(ref, () => ({
         setVisible: (visible) => setIsVisible(visible),
     }));
-
-    let sClassName = 'absolute top-0 w-full items-center z-50';
-    if (Platform.OS === 'web')
-        sClassName = 'fixed top-16 left-0 w-full items-center z-50';
-
-    let sClassName2 = 'w-1/2 items-center';
-    if (Platform.OS === 'web')
-        sClassName2 = 'items-center';        
 
     return (
         <View style={{ display: isVisible ? 'flex' : 'none' }} className={sClassName}>

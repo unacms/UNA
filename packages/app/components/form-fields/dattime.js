@@ -3,18 +3,20 @@ import Field, {getValidationRules} from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import Calendar from 'app/ui/atoms/calendar'
 
-export default function FormFieldDattime({ name, value = '', type, ...props }) {
+export default function ({ name, value = '', type, ...props }) {
     const formContext = useFormContext();
     const rules = getValidationRules(props);
+    if (value == '0000-00-00 00:00:00Z')
+        value = new Date().toISOString().replace('T', ' ').substring(0, 19) + 'Z';
+
     const { field } = useController({ name, rules, defaultValue: value });
 
     const setParamValue = (value) => {
         const date = new Date(value*1000);
-        let v = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:00Z`;
-        field.onChange(v);
-       /* setTimeout(() => {
-            formContext.setValue(name, v);
-        }, 100);*/
+        if (props.db.pass == 'Date')
+            field.onChange(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`);
+        else
+            field.onChange(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:00Z`);
     }
 
     return (

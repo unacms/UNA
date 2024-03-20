@@ -43,6 +43,14 @@ H5 {
 .u-vanilla-html A:hover {
     text-decoration: underline;
 }
+.bx-mention-link{
+    color: #0284c7;
+    text-decoration: none;
+}
+
+.bx-mention-link:hover {
+    text-decoration: underline;
+}
 
 html,
 body,

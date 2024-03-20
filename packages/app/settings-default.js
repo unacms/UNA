@@ -197,6 +197,7 @@ let settingsDefault = {
             'browse_subscriptions' : 'person_following',
             'r=bx_events' : 'event',
             'r=bx_groups' : 'group',
+            'r=bx_timeline' : 'feed'
         }
     },
     menu_items: {
@@ -836,6 +837,10 @@ let settingsDefault = {
             'u-btn-primary-cnt': ' bg-primary dark:bg-primary-d sm:hover:bg-primary-600 dark:sm:hover:bg-primary-700 border border-transparent  shadow-sm sm:hover:shadow-md active:opacity-50 active:shadow-none  ',
             'u-btn-primary-text': '  font-medium text-primary-50 sm:group-hover:text-white ',
             'u-btn-primary-trans': ' duration-200 ',
+
+            'u-btn-secondary-cnt': ' bg-orange-500 dark:bg-orange-500 hover:bg-bgrbutton-h dark:sm:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d sm:hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
+            'u-btn-secondary-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
+            'u-btn-secondary-trans': ' duration-200 ',
 
             'u-btn-danger-cnt': ' bg-red-600 hover:bg-red-500 border border-bg-red-700 shadow-sm hover:shadow active:opacity-50 active:shadow-none  ',
             'u-btn-danger-text': ' font-medium text-neutral-100 group-hover:text-white ',

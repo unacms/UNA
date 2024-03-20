@@ -244,15 +244,26 @@ export default function FormFieldFtf(props) {
     useEffect(() => {
         if (editor )//&& field.value == ''
             editor.commands.setContent(field.value)
+        /*    console.log('ssss', 1)
+        if (editor && props.name == 'cmt_text'){
+            
+            editor.commands.focus()
+        }*/
 
     }, [field.value]);
-
-    useEffect(() => {
+    //console.log('ssss', field.value)
+    /*useEffect(() => {
+        
         if (editor && props.name == 'cmt_text'){
 
             editor.commands.focus()
         }
-    }, [editor]);
+    }, [editor]);*/
+
+    if (editor && props.name == 'cmt_text'){
+
+        editor.commands.focus('end')
+    }
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 
@@ -265,14 +276,14 @@ export default function FormFieldFtf(props) {
         return <></>
     }, [link]);
 
-
+    const bgClass = props.bg =='transparent' ? '' : "dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
     return (
         <>
             <View>
                 <EditorContent 
                     editor={editor} 
-                    placeholder='DSFS'
-                    className={(props?.numLines == 1 ? 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-lg w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base' : 'bg-neutral-500/10 border border-neutral-500/10 focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df text-neutral-900 rounded-xl w-full dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base ') + ' ' + (isFullHtml? 'p-4 ' : 'p-2.5 my-')}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-900 w-full placeholder-neutral-500 dark:text-neutral-100 text-base' : bgClass + 'text-neutral-900 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-100 text-base ') + ' ' + (isFullHtml? 'p-4 ' : 'p-2.5 my-')}
+
                 />
                 <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
                     {isFullHtml && <MenuBar editor={editor} /> }
