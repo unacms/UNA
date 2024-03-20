@@ -178,7 +178,7 @@ function getMenuItemConfigs(unitType, data, handleClick, t) {
 
 function ImageSection({ data, imageSizes }) {
     return (
-        <View className="aspect-square w-1/4 mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center">
+        <View className="aspect-square mr-1 sm:mr-0 sm:w-full rounded-xl overflow-hidden items-center justify-center">
             <Image
                 src={data?.image?.src}
                 alt={data.title}
@@ -226,16 +226,16 @@ export default function Unit(props) {
     return (
         <>
             <Redirect ref={redirectdRef} />
-            <Card margin=" mx-1 sm:mx-0 my-1 sm:my-2 " rounded=" rounded-2xl ">
+            <Card margin="  m-1 sm:m-2 " rounded=" rounded-2xl ">
                 <Link className="group " href={data.url}>
-                    <View className="flex-row sm:flex-col p-1">
+                    <View className="flex-row sm:flex-col p-1 h-36 sm:h-auto">
                         <ImageSection data={data} imageSizes={imageSizes} />
-                        <View className="flex-col p-3 flex-auto items-between sm:h-36 justify-between ">
+                        <View className="flex-col p-2 flex-auto items-between justify-between ">
                             <View className='flex-auto mb-auto'>
-                                <Text numberOfLines={1} className=" text-xl sm:text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
+                                <Text numberOfLines={1} className=" mt-1 text-base leading-tight tracking-tight font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d">
                                     {data.title}
                                 </Text>
-                                <Row className="items-center h-6 my-3">
+                                <Row className="items-center h-6 mt-2">
                                     <View className="mr-2 h-6">
                                         <ProfilesListCnt data={isFollowers ? data.followers_list : (data.mutual_friends_count > 0 ? data.mutual_friends_list : data.friends_list)} />
                                     </View>
@@ -244,7 +244,7 @@ export default function Unit(props) {
                                     </Text>
                                 </Row>
                             </View>
-                            <View className="flex-row w-full ">
+                            <View className="flex-row w-full mt-4 ">
                                 {oMenuItemPrimary}
                                 {bMenuItemsMoreShow && !!oMenuItemsMore &&
                                     oMenuItemsMore.items.length > 0 && (

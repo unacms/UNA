@@ -19,9 +19,9 @@ const ProfileCnt = memo(({ authorData }) => (
 export default function (props) {
     function smallUnit() {
         return (
-            <View className=" px-1 sm:px-0 pb-3  w-full h-full max-w-4xl">
-                <Card addClassName=" p-2 flex-auto mx-auto w-full flex-col gap-y-4  ">
-                    <View className=" aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
+            
+                <Card margin="  m-1 sm:m-2 "  rounded=" rounded-2xl " addClassName=" p-2  ">
+                    <View className="  aspect-video flex-none rounded-lg overflow-hidden mb-auto w-full bg-bgritem dark:bg-bgritem-d  ">
                         {data.image && (
                             <Image
                                 {...data.image}
@@ -32,21 +32,21 @@ export default function (props) {
                             />
                         )}
                     </View>
-                    <View className="flex-auto sm:h-44 flex-col px-2 pb-2 gap-y-2">
+                    <View className="flex-auto sm:h-40 mt-1 flex-col p-2">
                         <Link href={data.url}>
-                            <Text numberOfLines={3} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-lg  font-bold">
+                            <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base  font-semibold">
                                 {data.title}
                             </Text>
                         </Link>
-                        <Text numberOfLines={3} className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm ">
+                        <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-1 mb-auto text-sm ">
                             {data.summary_plain}
                         </Text>
-                        <View>
+                        <View className="mt-2 ">
                             <ProfileCnt authorData={data.author_data} />
                         </View>
                     </View>
                 </Card>
-            </View>
+            
         )
     }
 

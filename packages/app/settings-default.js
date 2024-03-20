@@ -103,15 +103,14 @@ let settingsDefault = {
     },
     browse: {
         per_line: [
-            { width: 1280, count: 3 },
-            { width: 768, count: 2 },
+            { width: 1280, count: 4 },
+            { width: 768, count: 3 },
             { width: 640, count: 2 },
         ],
         per_line_profile: [
-            { width: 1440, count: 4 },
-            { width: 1280, count: 3 },
-            { width: 768, count: 3 },
-            { width: 640, count: 2 },
+            { width: 1440, count: 5 },
+            { width: 768, count: 4 },
+            { width: 640, count: 3 },
         ],
         per_line_left_side_bar: [
             { width: 1280, count: 4 },
