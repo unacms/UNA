@@ -80,7 +80,7 @@ const ItemInfo = ({ data }) => {
         return l && (
             <>
                 <Text className="text-neutral-500"> · </Text>
-                <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap nowrap">
+                <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap text-xs nowrap">
                     {l}
                 </Text>
             </>

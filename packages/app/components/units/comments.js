@@ -133,14 +133,14 @@ export default function UnitComments(props) {
                     <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[19px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
                 </View>
-                <View className='flex-1 flex-col gap-y-1 mb-2 '>
-                    <View className='bg-neutral-500/10 border border-neutral-500/10 rounded-lg px-1.5 u-vanilla-html-small py-1' >
-                        <View className="flex-row flex-1 items-center mb-0.5 overflow-hidden">
-                            <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
+                <View className='flex-1 flex-col mb-2 '>
+                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-2.5 py-2 mb-1 u-vanilla-html-small' >
+                        <View className="flex-row flex-1 items-center overflow-hidden">
+                            <Profile {...data.author_data} displayType="unit_wo_image" displaySize="xs" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
                             <Link href={data.cmt_url} className="flex items-center"><Time ts={data.cmt_time}></Time></Link>
                             {(maxLevel < data.cmt_level && appSetting('layout', 'show_in_reply_comments')) && parent?.data && <Row>
-                                    <Text className="text-neutral-500 px-1 text-sm">· In reply to</Text>
+                                    <Text className="text-neutral-500 px-1 text-xs">· In reply to</Text>
                                     <Profile {...parent.data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                                     {false && <Text className="text-neutral-500 px-1 text-sm whitespace-nowrap text-ellipsis overflow-hidden"> {stripTags(parent?.data?.cmt_text)}</Text>}
                                 </Row>}
