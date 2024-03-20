@@ -32,13 +32,13 @@ export default function (props) {
                             />
                         )}
                     </View>
-                    <View className="flex-auto sm:h-40 mt-1 flex-col p-2">
+                    <View className="flex-auto sm:h-40 mt-2 flex-col p-2">
                         <Link href={data.url}>
                             <Text numberOfLines={2} className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-tight text-base  font-semibold">
                                 {data.title}
                             </Text>
                         </Link>
-                        <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-1 mb-auto text-sm ">
+                        <Text numberOfLines={3} className="text-neutral-600 dark:text-neutral-400 mt-2 mb-auto text-xs ">
                             {data.summary_plain}
                         </Text>
                         <View className="mt-2 ">
