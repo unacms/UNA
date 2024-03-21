@@ -283,7 +283,7 @@ export function LeftSidebar({ title, addButtons, children }) {
         <View className=" hidden lg:block w-80 ">
             <View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
                 <Row className="justify-between items-center mt-1 mb-4 ">
-                    <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+                    <Text className="text-2xl truncate mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                         {title}
                     </Text>
                     <Row className=" ">

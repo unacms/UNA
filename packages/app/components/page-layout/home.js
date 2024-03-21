@@ -133,7 +133,7 @@ export default function PageLayout(props) {
                 <Profile
                     {...dUser}
                     displayType="unit_wo_info"
-                    displaySize="sm"
+                    displaySize="base"
                 />
             )
 
@@ -153,17 +153,20 @@ export default function PageLayout(props) {
                                     ) && (
                                         <View className='hidden lg:block'>
                                         {!!currentUser && (
-                                            <Link href={appSetting('layout', 'dashboard')}>
-                                                <Row className="items-center justify-between m-4 px-2.5 py-1 rounded-lg hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                                    <Row className='flex-row gap-x-2 items-center'>
-                                                        <View className=" bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
+                                            
+                                                <Row className=" justify-between p-4">
+                                                    <Link href={appSetting('layout', 'dashboard')}>
+                                                    <Row className='items-start group'>
+                                                        <View className="p-1.5">
                                                             {profile}
                                                         </View>
-                                                        <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                        <Text className="text-base flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
                                                             {currentUser.display_name}
                                                         </Text>
-                                                    </Row><View className='flex-none '><Button
-                                                        variant="text"
+                                                    </Row>
+                                                    </Link>
+                                                    <View className='flex-none my-auto'><Button
+                                                        variant="outline"
                                                         size="sm"
                                                         tooltip={t('Switch profile')}
                                                         startDecorator="UserSwitch"
@@ -171,7 +174,7 @@ export default function PageLayout(props) {
                                                         rounded
                                                         align="right"
                                                     /></View></Row>
-                                            </Link>
+                                            
                                         ) } 
                                     </View>
                                         )}
