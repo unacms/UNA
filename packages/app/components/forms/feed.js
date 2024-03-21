@@ -57,7 +57,7 @@ export default function FormFeed(props) {
                 onClose={() => {
                     setShowImage(null)
                 }}
-                presentation='fullScreen'
+                presentation='overFullScreen'
                 outerClickClose={false}
                 transparent={true}
                 headerBorder={true}

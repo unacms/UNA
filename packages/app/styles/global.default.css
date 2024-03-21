@@ -420,3 +420,6 @@ body {
     min-height: 1px !important;
     background: red;;
 }
+[data-rsbs-overlay]{
+    z-index: 9999;
+}

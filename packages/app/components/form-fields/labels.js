@@ -1,14 +1,14 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
+import { View, Row, Pressable } from 'app/design/view'
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import CheckBox from 'app/ui/atoms/checkbox';
 import { Button } from "app/design/controls";
 import { BottomSheetData } from 'app/context/bottomsheet';
+import RadioButton from 'app/ui/atoms/radiobutton';
 
-
-export default function FormFieldLabels(props) {
+export default function(props) {
 
     const rules = {};
     const defaultValue = props.value ? props.value : '';
@@ -73,16 +73,22 @@ function ChkList({ values, selectedValues, setFormValue }) {
             : [...value2, value];
         setValue2(selectedValues);
     }
-
+/*
+<CheckBox
+                        value={value2.includes(item2.value)}
+                        onValueChange={() => addValue2(item2.value)}
+                    />*/
     return (
         <>
             {values.map((item2, index) => (
-                <Row className='gap-x-2 items-center mb-2' key={'chk' + index}>
-                    <CheckBox
-                        value={value2.includes(item2.value)}
-                        onValueChange={() => addValue2(item2.value)}
+                <Row className='items-center' key={'chk' + index}>
+                    
+                    <RadioButton
+                        value={item2.value}
+                        status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
+                        onPress={() => { addValue2(item2.value); }}
                     />
-                    <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                    <Pressable onPress={() => addValue2(item2.value)}><Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text></Pressable>
                 </Row>
             ))}
             <View className='pt-2'>
