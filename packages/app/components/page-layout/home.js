@@ -133,7 +133,7 @@ export default function PageLayout(props) {
                 <Profile
                     {...dUser}
                     displayType="unit_wo_info"
-                    displaySize="base"
+                    displaySize="sm"
                 />
             )
 
@@ -145,54 +145,35 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden lg:block  w-80 xl:w-96  duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
-                                <View className="fixed fixed-process w-80 xl:w-96">
+                            <View className="hidden lg:block w-80 duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
+                                <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'
                                     ) && (
-                                            <View className="flex-col w-full pl-6 pr-4 py-3 cursor-pointer active:opacity-50">
-                                                <Link
-                                                    href={currentUser.url}
-                                                    className="flex-auto"
-                                                >
-                                                    <Row className="flex-row w-full gap-x-2 items-center">
-                                                        <View className="flex-none mx-0.5 items-start">
+                                        <View className='hidden lg:block'>
+                                        {!!currentUser && (
+                                            <Link href={appSetting('layout', 'dashboard')}>
+                                                <Row className="items-center justify-between m-4 px-2.5 py-1 rounded-lg hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                                    <Row className='flex-row gap-x-2 items-center'>
+                                                        <View className=" bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                                             {profile}
                                                         </View>
-
-
-                                                        <Text className="text-xl flex-auto my-auto font-bold overflow-hidden truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                            {
-                                                                currentUser.display_name
-                                                            }
+                                                        <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                            {currentUser.display_name}
                                                         </Text>
-                                                        {appSetting(
-                                                            'layout',
-                                                            'allow_switch_profile'
-                                                        ) && (
-                                                                <View className="flex-none">
-                                                                    <ProfileSwitcher
-                                                                        hideTitle={
-                                                                            true
-                                                                        }
-                                                                    >
-                                                                        <Button
-                                                                            variant="text"
-                                                                            tooltip={t(
-                                                                                'Switch profile'
-                                                                            )}
-                                                                            size="sm"
-                                                                            startDecorator="UserSwitch"
-                                                                            rounded
-                                                                            align="right"
-                                                                        />
-                                                                    </ProfileSwitcher>
-                                                                </View>
-                                                            )}
-                                                    </Row>
-                                                </Link>
-                                            </View>
+                                                    </Row><View className='flex-none '><Button
+                                                        variant="text"
+                                                        size="sm"
+                                                        tooltip={t('Switch profile')}
+                                                        startDecorator="UserSwitch"
+                                                        fullWidth
+                                                        rounded
+                                                        align="right"
+                                                    /></View></Row>
+                                            </Link>
+                                        ) } 
+                                    </View>
                                         )}
                                     {navBarBlocks.map((item, index) => {
                                         return (
@@ -338,8 +319,8 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden xl:block w-80 xl:w-96 ">
-                            <View className="fixed-process w-80 xl:w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
+                        <View className="hidden xl:block w-80 ">
+                            <View className="fixed-process w-80 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

@@ -72,7 +72,7 @@ export default function ({ menuPopup, showMenu, cssClass }) {
                             overshootClamping: true,
                         }}
                     >
-                        {items.length > 0 && <View className="w-72 h-screen m-menu ">
+                        {items.length > 0 && <View className="w-80 h-screen m-menu ">
                             <Pressable onPress={showMenu}>
                                 <ScrollView style={styles} onPress={handleHideMenu} className="backdrop-blur xl:flex shadow-2xl p-4 bg-bgrnavbar dark:bg-bgrnavbar-d flex-col gap-y-2 ">
                                     <View className="flex-col gap-y-0.5">

@@ -18,7 +18,7 @@ export default function () {
         let dUser = Object.assign({}, currentUser)
         dUser.url_avatar = dUser.avatar
         dUser.url = appSetting('layout', 'dashboard')
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
+        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
     }
 
     if (menu_account_items.length == 0 || !profile)
@@ -46,7 +46,7 @@ export default function () {
                     tooltip={t("Dashboard")}
                     variant="outline"
                     rounded
-                    padding={1}
+                    padding={'0px'}
                     startDecorator={profile}
                     id="m3"
                     onPress={() => { }}

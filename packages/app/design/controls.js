@@ -114,7 +114,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = isLastChild ? 'border-r border-bdrbutton dark:border-bdrbutton-d' : '';
+        const childClass = isLastChild ? 'border-r border-bdr dark:border-bdr-d' : '';
 
         let childItem;
         if (child.type === Button) {
@@ -238,11 +238,11 @@ export function Button(props) {
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-' + props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' sm:mx-1 ' : '');
+            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-' + props.padding : 'p-[7px]') : sClassDefaultRounding + ' px-2.5 py-[7px]  ';
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base leading-6  '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2   ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' // Conditionally add 'mx-2' class
 
             break
 
