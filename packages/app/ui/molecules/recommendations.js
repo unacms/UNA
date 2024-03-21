@@ -1,10 +1,13 @@
 import { useState, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { CardData } from 'app/context/card';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 
 export default function ElementRecommendations(oProps) {
+    const { t } = useTranslation();
+
     const { cardData, setCardData } = useContext(CardData);
     const [ elementData, setElementData ] = useState(false);
 
@@ -100,10 +103,28 @@ export default function ElementRecommendations(oProps) {
         event.preventDefault();
 
         performAction('perform', {a:sAction}, (oData) => {
-            setElementVars(oData);
-
-            if(!oData.a)
+            if(!oData.a) {
+                /*
+                 * Hide the whole card. Isn't used for now.
                 setElementVars({hidden:true}, true, true);    
+                 */
+
+                let sTitle = '';
+                switch(oProps.o) {
+                    case 'sys_friends':
+                        sTitle = t("Request Sent");
+                        break;
+
+                    case 'sys_subscriptions':
+                        sTitle = t("Following");
+                        break;
+                }
+                oData = {...oData, a: 'sent', title:sTitle, disabled: true};
+
+                console.log(oData);
+            }
+
+            setElementVars(oData);
         });
     };
 
@@ -117,6 +138,10 @@ export default function ElementRecommendations(oProps) {
     let sTitle = oProps?.title || '';
     if(isElementVar('title'))
         sTitle = getElementVar('title');
+
+    let bDisabled = false;
+    if(isElementVar('disabled'))
+        bDisabled = getElementVar('disabled');
 
     const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
@@ -132,6 +157,6 @@ export default function ElementRecommendations(oProps) {
     }
 
     return (
-        <ButtonAction title={sTitle} startDecorator={sIcon} onPress={(event) => handleDo(event, sAction)} {...oButtonProps} />
+        <ButtonAction title={sTitle} startDecorator={sIcon} onPress={(event) => handleDo(event, sAction)} disabled={bDisabled} {...oButtonProps} />
     );
 }
