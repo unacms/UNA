@@ -72,7 +72,7 @@ export default function (props) {
     const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto lg:border-r border-bdr dark:border-bdr-d"}>
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process lg:w-80'>
@@ -134,12 +134,10 @@ export default function (props) {
                             {headerSettings.backButton && getBackButtonWeb()}
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
                         </View>
-                        <Row className="hidden lg:flex flex-auto items-center justify-center ">
-                            <Row className='w-full overflow-hidden items-center justify-center'>
-                                {(bSearch && currentUser) && <View className=' flex-auto max-w-sm ml-4 mr-auto hidden lg:block '>
-                                    <Search type="input" placeholder="Enter search text" />
-                                </View>}
-                                {menu_navbar_items.length > 0 && <Row className='mx-4 gap-x-2  overflow-hidden '>
+                        <Row className="hidden lg:flex flex-auto  ">
+                            <Row className='w-full overflow-hidden items-center '>
+                                
+                                {menu_navbar_items.length > 0 && <Row className='mx-4  gap-x-2 overflow-hidden '>
                                     {menu_navbar_items.map(
                                         (item, index) =>
                                             <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -162,6 +160,9 @@ export default function (props) {
 
                                     )}
                                 </Row>}
+                                {(bSearch && currentUser) && <View className=' items-end ml-auto flex-auto max-w-sm hidden lg:block '>
+                                    <Search type="input" placeholder="Enter search text" />
+                                </View>}
                             </Row>
                         </Row>
                         <Row className="flex-row xl:flex-none justify-end ">

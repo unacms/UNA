@@ -116,8 +116,8 @@ export default function PageLayout(props) {
             <View className={appSetting('layout', 'max_width') +" w-full p-2  mx-auto flex-col"}>
                 <View className={appSetting('layout', 'max_width_block') +" w-full p-2  mx-auto flex-col"}>
                     <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
-                        <View className="justify-center sm:justify-between flex-auto gap-x-8 sm:flex-row  sm:flex-wrap my-auto w-full items-center">
-                            <View className="flex-row gap-x-2 items-center mb-4 sm:mb-0">
+                        <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
+                            <View className="flex-row gap-x-2 items-center mb-4">
                                 {profile}
                                 <Link href={currentUser.url}>
                                     <Text className="my-auto text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 hover:dark:text-neutral-50 text-lg font-semibold ">
@@ -296,7 +296,7 @@ function ElementDashboardStat(props) {
                             return <View className="  w-1/2 lg:w-1/3 xl:w-1/4 p-2 duration-300 " key={index}>
                                 <Link href={item2.link}>
                                     <Card rounded=" rounded-2xl " addClassName="sm:hover:scale-105 w-full p-4 " >
-                                        <Row className='space-x-1 w-full justify-between mb-2'>
+                                        <Row className='space-x-1 w-full justify-between'>
                                             {
                                                 item.count > 0 ? <Text className=" text-3xl -translate-y-1 font-semibold flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white  ">
                                                     {item.count}
@@ -306,7 +306,7 @@ function ElementDashboardStat(props) {
                                         </Row>
                                         <Row className="w-full my-auto gap-x-2 ">
 
-                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold mt-2">
                                                 {t(item2.title)}
                                             </Text>
                                             <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
@@ -328,9 +328,9 @@ function ElementDashboardStat(props) {
                                             {getCounter(item.growth, '', '%')}
 
                                         </Row>
-                                        <Row className="w-full my-auto gap-x-2 mb-2">
+                                        <Row className="w-full gap-x-2">
 
-                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                                            <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold mt-2 ">
                                                 {t(item2.title)}
                                             </Text>
                                             <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
@@ -359,7 +359,7 @@ function ElementDashboardStat(props) {
                                         <View className="flex-none text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                             <Icon icon={item2.icon} width={24} height={24} />
                                         </View>
-                                        <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold   my-auto ">
+                                        <Text className=" sm:text-lg flex-auto text-neutral-800 group-hover:text-neutral-950 dark:text-neutral-200 group-hover:dark:text-white font-semibold ">
                                             {t(item2.title)}
                                         </Text>
 

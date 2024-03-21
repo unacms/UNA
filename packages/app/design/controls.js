@@ -27,7 +27,7 @@ export const Switch = SwitchDef
 export const Hidden = styled(TextInputDef, 'hidden')
 //export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px]')
 
-const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto   p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 '
+const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
 export const PickerStyledIos = styled(PickerDef, PickerStyles)
 
@@ -65,19 +65,20 @@ export function Modal({
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
                     <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto`}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
-                            <Row className={`items-center justify-${textAlign} ${headerBorder ? 'border-b border-bdrbutton dark:border-bdr' : ''} pt-4 px-4`}>
+                            <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3`}>
                                 {title && (
-                                    <View>
-                                        <Text className='text-neutral-700 dark:text-neutral-200 text-center text-xl font-bold mb-2'>{title}</Text>
+                                    <View className='flex-auto'>
+                                        <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
                                     </View>
                                 )}
-                            </Row>
-                            {onClose && (
-                                <View className='mb-auto absolute top-2 right-2 z-10'>
+                                {onClose && (
+                                <View className=''>
                                     <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
                                 </View>
                             )}
-                            <View className="overflow-y-auto px-4 pt-2 pb-4 flex-auto md:h-auto">{children}</View>
+                            </Row>
+                            
+                            <View className="overflow-y-auto px-4 py-2 flex-auto md:h-auto">{children}</View>
                         </Pressable>
                     </View>
                 </View>

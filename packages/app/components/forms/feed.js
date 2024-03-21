@@ -60,6 +60,7 @@ export default function FormFeed(props) {
                 presentation='fullScreen'
                 outerClickClose={false}
                 transparent={true}
+                headerBorder={true}
             >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
@@ -70,7 +71,7 @@ export default function FormFeed(props) {
                         <View className="w-full flex-col ">
                             {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'notitle')}
 
-                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { placeholder: 'Write your text here...', linkify: true })}
+                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { bg: 'transparent', placeholder: 'Write here...', linkify: true  })}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
                                 {props.data.inputs['photo'] && <View className="">
@@ -93,13 +94,12 @@ export default function FormFeed(props) {
                 </View>
 
             </Modal>
-            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 lg:px-6  mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
+            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-4 lg:p-6  mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
                 <View className=" flex-row ">
                     <View className='mr-2 my-auto'>{profile}</View>
                     <Button
                         size="base"
-                        variant="text"
-                        startDecorator="Plus"
+                        variant="secondary"
                         fullWidth
                         rounded
                         title={t("Create new post") + "..."}

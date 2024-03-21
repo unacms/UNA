@@ -145,7 +145,7 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden lg:block  w-80  duration-200 lg:border-r  border-dashed border-bdr dark:border-bdr-d ">
+                            <View className="hidden lg:block  w-80  duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
@@ -209,7 +209,7 @@ export default function PageLayout(props) {
                         )}
 
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto xl:border-r border-dashed border-bdr dark:border-bdr-d ">
+                            <View className="flex-auto border-r  border-bdr dark:border-bdr-d ">
                                 <View className="flex-auto   w-full mx-auto">
                                     <Row className="p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&
@@ -338,8 +338,8 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden xl:block  w-96   ">
-                            <View className="fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4  duration-200">
+                        <View className="hidden xl:block w-96 ">
+                            <View className="fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

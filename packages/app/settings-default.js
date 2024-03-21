@@ -24,7 +24,7 @@ let settingsDefault = {
         format:'mixed', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
-        max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
+        max_width_block: 'max-w-screen-lg', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
         use_background: false,
         cover_aspect: 'aspect-3/1',
         cell_gap: 4,
@@ -838,7 +838,7 @@ let settingsDefault = {
             'u-btn-primary-text': '  font-medium text-primary-50 sm:group-hover:text-white ',
             'u-btn-primary-trans': ' duration-200 ',
 
-            'u-btn-secondary-cnt': ' bg-orange-500 dark:bg-orange-500 hover:bg-bgrbutton-h dark:sm:hover:bg-bgrbutton-dh border border-bdrbutton dark:border-bdrbutton-d sm:hover:border-bdrbutton-h dark:hover:border-bdrbutton-dh active:opacity-50 shadow-sm sm:hover:shadow-md active:shadow-none ',
+            'u-btn-secondary-cnt': ' bg-neutral-200 dark:bg-neutral-800 sm:hover:bg-neutral-300 dark:sm:hover:bg-neutral-700 border border-transparent active:opacity-50  ',
             'u-btn-secondary-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50 ',
             'u-btn-secondary-trans': ' duration-200 ',
 
