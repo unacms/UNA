@@ -39,7 +39,7 @@ export default function Form(props) {
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
             
-            if (data.inputs[key].name == "allow_view_to"){
+            if (data.inputs[key].name == "allow_view_to" || data.inputs[key].name == "object_privacy_view"){
                 data.inputs[key].type = 'visibility'
             }
 

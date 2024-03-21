@@ -148,7 +148,7 @@ var MentionEx = Mention.extend({
         return [
             'a',
             mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
-            node.attrs.id.symbol + ' ' + node.attrs.id.label,
+            (node.attrs.id.symbol == '@' ? '' : node.attrs.id.symbol) + '' + node.attrs.id.label,
         ]
     },
 })

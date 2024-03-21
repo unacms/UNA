@@ -72,7 +72,7 @@ function RbList({ values, selectedValue, setValue }) {
                         onPress={() => { setValue2(item2.value); setValue(item2.value) }}
                     />
                     <Pressable  onPress={() => { setValue2(item2.value); setValue(item2.value) }}><Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.label}</Text></Pressable>
-                </> : <Text className="pl-2 text-neutral-700 dark:text-neutral-200  text-sm font-medium">{item2.label}</Text>}
+                </> : <Text className="pl-2 text-neutral-700 dark:text-neutral-200  text-sm font-medium mt-4">{item2.label}</Text>}
             </Row>
         )
     });

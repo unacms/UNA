@@ -1,11 +1,11 @@
 import { MasonryFlashList, FlashList } from "@shopify/flash-list";
-import { LayoutData } from 'app/context/layout';
+//import { LayoutData } from 'app/context/layout';
 import { useContext, useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function UniList(props) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+   // const { layoutData, setLayoutData } = useContext(LayoutData);
     const routerExpo = useRouter();
    // console.log("propsprops", props)
     let { data, renderItem, onEndReached, ListFooterComponent, refer, onScrollToIndex, numColumns, keyExtractor, ...rest } = props
@@ -18,7 +18,7 @@ export default function UniList(props) {
         //setRefreshing(false);
     };
 
-    if (props.unit == 'feed'){
+    /*if (props.unit == 'feed'){
         if(layoutData && layoutData?.type == 'feed:new_content'){
             if(layoutData.data?.id){
                 let insertIndex = data.findIndex(item => item.type !== 'block');
@@ -42,7 +42,7 @@ export default function UniList(props) {
         if(layoutData && layoutData?.type == 'feed:remove_content'){
             data = data.filter(item => item.id !== layoutData.data);
         }
-    }
+    }*/
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     
     if (props.masonry){
