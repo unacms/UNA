@@ -133,7 +133,7 @@ export default function PageLayout(props) {
                 <Profile
                     {...dUser}
                     displayType="unit_wo_info"
-                    displaySize="base"
+                    displaySize="lg"
                 />
             )
 
@@ -154,18 +154,18 @@ export default function PageLayout(props) {
                                         <View className='hidden lg:block'>
                                         {!!currentUser && (
                                             
-                                                <Row className=" justify-between p-4">
+                                                <Row className=" justify-between px-4 py-2">
                                                     <Link href={appSetting('layout', 'dashboard')}>
                                                     <Row className='items-start group'>
-                                                        <View className="p-1.5">
+                                                        <View className="p-[1px]  rounded-full border border-bdr dark:border-bdr-d">
                                                             {profile}
                                                         </View>
-                                                        <Text className="text-base flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
+                                                        <Text className="text-base mx-2 text-wrap text-balance my-auto font-bold text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
                                                             {currentUser.display_name}
                                                         </Text>
                                                     </Row>
                                                     </Link>
-                                                    <View className='flex-none my-auto'><Button
+                                                    <View className='flex-none mt-2 mb-auto'><Button
                                                         variant="outline"
                                                         size="sm"
                                                         tooltip={t('Switch profile')}
