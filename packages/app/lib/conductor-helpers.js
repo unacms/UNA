@@ -280,8 +280,8 @@ export const ItemRenderer = memo(ItemRenderer_);
 
 export function LeftSidebar({ title, addButtons, children }) {
     return (
-        <View className="hidden lg:block w-80 t-0 ">
-            <View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
+        <View className="hidden lg:block w-80 xl:w-96 t-0 ">
+            <View className=' fixed-process w-80 xl:w-96 lg:px-4 lg:py-3 '>
                 <Row className="justify-between items-center mt-1 mb-4 ">
                     <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                         {title}
@@ -324,7 +324,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 </Row>
                 }
                 <Row className="items-center ">
-                    {title ? <Text className="text-2xl my-auto mx-6 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" ml-6"></Text>}
+                    {title ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" ml-6"></Text>}
                     {children}
                     {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}

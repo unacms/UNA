@@ -589,8 +589,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-80 2xl:w-96  ">
-                        <View className="fixed-process w-80 2xl:w-96 p-4">
+                    {isRightCol && <View className="hidden xl:block w-80 xl:w-96  xl:w-96  ">
+                        <View className="fixed-process w-80 xl:w-96  xl:w-96 p-2">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
@@ -669,7 +669,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80 xl:w-96  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}

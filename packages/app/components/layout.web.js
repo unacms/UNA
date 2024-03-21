@@ -223,12 +223,12 @@ export default function Layout(props) {
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
                     <Row className='w-full flex-col lg:flex-row-reverse lg:border-l xl:border-r border-bdr dark:border-bdr-d'>
-                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '') + ' w-full '}>
+                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] xl:w-[calc(100%-24rem)]  ' : '') + ' w-full '}>
                             <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />
                             <AsyncWorker />
                         </View>
-                        {menuItems.length > 0 && <View className='w-full lg:w-80'>
+                        {menuItems.length > 0 && <View className='w-full lg:w-80 xl:w-96 '>
                             <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
                         </View>}
                     </Row>

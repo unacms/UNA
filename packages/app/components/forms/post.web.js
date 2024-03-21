@@ -27,7 +27,7 @@ export default function FormPost(props) {
     props.data.inputs['title'].type = 'textarea'
     props.data.inputs['title'].height = 12
     props.data.inputs['title'].viewClasses =
-        ' text-2xl lg:text-3xl font-bold my-2 lg:my-4  tracking-tight placeholder-neutral-500 text-neutral-900 dark:text-neutral-50  focus:outline-none'
+        ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50  focus:outline-none'
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
     props.data.inputs['allow_comments'].caption = '';
@@ -77,9 +77,9 @@ export default function FormPost(props) {
                 </View>
             </View>
             <View className="flex-col ">
-                <View className='w-full flex-wrap mb-2 flex-row border rounded-xl border-bdr dark:border-bdr-d p-1 items-center '>
-                    <Text className="font-semibold px-3 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add media</Text>
-                    <Row className=" justify-start items-center flex-row flex-wrap ">
+                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d  py-1 px-2 items-center '>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Add media</Text>
+                    <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
                         <View className="">
                             {getFormFieldByData(
                                 props.data.inputs['pictures'],
@@ -113,15 +113,16 @@ export default function FormPost(props) {
                             )}
                         </View>
                     </Row>
-                </View>
-
-                {prevList.length > 0 && prevList[0]?.key && (
+                    {prevList.length > 0 && prevList[0]?.key && (
                     <Row className="flex-wrap">{prevList}</Row>
                 )}
+                </View>
 
-                <View className='w-full flex-wrap my-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
-                    <Text className="font-semibold px-2 my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
-                    <Row className="justify-start items-center flex-row  flex-auto ">
+                
+
+                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
+                    <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
                         {getFormFieldByData(
                             props.data.inputs['labels'],
                             props.handleSubmit,
@@ -130,8 +131,8 @@ export default function FormPost(props) {
                     </Row>
                 </View>
 
-                <View className='w-full flex-wrap mb-2 flex-row border rounded-xl border-bdr dark:border-bdr-d p-1'>
-                    <Text className="font-semibold px-2 py-1 flex-auto my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
+                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                    <Text className="font-semibold px-3 py-1 flex-auto my-auto text-sm  text-neutral-800 dark:text-neutral-200">Category</Text>
                     <Row className=" gap-x-2 max-w-xl px-2 justify-start items-center flex-auto flex-row flex-wrap ">
                         {getFormFieldByData(
                             props.data.inputs['cat'],
@@ -141,8 +142,8 @@ export default function FormPost(props) {
                     </Row>
                 </View>
 
-                <View className='w-full flex-wrap my-2   flex-row border rounded-xl border-bdr dark:border-bdr-d p-2'>
-                    <Text className="font-semibold px-2 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Comments</Text>
+                <View className='w-full flex-wrap my-1   flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                    <Text className="font-semibold px-3 py-1  my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Allow Comments</Text>
                     <Row className=" gap-x-2 p-2 justify-start items-center flex-row flex-wrap ">
                         {getFormFieldByData(
                             props.data.inputs['allow_comments'],

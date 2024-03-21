@@ -145,8 +145,8 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden lg:block  w-80  duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
-                                <View className="fixed fixed-process w-80">
+                            <View className="hidden lg:block  w-80 xl:w-96  duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
+                                <View className="fixed fixed-process w-80 xl:w-96">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'
@@ -338,8 +338,8 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden xl:block w-96 ">
-                            <View className="fixed-process w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
+                        <View className="hidden xl:block w-80 xl:w-96 ">
+                            <View className="fixed-process w-80 xl:w-96 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

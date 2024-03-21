@@ -67,7 +67,7 @@ export default function (props) {
             <View className="fixed -top-[1px]  w-full">
                 <View className="  backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                   <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center"}>
-                    <View className="flex-row flex-auto xl:flex-none w-80 my-auto items-center">
+                    <View className="flex-row flex-auto xl:flex-none w-80 xl:w-96 my-auto items-center">
                         {
                             headerSettings.menu && (
                                 <View className="lg:hidden mr-4">
@@ -124,7 +124,7 @@ export default function (props) {
                             
                         </Row>
                     </Row>
-                    <Row className="flex-row flex-auto xl:flex-none w-96 justify-end  ">          
+                    <Row className="flex-row flex-auto xl:flex-none w-80 xl:w-96 justify-end  ">          
                         {!!currentUser && (
                             <Row className="flex-row   justify-end ">
                             <View className=" flex-row my-auto gap-x-2 ml-2">

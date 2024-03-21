@@ -74,8 +74,8 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
-                        <View className=' pt-16 fixed-process lg:w-80'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 xl:w-96 lg:border-r border-bdr dark:border-bdr-d'>
+                        <View className=' pt-16 fixed-process lg:w-80 xl:w-96'>
                             <View className='pt-4 pr-4 pl-4'>
                                 {menu_sidebar_items.map(
                                     (item, index) =>

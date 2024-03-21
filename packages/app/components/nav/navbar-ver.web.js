@@ -78,9 +78,9 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
+                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " xl:border-r border-dashed border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 xl:w-96 top-0  items-start lg:h-screen    "}>
                 <View className=' flex-row lg:flex-col w-full  w-screen  lg:w-full  h-16 lg:h-auto items-center lg:items-start pr-4 lg:pr-0' >
-                    <View className=' justify-between  lg:h-screen lg:w-80 '>
+                    <View className=' justify-between  lg:h-screen lg:w-80 xl:w-96 '>
                         <View className='px-4 lg:pt-4 flex-row lg:flex-col'>
                             {headerSettings.menu && (
                                 <View className="lg:hidden mr-4">
