@@ -591,8 +591,8 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='group  active:opacity-50 active:translate-y-1 flex-row px-3 py-2 sm:p-3' rounded="rounded-none sm:rounded-2xl" margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
-                    <View className="w-12 h-12 mr-2 rounded-full flex-none bg-secondary-500/10">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row px-4 py-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                    <View className=" mr-2 xl:mr-4 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
