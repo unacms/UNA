@@ -70,7 +70,7 @@ export default function (props) {
                     <View className="flex-row px-3 sm:px-4 flex-auto xl:flex-none w-80 my-auto items-center">
                         {
                             headerSettings.menu && (
-                                <View className="lg:hidden mr-4">
+                                <View className="lg:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button
                                             variant="outline"
@@ -85,16 +85,20 @@ export default function (props) {
                                 </View>)}
                         {(props.uri == 'home' || windowWidth >= 1024) &&
                             <Link href="/home" aria-label="Logo">
-                                <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
+                                <View className="group mr-4 flex-row flex-none items-center my-auto">
                                     {appStatic('logo_mark')}
+                                    <View className="lg:hidden">
                                     {appStatic('logo_text')}
+                                    </View>
                                 </View>
                             </Link>
                         }
                         {headerSettings.backButton && getBackButtonWeb()}
                         {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
 
-                        {bSearch && <View className="hidden"><Search type="input" /></View>}
+                        {(bSearch && currentUser) && <View className=' w-full flex-auto max-w-sm hidden lg:block '>
+                                    <Search type="input" placeholder="Enter search text" />
+                                </View>}
 
                     </View>
                     <Row className="hidden xl:flex flex-auto">
@@ -150,7 +154,7 @@ export default function (props) {
                     </Row>
                     )}
                     {!currentUser && (
-                        <Row className="flex-row flex-auto sm:flex-none justify-end my-auto ml-1.5 gap-x-2">
+                        <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1.5 sm:gap-x-2">
                             {bSearch && <View><Search /></View>}
                             <MenuLauncher />
                             <Link href="/login">

@@ -17,7 +17,7 @@ import BlockByUrl from 'app/ui/molecules/block';
 const LogoText = (
     <Svg
         aria-label="Logo Text"
-        className="h-8   group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
+        className="h-8 w-20 group-active:scale-90 text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 duration-500"
         viewBox="0 0 6400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ const LogoText = (
 const LogoMark = (
     <Svg
         aria-label="Logo Mark"
-        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px]  "
+        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[40px] w-[40px]  "
         viewBox="0 0 2400 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

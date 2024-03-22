@@ -110,7 +110,7 @@ export default function (props) {
                         <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
                             {
                                 headerSettings.menu && (
-                                    <View className="lg:hidden mr-4">
+                                    <View className="lg:hidden mr-3 sm:mr-4">
                                         <Pressable onPress={showMenu}>
                                             <Button
                                                 variant="outline"
