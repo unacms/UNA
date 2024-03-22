@@ -2,7 +2,13 @@ import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
 import { Platform } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { appSetting, filterContent, storageSet, storageGet, getLayout } from 'app/lib/util'
+import {
+    appSetting,
+    filterContent,
+    storageSet,
+    storageGet,
+    getLayout,
+} from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import { Conductor } from 'app/ui/molecules/conductor'
 import { Text } from 'app/design/typography'
@@ -15,7 +21,6 @@ import ProfileSwitcher from 'app/components/elements/profile_switcher'
 import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
-
     const { t } = useTranslation()
 
     const isWeb = Platform.OS == 'web'
@@ -121,7 +126,8 @@ export default function PageLayout(props) {
                     }
                 >
                     {appStatic('components_splash', p)}
-                    {getLayout(currentUser) == 'ver ' && appStatic('components_fullfooter', p)}
+                    {getLayout(currentUser) == 'ver ' &&
+                        appStatic('components_fullfooter', p)}
                 </View>
             )
         }
@@ -133,7 +139,7 @@ export default function PageLayout(props) {
                 <Profile
                     {...dUser}
                     displayType="unit_wo_info"
-                    displaySize="lg"
+                    displaySize="base"
                 />
             )
 
@@ -145,49 +151,59 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden lg:block w-80 duration-200 lg:border-r  border-bdr dark:border-bdr-d ">
+                            <View className="hidden lg:block w-80 duration-200 2xl:border-x lg:border-r border-bdr dark:border-bdr-d ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'
                                     ) && (
-                                        <View className='hidden lg:block'>
-                                        {!!currentUser && (
-                                            
-                                                <Row className=" justify-between px-4 py-2">
-                                                    <Link href={appSetting('layout', 'dashboard')}>
-                                                    <Row className='items-start group'>
-                                                        <View className="p-[1px]  rounded-full border border-bdr dark:border-bdr-d">
+                                        <View className="">
+                                            {!!currentUser && (
+                                                <Row className="justify-between p-4">
+                                                    <Link
+                                                        href={appSetting(
+                                                            'layout',
+                                                            'dashboard'
+                                                        )}
+                                                    >
+                                                        <Row className="items-start group">
                                                             {profile}
-                                                        </View>
-                                                        <Text className="text-base mx-2 text-wrap text-balance my-auto font-bold text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
-                                                            {currentUser.display_name}
-                                                        </Text>
-                                                    </Row>
+                                                            <Text className="text-base mx-2 text-wrap text-balance my-auto font-bold text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
+                                                                {
+                                                                    currentUser.display_name
+                                                                }
+                                                            </Text>
+                                                        </Row>
                                                     </Link>
-                                                    <View className='flex-none mt-2 mb-auto'><Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        tooltip={t('Switch profile')}
-                                                        startDecorator="UserSwitch"
-                                                        fullWidth
-                                                        rounded
-                                                        align="right"
-                                                    /></View></Row>
-                                            
-                                        ) } 
+                                                    <View className="flex-none my-auto">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            tooltip={t(
+                                                                'Switch profile'
+                                                            )}
+                                                            startDecorator="UserSwitch"
+                                                            fullWidth
+                                                            rounded
+                                                            align="right"
+                                                        />
+                                                    </View>
+                                                </Row>
+                                            )}
+                                        </View>
+                                    )}
+                                    <View className="flex-auto px-2 w-full">
+                                        {navBarBlocks.map((item, index) => {
+                                            return (
+                                                <BlockByName
+                                                    key={'block_' + index}
+                                                    name={item.block}
+                                                    data={props.data}
+                                                    {...item.block.props}
+                                                />
+                                            )
+                                        })}
                                     </View>
-                                        )}
-                                    {navBarBlocks.map((item, index) => {
-                                        return (
-                                            <BlockByName
-                                                key={'block_' + index}
-                                                name={item.block}
-                                                data={props.data}
-                                                {...item.block.props}
-                                            />
-                                        )
-                                    })}
                                 </View>
                             </View>
                         )}
@@ -218,7 +234,7 @@ export default function PageLayout(props) {
                                                             }
                                                             variant={
                                                                 feedType ==
-                                                                    item.name
+                                                                item.name
                                                                     ? 'link'
                                                                     : 'text'
                                                             }
@@ -232,37 +248,37 @@ export default function PageLayout(props) {
                                             'feed',
                                             'show_selector_view'
                                         ) && (
-                                                <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
-                                                    <Button
-                                                        startDecorator="Rows"
-                                                        tooltip={t('Full')}
-                                                        rounded
-                                                        variant={
-                                                            unitMode == ''
-                                                                ? 'link'
-                                                                : 'text'
-                                                        }
-                                                        size="sm"
-                                                        onPress={() => {
-                                                            setUnitModeEx('')
-                                                        }}
-                                                    />
-                                                    <Button
-                                                        startDecorator="ListBullets"
-                                                        rounded
-                                                        tooltip={t('Short')}
-                                                        variant={
-                                                            unitMode == 'small'
-                                                                ? 'link'
-                                                                : 'text'
-                                                        }
-                                                        size="sm"
-                                                        onPress={() => {
-                                                            setUnitModeEx('small')
-                                                        }}
-                                                    />
-                                                </Row>
-                                            )}
+                                            <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                                <Button
+                                                    startDecorator="Rows"
+                                                    tooltip={t('Full')}
+                                                    rounded
+                                                    variant={
+                                                        unitMode == ''
+                                                            ? 'link'
+                                                            : 'text'
+                                                    }
+                                                    size="sm"
+                                                    onPress={() => {
+                                                        setUnitModeEx('')
+                                                    }}
+                                                />
+                                                <Button
+                                                    startDecorator="ListBullets"
+                                                    rounded
+                                                    tooltip={t('Short')}
+                                                    variant={
+                                                        unitMode == 'small'
+                                                            ? 'link'
+                                                            : 'text'
+                                                    }
+                                                    size="sm"
+                                                    onPress={() => {
+                                                        setUnitModeEx('small')
+                                                    }}
+                                                />
+                                            </Row>
+                                        )}
                                     </Row>
                                     <View className="relative w-full mx-auto max-w-3xl">
                                         {feedList.map((item, index) => {
@@ -294,8 +310,8 @@ export default function PageLayout(props) {
                                                             data={props.data}
                                                             name={
                                                                 props.blocks[
-                                                                item.name +
-                                                                '_feed_form'
+                                                                    item.name +
+                                                                        '_feed_form'
                                                                 ]
                                                             }
                                                         />
@@ -303,8 +319,8 @@ export default function PageLayout(props) {
                                                             data={props.data}
                                                             name={
                                                                 props.blocks[
-                                                                item.name +
-                                                                '_feed'
+                                                                    item.name +
+                                                                        '_feed'
                                                                 ]
                                                             }
                                                             unitMode={unitMode}
@@ -462,7 +478,10 @@ export default function PageLayout(props) {
                     {feedList.map((item, index) => {
                         if (feedType == item.name) {
                             return (
-                                <View key={'view' + index} className='w-full h-full'>
+                                <View
+                                    key={'view' + index}
+                                    className="w-full h-full"
+                                >
                                     <Conductor
                                         minHeaderHeight={0}
                                         isHideDefaultHeader={false}
