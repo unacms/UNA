@@ -804,7 +804,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
         containerClasses="w-full"
         items={filteredItems}
         isButtonOutside={false}
-        menuClasses="mr-auto ml-3 sm:ml-4 lg:ml-0 gap-x-2 flex-row"
+        menuClasses="mr-auto gap-x-2 flex-row"
         menuExClasses="mr-auto ml-3 sm:ml-4 items-end"
     />
 }
