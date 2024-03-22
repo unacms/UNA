@@ -69,14 +69,14 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                <View className='justify-between h-full'>
+                <View className='justify-between mb-4 h-full'>
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                        <View className="w-full flex-col ">
-                            <View className=" flex-row flex-wrap gap-x-2  flex-auto justify-between ">
-                                <View className=" flex-auto mb-4 text-base font-bold text-neutral-800 my-auto ">
+                        <View className="w-full  flex-col ">
+                            <View className=" flex-row flex-wrap gap-x-2 mt-2 flex-auto justify-between ">
+                                <View className=" flex-auto text-base font-bold text-neutral-800 my-auto ">
                                     <Profile {...currentUser} displayType="unit" displaySize="base" />
                                 </View>
-                                <View className=" mb-4  ">
+                                <View className="   ">
                                     {getFormFieldByData(props.data.inputs['object_privacy_view'], props.handleSubmit, 'nofield')}
                                 </View>
 
