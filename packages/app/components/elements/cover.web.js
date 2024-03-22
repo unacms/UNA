@@ -379,7 +379,7 @@ export default function ElementCover(props) {
                         </View>
                     </View>
                 )}
-                <View className=" flex-col md:flex-row gap-x-2 p-3 sm:p-4   ">
+                <View className=" flex-col md:flex-row gap-x-2 px-3 sm:px-4   ">
                     {bPerson && (
                         <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative ">
                             <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
@@ -406,8 +406,9 @@ export default function ElementCover(props) {
                             </View>
                         </View>
                     )}
-                    <View className="flex-col gap-y-4 lg:flex-row flex-auto my-auto ">
-                        <View className="flex-col gap-y-3 ">
+                    
+                        <View className="flex-col flex-auto gap-y-3 my-3 ">
+                            <View className=" flex-auto flex-col xl:flex-row  gap-y-3 justify-between  ">
                             <Row className=" flex-auto items-center gap-x-2  ">
                                 <Text
                                     className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
@@ -417,19 +418,14 @@ export default function ElementCover(props) {
                                 </Text>
                                 <Badges badges={data.badges} />
                             </Row>
-
                             <CoverMenuMeta {...data.meta_menu} />
-                        </View>
+                            </View>
 
-                        <View className=" flex-row flex-auto justify-end items-start justify-items-end">
-                            
-                            <CoverMenu
-                                {...data.actions_menu}
-                                uri={props?.uri}
-                            />
-                        
+                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
+
                         </View>
-                    </View>
+                    
+                   
                 </View>
             </View>
         </View>
