@@ -66,9 +66,9 @@ const ItemInfo = ({ data }) => {
     const { t } = useTranslation();
     const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
         <React.Fragment key={'owner' + index}>
-            <Text className="text-neutral-500"> · </Text>
+            <Text className="text-neutral-500/50 text-sm leading-5"> · </Text>
             <Link href={item.url} emulate={true}>
-                <Text className="text-neutral-500 hover:text-linkhover text-ellipsis overflow-hidden font-medium" numberOfLines={1}>
+                <Text className=" tracking-tight leading-5 text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-ellipsis overflow-hidden text-sm font-medium" numberOfLines={1}>
                     {item.title}
                 </Text>
             </Link>
@@ -79,8 +79,8 @@ const ItemInfo = ({ data }) => {
         const l = t('feed_type_' + data.type);
         return l && (
             <>
-                <Text className="text-neutral-500"> · </Text>
-                <Text className="text-neutral-500 text-ellipsis overflow-hidden whitespace-nowrap nowrap">
+                <Text className="text-neutral-500/50 text-sm leading-5"> · </Text>
+                <Text className=" tracking-tight leading-5 text-neutral-500 text-sm text-ellipsis overflow-hidden ">
                     {l}
                 </Text>
             </>
@@ -299,10 +299,8 @@ function DefaultUnit(data) {
     const NotEditedView = ({ showCommentsModal }) => (
         <>
             <MainContent />
-            <View className="flex-col relative px-0 py-4">
-                <Row className="px-4 flex-auto">
+            <View className="flex-col relative p-3 sm:p-4">
                     <MenuMemo showCommentsModal={showCommentsModal} />
-                </Row>
             </View>
         </>
     );
@@ -333,7 +331,7 @@ function DefaultUnit(data) {
     return (
         <AnimatedBlock>
             <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
-                <View className="flex-auto flex-row items-top p-4">
+                <View className="flex-auto flex-row items-top p-3 sm:p-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -546,7 +544,7 @@ function DefaultUnit(data) {
                         </View>
                     </View>
                 )}
-                <View className="flex-auto px-4 my-auto flex-col">
+                <View className="flex-auto px-3 sm:px-4 my-auto flex-col">
                     {bIsTitle && (
                         <Link href={url} className="">
                             <Text
@@ -591,7 +589,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row px-4 py-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className=" mr-2 xl:mr-4 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}

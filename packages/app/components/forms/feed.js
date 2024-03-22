@@ -106,7 +106,7 @@ export default function FormFeed(props) {
             </Modal>
             <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-3 sm:p-4 lg:p-6  mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
                 <View className=" flex-row ">
-                    <View className='mr-2 my-auto'>{profile}</View>
+                    <View className='mr-3 sm:mr-4 my-auto'>{profile}</View>
                     <Button
                         size="base"
                         variant="secondary"
