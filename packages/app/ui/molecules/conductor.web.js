@@ -610,10 +610,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (route.blocks?.browse_sidebar?.unitType) {
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
-            //border-r border-bdr dark:border-bdr-d border-dashed
+            
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d border-dashed' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d ' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && appStatic('components_content_empty')))}
 

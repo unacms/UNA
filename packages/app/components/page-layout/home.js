@@ -209,7 +209,7 @@ export default function PageLayout(props) {
                         )}
 
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto border-r  border-bdr dark:border-bdr-d ">
+                            <View className="flex-auto xl:border-r  border-bdr dark:border-bdr-d ">
                                 <View className="flex-auto   w-full mx-auto">
                                     <Row className="p-3 sm:p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&
