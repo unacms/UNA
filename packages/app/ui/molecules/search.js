@@ -191,7 +191,7 @@ export function ElementSearchData(oProps) {
             
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
-                    <View className="flex-row items-center justify-end">
+                    <View className="hidden flex-row items-center justify-end">
                         <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
                     </View>
                 )
@@ -230,7 +230,7 @@ export function ElementSearchData(oProps) {
             <Redirect ref={redirectdRef} />
             {
                 (!!inputValue && appSetting('layout', 'extended_search')) && (
-                    <View className="flex-row items-center mb-2 justify-end">
+                    <View className="hidden flex-row items-center mb-2 justify-end">
                         <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
                     </View>
                 )

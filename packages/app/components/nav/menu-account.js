@@ -25,7 +25,7 @@ export default function () {
         return <></>;
 
     return (
-        <View className="hidden sm:flex flex-row justify-center">
+        <View className=" flex-row justify-center">
             <DropdownMenu items={menu_account_items.map(
                 (item, index) => {
                     return (

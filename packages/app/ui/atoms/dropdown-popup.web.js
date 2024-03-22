@@ -29,7 +29,7 @@ export default function DropdownPopup(oProps) {
         <DmRoot modal={bModal} open={open} onOpenChange={(bDmOpen) => {onOpenChange(bDmOpen)}}>
             {sTrigger}
             <DmPortal>
-                <DmContent onFocusOutside={(event) => {event.preventDefault()}} className={"DropdownMenuContent "+(oProps.size? "DropdownMenuContent" + oProps.size.charAt(0).toUpperCase()+oProps.size.slice(1) : '') +" border-0 border-bdrmodal dark:border-bdrmodal-d backdrop-blur m-1 bg-bgrmodal dark:bg-bgrmodal-d shadow-xl"} {...restProps}>
+                <DmContent onFocusOutside={(event) => {event.preventDefault()}} className={"DropdownMenuContent "+(oProps.size? "DropdownMenuContent" + oProps.size.charAt(0).toUpperCase()+oProps.size.slice(1) : '') +" border-0 border-bdrmodal dark:border-bdrmodal-d backdrop-blur bg-bgrmodal m-1 rounded-b-xl dark:bg-bgrmodal-d p-2 shadow-lg "} {...restProps}>
                     {oProps.children[1]}
                 </DmContent>
             </DmPortal>
