@@ -50,8 +50,6 @@ export default function FormFeed(props) {
         profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
     }
 
-    console.log("props.data.inputs", props.data.inputs)
-
     return (
         <View className="w-full h-full ">
             <Modal
@@ -81,7 +79,7 @@ export default function FormFeed(props) {
                                 </View>
 
                             </View>
-                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { bg: 'transparent', placeholder: 'Write here...', linkify: true })}
+                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus:true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
                                 {props.data.inputs['photo'] && <View className="">

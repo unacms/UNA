@@ -17,7 +17,7 @@ export default function (props) {
     const { t } = useTranslation();
 
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }
-
+return <></>
     const memoizedBrowse = useMemo(() => {
         return <Browse cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);

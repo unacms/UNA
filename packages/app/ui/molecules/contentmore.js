@@ -31,8 +31,7 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
     let showButton = false;
     if (shortHtml.trim() != content.trim())
         showButton = true;
-
-    console.log("shortHtml", shortHtml, content)
+    
     const [showFull, setShowFull] = useState(openSmall);
     if (!showFull) {
         if (showButton){

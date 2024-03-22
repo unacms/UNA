@@ -195,7 +195,7 @@ export function ElementSearchData(oProps) {
         </>
     );
 
-
+    return <></>
     if (oProps.resInPopup) {
         const dd = <DropdownPopup
             open={!!popupContent}

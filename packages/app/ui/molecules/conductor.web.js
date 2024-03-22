@@ -797,7 +797,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
     return <DynamicMenu
         name="main-menu"
-        offsetWidth={80}
+        offsetWidth={120}
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
         MenuItem={MenuItem}

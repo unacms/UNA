@@ -148,8 +148,7 @@ export default function (props) {
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
                                         <View className="lg:hidden ">
-                                            {' '}
-                                            {bSearch && <Search />}{' '}
+                                            {bSearch && <Search />}
                                         </View>
                                         <View className="hidden">
                                             <MenuLauncher />
