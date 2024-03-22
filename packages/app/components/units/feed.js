@@ -66,9 +66,9 @@ const ItemInfo = ({ data }) => {
     const { t } = useTranslation();
     const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
         <React.Fragment key={'owner' + index}>
-            <Text className="text-neutral-500/50 text-sm leading-5"> · </Text>
+            <Text className="text-neutral-500 text-sm"> in </Text>
             <Link href={item.url} emulate={true}>
-                <Text className=" tracking-tight leading-5 text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-ellipsis overflow-hidden text-sm font-medium" numberOfLines={1}>
+                <Text className="  text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-semibold">
                     {item.title}
                 </Text>
             </Link>
@@ -79,8 +79,8 @@ const ItemInfo = ({ data }) => {
         const l = t('feed_type_' + data.type);
         return l && (
             <>
-                <Text className="text-neutral-500/50 text-sm leading-5"> · </Text>
-                <Text className=" tracking-tight leading-5 text-neutral-500 text-sm text-ellipsis overflow-hidden ">
+                <Text className=" text-neutral-500/50 text-sm"> · </Text>
+                <Text className="  text-neutral-500 text-sm font-normal text-center  ">
                     {l}
                 </Text>
             </>
@@ -313,15 +313,11 @@ function DefaultUnit(data) {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className="items-center">
-                        <View>
+                    <Row className="flex-wrap items-center">                      
                             <Link href={url}>
-                                <Time stylesNameAdd=" hover:text-linkhoverneutral" ts={data.date}></Time>
-                            </Link>
-                        </View>
-                        <Row className='  '>
+                                <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
+                            </Link>       
                             <ItemInfo data={data} />
-                        </Row>
                     </Row>
                 }
             />
@@ -529,7 +525,7 @@ function DefaultUnit(data) {
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
-                    <View className={isCompact ? "px-4 w-64 mb-auto pr-4" : "w-full px-0.5 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
+                    <View className={isCompact ? "px-4 w-64 mb-auto pr-4" : "w-full px-3 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
                         <View
                             className="w-full aspect-video    "
                             style={styles.card_image}
