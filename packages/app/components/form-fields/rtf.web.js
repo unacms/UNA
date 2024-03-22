@@ -144,6 +144,18 @@ const MenuBar = ({ editor }) => {
 }
 
 var MentionEx = Mention.extend({
+    addCommands() {
+        return {
+          insertMentionEx: (options) => ({ commands }) => {
+            commands.insertContent({
+              type: 'mention',
+              attrs: options.attrs,
+            });
+            commands.insertContent(' '); // Insert space after mention
+            return true;
+          },
+        };
+      },
     renderHTML({ node, HTMLAttributes }) {
         return [
             'a',

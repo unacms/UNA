@@ -54,7 +54,7 @@ export default function ({ menuPopup, showMenu, cssClass }) {
                     <MotiView
                         style={{ width: 288 }}
                         from={{
-                            translateX: -300,
+                            translateX: -400,
                             height: 500,
                             overshootClamping: false,
                         }}
@@ -65,7 +65,7 @@ export default function ({ menuPopup, showMenu, cssClass }) {
                         }}
                         exit={{
                             height: 0,
-                            translateX: -300,
+                            translateX: -400,
                             overshootClamping: false,
                         }}
                         transition={{

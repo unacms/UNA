@@ -1,26 +1,18 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useState, useRef } from 'react';
 import { BlockByName, DataByName } from 'app/components/block';
-import { Text } from 'app/design/typography'
-import { View, Row } from 'app/design/view'
-import { Button, Input } from 'app/design/controls';
-import Redirect from 'app/ui/atoms/redirect';
-import {SearchPanel} from 'app/ui/molecules/search';
-import { appSetting, parseUrl, parseQueryString} from 'app/lib/util';
+import { SearchPanel } from 'app/ui/molecules/search';
+import { parseUrl, parseQueryString} from 'app/lib/util';
+import { getLayout } from 'app/lib/util';
+import { useCurrentUser } from 'app/context/user'
 
 export default function PageLayout(props) {
+    const { currentUser, setCurrentUser } = useCurrentUser();
     const searchData = DataByName(props.data, props.blocks.browse);
 
-    //const [keyword, setKeyword] = useState(searchData.content[0].data.params.keyword ? searchData.content[0].data.params.keyword : '');
     const [section, setSection] = useState(searchData.content[0].data.params.section.length == 1 ? searchData.content[0].data.params.section[0] : '');
 
     const keyword = searchData.content[0].data.params.keyword ? searchData.content[0].data.params.keyword : '';
-    /*function changeKey(val){
-
-        console.log(val);
-        if (val != keyword)
-            setKeyword(val)
-    }*/
 
     function changeRoute(route){
         let b = parseUrl(route.link);
@@ -48,6 +40,8 @@ export default function PageLayout(props) {
         object:'search',
         items:menuItems
     }
+    const layout = getLayout(currentUser, 'navigator');
+    const leftSideBar = layout != 'hor' ? false : true
 
     return (<Conductor 
         layoutName={props.layoutName}
@@ -59,6 +53,7 @@ export default function PageLayout(props) {
         data={props.data} 
         blocks={props.blocks}
         useSectionAsMenu={true}
+        leftSideBar={leftSideBar}
         onChangeRoute={changeRoute}
     />)
 }

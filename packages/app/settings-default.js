@@ -65,7 +65,7 @@ let settingsDefault = {
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
-        comments_modal: false,
+        comments_modal: true,
         comments_mentions: true,
     },
     jitsi: {
@@ -492,7 +492,7 @@ let settingsDefault = {
         'search-keyword': {
             layout: 'navigator_search',
             blocks: {
-                browse: { name: 'system:search_keyword_result', showTitle: false, showBg: false },
+                browse: { name: 'system:search_keyword_result', showTitle: false, perLine: 1, showBg: false },
             },
             icon: 'MagnifyingGlass',
             headerSettings: { backButton: false, header: true, menu: true }

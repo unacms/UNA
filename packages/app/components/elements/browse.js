@@ -224,8 +224,8 @@ export default function (props) {
             refetch();
     }, [storageKeyValue, dataItems.params]);
 
-
-    if (dataItems.params.start == 0 && dataItems.data.length == 0)//status === 'loading'
+    //console.log(dataItems?.params?.start);
+    if (dataItems?.params?.start === 0 && dataItems.data.length == 0)//status === 'loading'
         return Preload
 
     if (props.sidebar) {

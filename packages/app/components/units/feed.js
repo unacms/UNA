@@ -44,26 +44,27 @@ const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     );
 }
 
-const CommentsSection = React.memo(({ commentsDataInline, data, isShowMoreComments, showCommentsModal }) => {
-    const { t } = useTranslation();
+const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
+
+    const ShowMoreCmts = (<Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
+        {t('View more comments...')}
+    </Text>);
     return (
         <View>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
-                    <Pressable onPress={() => { showCommentsModal() }} >
-                        <Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
-                            {t('View more comments...')}
-                        </Text>
-                    </Pressable>
+                    {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
+                        {ShowMoreCmts}
+                    </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}
                 </View>
             )}
         </View>
     )
 });
 
-const ItemInfo = ({ data }) => {
-    const { t } = useTranslation();
+const ItemInfo = ({ data, t }) => {
+
     const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
         <React.Fragment key={'owner' + index}>
             <Text className="text-neutral-500 text-sm"> in </Text>
@@ -186,10 +187,12 @@ const MenuManage = ({id, menu }) => {
 };
 
 function DefaultUnit(data) {
+
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
     }
-
+    const { t } = useTranslation();
+    let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -271,8 +274,11 @@ function DefaultUnit(data) {
                 ? <GroupView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
                 : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
+
+    const isCommentsModal = appSetting('layout', 'comments_modal')
+
     useEffect(() => {
-        if (appSetting('layout', 'comments_modal')) {
+        if (isCommentsModal) {
             async function fetchData() {
                 const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
                 setCmtsData(res.data);
@@ -285,7 +291,7 @@ function DefaultUnit(data) {
         setBottomSheetData({ title: data.author_data.display_name + "'s author name post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='px-4 pb-2'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
-    if (appSetting('layout', 'comments_modal'))
+    if (isCommentsModal)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
     const MenuMemo = memo(() => (
@@ -337,11 +343,11 @@ function DefaultUnit(data) {
                 displayType="unit"
                 displaySize="base"
                 showInfo={
-                    <Row className="flex-wrap items-center">                      
+                    <Row className="flex-wrap items-center text-sm">
                             <Link href={url}>
                                 <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
-                            </Link>       
-                            <ItemInfo data={data} />
+                        </Link>
+                        <ItemInfo data={data} t={t} />
                     </Row>
                 }
             />
@@ -369,7 +375,7 @@ function DefaultUnit(data) {
                         <NotEditedView showCommentsModal={showCommentsModal} />
                     )}
                 </View>
-                {commentsData && <CommentsSection showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
+                {commentsData && <CommentsSection t={t} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>
     )
