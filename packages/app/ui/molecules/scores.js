@@ -35,6 +35,18 @@ export default function ElementScore(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
+    let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -191,7 +203,7 @@ export default function ElementScore(oProps) {
         }
 
         return (
-            <ButtonAction key={'action-' + sAction} size={sDisplaySize} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction key={'action-' + sAction} size={sDisplaySize} startDecorator={oIconAliases[sAction]} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event, sAction)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
     });
 
@@ -234,7 +246,7 @@ export default function ElementScore(oProps) {
         ) : iScore.toString();
 
         sCounterButton = (
-            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} />
+            <ButtonCounter key="counter" size={sDisplaySize} startDecorator={!bShowCombined ? 'ArrowFatUp' : false} title={sScore} onPress={(event) => {handleGetPerformedBy(event)}} disabled={!bScore} {...oButtonProps} />
         );
 
         if(bScore) {
@@ -271,7 +283,7 @@ export default function ElementScore(oProps) {
 
         return (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );

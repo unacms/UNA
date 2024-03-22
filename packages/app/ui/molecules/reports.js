@@ -211,6 +211,10 @@ const ElementReports = forwardRef((oProps, ref) => {
     if(isContextVar('is_disabled'))
         bShowActionDisabled = getContextVar('is_disabled') === true;
 
+    let sTitle = oAction?.title || '';
+    if(isContextVar('title'))
+        sTitle = getContextVar('title');
+
     let oButtonProps = {};
     if(oProps.primary)
         oButtonProps.variant = 'primary';
@@ -222,10 +226,6 @@ const ElementReports = forwardRef((oProps, ref) => {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
-
-    let sTitle = oAction?.title || '';
-    if(isContextVar('title'))
-        sTitle = getContextVar('title');
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 

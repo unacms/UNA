@@ -28,6 +28,18 @@ export default function ElementLikes(oProps) {
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
 
+    let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -172,12 +184,12 @@ export default function ElementLikes(oProps) {
     let sActionButton = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} {...oButtonProps} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
         );
     }
 
@@ -234,7 +246,7 @@ export default function ElementLikes(oProps) {
 
             sCounterButton = (
                 <Animated.View key="counter" style={indicatorStyle}>
-                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} />
+                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
                 </Animated.View>
             );
 
@@ -254,7 +266,7 @@ export default function ElementLikes(oProps) {
 
         return (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );

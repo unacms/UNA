@@ -54,7 +54,19 @@ export default function ElementReactions(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
-    
+
+    let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+
     const getName = (sName) => {
         let aName = [oProps.type, oProps?.system?.replace(/_/g, '-'), oProps.object_id];
         if(sName != undefined && sName.length > 0)
@@ -271,7 +283,7 @@ export default function ElementReactions(oProps) {
 
         if(bShowActionUndo && bShowActionVoted) {
             sActionButton = (
-                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} />
+                <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} {...oButtonProps} />
             );
         }
         else {
@@ -289,11 +301,11 @@ export default function ElementReactions(oProps) {
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} />
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (
-                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} />
+                    <ButtonAction key="action" variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={(event) => {handleDo(event, aItems[0])}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
             else {
@@ -323,10 +335,10 @@ export default function ElementReactions(oProps) {
 
                 sActionButton = sActionButton = oItems.length > 1 ? (
                     <Reaction key="action" type="modal" showPopupType="onPress" items={aReactionItems} onTap={(item) => {onDoSelect(item)}} disabled={bShowActionDisabled} cardStyle={oReactionStyles.cardStyle}>
-                        <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} />
+                        <ButtonAction size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
                     </Reaction>
                 ) : (
-                    <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} />
+                    <ButtonAction key="action" size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : false} onPress={() => {onDoSelect(aItems[0])}} disabled={bShowActionDisabled} {...oButtonProps} />
                 );
             }
         }
@@ -500,7 +512,7 @@ export default function ElementReactions(oProps) {
 
         sResult = (
             <View>
-                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu size={sDisplaySize}  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sActionPopup}
                 {aCounter[1]}
             </View>
