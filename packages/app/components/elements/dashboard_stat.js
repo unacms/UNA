@@ -113,7 +113,7 @@ export default function PageLayout(props) {
             <Modal id='file-preview2' title="VideoChat" onVisible={!!showImage2} onClose={() => {setShowImage2(null)}}>
                 
             </Modal>
-            <View className={appSetting('layout', 'max_width') +" w-full p-2  mx-auto flex-col"}>
+            <View className={appSetting('layout', 'max_width') +" w-full  mx-auto flex-col"}>
                 <View className={appSetting('layout', 'max_width_block') +" w-full p-2  mx-auto flex-col"}>
                     <Card rounded=" rounded-2xl " addClassName="  w-full p-4 flex-row ">
                         <View className="justify-center sm:justify-between flex-auto my-auto w-full items-center">
@@ -173,7 +173,7 @@ export default function PageLayout(props) {
                                 
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
-                            <View className="flex-row gap-x-2 hidden lg:flex">
+                            <View className="flex-row flex-wrap gap-x-2 gap-y-2 hidden justify-center lg:flex">
                                 {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} ><Button
                                     variant="text"
                                     title={ t("Switch Profile") }

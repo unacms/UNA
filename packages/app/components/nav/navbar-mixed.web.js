@@ -74,15 +74,15 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
-                        <View className=' pt-16 fixed-process lg:w-80'>
-                            <View className='pt-4 pr-4 pl-4'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-x border-bdr dark:border-bdr-d'>
+                        <View className=' pt-16 fixed-process w-[318px]'>
+                            <View className='p-4'>
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                             <ButtonRef
                                                 variant="text"
-                                                size="lg"
+                                                size="base"
                                                 fullWidth
                                                 startDecorator={
                                                     item.icon.indexOf(' ') == -1
@@ -107,7 +107,7 @@ export default function (props) {
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed -top-[1px] w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
-                        <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
+                        <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
                             {
                                 headerSettings.menu && (
                                     <View className="lg:hidden mr-3 sm:mr-4">
@@ -134,64 +134,66 @@ export default function (props) {
                             {headerSettings.backButton && getBackButtonWeb()}
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
                         </View>
-                        <Row className="hidden lg:flex flex-auto  ">
+                        <Row className="flex-auto  ">
                             <Row className='w-full overflow-hidden items-center '>
                                 
-                                {menu_navbar_items.length > 0 && <Row className='mx-4  gap-x-2 overflow-hidden '>
-                                    {menu_navbar_items.map(
-                                        (item, index) =>
-                                            <Link className="flex-auto" href={item.link} key={`menu-${index}`} alt={item.title}>
-                                                <ButtonRef
-                                                    variant="text"
-                                                    pressed={item.link == '/' + props.uri ? true : false}
-                                                    size="lg"
-                                                    tooltip={t(item.title)}
-                                                    alt={t(item.title)}
-                                                    aria-label={t(item.title)}
-                                                    fullWidth
-                                                    startDecorator={
-                                                        item.icon.indexOf(' ') == -1
-                                                            ? item.icon
-                                                            : item.icon.split(' ')[0]
-                                                    }
-                                                    align="center"
-                                                />
-                                            </Link>
-
-                                    )}
-                                </Row>}
-                                {(bSearch && currentUser) && <View className=' items-end ml-auto flex-auto max-w-sm hidden lg:block '>
+                               
+                                {(bSearch && currentUser) && <View className=' items-end mx-auto flex-auto max-w-2xl hidden lg:block '>
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="flex-row xl:flex-none justify-end ">
+                        <Row className="flex-row flex-auto xl:flex-none w-80 px-3 sm:px-4 justify-end  ">
                             {!!currentUser && (
-                                <Row className="flex-row justify-end">
-                                    <View className=" flex-row my-auto gap-x-2 ml-2 ">
-                                        {bSearch && <View className="lg:hidden"><Search /></View>}
-                                        <MenuLauncher />
-                                        <MenuAdd />
-                                        <View className="hidden sm:flex flex-row gap-x-2 my-auto">
-                                            {bNotifs && <NotificationButton />}
-                                            {bMessenger &&
-                                                <Link href={appSetting('layout', 'messenger')} alt={t("Messenger")}>
-                                                    <ButtonRef
-                                                        tooltip={t("Messenger")}
-                                                        variant="outline"
-                                                        rounded
-                                                        startDecorator="ChatTeardropDots"
-                                                        id="m2"
-                                                    />
-                                                </Link>
-                                            }
+                                <Row className="flex-row justify-end ">
+                                    <View className=" flex-row my-auto gap-x-2 ">
+                                        <View className="lg:hidden ">
+                                            {' '}
+                                            {bSearch && <Search />}{' '}
                                         </View>
-                                        <MenuAccount />
+                                        <View className="hidden">
+                                            <MenuLauncher />
+                                        </View>
+                                        <View className="">
+                                            <MenuAdd />
+                                        </View>
+                                        <View className="hidden sm:block">
+                                            {bNotifs && <NotificationButton />}
+                                        </View>
+                                        <View className="hidden sm:block">
+                                        {bMessenger && (
+                                            <Link
+                                                href={appSetting(
+                                                    'layout',
+                                                    'messenger'
+                                                )}
+                                                alt={t('Messenger')}
+                                            >
+                                                <ButtonRef
+                                                    tooltip={t('Messenger')}
+                                                    variant="outline"
+                                                    rounded
+                                                    startDecorator="ChatTeardropDots"
+                                                    id="m2"
+                                                />
+                                            </Link>
+                                        )}                                        
+                                        </View>
+
+                                        
+                                        <View className="hidden sm:block">
+                                            <MenuAccount />
+                                        </View>
                                     </View>
                                 </Row>
                             )}
                             {!currentUser && (
-                                <Row className="flex-row flex-auto sm:flex-none justify-end   my-auto ml-2 gap-x-2">
+                                <Row className="flex-row flex-auto sm:flex-none justify-end my-auto gap-x-1.5 sm:gap-x-2">
+                                    {bSearch && (
+                                        <View>
+                                            <Search />
+                                        </View>
+                                    )}
                                     <MenuLauncher />
                                     <Link href="/login">
                                         <ButtonRef
@@ -199,7 +201,7 @@ export default function (props) {
                                             tooltip="Account"
                                             rounded
                                             aria-label="Account"
-                                            alt={t("Account")}
+                                            alt={t('Account')}
                                             startDecorator="User"
                                         />
                                     </Link>
