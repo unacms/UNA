@@ -2,7 +2,7 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import React, { memo, useState, useMemo, useEffect, useContext } from 'react'
+import React, { memo, useState, useMemo, useEffect, useContext, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
@@ -109,13 +109,87 @@ const LinkContent = ({ url, data }) => (
     </Link>
 );
 
-function DefaultUnit(data) {
+const MenuManage = ({id, menu }) => {
+    let { currentUser, setCurrentUser } = useCurrentUser()
 
+    const refReport = useRef(null);
+    const [reportTitle, setReportTitle] = useState(null);
+
+    const handleMenuManageSelect = async (oItem, event) => {
+        switch (oItem.name) {
+            case 'item-edit':
+                const oResultEdit = await fetcher(
+                    '/api.php?r=bx_timeline/get_edit_form/&params[]=' + id
+                )
+                setViewState({ view: 'edited', data: oResultEdit.data.form })
+                break
+
+            case 'item-delete':
+                const oResultDeleted = await fetcher(
+                    '/api.php?r=bx_timeline/delete/&params[]=' + id
+                )
+                setViewState({ view: 'deleted' })
+                break
+
+            case 'item-report':
+                refReport.current.report(event);
+                break;
+        }
+    }
+
+    let oReport = undefined;
+    const aMenuManageItems = !!currentUser ? menu && menuItemsByName(menu?.object, menu?.items, currentUser).map(
+        (aItem) => {
+            let sTitle = aItem.title;
+            if(!!aItem.display_type && aItem.display_type == 'element') {
+                const Element = componentsMap[aItem.data.type];
+                if(!!Element) {
+                    sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
+                    if(!!reportTitle)
+                        sTitle = reportTitle;
+
+                    oReport = (
+                        <View className="w-0 invisible">
+                            <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
+                        </View>
+                    );
+                }
+            }
+
+            return {
+                id: aItem.id ? aItem.id : aItem.name,
+                name: aItem.name,
+                link: aItem.link,
+                title: sTitle,
+            }
+        }
+    ) : []
+
+    return aMenuManageItems?.length > 0 && (
+        <>
+            <View className="flex-none ml-2">
+                <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
+                    <Button
+                        variant="text"
+                        size="sm"
+                        rounded
+                        startDecorator="DotsThreeOutline"
+                        onPress={() => {
+                            FeedbackHaptics('Medium')
+                        }}
+                    />
+                </DropdownMenu>
+            </View>
+            {!!oReport && oReport}
+        </>
+    );
+};
+
+function DefaultUnit(data) {
     if (data.type == 'timeline_common_repost') {
         return <></>; //NEED TO FIX
     }
 
-    let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -152,56 +226,6 @@ function DefaultUnit(data) {
         setViewState({ view: '' })
         setPostData(formData)
     }
-
-    const handleMenuManageSelect = async (oItem, event) => {
-        switch (oItem.name) {
-            case 'item-edit':
-                const result1 = await fetcher(
-                    '/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id
-                )
-                setViewState({ view: 'edited', data: result1.data.form })
-                break
-
-            case 'item-delete':
-                const result = await fetcher(
-                    '/api.php?r=bx_timeline/delete/&params[]=' + data.id
-                )
-                setViewState({ view: 'deleted' })
-                break
-        }
-    }
-
-    const aMenuManageItems = !!currentUser ? data?.menu_manage && menuItemsByName(data.menu_manage?.object, data.menu_manage?.items, currentUser).map(
-        (aItem) => {
-            return {
-                id: aItem.id ? aItem.id : aItem.name,
-                name: aItem.name,
-                link: aItem.link,
-                title: aItem.title,
-            }
-        }
-    ) : []
-
-    /*
-    if (aItem.title){
-                    return {
-                        id: aItem.id ? aItem.id : aItem.name,
-                        name: aItem.name,
-                        link: aItem.link,
-                        title: aItem.title,
-                    }
-                }
-                else{
-                   const Element = componentsMap[aItem.data.type]
-                    //if (!Element) return
-                    return {
-                        id: aItem.id ? aItem.id : aItem.name,
-                        name: aItem.name,
-                        link: '',
-                        title:  <Element {...aItem.data} />
-                    }
-                    return 
-                }*/
 
     let commentsData = null;
     let isShowMoreComments = false;
@@ -341,24 +365,7 @@ function DefaultUnit(data) {
                             if (!Element) return
                             return <Element key={`action-${index}`} {...item} />
                         })}
-                        {aMenuManageItems?.length > 0 && (
-                            <View className="flex-none ml-2">
-                                <DropdownMenu
-                                    items={aMenuManageItems}
-                                    onSelect={handleMenuManageSelect}
-                                >
-                                    <Button
-                                        variant="text"
-                                        size="sm"
-                                        rounded
-                                        startDecorator="DotsThreeOutline"
-                                        onPress={() => {
-                                            FeedbackHaptics('Medium')
-                                        }}
-                                    />
-                                </DropdownMenu>
-                            </View>
-                        )}
+                        <MenuManage id={data.id} menu={data?.menu_manage} />
                     </View>
                 </View>
                 <View className="flex-col ">
