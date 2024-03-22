@@ -21,11 +21,11 @@ if (Platform.OS === 'android') {
 /* inputs */
 export const Input = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d focus:bg-bgrinput-f dark:focus:bg-bgrinput-df border border-bdrinput dark:border-bdrinput-d focus:outline-none focus:outline-primary/50 dark:focus-outline-primary-d/50 duration-100 text-neutral-900 rounded-lg flex-auto     px-3   placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[46px] ')
 export const InputMulti = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg flex-auto p-2 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 ')
-export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px] ')
+export const InputRounded = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px] ')
 export const InputRoundedSmall = styled(TextInputDef, ' bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-f focus:outline-none  focus:border-bdrinput-f dark:focus:border-bdrinput-df  text-neutral-900 rounded-full flex-auto px-3 dark:focus:bg-bgrinput-df placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[34px] ')
 export const Switch = SwitchDef
 export const Hidden = styled(TextInputDef, 'hidden')
-//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[42px]')
+//export const Dropdown = styled(DropdownDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]')
 
 const PickerStyles = ' appearance-none bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg  flex-auto px-3 py-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base '
 export const PickerStyled = styled(PickerDef, PickerStyles + ' ')
@@ -114,7 +114,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = isLastChild ? 'border-r border-bdrbutton dark:border-bdrbutton-d' : '';
+        const childClass = isLastChild ? 'border-r border-bdr dark:border-bdr-d' : '';
 
         let childItem;
         if (child.type === Button) {
@@ -238,11 +238,11 @@ export function Button(props) {
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-' + props.padding : 'p-2') : sClassDefaultRounding + ' px-3 py-2  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' sm:mx-1 ' : '');
+            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-' + props.padding : 'p-[7px]') : sClassDefaultRounding + ' px-2.5 py-[7px]  ';
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base leading-6  '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2   ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-3 ' : '' // Conditionally add 'mx-2' class
 
             break
 
@@ -251,7 +251,7 @@ export function Button(props) {
             sIconContainer = ' h-7 w-7 ' + (buttonTitle !== '' ? ' sm:mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' mt-[1px] text-lg '
             iIconSize = 28;
-            sTitleContainer += buttonTitle !== '' ? ' mx-2 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' // Conditionally add 'mx-2' class
 
             break
 

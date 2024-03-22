@@ -6,7 +6,7 @@ import UniList from 'app/ui/atoms/unilist'
 import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, getLayout } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar, handleFeedLayoutData } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -29,8 +29,7 @@ import { storageClear } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
-
-    //const { layoutData, setLayoutData } = useContext(LayoutData);
+    const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     let uniRef = useRef();
     const [menuPopup, setMenuPopup] = useState(false)
@@ -144,12 +143,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     let bUpdateContent = false;
 
     if (hasEndpoint && currentRoute.data.length > 0) {
-        const a = currentRoute.data
+        const a = [...new Set(currentRoute.data
             .filter(item => item.type !== 'block')
             .map(item => item.id)
-            .slice(0, 10)
-            .join(',');
-
+        )].slice(0, 10).join(',');
         if (a) {
             endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
                 'params': { ...currentRoute.endpoint.params, validate: a }
@@ -158,19 +155,20 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     }
 
-    const { daemonData: daemonData2 } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
+    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
 
     useEffect(() => {
-        const data = daemonData2?.[0]?.data?.data;
-        if (data && (data == 'valid' || data == 'invalid')) {
-            setToaster2Visible(data !== 'valid');
+        if (daemonUrl == endpointUpdateContent) {
+            const data = daemonData?.[0]?.data?.data;
+            if (data && (data == 'valid' || data == 'invalid')) {
+                setToaster2Visible(data !== 'valid');
+            }
         }
-    }, [daemonData2]);
+    }, [daemonData, daemonUrl]);
 
     const showNewContent2 = async () => {
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)
-        //TODO IMPROVE
         const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
@@ -181,6 +179,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     }
     /* UPDATE CONTENT PART */
+
+    /* NEW POST TO FEED */
+    useEffect(() => {
+        if (currentRoute.endpoint?.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+            let clonedData = currentRoute.data
+            const data = handleFeedLayoutData(layoutData, clonedData)
+            const newRoutes = [...routes];
+            newRoutes[index].data = data
+            setRoutes(newRoutes);
+        }
+    }, [layoutData]);
+    /* NEW POST TO FEED */
 
     const indicatorOffset = useSharedValue(0);
 
@@ -263,7 +273,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     }
 
-
     const setFilterValue = (values) => {
 
         const newRoutes = [...routes];
@@ -282,6 +291,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         newRoutes[index].endpoint.params.start = 0;
         setRoutes(newRoutes);
     }
+
+
 
     /*const applyFilterValue = () => {
         const newRoutes = [...routes];
@@ -555,7 +566,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
-            let TabFlashListM = useMemo(() => {
+            /*let TabFlashListM = useMemo(() => {
+                console.log("dataItems", dataItems)
                 return <TabFlashList
                     index={route.index}
                     data={dataItems}
@@ -574,7 +586,25 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     }
                 />
-            }, [dataItems, numColumns]);
+            }, [dataItems, numColumns]);*/
+            const TabFlashListM = <TabFlashList
+                index={route.index}
+                data={dataItems}
+                endpoint={route.endpoint}
+                listState={route?.state}
+                storagekey={route.storageKeyValue}
+                refer={uniRef}
+                route={route}
+                unit={route.endpoint?.unit}
+                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                ListFooterComponent={
+                    <View>
+                        {(hasNextPage && isFetchingNextPage) ? (
+                            Preload
+                        ) : null}
+                    </View>
+                }
+            />
             //
             let sidebarUnitType = 'default';
             if (route.blocks?.browse_sidebar?.unitType) {
@@ -589,8 +619,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-80 xl:w-96  xl:w-96  ">
-                        <View className="fixed-process w-80 xl:w-96  xl:w-96 p-2">
+                    {isRightCol && <View className="hidden xl:block w-80  xl:w-96  ">
+                        <View className="fixed-process w-80  xl:w-96 p-2">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
@@ -658,6 +688,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 )
             })}
         </LeftSidebar>
+        
     }, [routes, index]);
 
     if (leftSideBar) {
@@ -669,7 +700,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                        <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80 xl:w-96  border-dashed border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                    <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80 border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}

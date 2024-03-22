@@ -25,7 +25,7 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
         }
     }, [url, pollingInterval]); 
 
-    return { daemonData, error };
+    return { daemonData, error, daemonUrl:url };
 };
 
 export default useDaemon;

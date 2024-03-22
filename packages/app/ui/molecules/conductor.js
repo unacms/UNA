@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useContext } from "react";
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-view";
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from '@react-navigation/native';
 import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, handleFeedLayoutData } from 'app/lib/conductor-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -13,9 +13,11 @@ import { Button } from 'app/design/controls';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter } from 'expo-router';
+import { LayoutData } from 'app/context/layout';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu = false, unitMode = '', skeleton = '', onChangeRoute, keyword }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
+    const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
     const routerExpo = useRouter();
     const initedTabs = fillTabs(menu, data, blocks, currentUser, useSectionAsMenu);
@@ -120,6 +122,16 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             queryClient.removeQueries(qKey);
         }
     }, [isRefreshing]);
+
+    /* NEW POST TO FEED */
+    useEffect(() => {
+        const data = handleFeedLayoutData(layoutData, routes[index].data, routes[index].endpoint?.unit )
+        const newRoutes = [...routes];
+        newRoutes[index].data = data
+        setRoutes(newRoutes);
+
+    }, [layoutData]);
+    /* NEW POST TO FEED */
 
     const onStartRefresh = async () => {
         setIsRefreshing(true);

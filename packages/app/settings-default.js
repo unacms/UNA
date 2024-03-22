@@ -65,7 +65,7 @@ let settingsDefault = {
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
-        comments_modal: true,
+        comments_modal: false,
         comments_mentions: true,
     },
     jitsi: {

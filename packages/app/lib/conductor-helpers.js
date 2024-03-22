@@ -20,6 +20,35 @@ export function getBackButtonWeb() {
     }
     return <></>
 }
+
+export function handleFeedLayoutData(layoutData, data) {
+
+    if (layoutData && layoutData?.type == 'feed:new_content') {
+        if (layoutData.data?.id) {
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data.splice(data.length, 0, layoutData.data);
+            }
+            else {
+                data.splice(insertIndex, 0, layoutData.data);
+            }
+        }
+        if (Array.isArray(layoutData.data)) {
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data.splice(data.length, 0, ...layoutData.data);
+            }
+            else {
+                data.splice(insertIndex, 0, ...layoutData.data);
+            }
+        }
+    }
+    if (layoutData && layoutData?.type == 'feed:remove_content') {
+        data = data.filter(item => item.id !== layoutData.data);
+    }
+    return data;
+}
+
 export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
     const m = menuItemsByName(menu.object, menu.items, currentUser, data.url);
     return m.map((item, index) => {
@@ -280,10 +309,10 @@ export const ItemRenderer = memo(ItemRenderer_);
 
 export function LeftSidebar({ title, addButtons, children }) {
     return (
-        <View className="hidden lg:block w-80 xl:w-96 t-0 ">
-            <View className=' fixed-process w-80 xl:w-96 lg:px-4 lg:py-3 '>
+        <View className=" hidden lg:block w-80 ">
+            <View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
                 <Row className="justify-between items-center mt-1 mb-4 ">
-                    <Text className="text-xl truncate ml-3.5 mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
+                    <Text className="text-2xl truncate mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                         {title}
                     </Text>
                     <Row className=" ">
@@ -326,7 +355,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                 <Row className="items-center ">
                     {title ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" ml-6"></Text>}
                     {children}
-                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
+                    {layout != 'mixed' && <Row className="hidden sm:flex px-4 cond-buttons-add">
                         {addButtons}
                     </Row>}
                 </Row>

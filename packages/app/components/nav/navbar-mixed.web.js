@@ -74,8 +74,8 @@ export default function (props) {
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 xl:w-96 lg:border-r border-bdr dark:border-bdr-d'>
-                        <View className=' pt-16 fixed-process lg:w-80 xl:w-96'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
+                        <View className=' pt-16 fixed-process lg:w-80'>
                             <View className='pt-4 pr-4 pl-4'>
                                 {menu_sidebar_items.map(
                                     (item, index) =>
@@ -106,11 +106,11 @@ export default function (props) {
             </View>
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed -top-[1px] w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
-                    <View className={appSetting('layout', 'max_width') + " px-3 sm:px-4 lg:px-6  w-full flex-row flex-auto  items-center "}>
+                    <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <View className="flex-row flex-auto lg:flex-none flex-auto my-auto items-center">
                             {
                                 headerSettings.menu && (
-                                    <View className="lg:hidden mr-4">
+                                    <View className="lg:hidden mr-3 sm:mr-4">
                                         <Pressable onPress={showMenu}>
                                             <Button
                                                 variant="outline"

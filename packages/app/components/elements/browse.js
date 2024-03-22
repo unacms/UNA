@@ -1,26 +1,53 @@
 import Unit from 'app/components/unit';
-import { useState, useEffect, useRef, useContext, memo } from 'react';
+import { useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
 import { View } from 'app/design/view'
 import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, storageGet, getDataFromCache, storageSet } from 'app/lib/util'
+import { appSetting, storageKey, getDataFromCache, storageSet } from 'app/lib/util'
 import { Text } from 'app/design/typography'
-import { useInfiniteQuery, useQueryClient, QueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery} from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
 import { useTranslation } from 'react-i18next';
 import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
+import { storageClear } from 'app/lib/util';
+import { LayoutData } from 'app/context/layout';
+import { handleFeedLayoutData } from 'app/lib/conductor-helpers';
 
-export default function ElementBrowse(props) {
-    //console.log('ElementBrowse')
-    const [maxId, setMaxId] = useState(0);
-    const toasterRef = useRef();
+const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
+    <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
+        <Unit
+            unit={data.unit ? data.unit : ''}
+            mode={unitMode}
+            module={data.module ? data.module : ''}
+            sidebar={props.sidebar}
+            object_id={data.object_id ? data.object_id : ''}
+            view={data.view ? data.view : ''}
+            {...props}
+            data={item}
+        />
+    </View>
+));
+
+const getNumCols = (width, props, data) => {
+    if (props.perLine)
+        return props.perLine;
+
+    if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
+        return width > 600 ? 4 : 1
+    }
+    return 1
+};
+
+export default function (props) {
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const toasterRef2 = useRef();
     const { t } = useTranslation();
-    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' + props.data.params?.type + ':' + props.data.params?.category)
     let uniRef = useRef();
 
+    let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' + props.data.params?.type + ':' + props.data.params?.category)
     const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
 
     let data = props.data;
@@ -36,57 +63,34 @@ export default function ElementBrowse(props) {
     if (defParams)
         defParams.moduleName = data.module ? data.module : '';
     const browseParams = defParams;
+
+    const [dataItems, setDataItems] = useState({ data: (appSetting('cache', 'list') && cachedData?.data?.data ? cachedData.data?.data : []), params: browseParams });
+
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
 
-    const getNumCols = (width) => {
-        if (props.perLine)
-            return props.perLine;
-
-        if (data.unit.startsWith('general-') || data.unit.startsWith('search-')) {
-            return width > 600 ? 4 : 1
-        }
-        return 1
-    };
+   
 
     const windowWidth = useWindowDimensions().width;
     const windowHeight = useWindowDimensions().height;
-    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth));
-
-    /* useEffect(() => {
-         if (getNumCols(windowWidth) != numColumns)
-             setNumColumns(getNumCols(windowWidth));
-     }, [windowWidth]);*/
+    const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, props, data));
 
     const handleLayout = (event) => {
         const containerWidth = event.nativeEvent.layout.width;
-        if (getNumCols(containerWidth) != numColumns) {
-            setNumColumns(getNumCols(containerWidth));
+        const numColumnsNew = getNumCols(containerWidth, props, data);
+        if (numColumnsNew != numColumns) {
+            setNumColumns(numColumnsNew);
         }
     };
 
-    let hOffset = 0;
+    const hOffset = Platform.OS === 'web' ? (windowWidth < 1024 ? 126 : 64) : 106;
+    const styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
 
-    if (Platform.OS === 'web') {
-        if (windowWidth < 1024) {
-            hOffset = 126;
-        }
-        else {
-            hOffset = 64;
-        }
-    }
-    else {
-        hOffset = 106;
-    }
+    const fetchData = useCallback(async ({ }) => {
+        return (await fetcher(data.request_url + JSON.stringify({ 'params': dataItems.params }))).data[0].data;
+    }, [dataItems.params]);
 
-    let styles = Platform.OS === 'web' ? {} : { height: (defParams?.height ? defParams.height : windowHeight - hOffset) }
-
-    const fetchData = async ({ }) => {
-
-        let sResponse = await fetcher(prepareUrl());
-        return sResponse.data[0].data
-    };
-
+    const queryClientKey = [data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix];
     const {
         status,
         data: newData,
@@ -94,7 +98,7 @@ export default function ElementBrowse(props) {
         hasNextPage,
         isFetchingNextPage,
         refetch,
-    } = useInfiniteQuery([data.request_url + browseParams?.type + defParams?.category + props?.cachePrefix], fetchData, {
+    } = useInfiniteQuery(queryClientKey, fetchData, {
         getNextPageParam: lastPage => {
             if (lastPage.data.length == 0)
                 return;
@@ -106,10 +110,18 @@ export default function ElementBrowse(props) {
         enabled: Platform.OS === 'web' ? false : false, // on native no cashed data
     });
 
-    function prepareUrl(isUseDefault = false) {
-        const params = getCurrentParams(isUseDefault);
-        return data.request_url + JSON.stringify({ 'params': params });
-    }
+    const handleEndReached = useCallback((lastItemIndex) => {
+        if (!hasNextPage)
+            return;
+        if (props.only_one_page == true)
+            return;
+        if (isFetchingNextPage)
+            return;
+        if (lastItemIndex == false)
+            return;
+
+        fetchNextPage();
+    }, [hasNextPage, props.only_one_page, isFetchingNextPage]);
 
     const getCurrentParams = (isUseDefault = false) => {
         if (newData?.pages.length > 0) {
@@ -126,18 +138,7 @@ export default function ElementBrowse(props) {
         return browseParams;
     }
 
-    const handleEndReached = (lastItemIndex) => {
-        if (!hasNextPage)
-            return;
-        if (props.only_one_page == true)
-            return;
-        if (isFetchingNextPage)
-            return;
-        if (lastItemIndex == false)
-            return;
-
-        fetchNextPage();
-    };
+    
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton)
         sSkeleton = props?.skeleton;
@@ -146,98 +147,97 @@ export default function ElementBrowse(props) {
         sSkeleton = [sSkeleton, props.unitType];
     const Preload = getSkeletonForList(sSkeleton, numColumns)
 
-    let dataItems = {
-        data: [
-            ...(appSetting('cache', 'list') && cachedData?.data?.data ? cachedData.data?.data : []),
-            ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
-        ]
-    };
-    //console.log("dataItems", dataItems, data.request_url + browseParams?.type + (defParams?.category? defParams?.category : '') + (props?.cachePrefix ? props?.cachePrefix : ''));
+    useEffect(() => {
+        if (newData?.pages) {
+            setDataItems({
+                data: [
+                    ...dataItems.data,
+                    ...(newData?.pages ? newData.pages.map(page => page.data).flat() : [])
+                ], params: getCurrentParams()
+            })
+        }
+    }, [newData?.pages]);
 
-    /* DAEMON PART */
-    const setToasterVisible = (val) => {
-        const current = toasterRef.current;
+    /* UPDATE CONTENT PART */
+
+    const setToaster2Visible = (val) => {
+        const current = toasterRef2.current;
         if (current) {
             current.setVisible(val);
         }
     }
 
-    let maxIdLocal = 0;
-    const bUseDaemon = (props.data.unit == 'feed');
-    const { daemonData, error } = useDaemon('/api.php?r=bx_timeline/get_live_update&params[]=' + JSON.stringify({ 'params': getCurrentParams(true) }) + '&params[]=0&params[]=0', false, bUseDaemon);
-    if (bUseDaemon) {
-        maxIdLocal = dataItems?.data.length > 0
-            ? dataItems?.data.reduce((max, item) => {
-                const idNumber = parseFloat(item.id);
-                return (typeof idNumber === 'number' && Number.isFinite(idNumber) && idNumber > max) ? idNumber : max;
-            }, parseFloat(dataItems?.data[0].id) || 0)
-            : 0;
-        if (daemonData && maxId > 0 && maxId < daemonData) {
-            setTimeout(() => {
-                setToasterVisible(true);
-            }, 100);
+    let endpointUpdateContent = '';
+    let bUpdateContent = false;
 
+    if (dataItems.data.length > 0 && props.sidebar !== true) {
+
+        const a = [...new Set(dataItems.data
+            .filter(item => item.type !== 'block')
+            .map(item => item.id)
+        )].slice(0, 10).join(',');
+        if (a) {
+            endpointUpdateContent = data.request_url + JSON.stringify({
+                'params': { ...getCurrentParams(), validate: a }
+            });
+            bUpdateContent = true;
         }
     }
+    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
 
     useEffect(() => {
-        if (maxIdLocal > 0 && maxIdLocal != maxId) {
-            setMaxId(maxIdLocal)
+        if (daemonUrl == endpointUpdateContent) {
+            const data = daemonData?.[0]?.data?.data;
+            if (data && (data == 'valid' || data == 'invalid')) {
+                setToaster2Visible(data !== 'valid');
+            }
         }
-    }, [maxIdLocal]);
+    }, [daemonData, daemonUrl]);
 
+    const showNewContent2 = async () => {
+        storageClear('ul:data', storageKeyValue)
+        storageClear('ul:state', storageKeyValue);
+        setDataItems({ data: [], params: browseParams });
 
-    const showNewContent = async () => {
-        setToasterVisible(false);
-        let sResponse = await fetcher(prepareUrl(true));
-        maxIdLocal = sResponse.data[0].data.data.length > 0 ? sResponse.data[0].data.data.reduce((max, item) => item.id > max ? item.id : max, sResponse.data[0].data.data[0].id) : 0;
-        setMaxId(maxIdLocal);
-        uniRef.current.scrollToIndex({ animated: true, index: -1 });
-
+        setToaster2Visible(false);
     }
-    /* DAEMON PART */
+    /* UPDATE CONTENT PART */
+
+    /* NEW POST TO FEED */
+    useEffect(() => {
+        if (data.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
+            let clonedData = JSON.parse(JSON.stringify(dataItems.data));
+            const data2 = handleFeedLayoutData(layoutData, clonedData)
+            setDataItems({ data: data2, params: dataItems.params });
+        }
+    }, [layoutData]);
+    /* NEW POST TO FEED */
 
     useEffect(() => {
         if (dataItems.data.length > 0) {
-            storageSet('ul:data', storageKeyValue, dataItems);
+            storageSet('ul:data', storageKeyValue, dataItems.data);
         }
-    }, [dataItems]);
+    }, [dataItems.data]);
 
     useEffect(() => {
         if (dataItems.data.length == 0)
             refetch();
-    }, [storageKeyValue]);
-    if (status === 'loading' && dataItems.data.length == 0)
+    }, [storageKeyValue, dataItems.params]);
+
+
+    if (dataItems.params.start == 0 && dataItems.data.length == 0)//status === 'loading'
         return Preload
 
     if (props.sidebar) {
-        let data2 = dataItems.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
-        return data2.map((item, index) => (
+        return dataItems.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).map((item, index) => (
             <View key={'item' + index} className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}><Unit unit={data.unit ? data.unit : ''} mode={unitMode} module={data.module ? data.module : ''} sidebar={props.sidebar} object_id={data.object_id ? data.object_id : ''} view={data.view ? data.view : ''}  {...props} data={item} /></View>
         ));
     }
 
-
-    const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
-        <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
-            <Unit
-                unit={data.unit ? data.unit : ''}
-                mode={unitMode}
-                module={data.module ? data.module : ''}
-                sidebar={props.sidebar}
-                object_id={data.object_id ? data.object_id : ''}
-                view={data.view ? data.view : ''}
-                {...props}
-                data={item}
-            />
-        </View>
-    ));
-
-
     return (
         <View className='w-full h-full' >
             <View className='w-full' onLayout={handleLayout}></View>
-            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />
+            <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className='w-full ' style={styles} >
                 {dataItems.data.length > 0 ? <>{props.showTitleInside ? <View className='p-3'><Text className="text-lg font-bold text-neutral-800 dark:text-neutral-200 ">{t(props.block.title)}</Text></View> : <></>}
                     <UniList

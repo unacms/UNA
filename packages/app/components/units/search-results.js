@@ -47,7 +47,7 @@ export function UnitSearchResultsSmall({data, onPress}) {
     const sText = data?.title ? data.title : stripTags(data.text);
 
     return (
-        <View className=" mt-2  ">
+        <View className=" my-1  ">
             <Redirect ref={redirectdRef} />
             <Pressable onPress={() => handleClick(url)}>
                 <View className=" bg-bgritem dark:bg-bgritem-d flex-row p-2 rounded-lg "> 

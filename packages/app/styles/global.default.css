@@ -303,7 +303,7 @@ div::-webkit-scrollbar {
 }
 
 .editor-height-3 .ProseMirror {
-    max-height: 200px;
+    max-height: auto;
     overflow-y: scroll;
 }
 

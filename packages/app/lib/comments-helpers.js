@@ -292,7 +292,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
-            <View className='mx-4' key={index}>
+            <View className='mx-3 sm:mx-4' key={index}>
                 <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
             </View>))
     }

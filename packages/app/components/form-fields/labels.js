@@ -82,7 +82,6 @@ function ChkList({ values, selectedValues, setFormValue }) {
         <>
             {values.map((item2, index) => (
                 <Row className='items-center' key={'chk' + index}>
-                    
                     <RadioButton
                         value={item2.value}
                         status={value2.includes(item2.value) ? 'checked' : 'unchecked'}

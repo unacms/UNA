@@ -18,7 +18,7 @@ export default function () {
         return <></>;
 
     return (
-        <View className="relative hidden lg:flex flex-row">
+        <View className="relative flex-row">
             <DropdownMenu items={menu_launcher_items.map((item, index) => ({
                 id: 'menu-' + index,
                 link: item.link,

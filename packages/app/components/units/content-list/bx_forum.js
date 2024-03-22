@@ -112,7 +112,7 @@ export default function Unit(props) {
                                         >
                                             <Text
                                                 numberOfLines={3}
-                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d leading-5 sm:leading-6 text-base sm:text-lg font-bold"
+                                                className="text-neutral-950 tracking-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-base sm:text-lg font-bold"
                                             >
                                                 {data.title}
                                             </Text>

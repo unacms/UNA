@@ -3,42 +3,13 @@ import { VirtuosoGrid, Virtuoso } from 'react-virtuoso'
 import { View } from 'app/design/view'
 import { View as ReactNativeView } from 'react-native'
 import { styled } from 'nativewind'
-import  {LayoutData} from 'app/context/layout';
-import { useContext } from 'react';
 import { Dimensions } from 'react-native';   
 import { storageSet, appSetting } from 'app/lib/util'
 
 export default function UniList(props) {
-    const { layoutData, setLayoutData } = useContext(LayoutData);
-
     let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
           numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, ...rest } = props
    
-    if (props.unit == 'feed'){
-        if(layoutData && layoutData?.type == 'feed:new_content'){
-            if(layoutData.data?.id){
-                let insertIndex = data.findIndex(item => item.type !== 'block');
-                if (insertIndex === -1) {
-                    data.splice(data.length, 0, layoutData.data);
-                }
-                else{
-                    data.splice(insertIndex, 0, layoutData.data);
-                }
-            }
-            if (Array.isArray(layoutData.data)){
-                let insertIndex = data.findIndex(item => item.type !== 'block');
-                if (insertIndex === -1) {
-                    data.splice(data.length, 0, ...layoutData.data);
-                }
-                else{
-                    data.splice(insertIndex, 0, ...layoutData.data);
-                }
-            }
-        }
-        if(layoutData && layoutData?.type == 'feed:remove_content'){
-            data = data.filter(item => item.id !== layoutData.data);
-        }
-    }
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     
     const itemContent = (index, data) => {

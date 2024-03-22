@@ -41,7 +41,7 @@ export default function AtomProfile(oProps) {
             iSizeWidth = 24
             iSizeHeight = 24
             sSizeFont = 'text-xs font-semibold';
-            sSizeFontLetter = 'text-sm font-bold';
+            sSizeFontLetter = 'text-base font-bold';
             break
 
         case 'sm':
@@ -56,8 +56,8 @@ export default function AtomProfile(oProps) {
             sSize = 'w-10 h-10 '
             iSizeWidth = 40
             iSizeHeight = 40
-            sSizeFont = 'text-base font-semibold';
-            sSizeFontLetter = 'text-xl  font-bold';
+            sSizeFont = ' text-sm font-bold';
+            sSizeFontLetter = 'text-xl font-bold';
             break
 
         case 'lg':
@@ -193,7 +193,8 @@ export default function AtomProfile(oProps) {
 
         case 'unit_wo_image':
             sResult = (
-                    <View className="flex-col my-auto"><Link emulate={emulate} haptics="Select" href={oProps.url}>
+                    <View className="flex-col my-auto ">
+                        <Link emulate={emulate} haptics="Select" href={oProps.url}>
                         {bShowLinks ? (
                             <DisplayNameLink
                                 title={oProps.display_name}
@@ -203,7 +204,7 @@ export default function AtomProfile(oProps) {
                             <DisplayNameText title={oProps.display_name} />
                         )}
                         </Link>
-                        <View className="flex text-neutral-600 dark:text-neutral-400 text-xs">{sShowInfo}</View>
+                        <View >{sShowInfo}</View>
                     </View>
          
             )

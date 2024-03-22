@@ -14,7 +14,7 @@ export default function ElementEntityAuthor(oProps) {
     const sInfo = (
         <Row className='items-center'>
             <Time ts={oProps.data.entry_date}></Time>
-            {oProps.data?.entry_context?.id && <><Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm ">  in <Link href={oProps.data.entry_context.url}>{oProps.data.entry_context.display_name}</Link></Text></>}
+            {oProps.data?.entry_context?.id && <><Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm "> in <Link href={oProps.data.entry_context.url}>{oProps.data.entry_context.display_name}</Link></Text></>}
         </Row>
     );
 
@@ -32,7 +32,7 @@ export default function ElementEntityAuthor(oProps) {
         });
 
     return (
-        <View className={false ? "mx-auto w-full max-w-5xl flex-row   justify-between  pt-4 px-4  sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
+        <View className={false ? "mx-auto w-full max-w-5xl flex-row justify-between pt-4 px-4  sm:rounded-t-lg bg-bgrcard dark:bg-bgrcard-d sm:border-t  sm:m-0 border-bdr dark:border-bdr-d sm:border-x" : " w-full items-center flex-row justify-between  "}>
             <View className={oProps.data.text ? '' : 'flex-auto'}><Profile {...oProps.data.author_data} displayType="unit" displaySize="base" showInfo={sInfo} /></View>
             { oProps.data.text && (
                 <View className='flex-auto overflow-hidden text-ellipsis w-1/2 lg:w-auto px-4'>
