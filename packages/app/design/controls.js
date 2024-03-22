@@ -217,11 +217,12 @@ export function Button(props) {
         sClassText += ' text-primary-600 dark:text-primary-400 ';
     }
 
-    const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-lg' : '';
+    const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';
+    const sClassFullRounding = buttonType != 'group-item' ? 'rounded-full' : '';
 
     switch (buttonSize) {
         case 'xs':
-            sClassContainer += buttonRounded ? ' rounded-full p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1 ' : sClassDefaultRounding + ' px-1 py-1 ';
             sIconContainer = ' h-4 w-4 ' + (buttonTitle !== '' ? ' mx-[1px] ' : '');
             sClassText += ' text-xs '
             iIconSize = 16;
@@ -229,30 +230,27 @@ export function Button(props) {
             break
 
         case 'sm':
-            sClassContainer += buttonRounded ? ' rounded-full p-1.5 ' : sClassDefaultRounding + (buttonType != 'none' ? ' px-2 py-1.5 ' : ' ');
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding + (buttonType != 'none' ? ' px-2 py-1.5 ' : ' ');
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? 'sm:mx-0.5 ' : '');
             sClassText += ' text-sm leading-5  '
             iIconSize = 20;
             sTitleContainer += buttonTitle !== '' ? ' mx-1.5  ' : '' // Conditionally add 'mx-2' class
-
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? ' rounded-full ' + (props.padding ? 'p-' + props.padding : 'p-[7px]') : sClassDefaultRounding + ' px-2.5 py-[7px]  ';
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-[7px]') : sClassDefaultRounding + ' px-2.5 py-[7px]  ';
             sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base leading-6  '
             iIconSize = 24;
             sTitleContainer += buttonTitle !== '' ? ' mx-3 ' : '' // Conditionally add 'mx-2' class
-
             break
 
         case 'lg':
-            sClassContainer += buttonRounded ? ' rounded-full px-2.5 py-2 ' : ' rounded-xl px-2.5 py-2 ';
+            sClassContainer += buttonRounded ? sClassFullRounding + ' px-2.5 py-2 ' : sClassDefaultRounding + ' px-2.5 py-2 ';
             sIconContainer = ' h-7 w-7 ' + (buttonTitle !== '' ? ' sm:mx-1 my-0.5 ' : ' mx-2 my-0.5 ');
             sClassText += ' mt-[1px] text-lg '
             iIconSize = 28;
             sTitleContainer += buttonTitle !== '' ? ' mx-4 ' : '' // Conditionally add 'mx-2' class
-
             break
 
 
