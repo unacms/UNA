@@ -28,6 +28,7 @@ export default function Unit(props) {
                         button_full_width: true,
                         button_rounded: false,
                         only_icon: true,
+                        on_done: 'hide'
                     }}
                 />
             </View>
