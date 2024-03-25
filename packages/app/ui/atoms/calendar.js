@@ -63,14 +63,14 @@ export default function ({ name, value = '', type, onChange }) {
         if (hide)
             setShowModal(false);
     }
-    const setValueDay = useCallback((day, hide = true) => {
+    const setValueDay = (day, hide = true) => {
         setdValue({type:'dt', value:day.dateString})
         if (!bIsTime) {
             setFieldValue({ dt: day.dateString, h: dValue.h, m: dValue.m }, hide);
         }
-    }, [dValue, bIsTime, onChange])
+    };
 
-    const addMonth = useCallback((type, val) => {
+    const addMonth = (type, val) => {
         let newDate = new Date(dValue.dt);
         if (type === 'y')
             newDate.setFullYear(newDate.getFullYear() + val);
@@ -78,7 +78,7 @@ export default function ({ name, value = '', type, onChange }) {
             newDate.setMonth(newDate.getMonth() + val);
 
         setValueDay({ dateString: newDate.toISOString().slice(0, 10) }, false)
-    }, [setValueDay]);
+    };
 
     const hours = useMemo(() => generateValues(24), []);
     const minutes = useMemo(() => generateValues(60), []);
@@ -96,7 +96,7 @@ export default function ({ name, value = '', type, onChange }) {
                             monthTextColor: colors.text,
                         }}
                         renderArrow={direction => { return <View className="text-neutral-800 dark:text-neutral-200"><Icon icon={direction == 'left' ? 'ArrowLeft' : 'ArrowRight'} width={24} height={24} /></View> }}
-                        initialDate={date}
+                        initialDate={dValue.dt}
                         customHeader={() => CalendarHeader(dValue, addMonth)}
                         onDayPress={day => {
                             setValueDay(day)
