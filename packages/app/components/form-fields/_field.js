@@ -77,7 +77,6 @@ export function getValidationRules({ checker, caption }) {
         }
 
         if (funct == 'length') {
-            console.log(checker.params)
             return {
                 required: {
                     value: true,
