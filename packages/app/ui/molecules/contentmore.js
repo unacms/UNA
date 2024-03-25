@@ -29,7 +29,7 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
     }
     const shortHtml = truncateHTML(content, 350);
     let showButton = false;
-    if (shortHtml.trim() != content.trim())
+    if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
     
     const [showFull, setShowFull] = useState(openSmall);
