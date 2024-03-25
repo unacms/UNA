@@ -104,24 +104,21 @@ export default function ElementRecommendations(oProps) {
 
         performAction('perform', {a:sAction}, (oData) => {
             if(!oData.a) {
-                /*
-                 * Hide the whole card. Isn't used for now.
-                setElementVars({hidden:true}, true, true);    
-                 */
+                if(!oParams?.on_done || oParams.on_done != 'hide') {
+                    let sTitle = '';
+                    switch(oProps.o) {
+                        case 'sys_friends':
+                            sTitle = t("Request Sent");
+                            break;
 
-                let sTitle = '';
-                switch(oProps.o) {
-                    case 'sys_friends':
-                        sTitle = t("Request Sent");
-                        break;
-
-                    case 'sys_subscriptions':
-                        sTitle = t("Following");
-                        break;
+                        case 'sys_subscriptions':
+                            sTitle = t("Following");
+                            break;
+                    }
+                    oData = {...oData, a: 'sent', title:sTitle, disabled: true};
                 }
-                oData = {...oData, a: 'sent', title:sTitle, disabled: true};
-
-                console.log(oData);
+                else
+                    setElementVars({hidden:true}, true, true);    
             }
 
             setElementVars(oData);
