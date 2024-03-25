@@ -377,7 +377,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const menuSettings = appSetting('menu_items', menu.object);
             let addButtonsSet = menuSettings?.add;
             if (!currentUser) {
-                addButtonsSet = addButtonsSet.filter(item => item.nonlogged !== false && item.nonoperator !== false);
+                addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false);
             }
             const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
