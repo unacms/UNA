@@ -40,7 +40,7 @@ export default function (props) {
     }
 
     const bSearch = appSetting('layout', 'search') == true;
-    const bNotifs = appSetting('layout', 'notifications') ? true : false;  
+    const bNotifs = appSetting('layout', 'notifications') ? true : false;
 
     let profile = null
     if (currentUser) {
@@ -70,6 +70,16 @@ export default function (props) {
 
     if (windowWidth < 1024 && (!headerSettings.header))
         return <></>
+
+        const buttonProps = {
+            variant: "primary",
+            title:"Create content",
+            startDecorator: "Plus",
+            id: "m3",
+            tooltip: "Create content",
+            fullWidth: true,
+            rounded: 'rounded',
+        }
 
     return (
         <>
@@ -121,7 +131,7 @@ export default function (props) {
                                     )}
                                     {!!currentUser && (
                                         <>
-                                            {bNotifs && <NotificationButton buttonProps={{ variant: "text", size: "lg", fullWidth: true, startDecorator: "Bell", align: "start", title: "Notifications" }}></NotificationButton>}
+
                                             {bSearch && <Search>
                                                 <Button
                                                     variant="text"
@@ -133,6 +143,9 @@ export default function (props) {
                                                 />
                                             </Search>
                                             }
+                                            <View className='mt-4 justify-center mx-auto w-full'>
+                                            <MenuAdd typestyle="button" buttonProps={buttonProps} />
+                                            </View>
                                         </>)}
                                 </View>
                             </View>
@@ -157,26 +170,22 @@ export default function (props) {
                                             align="right"
                                         /></View></Row>
                                 </Link>
-                            ) } 
+                            )}
                         </View>
                     </View>
                     {!!currentUser && (
-                                <Row className="flex-row px-3 sm:px-4 justify-end ">
-                                    <View className=" flex-row my-auto gap-x-2 ">
-                                        <View className="lg:hidden ">
-                                            {' '}
-                                            {bSearch && <Search />}{' '}
-                                        </View>
-                                        
-                                        <View className="">
-                                            <MenuAdd />
-                                        </View>
-                                        
+                        <Row className="flex-row px-3 sm:px-4 justify-end ">
+                            <View className=" flex-row my-auto gap-x-2 ">
+                                <View className="lg:hidden ">
+                                    {bSearch && <Search />}
+                                </View>
 
-                                     
-                                    </View>
-                                </Row>
-                            )}
+                                <View className="lg:hidden">
+                                    <MenuAdd />
+                                </View>
+                            </View>
+                        </Row>
+                    )}
                 </View>
                 <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="" />
             </ScrollView>

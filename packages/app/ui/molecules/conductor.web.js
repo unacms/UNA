@@ -26,6 +26,7 @@ import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear } from 'app/lib/util';
+import Footer from 'app/components/nav/footer';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -421,7 +422,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
                 opacity: opacityValue,
-                zIndex: scrollValue.value ? 40 : 60
+                zIndex: scrollValue.value ? 40 : 45
             };
         }, [scrollValue]);
 
@@ -698,8 +699,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16  w-full" />
                 {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
@@ -712,18 +713,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     </Row>
                 </View>
+                <Footer />
             </View>
         );
     }
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
+            <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
                 <RenderScene route={currentRoute} />
             </View>
+            <Footer />
         </View>
     );
 }

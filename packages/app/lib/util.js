@@ -179,13 +179,13 @@ export function getHeaderSettings(uri, width, layout) {
     let settings = appSetting('layouts', uri);
     if (!settings?.headerSettings) {
         if (layout == 'navigator') {
-            settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true } }
+            settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: false } }
         }
         if (layout == 'messenger') {
             settings = { headerSettings: { offset: false, header: false, backButton: false, menu: true, footer: true } }
         }
         if (layout == 'profile') {
-            settings = { headerSettings: { offset: false, header: false } }
+            settings = { headerSettings: { offset: false, header: false, footer: false } }
         }
     }
 

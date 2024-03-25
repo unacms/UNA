@@ -35,7 +35,7 @@ const ProfilesListCnt = memo(({ data }) => (
     />
 ));
 
-function getMenuItemConfigs(unitType, data, handleClick, t) {
+function getMenuItemConfigs(unitType, data, handleClick, t, setPopupVisible) {
     let oMenuItemPrimary = undefined;
     let oMenuItemsMore = undefined;
     let bMenuItemsMoreShow = true;
@@ -215,7 +215,7 @@ export default function Unit(props) {
     };
 
     const { oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow } = useMemo(() => {
-        return getMenuItemConfigs(props.unitType, data, handleClick, t);
+        return getMenuItemConfigs(props.unitType, data, handleClick, t, setPopupVisible);
     }, [props.unitType, data, handleClick, t]);
 
     const isFollowers = props.unitType == "person_followers" || props.unitType == "person_following" || props.unitType == "person_following_recommendations" ? true : false;

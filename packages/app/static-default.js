@@ -38,21 +38,20 @@ const LogoText = (
 )
 
 const LogoMark = (
-    
     <Svg 
     aria-label="Logo Mark"
     className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px] group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
     viewBox="0 0 240 240"
     fill="none"
     xmlns="http://www.w3.org/2000/svg">
-    <Path fill-rule="evenodd" clip-rule="evenodd" fill-opacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
-    <Path d="M104 104L136 136" stroke="currentColor" stroke-width="16"/>
-    <Path d="M184 70L160 130" stroke="currentColor" stroke-width="16"/>
-    <Path d="M80 110L56 170" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="192" cy="48" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="48" cy="192" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="152" cy="152" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="88" cy="88" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Path fillRule="evenodd" clipRule="evenodd" fillOpacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
+    <Path d="M104 104L136 136" stroke="currentColor" strokeWidth="16"/>
+    <Path d="M184 70L160 130" stroke="currentColor" strokeWidth="16"/>
+    <Path d="M80 110L56 170" stroke="currentColor" strokeWidth="16"/>
+    <Circle cx="192" cy="48" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
+    <Circle cx="48" cy="192" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
+    <Circle cx="152" cy="152" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
+    <Circle cx="88" cy="88" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
     </Svg>
 )
 
