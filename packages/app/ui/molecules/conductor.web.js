@@ -26,6 +26,7 @@ import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear } from 'app/lib/util';
+import Footer from 'app/components/nav/footer';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -374,7 +375,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
-            const addButtons = menuSettings?.add?.map((button) => {
+            let addButtonsSet = menuSettings?.add;
+            if (!currentUser) {
+                addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false);
+            }
+            const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
                 if (button.section)
                     btn = <Search section={button.section} />
@@ -417,7 +422,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const opacityValue = withTiming(1 - scrollValue.value, { duration: d });
             return {
                 opacity: opacityValue,
-                zIndex: scrollValue.value ? 40 : 60
+                zIndex: scrollValue.value ? 40 : 45
             };
         }, [scrollValue]);
 
@@ -610,17 +615,17 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (route.blocks?.browse_sidebar?.unitType) {
                 sidebarUnitType = route.blocks.browse_sidebar.unitType
             }
-            //border-r border-bdr dark:border-bdr-d border-dashed
+            
             return (
                 <Row style={{ paddingTop: header ? 0 : 0 }} className={headerSettings.columns == "reverse" ? 'flex-row-reverse' : ''}>
-                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d border-dashed' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
+                    <View className={(isRightCol ? 'flex-auto sm:border-r border-bdr dark:border-bdr-d ' : 'w-full p-2 ') + (layoutName == 'navigator' ? '' : ' pt-4')}>
                         {TabFlashListM}
                         {route?.endpoint?.request_url && (!route.endpoint?.finished ? Preload : (dataItems.length == 0 && appStatic('components_content_empty')))}
 
 
                     </View>
                     {isRightCol && <View className="hidden xl:block w-80  xl:w-96  ">
-                        <View className="fixed-process w-80  xl:w-96 p-2">
+                        <View className="fixed-process w-80 xl:w-96 p-4">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
                             })}
@@ -694,8 +699,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
-                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
                 {headerObj}
+                <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16  w-full" />
                 {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
@@ -708,18 +713,19 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     </Row>
                 </View>
+                <Footer />
             </View>
         );
     }
     return (
         <View className="w-full h-full" scrollEnabled={false} onLayout={handleLayoutTop}>
-            <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden absolute z-50 top-[115px] w-full" />
             {headerObj}
-            {/*<Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New content" size="sm" />*/}
+            <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
                 <RenderScene route={currentRoute} />
             </View>
+            <Footer />
         </View>
     );
 }
@@ -797,14 +803,14 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
     return <DynamicMenu
         name="main-menu"
-        offsetWidth={80}
+        offsetWidth={120}
         ButtonEx={ButtonEx}
         MenuItemEx={MenuItemEx}
         MenuItem={MenuItem}
         containerClasses="w-full"
         items={filteredItems}
         isButtonOutside={false}
-        menuClasses="mr-auto ml-3 sm:ml-4 lg:ml-0 gap-x-2 flex-row"
+        menuClasses=" ml-3 sm:ml-4 gap-x-2 flex-row"
         menuExClasses="mr-auto ml-3 sm:ml-4 items-end"
     />
 }

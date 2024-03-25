@@ -66,7 +66,7 @@ const Posts = memo(() => (
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
             <View className="w-full h-3 mt-3 rounded-full bg-neutral-500/20"></View>
             <View className="w-full h-3 mt-2 rounded-full bg-neutral-500/20"></View>
-            <View className="flex-row mt-auto">
+            <View className="flex-row mt-3">
                 <View className="w-9 h-9 rounded-full bg-neutral-500/20"></View>
                 <View className="ml-2 w-1/4 h-3 my-auto rounded-full bg-neutral-500/20"></View>
             </View>

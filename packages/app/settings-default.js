@@ -65,7 +65,7 @@ let settingsDefault = {
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
-        comments_modal: false,
+        comments_modal: true,
         comments_mentions: true,
     },
     jitsi: {
@@ -258,10 +258,10 @@ let settingsDefault = {
             { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut'},
         ],
         menu_sidebar: [
-            { title: 'Profile', link: '{profile}', icon: 'User' },
-            { title: 'Notifications', link: '/notifications-view', icon: 'Bell' },
-            { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots' },
-            { title: 'Friends', link: '/friends', icon: 'Link' },
+            { title: 'Profile', link: '{profile}', icon: 'User', nonlogged: false },
+            { title: 'Notifications', link: '/notifications-view', icon: 'Bell', nonlogged: false },
+            { title: 'Messages', link: '/messenger', icon: 'ChatTeardropDots', nonlogged: false },
+            { title: 'Friends', link: '/friends', icon: 'Link', nonlogged: false },
             { title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
             { title: 'Events', link: '/events-home', icon: 'CalendarCheck' },
             { title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' },
@@ -296,7 +296,7 @@ let settingsDefault = {
         ],
         menu_tabbar_non_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
-            {key: '/tab1', title: 'News', url: '/posts-home',icon: 'ChatCenteredText'},
+            {key: '/tab1', title: 'Posts', url: '/posts-home',icon: 'ChatCenteredText'},
             {key: '/tab2', title: 'About', url: '/about',icon: 'Info'},
             {key: '/tab3', title: 'Sign-up', url: '/create-account',icon: 'UserCircle'},
             {key: '/tab4', title: 'Login', url: '/login',icon: 'SignIn'},
@@ -492,7 +492,7 @@ let settingsDefault = {
         'search-keyword': {
             layout: 'navigator_search',
             blocks: {
-                browse: { name: 'system:search_keyword_result', showTitle: false, showBg: false },
+                browse: { name: 'system:search_keyword_result', showTitle: false, perLine: 1, showBg: false },
             },
             icon: 'MagnifyingGlass',
             headerSettings: { backButton: false, header: true, menu: true }

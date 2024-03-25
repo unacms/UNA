@@ -177,25 +177,21 @@ export function ElementSearchData(oProps) {
 
         handleSetPopupContent(sContent);
         inputRef.current && inputRef.current.focus();
-       
+
     }
 
     const cnt = (
-        <ScrollView className="max-h-72">
+        <ScrollView className="max-h-96">
             {!!popupContent && popupContent}
         </ScrollView>
     )
 
     const cnt2 = (
         <>
-            
-            {
-                (!!inputValue && appSetting('layout', 'extended_search')) && (
-                    <View className="hidden flex-row items-center justify-end">
-                        <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
-                    </View>
-                )
-            }
+
+            <View className=" flex-row items-center justify-end">
+                <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
+            </View>
         </>
     );
 
@@ -216,10 +212,10 @@ export function ElementSearchData(oProps) {
             ]}
         </DropdownPopup>
         return (
-            
+
             <View className=''>
                 <Redirect ref={redirectdRef} />
-                <InputRounded name="search" placeholder={t("Search") + '...'}  onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <InputRounded name="search" placeholder={t("Search") + '...'} onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
                 {dd}
             </View>
         )

@@ -143,110 +143,217 @@ export default function Unit(props) {
     )
         return;
 
+    switch (props.unitType) {
+        case 'search':
+            return getSearch();
+        default:
+            return getBase();
+    }
 
-    return (
-        <>
-            <Redirect ref={redirectdRef} />
-            <Card margin="m-2" rounded="rounded-2xl">
-                <Link className="group " href={data.url}>
-                    <View className="flex-row sm:flex-col p-1">
-                        <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
-                            <Image
-                                {...data.cover}
-                                alt={data.title}
-                                view="cover"
-                                className="absolute u-cover rounded-xl"
-                                sizes={imageSizes}
-                            />
-                           
-                        </View>
-                        <View className="flex-col p-3  flex-auto items-between justify-between ">
-                            <View>
-                                <Text
-                                    numberOfLines={1}
-                                    className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
-                                >
-                                    {data.title}
-                                </Text>
-                                <Row className="items-center h-6 my-3">
+    function getBase() {
+        return (
+            <>
+                <Redirect ref={redirectdRef} />
+                <Card margin="m-2" rounded="rounded-2xl">
+                    <Link className="group " href={data.url}>
+                        <View className="flex-row sm:flex-col p-1">
+                            <View className="aspect-square sm:aspect-video w-1/3 sm:w-full rounded-xl overflow-hidden items-center justify-center">
+                                <Image
+                                    {...data.cover}
+                                    alt={data.title}
+                                    view="cover"
+                                    className="absolute u-cover rounded-xl"
+                                    sizes={imageSizes}
+                                />
 
-
-                                    <View className="mr-2 h-6">
-                                        <ProfilesList
-                                            data={
-                                                data.members_list
-                                            }
-                                            showEmpty={false}
-                                            maxCount={3}
-                                            displaySize="xs"
-                                        />
-
-                                    </View>
-                                    {
-                                        <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
-                                            {friendsLabel}
-                                        </Text>
-                                    }
-
-                                    <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
-                                        {data.visibility != "3" ? (
-                                            <>Private</>
-                                        ) : (
-                                            <>Public</>
-                                        )}
+                            </View>
+                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+                                <View>
+                                    <Text
+                                        numberOfLines={1}
+                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                    >
+                                        {data.title}
                                     </Text>
-                                </Row>
-                            </View>
-                            <View className="flex-row w-full ">
-                                {oMenuItemPrimary}
-                                {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                    oMenuItemsMore.items.length > 0 && (
-                                        <View className='ml-2'>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className=" my-auto "
-                                                startDecorator="DotsThreeOutline"
-                                                onPress={(event) =>
-                                                    handleClickMore(event)
+                                    <Row className="items-center h-6 my-3">
+
+
+                                        <View className="mr-2 h-6">
+                                            <ProfilesList
+                                                data={
+                                                    data.members_list
                                                 }
+                                                showEmpty={false}
+                                                maxCount={3}
+                                                displaySize="xs"
                                             />
-                                            <Modal
-                                                key="more-popup"
-                                                onVisible={popupVisible}
-                                                onClose={() => {
-                                                    setPopupVisible(false);
-                                                }}
-                                            >
-                                                <View className="gap-y-4">
-                                                    <View className="flex-row items-center gap-x-4">
-                                                        <Profile
-                                                            display_type="unit"
-                                                            display_name={
-                                                                data.title
-                                                            }
-                                                            url={data.url}
-                                                            url_avatar={
-                                                                data?.image?.src
-                                                            }
-                                                            showInfo={false}
-                                                        />
-                                                    </View>
-                                                    <View>
-                                                        <Menu
-                                                            displayType="mixed"
-                                                            {...oMenuItemsMore}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            </Modal>
+
                                         </View>
-                                    )}
+                                        {
+                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                                {friendsLabel}
+                                            </Text>
+                                        }
+
+                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
+                                            {data.visibility != "3" ? (
+                                                <>Private</>
+                                            ) : (
+                                                <>Public</>
+                                            )}
+                                        </Text>
+                                    </Row>
+                                </View>
+                                <View className="flex-row w-full ">
+                                    {oMenuItemPrimary}
+                                    {bMenuItemsMoreShow && !!oMenuItemsMore &&
+                                        oMenuItemsMore.items.length > 0 && (
+                                            <View className='ml-2'>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className=" my-auto "
+                                                    startDecorator="DotsThreeOutline"
+                                                    onPress={(event) =>
+                                                        handleClickMore(event)
+                                                    }
+                                                />
+                                                <Modal
+                                                    key="more-popup"
+                                                    onVisible={popupVisible}
+                                                    onClose={() => {
+                                                        setPopupVisible(false);
+                                                    }}
+                                                >
+                                                    <View className="gap-y-4">
+                                                        <View className="flex-row items-center gap-x-4">
+                                                            <Profile
+                                                                display_type="unit"
+                                                                display_name={
+                                                                    data.title
+                                                                }
+                                                                url={data.url}
+                                                                url_avatar={
+                                                                    data?.image?.src
+                                                                }
+                                                                showInfo={false}
+                                                            />
+                                                        </View>
+                                                        <View>
+                                                            <Menu
+                                                                displayType="mixed"
+                                                                {...oMenuItemsMore}
+                                                            />
+                                                        </View>
+                                                    </View>
+                                                </Modal>
+                                            </View>
+                                        )}
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </Link>
-            </Card>
-        </>
-    );
+                    </Link>
+                </Card>
+            </>
+        );
+    }
+
+    function getSearch() {
+        return (
+            <>
+                <Redirect ref={redirectdRef} />
+                <Card margin="m-2" rounded="rounded-2xl">
+                    <Link className="group " href={data.url}>
+                        <View className="flex-row sm:flex-col p-1">
+
+                            <View className="flex-col p-3  flex-auto items-between justify-between ">
+                                <View>
+                                    <Text
+                                        numberOfLines={1}
+                                        className=" text-lg leading-tight tracking-tight font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-primary group-hover:dark:text-primary-d"
+                                    >
+                                        {data.title}
+                                    </Text>
+                                    <Row className="items-center h-6 my-3">
+
+
+                                        <View className="mr-2 h-6">
+                                            <ProfilesList
+                                                data={
+                                                    data.members_list
+                                                }
+                                                showEmpty={false}
+                                                maxCount={3}
+                                                displaySize="xs"
+                                            />
+
+                                        </View>
+                                        {
+                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                                {friendsLabel}
+                                            </Text>
+                                        }
+
+                                        <Text className=" bg-primary/10  rounded-md  px-1.5 py-1 text-xs flex-none items-center font-semibold text-neutral-600 dark:text-neutral-400">
+                                            {data.visibility != "3" ? (
+                                                <>Private</>
+                                            ) : (
+                                                <>Public</>
+                                            )}
+                                        </Text>
+                                    </Row>
+                                </View>
+                                <View className="flex-row w-full ">
+                                    {oMenuItemPrimary}
+                                    {bMenuItemsMoreShow && !!oMenuItemsMore &&
+                                        oMenuItemsMore.items.length > 0 && (
+                                            <View className='ml-2'>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className=" my-auto "
+                                                    startDecorator="DotsThreeOutline"
+                                                    onPress={(event) =>
+                                                        handleClickMore(event)
+                                                    }
+                                                />
+                                                <Modal
+                                                    key="more-popup"
+                                                    onVisible={popupVisible}
+                                                    onClose={() => {
+                                                        setPopupVisible(false);
+                                                    }}
+                                                >
+                                                    <View className="gap-y-4">
+                                                        <View className="flex-row items-center gap-x-4">
+                                                            <Profile
+                                                                display_type="unit"
+                                                                display_name={
+                                                                    data.title
+                                                                }
+                                                                url={data.url}
+                                                                url_avatar={
+                                                                    data?.image?.src
+                                                                }
+                                                                showInfo={false}
+                                                            />
+                                                        </View>
+                                                        <View>
+                                                            <Menu
+                                                                displayType="mixed"
+                                                                {...oMenuItemsMore}
+                                                            />
+                                                        </View>
+                                                    </View>
+                                                </Modal>
+                                            </View>
+                                        )}
+                                </View>
+                            </View>
+                        </View>
+                    </Link>
+                </Card>
+            </>
+        );
+    }
 }

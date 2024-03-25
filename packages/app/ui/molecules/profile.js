@@ -53,7 +53,7 @@ export default function AtomProfile(oProps) {
             break
 
         case 'base':
-            sSize = 'w-10 h-10 '
+            sSize = ' w-10 h-10 '
             iSizeWidth = 40
             iSizeHeight = 40
             sSizeFont = ' text-sm font-bold';

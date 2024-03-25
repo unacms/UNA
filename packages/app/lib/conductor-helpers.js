@@ -330,11 +330,11 @@ export function LeftSidebar({ title, addButtons, children }) {
 export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings, addButtons, children, isSmall, title, layout, showMenu }) {
     const isUseBg = appSetting('layout', 'use_background');
     return (
-        <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 lala3 " + (isUseBg ? " bg-bgrnavbar border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d border-b  " : (isSmall ? "   bg-bgrnavbar dark:bg-bgrnavbar-d border-b border-bdr dark:border-bdr-d backdrop-blur  " : "  border-b border-dashed border-bdr dark:border-bdr-d "))}  >
+        <View style={styles} className={(leftSideBar ? 'lg:hidden' : '') + " w-full items-left justify-center lg:h-16 bg-bgrnavbar dark:bg-bgrnavbar-d " + (isUseBg ? "  bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d  " : (isSmall ? "   bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d  " : "  border-b border-bdr dark:border-bdr-d "))}  >
             <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full'}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
-                    <Row className="items-center">
-                        <View className="ml-3 sm:ml-4 "></View>
+                    <Row className="items-center px-3 sm:px-4">
+                        
                         {headerSettings.header && getBackButtonWeb()}
                         {headerSettings.header == false && headerSettings.menu == true && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
                             <Button
@@ -345,17 +345,17 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
                             />
 
                         </Pressable></View>}
-                        {headerSettings.title && <Text className="text-2xl  mr-8 font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{title}</Text>}
+                        {headerSettings.title && <Text className="text-2xl font-bold text-neutral-800 dark:text-neutral-200 leading-tight">{title}</Text>}
                     </Row>
-                    <Row className="pr-4">
+                    <Row className="px-3 sm:px-4">
                         {addButtons}
                     </Row>
                 </Row>
                 }
                 <Row className="items-center ">
-                    {title ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" ml-6"></Text>}
+                    {title ? <Text className="text-2xl my-auto mx-4 font-bold text-neutral-800  dark:text-neutral-200 hidden lg:flex">{title}</Text> : <Text className=" ml-6 hidden lg:flex"></Text>}
                     {children}
-                    {layout != 'mixed' && <Row className="hidden sm:flex px-4 cond-buttons-add">
+                    {layout != 'mixed' && <Row className="hidden lg:flex px-4 cond-buttons-add">
                         {addButtons}
                     </Row>}
                 </Row>

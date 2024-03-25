@@ -147,7 +147,7 @@ export default function ElementMenu(oProps) {
         MenuItemEx={MenuItemEx}
         persistent={oProps.persistent} 
         MenuItem={MenuItem} 
-        containerClasses = "justify-center md:justify-start lg:justify-end w-full"
+        containerClasses = "w-full"
         items={filteredItems} 
         menuClasses={sClassName} 
         isButtonOutside = {false}

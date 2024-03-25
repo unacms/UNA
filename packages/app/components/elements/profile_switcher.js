@@ -29,8 +29,6 @@ export default function ElementProfileSwitcher(props) {
     }
 
     useEffect(() => {  
-       
-       
         fetchData()
     }, []);
         
@@ -40,7 +38,7 @@ export default function ElementProfileSwitcher(props) {
     };
 
     const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
-    if (!profileList)
+    if (currentUser.profiles_count <=1)
         return null;
 
     return (

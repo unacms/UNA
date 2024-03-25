@@ -29,27 +29,20 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
     }
     const shortHtml = truncateHTML(content, 350);
     let showButton = false;
-    if (shortHtml != content)
+    if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
+    
     const [showFull, setShowFull] = useState(openSmall);
-    /*
-    <Text  className={textClassName} htmlStyles={textStyle} numberOfLines={numberOfLines} >
-                        {stripTags(content)}
-                    </Text>*/
     if (!showFull) {
-        return (
-            <>
-                <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
-                {showButton && <Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} ><View className=" items-start w-full  py-2  "><Button
-                    title="More"
-                    startDecorator="ArrowFatLineDown"
-                    size="xs"
-                    solid
-                    rounded
-                    variant="outline"
-                /></View></Pressable>}
-            </>
-        )
+        if (showButton){
+            return (<Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} >
+                <HtmlMemo data={shortHtml + linkContent + '... <a href="javascript">Show more</a>'} htmlStyles={textStyle} />
+            </Pressable>);
+        }
+        else{
+            return <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
+        }
+        
     }
     else {
         return (

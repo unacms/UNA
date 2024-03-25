@@ -104,9 +104,9 @@ export default function PageLayout(props) {
                                 </Link>
                             </View>
                             <View className="flex-row  items-center gap-x-2 my-auto lg:hidden">
-                                {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} >
+                                <ProfileSwitcher hideTitle={true} >
                                     <Button variant="outline" startDecorator="UserSwitch" tooltip={t('Switch profile')} rounded  />
-                                </ProfileSwitcher>}
+                                </ProfileSwitcher>
                                 {
                                     appSetting('layout', 'switch_lang').length > 1 && (
                                         <View><DropdownMenu 
@@ -152,13 +152,13 @@ export default function PageLayout(props) {
                                 <Link href="/logout"><Button variant="outline" startDecorator="SignOut" rounded /></Link>
                             </View>
                             <View className="flex-row gap-x-2 hidden lg:flex">
-                                {appSetting('layout', 'allow_switch_profile') && <ProfileSwitcher hideTitle={true} ><Button
+                                <ProfileSwitcher hideTitle={true} ><Button
                                     variant="text"
                                     title={ t("Switch Profile") }
                                     startDecorator="UserSwitch"
                                     fullWidth
                                     align="left"
-                                /></ProfileSwitcher>}
+                                /></ProfileSwitcher>
                             
                                
                                 {

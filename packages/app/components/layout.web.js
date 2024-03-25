@@ -222,7 +222,7 @@ export default function Layout(props) {
         return (
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                    <Row className='w-full flex-col lg:flex-row-reverse lg:border-l xl:border-r border-bdr dark:border-bdr-d'>
+                    <Row className='w-full flex-col lg:flex-row-reverse  xl:border-r border-bdr dark:border-bdr-d'>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '') + ' w-full '}>
                             <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />

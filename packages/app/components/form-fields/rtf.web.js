@@ -144,6 +144,18 @@ const MenuBar = ({ editor }) => {
 }
 
 var MentionEx = Mention.extend({
+    addCommands() {
+        return {
+          insertMentionEx: (options) => ({ commands }) => {
+            commands.insertContent({
+              type: 'mention',
+              attrs: options.attrs,
+            });
+            commands.insertContent(' '); // Insert space after mention
+            return true;
+          },
+        };
+      },
     renderHTML({ node, HTMLAttributes }) {
         return [
             'a',
@@ -188,6 +200,9 @@ export default function FormFieldFtf(props) {
     });
 
     const editor = useEditor({
+        parseOptions: {
+            preserveWhitespace: 'full',
+        },
         extensions: [
             Image,
             Iframe,
@@ -236,22 +251,19 @@ export default function FormFieldFtf(props) {
                 }
             }
             field.onChange(editor.getHTML());   
-            //formContext.setValue(name, editor.getHTML());
         }
     })
 
 
     useEffect(() => {
-        if (editor )//&& field.value == ''
+        
+        if (editor && editor.getHTML() != field.value){//&& field.value == ''{}
+            console.log('ssss', field.value, editor.getHTML())
             editor.commands.setContent(field.value)
-        /*    console.log('ssss', 1)
-        if (editor && props.name == 'cmt_text'){
-            
-            editor.commands.focus()
-        }*/
+        }
 
     }, [field.value]);
-    //console.log('ssss', field.value)
+    console.log('ssss', props)
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -260,7 +272,7 @@ export default function FormFieldFtf(props) {
         }
     }, [editor]);*/
 
-    if (editor && props.name == 'cmt_text'){
+    if (editor && props.focus == true){
 
         editor.commands.focus('end')
     }

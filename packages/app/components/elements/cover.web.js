@@ -4,85 +4,91 @@ import Image from 'app/ui/atoms/image'
 import Badges from 'app/ui/atoms/badges'
 import { Text } from 'app/design/typography'
 import { stripTags } from 'app/lib/util'
-import { getBackButtonWeb } from 'app/lib/conductor-helpers';
+import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 import { Button } from 'app/design/controls'
 import { appSetting } from 'app/lib/util'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import Profile from 'app/ui/molecules/profile'
 import Menu from 'app/components/menu'
 import { useWindowDimensions } from 'react-native'
-import * as ImagePicker from 'expo-image-picker';
-import { uploadImage, md5 } from 'app/lib/util';
-import { genRnd, getLayout } from 'app/lib/util';
-import { fetcher } from 'app/lib/fetcher';
+import * as ImagePicker from 'expo-image-picker'
+import { uploadImage, md5 } from 'app/lib/util'
+import { genRnd, getLayout } from 'app/lib/util'
+import { fetcher } from 'app/lib/fetcher'
 import * as ImageManipulator from 'expo-image-manipulator'
-import { Image as ImageNative } from 'react-native';
-import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import { FeedbackHaptics } from 'app/lib/util';
+import { Image as ImageNative } from 'react-native'
+import DropdownMenu from 'app/ui/atoms/dropdown-menu'
+import { FeedbackHaptics } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 
 function CoverMenu(props) {
-    let { width } = useWindowDimensions();
-    let size = "base"
+    let { width } = useWindowDimensions()
+    let size = 'base'
 
-    if (width < 1280)
-        size = "sm"
+    if (width < 1280) size = 'sm'
 
-    const isSplitMenu = appSetting('layout', 'split_action_menu');
+    const isSplitMenu = appSetting('layout', 'split_action_menu')
 
-    let aMenuManageItems = [];
+    let aMenuManageItems = []
 
-    let propsCopy = { ...props }; // Create a copy of the array
+    let propsCopy = { ...props } // Create a copy of the array
 
     if (isSplitMenu) {
-        propsCopy.items = propsCopy.items.filter(aItem => {
+        propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem?.display_type && aItem.display_type != 'link') {
-                return true; // Exclude this item from the new array
-            }
-            else {
+                return true // Exclude this item from the new array
+            } else {
                 aMenuManageItems.push({
                     id: aItem.id ? aItem.id : aItem.name,
                     link: '/' + aItem.link,
-                    title: aItem.title
-                });
+                    title: aItem.title,
+                })
 
-                return false; // Include this item in the new array
+                return false // Include this item in the new array
             }
-        });
-    }
-    else {
-        propsCopy.items = propsCopy.items.filter(aItem => {
+        })
+    } else {
+        propsCopy.items = propsCopy.items.filter((aItem) => {
             if (aItem.name != props.uri) {
-                return true; // Exclude this item from the new array
+                return true // Exclude this item from the new array
+            } else {
+                return false // Include this item in the new array
             }
-            else {
-
-                return false; // Include this item in the new array
-            }
-        });
+        })
     }
 
     return (
-        <><Menu
-            {...propsCopy}
-            displayType="button"
-            autoSize={true}
-            params={{
-                show_action: true,
-                show_counter: true,
-                show_combined: true,
-                button_variant: 'default',
-                button_size: size,
-                button_rounded: false,
-                button_full_width: false,
-                button_hide_title_on_small: false,
-            }}
-        />
-            {(isSplitMenu && propsCopy.items.length > 0) && <View className='ml-2'>
-                <DropdownMenu items={aMenuManageItems}>
-                    <Button variant="default" size={size} tooltip="Settings" startDecorator="DotsThreeOutline" onPress={() => { FeedbackHaptics('Medium'); }} />
-                </DropdownMenu>
-            </View>}
+        <>
+            <Menu
+                {...propsCopy}
+                displayType="button"
+                autoSize={true}
+                params={{
+                    show_action: true,
+                    show_counter: true,
+                    show_combined: true,
+                    button_variant: 'default',
+                    button_size: size,
+                    button_rounded: false,
+                    button_full_width: false,
+                    button_hide_title_on_small: false,
+                }}
+            />
+            {isSplitMenu && propsCopy.items.length > 0 && (
+                <View className="ml-2">
+                    <DropdownMenu items={aMenuManageItems}>
+                        <Button
+                            variant="default"
+                            size={size}
+                            tooltip="Settings"
+                            startDecorator="DotsThreeOutline"
+                            onPress={() => {
+                                FeedbackHaptics('Medium')
+                            }}
+                        />
+                    </DropdownMenu>
+                </View>
+            )}
         </>
     )
 }
@@ -98,8 +104,14 @@ function CoverMenuSmall(props) {
             size="small"
         >
             {[
-                <Button key="btn" variant="text" rounded startDecorator="DotsThreeOutline" />,
-                <Menu key="menu"
+                <Button
+                    key="btn"
+                    variant="text"
+                    rounded
+                    startDecorator="DotsThreeOutline"
+                />,
+                <Menu
+                    key="menu"
                     {...props}
                     displayType="button"
                     params={{
@@ -110,7 +122,7 @@ function CoverMenuSmall(props) {
                         button_full_width: false,
                         button_hide_title_on_small: false,
                     }}
-                />
+                />,
             ]}
         </DropdownPopup>
     )
@@ -118,17 +130,25 @@ function CoverMenuSmall(props) {
 
 function CoverMenuMeta(props) {
     return (
-        <Menu {...props} displayType="mixed" params={{ button_variant: 'text', button_size: 'sm', button_hide_title_on_small: false }} />
+        <Menu
+            {...props}
+            displayType="mixed"
+            params={{
+                button_variant: 'text',
+                button_size: 'sm',
+                button_hide_title_on_small: false,
+            }}
+        />
     )
 }
 
 export function CoverSmall(props) {
     const data = props.data
-    const { currentUser, setCurrentUser } = useCurrentUser();
-    const isUseBg = appSetting('layout', 'use_background');
-    const windowDimen = useWindowDimensions();
-    const windowWidth = windowDimen.width;
-    let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
+    const { currentUser, setCurrentUser } = useCurrentUser()
+    const isUseBg = appSetting('layout', 'use_background')
+    const windowDimen = useWindowDimensions()
+    const windowWidth = windowDimen.width
+    let bPerson = props.data.profile.module == 'bx_persons' ? true : false
 
     let styles = {}
     if (windowWidth > 1024 && getLayout(currentUser) != 'hor') {
@@ -136,16 +156,30 @@ export function CoverSmall(props) {
     }
 
     return (
-        <View style={styles} className={(isUseBg ? " backdrop-blur bg-bgrtabbar    border-b border-bdrnavbar dark:border-bdr-d dark:bg-bgrtabbar-d" : " backdrop-blur bg-bgrbody2 dark:bg-bgrbody2-d border-b border-dashed border-bdr dark:border-bdr-d") + " w-full "}>
-            <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                <View className=" mx-2 py-2 flex-row gap-2">
+        <View
+            style={styles}
+            className={
+                (isUseBg
+                    ? ' border-b border-bdr dark:border-bdr-d'
+                    : '  bg-white dark:bg-neutral-800 border-b border-bdr dark:border-bdr-d') +
+                ' w-full '
+            }
+        >
+            <View
+                className={
+                    appSetting('layout', 'max_width') + ' w-full mx-auto'
+                }
+            >
+                <View className=" px-3 sm:px-4 py-2 flex-row gap-2">
                     <Row className=" items-center flex-auto">
                         {getBackButtonWeb()}
-                        {bPerson && <Profile
-                            {...data.profile}
-                            displayType="unit_wo_info"
-                            displaySize="base"
-                        />}
+                        {bPerson && (
+                            <Profile
+                                {...data.profile}
+                                displayType="unit_wo_info"
+                                displaySize="base"
+                            />
+                        )}
                         <View className=" flex-auto pl-2">
                             <Text className="text-lg xl:text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 whitespace-nowrap text-ellipsis overflow-hidden">
                                 {data.profile.display_name}
@@ -155,7 +189,6 @@ export function CoverSmall(props) {
                             <CoverMenuSmall {...data.actions_menu} />
                         </View>
                     </Row>
-
                 </View>
             </View>
         </View>
@@ -166,164 +199,233 @@ export default function ElementCover(props) {
     const data = props.data
     const mode = props.mode
     let { width } = useWindowDimensions()
-    let bPerson = props.data.profile.module == 'bx_persons' ? true : false;
-    const [coverUrl, setCoverUrl] = useState(data.cover.src);
+    let bPerson = props.data.profile.module == 'bx_persons' ? true : false
+    const [coverUrl, setCoverUrl] = useState(data.cover.src)
     const [pictureUrl, setPictureUrl] = useState(data.profile.url_avatar)
 
-    const uo = props.data.profile.module + '_cover_crop';
-    const so = data.cover.storage;
-    const img_trans = '';
-    const c = data.profile.info.id;
+    const uo = props.data.profile.module + '_cover_crop'
+    const so = data.cover.storage
+    const img_trans = ''
+    const c = data.profile.info.id
     const handleUpload = async (mode) => {
-
-        const url = '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + uo + '&so=' + so + '&uid=' + genRnd(8) + '&img_trans=' + img_trans + '&m=0&c=' + c + '&p=0';
+        const url =
+            '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' +
+            uo +
+            '&so=' +
+            so +
+            '&uid=' +
+            genRnd(8) +
+            '&img_trans=' +
+            img_trans +
+            '&m=0&c=' +
+            c +
+            '&p=0'
 
         //alert(mode);
-        let mediaTypes = ImagePicker.MediaTypeOptions.Images;
+        let mediaTypes = ImagePicker.MediaTypeOptions.Images
 
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: mediaTypes,
             quality: 1,
             allowsMultipleSelection: false,
-        });
+        })
         if (!result.cancelled) {
             for (const i of result.assets) {
-                let uri = i.uri;
+                let uri = i.uri
                 ImageNative.getSize(uri, async (width, height) => {
                     if (mode == 'cover') {
-                        let manipulatedWidth = 2000;
-                        let manipulatedHeight = 2000;
+                        let manipulatedWidth = 2000
+                        let manipulatedHeight = 2000
 
-                        if (width > manipulatedWidth || height > manipulatedHeight) {
+                        if (
+                            width > manipulatedWidth ||
+                            height > manipulatedHeight
+                        ) {
                             if (width > height) {
-                                manipulatedHeight = Math.round((height * manipulatedWidth) / width);
+                                manipulatedHeight = Math.round(
+                                    (height * manipulatedWidth) / width
+                                )
                             } else {
-                                manipulatedWidth = Math.round((width * manipulatedHeight) / height);
+                                manipulatedWidth = Math.round(
+                                    (width * manipulatedHeight) / height
+                                )
                             }
 
-                            const resizedPhoto = await ImageManipulator.manipulateAsync(uri, [
-                                { resize: { width: manipulatedWidth, height: manipulatedHeight } }
-                            ]);
-                            uri = resizedPhoto.uri;
+                            const resizedPhoto =
+                                await ImageManipulator.manipulateAsync(uri, [
+                                    {
+                                        resize: {
+                                            width: manipulatedWidth,
+                                            height: manipulatedHeight,
+                                        },
+                                    },
+                                ])
+                            uri = resizedPhoto.uri
                         }
                     }
                     if (mode == 'picture') {
-
-                        let s = width;
-                        let originX = 0;
-                        let originY = 0;
-                        let acts = [];
+                        let s = width
+                        let originX = 0
+                        let originY = 0
+                        let acts = []
                         if (width != height) {
                             if (width > height) {
-                                s = height;
-                                originX = (width - height) / 2;
+                                s = height
+                                originX = (width - height) / 2
                             } else {
                                 s = width
-                                originY = (height - width) / 2;
+                                originY = (height - width) / 2
                             }
-                            acts.push({ crop: { width: s, height: s, originX: 0, originY: 0 } });
+                            acts.push({
+                                crop: {
+                                    width: s,
+                                    height: s,
+                                    originX: 0,
+                                    originY: 0,
+                                },
+                            })
                         }
                         if (s > 500) {
-                            acts.push({ resize: { width: 500, height: 500 } });
+                            acts.push({ resize: { width: 500, height: 500 } })
                         }
-                        const resizedPhoto = await ImageManipulator.manipulateAsync(uri, acts);
-                        uri = resizedPhoto.uri;
+                        const resizedPhoto =
+                            await ImageManipulator.manipulateAsync(uri, acts)
+                        uri = resizedPhoto.uri
                     }
-                    let hash = md5(uri);
+                    let hash = md5(uri)
                     uploadImage(
                         uri,
                         url + '&a=upload',
                         handleInsertImageFinish,
                         { hash: hash, mode: mode }
-                    );
-                });
-
-
+                    )
+                })
             }
         }
-
-    };
+    }
 
     const handleInsertImageFinish = async (result, extraVar) => {
-        const sRequest = '/api.php?r=' + props.data.profile.module + '/update_image/&params[]=' + extraVar.mode + '&params[]=' + c + '&params[]=' + result.data.id;
-        const sResponse = await fetcher(sRequest);
-        if (extraVar.mode == 'cover')
-            setCoverUrl(sResponse.data);
-        else
-            setPictureUrl(sResponse.data);
-    };
+        const sRequest =
+            '/api.php?r=' +
+            props.data.profile.module +
+            '/update_image/&params[]=' +
+            extraVar.mode +
+            '&params[]=' +
+            c +
+            '&params[]=' +
+            result.data.id
+        const sResponse = await fetcher(sRequest)
+        if (extraVar.mode == 'cover') setCoverUrl(sResponse.data)
+        else setPictureUrl(sResponse.data)
+    }
 
-    data.profile.url_avatar = pictureUrl;
+    data.profile.url_avatar = pictureUrl
 
-    const isUseBg = appSetting('layout', 'use_background');
+    const isUseBg = appSetting('layout', 'use_background')
 
-    const bAllowEdit = data.allow_edit && appSetting('layout', 'allow_edit_covers');
+    const bAllowEdit =
+        data.allow_edit && appSetting('layout', 'allow_edit_covers')
     return (
-        <View className={isUseBg ? " backdrop-blur border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d " : ""}>
-            <View className={appSetting('layout', 'max_width') + ' sm:p-4 mx-auto w-full'}>
-                {mode != 'min' ? <View className={" duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:" + appSetting('layout', 'cover_aspect') + " w-auto sm:rounded-xl overflow-hidden"}>
-                    {!!data.cover && (
-                        <Image
-                            alt={data.group_name}
-                            view="cover"
-                            sizes="(max-width:1280px) 100vw, 1280px"
-                            className="u-cover "
-                            src={coverUrl}
-                        />
-                    )}
-                    {bAllowEdit && <View className='p-4 items-end'><Button rounded startDecorator="Camera" onPress={() => handleUpload('cover')} /></View>}
+        <View
+            className={
+                isUseBg
+                    ? ' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d '
+                    : ''
+            }
+        >
+            <View
+                className={
+                    appSetting('layout', 'max_width') +
+                    ' bg-bgrnavbar dark:bg-bgrnavbar-d sm:px-4 mx-auto w-full'
+                }
+            >
+                {mode != 'min' ? (
+                    <View
+                        className={
+                            ' duration-500 bg-primary-200  dark:bg-primary-950 aspect-video sm:' +
+                            appSetting('layout', 'cover_aspect') +
+                            ' w-auto sm:rounded-b-xl overflow-hidden'
+                        }
+                    >
+                        {!!data.cover && (
+                            <Image
+                                alt={data.group_name}
+                                view="cover"
+                                sizes="(max-width:1280px) 100vw, 1280px"
+                                className="u-cover "
+                                src={coverUrl}
+                            />
+                        )}
+                        {bAllowEdit && (
+                            <View className="p-4 items-end">
+                                <Button
+                                    rounded
+                                    startDecorator="Camera"
+                                    onPress={() => handleUpload('cover')}
+                                />
+                            </View>
+                        )}
 
-                    <View className='absolute lg:hidden top-4 left-4 z-50'>
-                        {getBackButtonWeb()}
-                    </View>
-                </View> :
-                    <View className={" h-24 w-auto sm:rounded-xl overflow-hidden"}>
-
-                        <View className='absolute lg:hidden top-4 left-4 z-50'>
+                        <View className="absolute lg:hidden top-4 left-4 z-50">
                             {getBackButtonWeb()}
                         </View>
                     </View>
-                }
-                <View className="relative  flex-col md:flex-row gap-x-2   ">
-
-                    {bPerson && <View className=" w-full h-24  md:h-44 lg:h-28 md:w-52 lg:mb-2 items-center  ">
-                        <View className='rounded-full absolute w-min p-1 z-50 duration-200 bottom-0  flex-none bg-bgrcard-h dark:bg-bgrcard-dh '>
-                            <Profile
-                                {...data.profile}
-                                displayType="unit_wo_info"
-                                displaySize='4xl'
-                            />
-                            {(bAllowEdit && appSetting('layout', 'hide_edit_covers')) && <View className='p-4 absolute -bottom-2 right-0'><Button rounded startDecorator="Camera" onPress={() => handleUpload('picture')} /></View>}
+                ) : (
+                    <View
+                        className={' h-24 w-auto sm:rounded-xl overflow-hidden'}
+                    >
+                        <View className="absolute lg:hidden top-4 left-4 z-50">
+                            {getBackButtonWeb()}
                         </View>
                     </View>
-                    }
-                    <View className='flex-auto my-4 items-center md:items-start  '>
-                        <Row className='items-center justity-center flex-auto text-center items-center md:items-start  '>
-                            <Text className="tracking-tight text-3xl lg:text-4xl font-bold text-neutral-900 dark:text-neutral-50 px-2 sm:px-0" numberOfLines={2}>
-                                {data.profile.display_name}
-                            </Text>
-                            <View className='ml-2'><Badges badges={data.badges} /></View>
-                        </Row>
-
-
-                        <View className="flex-col lg:flex-row gap-x-4 gap-y-4 my-4 w-full justify-between items-center  ">
-                            <View className=" items-center md:items-start  overflow-hidden gap-y-2 w-full lg:w-auto">
-                                <CoverMenuMeta {...data.meta_menu} />
+                )}
+                <View className=" flex-col md:flex-row gap-x-2 px-3 sm:px-4   ">
+                    {bPerson && (
+                        <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative ">
+                            <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
+                                <Profile
+                                    {...data.profile}
+                                    displayType="unit_wo_info"
+                                    displaySize="4xl"
+                                />
+                                {bAllowEdit &&
+                                    appSetting(
+                                        'layout',
+                                        'hide_edit_covers'
+                                    ) && (
+                                        <View className="p-4 absolute -bottom-2 right-0">
+                                            <Button
+                                                rounded
+                                                startDecorator="Camera"
+                                                onPress={() =>
+                                                    handleUpload('picture')
+                                                }
+                                            />
+                                        </View>
+                                    )}
                             </View>
-                            <View className="flex-auto mt-auto  max-w-3xl overflow-hidden w-full lg:w-auto items-center md:items-start">
-                                <CoverMenu {...data.actions_menu} uri={props?.uri} />
-                            </View>
-
-                            {bPerson &&
+                        </View>
+                    )}
+                    
+                        <View className="flex-col flex-auto gap-y-3 my-3 ">
+                            <View className=" flex-auto flex-col xl:flex-row  gap-y-3 justify-between  ">
+                            <Row className=" flex-auto items-center gap-x-2  ">
                                 <Text
-                                    numberOfLines={3}
-                                    className="lg:hidden w-full lg:TODO text-center text-sm md:text-base text-neutral-800 dark:text-neutral-200 "
+                                    className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
+                                    numberOfLines={2}
                                 >
-                                    {stripTags(data.profile.info.description)}
+                                    {data.profile.display_name}
                                 </Text>
-                            }
+                                <Badges badges={data.badges} />
+                            </Row>
+                            <CoverMenuMeta {...data.meta_menu} />
+                            </View>
+
+                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
+
                         </View>
-                    </View>
+                    
+                   
                 </View>
             </View>
         </View>

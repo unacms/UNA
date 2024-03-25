@@ -18,6 +18,7 @@ import Link from 'app/ui/atoms/link'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import ProfileSwitcher from 'app/components/elements/profile_switcher'
+import { ButtonRef } from 'app/design/controls'
 import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
@@ -167,7 +168,17 @@ export default function PageLayout(props) {
                                                         )}
                                                     >
                                                         <Row className="items-start group">
-                                                            {profile}
+                                                        <ButtonRef
+                    tooltip={t("Dashboard")}
+                    variant="outline"
+                    rounded
+                    padding={'0px'}
+                    startDecorator={profile}
+                    id="m3"
+                    onPress={() => { }}
+                    aria-label="Dashboard"
+                />
+                                                            
                                                             <Text className="text-base mx-2 text-wrap text-balance my-auto font-bold text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
                                                                 {
                                                                     currentUser.display_name
@@ -209,7 +220,7 @@ export default function PageLayout(props) {
                         )}
 
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto border-r  border-bdr dark:border-bdr-d ">
+                            <View className="flex-auto xl:border-r  border-bdr dark:border-bdr-d ">
                                 <View className="flex-auto   w-full mx-auto">
                                     <Row className="p-3 sm:p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&

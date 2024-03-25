@@ -72,7 +72,7 @@ export default function (props) {
                             ' w-full flex-row flex-auto  items-center'
                         }
                     >
-                        <View className="flex-row px-3 sm:px-4 flex-none w-80 my-auto items-center">
+                        <View className="flex-row px-3 sm:px-4 flex-auto xl:flex-none xl:w-80 my-auto items-center">
                             {headerSettings.menu && (
                                 <View className="sm:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
@@ -110,7 +110,7 @@ export default function (props) {
                                 </View>
                             )}
                             {bSearch && currentUser && (
-                                <View className=" w-full flex-auto max-w-sm hidden lg:block ">
+                                <View className=" w-full flex-auto max-w-sm hidden lg:flex ">
                                     <Search
                                         type="input"
                                         placeholder="Enter search text"
@@ -150,13 +150,12 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-auto xl:flex-none w-80 px-3 sm:px-4 justify-end  ">
+                        <Row className="flex-row flex-none xl:w-80 px-3 sm:px-4 justify-en ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
                                         <View className="lg:hidden ">
-                                            {' '}
-                                            {bSearch && <Search />}{' '}
+                                            {bSearch && <Search />}
                                         </View>
                                         <View className="hidden sm:block">
                                             <MenuLauncher />
