@@ -75,7 +75,7 @@ function Base({ data, imageSizes }) {
         <View className=" px-3 sm:px-4 pt-3 sm:pt-4 mx-auto w-full max-w-4xl">
             <Card addClassName=" p-2 flex-auto  mx-auto w-full flex-col md:flex-row-reverse duration-300 ">
                 {data.image && (
-                    <View className=" aspect-video flex-none mb-2 rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">
+                    <View className=" aspect-video flex-none rounded-lg overflow-hidden  w-full md:w-1/3 mb-auto  ">
                         <Image
                             {...data.image}
                             alt={data.title}
@@ -86,18 +86,20 @@ function Base({ data, imageSizes }) {
                     </View>
                 )}
 
-                <View className="flex-auto px-2 md:mr-2">
+                <View className="flex-auto px-2 py-2">
                     <Link href={data.url}>
-                        <Text numberOfLines={2} className="text-neutral-950  my-2 tracking-tight leading-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg sm:text-xl font-bold">
+                        <Text numberOfLines={2} className="text-neutral-950  mb-1 tracking-tight leading-tight dark:text-neutral-50 sm:hover:text-primary sm:dark:hover:text-primary-d text-lg font-bold">
                             {data.title}
                         </Text>
                         <Text numberOfLines={2} className="text-neutral-700 mb-2 dark:text-neutral-300  text-sm sm:text-base">
                             {data.summary_plain}
                         </Text>
                     </Link>
-                    <View className="mb-2 sm:mt-auto">
+                    <View className="mt-auto">
+
                         <ProfileCnt authorData={data.author_data} />
                     </View>
+
                 </View>
             </Card>
         </View>

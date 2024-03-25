@@ -1,7 +1,7 @@
 import { View, Row } from 'app/design/view'
 import { Text } from 'app/design/typography'
 import { Button } from 'app/design/controls'
-import Svg, { Path } from 'react-native-svg'
+import Svg, { Path, Circle } from 'react-native-svg'
 import Link from 'app/ui/atoms/link'
 import { Icon } from 'app/ui/atoms/icon'
 import Card from 'app/components/card'
@@ -38,38 +38,21 @@ const LogoText = (
 )
 
 const LogoMark = (
-    <Svg
-        aria-label="Logo Mark"
-        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[40px] w-[40px]  "
-        viewBox="0 0 2400 2400"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <Path
-            d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-            className="opacity-80 "
-            fill="#E2554F"
-        />
-        <Path
-            d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-            className="opacity-80 "
-            fill="#E2554F"
-        />
-        <Path
-            d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-            className="text-neutral-950 dark:text-neutral-50   group-hover:text-accent dark:group-hover:text-accent-d"
-            fill="#E2554F"
-        />
-        <Path
-            d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-            className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-            fill="currentColor"
-        />
-        <Path
-            d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-            className="group-hover:animate-pulse group-active:opacity-0 text-neutral-400 dark:text-neutral-600  group-hover:text-accent dark:group-hover:text-accent-d"
-            fill="currentColor"
-        />
+    
+    <Svg 
+    aria-label="Logo Mark"
+    className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px] group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
+    viewBox="0 0 240 240"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <Path fill-rule="evenodd" clip-rule="evenodd" fill-opacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
+    <Path d="M104 104L136 136" stroke="currentColor" stroke-width="16"/>
+    <Path d="M184 70L160 130" stroke="currentColor" stroke-width="16"/>
+    <Path d="M80 110L56 170" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="192" cy="48" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="48" cy="192" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="152" cy="152" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="88" cy="88" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
     </Svg>
 )
 
@@ -435,39 +418,23 @@ function ComponentsSplash(props) {
             }
         >
             <View className=" md:flex-row  xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 px-2 lg:gap-x-4 duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
-                <View className="flex-col xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center  gap-x-12 flex-auto p-8  ">
-                    <View className="flex-col mb-6 w-40 xl:w-1/3 aspect-square rounded-full   ">
-                        <Svg
-                            aria-label="Logo Mark"
-                            viewBox="0 0 2400 2400"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <Path
-                                d="M1660 1478.25L2280 400C1939.86 596.377 1735.59 711.463 1412.5 898L1660 1478.25Z"
-                                className="opacity-80 "
-                                fill="#ef4444"
-                            />
-                            <Path
-                                d="M987.5 1502L740 921.75L120 2000L987.5 1502Z"
-                                className="opacity-80 "
-                                fill="#ef4444"
-                            />
-                            <Path
-                                d="M740 921.75L1360 2000L1660 1478.25L1040 400L740 921.75Z"
-                                fill="#ef4444"
-                            />
-                            <Path
-                                d="M1200 2400C1862.74 2400 2400 1862.74 2400 1200C2400 997.894 2350.25 807.889 2262 640.8L2138.68 854.417C2178.34 962.119 2200 1078.53 2200 1200C2200 1752.28 1752.28 2200 1200 2200C923.41 2200 673.048 2087.73 492.015 1906.25L314 2008.6C533.433 2248.82 849.005 2400 1200 2400Z"
-                                className="opacity-80 "
-                                fill="#f59e0b"
-                            />
-                            <Path
-                                d="M2086.43 391.138L1907.77 493.559C1726.76 312.204 1476.48 200 1200 200C647.715 200 200 647.715 200 1200C200 1321.97 221.023 1437.93 261 1546L138.5 1759.22C50.1818 1592.08 0 1402.19 0 1200C0 537.258 537.258 0 1200 0C1551.1 0 1866.99 150.788 2086.43 391.138Z"
-                                className="opacity-80 "
-                                fill="#f59e0b"
-                            />
-                        </Svg>
+                <View className="flex-col  xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center  gap-x-6 flex-auto p-6  ">
+                    <View className="mb-6 xl:mb-0 w-40 xl:w-1/3 aspect-square rounded-full   ">
+                    <Svg 
+    aria-label="Logo Mark"
+    className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500  group-active:scale-90 text-neutral-700 dark:text-neutral-300   "
+    viewBox="0 0 240 240"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <Path fill-rule="evenodd" clip-rule="evenodd" fill-opacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
+    <Path d="M104 104L136 136" stroke="currentColor" stroke-width="16"/>
+    <Path d="M184 70L160 130" stroke="currentColor" stroke-width="16"/>
+    <Path d="M80 110L56 170" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="192" cy="48" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="48" cy="192" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="152" cy="152" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    <Circle cx="88" cy="88" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
+    </Svg>
                     </View>
 
                     <View className=" flex-auto ">
@@ -523,7 +490,7 @@ function ComponentsSplash(props) {
                 </View>
             </View>
             <View className="p-2 items-center sm:flex-row flex-wrap w-full duration-300">
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -544,7 +511,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2  w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2  w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -565,7 +532,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -587,7 +554,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -609,7 +576,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -631,7 +598,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
+                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
@@ -653,51 +620,7 @@ function ComponentsSplash(props) {
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
-                        <View className="flex-row gap-x-3 mb-4">
-                            <Button
-                                variant="outline"
-                                startDecorator="Storefront"
-                                rounded
-                                size="sm"
-                            />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                Buy & Sell
-                            </Text>
-                        </View>
-                        <Text
-                            numberOfLines={2}
-                            className="text-base text-neutral-600 dark:text-neutral-400"
-                        >
-                            Grab deals or sell your own stuff on a marketplace
-                            you can trust.
-                        </Text>
-                    </Card>
-                </View>
-
-                <View className="sm:flex-auto sm:w-1/2 md:w-1/3 lg:w-1/4 p-2 w-full max-w-md ">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
-                        <View className="flex-row gap-x-3 mb-4">
-                            <Button
-                                variant="outline"
-                                startDecorator="Video"
-                                rounded
-                                size="sm"
-                            />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                Watch Videos
-                            </Text>
-                        </View>
-                        <Text
-                            numberOfLines={2}
-                            className="text-base text-neutral-600 dark:text-neutral-400"
-                        >
-                            Explore, learn, and get entertained with the latest
-                            videos.
-                        </Text>
-                    </Card>
-                </View>
+             
             </View>
         </View>
     )
