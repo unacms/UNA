@@ -374,7 +374,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
-            const addButtons = menuSettings?.add?.map((button) => {
+            let addButtonsSet = menuSettings?.add;
+            if (!currentUser) {
+                addButtonsSet = addButtonsSet.filter(item => item.nonlogged !== false && item.nonoperator !== false);
+            }
+            const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
                 if (button.section)
                     btn = <Search section={button.section} />

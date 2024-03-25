@@ -47,7 +47,6 @@ export default function (props) {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
     }
 
-    const menu_navbar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
     const windowWidth = useWindowDimensions().width;

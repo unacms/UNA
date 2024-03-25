@@ -198,7 +198,7 @@ export function getHeaderSettings(uri, width, layout) {
         bHeader = true;
     }
 
-    const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' ? settings.headerSettings.menu : false;
+    const bMenu = typeof settings?.headerSettings?.menu !== 'undefined' ? settings.headerSettings.menu : true;
 
     const bTitle = typeof settings?.headerSettings?.title !== 'undefined' ? settings.headerSettings.title : true;
 
