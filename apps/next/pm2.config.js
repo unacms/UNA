@@ -4,7 +4,7 @@ const env = {
     UNA_API_KEY: process.env.UNA_API_KEY,
 
     UNA_URL: process.env.UNA_URL,
-    NEXT_PUBLIC_UNA_URL = process.env.NEXT_PUBLIC_UNA_URL
+    NEXT_PUBLIC_UNA_URL: process.env.NEXT_PUBLIC_UNA_URL,
 
     APP_URL: process.env.APP_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
