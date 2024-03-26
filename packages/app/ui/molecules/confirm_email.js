@@ -46,6 +46,7 @@ export default function ElementConfirmEmail(props) {
             <View className='mx-auto max-w-xl p-4'>
                 <Card rounded margin=' p-4 '>
                     <View className='mb-4 '>
+                        <Text className="text-lg text-center mb-2">{t("Unconfirmed email address")}</Text>
                         <Text className="text-base text-center">{t("Please check your email.")}</Text>
                     </View>
                     <View className='gap-y-4'>

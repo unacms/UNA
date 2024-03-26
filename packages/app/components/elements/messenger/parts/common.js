@@ -73,7 +73,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {   
         fetchConvos(searchValue);
-        setConvoId(convos.data[0].id);
+        if (convos.data.length > 0)
+            setConvoId(convos.data[0].id);
     }, [searchValue]);
 
     const fetchItems = async (convoId, isAddJots) => {
