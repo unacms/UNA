@@ -307,7 +307,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <View className='flex-1 flex-auto mb-4'>
+        <View className='flex-1 flex-auto'>
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}
@@ -345,7 +345,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     return (
-        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
+        <View style={{ height: layoutHeight }} className={appSetting('layout', 'max_width') + ' mx-auto xl:border-x border-bdr dark:border-bdr-d w-full items-stretch bg-bgrcard dark:bg-bgrcard-d'}>
             <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
             <Row className='items-stretch '>
                 {convosComponent}
@@ -356,10 +356,10 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 }
 
 const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch }) => {
-    return data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5 border-dashed border-bdrcard dark:border-bdrcard-d border-r'}>
+    return data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
         {data.length > 0 && <>
         
-            <Row  className='mr-2 p-2'>
+            <Row  className='py-2 px-3 border-b border-bdr dark:border-bdr-d'>
         <InputRounded name="search" placeholder={("Search") + '...'}   value={searchValue}  onChangeText={(value) => handleSearch(value)} />
     </Row><UniList
             refer={refListConvos}
@@ -383,17 +383,17 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
     return (<>
-        <View className='md:px-0 border-dashed border-bdrcard dark:border-bdrcard-d border-b  mb-2'>
-            {isWeb && <Row className='px-2 items-center justify-between w-full h-12'>
-                <Row className='lg:pl-2 items-center justify-start h-12'>           
+        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b  mb-2'>
+            {isWeb && <Row className='px-4 py-3 items-center justify-between w-full'>
+                <Row className='items-center justify-start '>           
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
                     <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
-                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="xs" onPress={() => editConvo()} />
-                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="xs"  onPress={() => leaveConvo()} />
-                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="outline" rounded size="xs" onPress={() => deleteConvo()} />
-                    <Button buttonTooltip="Info" startDecorator='Info' variant="outline" rounded size="xs" onPress={() => getConvo()} />
+                    <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="sm" onPress={() => editConvo()} />
+                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="sm"  onPress={() => leaveConvo()} />
+                    <Button buttonTooltip="Delete" startDecorator='Trash' variant="outline" rounded size="sm" onPress={() => deleteConvo()} />
+                    <Button buttonTooltip="Info" startDecorator='Info' variant="outline" rounded size="sm" onPress={() => getConvo()} />
                 </Row>
             </Row>}
         </View>
