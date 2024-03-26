@@ -12,7 +12,7 @@ import { Animated } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import BlockByUrl from 'app/ui/molecules/block';
+import BlockByUrl from 'app/ui/molecules/block'
 
 const LogoText = (
     <Svg
@@ -38,20 +38,59 @@ const LogoText = (
 )
 
 const LogoMark = (
-    <Svg 
-    aria-label="Logo Mark"
-    className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px] group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
-    viewBox="0 0 240 240"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg">
-    <Path fillRule="evenodd" clipRule="evenodd" fillOpacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
-    <Path d="M104 104L136 136" stroke="currentColor" strokeWidth="16"/>
-    <Path d="M184 70L160 130" stroke="currentColor" strokeWidth="16"/>
-    <Path d="M80 110L56 170" stroke="currentColor" strokeWidth="16"/>
-    <Circle cx="192" cy="48" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
-    <Circle cx="48" cy="192" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
-    <Circle cx="152" cy="152" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
-    <Circle cx="88" cy="88" r="24" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="16"/>
+    <Svg
+        aria-label="Logo Mark"
+        className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500 h-[42px] w-[42px] group-active:scale-90 text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100  "
+        viewBox="0 0 240 240"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <Path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            fillOpacity="0.5"
+            d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z"
+            fill="currentColor"
+        />
+        <Path d="M104 104L136 136" stroke="currentColor" strokeWidth="16" />
+        <Path d="M184 70L160 130" stroke="currentColor" strokeWidth="16" />
+        <Path d="M80 110L56 170" stroke="currentColor" strokeWidth="16" />
+        <Circle
+            cx="192"
+            cy="48"
+            r="24"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="16"
+        />
+        <Circle
+            cx="48"
+            cy="192"
+            r="24"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="16"
+        />
+        <Circle
+            cx="152"
+            cy="152"
+            r="24"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="16"
+        />
+        <Circle
+            cx="88"
+            cy="88"
+            r="24"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="16"
+        />
     </Svg>
 )
 
@@ -246,7 +285,6 @@ export function ComponentsIntro(props) {
                 useNativeDriver: false,
             }).start()
 
-
             const listener = animatedValue.addListener(({ value }) => {
                 setDisplayValue(Math.round(value))
             })
@@ -312,8 +350,7 @@ function ComponentModal(props) {
     return (
         <View
             className={
-                'flex-col w-full mx-auto ' +
-                appSetting('layout', 'max_width')
+                'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
             }
         >
             <View className=" md:flex-row  duration-300 ml-4">
@@ -353,11 +390,12 @@ function ComponentModal(props) {
                     </View>
 
                     <View className=" flex-auto ">
-                        <Text className="text-4xl mb-6  tracking-tight text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
+                        <Text className="text-4xl mb-6 text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
                             Welcome to the community!
                         </Text>
                         <Text className="text-base  text-center md:text-left text-neutral-700 dark:text-neutral-300 ">
-                            Connect with like-minded people - create, discover, share knowledge and grow together.
+                            Connect with like-minded people - create, discover,
+                            share knowledge and grow together.
                         </Text>
                     </View>
                 </View>
@@ -368,7 +406,9 @@ function ComponentModal(props) {
                             rounded=" rounded-2xl "
                             addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <View className=""><BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin"/></View>
+                            <View className="">
+                                <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
+                            </View>
                         </Card>
 
                         <Link
@@ -412,42 +452,24 @@ function ComponentsSplash(props) {
     return (
         <View
             className={
-                'flex-col xl:px-4 w-full mx-auto' +
+                'flex-col w-full mx-auto' +
                 appSetting('layout', 'max_width')
             }
         >
-            <View className=" md:flex-row  xl:mx-4 sm:bg-bgrcard/50 dark:sm:bg-bgrcard-d/50 px-2 lg:gap-x-4 duration-300 sm:border-y xl:border border-dashed xl:rounded-2xl border-gray-500/20">
-                <View className="flex-col  xl:flex-row mx-auto my-auto justify-center sm:justify-start items-center md:items-start xl:items-center  gap-x-6 flex-auto p-6  ">
-                    <View className="mb-6 xl:mb-0 w-40 xl:w-1/3 aspect-square rounded-full   ">
-                    <Svg 
-    aria-label="Logo Mark"
-    className=" group-hover:rotate-[180deg] group-hover:scale-125 group-active:scale-90 duration-500  group-active:scale-90 text-neutral-700 dark:text-neutral-300   "
-    viewBox="0 0 240 240"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg">
-    <Path fill-rule="evenodd" clip-rule="evenodd" fill-opacity="0.5" d="M120 24C66.9807 24 24 66.9807 24 120C24 138.371 29.1601 155.536 38.1098 170.126C32.9999 172.44 28.845 176.492 26.3991 181.528C14.7683 163.87 8 142.725 8 120C8 58.1441 58.1441 8 120 8C142.725 8 163.87 14.7683 181.528 26.3991C176.492 28.845 172.44 32.9999 170.126 38.1098C155.536 29.1601 138.371 24 120 24ZM58.4721 213.601C76.13 225.232 97.2746 232 120 232C181.856 232 232 181.856 232 120C232 97.2746 225.232 76.13 213.601 58.4721C211.155 63.5079 207 67.5598 201.89 69.8739C210.84 84.4639 216 101.629 216 120C216 173.019 173.019 216 120 216C101.629 216 84.4639 210.84 69.8739 201.89C67.5598 207 63.5079 211.155 58.4721 213.601Z" fill="currentColor"/>
-    <Path d="M104 104L136 136" stroke="currentColor" stroke-width="16"/>
-    <Path d="M184 70L160 130" stroke="currentColor" stroke-width="16"/>
-    <Path d="M80 110L56 170" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="192" cy="48" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="48" cy="192" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="152" cy="152" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    <Circle cx="88" cy="88" r="24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="16"/>
-    </Svg>
-                    </View>
-
-                    <View className=" flex-auto ">
-                        <Text className="text-4xl mb-6 lg:text-5xl tracking-tight text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
+            <View className="xl:m-4 md:flex-row bg-primary/10 dark:bg-primary-d/10 px-2 xl:px-4 py-4  lg:gap-x-4 duration-300 sm:border-y xl:border  xl:rounded-2xl border-primary/10 dark:border-primary-d/10 shadow">
+                <View className=" p-10 flex-col mx-auto justify-center my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
+                    
+                        <Text className=" w-full text-5xl mb-8 lg:text-6xl xl:text-7xl  text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
                             Welcome to the community!
                         </Text>
-                        <Text className="text-base lg:text-lg xl:text-xl text-center md:text-left text-neutral-700 dark:text-neutral-300 ">
-                            Connect with like-minded people - create, discover, share knowledge and grow together.
+                        <Text className=" w-full text-base lg:text-lg xl:text-xl text-center md:text-start text-neutral-600 dark:text-neutral-400 ">
+                        Connect, engage and collaborate with people who share your interests and passions - create, share, develop, explore, exchange insights, and expand your horizons together.
                         </Text>
-                    </View>
+                    
                 </View>
 
-                <View className="mx-auto w-full md:w-1/2 xl:w-1/3 my-auto mx-auto items-center  xl:p-4 ">
-                    <View className=" flex-auto w-full max-w-md  p-2 ">
+                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
+                    <View className=" flex-auto w-full   ">
                         <Card
                             rounded=" rounded-2xl "
                             addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
@@ -467,9 +489,10 @@ function ComponentsSplash(props) {
                             />
                         </Link>
 
-                        <View className="pb-2">
-                            <Card addClassName="border  p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto  flex-col ">
-                                <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                        
+                            <Card rounded=" rounded-2xl "
+                            addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  ">
+                                <Text className="text-center mb-4 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                     Don't have an account?
                                 </Text>
                                 <Link
@@ -477,149 +500,142 @@ function ComponentsSplash(props) {
                                     href="/create-account"
                                 >
                                     <Button
-                                        title="Create account"
+                                        title="Create new account"
                                         startDecorator="UserCirclePlus"
                                         size="base"
                                         fullWidth
                                     />
                                 </Link>
                             </Card>
-                        </View>
+                        
                     </View>
                 </View>
             </View>
-            <View className="p-2 items-center sm:flex-row flex-wrap w-full duration-300">
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
+            <View className=" items-center px-2 xl:px-4 py-4 xl:py-2 flex-row flex-wrap w-full duration-300">
+                <View className="w-full md:w-1/2 lg:w-1/3  flex-auto  max-w-lg mx-auto  xl:p-4 p-2  ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="Users"
-                                size="sm"
+                                size="base"
                                 rounded
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Meet People
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Make new friends and create lasting connections.
+                           Explore, connect, and build enduring friendships. Share experiences and create bonds that last, enriching your life's journey together.
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2  w-full max-w-md ">
+                <View className="w-full md:w-1/2 lg:w-1/3  flex-auto max-w-lg mx-auto xl:p-4   p-2 ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="UsersThree"
-                                size="sm"
+                                size="base"
                                 rounded
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Join Groups
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Find your tribe in groups that match your interests.
-                        </Text>
+Connect with your community by finding groups that resonate with your interests, where you can share, learn, and grow with like-minded individuals on a journey of mutual discovery and support.                        </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
+                <View className="w-full md:w-1/2 lg:w-1/3  flex-auto max-w-lg mx-auto  xl:p-4  p-2 ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="ChatCenteredText"
                                 rounded
-                                size="sm"
+                                size="base"
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Share Ideas
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Spitball ideas and get feedback from folks who get
-                            it.
+                            Toss around your concepts and receive insights from those who understand your vision, offering constructive feedback to refine and elevate your ideas.
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
+                <View className="w-full md:w-1/2 lg:w-1/3  flex-auto max-w-lg mx-auto xl:p-4   p-2 ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="CalendarCheck"
                                 rounded
-                                size="sm"
+                                size="base"
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Discover Events
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Find out what's happening and catch events you care
-                            about.
-                        </Text>
+Stay in the loop with the latest happenings and discover events that align with your interests, ensuring you never miss out on what you enjoy.                        </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
+                <View className="w-full md:w-1/2 lg:w-1/3    flex-auto max-w-lg mx-auto xl:p-4  p-2">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="ChatTeardropDots"
                                 rounded
-                                size="sm"
+                                size="base"
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Message Friends
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Chat on the go with your friends, wherever,
-                            whenever.
+                            Keep the conversation flowing with your friends, anytime and anywhere, ensuring you're always connected, no matter the distance.
                         </Text>
                     </Card>
                 </View>
-                <View className="sm:flex-auto sm:w-1/2 xl:w-1/3   p-2 w-full max-w-md ">
+                <View className="w-full md:w-1/2 lg:w-1/3   flex-auto max-w-lg mx-auto xl:p-4  p-2 ">
                     <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
                                 startDecorator="Chats"
                                 rounded
-                                size="sm"
+                                size="base"
                             />
-                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                            <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg xl:text-xl font-semibold ">
                                 Discuss Topics
                             </Text>
                         </View>
                         <Text
-                            numberOfLines={2}
+                            numberOfLines={3}
                             className="text-base text-neutral-600 dark:text-neutral-400"
                         >
-                            Ask questions, jump into debates or chat casually,
-                            your call.
+Dive into a world of interaction by asking questions, engaging in spirited debates, or enjoying casual conversations, fostering a dynamic environment of learning, sharing, and connecting.                            
                         </Text>
                     </Card>
                 </View>
-             
             </View>
         </View>
     )
@@ -728,7 +744,9 @@ const ComponentsFooter = () => {
 const ComponentsFullFooter = () => {
     const { t } = useTranslation()
     return (
-        <>  <View className='w-full h-16'></View>
+        <>
+            {' '}
+            <View className="w-full h-16"></View>
             <View className=" w-full p-3 flex-row justify-center bg-bgrbody dark:bg-bgrbody-d border-t border-bdr dark:border-bdr-d fixed bottom-0 ">
                 <Link href="/">
                     <Button

@@ -123,7 +123,7 @@ export default function PageLayout(props) {
                 <View
                     className={
                         appSetting('layout', 'max_width') +
-                        ' mx-auto w-full pt-4'
+                        ' mx-auto w-full'
                     }
                 >
                     {appStatic('components_splash', p)}
@@ -394,7 +394,7 @@ export default function PageLayout(props) {
                     <View
                         className={
                             appSetting('layout', 'max_width') +
-                            ' mx-auto w-full pt-4'
+                            ' mx-auto w-full'
                         }
                     >
                         {appStatic('components_splash', p)}
