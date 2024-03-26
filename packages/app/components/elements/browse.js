@@ -170,7 +170,7 @@ export default function (props) {
     let endpointUpdateContent = '';
     let bUpdateContent = false;
 
-    if (dataItems.data.length > 0 && props.sidebar !== true) {
+    if (dataItems.data.length > 0 && props.sidebar !== true && props.no_scroll !== true) {
 
         const a = [...new Set(dataItems.data
             .filter(item => item.type !== 'block')

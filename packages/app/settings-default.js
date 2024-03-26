@@ -21,7 +21,7 @@ let settingsDefault = {
     },
     layout: {
         format_list:['hor', 'ver', 'mixed'],
-        format:'mixed', //hor, ver, mixed
+        format:'hor', //hor, ver, mixed
         format_guest:'hor', //hor, ver, mixed
         max_width: 'max-w-screen-2xl',  // for hor = max-w-screen-2xl, for ver = max-w-screen-xl
         max_width_block: 'max-w-screen-xl', // for hor = max-w-screen-xl, for ver = max-w-screen-lg
@@ -65,7 +65,6 @@ let settingsDefault = {
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
-        comments_modal: true,
         comments_mentions: true,
     },
     jitsi: {
@@ -523,7 +522,7 @@ let settingsDefault = {
                 menu: { name: 'system:profile_menu', showTitle: false, showBg: false, leftbar: true },
                 
                 intro: { name: 'static:intro', showTitle: false, showBg: false, sidebar: true },
-                //friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
+                friends: { name: 'system:browse_recommendations_friends', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 messenger_contacts: { name: 'bx_messenger:get_block_contacts_messenger', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 subscriptions: { name: 'system:browse_recommendations_subscriptions', showTitle: false, showBg: false, sidebar: true, props: {no_scroll:true, skeleton: "one_column_browse",perLine: 1, showTitleInside: true} },
                 footer: { name: 'static:footer', showTitle: false, showBg: false, sidebar: true },

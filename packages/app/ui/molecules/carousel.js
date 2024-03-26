@@ -126,7 +126,7 @@ export default function ElementCarousel({ data = [] }) {
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 
     return <>
-        {currentImageIndex !== false && <Modal visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} outerClickClose={true} transparent={true} >
+        {currentImageIndex !== false && <Modal visible={currentImageIndex !== false} onClose={() => { setCurrentImageIndex(false) }} transparent={true} >
             <Row className=' w-full mx-auto items-center justify-center'>
                 {
                     currentImageIndex > 0 ? <View className='mr-2'><Button variant="outline" size="sm" onPress={() => setCurrentImageIndex(currentImageIndex - 1)} startDecorator="ArrowLeft" /></View> : <View className='mr-1 w-10'></View>

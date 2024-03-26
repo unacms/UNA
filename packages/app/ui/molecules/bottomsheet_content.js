@@ -39,6 +39,7 @@ export default function ElementCommentForm(props) {
         return <></>
 
     if (windowDimensions.width > 1024) {
+        //outerClickClose={false}
         return (
             <Modal
                 title={bottomSheetData.title}
@@ -49,12 +50,14 @@ export default function ElementCommentForm(props) {
                     if (bottomSheetData.onClose)
                         bottomSheetData.onClose();
                 }}
-                outerClickClose={false}
+                
                 transparent={true}
             >
-                <View className='w-full px-1 pb-1 ' style={{maxHeight:windowDimensions.height*88}}>
-                    {bottomSheetData.content}
-                    {bottomSheetData.footer}
+                <View className='w-full px-1 pb-1' style={{maxHeight:windowDimensions.height-100}}>
+                    <ScrollView className=' w-full'>
+                        {bottomSheetData.content}
+                        {bottomSheetData.footer}
+                    </ScrollView>
                 </View>
             </Modal>
         )

@@ -38,7 +38,6 @@ export function Root(props) {
 
     }, [currentUser?.notifications]);
 
-
     useEffect(() => {
         subscribe('sys_api_0' , 'config_changed', updateSettings);
     }, [])
@@ -46,7 +45,6 @@ export function Root(props) {
     const updateSettings = useCallback(async () => {
         remoteSettings.data = await getRemoteSettings();
     }, []);
-
 
     useEffect(() => {
         if (data?.user) {

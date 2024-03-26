@@ -14,9 +14,9 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
             setError(e);
         }
     };
-
+    
     useEffect(() => {
-        if (isLoadOnInit)
+        if (isLoadOnInit && url != '')
             fetchData(); 
         if (isActive){
             const intervalId = setInterval(fetchData, pollingInterval); 

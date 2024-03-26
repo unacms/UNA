@@ -256,14 +256,11 @@ export default function FormFieldFtf(props) {
 
 
     useEffect(() => {
-        
         if (editor && editor.getHTML() != field.value){//&& field.value == ''{}
-            console.log('ssss', field.value, editor.getHTML())
             editor.commands.setContent(field.value)
         }
 
     }, [field.value]);
-    console.log('ssss', props)
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -271,11 +268,11 @@ export default function FormFieldFtf(props) {
             editor.commands.focus()
         }
     }, [editor]);*/
-
+    useEffect(() => {
     if (editor && props.focus == true){
-
         editor.commands.focus('end')
     }
+}, [editor, field.value]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 

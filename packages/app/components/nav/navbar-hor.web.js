@@ -61,7 +61,11 @@ export default function (props) {
 
     let sTitle = props.title
     const menuSettings = appSetting('menu_items', props?.menu?.object)
-    if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
+    if (menuSettings && menuSettings.name) 
+        sTitle = t(menuSettings.name)
+
+
+
     return (
         <>
             <View className="fixed w-full">
@@ -109,7 +113,7 @@ export default function (props) {
                                     </Text>
                                 </View>
                             )}
-                            {bSearch && currentUser && (
+                            {bSearch && (
                                 <View className=" w-full flex-auto max-w-sm hidden lg:flex ">
                                     <Search
                                         type="input"
@@ -129,7 +133,7 @@ export default function (props) {
                                     >
                                         <ButtonRef
                                             pressed={
-                                                item.link == '/' + props.uri
+                                                (item.link == '/' + props.uri || (item.link == '/' && props.uri == 'home'))
                                                     ? true
                                                     : false
                                             }

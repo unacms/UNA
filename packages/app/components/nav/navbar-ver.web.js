@@ -124,6 +124,7 @@ export default function (props) {
                                                             ? item.icon
                                                             : item.icon.split(' ')[0]
                                                     }
+                                                    rounded
                                                     align="start"
                                                     title={item.title}
                                                 />
@@ -139,6 +140,7 @@ export default function (props) {
                                                     fullWidth={true}
                                                     startDecorator="MagnifyingGlass"
                                                     align="start"
+                                                    rounded
                                                     title={"Search"}
                                                 />
                                             </Search>

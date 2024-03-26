@@ -21,7 +21,6 @@ const getData = cache(async (props) => {
         },
         cache: 'no-store'
     };
-
     let l = UNA_URL + '/api.php' + '?r=system/get_page_by_request/TemplServicePages&params[]=' + path;
     let searchParams = JSON.parse(JSON.stringify(props.searchParams));
 
@@ -81,7 +80,9 @@ export default async function Page(props) {
     if (!remote_config.data || data.hash != remote_config.hash){
         remote_config = await getRemoteSettings(true);   
     }
-    return <Suspense fallback={<Loading />}>
-        <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
-    </Suspense>
+    return (
+        <Suspense fallback={<Loading/>}>
+            <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
+        </Suspense>
+    )
 }

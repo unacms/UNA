@@ -110,7 +110,7 @@ const LinkContent = ({ url, data }) => (
     </Link>
 );
 
-const MenuManage = ({id, menu }) => {
+const MenuManage = ({id, menu, setViewState }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
 
     const refReport = useRef(null);
@@ -192,11 +192,10 @@ function DefaultUnit(data) {
         return <></>; //NEED TO FIX
     }
     const { t } = useTranslation();
-    let { currentUser, setCurrentUser } = useCurrentUser()
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    const [cmtsData, setCmtsData] = useState(null)
+    const cmtsData = data.cmts_list;
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {
@@ -263,8 +262,7 @@ function DefaultUnit(data) {
         content_attach = content_attach.concat(data.content.videos_attach);
     }
 
-    if (viewState.view == 'deleted')
-        return <></>
+    
 
     const MainContent = () => bIsMarketContent
         ? <MarketView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
@@ -275,22 +273,15 @@ function DefaultUnit(data) {
                 : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
 
-    const isCommentsModal = appSetting('layout', 'comments_modal')
-
-    useEffect(() => {
-        if (isCommentsModal) {
-            async function fetchData() {
-                const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
-                setCmtsData(res.data);
-            }
-            fetchData();
-        }
-    }, []);
+    const isCommentsModal = data.cmts_list ? true : false;
 
     const showCommentsModal = async (initFormData) => {
         setBottomSheetData({ title: data.author_data.display_name + "'s author name post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='px-4 pb-2'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
+    if (viewState.view == 'deleted')
+        return <></>
+    console.log("isCommentsModal", isCommentsModal)
     if (isCommentsModal)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
@@ -365,7 +356,7 @@ function DefaultUnit(data) {
                             if (!Element) return
                             return <Element key={`action-${index}`} {...item} />
                         })}
-                        <MenuManage id={data.id} menu={data?.menu_manage} />
+                        <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState}/>
                     </View>
                 </View>
                 <View className="flex-col ">
@@ -375,7 +366,7 @@ function DefaultUnit(data) {
                         <NotEditedView showCommentsModal={showCommentsModal} />
                     )}
                 </View>
-                {commentsData && <CommentsSection t={t} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
+                {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
             </Card>
         </AnimatedBlock>
     )

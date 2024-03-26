@@ -127,7 +127,7 @@ export default function Nfc(props) {
 
            
 
-            <Modal onVisible={!!showModal} title="You have a new friend!" outerClickClose={true} >
+            <Modal onVisible={!!showModal} title="You have a new friend!" >
                 <View className='pb-4'>
                     <Profile {...showModal} displaySize="xl" />
                 </View>

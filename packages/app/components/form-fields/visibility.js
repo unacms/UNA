@@ -33,7 +33,7 @@ export default function (props) {
 
     const values = getVisibilityValues(props.values);
     const showSelect = (val) => {
-        setBottomSheetData({ title: 'Choose audience',showClose:true, content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
+        setBottomSheetData({ title: 'Choose audience',showClose:true, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
     }
     
     if (props.format == 'nofield'){

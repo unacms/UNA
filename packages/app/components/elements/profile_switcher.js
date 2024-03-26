@@ -19,8 +19,9 @@ export default function ElementProfileSwitcher(props) {
     const redirectdRef = useRef();
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
-        redirectdRef.current.redirect('/home');
+        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);       
+        setCurrentUser(result.data);
+        setShow(false);
     };
 
     async function fetchData() {
@@ -31,7 +32,6 @@ export default function ElementProfileSwitcher(props) {
     useEffect(() => {  
         fetchData()
     }, []);
-        
 
     const handleClick = async (id) => {
         setShow(true)

@@ -85,7 +85,7 @@ export default function ({ name, value = '', type, onChange }) {
 
     return (
         <>
-            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} outerClickClose={true} transparent={false}>
+            <Modal onVisible={!!showModal} onClose={() => { setShowModal(false) }} transparent={false}>
                 <View className='  max-w-sm w-full mx-auto aspect-square'>
                     {DynamicCalendar && <DynamicCalendar
                         className=' bg-bgrcard dark:bg-bgrcard-d'

@@ -49,7 +49,7 @@ export default function FormFeed(props) {
         dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
     }
-
+// outerClickClose={false}
     return (
         <View className="w-full h-full ">
             <Modal
@@ -59,7 +59,7 @@ export default function FormFeed(props) {
                     setShowImage(null)
                 }}
                 presentation='overFullScreen'
-                outerClickClose={false}
+               
                 transparent={true}
                 headerBorder={true}
             >
@@ -95,7 +95,12 @@ export default function FormFeed(props) {
                             {prevList.length > 0 && prevList[0]?.key && (
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>
                             )}
-                            {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
+                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
+                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
+                                <View className="">
+                                    {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
+                                </View>
+                            </Row>
                         </View>
                     </KeyboardAvoidingView>
                     {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
