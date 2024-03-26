@@ -104,7 +104,7 @@ export default function (props) {
                                     </Pressable>
                                 </View>
                             )}
-                            <View className='justify-center '>
+                            <View className='justify-center px-2'>
                                 <Link href="/home" aria-label="Logo">
                                     <View className="group  mr-auto flex-row flex-none items-center my-auto lg:mx-2 lg:mb-4">
                                         {appStatic('logo_mark')}
@@ -153,13 +153,13 @@ export default function (props) {
                                         <>
 
                                             
-                                            <View className='mt-4 justify-center mx-auto w-full   px-2 '>
+                                            <View className='mt-4 justify-center mx-auto w-full   px-4 '>
                                             <MenuAdd typestyle="button" buttonProps={buttonProps} />
                                             </View>
                                         </>)}
                             {!!currentUser && (
                                 <Link href={appSetting('layout', 'dashboard')}>
-                                    <Row className="items-center justify-between mx-2 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                    <Row className="items-center justify-between mx-4 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                         <Row className='flex-row gap-x-3 items-center'>
                                             <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                                 {profile}

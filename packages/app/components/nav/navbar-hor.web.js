@@ -150,7 +150,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-none xl:w-80 px-3 sm:px-4 justify-end ">
+                        <Row className="flex-row flex-none xl:w-96 px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

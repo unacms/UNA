@@ -330,8 +330,8 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden lg:block w-80 ">
-                            <View className="fixed-process w-80 max-w-md  px-2 py-3 flex-col space-y-4 duration-200">
+                        <View className="hidden lg:block w-80 xl:w-96 ">
+                            <View className="fixed-process w-80 xl:w-96 max-w-md  px-4 py-3 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

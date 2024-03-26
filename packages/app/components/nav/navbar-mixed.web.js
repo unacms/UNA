@@ -71,11 +71,11 @@ export default function (props) {
     const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-x border-bdr dark:border-bdr-d"}>
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
-                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-x border-bdr dark:border-bdr-d'>
-                        <View className=' pt-16 fixed-process w-[318px]'>
-                            <View className='p-4'>
+                    {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
+                        <View className=' pt-16 fixed-process w-80'>
+                            <View className='px-2 py-3'>
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -142,7 +142,7 @@ export default function (props) {
                                 </View>}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-auto xl:flex-none xl:w-80 px-3 sm:px-4 justify-end  ">
+                        <Row className="flex-row flex-auto xl:flex-none xl:w-96 px-3 sm:px-4 justify-end  ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">

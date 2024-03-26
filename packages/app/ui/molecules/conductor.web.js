@@ -624,7 +624,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
 
                     </View>
-                    {isRightCol && <View className="hidden xl:block w-80  xl:w-96  ">
+                    {isRightCol && <View className="hidden xl:block w-80 xl:w-96  ">
                         <View className="fixed-process w-80 xl:w-96 p-4">
                             {route?.sidebar?.content.map((item, index) => {
                                 return <ItemRenderer unitType={sidebarUnitType} key={'item' + index} route={route} numColumns={1} sidebar={true} item={item} unit={route?.sidebar?.endpoint?.unit} module={route?.sidebar?.endpoint?.module ? route?.sidebar?.endpoint?.module : ''} />
