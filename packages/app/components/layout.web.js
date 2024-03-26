@@ -217,8 +217,7 @@ export default function Layout(props) {
         if (width > 1024)
             headerSettings.offset = false;
 
-        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_navbar'), currentUser);
-
+        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
         return (
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
