@@ -20,9 +20,9 @@ export default function FormField(props) {
     return (
         <View className={sClassName}>
             {isShowCaption &&
-                <Text className="label-text block ml-0.5 mb-1 text-sm text-neutral-700 dark:text-neutral-200">
+                <Text className="label-text block mb-2 text-sm sm:text-base text-neutral-700 dark:text-neutral-300">
                     <Row className='items-center gap-x-1' >
-                        <Text className="font-medium">{caption}</Text>
+                        <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
                         {((props.checker || props.required) ? <Text className="text-red-600"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')} /></Text> : <></>)}
                     </Row >
@@ -34,7 +34,7 @@ export default function FormField(props) {
             {!!props.error2 && <FormError errorText={props.checker.error} />}
             {!!props.info &&
                 <View className="label" >
-                    <Text className="ml-0.5 mt-0.5 text-xs text-neutral-700 dark:text-neutral-200">{props.info}</Text>
+                    <Text className="mt-1 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300">{props.info}</Text>
                 </View>
             }
         </View>

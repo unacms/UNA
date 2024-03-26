@@ -73,12 +73,12 @@ export default function (props) {
 
         const buttonProps = {
             variant: "primary",
-            title:"Create content",
-            startDecorator: "Plus",
+            title:"Create",
             id: "m3",
-            tooltip: "Create content",
-            fullWidth: true,
+            tooltip: "Create",
             rounded: 'rounded',
+            fullWidth: true,
+            
         }
 
     return (
@@ -88,10 +88,10 @@ export default function (props) {
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " lg:border-r xl:border-x border-bdr dark:border-bdr-d") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
+                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " ") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start ' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
-                        <View className='px-3 sm:px-4 lg:pt-4 flex-row lg:flex-col lg:w-80'>
+                        <View className='px-3 sm:px-4 lg:px-2 lg:pt-4 flex-row lg:flex-col lg:w-80'>
                             {headerSettings.menu && (
                                 <View className="lg:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
@@ -117,7 +117,7 @@ export default function (props) {
                                             <Link href={item.link} key={`menu-${index}`} alt={item.title}>
                                                 <Button
                                                     variant="text"
-                                                    size="lg"
+                                                    size="base"
                                                     fullWidth={true}
                                                     startDecorator={
                                                         item.icon.indexOf(' ') == -1
@@ -135,7 +135,7 @@ export default function (props) {
                                             {bSearch && <Search>
                                                 <Button
                                                     variant="text"
-                                                    size="lg"
+                                                    size="base"
                                                     fullWidth={true}
                                                     startDecorator="MagnifyingGlass"
                                                     align="start"
@@ -143,27 +143,34 @@ export default function (props) {
                                                 />
                                             </Search>
                                             }
-                                            <View className='mt-4 justify-center mx-auto w-full'>
-                                            <MenuAdd typestyle="button" buttonProps={buttonProps} />
-                                            </View>
+                                            
                                         </>)}
                                 </View>
                             </View>
                         </View>
-                        <View className='hidden lg:block mt-4'>
+                        <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
+                        {!!currentUser && (
+                                        <>
+
+                                            
+                                            <View className='mt-4 justify-center mx-auto w-full   px-2 '>
+                                            <MenuAdd typestyle="button" buttonProps={buttonProps} />
+                                            </View>
+                                        </>)}
                             {!!currentUser && (
                                 <Link href={appSetting('layout', 'dashboard')}>
-                                    <Row className="items-center justify-between mx-4 mb-2 px-2.5 py-2 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                        <Row className='flex-row gap-x-2 items-center'>
+                                    <Row className="items-center justify-between mx-2 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                        <Row className='flex-row gap-x-3 items-center'>
                                             <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
                                                 {profile}
                                             </View>
-                                            <Text className="text-lg flex-auto my-auto font-bold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                                 {currentUser.display_name}
                                             </Text>
                                         </Row><View className='flex-none '><Button
                                             variant="text"
                                             size="sm"
+                                            rounded="rounded"
                                             tooltip={t('Switch profile')}
                                             startDecorator="UserSwitch"
                                             fullWidth

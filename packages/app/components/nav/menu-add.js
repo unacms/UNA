@@ -19,7 +19,7 @@ export default function ({buttonProps}) {
         rounded: 'rounded',
         startDecorator: "Plus",
         id: "m3",
-        tooltip: "Create content",
+        tooltip: "Create",
     }
     if (!buttonProps)
         buttonProps = buttonPropsDef;

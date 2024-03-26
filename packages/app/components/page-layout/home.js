@@ -140,7 +140,7 @@ export default function PageLayout(props) {
                 <Profile
                     {...dUser}
                     displayType="unit_wo_info"
-                    displaySize="base"
+                    displaySize="sm"
                 />
             )
 
@@ -152,7 +152,7 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden lg:block w-80 duration-200 2xl:border-x lg:border-r border-bdr dark:border-bdr-d ">
+                            <View className="hidden xl:block w-80 duration-200   ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
@@ -160,48 +160,29 @@ export default function PageLayout(props) {
                                     ) && (
                                         <View className="">
                                             {!!currentUser && (
-                                                <Row className="justify-between p-4">
-                                                    <Link
-                                                        href={appSetting(
-                                                            'layout',
-                                                            'dashboard'
-                                                        )}
-                                                    >
-                                                        <Row className="items-start group">
-                                                        <ButtonRef
-                    tooltip={t("Dashboard")}
-                    variant="outline"
-                    rounded
-                    padding={'0px'}
-                    startDecorator={profile}
-                    id="m3"
-                    onPress={() => { }}
-                    aria-label="Dashboard"
-                />
-                                                            
-                                                            <Text className="text-base mx-2 text-wrap text-balance my-auto font-bold text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100">
-                                                                {
-                                                                    currentUser.display_name
-                                                                }
-                                                            </Text>
-                                                        </Row>
-                                                    </Link>
-                                                    <View className="flex-none my-auto">
+                                            <Link href={appSetting('layout', 'dashboard')}>
+                                                <Row className="items-center justify-between mx-2 my-3 px-3 py-1 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                                    <Row className='flex-row gap-x-3 items-center'>
+                                                            {profile}
+                                                        
+                                                        <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                            {currentUser.display_name}
+                                                        </Text>
+                                                    </Row><View className='flex-none '>
                                                         <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            tooltip={t(
-                                                                'Switch profile'
-                                                            )}
-                                                            startDecorator="UserSwitch"
-                                                            fullWidth
-                                                            rounded
-                                                            align="right"
-                                                        />
-                                                    </View>
-                                                </Row>
-                                            )}
+                                                        variant="text"
+                                                        size="sm"
+                                                        tooltip={t('Switch profile')}
+                                                        startDecorator="UserSwitch"
+                                                        fullWidth
+                                                        align="right"
+                                                    /></View></Row>
+                                            </Link>
+                                        )}
                                         </View>
+                                        
+
+
                                     )}
                                     <View className="flex-auto px-2 w-full">
                                         {navBarBlocks.map((item, index) => {
@@ -220,8 +201,8 @@ export default function PageLayout(props) {
                         )}
 
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
-                            <View className="flex-auto xl:border-r  border-bdr dark:border-bdr-d ">
-                                <View className="flex-auto   w-full mx-auto">
+                            <View className="flex-auto  xl:mx-2">
+                                <View className="flex-auto  w-full mx-auto">
                                     <Row className="p-3 sm:p-4  max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&
                                             feedList.map((item, index) => {
@@ -349,8 +330,8 @@ export default function PageLayout(props) {
                                 </View>
                             </View>
                         </View>
-                        <View className="hidden xl:block w-80 ">
-                            <View className="fixed-process w-80 max-w-md  px-4 xl:mt-4 flex-col space-y-4 duration-200">
+                        <View className="hidden lg:block w-80 ">
+                            <View className="fixed-process w-80 max-w-md  px-2 py-3 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName

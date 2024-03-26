@@ -71,7 +71,7 @@ export default function (props) {
     const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-x border-bdr dark:border-bdr-d"}>
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-x border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process w-[318px]'>
@@ -103,7 +103,7 @@ export default function (props) {
                     </View>
                 </Row>
             </View>
-            {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed -top-[1px] w-full"}>
+            {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">

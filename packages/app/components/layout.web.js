@@ -222,7 +222,7 @@ export default function Layout(props) {
         return (
             <BottomSheetDataContext>
                 <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                    <Row className='w-full flex-col lg:flex-row-reverse  xl:border-r border-bdr dark:border-bdr-d'>
+                    <Row className='w-full flex-col lg:flex-row-reverse  '>
                         <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)]' : '') + ' w-full '}>
                             <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
                             <Suggestions />
@@ -245,7 +245,7 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
         <>
 
             <View className="w-full items-stretch" >
-                <View className=" w-full mx-auto flex-row -top-[1px] " >
+                <View className=" w-full mx-auto flex-row " >
                     <View className={(layoutName != 'messenger' ? '' : '') + '  w-full  relative overflow-hidden  pb-16 lg:pb-0 mx-auto'}>{/*mb-16* TODO*/ }
                         <View className='w-full mx-auto'>
                             {headerSettings.offset && <View className='w-full h-16' />}

@@ -23,7 +23,7 @@ import { useCurrentUser } from 'app/context/user'
 
 function CoverMenu(props) {
     let { width } = useWindowDimensions()
-    let size = 'base'
+    let size = 'sm'
 
     if (width < 1280) size = 'sm'
 
@@ -326,17 +326,11 @@ export default function ElementCover(props) {
     const bAllowEdit =
         data.allow_edit && appSetting('layout', 'allow_edit_covers')
     return (
-        <View
-            className={
-                isUseBg
-                    ? ' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d '
-                    : ''
-            }
-        >
+        <View className=' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View
                 className={
                     appSetting('layout', 'max_width') +
-                    ' bg-bgrnavbar dark:bg-bgrnavbar-d sm:px-4 mx-auto w-full'
+                    ' sm:px-4 mx-auto w-full'
                 }
             >
                 {mode != 'min' ? (
@@ -379,7 +373,7 @@ export default function ElementCover(props) {
                         </View>
                     </View>
                 )}
-                <View className=" flex-col md:flex-row gap-x-2 px-3 sm:px-4   ">
+                <View className=" flex-col md:flex-row gap-x-2 p-3 sm:p-4   ">
                     {bPerson && (
                         <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative ">
                             <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
@@ -407,8 +401,8 @@ export default function ElementCover(props) {
                         </View>
                     )}
                     
-                        <View className="flex-col flex-auto gap-y-3 my-3 ">
-                            <View className=" flex-auto flex-col xl:flex-row  gap-y-3 justify-between  ">
+                        <View className="flex-col flex-auto gap-y-3  ">
+                            <View className=" flex-auto flex-col gap-y-4 xl:flex-row  justify-between  ">
                             <Row className=" flex-auto items-center gap-x-2  ">
                                 <Text
                                     className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"

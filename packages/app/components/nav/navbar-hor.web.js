@@ -64,7 +64,7 @@ export default function (props) {
     if (menuSettings && menuSettings.name) sTitle = t(menuSettings.name)
     return (
         <>
-            <View className="fixed -top-[1px]  w-full">
+            <View className="fixed w-full">
                 <View className="  backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View
                         className={
@@ -72,7 +72,7 @@ export default function (props) {
                             ' w-full flex-row flex-auto  items-center'
                         }
                     >
-                        <View className="flex-row px-3 sm:px-4 flex-auto xl:flex-none xl:w-80 my-auto items-center">
+                        <View className="flex-row pl-3 sm:pl-4 sm:pr-2 flex-auto lg:flex-none lg:w-80 my-auto items-center">
                             {headerSettings.menu && (
                                 <View className="sm:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
@@ -150,7 +150,7 @@ export default function (props) {
                                 ))}
                             </Row>
                         </Row>
-                        <Row className="flex-row flex-none xl:w-80 px-3 sm:px-4 justify-en ">
+                        <Row className="flex-row flex-none xl:w-80 px-3 sm:px-4 justify-end ">
                             {!!currentUser && (
                                 <Row className="flex-row justify-end ">
                                     <View className=" flex-row my-auto gap-x-2 ">
