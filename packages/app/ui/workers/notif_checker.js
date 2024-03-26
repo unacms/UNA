@@ -18,12 +18,13 @@ export default function (oProps) {
 }
 
 export function ClearNotif () {
-    let { currentUser, setCurrentUser } = useCurrentUser();
-    
+    const { currentUser, setCurrentUser } = useCurrentUser();
+    useEffect(() => {
     if (currentUser?.notifications > 0){
         currentUser.notifications = 0;
         setCurrentUser({ ...currentUser });
         fetcher('/api.php?r=bx_notifications/mark_as_read/')
     }
+    },[]);
     return <></>
 }
