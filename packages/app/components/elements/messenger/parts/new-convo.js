@@ -17,6 +17,7 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
         setLoading(true);
         let request_url = '/api.php?r=bx_messenger/search_users/Services&params=' + JSON.stringify({ term: sValue });
         const sResponse = await fetcher(request_url);
+        console.log("sResponse.data", sResponse.data)
         setUsers(sResponse.data);
         setLoading(false);
 

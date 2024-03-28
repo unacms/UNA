@@ -560,7 +560,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             if (unitType == 'default')
                 unitType = getUnitType(route);
 
-            let sSkeleton = route?.endpoint.module ? route?.endpoint.module : route?.endpoint.unit
+            let sSkeleton = route?.endpoint?.module ? route?.endpoint?.module : route?.endpoint?.unit
             if (skeleton)
                 sSkeleton = skeleton;
 

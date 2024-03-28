@@ -4,8 +4,8 @@ import {Text} from 'app/design/typography'
 
 export default function FormFieldCustom(props) {
     
-    if (props.name == 'source')
-        return <FormFieldSuggestion {...props}/>
+    //if (props.name == 'source')
+    //    return <FormFieldSuggestion {...props}/>
 
     return (
         <></>

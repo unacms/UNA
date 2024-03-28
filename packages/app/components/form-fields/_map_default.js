@@ -12,6 +12,7 @@ import Location from './location';
 import Datetime from './dattime';
 import BlockHeader from './block_header';
 import Suggestion from './suggestion';
+import InitialMembers from './initial_members';
 import Labels from './labels';
 import InputSet from './input_set';
 import LocationRadius from './location_radius';
@@ -22,6 +23,7 @@ import Visibility from './visibility';
 export const componentsMapDefault = {
     input_set: InputSet,
     visibility: Visibility,
+    initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,
     hidden: Hidden,
