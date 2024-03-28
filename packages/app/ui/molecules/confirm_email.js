@@ -8,6 +8,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { useTranslation } from 'react-i18next';
 import Card from 'app/ui/molecules/card'
 import Redirect from 'app/ui/atoms/redirect';
+
 export default function ElementConfirmEmail(props) {
     let { currentUser, setCurrentUser } = useCurrentUser();
     const [showMsg, setShowMsg] = useState(false);
@@ -43,7 +44,7 @@ export default function ElementConfirmEmail(props) {
     return (
         <> <Redirect ref={redirectdRef} />
             <Msg onVisible={showMsg} title={"letter sent"} handleOk={() => { setShowMsg(false) }} />
-            <View className='mx-auto max-w-xl p-4'>
+            <View className='mx-auto max-w-xl p-4 w-full'>
                 <Card rounded margin=' p-4 '>
                     <View className='mb-4 '>
                         <Text className="text-lg text-center mb-2">{t("Unconfirmed email address")}</Text>
@@ -59,7 +60,7 @@ export default function ElementConfirmEmail(props) {
                         {inputError && <View className="label" >
                             <Text className="ml-0.5 mt-0.5 label-text-alt text-sm text-red-600 animate-pulse dark:text-red-400 font-medium">{t("Code invalid")}</Text>
                         </View>}
-                        <Button variant="text" title={t("Resend email")} onPress={pressBack} />
+                        <Button variant="link" size="sm" title={t("Resend email")} onPress={pressBack} />
                     </View>
                 </Card>
             </View>

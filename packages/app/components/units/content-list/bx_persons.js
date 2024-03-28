@@ -186,7 +186,7 @@ function ImageSection({ data, imageSizes }) {
                 className="absolute u-cover rounded-xl"
                 sizes={imageSizes}
             />
-            {!data?.image?.src && <Letter title={data.fullname} />}
+            {!data?.image?.src && <Letter title={data.fullname} id={data.author_data.id} />}
         </View>
     );
 }
