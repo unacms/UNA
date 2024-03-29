@@ -62,7 +62,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 
     useEffect(() => {
         setReplyItem(false);
-        setCommentForm(false)
+        setCommentForm(false);
+        if (dynamicData?.data?.jot_id > 0)
+            scrolTo();
     }, [dynamicData]);
 
    
@@ -149,19 +151,20 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const scrolTo = () => {
-        setTimeout(() => {
-            if (refListJots && refListJots?.current && jots.data?.jots?.length > 0) {
-                let offset = 0;
-                if (selectedConvo.unread > 0)
-                    offset = selectedConvo.unread - 1;
-                if (isWeb)
-                    refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "auto", index: jots.data?.jots?.length - offset - 1 });
-                else {
-                    //console.log('-----------------', jots.data?.jots?.length - offset - 1)
-                    //refListJots.current.scrollToEnd();
-                }
+        if (refListJots && refListJots?.current && jots.data?.jots?.length > 0) {
+            let offset = 0;
+            if (selectedConvo.unread > 0)
+                offset = selectedConvo.unread - 1;
+            if (isWeb){
+                //console.log('-----------------', jots.data?.jots?.length, offset)
+                refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: jots.data?.jots?.length - offset  });
             }
-        }, 500);
+            else {
+                //console.log('-----------------', jots.data?.jots?.length - offset - 1)
+                //refListJots.current.scrollToEnd();
+            }
+        }
+
     }
 
     useEffect(() => {
@@ -206,7 +209,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (jots?.index == 0) {
             scrolTo();
         }
-    }, [selectedConvo, jots?.index, refListJots?.current]);
+    }, [selectedConvo, jots?.index]);//refListJots?.current
 
     const changeConvo = (convo) => {
         setConvoId(convo.id);
@@ -384,7 +387,7 @@ const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
     const isWeb = Platform.OS == 'web'
     return (<>
-        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b  mb-2'>
+        <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
             {isWeb && <Row className='px-4 py-3 items-center justify-between w-full'>
                 <Row className='items-center justify-start '>           
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
@@ -398,10 +401,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 </Row>
             </Row>}
         </View>
-        <View style={{ height: layoutHeightRight }} className='mx-2'>
+        <View style={{ height: layoutHeightRight }} className='m-2'>
             {data.length > 0 && <UniList
                 refer={refListJots}
-                inverted={true}
+                {...(Platform.OS !== 'web' ? { inverted: true } : {})}
                 overscan={900}
                 startReached={isWeb ? startReached : null}
                 onEndReached={!isWeb ? startReached : null}

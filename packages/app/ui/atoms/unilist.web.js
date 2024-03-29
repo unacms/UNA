@@ -86,6 +86,7 @@ export default function UniList(props) {
                 ref = {refer}  
                 endReached={onEndReached}
                 overscan={900}
+                followOutput="smooth"
                 components={{
                     Footer: () => {
                         return ListFooterComponent

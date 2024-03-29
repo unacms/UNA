@@ -1,99 +1,151 @@
 import Field from './_field';
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useContext, useReducer } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import { Input } from 'app/design/controls'
-import Dropdown from 'app/ui/atoms/dropdown'
 import { fetcher } from 'app/lib/fetcher';
-import { Hidden } from 'app/design/controls'
 import Profile from 'app/ui/molecules/profile'
+import { Button, InputRounded } from 'app/design/controls'
+import Loading from 'app/ui/atoms/loading'
+import { BottomSheetData } from 'app/context/bottomsheet';
+import { Icon } from 'app/ui/atoms/icon'
 
-const User = ({ data, onSelect }) => {
-    return <Pressable onPress={() => onSelect(data)}>
-        <View className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
-                hover:bg-bgritem-h dark:hover:bg-bgritem-dh max-w-5xl self-center w-full border border-bdrnavbar dark:border-bdrnavbar-d mb-2">
-            <Profile displaySize="xs" {...data} url="" />
-        </View>
-    </Pressable>
+const User = ({ data, onSelect, type }) => {
+    return (
+        <Pressable onPress={() => onSelect(data)}>
+            <Row className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
+                    hover:bg-bgritem-h dark:hover:bg-bgritem-dh max-w-5xl self-center w-full border border-bdrnavbar dark:border-bdrnavbar-d mb-2 items-center gap-x-2">
+                <Profile displaySize="xs" {...data} url="" />
+                {type == 'remove' && <Icon icon="X" />}
+            </Row>
+        </Pressable>
+    );
+
+};
+
+export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = false }) {
+
+    const initialState = {
+        suggestedUsers: [],
+        selectedUsers: initedData,
+        showLoading: false,
+        searchText: ''
+    };
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    function reducer(state, action) {
+        if (action.suggestedUsers)
+            action.suggestedUsers = action.suggestedUsers.filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
+
+        if (action.selectedUsers)
+            action.selectedUsers = action.selectedUsers.filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
+
+        switch (action.type) {
+            case 'setSelectedUsers':
+                return { ...state, selectedUsers: action.selectedUsers };
+            case 'setLoading':
+                return { ...state, showLoading: true };
+            case 'searchFinished':
+                const selectedUserIds = state.selectedUsers.map(user => user.id);
+                action.suggestedUsers = action.suggestedUsers.filter(user => !selectedUserIds.includes(user.id));
+                return { ...state, suggestedUsers: action.suggestedUsers, showLoading: false, searchText: action.searchText };
+            case 'userSelected':
+                return { ...state, suggestedUsers: action.suggestedUsers, selectedUsers: action.selectedUsers };
+        }
+    }
+
+    const onChangeText = useCallback(async (sValue) => {
+        dispatch({ type: 'setLoading' })
+        const sResponse = await fetcher(requestUrl + JSON.stringify({ term: sValue }));
+        dispatch({ type: 'searchFinished', suggestedUsers: sResponse.data, searchText: sValue })
+    }, []);
+
+    const onSelectUser = useCallback((oData) => {
+        dispatch({ type: 'userSelected', selectedUsers: [...state.selectedUsers, oData], suggestedUsers: state.suggestedUsers.filter((user) => user.id !== oData.id) })
+    }, [state.suggestedUsers]);
+
+    useEffect(() => {
+        if (isSingle && state.selectedUsers.length > 0)
+            handleSave();
+    }, [state.selectedUsers]);
+
+    const onRemove = useCallback((oData) => {
+        dispatch({ type: 'userSelected', selectedUsers: state.selectedUsers.filter((user) => user.id !== oData.id), suggestedUsers: [...state.suggestedUsers, oData] })
+    }, [state.suggestedUsers, state.selectedUsers]);
+
+    const onSaveInt = useCallback(async () => {
+        onSave(state.selectedUsers, !isSingle);
+    }, [state.selectedUsers, isSingle]);
+
+    return <View className="">
+        <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
+            {state.selectedUsers && state.selectedUsers.map((item) => <User key={item.id} data={item} onSelect={onRemove} />)}
+        </Row>
+        <Row className="gap-x-2 mx-1">
+            <InputRounded
+                placeholder={"Select users..."}
+                className="px-2 w-full"
+                onChangeText={onChangeText}
+                role="textbox"
+            />
+            <Button variant="outline" disabled={state.selectedUsers.length == 0} startDecorator="Check" rounded align="start" onPress={() => onSaveInt()} />
+        </Row>
+        <Row className="text-center py-2 w-full  flex-wrap gap-x-2 ">
+            {state.suggestedUsers && !state.showLoading && state.suggestedUsers.map((item) => <User key={item.id} data={item} onSelect={onSelectUser} />)}
+            {state.showLoading && <View className=' w-full items-center justify-center py-2'><Loading /></View>}
+            {state.suggestedUsers.length == 0 && state.searchText != '' && !state.showLoading && <Text className="text-sm py-2">Nothing found</Text>}
+        </Row>
+    </View>
 };
 
 export default function (props) {
-    let rules = {};
-    let defaultValue = props.value ? props.value : '';
+    const rules = {};
+    const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
-    let name = props.name ? props.name : '';
-    let { field } = useController({ name, rules, defaultValue });
-
-    const [selectedValues, setSelectedValues] = useState([]);
-    const [selectedValue, setSelectedValue] = useState('');
-
-    const [users, setUsers] = useState([]);
-    const [susers, setSUsers] = useState([]);
-
-    const handleSearch = async (value) => {
-        const sResponse = await fetcher('/api.php?r=' + props.ajax_get_suggestions + "&term=" + value);
-        console.log("sResponse.data", sResponse.data)
-        setUsers(sResponse.data);
-    };
-
-    const setValueF = (val) => {
-        formContext.setValue(name, val);
+    const name = props.name ? props.name : '';
+    const { field } = useController({ name, rules, defaultValue });
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
+    const [selected, setSelected] = useState(props.value_data ? props.value_data : []);
+    const isSingle = props?.custom?.only_once;
+    const onSave = (data, isAdd = false) => {
+        if (isAdd) {
+            data = [...selected, ...data]
+        }
+        data = data.filter((v, i, a) => a.map(e => e.id).indexOf(v.id) === i);
+        const value = data.map(item => item.id);
+        setSelected(data)
+        field.onChange(value);
+        setBottomSheetData(false);
     }
 
-    const handlerOnRemove = useCallback((oData) => {
-        if (users.find((user) => user.id === oData.id) === undefined)
-            setUsers((prev) => [...prev, oData]);
+    const showSelect = (val) => {
+        setBottomSheetData({ title: 'Choose users', showClose: true, content: <SelectUsers isSingle={isSingle} onSave={onSave} requestUrl={'/api.php?r=' + props.ajax_get_suggestions + "&params="} initedData={[]} /> });
+    }
 
-        setSUsers(susers.filter((user) => user.id !== oData.id));
-
-    }, [users, susers]);
-
-    const handlerOnSelect = useCallback((oData) => {
-        if (susers.find((user) => user.id === oData.id) === undefined)
-            setSUsers((prev) => ([...prev, oData]));
-
-        setUsers(users.filter((user) => user.id !== oData.id));
-    }, [users]);
-
-    useEffect(() => {
-        (async () => {
-            if (props.custom?.callback && props?.attrs?.disabled != 'disabled') {
-                const sResponse = await fetcher('/api.php?r=' + props.custom.callback + field.value);
-                const names = Object.keys(sResponse.data);
-                names.forEach(name2 => {
-                    console.log(name2, (sResponse.data[name2].value))
-                    formContext.setValue(name2, (sResponse.data[name2].value));
-                });
-            }
-        })();
-
-        if (props?.attrs?.disabled == 'disabled') {
-            (async () => {
-                const sResponse = await fetcher('/api.php?r=' + props.custom.callback + defaultValue);
-                const names = Object.keys(sResponse.data);
-                setSelectedValue(sResponse.data['name'].value);
-            })();
+    const onRemove = useCallback((valueToRemove) => {
+        if (!isOnlyOnce) {
+            onSave(selected.filter(item => item.id !== valueToRemove.id))
         }
+    }, [selected]);
 
-    }, [field.value]);
     return (
-        <Field {...props}>
-            <View className='gap-y-4'>
-                <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
-                    {susers && susers.map((oItem) => <User key={oItem.id} data={oItem} onSelect={handlerOnRemove} />)}
-                </Row>
-                {props?.attrs?.disabled != 'disabled' && <Input onChangeText={(value) => handleSearch(value)} />}
-                <Row className="text-center w-full  flex-wrap gap-x-2 py-2">
-                    {users && users.map((oItem) => <User key={oItem.author_data.id} data={oItem.author_data} onSelect={handlerOnSelect} />)}
+        <Field {...props} error2={formContext.formState.errors[name]}>
+            <View className='w-full '>
+                <Row className='gap-x-2  justify-start items-start flex-row flex-wrap'>
+                    {selected && selected.map((oItem) => <User type={isSingle ? '' : "remove"} key={oItem.id} data={oItem} onSelect={onRemove} />)}
+                    <View className=''>
+                        <Button
+                            title={'Select ...'}
+                            startDecorator="Plus"
+                            variant="default"
+                            rounded
+                            size="sm"
+                            onPress={() => showSelect()}
+                        />
+                    </View>
                 </Row>
             </View>
-            <Hidden
-                name={props.name}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                value={String(field.value)}
-            />
         </Field>
     );
 }
