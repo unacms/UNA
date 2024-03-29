@@ -58,6 +58,7 @@ export function UnitSearchResultsSmall({data, onPress}) {
                     }
                     <View className="flex-auto mx-2 my-auto ">
                         <View className='flex-row  w-full items-end content-end'>
+                            
                             <Text className='flex-auto  text-sm text-neutral-900 dark:text-neutral-100' numberOfLines={1}>{sText}</Text>    
                         </View>
                         <View className='flex-row items-center'>
