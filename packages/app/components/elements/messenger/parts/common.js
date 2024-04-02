@@ -157,7 +157,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 offset = selectedConvo.unread - 1;
             if (isWeb){
                 //console.log('-----------------', jots.data?.jots?.length, offset)
-                refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: jots.data?.jots?.length - offset  });
+                //offset
+                refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: jots.data?.jots?.length });
             }
             else {
                 //console.log('-----------------', jots.data?.jots?.length - offset - 1)

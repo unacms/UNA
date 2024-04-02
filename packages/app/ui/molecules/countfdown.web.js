@@ -6,6 +6,7 @@ import { Text } from 'app/design/typography'
 
 export default function ElementCountDown(props) {
 
+    return <></>
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         if (completed) {
           // Render a completed state
