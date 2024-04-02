@@ -67,7 +67,7 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 
     useEffect(() => {
         if (isSingle && state.selectedUsers.length > 0)
-            handleSave();
+            onSave(state.selectedUsers);
     }, [state.selectedUsers]);
 
     const onRemove = useCallback((oData) => {
@@ -124,7 +124,7 @@ export default function (props) {
     }
 
     const onRemove = useCallback((valueToRemove) => {
-        if (!isOnlyOnce) {
+        if (!isSingle) {
             onSave(selected.filter(item => item.id !== valueToRemove.id))
         }
     }, [selected]);

@@ -151,14 +151,20 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const scrolTo = () => {
-        if (refListJots && refListJots?.current && jots.data?.jots?.length > 0) {
+        if (refListJots && refListJots?.current ) {
             let offset = 0;
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
             if (isWeb){
-                //console.log('-----------------', jots.data?.jots?.length, offset)
+                console.log('-----------------', jots.data?.jots?.length, offset, jots?.data?.params?.start)
                 //offset
-                refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: jots.data?.jots?.length });
+               // if (jots?.data?.params?.start == 0){
+                    console.log("scrooll", jots.data?.jots?.length)
+                    setTimeout(() => {
+                        refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
+                    }, 100);
+                   
+              //  }
             }
             else {
                 //console.log('-----------------', jots.data?.jots?.length - offset - 1)
@@ -210,8 +216,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (jots?.index == 0) {
             scrolTo();
         }
-    }, [selectedConvo, jots?.index]);//refListJots?.current
-
+    }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index
+    console.log("refListJots?.current", selectedConvo)
     const changeConvo = (convo) => {
         setConvoId(convo.id);
         if (isSmallScreen)
@@ -409,9 +415,10 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 overscan={900}
                 startReached={isWeb ? startReached : null}
                 onEndReached={!isWeb ? startReached : null}
-                firstItemIndex={999999999999 - data.length}
+                scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
                 height={layoutHeightRight}
+              
                 useWindowScroll
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
             />}

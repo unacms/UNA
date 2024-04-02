@@ -8,7 +8,7 @@ import { storageSet, appSetting } from 'app/lib/util'
 
 export default function UniList(props) {
     let { data, renderItem, onEndReached, contentContainerStyle, initialScrollIndex, ListHeaderComponent, ListFooterComponent, refer, onScrollToIndex,
-          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, ...rest } = props
+          numColumns, keyExtractor, useWindowScroll, height, listState, endpoint, index, viewParams, topItemCount, scrollToLastItem, ...rest } = props
    
     data = data.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id)) === i);
     
@@ -57,6 +57,7 @@ export default function UniList(props) {
                 itemContent={itemContent} 
                 stateChanged = {stateChanged}
                 {...(listState?.viewport ? { restoreStateFrom: listState } : {})}
+                {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                 overscan={900}
                 ref = {refer}   
                 endReached={onEndReached}
@@ -86,7 +87,7 @@ export default function UniList(props) {
                 ref = {refer}  
                 endReached={onEndReached}
                 overscan={900}
-                followOutput="smooth"
+                initialTopMostItemIndex={999999999999}
                 components={{
                     Footer: () => {
                         return ListFooterComponent
