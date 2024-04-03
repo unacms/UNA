@@ -87,7 +87,7 @@ export default function UniList(props) {
                 ref = {refer}  
                 endReached={onEndReached}
                 overscan={900}
-                initialTopMostItemIndex={999999999999}
+                {...(scrollToLastItem ? { initialTopMostItemIndex: data.length } : {})}
                 components={{
                     Footer: () => {
                         return ListFooterComponent
