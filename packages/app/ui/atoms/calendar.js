@@ -62,7 +62,7 @@ export default function ({ name, value = '', type, onChange }) {
 
     const setFieldValue = (val, hide = true) => {
         setcValue(val)
-        onChange((new Date(`${cValue.dt} ${cValue.h}:${cValue.m}`).getTime()) / 1000)
+        onChange((new Date(`${val.dt} ${val.h}:${val.m}`).getTime()) / 1000)
         if (hide)
             setShowModal(false);
     }
