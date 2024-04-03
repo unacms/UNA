@@ -222,7 +222,7 @@ export default function (props) {
     useEffect(() => {
         if (dataItems.data.length == 0)
             refetch();
-    }, [storageKeyValue, dataItems.params]);
+    }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
     if ( dataItems.data.length == 0 && (dataItems?.params?.start === 0 || status === 'loading'))
         return Preload
