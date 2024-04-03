@@ -9,7 +9,10 @@ export default function ({ name, value = '', type, ...props }) {
 
     if (value == '0000-00-00 00:00:00Z' || value == '')
         value = new Date().toISOString().replace('T', ' ').substring(0, 19) + 'Z';
-
+    if (props?.db?.pass == 'Date'){
+        value = value.split(' ')[0];
+    }
+    
     const { field } = useController({ name, rules, defaultValue: value });
 
     const setParamValue = (value) => {

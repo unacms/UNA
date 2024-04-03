@@ -26,9 +26,10 @@ export default function ElementProfileSwitcher(props) {
 
     async function fetchData() {
         const sResponse = await fetcher('/api.php?r=system/account_profile_switcher/TemplServiceProfiles');
-        setData(sResponse.data[0].data);
+        if (sResponse && sResponse.data && sResponse.data[0] && sResponse.data[0].data)
+            setData(sResponse.data[0].data);
     }
-
+    
     useEffect(() => {  
         fetchData()
     }, []);

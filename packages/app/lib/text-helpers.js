@@ -28,7 +28,7 @@ function replaceLinks(htmlString, hoverClass="") {
 
 function stripTagsWithLinks(s) {
     var allowed = ['a', 'br'];
-    if (s)
+    if (s){
         s = s.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, function (_, tag) {
             return allowed.includes(tag.toLowerCase()) ? _ : '';
         });
@@ -36,7 +36,7 @@ function stripTagsWithLinks(s) {
         s = s.replace(/\s\s+/g, ' ');
 
         return s.trim(); // Remove leading and trailing spaces
-
+    }
     return s;
 }
 

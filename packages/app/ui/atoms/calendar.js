@@ -71,7 +71,6 @@ export default function ({ name, value = '', type, onChange }) {
 
     const setValueDay = (day, hide = true) => {
         setdValue({ type: 'dt', value: day.dateString })
-        console.log("bIsTime", bIsTime)
         if (!bIsTime) {
             setFieldValue({ dt: day.dateString, h: dValue.h, m: dValue.m }, hide);
         }
