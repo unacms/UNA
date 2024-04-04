@@ -15,6 +15,7 @@ import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
 import { appSetting } from 'app/lib/util'
+import { fetcher } from 'app/lib/fetcher';
 
 const ProfileCnt = memo(({ title, url, image }) => (
     <Profile
@@ -50,7 +51,13 @@ function getMenuItemConfigs(unitType, data, handleClick, t, setPopupVisible) {
                     title: t("Message"),
                     icon: "ChatTeardropDots",
                     onPress: (event) => {
-                        handleClick(event, appSetting('layout', 'messenger'));
+                        event.preventDefault();
+
+                        (async () => {
+                            let request_url = '/api.php?r=bx_messenger/get_convo_url/Services&params[]=' + JSON.stringify({'recipient': data.author_data.id});
+                            const sResponse = await fetcher(request_url);
+                            handleClick(event, sResponse.data);
+                        })();
                     },
                 };
                 break;
