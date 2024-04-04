@@ -1,4 +1,3 @@
-
 import { View, Row } from 'app/design/view'
 import Dropdown from 'app/ui/atoms/dropdown'
 import { useState, useReducer, useMemo, useCallback, useEffect } from 'react';
@@ -8,9 +7,15 @@ import { Text } from 'app/design/typography';
 import { Icon } from 'app/ui/atoms/icon';
 import { Theme } from 'app/design/theme';
 
+const formatValueDate = (v) => {
+    const date = new Date(v.dt);
+    const localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    return localDate.toLocaleDateString();
+}
+
 const formatValue = (v, bIsTime) => {
     if (v.dt != '') {
-        let v3 = (new Date(v.dt)).toLocaleDateString();
+        let v3 = formatValueDate(v);
         if (bIsTime)
             return `${v3} ${v.h}:${v.m}`
         else
@@ -34,7 +39,7 @@ const CalendarHeader = (dValue, addMonth) => (
     <Row className='w-full justify-between mb-4 items-center mt-2'>
         <Button size="sm" rounded startDecorator="CaretDoubleLeft" onPress={() => addMonth('y', -1)} />
         <Button size="sm" rounded startDecorator="CaretLeft" onPress={() => addMonth('m', -1)} />
-        <Text className="font-font-medium text-neutral-700 text-lg">{new Date(dValue.dt).toLocaleDateString()}</Text>
+        <Text className="font-font-medium text-neutral-700 text-lg">{formatValueDate(dValue)}</Text>
         <Button size="sm" rounded startDecorator="CaretRight" onPress={() => addMonth('m', 1)} />
         <Button size="sm" rounded startDecorator="CaretDoubleRight" onPress={() => addMonth('y', 1)} />
     </Row>
@@ -66,8 +71,6 @@ export default function ({ name, value = '', type, onChange }) {
         if (hide)
             setShowModal(false);
     }
-
-
 
     const setValueDay = (day, hide = true) => {
         setdValue({ type: 'dt', value: day.dateString })

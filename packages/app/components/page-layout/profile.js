@@ -29,6 +29,9 @@ export default function PageLayout(props) {
     }
     let menu = JSON.parse(JSON.stringify(props.data.menu));
     let blocks = props.blocks;
+
+    if (!menu.items)
+        menu.items = [];
     
     const isNamePresent = menu.items.some(item => item.name === props.uri);
     const isNamePresent2 = props.data.menu.items.some(item => item.name === props.uri);

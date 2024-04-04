@@ -217,7 +217,6 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             scrolTo();
         }
     }, [refListJots?.current]);//selectedConvo refListJots?.current, jots?.index
-    console.log("refListJots?.current", selectedConvo)
     const changeConvo = (convo) => {
         setConvoId(convo.id);
         if (isSmallScreen)

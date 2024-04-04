@@ -66,7 +66,7 @@ export default function JotItem({ item, index, handleReply }) {
     }, [handleReply]);
 
     const Jot = <View className='w-full pb-4'>
-        <View className="flex-row gap-x-2 ">{index}
+        <View className="flex-row gap-x-2 ">
             <View className="w-10 flex-0 ">
                 <Profile {...item.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
             </View>

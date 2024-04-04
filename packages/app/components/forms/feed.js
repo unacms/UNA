@@ -88,7 +88,7 @@ export default function FormFeed(props) {
                                 {props.data.inputs['video'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
-                                {props.data.inputs['file'] && <View className="">
+                                {props.data.inputs['file'] && <View className="mr-4">
                                     {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
                             </Row>
@@ -97,7 +97,7 @@ export default function FormFeed(props) {
                             )}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                <View className="">
+                                <View className="mr-4">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
                             </Row>
