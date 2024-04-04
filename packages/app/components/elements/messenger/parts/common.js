@@ -26,8 +26,6 @@ import Profile from 'app/ui/molecules/profile'
 export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, fetchConvos, data, onSave }) {
     const isWeb = Platform.OS == 'web'
     const { width, height } = useWindowDimensions();
-
-    //console.log('menu', selectedMenu, convos, props.defaultConvoId);
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const [convoId, setConvoId] = useState(defaultConvoId);
     const [jots, setJots] = useState(false);
@@ -48,7 +46,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight : layoutHeight - formHeight;
+    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight- 10;
 
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
@@ -156,10 +154,8 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
             if (isWeb){
-                console.log('-----------------', jots.data?.jots?.length, offset, jots?.data?.params?.start)
                 //offset
                // if (jots?.data?.params?.start == 0){
-                    console.log("scrooll", jots.data?.jots?.length)
                     setTimeout(() => {
                         refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
                     }, 100);
@@ -317,7 +313,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     />
 
     const jotsComponent = (panelsVisible.jots && selectedConvo && jots?.data?.jots) && <View className={' w-full md:w-3/5 h-full flex-1 bg-bgrcard dark:bg-bgrcard-d'}>
-        <View className='flex-1 flex-auto'>
+        <View className=''>
             <Jots
                 isSmallScreen={isSmallScreen}
                 title={selectedConvo.title}

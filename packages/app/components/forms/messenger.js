@@ -5,6 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 
 export default function FormMessenger(props) {
+    const isWeb = Platform.OS == 'web';
     const [imageSource, setImageSource] = useState([]);
     function setPlaceHolder(name, previews) {
         if (JSON.stringify(previews) != JSON.stringify(imageSource[name])) {
@@ -38,21 +39,22 @@ export default function FormMessenger(props) {
     // execution submit time, uses as temporary message id for new message.
     props.data.inputs['payload'].value = parseInt((new Date()).getTime()/1000);
 //style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}
-    return <View className="w-full items-center  md:px-2" ref={viewFormRef} onLayout={handleLayout} >
-        <Row className="w-full flex flex-row items-center">
-            <View className="flex-0">
-                {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, icon: 'Image'})}
-            </View>
-            <View className="mr-2 flex-1 w-full " style={styles}>
+    return <View className='w-full px-2 md:px-4' >
+    <Row className='w-full items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d rounded-lg'>
+          
+            <View className='flex-auto ' >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['payload'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { submitOnEnter: true, styles: { minHeight: "auto" }, placeholder: 'Message ...' })}
+                {getFormFieldByData(props.data.inputs['message'], props.handleSubmit, 'custom', { focus:true, bg:'transparent', submitOnEnter: true, styles: { minHeight: "auto" },classes: 'mb-0 mt-0', placeholder: 'Message ...' })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 { getFormFieldByData(props.data.inputs['message_id'], props.handleSubmit, 'custom') }
                 {getFormFieldByData(props.data.inputs['send'], props.handleSubmit, 'custom')}
             </View>
-            <View className="flex-0">{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom')}</View>
+            <View className={isWeb ? '' : 'w-10 '}>
+                {getFormFieldByData(props.data.inputs['files'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder, classes: 'mb-0 mt-0 ' })}
+            </View>
+            <View className={isWeb ? '' : 'w-10 '}>{getFormFieldByData(props.data.inputs['submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'mb-0 ml-0 mt-0' : 'mb-0 mt-0' })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}
     </View>
