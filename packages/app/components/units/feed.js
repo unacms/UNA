@@ -25,6 +25,7 @@ import { Pressable } from 'app/design/view';
 import { ContentMore } from 'app/ui/molecules/contentmore';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
+import Carousel from 'app/ui/molecules/carousel'
 
 
 const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
@@ -281,7 +282,6 @@ function DefaultUnit(data) {
 
     if (viewState.view == 'deleted')
         return <></>
-    console.log("isCommentsModal", isCommentsModal)
     if (isCommentsModal)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
@@ -629,15 +629,13 @@ function SmallUnit(data) {
     )
 }
 
+/*
 function CarouselMemo({ aImg, b }) {
     const computedData = useMemo(() => {
-        const Carousel = React.memo(
-            dynamic(() => import('app/ui/molecules/carousel'))
-        )
-        return <Carousel data={aImg} />
-    }, [b])
+        return <><Carousel data={data} /></>
+    }, [b, aImg])
     return computedData
-}
+}*/
 
 function UnitImages(images) {
     if (images?.images?.length == 0)
@@ -652,7 +650,7 @@ function UnitImages(images) {
 
     return (
         <View className="w-full ">
-            <CarouselMemo aImg={aImg} />
+            <Carousel data={aImg} />
         </View>
     )
 }

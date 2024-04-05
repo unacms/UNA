@@ -3,7 +3,7 @@ import Html from 'app/ui/atoms/html';
 import { linkify2 } from 'app/lib/util'
 import Menu from 'app/components/menu';
 import React, { useState, useMemo, useEffect } from 'react'
-import dynamic from 'next/dynamic'
+import Carousel from 'app/ui/molecules/carousel'
 
 export default function ElementFeedItem({data}) {
     let tlContent = '';
@@ -24,16 +24,6 @@ export default function ElementFeedItem({data}) {
         content_attach = content_attach.concat(data.event.content.videos_attach);
     }
 
-    function CarouselMemo({ aImg, b }) {
-        const computedData = useMemo(() => {
-            const Carousel = React.memo(
-                dynamic(() => import('app/ui/molecules/carousel'))
-            )
-            return <Carousel data={aImg} />
-        }, [b])
-        return computedData
-    }
-
     function UnitImages(images) {
 
         if (images?.images?.length == 0) 
@@ -48,7 +38,7 @@ export default function ElementFeedItem({data}) {
     
         return (
             <View className="w-full ">
-                <CarouselMemo aImg={aImg} />
+                <Carousel data={aImg} />
             </View>
         )
     }

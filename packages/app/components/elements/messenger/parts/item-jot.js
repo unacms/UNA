@@ -2,12 +2,8 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { fetcher } from 'app/lib/fetcher';
 import React, { useState, useMemo, useCallback, memo } from 'react';
-import dynamic from 'next/dynamic'
-import { linkify } from 'app/lib/util'
-import AnimatedBlock from 'app/ui/molecules/animated-block'
 import Profile from 'app/ui/molecules/profile'
 import Time from 'app/ui/atoms/time'
-import Html from 'app/ui/atoms/html';
 import { Button } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import useSWR from "swr";
@@ -17,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { FeedbackHaptics } from 'app/lib/util';
 import { linkedText } from 'app/lib/text-helpers';
 import { Platform } from 'react-native'
-
+import Carousel from 'app/ui/molecules/carousel'
 
 export default function JotItem({ item, index, handleReply }) {
     const isWeb = Platform.OS == 'web'
@@ -100,7 +96,7 @@ export default function JotItem({ item, index, handleReply }) {
                             <Text className="text-xs text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.reply_message, "hover:text-linkhover")}</Text>
                         </View>}
                         <Text className="text-base text-neutral-800 dark:text-neutral-200 font-default">{linkedText(item?.message, "hover:text-linkhover")}</Text>
-                        <CarouselMemo aImg={aImg} />
+                        { aImg.length > 0 && <Carousel data={aImg}/> }
                     </>}
                 </View>
             </View>
@@ -140,12 +136,4 @@ export default function JotItem({ item, index, handleReply }) {
     )*/
 }
 
-function CarouselMemo({ aImg, b }) {
-    const computedData = useMemo(() => {
-        const Carousel = React.memo(
-            dynamic(() => import('app/ui/molecules/carousel'))
-        )
-        return <Carousel data={aImg} />
-    }, [b])
-    return computedData
-}
+

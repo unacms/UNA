@@ -10,7 +10,6 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import Menu from 'app/components/menu';
 import { useCurrentUser } from 'app/context/user';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
-import dynamic from 'next/dynamic'
 import React from 'react';
 import { fetcher } from 'app/lib/fetcher';
 import { useState } from 'react';
@@ -19,14 +18,8 @@ import useSWR from "swr";
 import { useTranslation } from 'react-i18next';
 import Link from 'app/ui/atoms/link'
 import { stripTags, appSetting } from 'app/lib/util';
+import Carousel from 'app/ui/molecules/carousel'
 
-function CarouselMemo({ aImg, b }) {
-    const computedData = useMemo(() => {
-        const Carousel = React.memo(dynamic(() => import('app/ui/molecules/carousel')));
-      return  <Carousel data={aImg}/>
-    }, [b]); 
-    return computedData;
-}
 
 export default function UnitComments(props) {
     const { t } = useTranslation();
@@ -162,9 +155,7 @@ export default function UnitComments(props) {
                                 </View>
                             ) : <Html htmlStyles={{fontSize:14}} data={linkify(data.cmt_text)} /> }
                         </View>
-                        { (viewState.view != 'edited'  && aImg.length > 0) && <CarouselMemo aImg={aImg}/>
-                            
-                        }
+                        { (viewState.view != 'edited'  && aImg.length > 0) && <Carousel data={aImg}/> }
                     </View>
                     { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>
                         { !!currentUser && !!props.handleReply ? <View className='mr-2'>

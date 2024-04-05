@@ -7,7 +7,8 @@ import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 
-export default function ElementCarousel({ data = [] }) {
+export default function ({ data = [] }) {
+    console.log("data", data)
     if (!data.length) return null;
 
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
@@ -95,7 +96,7 @@ export default function ElementCarousel({ data = [] }) {
 
 
             return (
-                <View className='px-0.5 sm:px-4 max-w-xs mx-auto'>
+                <View className='px-0.5 sm:px-4 max-w-xs mx-auto '>
                     <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
                         <Row className='gap-x-0.5  ' style={{ width: widthIm, height: heightIm }}>
                             <Image2 row={0} index={0} key={0} src={data[0].src} />
