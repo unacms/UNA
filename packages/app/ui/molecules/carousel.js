@@ -71,7 +71,7 @@ export default function ({ data = [] }) {
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
     const dataR2 = useMemo(() => (len === 3 ? data2.slice(1, 3) : data2.slice(2, 4)), [data2, len]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (data2.length === 1 && imageSize[0] === 0) {
             ImageOr.getSize(
                 data2[0].src,
@@ -80,13 +80,13 @@ export default function ({ data = [] }) {
                 }
             );
         }
-    }, [data2, imageSize]);
+    }, [data2, imageSize]);*/
 
 
     const Gallery = React.memo(({ data2, imageSize, width, handleLayout }) => {
         if (data2.length == 1) {
 
-            if (imageSize[0] == 0) {
+           /* if (imageSize[0] == 0) {
                 return <></>
             }
             let widthIm = width;
@@ -96,14 +96,10 @@ export default function ({ data = [] }) {
 
 
             return (
-                <View className='px-0.5 sm:px-4 max-w-xs mx-auto '>
-                    <View className="w-full gap-y-0.5 rounded sm:rounded-lg overflow-hidden " onLayout={handleLayout}>
-                        <Row className='gap-x-0.5  ' style={{ width: widthIm, height: heightIm }}>
-                            <Image2 row={0} index={0} key={0} src={data[0].src} />
-                        </Row>
-                    </View>
+                <View className='px-0.5 sm:px-4 max-w-xs mx-auto bg-red-500 aspect-square w-full'>
+                    <Image2 row={0} index={0} key={0} src={data[0].src} />
                 </View>
-            )
+            )*/
         }
 
         return (
