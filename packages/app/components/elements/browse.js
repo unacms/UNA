@@ -220,7 +220,7 @@ export default function (props) {
     }, [dataItems.data]);
 
     useEffect(() => {
-        if (dataItems.data.length == 0)
+        if (dataItems.data.length == 0 && dataItems.params == browseParams)
             refetch();
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 

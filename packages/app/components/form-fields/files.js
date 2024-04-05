@@ -21,14 +21,16 @@ export default function (props) {
     const [imageSource, setImageSource] = useState({ images: null });
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
+    let obfuscateFaces = formContext.watch('obfuscate_faces');
+    console.log(obfuscateFaces);
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });
     const bMultiple = props.multiple;
 
     const url = useMemo(() => {
-        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
-    }, [props]);
+        return '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]=&obfuscate_faces='+obfuscateFaces+'&&uo=' + props.uploaders[0] + '&so=' + props.storage_object + '&uid=' + genRnd(8) + '&img_trans=' + props.images_transcoder + '&m=' + (bMultiple ? 1 : 0) + '&c=' + props.content_id + '&p=' + (props.privacy ? 1 : 0);
+    }, [props, obfuscateFaces]);
 
     const RestoreGhosts = async (data) => {
 

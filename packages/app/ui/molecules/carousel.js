@@ -6,11 +6,14 @@ import { Modal } from "app/design/controls";
 import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 import { useWindowDimensions } from 'react-native';
-
+import { appSetting } from 'app/lib/util'
 export default function ({ data = [] }) {
-    console.log("data", data)
     if (!data.length) return null;
 
+    console.log('carousel', data);
+    const max_image_width = appSetting('layout', 'carousel_image_width');
+    const max_image_aspect = appSetting('layout', 'carousel_image_aspect');
+    
     const [currentImageIndex, setCurrentImageIndex] = useState(false);
 
     const [imageSize, setImageSize] = useState([0, 0]);
@@ -55,11 +58,11 @@ export default function ({ data = [] }) {
 
     const Image2 = (item) => (
         <View className='flex-auto h-full border border-bdr dark:border-bdr-d'>
-            <Pressable style={{
-                flex: 1,
-                justifyContent: 'center',
-            }} className=" " onPress={() => handleShowImage(item)} >
-                <Image sizes="384px" src={item.src} alt='' view="cover" className=" u-cover  dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+            <Pressable style={{flex: 1, justifyContent: 'center'}} onPress={() => handleShowImage(item)} >
+                {item.width && item.height ?
+                    <Image sizes="1280px" src={item.src} alt='' height={item.height} width={item.width}  className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />:
+                    <Image sizes="1280px" src={item.src} alt='' view="cover" className=" u-cover dark:bg-bgritem-d dark:bg-bgritem-d gap-x-1 " />
+                }
                 {item.row == 1 && item?.index2 == 1 && data.length > 3 && <View className='absolute z-50 w-full h-full text-center items-center justify-center'><Text className='text-5xl lg:text-7xl text-white'>+{data.length - 3}</Text></View>}
             </Pressable>
         </View>
@@ -71,40 +74,41 @@ export default function ({ data = [] }) {
     const dataR1 = useMemo(() => (len === 3 ? data2.slice(0, 1) : data2.slice(0, 2)), [data2, len]);
     const dataR2 = useMemo(() => (len === 3 ? data2.slice(1, 3) : data2.slice(2, 4)), [data2, len]);
 
-    /*useEffect(() => {
-        if (data2.length === 1 && imageSize[0] === 0) {
-            ImageOr.getSize(
-                data2[0].src,
-                (width, height) => {
-                    setImageSize([width, height]);
-                }
-            );
-        }
-    }, [data2, imageSize]);*/
-
-
     const Gallery = React.memo(({ data2, imageSize, width, handleLayout }) => {
         if (data2.length == 1) {
+            console.log('data[0]', data[0]);
 
-           /* if (imageSize[0] == 0) {
-                return <></>
+            // back compability for old data
+            if ( !data[0].height || !data[0].width){
+                return (
+                    <View  className = {`${max_image_width} mx-auto ${max_image_aspect} w-full px-0.5 sm:px-4`}>
+                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} />
+                    </View>
+                )
             }
-            let widthIm = width;
-            let heightIm = widthIm / imageSize[0] * imageSize[1];
-            if (heightIm > widthIm)
-                heightIm = widthIm;
+            // back compability for old data
 
-
+            let aspect = max_image_aspect;
+            let aspectStyle = '';
+            if(data[0].width && data[0].height && data[0].width > data[0].height){
+                aspect = '';
+            }
+            else{
+                aspectStyle=data[0].width/data[0].height;
+                data[0].height="";
+                data[0].width="";   
+            }
             return (
-                <View className='px-0.5 sm:px-4 max-w-xs mx-auto bg-red-500 aspect-square w-full'>
-                    <Image2 row={0} index={0} key={0} src={data[0].src} />
+                <View className = {`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg`}>
+                    <View style={{ aspectRatio:aspectStyle }} className='h-full'>
+                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} />
+                    </View>
                 </View>
-            )*/
+            )
         }
 
         return (
-            <View className='px-0.5 sm:px-4 '>
-                <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full max-w-sm  gap-y-0.5 rounded sm:rounded-lg overflow-hidden max-w-lg mx-auto"} onLayout={handleLayout}>
+                <View className={(data.length == 2 ? "aspect-video" : "aspect-square") + " w-full "+max_image_width+" gap-y-0.5 rounded sm:rounded-lg overflow-hidden mx-auto "}>
                     <Row className={(len > 2 ? 'h-1/2' : 'h-full') + ' gap-x-0.5 w-full '}>
                         {dataR1?.map((item, index) => (
                             <Image2 row={0} index={index} key={index} src={item.src} />
@@ -118,7 +122,6 @@ export default function ({ data = [] }) {
 
                     </Row>
                 </View>
-            </View>
         )
     }, (prevProps, nextProps) => prevProps.data2 === nextProps.data2);
 

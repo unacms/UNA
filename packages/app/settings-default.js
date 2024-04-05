@@ -66,6 +66,8 @@ let settingsDefault = {
         form_without_captions: ['sys_account_create', 'sys_login'],
         card_amimation_duration: 0,
         comments_mentions: true,
+        carousel_image_width: '',
+        carousel_image_aspect: 'aspect-video',
     },
     jitsi: {
         prefix: 'prefix_',

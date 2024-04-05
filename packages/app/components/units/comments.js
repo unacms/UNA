@@ -96,6 +96,8 @@ export default function UnitComments(props) {
     let aImg = files.map(obj => {
         return {
             src: obj.file,
+            width: obj.width,
+            height: obj.height,
             type: 'image'
         };
     });

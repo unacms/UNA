@@ -49,7 +49,7 @@ export default function FormFeed(props) {
         dUser.url = appSetting('layout', 'dashboard')
         profile = <Profile {...dUser} displaySize="base" displayType="unit_wo_info" />
     }
-// outerClickClose={false}
+
     return (
         <View className="w-full h-full ">
             <Modal
@@ -67,6 +67,7 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
+                
                 <View className='justify-between mb-4 h-full'>
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <View className="w-full  flex-col ">
@@ -80,17 +81,23 @@ export default function FormFeed(props) {
 
                             </View>
                             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus:true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
-                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
+                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center pr-4">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+
+                                {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
+                                    {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
+                                </View>}
                                 {props.data.inputs['photo'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['photo'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
                                 {props.data.inputs['video'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['video'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
-                                {props.data.inputs['file'] && <View className="mr-4">
+                                {props.data.inputs['file'] && <View className="">
                                     {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
+
+                              
                             </Row>
                             {prevList.length > 0 && prevList[0]?.key && (
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>

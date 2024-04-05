@@ -44,6 +44,8 @@ export default function JotItem({ item, index, handleReply }) {
     let aImg = useMemo(() => item?.files.map((obj) => {
         return {
             src: obj.src,
+            width: obj.width,
+            height: obj.height,
             type: 'image',
         }
     }), [item]);

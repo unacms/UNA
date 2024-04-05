@@ -31,13 +31,15 @@ export default function ElementFeedItem({data}) {
     
         let aImg = images?.images?.map((obj) => {
             return {
-                src: obj.src_orig,
+                src: obj.src_orig? obj.src_orig : obj.src,
+                width: obj.width,
+                height: obj.height,
                 type: 'image',
             }
         })
     
         return (
-            <View className="w-full ">
+            <View className="w-full px-0.5 sm:px-4">
                 <Carousel data={aImg} />
             </View>
         )
