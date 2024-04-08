@@ -79,7 +79,7 @@ export default function ({ data = [] }) {
             // back compability for old data
             if ( !data[0].height || !data[0].width){
                 return (
-                    <View  className = {`${max_image_width} mx-auto ${max_image_aspect} w-full px-0.5 sm:px-4`}>
+                    <View  className = {`${max_image_width} mx-auto ${max_image_aspect} w-full `}>
                         <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} />
                     </View>
                 )

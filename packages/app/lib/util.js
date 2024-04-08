@@ -557,7 +557,7 @@ export function stripTags(s) {
 
 export function stripTagsWithLinks(s) {
     if (s)
-        return String(s).replace(/<(?!\/?a(?=>|\s.*>))\/?.*?>/ig, '').replace(/\s+/g, ' ');
+        return String(s).replace(/<(?!\/?(a|p|br)(?=>|\s.*>))\/?.*?>/ig, '').replace(/\s+/g, ' ');
 
     return s;
 }
