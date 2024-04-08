@@ -6,7 +6,6 @@ import Link from 'app/ui/atoms/link'
 import { fetcher } from 'app/lib/fetcher';
 import { useEffect, useState, useRef } from 'react';
 import Card from 'app/ui/molecules/card'
-import { Icon } from 'app/ui/atoms/icon'
 import { Theme } from 'app/design/theme';
 import { stripTags } from 'app/lib/util';
 import { Button } from 'app/design/controls';
@@ -45,11 +44,17 @@ export default function ElementCalendar({ data }) {
 
     const fetchData = async () => {
         let params = {params: data.params};
-        console.log("cdata", cdata)
         if (cdata){
             params.params = {start: cdata.params.end, end: cdata.params.end + 24*60*60*30};
         }
-        const sResponse = await fetcher('/api.php?r=' + data.request_url + JSON.stringify(params));
+        
+        let url = '/api.php?r=' + data.request_url;
+        if (params.start){
+            url+= JSON.stringify(params);
+        }
+        console.log("xxx", params, url)
+        const sResponse = await fetcher(url);
+        console.log("xxx", sResponse.data)
         setData(sResponse.data);
     };
 

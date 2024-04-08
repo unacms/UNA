@@ -555,6 +555,13 @@ export function stripTags(s) {
     return s;
 }
 
+export function stripTagsWithLinks(s) {
+    if (s)
+        return String(s).replace(/<(?!\/?a(?=>|\s.*>))\/?.*?>/ig, '').replace(/\s+/g, ' ');
+
+    return s;
+}
+
 function urltoFile(url, filename, mimeType) {
     return (fetch(url)
         .then(function (res) { return res.arrayBuffer(); })

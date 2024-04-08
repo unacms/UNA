@@ -10,7 +10,7 @@ import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from 'app/components/menu'
-import { truncateHTML, stripTags, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
+import { truncateHTML, stripTags,stripTagsWithLinks, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
 import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
@@ -214,7 +214,7 @@ function DefaultUnit(data) {
     const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
 
-    data.content.text = stripTags(data.content.text);
+    data.content.text = stripTagsWithLinks(data.content.text);
     const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,

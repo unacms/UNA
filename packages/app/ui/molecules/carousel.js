@@ -10,7 +10,6 @@ import { appSetting } from 'app/lib/util'
 export default function ({ data = [] }) {
     if (!data.length) return null;
 
-    console.log('carousel', data);
     const max_image_width = appSetting('layout', 'carousel_image_width');
     const max_image_aspect = appSetting('layout', 'carousel_image_aspect');
     
@@ -76,7 +75,6 @@ export default function ({ data = [] }) {
 
     const Gallery = React.memo(({ data2, imageSize, width, handleLayout }) => {
         if (data2.length == 1) {
-            console.log('data[0]', data[0]);
 
             // back compability for old data
             if ( !data[0].height || !data[0].width){

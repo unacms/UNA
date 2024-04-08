@@ -62,7 +62,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (useSectionAsMenu)
             return data.url == item.key;
         else
-            return (data.url).includes(item.key);
+            return data.url == item.key;  // /for links like /events
+        //return (data.url).includes(item.key);
     }));
 
     //let maxIdLocal = 0;
