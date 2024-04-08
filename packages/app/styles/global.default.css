@@ -423,3 +423,19 @@ body {
 [data-rsbs-overlay]{
     z-index: 9999;
 }
+
+.ProseMirror .is-empty:not(.is-editor-empty)::before {
+    content: '' ;
+    float: left;
+    color: var(--novel-stone-400);
+    pointer-events: none;
+    height: 0;
+}
+
+.ProseMirror .is-editor-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--novel-stone-400);
+    pointer-events: none;
+    height: 0;
+}
