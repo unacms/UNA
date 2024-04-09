@@ -3,6 +3,7 @@ import { View, Row } from 'app/design/view'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import { getRandomColor } from 'app/lib/util';
+import { Icon } from 'app/ui/atoms/icon'
 
 /**
  * displayType: 
@@ -119,9 +120,23 @@ export default function AtomProfile(oProps) {
         if (oProps.href && (oProps.href == 'javascript:' || oProps.href === undefined))
             oProps.href='';
 
+        const isAnon = !oProps.url || oProps.url == '' || oProps.url == 'javascript:' || oProps.url == '/javascript:';
+
+
+        if (isAnon){
+            return (
+                <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center '+sSizeFont}>
+                    <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
+                        {oProps.title.replace(" (anonymized)", '')} 
+                    </Text>
+                    <Icon icon="Detective"></Icon>
+                </Row>
+            )
+     
+        }
         return (
-            <Text className={'text-neutral-900  dark:text-neutral-100 ' + ((!oProps.url || oProps.url == '' || oProps.url == 'javascript:') ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
-                {oProps.title}
+            <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
+                {oProps.title}{oProps.url}
             </Text>
         )
     }
