@@ -136,7 +136,7 @@ export default function AtomProfile(oProps) {
         }
         return (
             <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
-                {oProps.title}{oProps.url}
+                {oProps.title}
             </Text>
         )
     }
