@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import i18n from 'i18next';
-import { appSetting , UNA_URL, APP_URL } from 'app/config';
+import { appSetting , UNA_URL, APP_URL, APP_ORIGIN } from 'app/config';
 
 const USE_PROXY_WEB = appSetting('config', 'use_proxy_web'); 
 const USE_PROXY_NATIVE = appSetting('config', 'use_proxy_native'); 
@@ -64,8 +64,7 @@ export async function fetcherRaw (host, mixed) {
     if (origin)
         headers['Origin'] = origin;
     else if ('web' !== Platform.OS)
-        headers['Origin'] = 'neo://app';
-
+        headers['Origin'] = APP_ORIGIN;
 
     // headers['Cache-Control'] = "no-cache, no-store, must-revalidate";
     // headers['Pragma'] = "no-cache";

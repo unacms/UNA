@@ -2,6 +2,8 @@ import { settings } from 'app/settings';
 export const APP_URL = appSetting('config', 'app_url') ;
 export const UNA_URL = appSetting('config', 'una_url');
 export const UNA_API_KEY = appSetting('config', 'una_api_key');
+export const APP_ORIGIN = appSetting('config', 'app_origin');
+
 const merge = require('deepmerge');
 
 export function appSetting(section, name, path, extraSettings = null) {
@@ -21,7 +23,7 @@ export async function getRemoteSettings(isServer = false) {
     let opts = {
         cache: 'no-store',
         headers: {
-            Origin: 'neo://app'
+            Origin: APP_ORIGIN
         },
     };
     if (isServer){

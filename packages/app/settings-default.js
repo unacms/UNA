@@ -5,7 +5,10 @@ let settingsDefault = {
         una_url: env('UNA_URL'),
         app_url: env('APP_URL'),
         una_api_key: env('UNA_API_KEY'),
+        app_origin: env('APP_ORIGIN'),
+
         native_app_images_url: 'https://neo.so',
+        
         debug:  true,
         use_proxy_web: true,
         use_proxy_native: false,
