@@ -11,7 +11,6 @@ import { Platform, Image as ImageNative } from 'react-native'
 import { Button } from 'app/design/controls'
 import Menu from 'app/components/menu'
 import { truncateHTML, stripTags,stripTagsWithLinks, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
-import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
@@ -206,9 +205,8 @@ function DefaultUnit(data) {
             }
             : {}
     );
-
     const url = data.url.includes('://') ? data.url : '/' + data.url
-    const bIsTimelineContent = data?.type?.includes('timeline') ? true : false
+    const bIsTimelineContent = data?.type?.includes('timeline') || data?.type == 'bx_channels' ? true : false
     const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
     const bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
     const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
