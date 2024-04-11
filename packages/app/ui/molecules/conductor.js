@@ -4,8 +4,8 @@ import { TabView, useHeaderTabContext, SceneComponent } from "@showtime-xyz/tab-
 import { View, ScrollView, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { useNavigation } from '@react-navigation/native';
-import { appSetting, deepEqual, getUnitModeBySource } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, handleFeedLayoutData } from 'app/lib/conductor-helpers';
+import { appSetting, deepEqual, getUnitModeBySource, handleFeedLayoutData } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer } from 'app/lib/conductor-helpers';
 import { updateRightHeader } from 'app/lib/native-handlers';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -266,7 +266,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             animationHeaderPosition={animationHeaderPosition}
             animationHeaderHeight={animationHeaderHeight}
             renderTabBar={renderTabBar}
-            onStartRefresh={onStartRefresh}
+            
             isRefreshing={isRefreshing}
             enableGestureRunOnJS={false}
         />

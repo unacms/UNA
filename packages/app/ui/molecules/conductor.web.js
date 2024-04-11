@@ -3,10 +3,9 @@ import { Text } from 'app/design/typography';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "react-native-reanimated";
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
-import { Theme } from 'app/design/theme';
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getAlert, getLayout } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar, handleFeedLayoutData } from 'app/lib/conductor-helpers';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData } from 'app/lib/util';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar  } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -16,7 +15,6 @@ import { appStatic } from 'app/lib/app-static';
 import { Input } from 'app/design/controls'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import { useTranslation } from 'react-i18next';
-import { fetcher } from 'app/lib/fetcher';
 import Toaster from 'app/ui/atoms/toaster';
 import useDaemon from 'app/lib/hooks/daemon'
 import { LayoutData } from 'app/context/layout';

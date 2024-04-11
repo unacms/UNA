@@ -759,3 +759,31 @@ export function filterContent(dataOrig, needed) {
     return data;
 }
 
+export function handleFeedLayoutData(layoutData, data) {
+
+    if (layoutData && layoutData?.type == 'feed:new_content') {
+        if (layoutData.data?.id) {
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data.splice(data.length, 0, layoutData.data);
+            }
+            else {
+                data.splice(insertIndex, 0, layoutData.data);
+            }
+        }
+        if (Array.isArray(layoutData.data)) {
+            let insertIndex = data.findIndex(item => item.type !== 'block');
+            if (insertIndex === -1) {
+                data.splice(data.length, 0, ...layoutData.data);
+            }
+            else {
+                data.splice(insertIndex, 0, ...layoutData.data);
+            }
+        }
+    }
+    if (layoutData && layoutData?.type == 'feed:remove_content') {
+        data = data.filter(item => item.id !== layoutData.data);
+    }
+    return data;
+}
+

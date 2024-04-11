@@ -5,7 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, getDataFromCache, storageSet } from 'app/lib/util'
+import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery} from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -14,7 +14,6 @@ import useDaemon from 'app/lib/hooks/daemon'
 import Toaster from 'app/ui/atoms/toaster';
 import { storageClear } from 'app/lib/util';
 import { LayoutData } from 'app/context/layout';
-import { handleFeedLayoutData } from 'app/lib/conductor-helpers';
 
 const Item = memo(({ item, index, numColumns, data, unitMode, props }) => (
     <View className={numColumns > 1 ? 'w-full pb-2 ' : '  ' + (data.unit != 'feed' ? '   w-full' : '  ') + '  '}>
