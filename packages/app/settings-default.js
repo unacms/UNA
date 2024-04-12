@@ -422,7 +422,8 @@ let settingsDefault = {
                 {name:'account-settings-password', icon:'Gear'},
                 {name:'account-settings-email', icon:'Gear'},
                 {name:'account-settings-info', icon:'Gear'},
-                {name:'account-settings-delete', icon:'Gear'}
+                {name:'account-settings-delete', icon:'Gear'},
+                {name:'notifications-settings', icon:'Gear'}
             ],
         },
         bx_groups_submenu: {

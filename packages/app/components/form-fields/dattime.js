@@ -7,10 +7,11 @@ export default function ({ name, value = '', type, ...props }) {
     const formContext = useFormContext();
     const rules = getValidationRules(props);
 
-    if (value == '0000-00-00 00:00:00Z' || value == '')
-        value = new Date().toISOString().replace('T', ' ').substring(0, 19) + 'Z';
-    if (props?.db?.pass == 'Date'){
-        value = value.split(' ')[0];
+    if (value == '0000-00-00 00:00:00Z' || value == '') {
+        let date = new Date();
+        date.setHours(0, 0, 0, 0);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        value = date.toISOString().replace('T', ' ').substring(0, 19) + 'Z';
     }
     
     const { field } = useController({ name, rules, defaultValue: value });

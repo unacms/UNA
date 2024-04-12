@@ -20,23 +20,31 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
     if (showLink) {
         link = linkify2(content)
         if (link) {
-            linkContent = '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
+            linkContent = '<div class="bx-embed-link" source="' + link + '">' + link + '</div>'
         }
     }
 
     const handleShowMore = () => {
         setShowFull(!showFull);
     }
-    const shortHtml = truncateHTML(content, 350);
+    let shortHtml = truncateHTML(content, 350);
     let showButton = false;
     if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
     
+    if (showButton){
+        const lastIndex = shortHtml.lastIndexOf('</p>');
+        if (lastIndex !== -1) {
+            shortHtml = shortHtml.slice(0, lastIndex) + '... <a href="javascript">Show more</a></p>' + shortHtml.slice(lastIndex + 4);
+        }
+    }
+    console.log("shortHtml", shortHtml)
+
     const [showFull, setShowFull] = useState(openSmall);
     if (!showFull) {
         if (showButton){
             return (<Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} >
-                <HtmlMemo data={shortHtml + linkContent + '... <a href="javascript">Show more</a>'} htmlStyles={textStyle} />
+                <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
             </Pressable>);
         }
         else{

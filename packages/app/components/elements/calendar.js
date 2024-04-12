@@ -52,9 +52,7 @@ export default function ElementCalendar({ data }) {
         if (params.start){
             url+= JSON.stringify(params);
         }
-        console.log("xxx", params, url)
         const sResponse = await fetcher(url);
-        console.log("xxx", sResponse.data)
         setData(sResponse.data);
     };
 
@@ -85,9 +83,7 @@ export default function ElementCalendar({ data }) {
         return items;
     }
 
-    const onDateChanged = (a) => {
-        // console.log(a);
-    }
+
     const imageSizes = getImageSizes()
 
     if (transformedData.length == 0)

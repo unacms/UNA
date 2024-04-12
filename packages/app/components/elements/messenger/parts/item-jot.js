@@ -79,7 +79,6 @@ export default function JotItem({ item, index, handleReply }) {
                     {viewState.view == 'edited' ? (
                         <View className='-translate-y-6'>
                             <View className='ml-auto mb-2'>
-
                                 <Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded />
                             </View>
                             <Form

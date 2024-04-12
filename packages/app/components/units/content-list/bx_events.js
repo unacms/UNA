@@ -12,17 +12,15 @@ import { Button, Modal } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
-import { useTranslation } from 'react-i18next';
-import Letter from 'app/ui/atoms/letter'
+import Time from 'app/ui/atoms/time'
 
 export default function Unit(props) {
-    const { t } = useTranslation();
+
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
     const [popupVisible, setPopupVisible] = useState(false);
 
-    const { cardData, setCardData } = useContext(CardData);
 
     const handleClick = (event, sUrl) => {
         event.preventDefault();
@@ -178,10 +176,11 @@ export default function Unit(props) {
                                     {
                                         <><Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                             {friendsLabel}
-                                            </Text>
-                                            <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
+                                        </Text>
+                                            {friendsLabel == '' && <Text className="truncate text-xs leading-tight flex-auto text-neutral-600 dark:text-neutral-400">
                                                 {friendsLabel1}
                                             </Text>
+                                            }
                                         </>
                                     }
 
@@ -192,6 +191,28 @@ export default function Unit(props) {
                                             <>Public</>
                                         )}
                                     </Text>
+                                </Row>
+                                <Row className='mb-3 w-full bg-primary/30 px-2 py-1 rounded-md justify-between'>
+
+                                    {data.date_start && (
+                                        <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center">
+                                            <Time
+                                                stylesName="text-xs flex-none"
+                                                ts={data.date_start}
+                                            ></Time>
+                                        </Text>
+
+                                    )}
+                                    {data.date_end && (
+                                        <>
+                                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center"> - </Text>
+                                            <Text className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase font-semibold tracking-tight overflow-hidden  rounded-md flex-none items-center"><Time
+                                                stylesName="text-xs flex-none"
+                                                ts={data.date_end}
+                                            ></Time> </Text>
+                                        </>
+                                    )}
+
                                 </Row>
                             </View>
                             <View className="flex-row w-full ">
@@ -243,7 +264,7 @@ export default function Unit(props) {
                         </View>
                     </View>
                 </Link>
-            </Card>
+            </Card >
         </>
     );
 }

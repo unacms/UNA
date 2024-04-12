@@ -6,7 +6,7 @@ import pako from 'pako';
 import { useTranslation } from 'react-i18next';
 import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
-import { appSetting as setting, UNA_URL } from 'app/config';
+import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
 
 export function appSetting(section, name, path) {
@@ -412,7 +412,13 @@ export function tp(key, count, isHideData = false) {
 export function linkify2(text) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
-    return matches[0] ? matches[0][0] : null;
+    console.log("matchesmatches", matches)
+    for (let match of matches) {
+        if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
+            return match[0];
+        }
+    }
+    return null;
 }
 
 export function linkify3(inputText) {

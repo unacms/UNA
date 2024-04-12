@@ -22,7 +22,6 @@ export default function (props) {
     const formContext = useFormContext();
     const formValue = formContext.watch(name);
     let obfuscateFaces = formContext.watch('obfuscate_faces');
-    console.log(obfuscateFaces);
     const rules = getValidationRules(props);
     let defaultValue = props?.value ? props.value : '';
     const { field } = useController({ name, rules, defaultValue });

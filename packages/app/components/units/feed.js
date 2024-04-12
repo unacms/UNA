@@ -2,15 +2,15 @@ import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
 import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
-import React, { memo, useState, useMemo, useEffect, useContext, useRef } from 'react'
+import React, { memo, useState, useEffect, useContext, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { StyleSheet } from 'react-native'
 import { Platform, Image as ImageNative } from 'react-native'
-import { Button } from 'app/design/controls'
+import { Button, Modal } from 'app/design/controls'
 import Menu from 'app/components/menu'
-import { truncateHTML, stripTags,stripTagsWithLinks, menuItemsByName, FeedbackHaptics, appSetting, linkify2 } from 'app/lib/util'
+import { stripTags, menuItemsByName, FeedbackHaptics } from 'app/lib/util'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { fetcher } from 'app/lib/fetcher'
 import Form from 'app/components/elements/form'
@@ -25,7 +25,6 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
-
 
 const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
@@ -110,7 +109,7 @@ const LinkContent = ({ url, data }) => (
     </Link>
 );
 
-const MenuManage = ({id, menu, setViewState }) => {
+const MenuManage = ({ id, menu, setViewState }) => {
     let { currentUser, setCurrentUser } = useCurrentUser()
 
     const refReport = useRef(null);
@@ -142,11 +141,11 @@ const MenuManage = ({id, menu, setViewState }) => {
     const aMenuManageItems = !!currentUser ? menu && menuItemsByName(menu?.object, menu?.items, currentUser).map(
         (aItem) => {
             let sTitle = aItem.title;
-            if(!!aItem.display_type && aItem.display_type == 'element') {
+            if (!!aItem.display_type && aItem.display_type == 'element') {
                 const Element = componentsMap[aItem.data.type];
-                if(!!Element) {
+                if (!!Element) {
                     sTitle = aItem.data?.action ? aItem.data?.action.title : 'Report';
-                    if(!!reportTitle)
+                    if (!!reportTitle)
                         sTitle = reportTitle;
 
                     oReport = (
@@ -211,8 +210,6 @@ function DefaultUnit(data) {
     const bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
     const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
     const bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
-
-    data.content.text = stripTagsWithLinks(data.content.text);
     const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,
@@ -261,7 +258,7 @@ function DefaultUnit(data) {
         content_attach = content_attach.concat(data.content.videos_attach);
     }
 
-    
+
 
     const MainContent = () => bIsMarketContent
         ? <MarketView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
@@ -295,35 +292,6 @@ function DefaultUnit(data) {
         />
     ));
 
-    const EditedView = ({ viewState, onFormSubmit, setViewState }) => (
-        <View className="w-full">
-            <Form
-                {...viewState.data}
-                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
-                onFormSubmit={onFormSubmit}
-            />
-            <View className="mx-4 mb-4">
-                <Button
-                    title="Cancel"
-                    fullWidth
-                    size="base"
-                    startDecorator="X"
-                    variant="outline"
-                    onPress={() => setViewState({ view: '' })}
-                />
-            </View>
-        </View>
-    );
-
-    const NotEditedView = ({ showCommentsModal }) => (
-        <>
-            <MainContent />
-            <View className="flex-col relative p-3 sm:p-4">
-                    <MenuMemo showCommentsModal={showCommentsModal} />
-            </View>
-        </>
-    );
-
     const Author = ({ }) => (
         <View className='flex-auto overflow-hidden '>
             <Profile
@@ -333,8 +301,8 @@ function DefaultUnit(data) {
                 displaySize="base"
                 showInfo={
                     <Row className="flex-wrap items-center text-sm">
-                            <Link href={url}>
-                                <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
+                        <Link href={url}>
+                            <Time stylesNameAdd=" hover:text-linkhover  align-center text-center" ts={data.date}></Time>
                         </Link>
                         <ItemInfo data={data} t={t} />
                     </Row>
@@ -354,14 +322,37 @@ function DefaultUnit(data) {
                             if (!Element) return
                             return <Element key={`action-${index}`} {...item} />
                         })}
-                        <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState}/>
+                        <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>
                 </View>
                 <View className="flex-col ">
                     {viewState.view == 'edited' ? (
-                        <EditedView viewState={viewState} onFormSubmit={onFormSubmit} setViewState={setViewState} />
+                        <Modal
+                            title={t("Edit post")}
+                            onVisible={true}
+                            onClose={() => {
+                                setViewState({ view: '' })
+                            }}
+                            presentation='overFullScreen'
+
+                            transparent={true}
+                            headerBorder={true}
+                        >
+
+                            <Form
+                                {...viewState.data}
+                                classContainerName="flex-row flex-wrap px-2 w-full items-start justify-between"
+                                onFormSubmit={onFormSubmit}
+                            />
+
+                        </Modal>
                     ) : (
-                        <NotEditedView showCommentsModal={showCommentsModal} />
+                        <>
+                            <MainContent />
+                            <View className="flex-col relative p-3 sm:p-4">
+                                <MenuMemo showCommentsModal={showCommentsModal} />
+                            </View>
+                        </>
                     )}
                 </View>
                 {commentsData && <CommentsSection url={url} t={t} isCommentsModal={isCommentsModal} showCommentsModal={showCommentsModal} commentsDataInline={commentsData} data={data} isShowMoreComments={isShowMoreComments} />}
@@ -404,7 +395,6 @@ function DefaultUnit(data) {
                         )}
                         {data.content.date_start && (
                             <>
-                                {' '}
                                 ·{' '}
                                 <Time
                                     stylesName="text-xs flex-none"
@@ -412,7 +402,7 @@ function DefaultUnit(data) {
                                 ></Time>
                                 {data.content.date_end && (
                                     <>
-                                        -{' '}
+                                        {' - '}
                                         <Time
                                             stylesName="text-xs flex-none"
                                             ts={data.content.date_end}
@@ -641,7 +631,7 @@ function UnitImages(images) {
 
     let aImg = images?.images.map((obj) => {
         return {
-            src: obj.src_orig? obj.src_orig : obj.src,
+            src: obj.src_orig ? obj.src_orig : obj.src,
             width: obj.width,
             height: obj.height,
             type: 'image',
