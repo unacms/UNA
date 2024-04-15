@@ -277,7 +277,8 @@ function DefaultUnit(data) {
 
     if (viewState.view == 'deleted')
         return <></>
-    if (isCommentsModal)
+        
+    if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
     const MenuMemo = memo(() => (
