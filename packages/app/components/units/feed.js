@@ -49,7 +49,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
         {t('View more comments...')}
     </Text>);
     return (
-        <View className='border-t border-bdr dark:border-bdr-d py-4'>
+        <View className='border-t border-bdr dark:border-bdr-d pt-4 mt-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
