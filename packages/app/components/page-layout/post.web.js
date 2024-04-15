@@ -73,7 +73,7 @@ export default function PageLayout(props) {
         }
         else {
             aItems[actionsItemIndex].data = (
-                <View className='pt-4 px-4 lg:pt-4'>
+                <View className=' pt-4 px-4 sm:pt-6 sm:px-6 '>
                     {aItems[actionsItemIndex].data}
                 </View>
             );
@@ -90,7 +90,7 @@ export default function PageLayout(props) {
         <>
             {header}
             <View className=" py-0 mt-14 lg:mt-4 ">
-                <View className="max-w-5xl mx-auto w-full  border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
+                <View className="max-w-5xl mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d sm:hover:bg-bgrcard-h sm:dark:hover:bg-bgrcard-dh">
                     <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 36 : 16, heightx: sizes.otherHeight }} className={'w-full '+ (windowDimensions.width < 1024 ? '' : offset)}>
                     {CommentsPartsData[0]}
                     </View>

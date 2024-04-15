@@ -39,7 +39,7 @@ export default function FormMessenger(props) {
     // execution submit time, uses as temporary message id for new message.
     props.data.inputs['payload'].value = parseInt((new Date()).getTime()/1000);
 //style={{ marginBottom: ( Platform.OS !== 'web' ? sizes.formHeight : 8 ) }}
-    return <View className='w-full px-2 md:px-4' >
+    return <View className='w-full px-4 md:px-6' >
     <Row className='w-full items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d rounded-lg'>
           
             <View className='flex-auto ' >

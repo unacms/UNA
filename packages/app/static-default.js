@@ -318,7 +318,7 @@ export function ComponentsIntro(props) {
 
     const CounterText = React.memo(({ data }) => {
         return (
-            <View className="absolute right-0 flex-col bg-gradient-to-r pl-12   from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-11 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+            <View className="absolute right-0 flex-col bg-gradient-to-r pl-16 from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-11 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
                 <Text className="font-bold text-neutral-950 leading-5 dark:text-neutral-50 text-3xl font-bold">
                     <AnimatedCounter
                         value={data}
@@ -334,7 +334,7 @@ export function ComponentsIntro(props) {
     })
 
     return (
-        <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-6 ">
+        <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4 ">
             <View className="flex-row gap-y-2 overflow-hidden">
                 <ProfilesList data={data2} showEmpty={true} maxCount={12} />
                 <CounterText data={data} />
