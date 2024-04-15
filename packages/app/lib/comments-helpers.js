@@ -292,7 +292,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
-            <View className='mx-3 sm:mx-4' key={index}>
+            <View className=' ' key={index}>
                 <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
             </View>))
     }
@@ -462,7 +462,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " lg:py-1 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " sm:py-4 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

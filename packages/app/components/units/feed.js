@@ -49,7 +49,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
         {t('View more comments...')}
     </Text>);
     return (
-        <View className='border-t border-bdr dark:border-bdr-d py-4'>
+        <View className='border-t border-bdr dark:border-bdr-d pt-4 mt-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
@@ -66,9 +66,9 @@ const ItemInfo = ({ data, t }) => {
 
     const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
         <React.Fragment key={'owner' + index}>
-            <Text className="text-neutral-500 text-sm"> in </Text>
+            <Text className="text-neutral-500/50 text-sm"> · </Text>
             <Link href={item.url} emulate={true}>
-                <Text className="  text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-semibold">
+                <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
                     {item.title}
                 </Text>
             </Link>
@@ -102,7 +102,7 @@ const LinkContent = ({ url, data }) => (
         </Text>
         <Text
             numberOfLines={2}
-            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+            className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
         >
             {data.content.title}
         </Text>
@@ -272,7 +272,7 @@ function DefaultUnit(data) {
     const isCommentsModal = data.cmts_list ? true : false;
 
     const showCommentsModal = async (initFormData) => {
-        setBottomSheetData({ title: data.author_data.display_name + "'s author name post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='px-4 pb-2'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
+        setBottomSheetData({ title: data.author_data.display_name + "'s post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
     if (viewState.view == 'deleted')
@@ -314,8 +314,8 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='' >
-                <View className="flex-auto flex-row items-top p-3 sm:p-4">
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName=' p-4 sm:p-6  ' >
+                <View className="flex-auto flex-row items-top pb-4 sm:pb-6">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -350,7 +350,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="flex-col relative p-3 sm:p-4 ">
+                            <View className="pt-4 sm:pt-6 ">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
@@ -415,15 +415,15 @@ function DefaultUnit(data) {
                     </Text>
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
                 </Link>
                 <View>
-                    <View className="flex-col gap-y-3 relative">
+                    <View className="flex-col relative">
                         <Text
-                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            className="text-neutral-950 dark:text-neutral-50 pb-4 text-sm "
                             numberOfLines={2}
                         >
                             {data.content.text}
@@ -455,9 +455,9 @@ function DefaultUnit(data) {
             <View className="flex-auto p-2 my-auto flex-col">
                 {linkForAd}
                 <View>
-                    <View className="flex-col gap-y-3 relative">
+                    <View className="flex-col relative">
                         <Text
-                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            className="text-neutral-950 dark:text-neutral-50 pb-4  text-sm "
                             numberOfLines={3}
                         >
                             {data.content.text}
@@ -494,15 +494,15 @@ function DefaultUnit(data) {
 
                     <Text
                         numberOfLines={2}
-                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                        className=" mt-1 text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
                     >
                         {data.content.title}
                     </Text>
                 </Link>
                 <View>
-                    <View className="flex-col gap-y-3 relative">
+                    <View className="flex-col relative">
                         <Text
-                            className="text-neutral-950 dark:text-neutral-50  text-sm "
+                            className="text-neutral-950 dark:text-neutral-50 pb-4 text-sm "
                             numberOfLines={3}
                         >
                             {data.content.text}
@@ -518,7 +518,7 @@ function DefaultUnit(data) {
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
-                    <View className={isCompact ? "px-4 w-64 mb-auto pr-4" : "w-full px-3 sm:px-4 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
+                    <View className={isCompact ? "px-4 w-64 mb-auto pr-4" : "w-full px-4 sm:px-6 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
                         <View
                             className="w-full aspect-video    "
                             style={styles.card_image}
@@ -533,27 +533,27 @@ function DefaultUnit(data) {
                         </View>
                     </View>
                 )}
-                <View className="flex-auto px-3 sm:px-4 my-auto flex-col">
+                <View className="flex-auto my-auto flex-col">
                     {bIsTitle && (
                         <Link href={url} className="">
                             <Text
                                 numberOfLines={2}
-                                className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-xl tracking-tight font-bold"
+                                className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
                             >
                                 {data.content.title}
                             </Text>
                         </Link>
                     )}
                     <View>
-                        <View className="flex-col gap-y-3 relative ">
+                        <View className="flex-col  relative ">
                             {bIsTimelineContent && (
-                                <View className={' ' + data.content.text && content_attach.length > 0 ? 'pb-3' : ''}>
+                                <View className={' ' + data.content.text && content_attach.length > 0 ? ' pb-4 ' : ''}>
                                     <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
                                 </View>
                             )}
                             {!bIsTimelineContent && (
                                 <Text
-                                    className="text-neutral-950 dark:text-neutral-50 pt-2 text-sm sm:text-base"
+                                    className="text-neutral-600 dark:text-neutral-400 pt-4 text-sm sm:text-base"
                                     numberOfLines={2}
                                 >
                                     {data.content.text}
@@ -578,7 +578,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 sm:p-6 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
