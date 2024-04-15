@@ -49,7 +49,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
         {t('View more comments...')}
     </Text>);
     return (
-        <View>
+        <View className='border-t border-bdr dark:border-bdr-d pt-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
@@ -209,7 +209,7 @@ function DefaultUnit(data) {
     const bIsGroupContent = (data.type == 'bx_groups' || data.type == 'bx_events') && data.action == 'added'
     const bIsMarketContent = (data.type == 'bx_market') && data.action == 'added'
     const bIsAddContent = (data.type == 'bx_ads') && data.action == 'added'
-    const bIsTitle = data?.content?.title && data?.content?.title?.trim() != ''
+    const bIsTitle = data?.content?.title && data?.content?.title?.trim() != '' ? true : false
     const { data: dynamicData, error } = useSWR(
         postData ? ['/api.php?r=bx_timeline/get_edit_form/&params[]=' + data.id, '', postData] : null,
         fetcher,
@@ -313,7 +313,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='' >
                 <View className="flex-auto flex-row items-top p-3 sm:p-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
@@ -626,7 +626,8 @@ function CarouselMemo({ aImg, b }) {
 }*/
 
 function UnitImages(images) {
-    if (images?.images?.length == 0)
+
+    if (!images?.images || images?.images?.length == 0)
         return <></>
 
     let aImg = images?.images.map((obj) => {

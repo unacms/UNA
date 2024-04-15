@@ -67,7 +67,6 @@ export default function Suggestions(props) {
             let cnt = (
                 <View className={(windowWidth > 1024 ? 'max-h-96' : '') + ''}>
                     <Browse sidebar={windowWidth > 1024 ? false : true} only_one_page={true} data={{ request_url: dataModal.request_url.replace('{user_id}', currentUser.id), "type": "obj_own_and_con", unit: "general-content-list" }} perLine={dataModal.perLine} unitType={dataModal.unitType} />
-
                 </View>
             );
             setBottomSheetData({ title: dataModal.title, content: cnt, showClose: true, onClose: onCloseEvent, snapPoints: ['50%', '65%'] });

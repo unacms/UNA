@@ -43,7 +43,7 @@ export default function ElementConfirmEmail(props) {
 
     return (
         <> <Redirect ref={redirectdRef} />
-            <Msg onVisible={showMsg} title={"letter sent"} handleOk={() => { setShowMsg(false) }} />
+            <Msg onVisible={showMsg} title={"Letter sent, please check your email"} handleOk={() => { setShowMsg(false) }} />
             <View className='mx-auto max-w-xl p-4 w-full'>
                 <Card rounded margin=' p-4 '>
                     <View className='mb-4 '>

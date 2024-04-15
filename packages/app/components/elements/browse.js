@@ -223,7 +223,7 @@ export default function (props) {
             refetch();
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
-    if ( dataItems.data.length == 0 && (dataItems?.params?.start === 0 || status === 'loading'))
+    if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && !props.only_one_page) || status === 'loading'))
         return Preload
 
     if (props.sidebar) {

@@ -23,6 +23,7 @@ import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
 import Chart from './chart';
+import NotificationsSettings from './notifications_settings';
 
 export const componentsMapDefault = {
     chart: Chart,
@@ -44,6 +45,7 @@ export const componentsMapDefault = {
     profile_menu: ProfileMenu,
     profile_switcher: ProfileSwitcher,
     feed_item: FeedItem,
+    notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
     categories_list: CategoriesList,
     lang: Lang,

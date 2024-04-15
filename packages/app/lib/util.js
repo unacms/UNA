@@ -286,7 +286,7 @@ export function truncateHTML(text, length) {
         var fragment = testString.substring(0, endPos);
         // Test to see if an end tag is found in the fragment. If not, append one to the end
         //  of the truncated HTML, thus closing the last unclosed tag
-        if (!new RegExp("<" + tagName + "\/>").test(fragment)) {
+        if (!new RegExp("<" + tagName + "\/>").test(fragment) && !new RegExp("<\/" + tagName + ">").test(truncated)) {
             truncated += '</' + reverseHtml(tagName) + '>';
         }
         // Get rid of the already tested fragment
@@ -295,6 +295,10 @@ export function truncateHTML(text, length) {
         tagMatch = reverseTagOpenExpr.exec(testString);
     }
     return truncated;
+}
+
+export function firstLetterCap(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function reverseHtml(str) {
@@ -412,7 +416,6 @@ export function tp(key, count, isHideData = false) {
 export function linkify2(text) {
     const urlRegex = /\b((https?:\/\/)|(www\.))((([0-9a-zA-Z_!~*'().&=+$%-]+:)?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}\.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+\.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z]\.[a-zA-Z]{2,16})(:[0-9]{1,4})?((\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]*)*))/g;
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
-    console.log("matchesmatches", matches)
     for (let match of matches) {
         if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
             return match[0];

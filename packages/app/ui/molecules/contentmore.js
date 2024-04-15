@@ -14,7 +14,7 @@ function HtmlMemo({ data }) {
 }
 
 export function ContentMore({ content, numberOfLines, textStyle, openSmall, textClassName, showLink = true }) {
-
+    
     let link = '';
     let linkContent = '';
     if (showLink) {
@@ -28,17 +28,17 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
         setShowFull(!showFull);
     }
     let shortHtml = truncateHTML(content, 350);
+    
     let showButton = false;
     if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
-    
+
     if (showButton){
         const lastIndex = shortHtml.lastIndexOf('</p>');
         if (lastIndex !== -1) {
             shortHtml = shortHtml.slice(0, lastIndex) + '... <a href="javascript">Show more</a></p>' + shortHtml.slice(lastIndex + 4);
         }
     }
-    console.log("shortHtml", shortHtml)
 
     const [showFull, setShowFull] = useState(openSmall);
     if (!showFull) {
