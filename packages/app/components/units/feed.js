@@ -272,7 +272,7 @@ function DefaultUnit(data) {
     const isCommentsModal = data.cmts_list ? true : false;
 
     const showCommentsModal = async (initFormData) => {
-        setBottomSheetData({ title: data.author_data.display_name + "'s author name post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='px-4 pb-2'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
+        setBottomSheetData({ title: data.author_data.display_name + "'s post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
     if (viewState.view == 'deleted')
