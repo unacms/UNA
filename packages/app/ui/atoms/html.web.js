@@ -16,7 +16,11 @@ export default function ElementHtml(props) {
             if (data){
                 const iframe = document.querySelector(`iframe[id="${data[0]}"]`);
                 if (iframe) {
-                    iframe.style.height = `${data[1]}px`;
+                    if (iframe.style.height != `${data[1]}px`){
+                        console.log('ifr', data[0], data[1], iframe.style.height);
+                    //    iframe.style.height = `${data[1]}px`;
+                       
+                    }
                 }
             }
         };
@@ -36,7 +40,7 @@ export default function ElementHtml(props) {
             newData = newData.replace(regex, (match, capture) => {
                 let hash = md5(capture);
                 return (
-                    `<iframe scrolling="no" id=${hash} height=auto class="w-full max-w-xl h-30 mx-auto " src="${absoluteApiUrl("embeds")}${capture}&theme=${scheme}&hash=${hash}"></iframe>`
+                    `<iframe scrolling="no" id=${hash} height=140 class="w-full max-w-xl h-30 mx-auto " src="${absoluteApiUrl("embeds")}${capture}&theme=${scheme}&hash=${hash}"></iframe>`
                 );
             });
             newData = newData.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');
