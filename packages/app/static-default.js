@@ -318,15 +318,15 @@ export function ComponentsIntro(props) {
 
     const CounterText = React.memo(({ data }) => {
         return (
-            <View className="absolute right-0 flex-col bg-gradient-to-r pl-8   from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-10 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
-                <Text className="font-bold text-neutral-950 leading-4 dark:text-neutral-50 text-xl font-bold">
+            <View className="absolute right-0 flex-col bg-gradient-to-r pl-12   from-transparent via-white dark:via-neutral-900 dark:to-neutral-900 to-white h-11 justify-end gap-y-0.5 items-end flex-none my-auto whitespace-nowrap nowrap ">
+                <Text className="font-bold text-neutral-950 leading-5 dark:text-neutral-50 text-3xl font-bold">
                     <AnimatedCounter
                         value={data}
                         duration={1000}
                         startFrom={1}
                     />
                 </Text>
-                <Text className="  text-neutral-700 dark:text-neutral-300 text-xs ">
+                <Text className="  text-neutral-500 text-xs ">
                     {tp('members', data, true)}
                 </Text>
             </View>
@@ -334,12 +334,12 @@ export function ComponentsIntro(props) {
     })
 
     return (
-        <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-4 ">
+        <Card addClassName=" bg-white dark:bg-neutral-900 flex-col gap-y-4 p-6 ">
             <View className="flex-row gap-y-2 overflow-hidden">
                 <ProfilesList data={data2} showEmpty={true} maxCount={12} />
                 <CounterText data={data} />
             </View>
-            <Text className="text-xs  text-neutral-700 dark:text-neutral-300">
+            <Text className="text-sm  text-neutral-700 dark:text-neutral-300">
                 {t('Community Intro')}
             </Text>
         </Card>
@@ -415,15 +415,14 @@ function ComponentModal(props) {
 function ComponentsSplash(props) {
     return (
         <View
-            className={
-                'flex-col w-full mx-auto' +
-                appSetting('layout', 'max_width')
-            }
+            className=
+                'flex-col w-full '
+            
         >
-            <View className="xl:m-4 md:flex-row bg-primary/10 dark:bg-primary-d/10 px-2 xl:px-4 py-4  lg:gap-x-4 duration-300 sm:border-y xl:border  xl:rounded-2xl border-primary/10 dark:border-primary-d/10 shadow">
+            <View className="mb-4 md:flex-row bg-gradient-to-t from-primary/10 to-transparent  px-2 xl:px-4 py-6 lg:gap-x-4 duration-300  ">
                 <View className=" p-10 flex-col mx-auto justify-center my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
                     
-                        <Text className=" w-full text-4xl mb-8 lg:text-6xl xl:text-7xl  text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
+                        <Text className=" w-full text-4xl mb-8 lg:text-6xl  text-center md:text-left font-bold text-neutral-800 dark:text-neutral-200 ">
                             Welcome to the community!
                         </Text>
                         <Text className=" w-full text-base lg:text-lg xl:text-xl text-center md:text-start text-neutral-600 dark:text-neutral-400 ">
@@ -477,7 +476,7 @@ function ComponentsSplash(props) {
             </View>
             <View className=" items-center px-2 xl:px-4 py-4 xl:py-2 flex-row flex-wrap w-full duration-300">
                 <View className="w-full md:w-1/2 lg:w-1/3  flex-auto  max-w-lg mx-auto  xl:p-4 p-2  ">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName="  w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"

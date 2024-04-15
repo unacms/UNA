@@ -71,7 +71,7 @@ export default function (props) {
     const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
     return (
         <>
-            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto xl:border-r border-bdr dark:border-bdr-d"}>
+            <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 lg:border-r border-bdr dark:border-bdr-d'>
                         <View className=' pt-16 fixed-process w-80'>
@@ -134,7 +134,7 @@ export default function (props) {
                             {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
                         </View>
                         <Row className="flex-auto  ">
-                            <Row className='w-full overflow-hidden items-center '>
+                            <Row className='w-full items-center '>
                                 
                                
                                 {(bSearch && currentUser) && <View className=' items-end mx-auto flex-auto max-w-2xl hidden lg:block '>
