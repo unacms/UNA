@@ -411,10 +411,10 @@ function ComponentsSplash(props) {
         <View className="flex-col w-full ">
             <View className="mb-4 md:flex-row border-b border-bdr dark:border-bdr-d  px-2 xl:px-4 py-8 lg:gap-x-4 duration-300  ">
 
-                <View className=' absolute my-auto'>
-                <View className='translate-x-8 -rotate-6 translate-y-8 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
-                <View className='translate-x-24 -rotate-6 translate-y-16 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
-                <View className='translate-x-40 -rotate-6 translate-y-24 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
+                <View className='group absolute my-auto'>
+                <View className='translate-x-8 -rotate-6 translate-y-8 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
+                <View className='translate-x-32 -rotate-6 translate-y-16 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
+                <View className='translate-x-60 -rotate-6 translate-y-24 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-3xl w-80 h-80 '></View>
 
 
                 </View>
