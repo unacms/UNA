@@ -49,7 +49,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
         {t('View more comments...')}
     </Text>);
     return (
-        <View className='border-t border-bdr dark:border-bdr-d pt-4'>
+        <View className='border-t border-bdr dark:border-bdr-d py-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
@@ -313,7 +313,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-3xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='' >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='' >
                 <View className="flex-auto flex-row items-top p-3 sm:p-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
@@ -349,7 +349,7 @@ function DefaultUnit(data) {
                     ) : (
                         <>
                             <MainContent />
-                            <View className="flex-col relative p-3 sm:p-4">
+                            <View className="flex-col relative p-3 sm:p-4 ">
                                 <MenuMemo showCommentsModal={showCommentsModal} />
                             </View>
                         </>
@@ -577,7 +577,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-3xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
