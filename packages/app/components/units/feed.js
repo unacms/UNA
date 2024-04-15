@@ -313,7 +313,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
+            <Card rounded=' rounded-none sm:rounded-3xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName='lg:p-2' >
                 <View className="flex-auto flex-row items-top p-3 sm:p-4">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
@@ -577,8 +577,8 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
-                    <View className=" mr-2 xl:mr-4 rounded-full flex-none bg-secondary-500/10">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-4 xl:p-6' rounded=" rounded-none sm:rounded-3xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                    <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
                             displayType="unit_wo_info"
@@ -586,18 +586,18 @@ function SmallUnit(data) {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto ">
-                        <View className="flex-row gap-x-2">
-                            <Text className="text-xs flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
+                        <View className="flex-row gap-x-2 xl:gap-x-3">
+                            <Text className="text-base flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>
                             <Time className="text-xs flex-none" ts={data.date}></Time>
                         </View>
-                        <Text className="flex-auto text-base  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
+                        <Text className="flex-auto text-lg  font-bold text-neutral-800 dark:text-neutral-200 sm:group-hover:text-neutral-950 sm:dark:group-hover:text-neutral-50" numberOfLines={1}>
                             {data.content.title}
                         </Text>
                         <View className="flex-row w-full items-end content-end">
                             <Text
-                                className="flex-auto mr-2 text-sm text-neutral-800 dark:text-neutral-200 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
+                                className="flex-auto mr-2 text-base text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-neutral-50"
                                 numberOfLines={1}
                             >
                                 {data.plainText}{stripTags(data.content.text)}

@@ -23,7 +23,7 @@ export default function ({maxCount, showEmpty, data, displaySize="base"}) {
             break
 
         case 'base':
-            sSize = 'w-10 h-10 '
+            sSize = 'w-[42px] h-[42px] '
             break
     }
 

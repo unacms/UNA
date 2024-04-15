@@ -393,7 +393,7 @@ export default function PageLayout(props) {
                 <ScrollView>
                     <View
                         className={
-                            appSetting('layout', 'max_width') +
+                            appSetting('layout', 'theme') +
                             ' mx-auto w-full'
                         }
                     >
