@@ -238,64 +238,42 @@ export function getUnitModeBySource(source) {
 }
 
 
-export function truncateHTML(text, length) {
-    if (!text)
-        return '';
-    var truncated = text.substring(0, length);
-    // Remove line breaks and surrounding whitespace
-    truncated = truncated.replace(/(\r\n|\n|\r)/gm, "").trim();
-    // If the text ends with an incomplete start tag, trim it off
-    truncated = truncated.replace(/<(\w*)(?:(?:\s\w+(?:={0,1}(["']{0,1})\w*\2{0,1})))*$/g, '');
-    // If the text ends with a truncated end tag, fix it.
-    var truncatedEndTagExpr = /<\/((?:\w*))$/g;
-    var truncatedEndTagMatch = truncatedEndTagExpr.exec(truncated);
-    if (truncatedEndTagMatch != null) {
-        var truncatedEndTag = truncatedEndTagMatch[1];
-        // Check to see if there's an identifiable tag in the end tag
-        if (truncatedEndTag.length > 0) {
-            // If so, find the start tag, and close it
-            var startTagExpr = new RegExp(
-                "<(" + truncatedEndTag + "\\w?)(?:(?:\\s\\w+(?:=([\"\'])\\w*\\2)))*>");
-            var testString = truncated;
-            var startTagMatch = startTagExpr.exec(testString);
-
-            var startTag = null;
-            while (startTagMatch != null) {
-                startTag = startTagMatch[1];
-                testString = testString.replace(startTagExpr, '');
-                startTagMatch = startTagExpr.exec(testString);
-            }
-            if (startTag != null) {
-                truncated = truncated.replace(truncatedEndTagExpr, '</' + startTag + '>');
-            }
-        } else {
-            // Otherwise, cull off the broken end tag
-            truncated = truncated.replace(truncatedEndTagExpr, '');
+export function truncateHTML(html, maxLength) {
+    if (!html) return '';
+  
+    // Limit the length
+    let truncated = html.substring(0, maxLength);
+  
+    // Remove trailing half-opened tags
+    truncated = truncated.replace(/<[^>]*$/, '');
+  
+    // Stack to track opened tags
+    const tags = [];
+    const tagRegex = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi;
+    let match;
+    
+    // Iterate over all tags to see which ones are opened or closed
+    while ((match = tagRegex.exec(truncated))) {
+      const tagName = match[1];
+      const isClosingTag = match[0][1] === '/';
+  
+      if (!isClosingTag) {
+        tags.push(tagName);
+      } else {
+        let i = tags.lastIndexOf(tagName);
+        if (i !== -1) {
+          tags.splice(i, 1); // Remove the tag from the stack
         }
+      }
     }
-    // Now the tricky part. Reverse the text, and look for opening tags. For each opening tag,
-    //  check to see that he closing tag before it is for that tag. If not, append a closing tag.
-    var testString = reverseHtml(truncated);
-    var reverseTagOpenExpr = /<(?:(["'])\w*\1=\w+ )*(\w*)>/;
-    var tagMatch = reverseTagOpenExpr.exec(testString);
-    while (tagMatch != null) {
-        var tag = tagMatch[0];
-        var tagName = tagMatch[2];
-        var startPos = tagMatch.index;
-        var endPos = startPos + tag.length;
-        var fragment = testString.substring(0, endPos);
-        // Test to see if an end tag is found in the fragment. If not, append one to the end
-        //  of the truncated HTML, thus closing the last unclosed tag
-        if (!new RegExp("<" + tagName + "\/>").test(fragment) && !new RegExp("<\/" + tagName + ">").test(truncated)) {
-            truncated += '</' + reverseHtml(tagName) + '>';
-        }
-        // Get rid of the already tested fragment
-        testString = testString.replace(fragment, '');
-        // Get another tag to test
-        tagMatch = reverseTagOpenExpr.exec(testString);
+  
+    // Close all unclosed tags in the reverse order they were opened
+    while (tags.length) {
+      truncated += `</${tags.pop()}>`;
     }
+  
     return truncated;
-}
+  }
 
 export function firstLetterCap(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
