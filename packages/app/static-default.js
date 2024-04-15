@@ -408,7 +408,9 @@ function ComponentModal(props) {
 
 function ComponentsSplash(props) {
     return (
-        <View className="flex-col w-full ">
+        <View className={
+            'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
+        }>
             <View className="mb-4 md:flex-row border-b border-bdr dark:border-bdr-d  px-2 xl:px-4 py-8 lg:gap-x-4 duration-300  ">
 
                 <View className='group absolute my-auto'>
