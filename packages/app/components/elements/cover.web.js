@@ -373,7 +373,7 @@ export default function ElementCover(props) {
                         </View>
                     </View>
                 )}
-                <View className=" flex-col md:flex-row gap-x-2 p-3 sm:p-4   ">
+                <View className=" flex-col md:flex-row gap-x-2 p-4 sm:p-6  ">
                     {bPerson && (
                         <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative ">
                             <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
