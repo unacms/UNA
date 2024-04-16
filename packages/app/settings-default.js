@@ -19,7 +19,8 @@ let settingsDefault = {
         },
         api_keys: {
             google_maps: 'AIzaSyAhrci201-9xXIRAy0kLOHFGppeTk8AHmo',
-            open_ai: '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'
+            open_ai: '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',
+            onesignal: null,
         },
     },
     layout: {

@@ -16,6 +16,7 @@ import BottomSheetDataContext from 'app/context/bottomsheet';
 import { appStatic } from 'app/lib/app-static'
 import { storageSet, storageClear, storageGet } from 'app/lib/util'
 import { menuItemsByName } from 'app/lib/util'
+import OneSignal from 'react-onesignal';
 
 const Navbar = lazy(() => import('app/components/nav/navbar'));
 
@@ -24,6 +25,15 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
         <Navbar {...props} />
     );
 });
+
+async function runOneSignal() {    
+    const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
+    if (ONESIGNAL_KEY) {
+        alert(appSetting('config', 'api_keys', 'onesignal'));
+        await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true});
+        OneSignal.Slidedown.promptPush();
+    }
+}
 
 export default function Layout(props) {
     const [isModal, setIsModal] = useState(false);
@@ -53,6 +63,9 @@ export default function Layout(props) {
     }, []);
 
     useEffect(() => {
+
+        runOneSignal();
+
         if (navigator.serviceWorker) {
             navigator.serviceWorker.register('/sw.js');
         }
