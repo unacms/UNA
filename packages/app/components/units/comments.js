@@ -85,9 +85,9 @@ export default function UnitComments(props) {
     
     let l = level< maxLevel ? level : maxLevel;
     for (let i = 0; i < l; i++){
-        cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
+        cells.push(<View key={'sp-'+level+'-'+i} className='w-8'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
         {(lvls[i+1]) && <View className="ml-[15px] w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View> }
-        {(i == level - 1) && <View className="ml-[15px] h-8 w-8 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto"></View> }
+        {(i == level - 1) && <View className="ml-[15px] h-6 w-6 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto"></View> }
     </View>)
     };   
 
@@ -124,11 +124,11 @@ export default function UnitComments(props) {
         <View className='w-full'>
             <View  className="flex-row gap-x-2 ">
                 {cells}
-                <View className="w-8 mt-2 z-50 flex-0 ">
+                <View className="w-8 z-50 flex-0 ">
                 <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
                     {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
                 </View>
-                <View className='flex-1 flex-col my-2 '>
+                <View className='flex-1 flex-col mb-2 '>
                     <View className='bg-bgritem dark:bg-bgritem-d rounded-xl  px-2 py-1.5 mb-0.5 u-vanilla-html-small' >
                         <View className="flex-row flex-1 items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />

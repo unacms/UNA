@@ -45,14 +45,14 @@ const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
 
 const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data, isShowMoreComments, showCommentsModal, url, t }) => {
 
-    const ShowMoreCmts = (<Text className='text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-neutral-50 hover:underline font-semibold'>
+    const ShowMoreCmts = (<Text className='text-neutral-600 dark:text-neutral-400 hover:text-primary dark:hover:text-primary-d text-sm font-semibold'>
         {t('View more comments...')}
     </Text>);
     return (
-        <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-2 mt-4'>
+        <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
-                <View className='px-4 pb-4'>
+                <View className='bg-bgritem dark:bg-bgritem-d hover:bg-primary/10 dark:hover:bg-primary-d/10 px-3 py-1  rounded-lg'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
                         {ShowMoreCmts}
                     </Pressable> : <Link href={url}>{ShowMoreCmts}</Link>}

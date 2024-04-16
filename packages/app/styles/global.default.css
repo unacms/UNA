@@ -44,12 +44,19 @@ H5 {
     text-decoration: underline;
 }
 .bx-mention-link{
-    color: #0284c7;
+    color: rgba(37, 99, 235, 1);
     text-decoration: none;
+    background-color: rgba(37, 99, 235, 0.1);
+    border-radius: 6px;
+    padding: 2px 4px;
+    
 }
 
 .bx-mention-link:hover {
     text-decoration: underline;
+   
+    background-color: rgba(37, 99, 235, 0.05);
+   
 }
 
 html,
