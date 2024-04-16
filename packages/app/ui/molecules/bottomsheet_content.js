@@ -53,7 +53,7 @@ export default function ElementCommentForm(props) {
                 
                 transparent={true}
             >
-                <View className='w-full px-1 pb-1' style={{maxHeight:windowDimensions.height-100}}>
+                <View className='w-full pb-6' style={{maxHeight:windowDimensions.height-100}}>
                     <ScrollView className=' w-full'>
                         {bottomSheetData.content}
                         {bottomSheetData.footer}

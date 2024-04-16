@@ -518,9 +518,9 @@ function DefaultUnit(data) {
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
-                    <View className={isCompact ? "px-4 w-64 mb-auto pr-4" : "w-full px-4 sm:px-6 md:w-64 mb-3 md:mb-auto md:pr-4 "}>
+                    <View className={isCompact ? " w-48 mb-auto pr-4" : "w-full  md:w-48 mb-3 md:mb-auto md:ml-4"}>
                         <View
-                            className="w-full aspect-video    "
+                            className="w-full aspect-[2/1] md:aspect-square    "
                             style={styles.card_image}
                         >
                             <Image
@@ -537,7 +537,7 @@ function DefaultUnit(data) {
                     {bIsTitle && (
                         <Link href={url} className="">
                             <Text
-                                numberOfLines={2}
+                                numberOfLines={3}
                                 className="  text-neutral-950 hover:text-primary dark:text-neutral-50 hover:text-primary-d text-2xl tracking-tight font-bold"
                             >
                                 {data.content.title}
@@ -553,8 +553,8 @@ function DefaultUnit(data) {
                             )}
                             {!bIsTimelineContent && (
                                 <Text
-                                    className="text-neutral-600 dark:text-neutral-400 pt-4 text-sm sm:text-base"
-                                    numberOfLines={2}
+                                    className="text-neutral-600 dark:text-neutral-400 pt-2 text-sm sm:text-base"
+                                    numberOfLines={3}
                                 >
                                     {data.content.text}
                                 </Text>

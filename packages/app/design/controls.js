@@ -79,7 +79,7 @@ export function Modal({
                             )}
                             </Row>
                             
-                            <View className="overflow-y-auto p-4 pb-0 flex-auto md:h-auto">{children}</View>
+                            <View className="overflow-y-auto p-3 sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0 flex-auto md:h-auto">{children}</View>
                         </Pressable>
                     </View>
                 </View>

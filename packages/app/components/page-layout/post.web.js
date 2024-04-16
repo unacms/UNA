@@ -82,7 +82,7 @@ export default function PageLayout(props) {
     }
 
     const commentsData = DataByName(props.data, props.blocks.comments);
-    const offset = commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html === 2 ? "pb-36 " : "pb-20";
+    const offset = commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html === 2 ? "pb-36 " : "pb-2";
     const isStycky = windowDimensions.width < 1024 || sizes.otherHeight < sizes.cntHeight;
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
 
@@ -91,7 +91,7 @@ export default function PageLayout(props) {
             {header}
             <View className=" py-0 lg:px-4 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d ">
-                    <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 36 : 16, heightx: sizes.otherHeight }} className={'w-full p-3 sm:p-6 '+ (windowDimensions.width < 1024 ? '' : offset)}>
+                    <Row><View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 16 : 24, heightx: sizes.otherHeight }} className={'w-full p-3 sm:p-6 '+ (windowDimensions.width < 1024 ? '' : offset)}>
                     {CommentsPartsData[0]}
                     </View>
                     </Row>

@@ -58,7 +58,7 @@ function Default({ data, showPad, sidebar }) {
     const text = clearLinks(data.entry_text);
     return (
         <View className="w-full">
-            {(data.image) && <View className="w-full aspect-[3/1] mb-4"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" mt-4 u-cover" view="cover"   /></View>}              
+            {(data.image) && <View className="w-full aspect-[2/1] rounded-xl overflow-hidden my-2 lg:mt-6"><Image {...data.image} alt={data.title} sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover" view="cover"   /></View>}              
             <View className={"mx-auto w-full " + (showPad == false || sidebar ? '' : ' ')}>
                 <H1 className="font-bold tracking-tight  text-neutral-900 dark:text-neutral-50 ">{data.entry_title}</H1>
                 <Html data={text} />

@@ -37,17 +37,18 @@ export default function(props) {
     //Selected: ' + field.value.length 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <View className='w-full '>
-                <Row className='gap-x-2  justify-end items-center flex-row flex-wrap'>
-                    <View className='my-1'><Button
-                        title={'Select ...'}
+            <View className='w-full justify-between '>
+            
+                <View className='w-full pl-4 flex-auto justify-end items-center flex-row flex-wrap'>
+                    <Button
                         startDecorator="Plus"
-                        variant="default"
-                        size="sm"
+                        rounded
+                        variant="text"
+                        size="base"
                         onPress={() => showSelect()}
-                    /></View>
+                    />
                     {!!field.value && field.value.map((item, index) => (
-                        <View className='my-1' key={'label' + index}>
+                        <View className='m-1' key={'label' + index}>
                             <Button
                                 endDecorator="X"
                                 variant={"outline"}
@@ -58,7 +59,7 @@ export default function(props) {
                         </View>
                     )
                     )}
-                </Row>
+                </View>
             </View>
         </Field>
     );
@@ -81,20 +82,22 @@ function ChkList({ values, selectedValues, setFormValue }) {
     return (
         <>
             {values.map((item2, index) => (
-                <Row className='items-center' key={'chk' + index}>
+                <Pressable onPress={() => addValue2(item2.value)}>
+                <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
                     <RadioButton
                         value={item2.value}
                         status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
                         onPress={() => { addValue2(item2.value); }}
                     />
-                    <Pressable onPress={() => addValue2(item2.value)}><Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text></Pressable>
+                    <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
                 </Row>
+                </Pressable>
             ))}
             <View className='pt-2'>
                 <Button
                     title='Save'
-                    variant="outline"
-                    size="sm"
+                    variant="default"
+                    size="base"
                     onPress={() => setFormValue(value2)}
                 />
             </View>

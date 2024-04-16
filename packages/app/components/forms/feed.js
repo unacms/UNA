@@ -81,10 +81,10 @@ export default function FormFeed(props) {
 
                             </View>
                             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus:true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
-                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center pr-4">
-                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+                            <Row className=" flex-wrap my-1 border border-bdr dark:border-bdr-d rounded-xl gap-x-1 items-center py-1 pr-3">
+                                <Text className="px-4 mr-auto text-base font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
 
-                                {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
+                                {props.data.inputs['obfuscate_faces'] && <View className="mr-2">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                                 </View>}
                                 {props.data.inputs['photo'] && <View className="">
@@ -103,8 +103,8 @@ export default function FormFeed(props) {
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>
                             )}
                             <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
-                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                <View className="mr-4">
+                                <Text className="px-4 py-5 mr-auto mb-auto text-base font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
+                                <View className="mr-2">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
                             </Row>
