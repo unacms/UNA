@@ -86,8 +86,8 @@ export default function UnitComments(props) {
     let l = level< maxLevel ? level : maxLevel;
     for (let i = 0; i < l; i++){
         cells.push(<View key={'sp-'+level+'-'+i} className='w-10'>{  /*i+'-'+level+'-'+lvls[i]+'-'+lvls.length*/}
-        {(lvls[i+1]) && <View className="ml-5 w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View> }
-        {(i == level - 1) && <View className="ml-5 h-8 w-8 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute top-0 rounded-bl-xl flex-auto"></View> }
+        {(lvls[i+1]) && <View className="ml-[15px] w-0.5 flex-auto  bg-neutral-100 dark:bg-neutral-800"></View> }
+        {(i == level - 1) && <View className="ml-[15px] h-8 w-8 border-neutral-100 dark:border-neutral-800  border-l-2 border-b-2 absolute -top-1.5 rounded-bl-2xl flex-auto"></View> }
     </View>)
     };   
 
@@ -124,12 +124,12 @@ export default function UnitComments(props) {
         <View className='w-full'>
             <View  className="flex-row gap-x-2 ">
                 {cells}
-                <View className="w-[42px] mt-2 flex-0 ">
-                    <Profile {...data.author_data} displayType="unit_wo_info" displaySize="base" showInfo="false" />
-                    {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-5  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
+                <View className="w-8 mt-2 z-50 flex-0 ">
+                <Profile {...data.author_data} displayType="unit_wo_info" displaySize="sm" showInfo="false" />
+                    {(items.length != 0 && view != 'flat') && <View className="w-0.5 ml-[15px]  flex-auto bg-neutral-100 dark:bg-neutral-800"><Text>&nbsp;</Text></View> }
                 </View>
                 <View className='flex-1 flex-col my-2 '>
-                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl px-2.5 py-2 mb-1 u-vanilla-html-small' >
+                    <View className='bg-bgritem dark:bg-bgritem-d rounded-xl  px-2 py-1.5 mb-0.5 u-vanilla-html-small' >
                         <View className="flex-row flex-1 items-center overflow-hidden">
                             <Profile {...data.author_data} displayType="unit_wo_image" displaySize="sm" showInfo="false" />
                             <View><Text className="text-neutral-500 px-1">·</Text></View>
@@ -159,14 +159,14 @@ export default function UnitComments(props) {
                         </View>
                         { (viewState.view != 'edited'  && aImg.length > 0) && <Carousel data={aImg}/> }
                     </View>
-                    { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full justify-between items-center'>
+                    { viewState.view != 'edited' && <View className=' mb-1 flex-row w-full  items-center'>
                         { !!currentUser && !!props.handleReply ? <View className='mr-2'>
-                            <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="outline"  onPress={() => handleReply(data)} rounded />
+                            <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data)} rounded />
                         </View> : <View className='mr-2'></View> }
-                        <View className='flex-row'>
+                        <View className='flex-row flex-auto '>
                             <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs'}} />
                             {!!currentUser && !!aMenuManageItems.length && 
-                            <View className="ml-2">
+                            <View className="ml-auto flex-none">
                                 <DropdownMenu items={aMenuManageItems.map((aItem) => {
                                     return {
                                         id: aItem.id ? aItem.id : aItem.name,
@@ -175,7 +175,7 @@ export default function UnitComments(props) {
                                         title: aItem.title
                                     };
                                 })} onSelect={handleManageMenuSelect}>
-                                    <Button variant="outline" size="xs" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} rounded />
+                                    <Button variant="text" size="xs" startDecorator="DotsThreeOutline" onPress={() => {FeedbackHaptics('Medium');}} rounded />
                                 </DropdownMenu>
                             </View>
                             }

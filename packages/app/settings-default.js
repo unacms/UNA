@@ -869,6 +869,8 @@ let settingsDefault = {
         buttons_group_styles: {
             'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
+            'u-btn-text-cnt': ' border border-transparent hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+
         },
     },
 }

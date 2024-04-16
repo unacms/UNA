@@ -49,7 +49,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
         {t('View more comments...')}
     </Text>);
     return (
-        <View className='border-t border-bdr dark:border-bdr-d pt-4 mt-4'>
+        <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-2 mt-4'>
             <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='px-4 pb-4'>
@@ -80,7 +80,7 @@ const ItemInfo = ({ data, t }) => {
         return l && (
             <>
                 <Text className=" text-neutral-500/50 text-sm"> · </Text>
-                <Text className="  text-neutral-500 text-sm font-normal text-center  ">
+                <Text className="  text-neutral-600 dark:text-neutral-400 text-sm font-medium text-center  ">
                     {l}
                 </Text>
             </>
@@ -314,8 +314,8 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName=' p-4 sm:p-6  ' >
-                <View className="flex-auto flex-row items-top pb-4 sm:pb-6">
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName=' p-3 sm:p-6  ' >
+                <View className="flex-auto flex-row items-top pb-3 sm:pb-6">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">
                         {data.author_actions.map((item, index) => {
@@ -578,7 +578,7 @@ function SmallUnit(data) {
     return (
         <AnimatedBlock>
             <Link href={url} className="w-full" emulate={true}>
-                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-4 sm:p-6 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
+                <Card addClassName='  group active:opacity-50 active:translate-y-1 flex-row p-3 sm:p-6 ' rounded=" rounded-none sm:rounded-2xl " margin=" -mb-[1px] sm:mx-4 sm:mb-2 ">
                     <View className=" mr-2 xl:mr-3 rounded-full flex-none bg-secondary-500/10">
                         <Profile
                             {...data.author_data}
@@ -587,7 +587,7 @@ function SmallUnit(data) {
                         />
                     </View>
                     <View className="flex-auto flex-col my-auto ">
-                        <View className="flex-row gap-x-2 xl:gap-x-3">
+                        <View className="flex-row gap-x-3 sm:gap-x-4">
                             <Text className="text-base flex-auto font-semibold text-neutral-800 dark:text-neutral-200">
                                 {data.author_data.display_name}
                             </Text>

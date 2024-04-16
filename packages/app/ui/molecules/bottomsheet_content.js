@@ -105,7 +105,7 @@ export default function ElementCommentForm(props) {
 
     return (
         <BottomSheet2 {...bottomSheetProps} >
-            <View className=" mx-auto w-full flex-1 flex-auto  h-full">
+            <View className=" mx-auto w-full flex-1 flex-auto py-2 h-full">
                 {!isWeb && bottomSheetProps.header}
                 {isListView ? content : <ScrollView className=' w-full'>
                     {content}

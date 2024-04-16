@@ -24,7 +24,7 @@ export default function FormField(props) {
                     <Row className='items-center gap-x-1' >
                         <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
-                        {((props.checker || props.required) ? <Text className="text-red-600"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')} /></Text> : <></>)}
+                        {((props.checker || props.required) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')} /></Text> : <></>)}
                     </Row >
                 </Text>
             }

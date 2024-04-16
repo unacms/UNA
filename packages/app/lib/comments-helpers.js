@@ -300,7 +300,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
     const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
-        <Row className='flex-row jusity-between items-center m-4'>
+        <Row className='flex-row jusity-between items-center my-4'>
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t('Comments')} ({commentData.total_count})</Text>
             <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
@@ -344,7 +344,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                         return item.data;
                     }
                     return (
-                        <View className='mx-4' key={index}>
+                        <View className='' key={index}>
                             <UnitComments module={commentData.moduleName} {...item} view={viewMode} max_level={commentData.maxLevel} handleReply={handleReply} handleEdit={handleEdit} handleDelete={handleDelete} />
                         </View>
                     )
@@ -462,7 +462,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                     </Row>
                 </View>)
             }
-            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : " sm:py-4 ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
+            <Form {...form} resetOnSubmit={true} classContainerName={(isModal ? "" : "  ") + " flex-row flex-wrap w-full items-start justify-between"} onFormSubmit={onFormSubmit} />
         </View>
     )
 }

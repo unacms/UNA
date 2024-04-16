@@ -42,7 +42,7 @@ export function Modal({
     onVisible,
     title,
     textAlign = 'center',
-    headerBorder = false,
+    headerBorder = true,
     fullWidth = true,
     children
 }) {
@@ -79,7 +79,7 @@ export function Modal({
                             )}
                             </Row>
                             
-                            <View className="overflow-y-auto px-4 py-2 flex-auto md:h-auto">{children}</View>
+                            <View className="overflow-y-auto p-4 pb-2 flex-auto md:h-auto">{children}</View>
                         </Pressable>
                     </View>
                 </View>

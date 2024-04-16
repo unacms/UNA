@@ -20,8 +20,8 @@ export default function FormComments(props) {
 
     props.data.inputs['cmt_submit'].icon = 'PaperPlaneRight';
 
-    return <View className='w-full px-4 sm:px-6' >
-        <Row className='w-full items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d rounded-lg'>
+    return <View className='w-full ' >
+        <Row className='w-full items-center bg-bgrinput dark:bg-bgrinput-d border border-bdrinput dark:border-bdrinput-d rounded-xl p-1'>
             <View className='flex-auto ' >
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}

@@ -19,10 +19,10 @@ export default function PageLayout(props) {
     
     return (
         <ScrollView className={cls}>
-            <View className=" w-full p-4 mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-2xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
+            <View className=" w-full p-2 mx-auto max-w-5xl flex-col items-center lg:flex-row  rounded-3xl lg:bg-bgrnavbar/50 lg:dark:bg-bgrnavbar-d/50 lg:border border-dashed border-bdr dark:border-bdr-d ">
                 <View className="flex-col p-8 flex-auto w-full  items-center lg:items-start  gap-y-4 lg:gap-y-8 my-auto ">
                     <Text className="text-4xl lg:text-5xl tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
-                        { isAllowJoin ? 'Join now!' : 'Request Invitation!' }
+                        { isAllowJoin ? 'Join now!' : 'Request Invitation' }
                     </Text>
 
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
@@ -137,7 +137,7 @@ export default function PageLayout(props) {
                     {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName="border  px-6 py-4 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
+                        addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
                     >
                         <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                             Already have an account?

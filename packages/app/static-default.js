@@ -387,7 +387,7 @@ function ComponentModal(props) {
                             rounded=" rounded-2xl "
                             addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <Text className="text-center mb-4 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                            <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                 Don't have an account?
                             </Text>
                             <Link className=" w-full " href="/create-account">
@@ -458,7 +458,7 @@ function ComponentsSplash(props) {
                             rounded=" rounded-2xl "
                             addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <Text className="text-center mb-4 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                            <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                 Don't have an account?
                             </Text>
                             <Link className=" w-full " href="/create-account">
@@ -475,7 +475,7 @@ function ComponentsSplash(props) {
             </View>
             <View className=" items-center px-2 xl:px-4 py-4 flex-row flex-wrap w-full duration-300">
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName="  w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
