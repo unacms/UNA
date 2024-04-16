@@ -436,7 +436,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         Keyboard.dismiss();
     }
 
-    let padding = 8;
+    let padding = 16;
     if (isModal)
         padding = 0;
     const { colors } = useTheme();
