@@ -725,7 +725,7 @@ export function menuItemsByName(name, items, currentUser, url = '') {
         }
 
         items = items.filter(item => {
-            return !item.membership_level || (item.membership_level & currentUser.membership) == currentUser.membership});
+            return !item.membership_level || (item.membership_level & Math.pow(2, currentUser.membership)) == Math.pow(2, currentUser.membership)});
     }
 
     items = items.map(item => {
