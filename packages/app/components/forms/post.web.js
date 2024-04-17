@@ -30,8 +30,9 @@ export default function FormPost(props) {
         ' text-2xl lg:text-3xl font-bold my-2 placeholder-neutral-500 text-neutral-900 dark:text-neutral-50  focus:outline-none'
     props.data.inputs['text'].viewClasses = 'dark:focus:bg-red-500'
 
-    props.data.inputs['allow_comments'].caption = '';
-    
+    if (props.data.inputs['allow_comments'])
+        props.data.inputs['allow_comments'].caption = '';
+
     return (
         <View className="w-full max-w-5xl flex-col">
             <View className="  overflow-hidden flex-col  ">
@@ -114,15 +115,15 @@ export default function FormPost(props) {
                         </View>
                     </Row>
                     {prevList.length > 0 && prevList[0]?.key && (
-                    <Row className="flex-wrap">{prevList}</Row>
-                )}
+                        <Row className="flex-wrap">{prevList}</Row>
+                    )}
                 </View>
 
-                
 
-                <View className='w-full flex-wrap my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
-                <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
-                    <Row className=" justify-start items-center flex-row flex-wrap px-2 ">
+
+                <View className='w-full  my-1 flex-row border rounded-xl border-bdr dark:border-bdr-d py-1 px-2'>
+                    <Text className="font-semibold px-3 py-1 justify-center my-auto text-sm flex-auto text-neutral-800 dark:text-neutral-200">Labels</Text>
+                    <Row className=" justify-start items-center flex-auto px-2 ">
                         {getFormFieldByData(
                             props.data.inputs['labels'],
                             props.handleSubmit,

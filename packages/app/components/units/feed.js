@@ -63,17 +63,39 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
 });
 
 const ItemInfo = ({ data, t }) => {
+    const [showContextList, setShowContextList] = useState(false);
 
-    const OwnersList = () => data.owners?.length > 0 && data.owners.map((item, index) => (
-        <React.Fragment key={'owner' + index}>
-            <Text className="text-neutral-500/50 text-sm"> · </Text>
-            <Link href={item.url} emulate={true}>
-                <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
-                    {item.title}
-                </Text>
-            </Link>
-        </React.Fragment>
-    ));
+    const OwnersList = () => data.owners?.length > 0 ? data.owners?.length == 1 ? <>
+        <Text className="text-neutral-500/50 text-sm"> · </Text>
+        <Link href={data.owners[0].url} emulate={true}>
+            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
+                {data.owners[0].title}
+            </Text>
+        </Link></> : <><Text className="text-neutral-500/50 text-sm"> · </Text>
+        <Pressable onPress={() => { setShowContextList(true) }} >
+            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
+                {data.owners[0].title} + {data.owners.length - 1}
+            </Text>
+        </Pressable>
+        <Modal
+            onVisible={showContextList}
+            onClose={() => {
+                setShowContextList(false)
+            }}
+            presentation='overFullScreen'
+            transparent={true}
+            headerBorder={true}
+        >
+            <Row className='gap-x-2 mb-4'>{
+                data.owners.map((item, index) => (
+                   
+                        <Link key={`link-{$index}`} href={item.url} emulate={true}>
+                            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
+                                {item.title}
+                            </Text>
+                        </Link>
+                ))}</Row>
+        </Modal></> : <></>;
 
     const FeedType = () => {
         const l = t('feed_type_' + data.type);
@@ -277,7 +299,7 @@ function DefaultUnit(data) {
 
     if (viewState.view == 'deleted')
         return <></>
-        
+
     if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items[0].data.callback = showCommentsModal
 
@@ -314,7 +336,7 @@ function DefaultUnit(data) {
 
     return (
         <AnimatedBlock>
-            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName=' p-3 sm:p-6  ' >
+            <Card rounded=' rounded-none sm:rounded-2xl ' border=" sm:border border-bdrcard dark:border-bdrcard-d" margin=' mb-2 sm:mb-4 sm:mx-4 ' addClassName={'p-3 sm:p-6 tl-' + data.id} >
                 <View className="flex-auto flex-row items-top pb-3 sm:pb-6">
                     <Author />
                     <View className="flex-auto justify-end flex-row mb-auto">

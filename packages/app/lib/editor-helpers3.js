@@ -1,4 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { View, Row } from 'app/design/view'
+import { Button } from 'app/design/controls';
 
 export default forwardRef((props, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0)
@@ -51,13 +53,18 @@ export default forwardRef((props, ref) => {
         <div className="items">
             {props.items.length
                 ? props.items.map((item, index) => (
-                    <button
-                        className={`item ${index === selectedIndex ? 'is-selected' : ''}`}
+                    
+                    <Button
+                        pressed = {index === selectedIndex ? true : false}
                         key={index}
-                        onClick={() => selectItem(index)}
+                        variant="text"
+                        fullWidth
+                        align="left"
+                        onPress={() => selectItem(index)}
                     >
                         {item.label}
-                    </button>
+                    </Button>
+ 
                 ))
                 : <></>
             }

@@ -8,6 +8,7 @@ import { View, Row } from 'app/design/view'
 
 export default function FormFieldCheckboxSet(props) {
     
+
     let formContext = useFormContext();
     
     let rules = {};
@@ -32,7 +33,7 @@ export default function FormFieldCheckboxSet(props) {
         }
     }
 
-    const values = Object.entries(props.values).map(([key, value]) => ({id: key, label: value}));
+    const values = Array.isArray(props.values) ? props.values.map(obj => ({id: obj.key, label: obj.value})) : Object.entries(props.values).map(([key, value]) => ({id: key, label: value}));
     return (
         <Field {...props}>
             <Row className='gap-x-2 items-center'>

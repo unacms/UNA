@@ -15,7 +15,7 @@ const User = ({ data, onSelect, type }) => {
         <Pressable onPress={() => onSelect(data)}>
             <Row className="p-1 pr-2 group duration-200 rounded-full active:opacity-50 active:translate-y-1
                     hover:bg-bgritem-h dark:hover:bg-bgritem-dh max-w-5xl self-center w-full border border-bdrnavbar dark:border-bdrnavbar-d mb-2 items-center gap-x-2">
-                <Profile displaySize="xs" {...data} url="" />
+                <Profile displaySize="xs" {...data} showLinks={false} />
                 {type == 'remove' && <Icon icon="X" />}
             </Row>
         </Pressable>
@@ -100,6 +100,8 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 };
 
 export default function (props) {
+
+    return <></>
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();

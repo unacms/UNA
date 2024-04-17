@@ -1,5 +1,6 @@
 import { ReactRenderer } from '@tiptap/react'
 import tippy from 'tippy.js'
+import 'app/styles/tippyjs.css'
 import { fetcher } from 'app/lib/fetcher';
 import MentionList from 'app/lib/editor-helpers3'
 import { PluginKey } from '@tiptap/pm/state'
@@ -32,6 +33,7 @@ export function Suggestion(startfrom) {
                     }
 
                     popup = tippy('body', {
+                        theme: 'mention',
                         getReferenceClientRect: props.clientRect,
                         appendTo: () => document.body,
                         content: component.element,

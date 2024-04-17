@@ -7,6 +7,6 @@ import 'app/styles/tippyjs.css'
 
 export default function Tooltip(props) {
     return (
-        <Tippy theme='custom' content={props.content}>{props.children}</Tippy>
+        <Tippy theme='tooltip' content={props.content}>{props.children}</Tippy>
     );
 }

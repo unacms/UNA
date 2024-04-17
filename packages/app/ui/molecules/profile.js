@@ -114,9 +114,10 @@ export default function AtomProfile(oProps) {
     let emulate = oProps.showLink ? false : true
 
     //--- with clickable Username (or not)
-    const bShowLinks = !oProps.showLinks || oProps.showLinks === 'true'
+    const bShowLinks = oProps.showLinks !== false;
 
     function DisplayNameLink(oProps) {
+        
         if (oProps.href && (oProps.href == 'javascript:' || oProps.href === undefined))
             oProps.href='';
 
@@ -127,7 +128,7 @@ export default function AtomProfile(oProps) {
             return (
                 <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center '+sSizeFont}>
                     <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
-                        {oProps.title.replace(" (anonymized)", '')} 
+                        {oProps.title && oProps.title.replace(" (anonymized)", '')} 
                     </Text>
                     <Icon icon="Detective"></Icon>
                 </Row>
@@ -203,22 +204,23 @@ export default function AtomProfile(oProps) {
                 </View>
             </View>;
 
-            sResult = oProps.url ? <Link emulate={emulate} href={oProps.url}>{content}</Link> : content
+            sResult = oProps.url && bShowLinks ? <Link emulate={emulate} href={oProps.url}>{content}</Link> : content
             break
 
         case 'unit_wo_image':
             sResult = (
                     <View className="flex-col my-auto ">
-                        <Link emulate={emulate} haptics="Select" href={oProps.url}>
+                        
                         {bShowLinks ? (
+                            <Link emulate={emulate} haptics="Select" href={oProps.url}>
                             <DisplayNameLink
                                 title={oProps.display_name}
                                 url={oProps.url}
-                            />
+                            /></Link>
                         ) : (
                             <DisplayNameText title={oProps.display_name} />
                         )}
-                        </Link>
+                        
                         <View >{sShowInfo}</View>
                     </View>
          

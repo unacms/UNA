@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { appSetting } from 'app/lib/util'
 
 export default function FormFeed(props) {
+
     const { t } = useTranslation();
     const [showImage, setShowImage] = useState(false)
     const [responseId, setResponseId] = useState(0)
@@ -59,7 +60,7 @@ export default function FormFeed(props) {
                     setShowImage(null)
                 }}
                 presentation='overFullScreen'
-               
+
                 transparent={true}
                 headerBorder={true}
             >
@@ -67,7 +68,7 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['object_cf'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
-                
+
                 <View className='justify-between mb-4 h-full'>
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <View className="w-full  flex-col ">
@@ -80,11 +81,11 @@ export default function FormFeed(props) {
                                 </View>
 
                             </View>
-                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus:true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
-                            <Row className=" flex-wrap my-1 border border-bdr dark:border-bdr-d rounded-xl gap-x-1 items-center py-1 pr-3">
-                                <Text className="px-4 mr-auto text-base font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
+                            {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
+                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center pr-4">
+                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
 
-                                {props.data.inputs['obfuscate_faces'] && <View className="mr-2">
+                                {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
                                     {getFormFieldByData(props.data.inputs['obfuscate_faces'], props.handleSubmit, 'default')}
                                 </View>}
                                 {props.data.inputs['photo'] && <View className="">
@@ -97,14 +98,14 @@ export default function FormFeed(props) {
                                     {getFormFieldByData(props.data.inputs['file'], props.handleSubmit, 'custom', { previewPlaceHolder: setPlaceHolder })}
                                 </View>}
 
-                              
+
                             </Row>
                             {prevList.length > 0 && prevList[0]?.key && (
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>
                             )}
-                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
-                                <Text className="px-4 py-5 mr-auto mb-auto text-base font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                <View className="mr-2">
+                            <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
+                                <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
+                                <View className="mr-4 flex-auto ">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
                             </Row>
@@ -112,9 +113,11 @@ export default function FormFeed(props) {
                     </KeyboardAvoidingView>
                     {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
                 </View>
-
             </Modal>
-            <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-3 sm:p-6 mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
+            {props.exProps?.mode == 'button' ? <Button variant = "primary" title = "Create" tooltip = "Create" rounded = 'rounded' fullWidth onPress={() => {
+                FeedbackHaptics('Medium')
+                setShowImage(true)
+            }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-3 sm:p-6 mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
                 <View className=" flex-row ">
                     <View className='mr-3 sm:mr-4 my-auto'>{profile}</View>
                     <Button
@@ -131,6 +134,7 @@ export default function FormFeed(props) {
                     />
                 </View>
             </Card>
+            }
         </View>
     )
 }

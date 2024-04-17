@@ -298,7 +298,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }
 
 
-    const buttonRef = useRef();
     let header = commentData.total_count > 0 ? (
         <Row className='flex-row  items-center my-4 pt-4 border-t border-bdr/50 dark:border-bdr-d/50'>
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t('Comments')} ({commentData.total_count})</Text>

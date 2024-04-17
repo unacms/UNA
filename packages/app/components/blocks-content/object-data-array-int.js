@@ -80,12 +80,6 @@ export default function BlockContentObjectDataArray(props) {
         'redirect': Redirect
     };
 
-
-
-    console.log("realDatarealData", realData);
-
-
-
     // display each block element from static data or from dynamic data
     return (
         <View className={(Platform.OS == 'web' ? 'gap-y-4' : '') + "relative"}>

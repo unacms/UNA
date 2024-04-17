@@ -5,22 +5,20 @@ import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable, ScrollView } from 'app/design/view'
 import MenuDrawer from 'app/components/nav/menu-drawer'
-import { Button, ButtonRef } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
 import { appSetting, getHeaderSettings } from 'app/lib/util'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Redirect from 'app/ui/atoms/redirect'
 import Search from 'app/ui/molecules/search'
-import Browse from 'app/components/elements/browse'
-import Notifications from 'app/components/units/notifications'
 import Profile from 'app/ui/molecules/profile'
-
 import { useTranslation } from 'react-i18next';
-import NotificationButton from 'app/ui/molecules/notif'
 import MenuAdd from 'app/components/nav/menu-add'
+import BlockByUrl from 'app/ui/molecules/block'
 
 export default function (props) {
+
     const { t } = useTranslation();
     const redirectdRef = useRef()
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -54,6 +52,8 @@ export default function (props) {
 
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
+    const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser)
+
     const windowWidth = useWindowDimensions().width + 17;
     let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
     if (windowWidth < 1024)
@@ -71,18 +71,16 @@ export default function (props) {
     if (windowWidth < 1024 && (!headerSettings.header))
         return <></>
 
-        const buttonProps = {
-            variant: "primary",
-            title:"Create",
-            id: "m3",
-            tooltip: "Create",
-            rounded: 'rounded',
-            fullWidth: true,
-            
-        }
+    const buttonProps = {
+        startDecorator: "Plus",
+        id: "m3",
+        tooltip: "Create",
+        rounded: 'rounded',
+    }
 
     return (
         <>
+
             <Redirect ref={redirectdRef} />
             <ScrollView
                 contentContainerStyle={{
@@ -145,20 +143,19 @@ export default function (props) {
                                                 />
                                             </Search>
                                             }
-                                            
                                         </>)}
                                 </View>
                             </View>
                         </View>
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
-                        {!!currentUser && (
-                                        <>
-
-                                            
-                                            <View className='mt-4 justify-center mx-auto w-full   px-4 '>
-                                            <MenuAdd typestyle="button" buttonProps={buttonProps} />
-                                            </View>
-                                        </>)}
+                            {!!currentUser && (
+                                    <Row className='mt-4 justify-center mx-auto w-full px-4 gap-x-4'>
+                                        <View className='flex-auto'>
+                                            <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
+                                        </View>
+                                        {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
+                                    </Row>
+                            )}
                             {!!currentUser && (
                                 <Link href={appSetting('layout', 'dashboard')}>
                                     <Row className="items-center justify-between mx-4 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">

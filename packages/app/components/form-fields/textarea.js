@@ -4,7 +4,6 @@ import { useController,useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
 import { useState  } from 'react';
 
-
 export default function FormFieldText(props) {
     
     const rules = getValidationRules(props);

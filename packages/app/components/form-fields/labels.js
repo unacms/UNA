@@ -36,32 +36,30 @@ export default function(props) {
     }
     //Selected: ' + field.value.length 
     return (
-        <Field {...props} error2={formContext.formState.errors[name]}>
-            <View className='w-full justify-between '>
+        <View className='w-full justify-between '>
             
-                <View className='w-full pl-4 flex-auto justify-end items-center flex-row flex-wrap'>
+        <View className='w-full pl-4 flex-auto justify-end items-center flex-row flex-wrap'>
+            <Button
+                startDecorator="Plus"
+                rounded
+                variant="text"
+                size="base"
+                onPress={() => showSelect()}
+            />
+            {!!field.value && field.value.map((item, index) => (
+                <View className='m-1' key={'label' + index}>
                     <Button
-                        startDecorator="Plus"
-                        rounded
-                        variant="text"
-                        size="base"
-                        onPress={() => showSelect()}
+                        endDecorator="X"
+                        variant={"outline"}
+                        size="sm"
+                        title={item}
+                        onPress={() => removeValue(item)}
                     />
-                    {!!field.value && field.value.map((item, index) => (
-                        <View className='m-1' key={'label' + index}>
-                            <Button
-                                endDecorator="X"
-                                variant={"outline"}
-                                size="sm"
-                                title={item}
-                                onPress={() => removeValue(item)}
-                            />
-                        </View>
-                    )
-                    )}
                 </View>
-            </View>
-        </Field>
+            )
+            )}
+        </View>
+    </View>
     );
 }
 
@@ -82,15 +80,15 @@ function ChkList({ values, selectedValues, setFormValue }) {
     return (
         <>
             {values.map((item2, index) => (
-                <Pressable onPress={() => addValue2(item2.value)}>
-                <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                    <RadioButton
-                        value={item2.value}
-                        status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
-                        onPress={() => { addValue2(item2.value); }}
-                    />
-                    <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
-                </Row>
+                <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
+                    <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
+                        <RadioButton
+                            value={item2.value}
+                            status={value2.includes(item2.value) ? 'checked' : 'unchecked'}
+                            onPress={() => { addValue2(item2.value); }}
+                        />
+                        <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                    </Row>
                 </Pressable>
             ))}
             <View className='pt-2'>

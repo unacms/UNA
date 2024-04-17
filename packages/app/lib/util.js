@@ -727,7 +727,7 @@ export function menuItemsByName(name, items, currentUser, url = '') {
 
     items = items.map(item => {
         if (item.link === '{studio}') {
-            return { ...item, link: UNA_URL + 'studio/launcher.php' };
+            return { ...item, link: UNA_URL + '/studio/launcher.php' };
         }
         if (item.link === '{profile}') {
             return { ...item, link: currentUser?.url };
