@@ -33,7 +33,6 @@ export default function FormFieldSuggestion(props) {
                 const sResponse = await fetcher('/api.php?r=' + props.custom.callback + field.value);
                 const names = Object.keys(sResponse.data);
                 names.forEach(name2 => {
-                    console.log(name2, (sResponse.data[name2].value))
                     formContext.setValue(name2, (sResponse.data[name2].value));
                 });
             }

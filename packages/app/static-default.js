@@ -350,7 +350,7 @@ function ComponentModal(props) {
     return (
         <View
             className={
-                'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
+                'flex-col mb-4 w-full mx-auto ' + appSetting('layout', 'max_width')
             }
         >
             <View className=" md:flex-row  duration-300">
@@ -368,7 +368,10 @@ function ComponentModal(props) {
                             rounded=" rounded-2xl "
                             addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
                         >
-                            <View className="">{props.block}</View>
+                            <View className="">
+                                <BlockByUrl url="/api.php?r=system/login_form/TemplServiceLogin" />
+
+                            </View>
                         </Card>
 
                         <Link
@@ -414,14 +417,14 @@ function ComponentsSplash(props) {
             <View className="mb-4 md:flex-row border-b border-bdr dark:border-bdr-d  px-2 xl:px-4 py-8 lg:gap-x-4 duration-300  ">
 
                 <View className='group absolute my-auto'>
-                <View className='translate-x-8 -rotate-6 translate-y-8 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
-                <View className='translate-x-32 -rotate-6 translate-y-16 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
-                <View className='translate-x-60 -rotate-6 translate-y-24 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
+                    <View className='translate-x-8 -rotate-6 translate-y-8 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
+                    <View className='translate-x-32 -rotate-6 translate-y-16 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
+                    <View className='translate-x-60 -rotate-6 translate-y-24 duration-1000 hover:rotate-6 absolute backdrop-blur-sm  bg-primary/5 rounded-2xl w-80 h-80 '></View>
 
 
                 </View>
                 <View className=" p-10 flex-col mx-auto justify-center  my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
-                    
+
                     <Text className=" w-full text-5xl mb-8 lg:text-6xl max-w-2xl text-center md:text-left tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         Welcome to the community!
                     </Text>

@@ -11,6 +11,7 @@ import Link from 'app/ui/atoms/link';
 import { useTranslation } from 'react-i18next';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
+import { appStatic } from 'app/lib/app-static'
 
 export default function ElementSearch(oProps) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
@@ -18,27 +19,15 @@ export default function ElementSearch(oProps) {
     const sType = oProps?.type ? oProps.type : 'default';
     const oParams = oProps?.params ? oProps.params : {};
     const [inputValue, setInputValue] = useState('');
-    //  const [popupOpen, setPopupOpen] = useState(false);
-
-    /* useEffect(() => {
-         if (popupOpen) {
-             setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
-         }
-         else {
-             setBottomSheetData(false);
-         }
-     }, [popupOpen]);*/
 
     const handleOpenPopupDefault = () => {
-        if (!bottomSheetData)
-            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />, showClose: false, snapPoints: ['25%', '70%'] });
-        else
+        if (!bottomSheetData){
+            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: false, snapPoints: ['75%', '100%'] });
+        }else{
             setBottomSheetData(false);
+        }
     }
 
-    /*<Pressable onPress={() => handleOpenPopupDefault()}>
-                <InputRounded name="search" value={inputValue} onChangeText={(value) => { handleSearch(value); handleOpenPopupDefault() }} placeholder={t("Search") + '...'} role="textbox" aria-label="Search" />
-            </Pressable>*/
     let sResult = sType == 'input' ? (
         <ElementSearchData {...oProps} resInPopup={true} />
     ) : (
@@ -161,12 +150,12 @@ export function ElementSearchData(oProps) {
 
         const sResponse = await fetcher('/api.php?r=system/get_data_search_api/TemplServices&params=' + JSON.stringify(aParams));
         if (!sResponse?.data) {
-            handleSetPopupContent('');
+            handleSetPopupContent('aa');
         }
 
         const oBlock = sResponse.data.shift();
         if (oBlock.data?.unit != 'search-results' || !oBlock.data?.data || !oBlock.data.data.length) {
-            handleSetPopupContent('');
+            handleSetPopupContent(appStatic('components_content_empty'));
         }
 
         const sContent = (
@@ -174,6 +163,9 @@ export function ElementSearchData(oProps) {
                 {oBlock.data.data.map((a, index) => <SearchResults key={index} data={a} onPress={() => handleClose()} />)}
             </View>
         );
+        if (oBlock.data.data.length == 0){
+            return appStatic('components_modal')
+        }
 
         handleSetPopupContent(sContent);
         inputRef.current && inputRef.current.focus();
@@ -187,12 +179,9 @@ export function ElementSearchData(oProps) {
     )
 
     const cnt2 = (
-        <>
-
             <View className=" flex-row items-center justify-end">
                 <Button variant="text" size="sm" rounded endDecorator="CaretDoubleRight" title={sTxtViewExtended} onPress={() => handleRedirect()} />
             </View>
-        </>
     );
 
 
@@ -232,7 +221,7 @@ export function ElementSearchData(oProps) {
                 )
             }
             <View className="flex-row">
-                <Input name="search" onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
+                <Input name="search" placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             {cnt}
         </View>

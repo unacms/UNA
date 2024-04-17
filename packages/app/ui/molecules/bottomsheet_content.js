@@ -83,6 +83,7 @@ export default function ElementCommentForm(props) {
             {isShowClose && <View className={'absolute right-2 z-50 ' + (isWeb ? 'top-4' : 'top-0')}>
                 <Button startDecorator="X" tooltip={('Close')} variant='text' size='sm' onPress={() => onClose()} />
             </View>}
+            {!!bottomSheetData.header && bottomSheetData.header}
         </>
 
     const onClose = () => {
