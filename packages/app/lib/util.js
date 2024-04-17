@@ -723,6 +723,9 @@ export function menuItemsByName(name, items, currentUser, url = '') {
         if (!currentUser.operator) {
             items = items.filter(item => item.nonoperator !== false);
         }
+
+        items = items.filter(item => {
+            return !item.membership_level || (item.membership_level & currentUser.membership) == currentUser.membership});
     }
 
     items = items.map(item => {

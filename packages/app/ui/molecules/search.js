@@ -220,7 +220,7 @@ export function ElementSearchData(oProps) {
                     </View>
                 )
             }
-            <View className="flex-row">
+            <View className="flex-row mb-2">
                 <Input name="search" placeholder='Start typing to search...' onKeyPress={(event) => handleKeyPress(event)} value={inputValue} ref={inputRef} onChangeText={(value) => handleSearch(value)} />
             </View>
             {cnt}

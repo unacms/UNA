@@ -38,10 +38,9 @@ export default function(props) {
     return (
         <View className='w-full justify-between '>
             
-        <View className='w-full pl-4 flex-auto justify-end items-center flex-row flex-wrap'>
+        <View className='w-full pl-4 flex-auto justify-end items-center flex-row flex-wrap my-2'>
             <Button
                 startDecorator="Plus"
-                rounded
                 variant="text"
                 size="base"
                 onPress={() => showSelect()}

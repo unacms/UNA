@@ -53,7 +53,7 @@ export default forwardRef((props, ref) => {
         <div className="items">
             {props.items.length
                 ? props.items.map((item, index) => (
-                    
+                    <View className='my-0.5'>
                     <Button
                         pressed = {index === selectedIndex ? true : false}
                         key={index}
@@ -64,7 +64,7 @@ export default forwardRef((props, ref) => {
                     >
                         {item.label}
                     </Button>
- 
+                    </View>
                 ))
                 : <></>
             }

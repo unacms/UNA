@@ -82,7 +82,7 @@ export default function FormFeed(props) {
 
                             </View>
                             {getFormFieldByData(props.data.inputs['text'], props.handleSubmit, 'custom', { focus: true, bg: 'transparent', placeholder: 'Write here...', linkify: true })}
-                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center pr-4">
+                            <Row className=" flex-wrap my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center pr-2">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Add media</Text>
 
                                 {props.data.inputs['obfuscate_faces'] && <View className="mr-4">
@@ -105,7 +105,7 @@ export default function FormFeed(props) {
                             )}
                             <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
-                                <View className="mr-4 flex-auto ">
+                                <View className="mr-2 flex-auto ">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
                             </Row>

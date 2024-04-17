@@ -85,16 +85,16 @@ const ItemInfo = ({ data, t }) => {
             presentation='overFullScreen'
             transparent={true}
             headerBorder={true}
+            title="Posted to"
         >
-            <Row className='gap-x-2 mb-4'>{
+            <View className='gap-x-2 mb-2'>{
                 data.owners.map((item, index) => (
-                   
+                    <Row className='items-center py-1 pl-2 my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
                         <Link key={`link-{$index}`} href={item.url} emulate={true}>
-                            <Text className=" bg-primary-500/10 px-1 rounded text-neutral-600 dark:text-neutral-400 hover:text-linkhover text-sm font-medium">
-                                {item.title}
-                            </Text>
+                            <Text className="text-neutral-700 dark:text-neutral-200 text-sm"> {item.title}</Text>
                         </Link>
-                ))}</Row>
+                    </Row>
+                ))}</View>
         </Modal></> : <></>;
 
     const FeedType = () => {

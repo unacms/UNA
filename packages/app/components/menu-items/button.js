@@ -68,7 +68,7 @@ export default function MenuItemButton(oProps) {
                     sButtonIcon = getIconByNameFromIconset(oIconset, oProps.name);
             }
 
-            let buttonAction = <ButtonAction title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />;
+            let buttonAction = <>xxx</>;
             if (oProps?.list?.length > 0){
                 buttonAction = <Text className="hover:text-linkhover px-2 text-neutral-700 font-medium">{oProps.title}</Text>
             }

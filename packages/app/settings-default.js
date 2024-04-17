@@ -249,8 +249,8 @@ let settingsDefault = {
             { name: 'channels-home', title: 'Channels', link: '/channels-home', icon: 'Hash' },  
         ],
         menu_add: [
-            { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText'},
-            { name: 'create-group-profile',title: 'Add group', link: '/create-group-profile', icon: 'UsersThree'},
+            { name: 'create-post',title: 'Add post', link: '/create-post', icon: 'ChatCenteredText', nonoperator: false},
+            { name: 'create-group-profile',title: 'Add group', link: '/create-group-profile', icon: 'UsersThree', membership_level:8},
             { name: 'create-event-profile',title: 'Add event', link: '/create-event-profile', icon: 'Calendar'},
             { name: 'create-discussion',title: 'Add discussion', link: '/create-discussion', icon: 'Chats'},
             { name: 'create-ad',title: 'Add ad', link: '/create-ad', icon: 'Megaphone'},
