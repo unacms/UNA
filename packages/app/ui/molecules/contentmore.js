@@ -29,9 +29,6 @@ export function ContentMore({ content, embed, numberOfLines, textStyle, openSmal
     if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
 
-    console.log("aaaaaaaaa0", shortHtml.trim());
-    console.log("aaaaaaaaa1", content.trim())
-
     if (showButton){
         const lastIndex = shortHtml.lastIndexOf('</p>');
         if (lastIndex !== -1) {
