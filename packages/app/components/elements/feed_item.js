@@ -10,9 +10,12 @@ export default function ElementFeedItem({data}) {
 
     tlContent = data.event.content.text;//truncateHTML(data.content.text, 380);
     if (data.event.content.images_attach.length == 0){
-        let link = linkify2(data.event.content.text);
+        /*let link = linkify2(data.event.content.text);
         if (link){
             tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
+        }*/
+        if (data.event.content.embed){
+            tlContent = tlContent + data.event.content.embed
         }
     }
 

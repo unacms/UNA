@@ -103,11 +103,12 @@ export default function FormFeed(props) {
                             {prevList.length > 0 && prevList[0]?.key && (
                                 <Row className="flex-wrap gap-2 ">{prevList}</Row>
                             )}
-                            <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
+                            {props.data.inputs['labels'] && <Row className="  my-2 border border-bdr dark:border-bdr-d rounded-xl  items-center ">
                                 <Text className="px-4 mr-auto text-sm font-medium text-neutral-800 dark:text-neutral-200">Labels</Text>
                                 <View className="mr-2 flex-auto ">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
+                            }
                             </Row>
                         </View>
                     </KeyboardAvoidingView>

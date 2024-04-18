@@ -35,13 +35,15 @@ export default function ElementHtml(props) {
 
     const data = useMemo(() => {
         let newData = propsData;
-        newData = newData.replace(/<a class="bx-mention-link"[^>]*><\/a>/g, '');
-        const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
+        if (newData)
+            newData = newData.replace(/<a class="bx-mention-link"[^>]*><\/a>/g, '');
+        
         if (newData){
+            const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
             newData = newData.replace(regex, (match, capture) => {
                 let hash = md5(capture);
                 return (
-                    `<iframe scrolling="no" id=${hash} height=140 class="w-full bg-red-500 h-30 mx-auto " src="${absoluteApiUrl("embeds")}${capture}&theme=${scheme}&hash=${hash}"></iframe>`
+                    `<iframe scrolling="no" id=${hash} height=140 class="w-full h-30 mx-auto " src="${absoluteApiUrl("embeds")}${capture}&theme=${scheme}&hash=${hash}"></iframe>`
                 );
             });
             newData = newData.replace(/(((<[^\/(br)>]*>)+[ \n(<br\s*\/*>)]*(<\/[^>]+>)+)+)/g, '');

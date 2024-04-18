@@ -257,7 +257,7 @@ export function truncateHTML(html, maxLength) {
       const tagName = match[1];
       const isClosingTag = match[0][1] === '/';
   
-      if (!isClosingTag) {
+      if (!isClosingTag && !/br|hr|img|input|link|meta|area|base|col|command|embed|keygen|param|source|track|wbr/.test(tagName)) {
         tags.push(tagName);
       } else {
         let i = tags.lastIndexOf(tagName);
@@ -273,7 +273,7 @@ export function truncateHTML(html, maxLength) {
     }
   
     return truncated;
-  }
+}
 
 export function firstLetterCap(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -396,6 +396,7 @@ export function linkify2(text) {
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
     for (let match of matches) {
         if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
+            console.log("match[0]", match[0])
             return match[0];
         }
     }

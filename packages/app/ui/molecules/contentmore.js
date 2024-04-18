@@ -13,15 +13,11 @@ function HtmlMemo({ data }) {
     return computedData
 }
 
-export function ContentMore({ content, numberOfLines, textStyle, openSmall, textClassName, showLink = true }) {
+export function ContentMore({ content, embed, numberOfLines, textStyle, openSmall, textClassName, showLink = true }) {
     
-    let link = '';
     let linkContent = '';
-    if (showLink) {
-        link = linkify2(content)
-        if (link) {
-            linkContent = '<div class="bx-embed-link" source="' + link + '">' + link + '</div>'
-        }
+    if (showLink && embed) {
+        linkContent = embed;
     }
 
     const handleShowMore = () => {
@@ -32,6 +28,9 @@ export function ContentMore({ content, numberOfLines, textStyle, openSmall, text
     let showButton = false;
     if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
+
+    console.log("aaaaaaaaa0", shortHtml.trim());
+    console.log("aaaaaaaaa1", content.trim())
 
     if (showButton){
         const lastIndex = shortHtml.lastIndexOf('</p>');

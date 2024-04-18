@@ -570,7 +570,7 @@ function DefaultUnit(data) {
                         <View className="flex-col  relative ">
                             {bIsTimelineContent && (
                                 <View className={' ' + data.content.text && content_attach.length > 0 ? ' pb-4 ' : ''}>
-                                    <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
+                                    <ContentMore showLink={data?.content?.images_attach?.length == 0} content={data.content.text} embed={data.content.embed} numberOfLines={3} openSmall={false} textClassName="font-default text-base text-neutral-600 dark:text-neutral-400" />
                                 </View>
                             )}
                             {!bIsTimelineContent && (
