@@ -108,8 +108,8 @@ export default function FormFeed(props) {
                                 <View className="mr-2 flex-auto ">
                                     {props.data.inputs['labels'] && getFormFieldByData(props.data.inputs['labels'], props.handleSubmit, 'notitle')}
                                 </View>
-                            }
-                            </Row>
+                            
+                            </Row>}
                         </View>
                     </KeyboardAvoidingView>
                     {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
