@@ -203,10 +203,12 @@ export default function PageLayout(props) {
                         <View className="flex-auto w-full lg:w-auto flex-row  duration-200">
                             <View className="flex-auto  xl:mx-2">
                                 <View className="flex-auto  w-full mx-auto">
-                                    <Row className="p-3 sm:p-4  max-w-3xl mx-auto gap-x-2  w-full">
+                                    <Row className="px-3 sm:px-4 pt-2 sm:pt-4 max-w-3xl mx-auto gap-x-2  w-full">
                                         {feedList.length > 1 &&
                                             feedList.map((item, index) => {
                                                 return (
+                                                    <Row className="flex-none items-start justify-start  gap-x-1 pb-2 sm:pb-4 ">
+
                                                     <Pressable
                                                         key={'selector' + index}
                                                         className=" my-auto items-center"
@@ -234,13 +236,14 @@ export default function PageLayout(props) {
                                                             size="sm"
                                                         />
                                                     </Pressable>
+                                                    </Row>
                                                 )
                                             })}
                                         {appSetting(
                                             'feed',
                                             'show_selector_view'
                                         ) && (
-                                            <Row className="flex-auto gap-x-1 flex-auto items-end justify-end">
+                                            <Row className="flex-auto gap-x-1 pb-2 sm:pb-4 flex-auto items-end justify-end">
                                                 <Button
                                                     startDecorator="Rows"
                                                     tooltip={t('Full')}
@@ -331,7 +334,7 @@ export default function PageLayout(props) {
                             </View>
                         </View>
                         <View className="hidden lg:block w-80 xl:w-96 ">
-                            <View className="fixed-process w-80 xl:w-96 max-w-md  px-4 py-3 flex-col space-y-4 duration-200">
+                            <View className="fixed-process w-80 xl:w-96 max-w-md  p-4 flex-col space-y-4 duration-200">
                                 {sideBarBlocks.map((item, index) => {
                                     return (
                                         <BlockByName
