@@ -364,7 +364,7 @@ export default function (props) {
                                 src={coverUrl}
                             />
                         )}
-                        {bAllowEdit && (
+                        
                             <Row className="p-4 justify-end gap-x-4">
                                {isAllowSwitch && <Button
                                     rounded
@@ -375,13 +375,13 @@ export default function (props) {
                                 />
 
                                }
-                                <Button
+                                {bAllowEdit && (<Button
                                     rounded
                                     startDecorator="Camera"
                                     onPress={() => handleUpload('cover')}
-                                />
+                                />)}
                             </Row>
-                        )}
+                        
 
                         <View className="absolute lg:hidden top-4 left-4 z-50">
                             {getBackButtonWeb()}
