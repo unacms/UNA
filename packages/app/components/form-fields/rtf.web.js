@@ -261,18 +261,12 @@ export default function FormFieldFtf(props) {
         }
 
     }, [field.value]);
-    /*useEffect(() => {
-        
-        if (editor && props.name == 'cmt_text'){
 
-            editor.commands.focus()
-        }
-    }, [editor]);*/
     useEffect(() => {
-    if (editor && props.focus == true){
-        editor.commands.focus('end')
-    }
-}, [editor, field.value]);
+        if (editor && props.focus == true){
+            editor.commands.focus('end')
+        }
+    }, [editor]);//, field.value - removed: on edit move cursor to end of text
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 

@@ -20,8 +20,6 @@ export default function BlockByUrl({url, exProps}) {
 
     if (!data)
         return <></>;
-    
-        console.log("data", data)
 
     let cnt = {content: data, designbox_id: 0}
     return <BlockByData block = {cnt}  exProps={exProps}/>

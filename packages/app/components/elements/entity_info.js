@@ -52,11 +52,14 @@ export default function ElementEntityInfo({ data }) {
                 return <Time stylesName="text-base text-neutral-800 dark:text-neutral-200" ts={a.value}></Time>
 
             case 'select':
-                return (
-                    <Text className=" text-neutral-800 text-base dark:text-neutral-200">
-                        {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}
-                    </Text>
-                )
+                if (a.value !=0 && a.value != ''){
+                    return (
+                        <Text className=" text-neutral-800 text-base dark:text-neutral-200">
+                            {a.value} {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}
+                        </Text>
+                    )
+                }
+                return false
 
             case 'textarea':
                 return <Html data={a.values ? a.values[a.value] : a.value} />

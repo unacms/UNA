@@ -13,6 +13,9 @@ export default function ({ name, value = '', type, ...props }) {
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         value = date.toISOString().replace('T', ' ').substring(0, 19) + 'Z';
     }
+    if (!bIsTime){
+        value = value.substring(0, 10);
+    }
     
     const { field } = useController({ name, rules, defaultValue: value });
 
