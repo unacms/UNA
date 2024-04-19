@@ -195,7 +195,8 @@ export function CoverSmall(props) {
     )
 }
 
-export default function ElementCover(props) {
+export default function (props) {
+    const { currentUser, setCurrentUser } = useCurrentUser()
     const data = props.data
     const mode = props.mode
     let { width } = useWindowDimensions()
@@ -323,8 +324,21 @@ export default function ElementCover(props) {
 
     const isUseBg = appSetting('layout', 'use_background')
 
-    const bAllowEdit =
-        data.allow_edit && appSetting('layout', 'allow_edit_covers')
+    const bAllowEdit = data.allow_edit && appSetting('layout', 'allow_edit_covers');
+    
+    const foundItem = currentUser?.informer?.find((item) => { return item.id == 'sys-switch-profile-context'});
+    let isAllowSwitch = foundItem ? foundItem.msg : false;
+    if (isAllowSwitch){
+        let match = isAllowSwitch.match(/switch_to_profile=(\d+)/);
+        isAllowSwitch = match ? match[1] : null
+    }
+
+    const handleSwitch = async (id) => {
+        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);       
+        setCurrentUser(result.data);
+    };
+
+    
     return (
         <View className=' border-b border-bdrnavbar dark:border-bdr-d bg-bgrnavbar dark:bg-bgrnavbar-d ' >
             <View
@@ -351,13 +365,22 @@ export default function ElementCover(props) {
                             />
                         )}
                         {bAllowEdit && (
-                            <View className="p-4 items-end">
+                            <Row className="p-4 justify-end gap-x-4">
+                               {isAllowSwitch && <Button
+                                    rounded
+                                    variant="primary"
+                                    startDecorator="UserSwitch" 
+                                    tooltip={'Switch to profile'}
+                                    onPress={() => handleSwitch(isAllowSwitch)}
+                                />
+
+                               }
                                 <Button
                                     rounded
                                     startDecorator="Camera"
                                     onPress={() => handleUpload('cover')}
                                 />
-                            </View>
+                            </Row>
                         )}
 
                         <View className="absolute lg:hidden top-4 left-4 z-50">
@@ -375,7 +398,7 @@ export default function ElementCover(props) {
                 )}
                 <View className=" flex-col md:flex-row gap-x-2 p-3 sm:p-6  ">
                     {bPerson && (
-                        <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative ">
+                        <View className=" w-full h-24 md:h-44 lg:h-28 md:w-52 relative">
                             <View className="rounded-full absolute w-min p-1 z-50 duration-200 bottom-0 flex-none bg-bgrcard-h dark:bg-bgrcard-dh ">
                                 <Profile
                                     {...data.profile}
@@ -401,25 +424,23 @@ export default function ElementCover(props) {
                         </View>
                     )}
                     
-                        <View className="flex-col flex-auto gap-y-3  ">
-                            <View className=" flex-auto flex-col gap-y-4 xl:flex-row  justify-between  ">
-                            <Row className=" flex-auto items-center gap-x-2  ">
-                                <Text
-                                    className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
-                                    numberOfLines={2}
-                                >
-                                    {data.profile.display_name}
-                                </Text>
-                                <Badges badges={data.badges} />
-                            </Row>
-                            <CoverMenuMeta {...data.meta_menu} />
-                            </View>
-
-                            <CoverMenu {...data.actions_menu} uri={props?.uri} />
-
+                    <View className="flex-col flex-auto gap-y-3  ">
+                        <View className=" flex-auto flex-col gap-y-4 xl:flex-row  justify-between  ">
+                        <Row className=" flex-auto items-center gap-x-2  ">
+                            <Text
+                                className="tracking-tight text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50"
+                                numberOfLines={2}
+                            >
+                                {data.profile.display_name}
+                            </Text>
+                            <Badges badges={data.badges} />
+                        </Row>
+                        <CoverMenuMeta {...data.meta_menu} />
                         </View>
-                    
-                   
+
+                        <CoverMenu {...data.actions_menu} uri={props?.uri} />
+
+                    </View>
                 </View>
             </View>
         </View>
