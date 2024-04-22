@@ -5,12 +5,12 @@ import { Suspense } from 'react'
 import { Loading } from 'app/loading'
 import 'app/styles/global.default.css'
 import 'app/styles/global.css'
-
+import { notFound } from 'next/navigation'
 const SITE_TITLE = 'NEO';
 let remote_config = {hash: null, data: null};
 //export const runtime = 'edge'
 
-const getData = cache(async (props) => {
+export const getData = cache(async (props) => {
     let path = props.params.path.join('/');
     let cookieString = props.searchParams.cookieString;
 
@@ -76,10 +76,16 @@ export async function generateMetadata(props) {
 }
 
 export default async function Page(props) {
+    
+    
     const data = await getData(props);    
     if (!remote_config.data || data.hash != remote_config.hash){
         remote_config = await getRemoteSettings(true);   
     }
+    if (data?.data.page_status == 404){
+        notFound(props)
+    }
+    
     return (
         <Suspense fallback={<Loading/>}>
             <Root settings={remote_config.data} path={'home'} data={data?.data} uri={data?.data?.uri} url={data?.data?.url} code={data.code}></Root>
