@@ -36,7 +36,7 @@ export default function ElementHtml(props) {
     const data = useMemo(() => {
         let newData = propsData;
         if (newData)
-            newData = newData.replace(/<a class="bx-mention-link"[^>]*><\/a>/g, '');
+            newData = newData.replace(/<a(.*?)class="bx-mention-link(.*?)"[^>]*><\/a>/g, '');
         
         if (newData){
             const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
