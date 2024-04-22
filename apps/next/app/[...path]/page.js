@@ -75,7 +75,7 @@ export async function generateMetadata(props) {
     }
 }
 
-export default async function Page(props) {
+export default async function(props) {
     const data = await getData(props);    
     if (!remote_config.data || data.hash != remote_config.hash){
         remote_config = await getRemoteSettings(true);   

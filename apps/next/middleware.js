@@ -7,18 +7,20 @@ export const config = {
     runtime: 'experimental-edge',
 };
 
-
 export function middleware(request) {
+    
     if (!request.nextUrl.pathname.includes('.php')) {
+        
         if (!request.nextUrl.pathname.includes('.icon')) {
             let c = request.cookies.getAll();
             let cookieString = '';
             c.map(function (item) {
                 cookieString += item.name + '=' + encodeURIComponent(item.value) + '; '
             });
-            let url = request.url;
+            let url = request.nextUrl.origin + request.nextUrl.pathname + request.nextUrl.search;
             if (request.nextUrl.pathname == '/')
-                url = url +'home';
+                url = request.nextUrl.origin + '/home' + request.nextUrl.search
+
             if (cookieString != ''){
                 const response =  NextResponse.rewrite(new URL(url + (url.includes('?') ? '&' : '?') + "cookieString=" + cookieString));
                 return response
