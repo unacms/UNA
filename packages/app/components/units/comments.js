@@ -164,7 +164,7 @@ export default function UnitComments(props) {
                             <Button align="start" title={t("Reply")} size ="xs" startDecorator="ArrowBendLeftUp" variant="text"  onPress={() => handleReply(data)} rounded />
                         </View> : <View className='mr-2'></View> }
                         <View className='flex-row flex-auto '>
-                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs'}} />
+                            <Menu {...data.menu_actions} displayType="element" showMatched={true} params={{show_action: true, show_counter: true, show_combined: true, display_size: 'xs', button_variant: 'text'}} />
                             {!!currentUser && !!aMenuManageItems.length && 
                             <View className="ml-auto flex-none">
                                 <DropdownMenu items={aMenuManageItems.map((aItem) => {
