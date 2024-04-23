@@ -1,11 +1,11 @@
-import { View, Row, Pressable, ScrollView } from 'app/design/view'
+import { View, ScrollView } from 'app/design/view'
 import { BlockByName } from 'app/components/block'
-import { getPageWidth } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import Card from 'app/components/card'
 import { Button } from 'app/design/controls'
 import Link from 'app/ui/atoms/link'
 import { Platform } from 'react-native'
+import { appStatic } from 'app/lib/app-static'
 
 export default function PageLayout(props) {
     let cls = 'lg:h-[calc(100vh-4rem)]';
@@ -25,108 +25,7 @@ export default function PageLayout(props) {
                     <Text className="text-base lg:text-lg xl:text-xl  text-neutral-700 dark:text-neutral-300  ">
                         Login to your account to continue.
                     </Text>
-                    <View className="flex-row hidden lg:flex  gap-x-12 gap-y-2">
-                        <View className="flex-col gap-y-4">
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="Users"
-                                    size="sm"
-                                    full
-                                    rounded
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Meet People
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="UsersThree"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Join Groups
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="ChatCenteredText"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Share Ideas
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="CalendarCheck"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Discover Events
-                                </Text>
-                            </View>
-                        </View>
-
-                        <View className="flex-col gap-y-4">
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="ChatTeardropDots"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Message Friends
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="Chats"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Discuss Topics
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="Storefront"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Buy & Sell
-                                </Text>
-                            </View>
-
-                            <View className="flex-row gap-x-2 ">
-                                <Button
-                                    variant="outline"
-                                    startDecorator="Video"
-                                    rounded
-                                    size="sm"
-                                />
-                                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
-                                    Watch Videos
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
+                    {appStatic('components_logincontent')}
                 </View>
 
 

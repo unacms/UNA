@@ -623,6 +623,111 @@ function ComponentsSplash(props) {
     )
 }
 
+const ComponentsLoginContent = (
+    <View className="flex-row hidden lg:flex  gap-x-12 gap-y-2">
+        <View className="flex-col gap-y-4">
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="Users"
+                    size="sm"
+                    full
+                    rounded
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Meet People
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="UsersThree"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Join Groups
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="ChatCenteredText"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Share Ideas
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="CalendarCheck"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Discover Events
+                </Text>
+            </View>
+        </View>
+
+        <View className="flex-col gap-y-4">
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="ChatTeardropDots"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Message Friends
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="Chats"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Discuss Topics
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="Storefront"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Buy & Sell
+                </Text>
+            </View>
+
+            <View className="flex-row gap-x-2 ">
+                <Button
+                    variant="outline"
+                    startDecorator="Video"
+                    rounded
+                    size="sm"
+                />
+                <Text className="flex-auto my-auto text-neutral-800 dark:text-neutral-200 text-lg font-semibold ">
+                    Watch Videos
+                </Text>
+            </View>
+        </View>
+    </View>
+)
+
 const ComponentsDummy = (
     <>
         <Row className="mb-auto  text-green-800 bg-green-200 dark:bg-green-950 gap-x-1 py-1 px-2 rounded-full dark:text-green-200 sm:aspect-5/1 aspect-5/1 aspect-[5/1] sm:aspect-4/1 aspect-4/1 aspect-[4/1] sm:aspect-3/1 aspect-3/1 aspect-[3/1]">
@@ -792,4 +897,5 @@ export const staticDefault = {
     components_dummy: ComponentsDummy,
     components_footer: ComponentsFooter,
     components_fullfooter: ComponentsFullFooter,
+    components_logincontent: ComponentsLoginContent
 }

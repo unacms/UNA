@@ -272,7 +272,7 @@ export default function FormFieldFtf(props) {
 
     const computedData = useMemo(() => {
         if (link)
-            return  <View className='w-1/3 mt-2'>
+            return  <View className=' mt-2'>
                 <Html data={link} />
             </View>
 
