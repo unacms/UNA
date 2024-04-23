@@ -10,7 +10,7 @@ const SITE_TITLE = 'NEO';
 let remote_config = {hash: null, data: null};
 //export const runtime = 'edge'
 
-export const getData = cache(async (props) => {
+const getData = cache(async (props) => {
     let path = props.params.path.join('/');
     let cookieString = props.searchParams.cookieString;
 
@@ -76,7 +76,6 @@ export async function generateMetadata(props) {
 }
 
 export default async function Page(props) {
-    
     
     const data = await getData(props);    
     if (!remote_config.data || data.hash != remote_config.hash){
