@@ -384,7 +384,6 @@ function DefaultUnit(data) {
     )
 
     function GroupView({ data, styles, url, isCompact }) {
-        
         const pref = isCompact ? '' : 'md:';
         return (<View className={isCompact ? " flex-row space-x-2 mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1" : " flex-col md:flex-row space-x-2 mx-0.5 sm:mx-4 overflow-hidden rounded-lg border border-bdritem dark:border-bdritem-d bg-bgritem dark:bg-bgritem-d p-1"}>
             {data.mainImage && (
