@@ -1,4 +1,5 @@
 
+"use client"
 import Layout from 'app/components/layout';
 import PageLayout from 'app/components/page-layout';
 import LayoutDataContext from 'app/context/layout';

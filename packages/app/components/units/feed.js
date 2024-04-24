@@ -171,7 +171,7 @@ const MenuManage = ({ id, menu, setViewState }) => {
                         sTitle = reportTitle;
 
                     oReport = (
-                        <View className="w-0 invisible">
+                        <View className="w-0 h-0" style={{ opacity: 0 }}>
                             <Element key={aItem.id ? aItem.id : aItem.name} ref={refReport} onChangeTitle={setReportTitle} {...aItem.data} />
                         </View>
                     );
@@ -189,7 +189,7 @@ const MenuManage = ({ id, menu, setViewState }) => {
 
     return aMenuManageItems?.length > 0 && (
         <>
-            <View className="flex-none ml-2">
+            <View className="flex-none ml-2 x">
                 <DropdownMenu items={aMenuManageItems} onSelect={handleMenuManageSelect}>
                     <Button
                         variant="text"
@@ -663,7 +663,7 @@ function UnitImages(images) {
     })
 
     return (
-        <View className="w-full px-0.5 sm:px-4">
+        <View className="w-full px-0.5 ">
             <Carousel data={aImg} />
         </View>
     )

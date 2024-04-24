@@ -425,10 +425,10 @@ function ComponentsSplash(props) {
                 </View>
                 <View className=" p-10 flex-col mx-auto justify-center  my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
 
-                    <Text className=" w-full text-5xl mb-8 lg:text-6xl max-w-2xl text-center md:text-left tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
+                    <Text className=" text-5xl mb-8 lg:text-6xl max-w-2xl text-center md:text-left tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         Welcome to the community!
                     </Text>
-                    <Text className=" w-full text-base lg:text-lg xl:text-xl max-w-2xl  text-center md:text-start text-neutral-600 dark:text-neutral-400 ">
+                    <Text className=" text-base lg:text-lg xl:text-xl max-w-2xl  text-center md:text-start text-neutral-600 dark:text-neutral-400 ">
                         Connect, engage and collaborate with people who share
                         your interests and passions - create, share, develop,
                         explore, exchange insights, and expand your horizons
@@ -478,7 +478,7 @@ function ComponentsSplash(props) {
             </View>
             <View className=" items-center px-2 xl:px-4 py-4 flex-row flex-wrap w-full duration-300">
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
@@ -501,7 +501,7 @@ function ComponentsSplash(props) {
                     </Card>
                 </View>
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
@@ -525,7 +525,7 @@ function ComponentsSplash(props) {
                     </Card>
                 </View>
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
@@ -549,7 +549,7 @@ function ComponentsSplash(props) {
                     </Card>
                 </View>
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
@@ -572,7 +572,7 @@ function ComponentsSplash(props) {
                     </Card>
                 </View>
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"
@@ -595,7 +595,7 @@ function ComponentsSplash(props) {
                     </Card>
                 </View>
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">
-                    <Card addClassName=" rounded-2xl w-full flex-auto flex-col p-6 ">
+                    <Card addClassName=" rounded-2xl w-full flex-col p-6 ">
                         <View className="flex-row gap-x-3 mb-4">
                             <Button
                                 variant="outline"

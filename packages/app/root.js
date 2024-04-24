@@ -4,11 +4,13 @@ import React, { useEffect, useCallback } from 'react';
 import { useCurrentUser } from 'app/context/user';
 import { Platform } from 'react-native'
 import { storageClear, decodeText } from 'app/lib/util';
-import Layouts from 'app/components/layouts'
+//import Layouts from 'app/components/layouts'
 import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
+import dynamic from 'next/dynamic'
 
+const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
 //const Layouts = React.lazy(() => import('app/components/layouts'));
 
 const metaAdder = (queryProperty, value) => {

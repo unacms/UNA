@@ -1,7 +1,7 @@
 "use client"
 import { Analytics } from '@vercel/analytics/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Provider } from 'app/provider'
+
 import { CurrentUserProvider } from 'app/context/user';
 import { storageGet } from 'app/lib/util'
 import * as RNLocalize from "react-native-localize";
@@ -66,14 +66,14 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" >
             <body className='bg-bgrbody dark:bg-bgrbody-d' style={{overflowY:'initial'}}>
-                <Provider>
+               
                         <QueryClientProvider client={queryClient}>
                             <CurrentUserProvider>
                                 {!!process.env['VERCEL'] ? <Analytics /> : null}
                                 {children}
                             </CurrentUserProvider>
                         </QueryClientProvider>
-                    </Provider>
+                
                     <SpeedInsights />
                 </body>
         </html>

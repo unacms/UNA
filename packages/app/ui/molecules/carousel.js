@@ -7,9 +7,12 @@ import { Text } from 'app/design/typography';
 import { Image as ImageOr } from 'react-native';
 import { useWindowDimensions } from 'react-native';
 import { appSetting } from 'app/lib/util'
+import { Platform } from 'react-native' 
+
 export default function ({ data = [] }) {
     if (!data.length) return null;
 
+    const isWeb = Platform.OS == 'web'
     const max_image_width = appSetting('layout', 'carousel_image_width');
     const max_image_aspect = appSetting('layout', 'carousel_image_aspect');
     
@@ -20,7 +23,8 @@ export default function ({ data = [] }) {
 
     const [width, setWidth] = useState(400);
 
-    const windowWidth = useWindowDimensions().width - 200;
+    const windowWidthOr = useWindowDimensions().width ;
+    const windowWidth = windowWidthOr - 200;
     const windowHeight = useWindowDimensions().height - 200;
 
     const handleShowImage = useCallback((img) => {
@@ -88,21 +92,45 @@ export default function ({ data = [] }) {
 
             let aspect = max_image_aspect;
             let aspectStyle = '';
-            if(data[0].width && data[0].height && data[0].width > data[0].height){
+            let w = data[0].width;
+            let h = data[0].height;
+            if(w && h && w > h){
                 aspect = '';
-            }
-            else{
-                aspectStyle=data[0].width/data[0].height;
-                data[0].height="";
-                data[0].width="";   
-            }
-            return (
-                <View className = {`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg`}>
+                if (isWeb){
+                    return (<View className = {`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg`}>
                     <View style={{ aspectRatio:aspectStyle }} className='h-full'>
-                        <Image2 row={0} index={0} key={0} width={data[0].width} height={data[0].height} src={data[0].src} />
+                        <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
+                    </View>
+                </View>)
+                }
+                aspectStyle = w / h;
+                if (w > (windowWidthOr-20)){
+                    h= (windowWidthOr-20)/w*h
+                    w = windowWidthOr-20;
+                   
+                }
+
+              return (
+                <View className = {`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg`}>
+                    <View style={{ aspectRatio:aspectStyle, width:w, height:h }} >
+                        <Image2 row={0} index={0} key={0}  src={data[0].src} />
                     </View>
                 </View>
             )
+            }
+            else{
+                aspectStyle = w / h;
+                h = "";
+                w = "";   
+                return (
+                    <View className = {`${max_image_width} mx-auto ${aspect} w-full  items-center justify-center bg-neutral-200  dark:bg-neutral-600 rounded sm:rounded-lg`}>
+                        <View style={{ aspectRatio:aspectStyle }} className='h-full '>
+                            <Image2 row={0} index={0} key={0} width={w} height={h} src={data[0].src} />
+                        </View>
+                    </View>
+                )
+            }
+            
         }
 
         return (

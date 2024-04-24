@@ -206,7 +206,7 @@ export default function PageLayout(props) {
                                         {feedList.length > 1 &&
                                             feedList.map((item, index) => {
                                                 return (
-                                                    <Row className="flex-none items-start justify-start  gap-x-1 pb-2 sm:pb-4 ">
+                                                    <Row  key={'row_' + index} className="flex-none items-start justify-start  gap-x-1 pb-2 sm:pb-4 ">
 
                                                     <Pressable
                                                         key={'selector' + index}
