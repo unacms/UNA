@@ -20,7 +20,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     useImperativeHandle(ref, () => {
         return {
             report(e) {
-                if(elementRef.current.classList.contains('do'))
+                if(!elementRef.current.is_reported)
                     handleGetDo(e);
                 else
                     handleUndo(e);
@@ -204,16 +204,18 @@ const ElementReports = forwardRef((oProps, ref) => {
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-    let bShowActionReported = oAction?.is_reported === true;
-    if(isContextVar('is_reported'))
-        bShowActionReported = getContextVar('is_reported') === true;
-    let bShowActionDisabled = oAction?.is_disabled === true;
-    if(isContextVar('is_disabled'))
-        bShowActionDisabled = getContextVar('is_disabled') === true;
 
-    let sTitle = oAction?.title || '';
+    if(isContextVar('is_reported'))
+        oAction.is_reported = getContextVar('is_reported') === true;
+    let bShowActionReported = oAction?.is_reported === true;
+
+    if(isContextVar('is_disabled'))
+        oAction.is_disabled = getContextVar('is_disabled') === true;
+    let bShowActionDisabled = oAction?.is_disabled === true;
+
     if(isContextVar('title'))
-        sTitle = getContextVar('title');
+        oAction.title = getContextVar('title');
+    let sTitle = oAction?.title || '';
 
     let oButtonProps = {};
     if(oProps.primary)
@@ -329,6 +331,11 @@ const ElementReports = forwardRef((oProps, ref) => {
         );
     }
 
+    /**
+     * Save current state in 'ref' to use in Imperative functions.
+     */
+    elementRef.current = oAction;
+
     const sObject = getName();
     if(bShowCombined) {
         let aButtonsGroup = [sActionButton];
@@ -336,7 +343,7 @@ const ElementReports = forwardRef((oProps, ref) => {
             aButtonsGroup.push(sCounterButton);
 
         return (
-            <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do')} ref={elementRef}>
+            <View className={(bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
                 <ButtonsGroupMenu size={sDisplaySize} {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                     {sActionPopup}
                     {sCounterPopup}
@@ -345,7 +352,7 @@ const ElementReports = forwardRef((oProps, ref) => {
     }
     else
         return (
-            <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')} ref={elementRef}>
+            <View className={'flex-auto flex-row items-center' + (bShowActionUndo && bShowActionReported ? ' undo' : ' do')}>
                 {bShowAction && !!sActionButton && <View key={sObject + '-action-button'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
                 {bShowAction && !!sActionPopup && <View key={sObject + '-action-popup'}>{sActionPopup}</View>}
                 {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
