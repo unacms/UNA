@@ -10,6 +10,7 @@ import { styled } from 'nativewind'
 
 const MentionInput = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]')
 const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
+const MentionInputMultiTransparent = styled(MentionInputDef, '  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
 
 export default function FormFieldText({ name, value = '', numLines = 4, ...props }) {
     const { field } = useController({ name, rules: {}, defaultValue: value });
@@ -74,9 +75,11 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
     if (typeof props.styles === 'object')
         styles = {...styles, ...props.styles};
 
+    let MentionInput = props.bg =='transparent' ? MentionInputMultiTransparent : MentionInputMulti
+
     return (
         <Field {...props}>
-            <MentionInputMulti style={styles}
+            <MentionInput style={styles}
                 multiline
                 value={localValue}
                 onChange={handleChange2}

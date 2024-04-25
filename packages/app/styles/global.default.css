@@ -452,3 +452,6 @@ body {
 .bx-embeded{
     border: 1px solid rgba(107, 114, 128, 0.2) !important
 }
+div{
+    scrollbar-width: none;
+}

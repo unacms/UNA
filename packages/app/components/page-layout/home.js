@@ -17,7 +17,7 @@ import Profile from 'app/ui/molecules/profile'
 import Link from 'app/ui/atoms/link'
 import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
-
+import { useWindowDimensions } from 'react-native';
 import Image from 'app/ui/atoms/image'
 
 export default function PageLayout(props) {
@@ -32,6 +32,10 @@ export default function PageLayout(props) {
     const [feedType, setFeedType] = useState(
         feedTypeD ? feedTypeD : appSetting('feed', 'default_feed')
     )
+
+    const windowDimen = useWindowDimensions();
+    const windowHeight = windowDimen.height;
+
     const feedList = appSetting('feed', 'list')
 
     const [unitMode, setUnitMode] = useState(
@@ -388,6 +392,7 @@ export default function PageLayout(props) {
         data: props.data,
         block: SplashBlock(props),
     }
+    const feedHeight = windowHeight - 64 -64 - (feedList.length > 1 ? 40 : 0)
 
     return (
         <View className="w-full ">
@@ -474,7 +479,8 @@ export default function PageLayout(props) {
                             return (
                                 <View
                                     key={'view' + index}
-                                    className="w-full h-full"
+                                    style={{ height: feedHeight}}
+                                    className="w-full  "
                                 >
                                     <Conductor
                                         minHeaderHeight={0}
