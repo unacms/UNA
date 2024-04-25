@@ -8,6 +8,23 @@ export default function ElementHtml(props) {
     const scheme = useColorScheme();
 
 
+    function removeNestedATags(html) {
+        let regex = /<a [^>]*>[^<]*<a [^>]*>(.*?)<\/a>/g;
+    
+        // Function to replace only the innermost <a> tags
+        function replaceInnermostATags(match) {
+            // Remove the innermost <a> tag but leave the content
+            return match.replace(/<a [^>]*>(.*?)<\/a>/, '$1');
+        }
+    
+        // Keep replacing while there are nested <a> tags
+        while (regex.test(html)) {
+            html = html.replace(regex, replaceInnermostATags);
+        }
+    
+        return html;
+    }
+
     useEffect(() => {
         const handleMessage = (event) => {
             let data = false;
@@ -35,8 +52,11 @@ export default function ElementHtml(props) {
 
     const data = useMemo(() => {
         let newData = propsData;
-        if (newData)
+        if (newData){
             newData = newData.replace(/<a(.*?)class="bx-mention-link(.*?)"[^>]*><\/a>/g, '');
+            newData = removeNestedATags(newData);
+
+        }
         
         if (newData){
             const regex = /<div class="bx-embed-link" source="(.*?)">[\s\S]*?<\/div>/g;
