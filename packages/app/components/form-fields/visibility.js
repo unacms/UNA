@@ -31,7 +31,8 @@ export default function (props) {
         setBottomSheetData(false);
     }
 
-    const values = getVisibilityValues(props.values);
+    let values = getVisibilityValues(props.values);
+    values = values.filter(item => item.value != '6' && item.value != '8');
     const showSelect = (val) => {
         setBottomSheetData({ title: 'Choose audience',showClose:true, snapPoints: ['70%', '70%'], content: <RbList values={values} setValue={setValueF} selectedValue={field.value} /> });
     }

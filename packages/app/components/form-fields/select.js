@@ -65,5 +65,6 @@ export function getVisibilityValues(valuesIn){
         }); 
         values = values.filter(Boolean);
     }
+    
     return values;
 }

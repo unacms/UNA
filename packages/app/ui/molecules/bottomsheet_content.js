@@ -7,7 +7,7 @@ import { Button } from 'app/design/controls'
 import { Text } from 'app/design/typography'
 import { Platform, Dimensions } from 'react-native'
 import { Modal } from 'app/design/controls'
-import { ScrollView } from 'dripsy';
+import { ScrollView } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 
 export default function ElementCommentForm(props) {
