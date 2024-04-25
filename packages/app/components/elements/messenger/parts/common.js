@@ -33,7 +33,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [panelsVisible, setPanelsVisible] = useState({ convos: true, jots: isSmallScreen ? false : true });
     const [commentForm, setCommentForm] = useState(false);
     const [jotUpdated, setJotUpdated] = useState(false);
-    const [formHeight, setFormHeight] = useState(96);
+    const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
     
@@ -422,7 +422,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
 });
 
 const FormContainer = memo(({ form, replyItem, onFormSubmit, handleCancelReply, handleLayout }) => {
-    let padding = 8;
+    let padding = 12;
     const { colors } = useTheme();
     return (
         <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
