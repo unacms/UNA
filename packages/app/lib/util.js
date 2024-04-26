@@ -396,7 +396,6 @@ export function linkify2(text) {
     let matches = Array.from(text.matchAll(urlRegex)).reverse();
     for (let match of matches) {
         if ([APP_URL, UNA_URL].every(domain => !match[0].includes(domain))) {
-            console.log("match[0]", match[0])
             return match[0];
         }
     }

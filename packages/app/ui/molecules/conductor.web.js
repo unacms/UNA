@@ -374,9 +374,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
         if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
-            let addButtonsSet = menuSettings?.add;
+            let addButtonsSet = menuSettings?.add.filter(item => item.hideInTopBar !== true);
             if (!currentUser) {
-                addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false);
+                addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false );
             }
             const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
@@ -644,7 +644,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);
-        const addButtons = menuSettings?.add?.map((button) => {
+        const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
 
             let btn = undefined;
             if (button.section)

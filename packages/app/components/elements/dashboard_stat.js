@@ -42,12 +42,15 @@ function getCounter(num, icon = '', add = '') {
     )
 }
 
-export default function PageLayout(props) {
+export default function (props) {
     
     const { t } = useTranslation();
     let { currentUser, setCurrentUser } = useCurrentUser()
     
     const [showImage2, setShowImage2] = useState(false);
+
+    console.log("currentUser", currentUser);
+
 
     let profile = null
     if (currentUser) {
