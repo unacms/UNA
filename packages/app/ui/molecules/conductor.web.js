@@ -641,6 +641,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setCntWidth(event.nativeEvent.layout.width)
 
     };
+    
 
     const leftSideBarObj = useCallback(() => {
         const menuSettings = appSetting('menu_items', menu.object);

@@ -29,7 +29,7 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
 async function runOneSignal() {    
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     if (ONESIGNAL_KEY) {
-        alert(appSetting('config', 'api_keys', 'onesignal'));
+        //alert(appSetting('config', 'api_keys', 'onesignal'));
         await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true});
         OneSignal.Slidedown.promptPush();
     }
