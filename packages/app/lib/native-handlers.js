@@ -57,7 +57,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
                 { backButton }
                 { leftComponent }
                 { icon ? <Icon icon={icon} width={24} height={24} color={colors.barsColor} /> : <></>}
-                { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>{header}</Text>}
+                { _path =='/home' ? <SvgLogoNative/> : <Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>{header.replace('__notification__', '')}</Text>}
             </Row>
         )
     }

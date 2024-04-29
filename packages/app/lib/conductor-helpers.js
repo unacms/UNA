@@ -140,7 +140,9 @@ export async function parseData(routes, index, setRoutes, newData) {
         const sResponse = await fetcher(sRequest);
         const newData = sResponse.data[0]?.data?.data ? sResponse.data[0]?.data?.data : [];
         let finished = newData?.length === 0 || !newData;
-        if (params?.per_page && newData?.length == 0 ) {//< params.per_page
+        let zeroRes = currentRoute.endpoint.request_url.includes('bx_timeline') ? newData?.length == 0 : newData?.length < params.per_page //FIX COUNT FROM FEED less then per_page it's normal
+
+        if (params?.per_page && zeroRes) {
             finished = true;
         }
         let isFinished = (currentRoute.endpoint.finished !== finished)
