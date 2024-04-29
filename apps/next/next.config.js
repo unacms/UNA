@@ -1,7 +1,7 @@
 const { withExpo } = require('@expo/next-adapter')
 const merge = require('deepmerge');
 const nextConfigCustom = require('./next.config.custom.js');
-const MillionCompiler = require('@million/lint');
+//const MillionCompiler = require('@million/lint');
 
 
 /** @type {import('next').NextConfig} */
