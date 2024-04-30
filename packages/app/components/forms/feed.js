@@ -60,7 +60,7 @@ export default function FormFeed(props) {
                     setShowImage(null)
                 }}
                 presentation='overFullScreen'
-
+                padding = 'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'
                 transparent={true}
                 headerBorder={true}
             >

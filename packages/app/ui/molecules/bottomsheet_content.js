@@ -38,6 +38,7 @@ export default function ElementCommentForm(props) {
     if (!isShow)
         return <></>
 
+    console.log(bottomSheetData);
     if (windowDimensions.width > 1024) {
         //outerClickClose={false}
         return (
@@ -50,6 +51,7 @@ export default function ElementCommentForm(props) {
                     if (bottomSheetData.onClose)
                         bottomSheetData.onClose();
                 }}
+                padding={bottomSheetData?.modal?.padding}
                 
                 transparent={true}
             >

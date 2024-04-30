@@ -30,7 +30,7 @@ const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
     const isWeb = Platform.OS == 'web' ? true : false;
     const aItems = [itemContent];
-    const CommentsPartsData = CommentsParts(commentsData, aItems, windowDimensions.height * 0.95 - 136, initFormData);
+    const CommentsPartsData = CommentsParts(commentsData, aItems, windowDimensions.height * 0.95 - 166, initFormData);
     return (
         <View className='flex-1 w-full '>
             <View className={'w-full flex-auto ' + (isWeb ? '' : ' h-16')}>
@@ -294,7 +294,7 @@ function DefaultUnit(data) {
     const isCommentsModal = data.cmts_list ? true : false;
 
     const showCommentsModal = async (initFormData) => {
-        setBottomSheetData({ title: data.author_data.display_name + "'s post", showClose: true, isListView: true, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
+        setBottomSheetData({ title: data.author_data.display_name + "'s post", showClose: true, isListView: true, modal:{padding:'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'}, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
     }
 
     if (viewState.view == 'deleted')
