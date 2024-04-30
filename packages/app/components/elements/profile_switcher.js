@@ -49,7 +49,7 @@ export default function ElementProfileSwitcher(props) {
             </Pressable>
             {(show  ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={show} onClose={() => {setShow(false)}}>
                 <Redirect ref={redirectdRef} />
-                <View className="  overflow-hidden flex-col">
+                <View className="  overflow-hidden flex-col mb-4">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">
                         <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
                             Your Profiles
