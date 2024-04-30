@@ -135,7 +135,7 @@ export default function Layout(props) {
 
 
         window.addEventListener('scroll', handleScroll);
-        handleScroll();
+        //handleScroll(); disabled, reason: on profile page on load right block is on top
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
