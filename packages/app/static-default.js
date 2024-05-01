@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { tp, appSetting } from 'app/lib/util'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import BlockByUrl from 'app/ui/molecules/block'
+import { Platform } from 'react-native'
 
 const LogoText = (
     <Svg
@@ -96,7 +97,7 @@ const LogoMark = (
 
 const LogoNative = (
     <Svg
-        className="w-20 h-6 text-primary"
+        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +140,7 @@ const LogoNative = (
 
 const LogoNativeDark = (
     <Svg
-        className="w-20 h-6 text-primary"
+        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -410,6 +411,63 @@ function ComponentModal(props) {
 }
 
 function ComponentsSplash(props) {
+    const isWeb = Platform.OS == 'web';
+    
+
+    const cnt = <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
+        <View className=" flex-auto w-full   ">
+            <Card
+                rounded=" rounded-2xl "
+                addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
+            >
+                <View className="">{props.block}</View>
+            </Card>
+
+            <Link
+                className=" mx-auto  w-full "
+                href="/forgot-password"
+            >
+                <Button
+                    title="Forgot password?"
+                    variant="link"
+                    fullWidth
+                    size="sm"
+                />
+            </Link>
+
+            <Card
+                rounded=" rounded-2xl "
+                addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  "
+            >
+                <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                    Don't have an account?
+                </Text>
+                <Link className=" w-full " href="/create-account">
+                    <Button
+                        title="Create new account"
+                        startDecorator="UserCirclePlus"
+                        size="base"
+                        fullWidth
+                    />
+                </Link>
+            </Card>
+        </View>
+    </View>
+
+    if (!isWeb){
+        return (
+            <View className=' w-full h-screen w-full justify-center mt-4'>
+                <View className='   '>
+                    <View className='items-center mb-4 '><View className='w-60 h-16'>{LogoNative}</View></View>
+                    <Text className=" text-center  text-xl font-semibold  mx-auto text-neutral-700 dark:text-neutral-300 mb-4">
+                        Login to your account to continue.
+                    </Text>
+                {cnt}
+                </View>
+            </View>
+        )
+    }
+
     return (
         <View className={
             'flex-col w-full mx-auto ' + appSetting('layout', 'max_width')
@@ -424,7 +482,6 @@ function ComponentsSplash(props) {
 
                 </View>
                 <View className=" p-10 flex-col mx-auto justify-center  my-auto sm:justify-start items-center md:items-start xl:items-center  flex-auto  ">
-
                     <Text className=" text-5xl mb-8 lg:text-6xl max-w-2xl text-center md:text-left tracking-tight font-bold text-neutral-800 dark:text-neutral-200 ">
                         Welcome to the community!
                     </Text>
@@ -436,45 +493,7 @@ function ComponentsSplash(props) {
                     </Text>
                 </View>
 
-                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-1/3 my-auto mx-auto items-center xl:p-4 p-2  ">
-                    <View className=" flex-auto w-full   ">
-                        <Card
-                            rounded=" rounded-2xl "
-                            addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
-                        >
-                            <View className="">{props.block}</View>
-                        </Card>
-
-                        <Link
-                            className=" mx-auto  w-full "
-                            href="/forgot-password"
-                        >
-                            <Button
-                                title="Forgot password?"
-                                variant="link"
-                                fullWidth
-                                size="sm"
-                            />
-                        </Link>
-
-                        <Card
-                            rounded=" rounded-2xl "
-                            addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  "
-                        >
-                            <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
-                                Don't have an account?
-                            </Text>
-                            <Link className=" w-full " href="/create-account">
-                                <Button
-                                    title="Create new account"
-                                    startDecorator="UserCirclePlus"
-                                    size="base"
-                                    fullWidth
-                                />
-                            </Link>
-                        </Card>
-                    </View>
-                </View>
+                {cnt}
             </View>
             <View className=" items-center px-2 xl:px-4 py-4 flex-row flex-wrap w-full duration-300">
                 <View className="w-full md:w-1/2 lg:w-1/3 flex-auto max-w-lg mx-auto xl:p-4 p-2">

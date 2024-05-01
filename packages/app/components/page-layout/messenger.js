@@ -14,6 +14,7 @@ import { fetcher } from 'app/lib/fetcher';
 import { Platform } from 'react-native'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 
+
 export default function PageLayout({ url, data, layoutName, blocks: { main } }) {
     const isWeb = Platform.OS == 'web'
     const sTitle = 'Messenger';
@@ -25,8 +26,9 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
     if (aUrl.length > 2)
         defaultConvoId = aUrl[2];
 
-
     const { currentUser, setCurrentUser } = useCurrentUser();
+    
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
 
     const layout = getLayout(currentUser, 'navigator');
     const isLeftMenu = layout != 'hor' ? false : true;
@@ -166,20 +168,20 @@ const MessengerContainer = memo(({ convos, selectedMenu, url, data, windowWHeigh
 });
 
 
-const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, layoutName, sTitle, menu, changeMenu }) => {
+const TopMenu = memo(({ url, currentUser, windowWidth, isLeftMenu, addButtons, layoutName, sTitle, menu, changeMenu, isDrawer }) => {
     const isWeb = Platform.OS == 'web'
     const [menuPopup, setMenuPopup] = useState(false)
 
     const showMenu = () => {
         setMenuPopup(!menuPopup)
     }
-
+   
     const headerSettings = getHeaderSettings(getURI(url), windowWidth, layoutName);
     return (
         <>
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-[114px]  w-full" />
             <View className=''>
-                <TopSidebar isWeb={isWeb} leftSideBar={isLeftMenu} headerSettings={headerSettings} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
+                <TopSidebar isDrawer={isDrawer} isWeb={isWeb} leftSideBar={isLeftMenu} headerSettings={headerSettings} addButtons={addButtons} isSmall={true} showMenu={showMenu} layout={layoutName} title={sTitle} >
                     <View className='ml-3 sm:ml-4 mr-auto '>
                         <Row className="gap-x-2" >
                             {menu.data.map((a, index2) => {

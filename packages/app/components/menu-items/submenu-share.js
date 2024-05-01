@@ -2,11 +2,13 @@ import { Share } from 'react-native';
 import { fetcher } from 'app/lib/fetcher';
 import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls'
 import { Pressable } from 'app/design/view'
-import dynamic from 'next/dynamic'
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
 import { setClipboard } from 'app/lib/util'
+import Msg from 'app/ui/molecules/msg';
+import { useState } from 'react';
 
 export default function MenuItemSubmenuShare(oProps) {
+    const [showMsg, setShowMsg] = useState(false);
 
     const oIconAliases = {
         'item-share': 'ShareFat',
@@ -26,8 +28,12 @@ export default function MenuItemSubmenuShare(oProps) {
             case 'item-repost':
                 handleClick = async () => {
                     const sResponse = await fetcher('/api.php?r=bx_timeline/repost/Module&params=' + JSON.stringify(Object.values(oItem.data)));
-                    if(sResponse?.data && parseInt(sResponse.data?.code) > 0)
-                        console.log(sResponse.data);
+                    console.log("sResponse", sResponse)
+                    if(sResponse?.data ){
+                        const sMsg = sResponse.data?.message ? sResponse.data?.message : 'The item was successfully reposted.';
+                        console.log("sMsg", sMsg)
+                        setShowMsg(sMsg);
+                    }
                 };
                 break;
 
@@ -77,10 +83,13 @@ export default function MenuItemSubmenuShare(oProps) {
 
 
     return (
-        <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
-            <DropdownMenu items={aSubmenuItems}>
-                <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
-            </DropdownMenu>
-        </Pressable>
+        <>
+            <Msg onVisible={showMsg} title={showMsg} handleOk={() => { setShowMsg(false) }} />
+            <Pressable className="flex-auto" onPress={(event) => {event.preventDefault()}}>
+                <DropdownMenu items={aSubmenuItems}>
+                    <ButtonAction title={oProps?.title ? oProps.title : ''} startDecorator={oIconAliases[oProps.name] ? oIconAliases[oProps.name] : ''} />
+                </DropdownMenu>
+            </Pressable>
+        </>
     );
 }

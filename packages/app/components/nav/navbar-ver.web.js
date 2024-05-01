@@ -24,6 +24,8 @@ export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
 
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+
     let { width } = useWindowDimensions()
 
     if (width > 1280 && menuPopup)
@@ -90,7 +92,7 @@ export default function (props) {
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start ' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <View className='px-3 sm:px-4 lg:px-2 lg:pt-4 flex-row lg:flex-col lg:w-80'>
-                            {headerSettings.menu && (
+                            {(headerSettings.menu && isDrawer) && (
                                 <View className="lg:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button

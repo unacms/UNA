@@ -13,6 +13,9 @@ export default function ({ menuPopup, showMenu, cssClass }) {
     const items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser);
     const handleHideMenu = (params) => { }
 
+    if (items.length == 0)
+        return <></>
+
     const { t } = useTranslation();
 
     let windowHeight = Dimensions.get('window').height

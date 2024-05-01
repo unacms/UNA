@@ -32,27 +32,34 @@ export default function PageLayout(props) {
                     {appStatic('components_logincontent')}
                 </View>
 
-                <View className=" flex-auto flex-col gap-y-4 w-full max-w-md  ">
-                    {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
-                    {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
+                <View className="mx-auto w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center xl:p-4 p-2  ">
+                    <View className=" flex-auto w-full   ">
+                    <Card
+                            rounded=" rounded-2xl "
+                            addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
+                        >
+                        {!isAllowJoin && <BlockByName name={props.blocks.form_invitation} data={props.data} />}
+                        {isAllowJoin && <BlockByName name={props.blocks.form_join} data={props.data} />}
+                    </Card>
+                    <View className="w-full m-2"></View>
                     <Card
                         rounded=" rounded-2xl "
-                        addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto gap-y-6 flex-col "
+                        addClassName="border p-6 w-full  max-w-xl mx-auto flex-auto flex-col "
                     >
-                        <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  ">
+                        <Text className="text-lg font-bold  mx-auto text-neutral-700 dark:text-neutral-300  mb-6">
                             Already have an account?
                         </Text>
                         <Link className=" w-full " href="/login">
                             <Button
                                 title="Log in with email"
-                                variant="outline"
+                               
                                 startDecorator="SignIn"
                                 size="base"
                                 fullWidth
                             />
                         </Link>
                     </Card>
-
+                    </View>
                 </View>
             </View>
         </ScrollView>

@@ -24,6 +24,8 @@ export default function (props) {
     const { t } = useTranslation();
     let { width } = useWindowDimensions()
 
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+
     if (width > 1280 && menuPopup)
         setMenuPopup(false)
 
@@ -108,7 +110,7 @@ export default function (props) {
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
                         <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
                             {
-                                headerSettings.menu && (
+                                (headerSettings.menu && isDrawer) && (
                                     <View className="lg:hidden mr-3 sm:mr-4">
                                         <Pressable onPress={showMenu}>
                                             <Button

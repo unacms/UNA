@@ -67,19 +67,20 @@ export function Modal({
                 <View className={`flex-row justify-center left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal h-full ${sClassPosition}`}>
                     <View className={`${fullWidth ? 'w-full' : ''} relative h-full max-w-2xl md:h-auto `}>
                         <Pressable onPress={() => { }} className='relative bg-bgrmodal dark:bg-bgrmodal-d h-full md:h-auto sm:border sm:border-bdrmodal sm:dark:border-bdrmodal-d sm:rounded-2xl sm:shadow-sm'>
-                            <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3 sm:px-6 sm:py-5 `}>
-                                {title && (
-                                    <View className='flex-auto'>
-                                        <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
+                            {
+                                (title || onClose) && <Row className={`items-center justify-${textAlign} ${headerBorder ? ' border-b border-bdr dark:border-bdr-d ' : ''} px-4 py-3 sm:px-6 sm:py-5 `}>
+                                    {title && (
+                                        <View className='flex-auto'>
+                                            <Text className='text-neutral-700 dark:text-neutral-200 text-xl font-bold '>{title}</Text>
+                                        </View>
+                                    )}
+                                    {onClose && (
+                                    <View className=''>
+                                        <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
                                     </View>
                                 )}
-                                {onClose && (
-                                <View className=''>
-                                    <Button variant='text' size='sm' rounded startDecorator='X' onPress={onClose} />
-                                </View>
-                            )}
-                            </Row>
-                            
+                                </Row>
+                            }
                             <View className = { padding+" overflow-y-auto flex-auto md:h-auto" }>{children}</View>
                         </Pressable>
                     </View>

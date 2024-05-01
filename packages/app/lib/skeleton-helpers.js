@@ -60,7 +60,7 @@ const Forum = memo(() => (
 ));
 
 const Posts = memo(() => (
-    <View className="p-2 mt-4 sm:mx-4 shadow flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
+    <View className="m-3 p-2 mt-4 sm:mx-4 shadow flex-auto md:flex-row-reverse rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d ">
         <View className="relative bg-neutral-500/20 aspect-video rounded-xl w-full md:w-1/3 "></View>
         <View className="flex-auto p-2 flex-col md:ml-0.5 md:mr-2">
             <View className="w-2/3 h-4 mt-1.5 rounded-full bg-neutral-500/20"></View>
@@ -75,7 +75,7 @@ const Posts = memo(() => (
 ));
 
 const PostsSmall = memo(() => (
-    <View className="sm:m-2 flex-auto shadow rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
+    <View className="m-2 flex-auto shadow rounded-2xl p-2 overflow-hidden bg-bgrcard dark:bg-bgrcard-d">
         <View className="relative bg-neutral-500/20 aspect-video rounded-lg w-full "></View>
         <View className="flex-auto p-2 flex-col">
             <View className="w-full h-4 mt-2 rounded-full bg-neutral-500/20"></View>

@@ -98,7 +98,10 @@ const ItemInfo = ({ data, t }) => {
         </Modal></> : <></>;
 
     const FeedType = () => {
-        const l = t('feed_type_' + data.type);
+        let l = t('feed_type_' + data.type);
+        if (data.type == 'timeline_common_repost') {
+            l += ' ' + data.content.owner_name + "'s " + data.content.parse_type;
+        }
         return l && (
             <>
                 <Text className=" text-neutral-500/50 text-sm"> · </Text>

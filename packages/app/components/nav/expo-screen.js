@@ -87,12 +87,13 @@ export function Screen(params) {
                     : <></>;
 
                 updateRightHeader(currentUser ? settings?.header : null, navigation);
-                updateCenterHeader(_path, t(data.props.data.title), false, navigation, routerExpo, colors, '', profileDisplay);
+                updateCenterHeader(_path, t(data.props.data.title), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
+                
                 setPageData(data.props);
             }
         };
         fetchPageData();
-    }, [_path, isFocused]);
+    }, [_path, isFocused, currentUser]);
 
 
     if (!isFocused)

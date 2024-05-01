@@ -50,7 +50,7 @@ export default function PageLayout(props) {
     let actionsItemIndex = aItems.findIndex(item => item.id === 'block_actions');
     if (actionsItemIndex !== -1) {
         aItems[actionsItemIndex].data = (
-            <View className=' border-b  border-bdr/50 dark:border-bdr-d/50 '>
+            <View className=''>
                 {aItems[actionsItemIndex].data}
             </View>
         );

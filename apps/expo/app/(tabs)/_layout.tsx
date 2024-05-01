@@ -56,7 +56,6 @@ export default function AppLayout() {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
 
-
     return (
         <SafeAreaView edges={['left', 'right', 'bottom']} style={{
             width: '100%',
@@ -71,7 +70,7 @@ export default function AppLayout() {
                     screenOptions={({ navigation, route }) => ({
                         tabBarStyle: {
                             backgroundColor: colors.barsBackground,
-                            height: 55
+                            height: currentUser || appSetting('layout', 'hide_nav_non_logged_native: true') ? 55 : 0
                         },
                         headerStyle: {
                             backgroundColor: colors.barsBackground,
@@ -87,27 +86,35 @@ export default function AppLayout() {
                     })}
                 >
                     {
-                        TabList.map((tab, index) => (
-                            <Tabs.Screen
-                                key={`tab${index}`}
-                                name={`tab${index}`}
-                                initialParams={{ url2: tab.url }}
-                                listeners={{
-                                    tabPress: e => {
-                                        FeedbackHaptics('Medium');
-                                    },
-                                }}
-                                options={{
-                                    tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
-                                    title: t(tab.title),
-                                    headerShown: false,
-                                    tabBarIcon: ({ color }) => (
-                                        (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
-                                    )
-
-                                }}
-                            />
-                        ))}
+                        TabList.map((tab, index) => {
+                            const options = {
+                                tabBarBadge: tab.url == appSetting('layout', 'notifications') ? notifCount : null,
+                                title: t(tab.title),
+                                headerShown: false,
+                                tabBarIcon: ({ color }) => (
+                                    (tab.url == '/dashboard' && profile) ? profile : <Icon icon={tab.icon} width={iconWidth} height={iconHeight} color={color} />
+                                )
+                            };
+                    
+                            if (tab.title == '') {
+                                options.tabBarLabel = () => null;
+                            }
+                    
+                            return (
+                                <Tabs.Screen
+                                    key={`tab${index}`}
+                                    name={`tab${index}`}
+                                    initialParams={{ url2: tab.url }}
+                                    listeners={{
+                                        tabPress: e => {
+                                            FeedbackHaptics('Medium');
+                                        },
+                                    }}
+                                    options={options}
+                                />
+                            );
+                        })
+                    }
                 </Tabs>
             </BottomSheetDataContext>
         </SafeAreaView>

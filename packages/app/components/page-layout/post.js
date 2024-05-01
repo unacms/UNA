@@ -1,11 +1,10 @@
 import { View } from 'app/design/view';
 import { BlockByName, DataByName} from 'app/components/block';
-
+import { useCurrentUser } from 'app/context/user';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { stripTags } from 'app/lib/util';
 import { useTheme } from '@react-navigation/native';
 import { Platform } from 'react-native'
-
 import { CommentsBrowse, CommentsForm } from 'app/lib/comments-helpers'
 import { KeyboardAvoidingView } from 'react-native';
 import { useNavigation, useRouter} from "expo-router";
@@ -19,7 +18,7 @@ export default function PageLayout(props) {
     const [addData, setAddData] = useState({});
     const [sizes, setSizes] = useState({formHeight:0});
     const [isKeyboardVisible, setKeyboardVisible] = useState(0);
-
+    const { currentUser } = useCurrentUser();
     const viewFormRef = useRef();
     const viewCntRef = useRef();
 
@@ -57,7 +56,7 @@ export default function PageLayout(props) {
             data: <BlockByName data={props.data} name={value} />
         }));
         if (aItems.length > 0){
-            updateCenterHeader(null, <View style={{width:Dimensions.get('window').width-65}} className=' items-center '>{aItems[0].data}</View>, true, navigation, routerExpo, colors, null);
+            updateCenterHeader(null, <View style={{width:Dimensions.get('window').width-65}} className=' items-center '>{aItems[0].data}</View>, true, navigation, routerExpo, colors, null, null, currentUser);
         }
     }, 100);
 
