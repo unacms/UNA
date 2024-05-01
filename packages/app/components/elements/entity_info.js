@@ -55,7 +55,7 @@ export default function ElementEntityInfo({ data }) {
                 if (a.value !=0 && a.value != ''){
                     return (
                         <Text className=" text-neutral-800 text-base dark:text-neutral-200">
-                            {a.value} {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}
+                            {a.values ? (a.values[a.value].value ? a.values[a.value].value : a.values[a.value]) : a.value}
                         </Text>
                     )
                 }
