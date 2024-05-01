@@ -11,12 +11,9 @@ import { appSetting } from 'app/lib/util'
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
-    if (scheme === 'dark'){
-        return appStatic('logo_native')
-    }
-    else{
-        return appStatic('logo_nativedark')
-    }
+    const logo = scheme === 'dark' ? 'logo_native' : 'logo_nativedark';
+    
+    return <View className='w-20 h-6'>{appStatic(logo)}</View>;
 };
 
 export function updateRightHeader(items, navigation) {

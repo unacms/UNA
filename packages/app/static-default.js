@@ -97,7 +97,7 @@ const LogoMark = (
 
 const LogoNative = (
     <Svg
-        className="w-20 h-6 text-primary"
+        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -140,7 +140,7 @@ const LogoNative = (
 
 const LogoNativeDark = (
     <Svg
-        className="w-20 h-6 text-primary"
+        className=" text-primary"
         viewBox="0 0 8000 2400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -456,9 +456,9 @@ function ComponentsSplash(props) {
 
     if (!isWeb){
         return (
-            <View className=' w-full h-screen w-full justify-center'>
+            <View className=' w-full h-screen w-full justify-center mt-4'>
                 <View className='   '>
-                    <View className='items-center mb-4'>{LogoNative}</View>
+                    <View className='items-center mb-4 '><View className='w-60 h-16'>{LogoNative}</View></View>
                     <Text className=" text-center  text-xl font-semibold  mx-auto text-neutral-700 dark:text-neutral-300 mb-4">
                         Login to your account to continue.
                     </Text>

@@ -297,7 +297,7 @@ let settingsDefault = {
         menu_tabbar_logged: [
             {key: '/tab0', title: 'Home', url: '/home',icon: 'House'},
             {key: '/tab1', title: 'Messages', url: '/messenger',icon: 'ChatTeardropDots'},
-            {key: '/tab2', title: 'Friends', url: '/posts-home', icon: 'Users'},
+            {key: '/tab2', title: 'Friends', url: '/friends', icon: 'Users'},
             {key: '/tab3', title: 'Notifications', url: '/notifications-view', icon: 'Bell'},
             {key: '/tab4', title: 'Menu', url: '/dashboard',icon: 'UserList'},
         ],
