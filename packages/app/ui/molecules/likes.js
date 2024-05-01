@@ -184,7 +184,7 @@ export default function ElementLikes(oProps) {
     let sActionButton = undefined;
     if(bShowActionUndo && bShowActionVoted) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} {...oButtonProps} />
+            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} pressed={true} {...oButtonProps} />
         );
     }
     else {
