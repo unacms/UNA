@@ -72,6 +72,7 @@ let settingsDefault = {
         comments_mentions: true,
         carousel_image_width: '',
         carousel_image_aspect: 'aspect-video',
+        show_navigation_non_logged_native: false
     },
     jitsi: {
         prefix: 'prefix_',
@@ -476,15 +477,15 @@ let settingsDefault = {
         login: {
             layout: 'login',
             blocks: {
-                form: { name: 'system:login_form', showTitle: false },
+                form: { name: 'system:login_form', showTitle: false, showBg: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },
         'create-account': {
             layout: 'create-account',
             blocks: {
-                form_join: { name: 'system:create_account_form', showTitle: false },
-                form_invitation: { name: 'bx_invites:get_block_form_request', showTitle: false },
+                form_join: { name: 'system:create_account_form', showTitle: false, showBg: false },
+                form_invitation: { name: 'bx_invites:get_block_form_request', showTitle: false, showBg: false },
             },
             headerSettings: { header: true, backButton: false, menu: true, title: true },
         },

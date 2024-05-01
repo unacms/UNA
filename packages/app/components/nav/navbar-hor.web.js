@@ -34,6 +34,8 @@ export default function (props) {
         // setMenuPopup(false)
     }
 
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+
     const bSearch = appSetting('layout', 'search') == true
     const bMessenger = appSetting('layout', 'messenger') ? true : false
     const bNotifs = appSetting('layout', 'notifications') ? true : false
@@ -77,7 +79,7 @@ export default function (props) {
                         }
                     >
                         <View className="flex-row pl-3 sm:pl-4 sm:pr-2 flex-auto lg:flex-none lg:w-80 my-auto items-center">
-                            {headerSettings.menu && (
+                            {(headerSettings.menu && isDrawer) && (
                                 <View className="sm:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button

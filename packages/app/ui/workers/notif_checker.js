@@ -9,8 +9,9 @@ export default function (oProps) {
     if (currentUser){
     const { daemonData, error } = useDaemon("/api.php?r=bx_notifications/get_unread_notifications_num&params[]=", false, true, 10000);
     useEffect(() => {
-        if (daemonData >= 0 && daemonData != currentUser?.notifications) {
-            currentUser.notifications = daemonData;
+        const newNotifs = Number(daemonData);
+        if (newNotifs != Number(currentUser?.notifications)) {
+            currentUser.notifications = newNotifs;
             setCurrentUser({ ...currentUser });
         }
 

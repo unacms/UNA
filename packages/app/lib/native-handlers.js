@@ -7,7 +7,7 @@ import { Icon } from 'app/ui/atoms/icon';
 import { appStatic } from 'app/lib/app-static';
 import Search from 'app/ui/molecules/search';
 import { FeedbackHaptics } from 'app/lib/util';
-import { useCurrentUser } from 'app/context/user';
+import { appSetting } from 'app/lib/util'
 
 export function SvgLogoNative() {
     const scheme = useColorScheme();
@@ -47,7 +47,7 @@ export function updateRightHeaderObj(addButtons, navigation) {
     }
 };
 
-export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent) {
+export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent, currentUser) {
     let type = typeof header;
     const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>
     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
@@ -69,6 +69,7 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
     }
     navigation.setOptions({ 
         headerBackVisible: false, 
-        headerTitle:(props) => header
+        headerTitle:(props) => header,
+        headerShown: currentUser || appSetting('layout', 'show_navigation_non_logged_native') ? true : false
     });
 };

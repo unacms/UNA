@@ -165,7 +165,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
     useEffect(() => {
         // flashListRef.current.scrollToIndex({ animated: true, index:  });
-        // console.log('aaaa')
     }, []);
 
 

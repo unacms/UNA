@@ -4,7 +4,7 @@ import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing } from "
 import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { StyleSheet, useWindowDimensions } from 'react-native';
-import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData } from 'app/lib/util';
+import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName } from 'app/lib/util';
 import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar  } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
@@ -48,6 +48,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const [routes, setRoutes] = useState(initedTabs);
     const [cntWidth, setCntWidth] = useState(0);
 
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
 
     useEffect(() => {
         setRoutes(initedTabs);
@@ -397,8 +398,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                  styles = { width: 1536 - 20 * 16 }
              }
  */
+            
             return (
-                <TopSidebar isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
+                <TopSidebar isDrawer={isDrawer} isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                     <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
                 </TopSidebar>
 

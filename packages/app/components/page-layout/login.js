@@ -29,37 +29,44 @@ export default function PageLayout(props) {
                 </View>
 
 
-                <View className=" flex-auto flex-col w-full  max-w-md gap-y-2 p-2">
+                <View className="w-full max-w-lg md:w-1/2 lg:w-2/5 my-auto mx-auto items-center xl:p-4 p-2  ">
+                    <View className=" flex-auto w-full   ">
+                <Card
+                            rounded=" rounded-2xl "
+                            addClassName="border px-6 py-4 w-full  max-w-xl mx-auto flex-auto  "
+                        >
                     <BlockByName name={props.blocks.form} data={props.data} />
+                    </Card>
                     <Link
-                        className=" mx-auto  w-full "
-                        href="/forgot-password"
-                    >
-                        <Button
-                            title="Forgot password?"
-                            variant="link"
-                            fullWidth
-                            size="sm"
-                        />
-                    </Link>
-                    <View className="">
-                        <Card addClassName="border  p-6 rounded-2xl justify-center w-full max-w-xl mx-auto flex-auto flex-col ">
+                            className=" mx-auto  w-full "
+                            href="/forgot-password"
+                        >
+                            <Button
+                                title="Forgot password?"
+                                variant="link"
+                                fullWidth
+                                size="sm"
+                            />
+                        </Link>
+
+                        <Card
+                            rounded=" rounded-2xl "
+                            addClassName="border p-6 mt-6 w-full  max-w-xl mx-auto flex-auto  "
+                        >
                             <Text className="text-center mb-6 text-lg font-semibold  mx-auto text-neutral-700 dark:text-neutral-300  ">
                                 Don't have an account?
                             </Text>
                             <Link className=" w-full " href="/create-account">
                                 <Button
-                                    title="Create account"
-                                    variant="outline"
+                                    title="Create new account"
                                     startDecorator="UserCirclePlus"
                                     size="base"
                                     fullWidth
                                 />
                             </Link>
                         </Card>
-                    </View>
                 </View>
-
+                </View>
             </View>
         </ScrollView>
     )

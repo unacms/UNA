@@ -20,6 +20,7 @@ export function Nav({ addButtons }) {
 }
 
 export function Nav2({ text, onPress, backButton }) {
+    const { currentUser } = useCurrentUser();
     const routerExpo = useRouter();
     const navigation = useNavigation();
     const { colors } = useTheme();
@@ -29,5 +30,5 @@ export function Nav2({ text, onPress, backButton }) {
 }
         <Text className="font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl">{text}</Text>
     </Row>
-    updateCenterHeader(null, header, false, navigation, routerExpo, colors, null);
+    updateCenterHeader(null, header, false, navigation, routerExpo, colors, null,null, currentUser);
 }
