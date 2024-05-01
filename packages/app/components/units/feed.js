@@ -50,7 +50,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
-            <CommentsBrowse maxCount={2} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
+            <CommentsBrowse browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='bg-bgritem dark:bg-bgritem-d hover:bg-primary/10 dark:hover:bg-primary-d/10 px-3 py-1  rounded-lg'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
@@ -209,9 +209,9 @@ const MenuManage = ({ id, menu, setViewState }) => {
 
 function DefaultUnit(data) {
 
-    if (data.type == 'timeline_common_repost') {
-        return <></>; //NEED TO FIX
-    }
+   /* if (data.type == 'timeline_common_repost') {
+        return <>555</>; //NEED TO FIX
+    }*/
     const { t } = useTranslation();
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
