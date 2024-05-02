@@ -8,6 +8,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
+import {parse as flatted_parse, stringify as flatted_stringify, toJSON, fromJSON} from 'flatted';
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
@@ -111,8 +112,9 @@ function replacer(key, value) {
 }
 
 function compress(data) {
+    
     try {
-        let a = JSON.stringify(data, replacer)
+        let a = flatted_stringify(data);
         return Buffer.from(pako.deflate(a)).toString('base64');
     } catch (error) {
         console.log('!!!-Compression error:', data, error);
@@ -122,7 +124,7 @@ function compress(data) {
 
 function decompress(data) {
     try {
-        return JSON.parse(pako.inflate(Uint8Array.from(Buffer.from(data, 'base64')), { to: 'string' }));
+        return flatted_parse(pako.inflate(Uint8Array.from(Buffer.from(data, 'base64')), { to: 'string' }));
     } catch (error) {
         console.log('!!!-Decompression error:', error, error);
         return null;
