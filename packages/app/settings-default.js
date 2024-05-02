@@ -185,6 +185,11 @@ let settingsDefault = {
             show_counter_as_button: false,
             haptics_type: 'Medium',
         },
+        share: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+        },
         connection: {
             show_action_as_button: true,
             sys_profiles_friends: {
