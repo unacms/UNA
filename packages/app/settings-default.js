@@ -241,7 +241,7 @@ let settingsDefault = {
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
         ],
         menu_drawer: [
-            { name: 'home', title: 'Home', link: '/', icon: 'House'},
+          /*  { name: 'home', title: 'Home', link: '/', icon: 'House'},
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
@@ -249,7 +249,7 @@ let settingsDefault = {
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
             { name: 'persons-home', title: 'People', link: '/persons-home', icon: 'UsersFour' }, 
             { name: 'discussion-home', title: 'Discussions', link: '/discussions-home', icon: 'Chats' }, 
-            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},
+            { name: 'Logout',title: 'Sign out', link: '/logout', icon: 'SignOut', nonlogged: false},*/
         ],
         menu_launcher: [
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 

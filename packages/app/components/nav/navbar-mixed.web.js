@@ -111,7 +111,7 @@ export default function (props) {
                         <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
                             {
                                 (headerSettings.menu && isDrawer) && (
-                                    <View className="hidden mr-3 sm:mr-4">
+                                    <View className="lg:hidden mr-3 sm:mr-4">
                                         <Pressable onPress={showMenu}>
                                             <Button
                                                 variant="outline"
