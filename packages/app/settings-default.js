@@ -177,6 +177,14 @@ let settingsDefault = {
             show_counter_as_button: false,
             haptics_type: 'Medium',
         },
+        repost: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+            show_counter: false,
+            show_counter_as_button: false,
+            haptics_type: 'Medium',
+        },
         connection: {
             show_action_as_button: true,
             sys_profiles_friends: {
