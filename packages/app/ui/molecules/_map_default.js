@@ -3,6 +3,8 @@ import Reactions from './reactions';
 import Scores from './scores';
 import Comments from './comments';
 import Reports from './reports';
+import Reposts from './reposts';
+import Shares from './shares';
 import Connections from './connections';
 import Recommendation from './recommendations';
 
@@ -12,6 +14,8 @@ export const componentsMapDefault = {
     scores: Scores,
     comments: Comments,
     reports: Reports,
+    reposts: Reposts,
+    shares: Shares,
     connections: Connections,
     recommendation: Recommendation,
 };

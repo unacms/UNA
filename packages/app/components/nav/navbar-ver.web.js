@@ -93,7 +93,7 @@ export default function (props) {
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <View className='px-3 sm:px-4 lg:px-2 lg:pt-4 flex-row lg:flex-col lg:w-80'>
                             {(headerSettings.menu && isDrawer) && (
-                                <View className="lg:hidden mr-3 sm:mr-4">
+                                <View className="hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button
                                             variant="outline"

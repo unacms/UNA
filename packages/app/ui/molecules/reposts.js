@@ -1,23 +1,19 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
-import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
 import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
-import Profile from 'app/ui/molecules/profile';
-import { subscribe } from 'app/ui/atoms/socket';
-import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
 
-export default function ElementLikes(oProps) {
+export default function ElementReposts(oProps) {
     const { t } = useTranslation();
-    const oSettings = appSetting('social_actions', 'like');
+    const oSettings = appSetting('social_actions', 'repost');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ThumbsUp"
+    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ArrowsClockwise"
     const oAction = oProps.action;
-    const oCounter = oProps.counter;
+    const oCounter = oProps?.counter;
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
@@ -26,7 +22,7 @@ export default function ElementLikes(oProps) {
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
-    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true   
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true
 
     let oButtonProps = {};
     if(oProps.primary)
@@ -93,10 +89,8 @@ export default function ElementLikes(oProps) {
     };
 
     const performAction = async (sAction, aParams, onLoad) => {
-        const aParamsDefault = {s: oProps.system, o:oProps.object_id};
-
-        aParams = aParams ? {...aParamsDefault, ...aParams} : aParamsDefault;
-        const sRequest = '/api.php?r=system/' + sAction + '/TemplVoteServices&params[]=' + JSON.stringify(aParams);
+        console.log(aParams);
+        const sRequest = '/api.php?r=bx_timeline/' + sAction + '/Module&params=' + JSON.stringify(aParams);
 
         const sResponse = await fetcher(sRequest);
         if(typeof onLoad === 'function')
@@ -108,15 +102,7 @@ export default function ElementLikes(oProps) {
 
         FeedbackHaptics(oParams.haptics_type);
 
-        performAction('do', {value: 1}, (oData) => {
-            setContextVars(oData);
-        });
-    };
-
-    const handleUndo = (event) => {
-        event.preventDefault();
-
-        performAction('do', {value: 1}, (oData) => {
+        performAction('repost', Object.values(oAction.data), (oData) => {
             setContextVars(oData);
         });
     };
@@ -156,23 +142,12 @@ export default function ElementLikes(oProps) {
         );
     };
 
-    let { currentUser, setCurrentUser } = useCurrentUser();
-    useEffect(() => {
-        subscribe(oProps.system + '_' + oProps.type + '_' + oProps.object_id, 'voted', cb);
-    }, [])
-
-    const cb = (data) => {
-        let aData = JSON.parse(data);
-        if(!!aData?.api)
-            setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
-    }
-
     //--- show action
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
     const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
 
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
+    const bShowActionPerformed = oAction?.is_performed === true || (isContextVar('is_performed') && getContextVar('is_performed') === true);
     const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
 
     let sTitle = oAction?.title || '';
@@ -182,7 +157,7 @@ export default function ElementLikes(oProps) {
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     let sActionButton = undefined;
-    if(bShowActionUndo && bShowActionVoted) {
+    if(bShowActionUndo && bShowActionPerformed) {
         sActionButton = (
             <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} pressed={true} {...oButtonProps} />
         );
@@ -195,10 +170,9 @@ export default function ElementLikes(oProps) {
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
-    const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
     const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
-
+    
     let iCount = '';
     if (oCounter?.count)
         iCount = oCounter.count;
@@ -206,56 +180,12 @@ export default function ElementLikes(oProps) {
         const oCounterGlobal = getContextVar('counter');
         if(oCounterGlobal?.count)
             iCount = oCounterGlobal.count;
-    }    
-   
+    }
 
-  const sharedValue = useSharedValue(1);
-
-  const indicatorStyle = useAnimatedStyle(() => {
-    return {
-      opacity: sharedValue.value,
-    };
-  },[sharedValue]);
-
-  useEffect(() => {
-    sharedValue.value = withSequence(
-      withTiming(0, { duration: 500 }), // fade out
-      withTiming(1, { duration: 500 }) // fade in
-    );
-  }, [iCount]);
-  
-    
- 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
     if(bShowCounter && oCounter?.count != undefined) {
-
-        if(iCount > 0) {
-            let sUsers = undefined;
-            if(performedBy) {
-                sUsers = performedBy.map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
-
-
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
-
-            sCounterButton = (
-                <Animated.View key="counter" style={indicatorStyle}>
-                    <ButtonCounter size={sDisplaySize} startDecorator={!bShowCombined ? 'ThumbsUp' : false} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
-                </Animated.View>
-            );
-
-            sCounterPopup = (
-                <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
-                </Modal>
-            );
-        }
+        //TODO: Counter can be added here.
     }
 
     const sObject = getName();

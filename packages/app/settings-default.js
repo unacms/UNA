@@ -177,6 +177,19 @@ let settingsDefault = {
             show_counter_as_button: false,
             haptics_type: 'Medium',
         },
+        repost: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+            show_counter: false,
+            show_counter_as_button: false,
+            haptics_type: 'Medium',
+        },
+        share: {
+            show_action: true,
+            show_action_as_button: true,
+            show_action_label: true,
+        },
         connection: {
             show_action_as_button: true,
             sys_profiles_friends: {
@@ -868,11 +881,14 @@ let settingsDefault = {
 
             'u-btn-group-item-cnt': ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 hover:shadow-sm active:shadow-none ',
             'u-btn-group-item-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
+
+            'u-btn-group-item-text-cnt': ' hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 hover:shadow-sm active:shadow-none ',
+            'u-btn-group-item-text-text': ' font-medium text-neutral-700 group-hover:text-neutral-950 dark:text-neutral-300 dark:group-hover:text-neutral-50',
         },
         buttons_group_styles: {
             'u-btn-default-cnt': ' border border-bdrbutton dark:border-bdrbutton-d bg-bgrbutton dark:bg-bgrbutton-d shadow-sm overflow-hidden ',
             'u-btn-outline-cnt': ' border border-bdrbutton dark:border-bdrbutton-d overflow-hidden ',
-            'u-btn-text-cnt': ' border border-transparent hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50 ',
+            'u-btn-text-cnt': ' border border-transparent active:opacity-50 ',
 
         },
     },
