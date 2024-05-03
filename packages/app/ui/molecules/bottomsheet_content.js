@@ -38,7 +38,6 @@ export default function ElementCommentForm(props) {
     if (!isShow)
         return <></>
 
-    console.log(bottomSheetData);
     if (windowDimensions.width > 1024) {
         //outerClickClose={false}
         return (

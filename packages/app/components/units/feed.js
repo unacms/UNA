@@ -28,15 +28,25 @@ import Carousel from 'app/ui/molecules/carousel'
 
 const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
+    const [height, setHeight] = useState(windowDimensions.height * 0.95 - 166);
+    const viewFormRef = useRef();
     const isWeb = Platform.OS == 'web' ? true : false;
     const aItems = [itemContent];
-    const CommentsPartsData = CommentsParts(commentsData, aItems, windowDimensions.height * 0.95 - 166, initFormData);
+    const CommentsPartsData = CommentsParts(commentsData, aItems, height, initFormData);
+
+    const handleLayout = () => {
+        viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
+            const h = windowDimensions.height * 0.95 - 82 - height;
+            setHeight(h)
+        });
+    }; 
+
     return (
-        <View className='flex-1 w-full '>
-            <View className={'w-full flex-auto ' + (isWeb ? '' : ' h-16')}>
+        <View className=' w-full '>
+            <View  className={'w-full  ' + (isWeb ? '  ' : ' h-16')}>
                 {CommentsPartsData[0]}
             </View>
-            <View className={(isWeb ? '' : 'absolute bottom-0 ') + ' w-full'} >
+            <View  ref={viewFormRef} onLayout={handleLayout} className={(isWeb ? '' : 'absolute bottom-0 ') + ' w-full'} >
                 {CommentsPartsData[1]}
             </View>
         </View>

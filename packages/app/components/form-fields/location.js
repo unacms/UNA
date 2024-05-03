@@ -10,17 +10,31 @@ import {Text} from 'app/design/typography'
 //import Autocomplete from "react-google-autocomplete";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { Input } from 'app/design/controls'
-import { useState, } from 'react';
+import { use, useState, } from 'react';
 import { useFormContext, useController } from 'react-hook-form';
 import { appSetting } from 'app/lib/util'
+import { useEffect } from 'react'
 
 export default function FormFieldLocation(props) {
 
+    console.log("propsprops", props);
     const formContext = useFormContext();
     let name = props.name;
     let rules = {};
     let defaultValue = props.value ? props.value : '';
     const [place, setPlace] = useState(defaultValue);
+    
+    useEffect(() => {
+        formContext.setValue(name + '_country', props.value.country);
+        formContext.setValue(name + '_state', props.value.state);
+        formContext.setValue(name + '_city', props.value.city);
+        formContext.setValue(name + '_zip', props.value.zip);
+        formContext.setValue(name + '_lat', props.value.lat);
+        formContext.setValue(name + '_lng', props.value.lng);
+        formContext.setValue(name + '_street', props.value.street);
+        formContext.setValue(name + '_street_number', props.value.street_number);
+
+    },[props.value]);
 
     const { ref } = usePlacesWidget({
         options: {
@@ -34,6 +48,8 @@ export default function FormFieldLocation(props) {
             parseAdd(place)
         }
     })
+
+
 
     const parseAdd = (place) =>
     {
