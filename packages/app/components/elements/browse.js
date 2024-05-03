@@ -5,7 +5,7 @@ import { useWindowDimensions } from 'react-native';
 import { Platform } from 'react-native'
 import UniList from 'app/ui/atoms/unilist'
 import { fetcher } from 'app/lib/fetcher';
-import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData } from 'app/lib/util'
+import { appSetting, storageKey, getDataFromCache, storageSet, handleFeedLayoutData, cloneObject } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { useInfiniteQuery} from '@tanstack/react-query'
 import { getSkeletonForList } from 'app/lib/skeleton-helpers';
@@ -205,7 +205,7 @@ export default function (props) {
     /* NEW POST TO FEED */
     useEffect(() => {
         if (data.unit === 'feed' && layoutData && layoutData.data && (layoutData?.type == 'feed:new_content' || layoutData?.type == 'feed:remove_content')) {
-            let clonedData = JSON.parse(JSON.stringify(dataItems.data));
+            let clonedData = cloneObject(dataItems.data);
             const data2 = handleFeedLayoutData(layoutData, clonedData)
             setDataItems({ data: data2, params: dataItems.params });
         }

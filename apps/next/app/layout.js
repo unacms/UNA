@@ -10,7 +10,6 @@ import { initReactI18next } from 'react-i18next';
 import { useColorScheme } from 'react-native';
 import en from 'app/locales/en/translation.json';
 import ru from 'app/locales/ru/translation.json';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function RootLayout({ children }) {
 
@@ -73,8 +72,6 @@ export default function RootLayout({ children }) {
                                 {children}
                             </CurrentUserProvider>
                         </QueryClientProvider>
-                
-                    <SpeedInsights />
                 </body>
         </html>
     )

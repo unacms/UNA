@@ -19,6 +19,7 @@ import { appStatic } from 'app/lib/app-static'
 import { useTranslation } from 'react-i18next'
 import { useWindowDimensions } from 'react-native';
 import Image from 'app/ui/atoms/image'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function PageLayout(props) {
     const { t } = useTranslation()
@@ -163,11 +164,10 @@ export default function PageLayout(props) {
                                     ) && (
                                         <View className="">
                                             {!!currentUser && (
-                                            <Link href={appSetting('layout', 'dashboard')}>
-                                                <Row className="items-center justify-between mx-2 my-3 px-3 py-1 rounded-xl hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                            <ProfileSwitcher>
+                                                <Row className="items-center justify-between mx-2 mt-3 px-3 py-1 rounded-xl hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                                     <Row className='flex-row gap-x-3 items-center'>
                                                             {profile}
-                                                        
                                                         <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                                             {currentUser.display_name}
                                                         </Text>
@@ -180,7 +180,7 @@ export default function PageLayout(props) {
                                                         fullWidth
                                                         align="right"
                                                     /></View></Row>
-                                            </Link>
+                                            </ProfileSwitcher>
                                         )}
                                         </View>
                                         

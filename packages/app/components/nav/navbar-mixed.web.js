@@ -17,6 +17,7 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -24,7 +25,7 @@ export default function (props) {
     const { t } = useTranslation();
     let { width } = useWindowDimensions()
 
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
 
     if (width > 1280 && menuPopup)
         setMenuPopup(false)
@@ -78,6 +79,25 @@ export default function (props) {
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
                         <View className=' pt-16 fixed-process w-80'>
                             <View className='px-4 py-4'>
+                                {!!currentUser && (
+                                    <ProfileSwitcher>
+                                        <Row className="items-center justify-between px-3 py-1 rounded-xl hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
+                                            <Row className='flex-row gap-x-3 items-center'>
+                                                {profile}
+                                                <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                    {currentUser.display_name}
+                                                </Text>
+                                            </Row><View className='flex-none '>
+                                                <Button
+                                                    variant="text"
+                                                    size="sm"
+                                                    tooltip={t('Switch profile')}
+                                                    startDecorator="UserSwitch"
+                                                    fullWidth
+                                                    align="right"
+                                                /></View></Row>
+                                    </ProfileSwitcher>
+                                )}
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -137,8 +157,8 @@ export default function (props) {
                         </View>
                         <Row className="flex-auto  ">
                             <Row className='w-full items-center '>
-                                
-                               
+
+
                                 {(bSearch && currentUser) && <View className=' items-end mx-auto flex-auto max-w-2xl hidden lg:block '>
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>}
@@ -161,26 +181,26 @@ export default function (props) {
                                             {bNotifs && <NotificationButton />}
                                         </View>
                                         <View className="hidden sm:block">
-                                        {bMessenger && (
-                                            <Link
-                                                href={appSetting(
-                                                    'layout',
-                                                    'messenger'
-                                                )}
-                                                alt={t('Messenger')}
-                                            >
-                                                <ButtonRef
-                                                    tooltip={t('Messenger')}
-                                                    variant="outline"
-                                                    rounded
-                                                    startDecorator="ChatTeardropDots"
-                                                    id="m2"
-                                                />
-                                            </Link>
-                                        )}                                        
+                                            {bMessenger && (
+                                                <Link
+                                                    href={appSetting(
+                                                        'layout',
+                                                        'messenger'
+                                                    )}
+                                                    alt={t('Messenger')}
+                                                >
+                                                    <ButtonRef
+                                                        tooltip={t('Messenger')}
+                                                        variant="outline"
+                                                        rounded
+                                                        startDecorator="ChatTeardropDots"
+                                                        id="m2"
+                                                    />
+                                                </Link>
+                                            )}
                                         </View>
 
-                                        
+
                                         <View className="hidden sm:block">
                                             <MenuAccount />
                                         </View>

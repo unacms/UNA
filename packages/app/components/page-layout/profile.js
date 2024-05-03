@@ -1,7 +1,7 @@
 import { Conductor } from 'app/ui/molecules/conductor';
 import { useContext, useState, useEffect } from 'react';
 import Cover, {CoverSmall} from 'app/components/elements/cover';
-import { getHeaderSettings, getBlocksFromData } from 'app/lib/util';
+import { getHeaderSettings, getBlocksFromData, cloneObject } from 'app/lib/util';
 import { useWindowDimensions } from 'react-native';
 import { LayoutData } from 'app/context/layout';
 import { fetcher } from 'app/lib/fetcher';
@@ -27,7 +27,7 @@ export default function PageLayout(props) {
     if (!props.data.menu.items){
         props.data.menu.items = [];
     }
-    let menu = JSON.parse(JSON.stringify(props.data.menu));
+    let menu = cloneObject(props.data.menu);
     let blocks = props.blocks;
 
     if (!menu.items)

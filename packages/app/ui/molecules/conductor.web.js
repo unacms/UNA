@@ -535,7 +535,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
             return a;
         }
-
+        console.log("propsprops", props)
         return (
             <UniList
                 {...props}
@@ -572,7 +572,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
-            /*let TabFlashListM = useMemo(() => {
+            let TabFlashListM = useMemo(() => {
                 console.log("dataItems", dataItems)
                 return <TabFlashList
                     index={route.index}
@@ -592,8 +592,8 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     }
                 />
-            }, [dataItems, numColumns]);*/
-            const TabFlashListM = <TabFlashList
+            }, [dataItems, numColumns]);
+           /* const TabFlashListM = <TabFlashList
                 index={route.index}
                 data={dataItems}
                 endpoint={route.endpoint}
@@ -610,7 +610,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         ) : null}
                     </View>
                 }
-            />
+            />*/
             //
             let sidebarUnitType = 'default';
             if (route.blocks?.browse_sidebar?.unitType) {

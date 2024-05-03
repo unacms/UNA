@@ -8,7 +8,7 @@ import Clipboard from '@react-native-community/clipboard';
 import { decode } from 'html-entities';
 import { appSetting as setting, UNA_URL, APP_URL } from 'app/config';
 import { remoteSettings } from 'app/settings-remote';
-import {parse as flatted_parse, stringify as flatted_stringify, toJSON, fromJSON} from 'flatted';
+import {parse as flatted_parse, stringify as flatted_stringify} from 'flatted';
 
 export function appSetting(section, name, path) {
     return setting(section, name, path, remoteSettings.data);
@@ -16,6 +16,9 @@ export function appSetting(section, name, path) {
 
 export function decodeText(str) {
     return decode(str);
+}
+export function cloneObject(obj) {
+    return flatted_parse(flatted_stringify(obj))
 }
 
 export function truncateString(str, num) {
@@ -744,7 +747,7 @@ export function menuItemsByName(name, items, currentUser, url = '') {
 }
 
 export function filterContent(dataOrig, needed) {
-    let data = JSON.parse(JSON.stringify(dataOrig));
+    let data = cloneObject(dataOrig);
     for (let cell in data.elements) {
         data.elements[cell] = data.elements[cell].filter(obj => needed.includes(obj.source));
     }

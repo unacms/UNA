@@ -7,7 +7,6 @@ import * as ImageManipulator from 'expo-image-manipulator'
 import { Button } from 'app/design/controls';
 import { Icon } from 'app/ui/atoms/icon';
 import { genRnd, appSetting } from 'app/lib/util';
-import { Platform } from 'react-native'
 import * as DocumentPicker from 'expo-document-picker';
 import { fetcher } from 'app/lib/fetcher';
 import { useFormContext, useController } from 'react-hook-form';
@@ -281,6 +280,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
             }
 
             let isImage = img?.file_type?.includes('image/');
+
             button = (
                 <Pressable onPress={selectImage} >
                     <View className={w + '  items-center justify-center bg-primary/5 ' + (isImage ? appSetting('layout', 'cover_aspect') : 'h-32')}>
@@ -288,8 +288,8 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                             <Text className='text-neutral-500/50 text-lg  justify-center  flex-col text-center'>Drag & Drop or browse files...</Text>
                         </View>
                         {img != null && (<>
-                            {isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
-                            {img?.preload && <View className='absolute w-full h-full justify-center items-center'><Loading /></View>}
+                            { isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
+                            { imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
                             <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                 <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
                             </View>

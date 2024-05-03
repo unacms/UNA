@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
-
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
@@ -12,12 +11,13 @@ import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import DropdownMenu from 'app/ui/atoms/dropdown-menu'
 import { useTranslation } from 'react-i18next'
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
+
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [menuPopup, setMenuPopup] = useState(false)
@@ -65,8 +65,6 @@ export default function (props) {
     const menuSettings = appSetting('menu_items', props?.menu?.object)
     if (menuSettings && menuSettings.name) 
         sTitle = t(menuSettings.name)
-
-
 
     return (
         <>

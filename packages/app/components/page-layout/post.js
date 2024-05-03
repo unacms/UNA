@@ -82,7 +82,7 @@ export default function PageLayout(props) {
       }, []);
 
     return (//style ={{marginBottom: sizes.formHeight}}
-        <View className='flex-1 w-full h-full'>
+        <View className='flex-1 w-full h-full '>
             <View ref={viewCntRef} className="w-full h-full flex-1 bg-bgrcard dark:bg-bgrcard-d" >
                 <View  className='overflow-hidden h-full w-full' >
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData.content[0].url} />

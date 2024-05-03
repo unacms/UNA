@@ -13,7 +13,7 @@ import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
-import Letter from 'app/ui/atoms/letter'
+import MoreMenu from 'app/components/nav/menu-more'
 
 export default function Unit(props) {
     const { t } = useTranslation();
@@ -206,48 +206,9 @@ export default function Unit(props) {
                                 </View>
                                 <View className="flex-row w-full ">
                                     {oMenuItemPrimary}
-                                    {bMenuItemsMoreShow && !!oMenuItemsMore &&
-                                        oMenuItemsMore.items.length > 0 && (
-                                            <View className='ml-2'>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className=" my-auto "
-                                                    startDecorator="DotsThreeOutline"
-                                                    onPress={(event) =>
-                                                        handleClickMore(event)
-                                                    }
-                                                />
-                                                <Modal
-                                                    key="more-popup"
-                                                    onVisible={popupVisible}
-                                                    onClose={() => {
-                                                        setPopupVisible(false);
-                                                    }}
-                                                >
-                                                    <View className="gap-y-4">
-                                                        <View className="flex-row items-center gap-x-4">
-                                                            <Profile
-                                                                display_type="unit"
-                                                                display_name={
-                                                                    data.title
-                                                                }
-                                                                url={data.url}
-                                                                url_avatar={
-                                                                    data?.image?.src
-                                                                }
-                                                                showInfo={false}
-                                                            />
-                                                        </View>
-                                                        <View>
-                                                            <Menu
-                                                                displayType="mixed"
-                                                                {...oMenuItemsMore}
-                                                            />
-                                                        </View>
-                                                    </View>
-                                                </Modal>
-                                            </View>
+                                    {(bMenuItemsMoreShow && !!oMenuItemsMore &&
+                                        oMenuItemsMore.items.length > 0) && (
+                                            <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
                                         )}
                                 </View>
                             </View>

@@ -16,6 +16,7 @@ import Profile from 'app/ui/molecules/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/block'
+import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function (props) {
 
@@ -93,7 +94,7 @@ export default function (props) {
                     <View className=' justify-between  lg:h-screen flex-auto '>
                         <View className='px-3 sm:px-4 lg:px-2 lg:pt-4 flex-row lg:flex-col lg:w-80'>
                             {(headerSettings.menu && isDrawer) && (
-                                <View className="hidden mr-3 sm:mr-4">
+                                <View className="lg:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
                                         <Button
                                             variant="outline"
@@ -159,7 +160,7 @@ export default function (props) {
                                     </Row>
                             )}
                             {!!currentUser && (
-                                <Link href={appSetting('layout', 'dashboard')}>
+                                    <ProfileSwitcher>
                                     <Row className="items-center justify-between mx-4 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
                                         <Row className='flex-row gap-x-3 items-center'>
                                             <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
@@ -177,7 +178,8 @@ export default function (props) {
                                             fullWidth
                                             align="right"
                                         /></View></Row>
-                                </Link>
+                                    </ProfileSwitcher>
+                               
                             )}
                         </View>
                     </View>

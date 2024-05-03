@@ -61,6 +61,10 @@ export function Modal({
     }
     const sClassPosition = positionClasses[position] || positionClasses['center'];
 
+    if (!title && onClose){
+        textAlign = 'end'
+    }
+
     return (
         <ModalDef visible={onVisible} presentationStyle={presentation} animationType={animation} transparent={transparent}>
             <Wrapper className="flex justify-end w-full h-full bg-white/80 dark:bg-black/80 backdrop-blur" {...(isOuterClose && { onPress: onClose })}>

@@ -2,30 +2,18 @@ import { useState, useContext, useRef, useMemo, memo } from 'react'
 import { CardData } from 'app/context/card'
 import Image from 'app/ui/atoms/image'
 import Link from 'app/ui/atoms/link'
-import Profile from 'app/ui/molecules/profile'
-import { getImageSizes, FeedbackHaptics, tp, t } from 'app/lib/util'
+import { getImageSizes, tp } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row } from 'app/design/view'
-import Menu from 'app/components/menu'
+import MoreMenu from 'app/components/nav/menu-more'
 import Card from 'app/ui/molecules/card'
-import { Button, Modal } from 'app/design/controls'
+import { Button } from 'app/design/controls'
 import Redirect from 'app/ui/atoms/redirect'
 import { componentsMap } from 'app/ui/molecules/_map'
 import ProfilesList from 'app/ui/molecules/profile_list'
 import { useTranslation } from 'react-i18next';
 import Letter from 'app/ui/atoms/letter'
-import { appSetting } from 'app/lib/util'
 import { fetcher } from 'app/lib/fetcher';
-
-const ProfileCnt = memo(({ title, url, image }) => (
-    <Profile
-        display_type="unit"
-        display_name={title}
-        url={url}
-        url_avatar={image}
-        showInfo={false}
-    />
-));
 
 const ProfilesListCnt = memo(({ data }) => (
     <ProfilesList
@@ -203,8 +191,8 @@ export default function Unit(props) {
     const data = props.data;
     const imageSizes = getImageSizes();
     const redirectdRef = useRef();
-    const [popupVisible, setPopupVisible] = useState(false);
     const { cardData, setCardData } = useContext(CardData);
+    const [popupVisible, setPopupVisible] = useState(false);
 
     const friendsLabel = data.mutual_friends_count > 0
         ? tp("mutual_friends", data?.mutual_friends_count, false)
@@ -215,11 +203,7 @@ export default function Unit(props) {
         redirectdRef.current.redirect(sUrl);
     };
 
-    const handleClickMore = (event) => {
-        event.preventDefault();
-        FeedbackHaptics("Medium");
-        setPopupVisible(true);
-    };
+ 
 
     const { oMenuItemPrimary, oMenuItemsMore, bMenuItemsMoreShow } = useMemo(() => {
         return getMenuItemConfigs(props.unitType, data, handleClick, t, setPopupVisible);
@@ -255,40 +239,7 @@ export default function Unit(props) {
                                 {oMenuItemPrimary}
                                 {bMenuItemsMoreShow && !!oMenuItemsMore &&
                                     oMenuItemsMore.items.length > 0 && (
-                                        <View className='ml-2'>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className=" my-auto "
-                                                startDecorator="DotsThreeOutline"
-                                                onPress={(event) =>
-                                                    handleClickMore(event)
-                                                }
-                                            />
-                                            <Modal
-                                                key="more-popup"
-                                                onVisible={popupVisible}
-                                                onClose={() => {
-                                                    setPopupVisible(false);
-                                                }}
-                                            >
-                                                <View className="gap-y-4">
-                                                    <View className="flex-row items-center gap-x-4">
-                                                        <ProfileCnt
-                                                            title={data.title}
-                                                            url={data.url}
-                                                            image={data?.image?.src}
-                                                        />
-                                                    </View>
-                                                    <View>
-                                                        <Menu
-                                                            displayType="mixed"
-                                                            {...oMenuItemsMore}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            </Modal>
-                                        </View>
+                                        <MoreMenu oMenuItemsMore={oMenuItemsMore} data={data} popupVisible={popupVisible} setPopupVisible={setPopupVisible}/>
                                     )}
                             </View>
                         </View>

@@ -346,7 +346,7 @@ function DefaultUnit(data) {
                         {data.author_actions.map((item, index) => {
                             const Element = componentsMap[item.type]
                             if (!Element) return
-                            return <Element key={`action-${index}`} {...item} />
+                            return <Element  params={{ button_variant: 'text' }}  key={`action-${index}`} {...item} />
                         })}
                         <MenuManage id={data.id} menu={data?.menu_manage} setViewState={setViewState} />
                     </View>

@@ -69,7 +69,7 @@ export default function FormFeed(props) {
                 {getFormFieldByData(props.data.inputs['owner_id'], props.handleSubmit, 'default')}
                 {getFormFieldByData(props.data.inputs['type'], props.handleSubmit, 'default')}
 
-                <View className='justify-between mb-4 h-full'>
+                <View className='justify-between mb-4 h-full p-4 sm:p-0'>
                     <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
                         <View className="w-full  flex-col ">
                             <View className=" flex-row flex-wrap gap-x-2 mt-2 flex-auto justify-between ">
