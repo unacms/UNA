@@ -75,7 +75,9 @@ export default function ElementEntityInfo({ data }) {
                 )
 
             case 'location':
-                return false
+                return <Text className=" text-neutral-800 text-base dark:text-neutral-200">
+                {a.value.location_string}
+                </Text>
 
             default:
                 return (

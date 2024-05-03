@@ -535,7 +535,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             });
             return a;
         }
-        console.log("propsprops", props)
         return (
             <UniList
                 {...props}
@@ -573,7 +572,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             let isRightCol = route?.sidebar?.content?.length > 0 || route?.blocks?.browse_sidebar;
 
             let TabFlashListM = useMemo(() => {
-                console.log("dataItems", dataItems)
                 return <TabFlashList
                     index={route.index}
                     data={dataItems}
