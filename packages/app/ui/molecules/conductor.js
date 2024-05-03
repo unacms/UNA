@@ -155,7 +155,7 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
                 unit={route.endpoint?.unit}
                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} unitMode={unitMode} route={route} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
                 ListFooterComponent={
-                    (route?.endpoint?.finished) ? null : Preload
+                    (route?.endpoint?.request_url ? ( route?.endpoint?.finished ? null : Preload) : <></>)
                 }
             />
         )

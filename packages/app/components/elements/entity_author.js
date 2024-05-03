@@ -12,11 +12,22 @@ export default function ElementEntityAuthor(oProps) {
     let { currentUser, setCurrentUser } = useCurrentUser();
 
     const sInfo = (
-        <Row className='items-center'>
+        <Row className='items-center '>
             <Time ts={oProps.data.entry_date}></Time>
-            {oProps.data?.entry_context?.id && <><Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm "> in <Link href={oProps.data.entry_context.url}>{oProps.data.entry_context.display_name}</Link></Text></>}
+            {
+                !!oProps.data?.entry_context?.id && (
+
+                    <>
+                        <Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm "> in </Text>
+                        <Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm ">
+                            <Link href={oProps.data.entry_context.url}><Text className=" text-neutral-500 dark:text-neutral-400 font-normal text-sm ">{oProps.data.entry_context.display_name}</Text></Link>
+                        </Text>
+                    </>
+
+                )}
         </Row>
     );
+
 
     let aMenuManageItems = [];
     if(!!currentUser && oProps?.data?.menu_manage?.items)
