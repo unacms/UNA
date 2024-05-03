@@ -24,7 +24,7 @@ export default function FormFieldSwitcher(props) {
         <Field {...props}>
             <Row className='gap-x-2 items-center'>
             <Switch
-                trackColor={{false: colors.border, true: colors.primary}}
+                trackColor={{false: colors.border, true: colors.checkbox}}
                 thumbColor={'#ffffff'}
                 activeThumbColor={'#ffffff'}
                 ios_backgroundColor={colors.background}
