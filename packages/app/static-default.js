@@ -456,12 +456,10 @@ function ComponentsSplash(props) {
 
     if (!isWeb){
         return (
-            <View className=' w-full h-screen w-full justify-center mt-4'>
+            <View className=' w-full  w-full justify-center mt-16 '>
                 <View className='   '>
                     <View className='items-center mb-4 '><View className='w-60 h-16'>{LogoNative}</View></View>
-                    <Text className=" text-center  text-xl font-semibold  mx-auto text-neutral-700 dark:text-neutral-300 mb-4">
-                        Login to your account to continue.
-                    </Text>
+                    
                 {cnt}
                 </View>
             </View>

@@ -46,6 +46,7 @@ export function updateRightHeaderObj(addButtons, navigation) {
 
 export function updateCenterHeader(_path, header, backButtonPresented, navigation, routerExpo, colors, icon, leftComponent, currentUser) {
     let type = typeof header;
+
     const backButton =  backButtonPresented ? <Pressable className="mr-4   rounded-full justify-center items-center" onPress={() => { FeedbackHaptics('Medium'); routerExpo.back(); }}>
     <Icon icon="ArrowLeft" width={24} height={24} color={colors.barsColor} /></Pressable> :<></>
     if (type == 'string'){
@@ -64,9 +65,13 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
                 {header}
         </Row> );
     }
+
+    if (!currentUser)
+        header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>Login to your account</Text></>
+
     navigation.setOptions({ 
         headerBackVisible: false, 
         headerTitle:(props) => header,
-        headerShown: currentUser || appSetting('layout', 'show_navigation_non_logged_native') ? true : false
+        headerShown: true
     });
 };
