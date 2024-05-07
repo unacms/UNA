@@ -16,9 +16,9 @@ import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
 export default function (props) {
+    console.log('props', props)
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation()
@@ -170,7 +170,7 @@ export default function (props) {
                                         <View className="hidden sm:block">
                                             {bNotifs && <NotificationButton />}
                                         </View>
-                                        <View className="hidden sm:block">
+                                        <View className="sm:block">
                                         {bMessenger && (
                                             <Link
                                                 href={appSetting(

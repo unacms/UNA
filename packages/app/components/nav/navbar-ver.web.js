@@ -159,28 +159,9 @@ export default function (props) {
                                         {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
                                     </Row>
                             )}
-                            {!!currentUser && (
-                                    <ProfileSwitcher>
-                                    <Row className="items-center justify-between mx-4 my-3 p-1 rounded-full hover:border-transparent border border-bdritem dark:border-bdritem-d cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                        <Row className='flex-row gap-x-3 items-center'>
-                                            <View className="mx-0.5 bg-bgritem dark:bg-bgritem-d rounded-full flex-none ">
-                                                {profile}
-                                            </View>
-                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </Row><View className='flex-none '><Button
-                                            variant="text"
-                                            size="sm"
-                                            rounded="rounded"
-                                            tooltip={t('Switch profile')}
-                                            startDecorator="UserSwitch"
-                                            fullWidth
-                                            align="right"
-                                        /></View></Row>
-                                    </ProfileSwitcher>
-                               
-                            )}
+                            <View className='py-4'>
+                                <ProfileSwitcher hideTitle={true} useDefault={true} rounded="rounded-full mx-3" />
+                            </View>
                         </View>
                     </View>
                     {!!currentUser && (

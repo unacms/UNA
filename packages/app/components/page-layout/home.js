@@ -140,13 +140,7 @@ export default function PageLayout(props) {
             let dUser = Object.assign({}, currentUser)
             dUser.url_avatar = dUser.avatar
             dUser.url = appSetting('layout', 'dashboard')
-            const profile = (
-                <Profile
-                    {...dUser}
-                    displayType="unit_wo_info"
-                    displaySize="sm"
-                />
-            )
+           
 
             return (
                 <View
@@ -162,30 +156,9 @@ export default function PageLayout(props) {
                                         'layout',
                                         'show_profile_info'
                                     ) && (
-                                        <View className="">
-                                            {!!currentUser && (
-                                            <ProfileSwitcher>
-                                                <Row className="items-center justify-between mx-2 mt-3 px-3 py-1 rounded-xl hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                                    <Row className='flex-row gap-x-3 items-center'>
-                                                            {profile}
-                                                        <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                            {currentUser.display_name}
-                                                        </Text>
-                                                    </Row><View className='flex-none '>
-                                                        <Button
-                                                        variant="text"
-                                                        size="sm"
-                                                        tooltip={t('Switch profile')}
-                                                        startDecorator="UserSwitch"
-                                                        fullWidth
-                                                        align="right"
-                                                    /></View></Row>
-                                            </ProfileSwitcher>
-                                        )}
+                                        <View className="pt-4">
+                                            <ProfileSwitcher hideTitle={true} useDefault={true}/>
                                         </View>
-                                        
-
-
                                     )}
                                     <View className="flex-auto px-2 w-full">
                                         {navBarBlocks.map((item, index) => {

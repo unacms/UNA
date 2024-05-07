@@ -39,15 +39,53 @@ export default function ElementProfileSwitcher(props) {
     };
 
     const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
-    if (currentUser.profiles_count <=1)
-        return null;
+    
+
+    const profile = (
+        <Profile
+            {...currentUser}
+            displayType="unit_wo_info"
+            displaySize="sm"
+        />
+    )
+
+    console.log("props.children", props.children);
+
+    if (!currentUser){
+        return <></>;
+    }
+
+    const rounded = props.rounded ? props.rounded : 'rounded-xl'
 
     return (
         <>  
-            <Pressable onPress = {() => handleClick()}>
-                {props.children}
-            </Pressable>
-            {(show  ) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={show} onClose={() => {setShow(false)}}>
+            {!props.useDefault ? 
+                <Pressable onPress = {() => handleClick()}>
+                    {props.children}
+                </Pressable> :
+                <Link href={currentUser.url} emulate={true} >          
+                    <Row className={rounded + " items-center justify-between mx-2 px-3 py-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                        <Row className='flex-row gap-x-3 items-center'>
+                            {profile}
+                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                {currentUser.display_name}
+                            </Text>
+                        </Row>
+                        <View className='flex-none '>
+                            {currentUser.profiles_count > 1 && <Button
+                                variant="text"
+                                size="sm"
+                                tooltip={t('Switch profile')}
+                                startDecorator="UserSwitch"
+                                fullWidth
+                                align="right"
+                                onPress = {() => handleClick()}
+                            />}
+                        </View>
+                    </Row>
+                </Link>  
+            }
+            {(show) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={show} onClose={() => {setShow(false)}}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
                     { !props.hideTitle && <View className="flex-row items-center  justify-between">

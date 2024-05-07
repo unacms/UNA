@@ -78,26 +78,8 @@ export default function (props) {
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
                         <View className=' pt-16 fixed-process w-80'>
-                            <View className='px-4 py-4'>
-                                {!!currentUser && (
-                                    <ProfileSwitcher>
-                                        <Row className="items-center justify-between px-3 py-1 rounded-xl hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50">
-                                            <Row className='flex-row gap-x-3 items-center'>
-                                                {profile}
-                                                <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                    {currentUser.display_name}
-                                                </Text>
-                                            </Row><View className='flex-none '>
-                                                <Button
-                                                    variant="text"
-                                                    size="sm"
-                                                    tooltip={t('Switch profile')}
-                                                    startDecorator="UserSwitch"
-                                                    fullWidth
-                                                    align="right"
-                                                /></View></Row>
-                                    </ProfileSwitcher>
-                                )}
+                            <View className='px-4 py-4 mt-0'>
+                                <ProfileSwitcher hideTitle={true} useDefault={true}/>
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
