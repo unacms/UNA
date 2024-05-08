@@ -19,7 +19,7 @@ export default function ElementProfileSwitcher(props) {
     const redirectdRef = useRef();
 
     const handleSwitch = async (id) => {
-        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);       
+        const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);
         setCurrentUser(result.data);
         setShow(false);
     };
@@ -29,8 +29,8 @@ export default function ElementProfileSwitcher(props) {
         if (sResponse && sResponse.data && sResponse.data[0] && sResponse.data[0].data)
             setData(sResponse.data[0].data);
     }
-    
-    useEffect(() => {  
+
+    useEffect(() => {
         fetchData()
     }, []);
 
@@ -39,34 +39,30 @@ export default function ElementProfileSwitcher(props) {
     };
 
     const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
-    
-
-    const profile = (
-        <Profile
-            {...currentUser}
-            displayType="unit_wo_info"
-            displaySize="sm"
-        />
-    )
 
     console.log("props.children", props.children);
 
-    if (!currentUser){
+    if (!currentUser) {
         return <></>;
     }
 
     const rounded = props.rounded ? props.rounded : 'rounded-xl'
 
     return (
-        <>  
-            {!props.useDefault ? 
-                <Pressable onPress = {() => handleClick()}>
+        <>
+            {!props.useDefault ?
+                <Pressable onPress={() => handleClick()}>
                     {props.children}
                 </Pressable> :
-                <Link href={currentUser.url} emulate={true} >          
+                <Link href={currentUser.url} emulate={true} >
                     <Row className={rounded + " items-center justify-between mx-2 px-3 py-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
                         <Row className='flex-row gap-x-3 items-center'>
-                            {profile}
+                            <Profile
+                                {...currentUser}
+                                url_avatar={currentUser.avatar}
+                                displayType="unit_wo_info"
+                                displaySize="sm"
+                            />
                             <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
                                 {currentUser.display_name}
                             </Text>
@@ -79,65 +75,65 @@ export default function ElementProfileSwitcher(props) {
                                 startDecorator="UserSwitch"
                                 fullWidth
                                 align="right"
-                                onPress = {() => handleClick()}
+                                onPress={() => handleClick()}
                             />}
                         </View>
                     </Row>
-                </Link>  
+                </Link>
             }
-            {(show) && <Modal id='file-preview' title = { t ("Your Profiles") } onVisible={show} onClose={() => {setShow(false)}}>
+            {(show) && <Modal id='file-preview' title={t("Your Profiles")} onVisible={show} onClose={() => { setShow(false) }}>
                 <Redirect ref={redirectdRef} />
                 <View className="  overflow-hidden flex-col">
-                    { !props.hideTitle && <View className="flex-row items-center  justify-between">
+                    {!props.hideTitle && <View className="flex-row items-center  justify-between">
                         <Text className="text-lg px-1.5 py-2 font-bold text-neutral-800 dark:text-neutral-200 ">
                             Your Profiles
                         </Text>
                     </View>
                     }
                     {profileList && profileList.map((item, index) => {
-                        let dUser = {...item}
+                        let dUser = { ...item }
                         dUser.url_avatar = dUser.avatar
                         let profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="base" />
-                        return (     
-                            <Link href={dUser.url} emulate={true} key={index}>              
-                            <View key = {'index' + index} className=" p-2 flex-row  
+                        return (
+                            <Link href={dUser.url} emulate={true} key={index}>
+                                <View key={'index' + index} className=" p-2 flex-row  
                                 group duration-200 overflow-hidden rounded-lg  
                                 hover:bg-bgritem dark:hover:bg-bgritem-d
                                 max-w-5xl self-center w-full gap-x-2">
                                     <View className="w-10 h-10 bg-blue-500/50 rounded-full flex-none ">{profile}</View>
                                     <Text className='text-sm my-auto flex-auto font-semibold truncate text-neutral-900 dark:text-neutral-100'>{item.display_name}</Text>
                                     <View className="text-sm bont-semibold flex-none my-auto">
-                                    <Button id="menu" startDecorator="UserSwitch" tooltip={t('Switch profile')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />           
+                                        <Button id="menu" startDecorator="UserSwitch" tooltip={t('Switch profile')} variant='outline' size='sm' onPress={() => handleSwitch(item.id)} />
+                                    </View>
                                 </View>
-                            </View>
                             </Link>
                         )
                     })}
                     <Row className='justity-between mt-4 w-full'>
                         {appSetting('layout', 'allow_create_new_profile') && <View className='w-1/2 pr-2'>
-                        <Link href="/create-persons-profile">
-                            <Button
-                                variant="outline"
-                                title= {t("Create new profile")}
-                                startDecorator="UserCircle"
-                                fullWidth
-                  
-                            />
-                        </Link>
+                            <Link href="/create-persons-profile">
+                                <Button
+                                    variant="outline"
+                                    title={t("Create new profile")}
+                                    startDecorator="UserCircle"
+                                    fullWidth
+
+                                />
+                            </Link>
                         </View>}
                         <View className='w-1/2 pl-2'>
-                        <Link href="/logout">
-                            <Button
-                                variant="outline"
-                                title= {t("Sign out")}
-                                startDecorator="SignOut"
-                                fullWidth
-                            />
-                        </Link>
+                            <Link href="/logout">
+                                <Button
+                                    variant="outline"
+                                    title={t("Sign out")}
+                                    startDecorator="SignOut"
+                                    fullWidth
+                                />
+                            </Link>
                         </View>
                     </Row>
                 </View>
             </Modal>}
-        </>   
-    ) 
+        </>
+    )
 }
