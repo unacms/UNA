@@ -105,6 +105,7 @@ export function ButtonsGroup({
     variant = 'default',
     size = 'base',
     fullWidth = false,
+    hideTitleOnSmall=true,
     rounded = false,
     children = [],
     ...rest
@@ -126,7 +127,7 @@ export function ButtonsGroup({
 
         let childItem;
         if (child.type === Button) {
-            childItem = <Button variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
+            childItem = <Button hideTitleOnSmall={hideTitleOnSmall} variant={'group-item' + ((!!variant && variant == 'text') || bTextContainer ? '-text' : '')} size={size} fullWidth={fullWidth} {...restChild} />;
         } else {
             childItem = child;
         }
@@ -320,16 +321,16 @@ export const ButtonRef = React.forwardRef((props, forwardedRef) => {
 });
 
 export function ButtonsGroupMenu(props) {
-    let { variant, size, rounded, ...rest } = props
+    let { variant, size, rounded, hideTitleOnSmall, ...rest } = props
 
-    return <ButtonsGroup variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
+    return <ButtonsGroup hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
-    let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, ...rest } = props
+    let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
 
     return (
-        <Button variant={'group-item' + (!!variant && variant == 'text' ? '-text' : '')} hideTitleOnSmall={true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
+        <Button variant={'group-item' + (!!variant && variant == 'text' ? '-text' : '')} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
             {props.children}
         </Button>
     );

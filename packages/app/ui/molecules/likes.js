@@ -39,6 +39,8 @@ export default function ElementLikes(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps.system.replace(/_/g, '-'), oProps.object_id];

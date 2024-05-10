@@ -54,7 +54,7 @@ export default function ElementReactions(oProps) {
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both') && !!oCounter && !!oCounter?.items;
     const bShowFull = bShowAction && bShowCounter;
     const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
-
+   
     let oButtonProps = {};
     if(oProps.primary)
         oButtonProps.variant = 'primary';
@@ -66,6 +66,8 @@ export default function ElementReactions(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
     const getName = (sName) => {
         let aName = [oProps.type, oProps?.system?.replace(/_/g, '-'), oProps.object_id];
@@ -301,7 +303,7 @@ export default function ElementReactions(oProps) {
                 sActionButton = oItems.length > 1 ? (
                     <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
                         <DropdownMenu variant="horizontal" items={aItems} onSelect={(oItem, event) => {handleDo(event, oItem)}}>
-                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+                         z   <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={getIconAlias(sReaction)} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />
                         </DropdownMenu>
                     </Pressable>
                 ) : (

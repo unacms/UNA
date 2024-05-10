@@ -600,7 +600,7 @@ function DefaultUnit(data) {
             </View>
             {bIsTimelineContent && (
                 <View className="">
-                    <UnitImages images={data.content.images_attach} />
+                    <UnitImages images={[...data.content.images_attach, ...data.content.videos_attach]} />
                 </View>
             )}
         </>
