@@ -18,6 +18,22 @@ export default function ElementComments(oProps) {
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
     const sDisplaySize = oProps?.displaySize ? oProps.displaySize : (oParams?.display_size ? oParams.display_size : false);
 
+    let oButtonProps = {};
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+    if(oProps.params?.button_variant != undefined)
+        oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.params?.button_size != undefined)
+        oButtonProps.size = oProps.params.button_size;
+    if(oProps.params?.button_rounded != undefined)
+        oButtonProps.rounded = oProps.params.button_rounded;
+    if(oProps.params?.button_full_width != undefined)
+        oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
+
+
+
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
@@ -134,7 +150,7 @@ export default function ElementComments(oProps) {
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 
     const sActionButton = (
-        <ButtonAction key="action" size={sDisplaySize} startDecorator="ChatCircleText" title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} />
+        <ButtonAction key="action" size={sDisplaySize} startDecorator="ChatCircleText" title={bShowActionLabel ? (iCount > 0 ? iCount : sTitle) : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
     );
 
 
@@ -181,7 +197,7 @@ export default function ElementComments(oProps) {
         return (
             <View>
                 <Redirect ref={redirectdRef} />
-                <ButtonsGroupMenu size={sDisplaySize}>{aButtonsGroup}</ButtonsGroupMenu>
+                <ButtonsGroupMenu  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
                 {sCounterPopup}
             </View>
         );
