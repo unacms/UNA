@@ -47,7 +47,7 @@ export default function () {
                             <Link href={tab.url} noprefetch={tab.url == appSetting('layout', 'notifications') ? "false" : "true"}>
                                 <View className='flex-col gap-1 items-center'>
                                     {tab.url == appSetting('layout', 'dashboard') && profile ? profile : <Icon icon={tab.icon} width={24} height={24} />}
-                                    {tab.title && <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap ' + (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300' : 'text-primary')}>{tab.title}</Text>}
+                                    {!!tab.title && <Text className={'group-hover:text-primary dark:group-hover:text-primary  text-[10px] whitespace-nowrap ' + (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300' : 'text-primary')}>{tab.title}</Text>}
                                     {(tab.url == appSetting('layout', 'notifications') && notifCount > 0) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{notifCount}</Text></View>}
                                     {(tab.url == '/friends-all' && frCount > 0) && <View className='absolute bg-contrast border-2 border-white dark:border-neutral-900 rounded-full  px-1.5 items-center justify-center -right-1 -top-2'><Text className='text-white text-xs font-semibold'>{frCount}</Text></View>}
                                 </View>
