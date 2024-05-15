@@ -61,6 +61,11 @@ export function Root(props) {
                 b.notifications = data.user.notifications
                 setCurrentUser(b);
             }
+            if (currentUser && currentUser?.informer != data.user.informer) {
+                let b = currentUser;
+                b.informer = data.user.informer
+                setCurrentUser(data.user);
+            }
         }
         else {
             // if (currentUser != null){
