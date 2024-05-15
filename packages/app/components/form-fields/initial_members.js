@@ -100,8 +100,6 @@ export function SelectUsers({ onSave, initedData = [], requestUrl, isSingle = fa
 };
 
 export default function (props) {
-
-    return <></>
     const rules = {};
     const defaultValue = props.value ? props.value : '';
     const formContext = useFormContext();
