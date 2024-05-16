@@ -26,16 +26,15 @@ export default function FormFieldLocation(props) {
     
     useEffect(() => {
         if (formContext){
-        formContext.setValue(name + '_country', props.value.country);
-        formContext.setValue(name + '_state', props.value.state);
-        formContext.setValue(name + '_city', props.value.city);
-        formContext.setValue(name + '_zip', props.value.zip);
-        formContext.setValue(name + '_lat', props.value.lat);
-        formContext.setValue(name + '_lng', props.value.lng);
-        formContext.setValue(name + '_street', props.value.street);
-        formContext.setValue(name + '_street_number', props.value.street_number);
-    }
-
+            formContext.setValue(name + '_country', props.value.country);
+            formContext.setValue(name + '_state', props.value.state);
+            formContext.setValue(name + '_city', props.value.city);
+            formContext.setValue(name + '_zip', props.value.zip);
+            formContext.setValue(name + '_lat', props.value.lat);
+            formContext.setValue(name + '_lng', props.value.lng);
+            formContext.setValue(name + '_street', props.value.street);
+            formContext.setValue(name + '_street_number', props.value.street_number);
+        }
     },[props.value]);
 
     const { ref } = usePlacesWidget({

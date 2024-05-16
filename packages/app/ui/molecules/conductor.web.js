@@ -590,7 +590,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                         </View>
                     }
                 />
-            }, [dataItems, numColumns]);
+            }, [dataItems, numColumns, dataItems.length]);
            /* const TabFlashListM = <TabFlashList
                 index={route.index}
                 data={dataItems}
