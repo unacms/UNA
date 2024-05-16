@@ -1,9 +1,9 @@
-import { appSetting,md5 } from 'app/lib/util';
+import { appSetting, md5 } from 'app/lib/util';
 import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 import { useState, useContext, useRef, useEffect } from 'react';
-import {componentsMap} from 'app/components/units/_map';
+import { componentsMap } from 'app/components/units/_map';
 import { Button, Modal } from 'app/design/controls'
 import useSWR from "swr";
 import { fetcher } from 'app/lib/fetcher';
@@ -300,16 +300,16 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     let header = commentData.total_count > 0 ? (
         <Row className='flex-row  items-center my-4 pt-4 border-t border-bdr/50 dark:border-bdr-d/50'>
             <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t('Comments')} ({commentData.total_count})</Text>
-            <View className="ml-4">
+            {!appSetting('layout', 'hide_comments_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[
                         { id: 'newest', name: 'desc', title: t('Oldest first') },
                         { id: 'oldest', name: 'asc', title: t('Newest first') }
                     ]} onSelect={(oItem) => { handleOrder(oItem.name) }}>
-                        <Button title={appSetting('lang_keys', 'comment_sorting_' + commentData.orderWay)} variant="outline" startDecorator="SortAscending" size="xs" />
+                        <Button variant="outline" startDecorator="SortAscending" size="xs" />
                     </DropdownMenu>
                 </Pressable>
-            </View>
+            </View>}
         </Row>) : <Text>&nbsp;</Text>;
 
     if (addItems) {
@@ -390,7 +390,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions'))
-                form.data.inputs.cmt_text.value = '<a target="_blank" id="'+md5(formData.text)+'" class="bx-mention-link" href="'+formData.author.url+'">'+formData.author.display_name+'</a>&nbsp;';
+                form.data.inputs.cmt_text.value = '<a target="_blank" id="' + md5(formData.text) + '" class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
             form.data.reset = true;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }

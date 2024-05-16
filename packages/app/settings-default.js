@@ -72,7 +72,8 @@ let settingsDefault = {
         comments_mentions: true,
         carousel_image_width: '',
         carousel_image_aspect: 'aspect-video',
-        show_navigation_non_logged_native: false
+        show_navigation_non_logged_native: false,
+        hide_comments_sort: false
     },
     jitsi: {
         prefix: 'prefix_',
