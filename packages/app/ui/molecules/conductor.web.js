@@ -785,7 +785,7 @@ function ConductorMenu({ routes, index, t, setIndex, getNumCols, windowWidth, on
 
         return (
             <Pressable
-                className={menu_settings?.class ?? ''}
+                className={' px-3 py-2.5 ' + menu_settings?.class ?? ''}
                 onPress={handlePress}
             >
                 <Row className="justify-between items-center min-w-[200px]">

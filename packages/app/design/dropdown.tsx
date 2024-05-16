@@ -19,6 +19,14 @@ export const DropdownMenuItemV = DropdownMenu.create(
   'Item'
 )
 
+export const DropdownMenuItemNoPad = DropdownMenu.create(
+  styled(
+    DropdownMenu.Item,
+    'flex-row items-center justify-between bg-bgrmodal dark:bg-bgrmodal-d hover:bg-bgritem dark:hover:bg-bgritem-d font-medium text-neutral-700 dark:text-neutral-200 dark:hover:text-white hover:cursor-pointer'
+  ),
+  'Item'
+)
+
 export const DropdownMenuContentH = DropdownMenu.create(
   styled(
     DropdownMenu.Content,

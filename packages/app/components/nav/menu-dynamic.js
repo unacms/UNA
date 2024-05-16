@@ -38,7 +38,9 @@ export default function DynamicMenu({ name, MenuItem, MenuItemEx, ButtonEx, cont
     }, []);
 
     let ExMenu = visibleItemsCount < items.length && (
-        <DropdownMenu items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
+        <DropdownMenu 
+            variant = 'nopad'
+            items={items.slice(visibleItemsCount).map((aItem, iKey) => ({
             id: 'menu-' + iKey,
             link: aItem.link,
             title: <MenuItemEx  key={name +'menuex'+ iKey} item={aItem} index={iKey+visibleItemsCount}  />,

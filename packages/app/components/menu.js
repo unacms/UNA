@@ -85,6 +85,7 @@ export default function ElementMenu(oProps) {
 
         // Check if the `display_type` of the item is supported by `componentsMap`
         const sDisplayTypeItem = aItem.display_type ? aItem.display_type : sDisplayType;
+        
         if (!componentsMap[sDisplayTypeItem]) {
             return false;
         }
@@ -132,13 +133,14 @@ export default function ElementMenu(oProps) {
     const MenuItemEx = memo(({ item, index }) => {
         const ItemType = componentsMap[item.display_type ? item.display_type : sDisplayType];
         let modifiedParams = { ...oProps.params, button_variant: 'none', button_size: 'sm'};
+
         return (
             <ItemType key={item.id ? item.id : item.name} {...item} params={modifiedParams} />
         )
     });
 
     const ButtonEx = memo(() => {
-        return <View key="btn" className='ml-2'><Button size={oProps.params.button_size} variant="default" startDecorator="DotsThreeOutline" /></View>;
+        return <View key="btn" className='ml-2'><Button size={oProps.params.button_size} onPress={() => {}} variant="default" startDecorator="DotsThreeOutline" /></View>;
     });
     
     return <DynamicMenu 

@@ -114,7 +114,7 @@ export function ButtonsGroup({
     sClassContainer += fullWidth ? ' flex-auto' : ' w-fit m-0 truncate';
 
     const ThemeCssClasses = appSetting('theme', 'buttons_group_styles');
-    sClassContainer += ThemeCssClasses['u-btn-' + variant + '-cnt'];
+    sClassContainer += ThemeCssClasses['u-btn-' + variant + '-cnt'] ? ThemeCssClasses['u-btn-' + variant + '-cnt'] + ' ' : ' ';
     sClassContainer += rounded ? 'rounded-full ' : 'rounded-lg ';
     sClassContainer += className;
 
@@ -123,7 +123,7 @@ export function ButtonsGroup({
     const aChildren = children.map((child, iIndex) => {
         const { variant, size, fullWidth, ...restChild } = child.props;
         const isLastChild = iIndex < children.length - 1;
-        const childClass = isLastChild ? 'border-r border-transparent dark:border-transparent' : '';
+        const childClass = 'flex-auto ' + (isLastChild ? 'border-r border-transparent dark:border-transparent' : '');
 
         let childItem;
         if (child.type === Button) {
@@ -133,7 +133,7 @@ export function ButtonsGroup({
         }
 
         return (
-            <View key={iIndex} className={childClass}>
+            <View key={iIndex} className={' ' + childClass}>
                 {childItem}
             </View>
         );
@@ -219,6 +219,9 @@ export function Button(props) {
         sClassText += classTextName
     }
 
+    if (buttonType == 'none')
+        buttonAlign = 'start'
+
     sClassContainer += ' justify-' + buttonAlign + ' '
 
     if (buttonPressed) {
@@ -226,8 +229,13 @@ export function Button(props) {
         sClassText += ' text-primary-600 dark:text-primary-400 ';
     }
 
-    const sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';
+    let sClassDefaultRounding = buttonType != 'group-item' ? 'rounded-' + (buttonSize == 'lg' ? 'xl' : 'lg') : '';
     const sClassFullRounding = buttonType != 'group-item' ? 'rounded-full' : '';
+
+    if (buttonType == 'none'){
+        sClassDefaultRounding = ''
+        buttonRounded = false;
+    }
 
     switch (buttonSize) {
         case 'xs':
@@ -239,7 +247,8 @@ export function Button(props) {
             break
 
         case 'sm':
-            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding + (buttonType != 'none' ? ' px-2 py-1.5 ' : ' ');
+            sClassContainer += buttonRounded ? sClassFullRounding + ' p-1.5 ' : sClassDefaultRounding ;
+            sClassContainer += (buttonType != 'none' ? ' px-2 py-1.5 ' : ' px-3 py-2.5 justify-start ') + (buttonType == 'none' ? ' w-full ' : ' ')
             sIconContainer = ' h-5 w-5 ' + (buttonTitle !== '' ? ' mx-0.5 ' : '');
             sClassText += ' text-sm leading-5  '
             iIconSize = 20;
@@ -323,14 +332,18 @@ export const ButtonRef = React.forwardRef((props, forwardedRef) => {
 export function ButtonsGroupMenu(props) {
     let { variant, size, rounded, hideTitleOnSmall, ...rest } = props
 
-    return <ButtonsGroup hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
+    return <ButtonsGroup fullWidth={true} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} variant={!!variant ? variant : 'outline'} size={!!size ? size : 'xs'} rounded={rounded != undefined ? rounded : true}>{props.children}</ButtonsGroup>
 }
 
 export function ButtonMenuGroupItem(props) {
     let { variant, size, title, startDecorator, endDecorator, onPress, pressed, rounded, fullWidth, disabled, hideTitleOnSmall, ...rest } = props
-
+    let sVariant = 'group-item' + (!!variant && variant == 'text' ? '-text' : '');
+    if (variant == 'none'){
+        sVariant='none';
+        fullWidth='true'
+    }
     return (
-        <Button variant={'group-item' + (!!variant && variant == 'text' ? '-text' : '')} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : false}>
+        <Button variant={sVariant} hideTitleOnSmall={hideTitleOnSmall != undefined ? hideTitleOnSmall : true} size={!!size ? size : 'sm'} title={title} startDecorator={startDecorator} endDecorator={endDecorator} onPress={onPress} pressed={pressed != undefined ? pressed : false} rounded={rounded != undefined ? rounded : true} disabled={disabled != undefined ? disabled : false} fullWidth={fullWidth != undefined ? fullWidth : true}>
             {props.children}
         </Button>
     );

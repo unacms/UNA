@@ -11,7 +11,8 @@ import {
     DropdownMenuItemV, 
     DropdownMenuItemH, 
     DropdownMenuItemTitle,
-    DropdownMenuItemIcon
+    DropdownMenuItemIcon,
+    DropdownMenuItemNoPad
 } from 'app/design/dropdown';
 
 //import * as DropdownMenu from 'zeego/dropdown-menu'
@@ -42,12 +43,12 @@ export default function (oProps) {
     const handleSelect = (oItem) => {
         redirectdRef.current.redirect('' + oItem.link);
     }
-
+    console.log("oProps?.variant", oProps)
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
     const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
 
-    const DmContent = sVariant == 'vertical' ? DropdownMenuContentV : DropdownMenuContentH;
-    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : DropdownMenuItemH;   
+    const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
+    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : ('nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);   
 
     const aDmItems = oProps.items.map((oItem) => {
         let sIcon = undefined;
