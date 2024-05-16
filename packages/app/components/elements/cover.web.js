@@ -335,7 +335,7 @@ export default function (props) {
 
     const handleSwitch = async (id) => {
         const result = await fetcher('/api.php?r=system/switch_profile/TemplServiceAccount&params[]=' + id);       
-        setCurrentUser(result.data);
+        location.reload();
     };
 
     
