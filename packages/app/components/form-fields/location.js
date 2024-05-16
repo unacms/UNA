@@ -25,6 +25,7 @@ export default function FormFieldLocation(props) {
     const [place, setPlace] = useState(defaultValue);
     
     useEffect(() => {
+        if (formContext){
         formContext.setValue(name + '_country', props.value.country);
         formContext.setValue(name + '_state', props.value.state);
         formContext.setValue(name + '_city', props.value.city);
@@ -33,6 +34,7 @@ export default function FormFieldLocation(props) {
         formContext.setValue(name + '_lng', props.value.lng);
         formContext.setValue(name + '_street', props.value.street);
         formContext.setValue(name + '_street_number', props.value.street_number);
+    }
 
     },[props.value]);
 

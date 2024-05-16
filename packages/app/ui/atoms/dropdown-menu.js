@@ -43,7 +43,7 @@ export default function (oProps) {
     const handleSelect = (oItem) => {
         redirectdRef.current.redirect('' + oItem.link);
     }
-    console.log("oProps?.variant", oProps)
+
     const sVariant = !!oProps?.variant ? oProps.variant : 'vertical';
     const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
 

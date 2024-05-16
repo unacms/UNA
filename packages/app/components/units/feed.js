@@ -4,6 +4,7 @@ import Time from 'app/ui/atoms/time'
 import Profile from 'app/ui/molecules/profile'
 import React, { memo, useState, useEffect, useContext, useRef } from 'react'
 import { useCurrentUser } from 'app/context/user'
+import { appSetting } from 'app/lib/util'
 import { Text } from 'app/design/typography'
 import { View, Row, ScrollView } from 'app/design/view'
 import { StyleSheet } from 'react-native'
@@ -60,7 +61,7 @@ const CommentsSection = React.memo(({ isCommentsModal, commentsDataInline, data,
     </Text>);
     return (
         <View className='border-t border-bdr/50 dark:border-bdr-d/50 pt-4 mt-4'>
-            <CommentsBrowse browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
+            <CommentsBrowse maxCount={appSetting('layout', 'comments_count_in_feed')} browse={commentsDataInline} module={data?.cmts.module} isShort={true} handleReply={showCommentsModal} />
             {isShowMoreComments && (
                 <View className='bg-bgritem dark:bg-bgritem-d hover:bg-primary/10 dark:hover:bg-primary-d/10 px-3 py-1  rounded-lg'>
                     {isCommentsModal ? <Pressable onPress={() => { showCommentsModal() }} >
@@ -264,7 +265,7 @@ function DefaultUnit(data) {
     let isShowMoreComments = false;
     if (data?.cmts?.data?.length > 0) {
         commentsData = { id: 'cmt_list', insert: 'before', 'type': 'browse', 'data': data.cmts };
-        if (data?.cmts.total_count > data?.cmts?.data?.length) {
+        if (data?.cmts.total_count > appSetting('layout', 'comments_count_in_feed')) {
             isShowMoreComments = true;
         }
     }

@@ -1,7 +1,6 @@
 'use client'
 
 import { IconSet as IconSetDedault } from './icons-web.default';
-import { appSetting } from 'app/lib/util'
 import { Theme } from 'app/design/theme';
 import { Airplane, Lifebuoy, Prohibit, Medal, Shield, Eye}  
 
