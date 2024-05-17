@@ -150,17 +150,17 @@ export default function PageLayout(props) {
                 >
                     <View className="flex-auto  relative w-full flex-row mx-auto ">
                         {getLayout(currentUser) == 'hor' && (
-                            <View className="hidden xl:block w-80 duration-200   ">
+                            <View className="hidden xl:block w-80 duration-300 border-r border-bdr dark:border-bdr-d  ">
                                 <View className="fixed fixed-process w-80">
                                     {appSetting(
                                         'layout',
                                         'show_profile_info'
                                     ) && (
-                                        <View className="pt-4">
+                                        <View className="px-4 pt-3 pb-1">
                                             <ProfileSwitcher hideTitle={true} useDefault={true}/>
                                         </View>
                                     )}
-                                    <View className="flex-auto px-2 w-full">
+                                    <View className="flex-auto px-4 w-full">
                                         {navBarBlocks.map((item, index) => {
                                             return (
                                                 <BlockByName
