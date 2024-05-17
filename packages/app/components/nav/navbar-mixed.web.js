@@ -78,7 +78,7 @@ export default function (props) {
                 <Row className='w-full'>
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
                         <View className=' pt-16 fixed-process w-80'>
-                            <View className='px-4 py-4 mt-0'>
+                            <View className='px-4 py-3'>
                                 <ProfileSwitcher hideTitle={true} useDefault={true}/>
                                 {menu_sidebar_items.map(
                                     (item, index) =>

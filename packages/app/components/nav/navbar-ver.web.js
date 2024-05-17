@@ -76,10 +76,12 @@ export default function (props) {
         return <></>
 
     const buttonProps = {
-        startDecorator: "Plus",
+
         id: "m3",
+        startDecorator: "Plus",
         tooltip: "Create",
         rounded: 'rounded',
+    
     }
 
     const menu_account_items = menuItemsByName('', appSetting('menu_items', 'menu_account'), currentUser)
@@ -95,7 +97,7 @@ export default function (props) {
                 className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " ") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start ' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
-                        <View className='px-3 sm:px-4 lg:px-2 lg:pt-4 flex-row lg:flex-col lg:w-80'>
+                        <View className=' flex-row lg:flex-col lg:w-80'>
                             {(headerSettings.menu && isDrawer) && (
                                 <View className="lg:hidden mr-3 sm:mr-4">
                                     <Pressable onPress={showMenu}>
@@ -108,9 +110,9 @@ export default function (props) {
                                     </Pressable>
                                 </View>
                             )}
-                            <View className='justify-center px-2'>
+                            <View className='justify-center px-4'>
                                 <Link href="/home" aria-label="Logo">
-                                    <View className="group  mr-auto flex-row flex-none items-center my-auto lg:mx-2 lg:mb-4">
+                                    <View className="group  mr-auto flex-row flex-none items-center my-auto lg:py-2.5 px-1">
                                         {appStatic('logo_mark')}
                                         {appStatic('logo_text')}
                                     </View>
@@ -159,11 +161,11 @@ export default function (props) {
                                     <View className='flex-auto'>
                                         <BlockByUrl url="/api.php?r=bx_timeline/get_block_post_account" exProps={{ "mode": "button" }} />
                                     </View>
-                                    {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
                                 </Row>
                             )}
                             <View className='py-4'>
-
+                            <Row className='flex-row px-4 '>  
+                                <View className='flex-auto'>
                                 <DropdownMenu items={menu_account_items.map(
                                     (item, index) => {
                                         return (
@@ -180,7 +182,7 @@ export default function (props) {
                                     }
                                 )}
                                 >
-                                    <Row className={"rounded-full mx-3 items-center justify-between mx-2 px-3 py-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
                                         <Row className='flex-row gap-x-3 items-center'>
                                             <Profile
                                                 {...currentUser}
@@ -195,6 +197,11 @@ export default function (props) {
 
                                     </Row>
                                 </DropdownMenu>
+                                </View> 
+                                <View className='ml-2'>
+                                {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
+                                </View>
+                                </Row>
                             </View>
                         </View>
                     </View>

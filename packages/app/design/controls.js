@@ -256,11 +256,11 @@ export function Button(props) {
             break
 
         case 'base':
-            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' px-2.5 py-2  ';
-            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1.5 ' : '');
+            sClassContainer += buttonRounded ? sClassFullRounding + (props.padding ? ' p-' + props.padding : ' p-2') : sClassDefaultRounding + ' px-2 py-2  ';
+            sIconContainer = ' h-6 w-6  ' + (buttonTitle !== '' ? ' mx-1 ' : '');
             sClassText += ' text-base leading-6  '
             iIconSize = 24;
-            sTitleContainer += buttonTitle !== '' ? ' mx-3 ' : '' // Conditionally add 'mx-2' class
+            sTitleContainer += buttonTitle !== '' ? ' mx-1 ' : '' // Conditionally add 'mx-2' class
             break
 
         case 'lg':

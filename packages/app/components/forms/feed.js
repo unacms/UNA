@@ -115,7 +115,7 @@ export default function FormFeed(props) {
                     {getFormFieldByData(props.data.inputs['tlb_do_submit'], props.handleSubmit, 'default')}
                 </View>
             </Modal>
-            {props.exProps?.mode == 'button' ? <Button variant = "primary" title = "Create" tooltip = "Create" rounded = 'rounded' fullWidth onPress={() => {
+            {props.exProps?.mode == 'button' ? <Button variant = "primary" title = "Post" tooltip = "Post" rounded = 'rounded' fullWidth onPress={() => {
                 FeedbackHaptics('Medium')
                 setShowImage(true)
             }} /> : <Card rounded=' rounded-none sm:rounded-2xl  ' margin=' p-3 sm:p-6 mb-2 sm:mb-4 sm:mx-4 ' border=" sm:border border-bdrcard dark:border-bdrcard-d" >
