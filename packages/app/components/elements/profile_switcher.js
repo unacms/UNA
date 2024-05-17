@@ -40,8 +40,6 @@ export default function ElementProfileSwitcher(props) {
 
     const profileList = data?.profiles?.filter((item) => (item.id != currentUser.id));
 
-    console.log("props.children", props.children);
-
     if (!currentUser) {
         return <></>;
     }

@@ -48,7 +48,8 @@ export default function (oProps) {
     const onSelect = oProps?.onSelect ? oProps.onSelect : handleSelect;
 
     const DmContent = (sVariant == 'vertical' || sVariant == 'nopad') ? DropdownMenuContentV : DropdownMenuContentH;
-    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : ('nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);   
+    const DmItem = sVariant == 'vertical' ? DropdownMenuItemV : (sVariant == 'nopad' ? DropdownMenuItemNoPad : DropdownMenuItemH);   
+
 
     const aDmItems = oProps.items.map((oItem) => {
         let sIcon = undefined;

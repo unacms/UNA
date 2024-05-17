@@ -83,7 +83,12 @@ export default function (props) {
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
-                                            <ButtonRef
+                                            <Button
+                                                pressed={
+                                                    (item.link == '/' + props.uri || (item.link == '/' && props.uri == 'home'))
+                                                        ? true
+                                                        : false
+                                                }
                                                 variant="text"
                                                 size="base"
                                                 fullWidth
