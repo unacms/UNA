@@ -282,7 +282,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }, [commentData.lastInserted]);
 
     useEffect(() => {
-        subscribe(commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+        subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
     }, [])
 
     const dataArrayRef = useRef([]);
