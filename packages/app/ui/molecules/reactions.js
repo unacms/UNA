@@ -66,6 +66,7 @@ export default function ElementReactions(oProps) {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    oButtonProps.fullWidth= false;
     if(oProps.params?.button_hide_title_on_small != undefined)
         oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
@@ -476,7 +477,7 @@ export default function ElementReactions(oProps) {
         });
 
         return [[
-                <ButtonCounter key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
+                <ButtonCounter fullWidth={false} key="counter" size={sDisplaySize} endDecorator={aCounter} title={iTotal} onPress={handleGetPerformedByCpd} />
             ], [
                 <Modal key="counter-popup"  title={t("Reactions")} onVisible={popupVisibleByCpd} onClose={() => {setPopupVisibleByCpd(false)}}>
                     <View className="relative flex-row  border-b border-bdr dark:border-bdr-d ">{aPerformedByMenu}</View>
