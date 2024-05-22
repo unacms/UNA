@@ -47,8 +47,8 @@ export default function (props) {
     let uniRef = useRef();
 
     let storageKeyValue = storageKey(props.uri + ':' + props.data.request_url + ':' + props.data.params?.type + ':' + props.data.params?.category)
-    const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
-
+    //const [cachedData, setCachedData] = useState(props.cachePrefix ? false : { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) });
+    const cachedData =  { state: getDataFromCache('ul:state', storageKeyValue), data: getDataFromCache('ul:data', storageKeyValue) };
     let data = props.data;
     if (data.unit == 'mixed') {
         data.unit = 'general-profile-list';
@@ -63,8 +63,7 @@ export default function (props) {
         defParams.moduleName = data.module ? data.module : '';
     const browseParams = defParams;
 
-    const [dataItems, setDataItems] = useState({ data: (appSetting('cache', 'list') && cachedData?.data?.data ? cachedData.data?.data : []), params: browseParams });
-
+    const [dataItems, setDataItems] = useState({ data: (appSetting('cache', 'list') && cachedData?.data ? cachedData.data : []), params: browseParams });
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
 
@@ -213,6 +212,7 @@ export default function (props) {
     /* NEW POST TO FEED */
 
     useEffect(() => {
+        
         if (dataItems.data.length > 0) {
             storageSet('ul:data', storageKeyValue, dataItems.data);
         }

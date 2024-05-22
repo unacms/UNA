@@ -16,8 +16,6 @@ import { appSetting } from 'app/lib/util'
 import { useEffect } from 'react'
 
 export default function FormFieldLocation(props) {
-
-    console.log("propsprops", props);
     const formContext = useFormContext();
     let name = props.name;
     let rules = {};

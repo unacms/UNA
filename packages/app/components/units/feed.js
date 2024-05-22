@@ -26,6 +26,7 @@ import { ContentMore } from 'app/ui/molecules/contentmore';
 import { BottomSheetData } from 'app/context/bottomsheet';
 import { useWindowDimensions } from 'react-native'
 import Carousel from 'app/ui/molecules/carousel'
+import { subscribe } from 'app/ui/atoms/socket';
 
 const CommentsModal = ({ commentsData, initFormData, itemContent }) => {
     const windowDimensions = useWindowDimensions();
@@ -230,7 +231,6 @@ function DefaultUnit(data) {
     const [viewState, setViewState] = useState({ view: '' })
     const [postData, setPostData] = useState(null)
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
-    const cmtsData = data.cmts_list;
     const styles = StyleSheet.create(
         Platform.OS !== 'web'
             ? {
@@ -305,10 +305,22 @@ function DefaultUnit(data) {
                 : <DefaultView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />;
 
 
-    const isCommentsModal = data.cmts_list ? true : false;
+    const isCommentsModal = appSetting('layout', 'comments_in_modal');
 
     const showCommentsModal = async (initFormData) => {
-        setBottomSheetData({ title: data.author_data.display_name + "'s post", showClose: true, isListView: true, modal:{padding:'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'}, content: <CommentsModal initFormData={initFormData} itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} commentsData={cmtsData} />, snapPoints: ['95%', '95%'] });
+        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        setBottomSheetData(
+            { 
+                title: data.author_data.display_name + "'s post", 
+                showClose: true, 
+                isListView: true, 
+                modal:{padding:'sm:p-6 sm:pt-4 pb-1 sm:pb-4 md:pb-0'}, 
+                content: <CommentsModal initFormData={initFormData}
+                itemContent={{ id: "block-comments", data: <><View className='pb-4'><Author /></View><MainContent /></> }} 
+                commentsData={res.data} />, 
+                snapPoints: ['95%', '95%'] 
+            }
+        );
     }
 
     if (viewState.view == 'deleted')
@@ -316,6 +328,8 @@ function DefaultUnit(data) {
 
     if (isCommentsModal && data.menu_actions?.items[0].data?.callback)
         data.menu_actions.items[0].data.callback = showCommentsModal
+
+   
 
     const MenuMemo = memo(() => (
         <Menu
@@ -687,6 +701,7 @@ function UnitImages(images) {
 
 export default function UnitFeed(props) {
     let data = props.data
+   
 
     data.mainImage = null
     if (data?.content?.images)
@@ -697,8 +712,50 @@ export default function UnitFeed(props) {
         data.comments = data.cmts.data[0][Object.keys(data.cmts.data[0])[0]].data
     }
 
-    data.showMore = true
-    let unit = props.mode == 'small' ? SmallUnit(data) : DefaultUnit(data)
+    data.showMore = true;
+
+    const [datas, setDatas] = useState(data);
+
+    const cb = async (inputData) => {
+        let result1 = await fetcher(
+            '/api.php?r=bx_timeline/get_block_item/&params[]=&id=' + datas.id
+        )
+        const inputDataObj = JSON.parse(inputData)
+      
+        const updatedData = { 
+            ...datas,
+            cmts: result1.data[0].data.event.cmts,
+            menu_actions: {
+                ...datas.menu_actions,
+                items: datas.menu_actions.items.map((action, index) => {
+                    if (action.name === 'item-comment') {
+                        return {
+                            ...action,
+                            data: {
+                                ...action.data,
+                                action: {
+                                    ...action.data.action,
+                                    count: inputDataObj.count
+                                },
+                                counter: {
+                                    ...action.data.counter,
+                                    count: inputDataObj.count
+                                }
+                            }
+                        };
+                    }
+                    return action;
+                }),
+            }
+        };
+
+        setDatas(updatedData);
+    }
+
+    useEffect(() => {
+        subscribe('cmts_' + datas.cmts.module + '_' + datas.id, 'comment_added', cb);
+    }, [])
+    let unit = props.mode == 'small' ? SmallUnit(datas) : DefaultUnit(datas)
 
     return <>{unit}</>
 }

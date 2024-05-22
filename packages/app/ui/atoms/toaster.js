@@ -9,7 +9,7 @@ const ElementToster = forwardRef((props, ref) => {
     const sharedValue = useSharedValue(50); 
 
     const isWeb = Platform.OS === 'web';
-    const sClassName = isWeb ? ' fixed bottom-24 left-0 w-full items-center z-50' : 'absolute top-0 w-full items-center z-50';
+    const sClassName = isWeb ? ' fixed bottom-32 left-0 w-full items-center z-50' : 'absolute top-0 w-full items-center z-50';
     const sClassName2 = isWeb ? 'items-center' : 'w-1/2 items-center';
         
     const indicatorStyle = useAnimatedStyle(() => {

@@ -74,6 +74,7 @@ let settingsDefault = {
         carousel_image_aspect: 'aspect-video',
         show_navigation_non_logged_native: false,
         hide_comments_sort: false,
+        comments_in_modal: true,
         comments_count_in_feed: 3
     },
     jitsi: {

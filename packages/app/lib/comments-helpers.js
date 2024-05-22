@@ -249,7 +249,10 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
     DataForList(commentData?.listData?.data?.data, 0, 0, []);
 
+    const toasterRef = useRef();
+
     const cb = (data) => {
+        console.log('cb2', data)
         let k = JSON.parse(data);
         if (currentUser && currentUser.id != k.author_id) {
             if (!dataArrayRef.current.includes(k.id)) {
@@ -266,9 +269,11 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }
 
     const cb2 = (val) => {
-        const current = toasterRef.current;
-        if (current) {
-            current.setVisible(val);
+        if(toasterRef){
+            const current = toasterRef.current;
+            if (current) {
+                current.setVisible(val);
+            }
         }
     }
 
@@ -282,7 +287,8 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }, [commentData.lastInserted]);
 
     useEffect(() => {
-        subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
+        if (!isShort)
+            subscribe('cmts_' + commentData.moduleName + '_' + commentData.objectId, 'comment_added', cb);
     }, [])
 
     const dataArrayRef = useRef([]);
@@ -326,10 +332,11 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
     //dataOut = dataOut.filter(item => (!item.id.toString().includes('block') || typeof item.data?.props?.children !== 'undefined') );
 
-    const toasterRef = useRef();
+   
 
     return (
         <>
+         <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
             <UniList
                 useWindowScroll
                 height={height > 0 ? height : undefined}
@@ -356,7 +363,7 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
                     ) : null
                 }
             />
-            <Toaster ref={toasterRef} onPress={showNewContent} variant="primary" title="New comment" size="sm" />
+           
         </>
     )
 }
@@ -389,8 +396,14 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
     useEffect(() => {
         if (formData.parent_id > 0) {
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
-            if (appSetting('layout', 'comments_mentions'))
-                form.data.inputs.cmt_text.value = '<a target="_blank" id="' + md5(formData.text) + '" class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
+            if (appSetting('layout', 'comments_mentions')){
+                if (formData.author.url == "/javascript:"){
+                    form.data.inputs.cmt_text.value = '<span class="bx-mention-link">' + formData.author.display_name + '</span>&nbsp;';
+                }
+                else{
+                    form.data.inputs.cmt_text.value = '<a target="_blank" id="' + md5(formData.text) + '" class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
+                }
+            }
             form.data.reset = true;
             addCommentData({ formText: formData.text, formAuthor: formData.author.display_name, parentId: formData.parent_id })
         }

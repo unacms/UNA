@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
-import Field, {getValidationRules} from './_field';
+import Field, {getValidationRules} from 'app/components/form-fields/_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
 import { uploadImage,linkify2 } from 'app/lib/util';
@@ -164,6 +164,46 @@ var MentionEx = Mention.extend({
         ]
     },
 })
+
+const BxMentionSpan = Node.create({
+    name: 'bxMentionLink',
+  
+    inline: true,
+    group: 'inline',
+    content: 'inline*',
+    selectable: false,
+    atom: true,
+  
+    addAttributes() {
+      return {
+        class: {
+          default: 'bx-mention-link',
+        },
+      };
+    },
+  
+    parseHTML() {
+      return [
+        {
+          tag: 'span.bx-mention-link',
+        },
+      ];
+    },
+  
+    renderHTML({ HTMLAttributes }) {
+      return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+    },
+  
+    addCommands() {
+      return {
+        setBxMentionLink: () => ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+          });
+        },
+      };
+    },
+  });
     
 export default function FormFieldFtf(props) {
 
@@ -173,6 +213,10 @@ export default function FormFieldFtf(props) {
     const [link, setLink] = useState(null);
     const formContext = useFormContext();
     const { field } = useController({ name, rules, defaultValue });
+    const object_privacy_view = formContext.watch('object_privacy_view');
+    const object_id = formContext.watch('id');
+    const m = name=="cmt_text" ? "sys_cmts": "bx_timeline";
+
 
     useEffect(() => {
         if (props.value !== undefined){
@@ -207,6 +251,7 @@ export default function FormFieldFtf(props) {
             Image,
             Iframe,
             SubmitOnEnter,
+            BxMentionSpan,
             Link.configure({
                 openOnClick: false,
             }),
@@ -218,7 +263,7 @@ export default function FormFieldFtf(props) {
                 HTMLAttributes: {
                     class: 'bx-mention-link',
                 },
-                suggestion: Suggestion('@'),
+                suggestion: Suggestion('@', object_privacy_view, m, object_id),
 
                 
             }),
@@ -226,7 +271,7 @@ export default function FormFieldFtf(props) {
                 HTMLAttributes: {
                     class: 'bx-mention-link',
                 },
-                suggestion: Suggestion('#'),
+                suggestion: Suggestion('#', object_privacy_view, m, object_id),
                 
                 
             }),
@@ -254,25 +299,33 @@ export default function FormFieldFtf(props) {
         }
     })
 
-
     useEffect(() => {
         if (editor && editor.getHTML() != field.value){//&& field.value == ''{}
-            editor.commands.setContent(field.value)
+            editor.commands.setContent(field.value);
+            editor.commands.focus()
         }
 
     }, [field.value]);
+    
+    /*useEffect(() => {
+        
+        if (editor && props.name == 'cmt_text'){
+
+            editor.commands.focus()
+        }
+    }, [editor]);*/
 
     useEffect(() => {
-        if (editor && props.focus == true){
-            editor.commands.focus('end')
-        }
-    }, [editor]);//, field.value - removed: on edit move cursor to end of text
+    if (editor && props.focus == true){
+        editor.commands.focus('end')
+    }
+}, [editor]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 
     const computedData = useMemo(() => {
         if (link)
-            return  <View className=' mt-2'>
+            return  <View className='w-1/3 mt-2'>
                 <Html data={link} />
             </View>
 
@@ -285,7 +338,7 @@ export default function FormFieldFtf(props) {
             <View>
                 <EditorContent 
                     editor={editor} 
-                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 text-base' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-lg ') + ' ' + (isFullHtml? ' p-4 ' : ' px-0.5 my-2 ')}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 text-base' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml? ' p-4 ' : ' px-2.5 py-2 ')}
 
                 />
                 <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>

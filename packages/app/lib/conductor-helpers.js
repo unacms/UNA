@@ -91,7 +91,9 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
                     // i.endpoint = stateC.endpoint;
                     i.state = stateC.state
                 }
+                
                 let stateD = getDataFromCache('ul:data', i.storageKeyValue);
+                console.log("stateD", i.storageKeyValue, stateD)
                 if (stateD) {
                     i.endpoint = stateD.endpoint;
                     i.data = stateD.data;
@@ -191,6 +193,7 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 }
 
 export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
+    console.log(123)
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;
@@ -206,6 +209,7 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
                 route.sidebar = sidebar
 
             route.inited = true;
+            console.log("storageSet", route.data.concat(newItems))
             storageSet('ul:data', route.storageKeyValue, { data: route.data.concat(newItems), endpoint: route.endpoint });
             return {
                 ...route,
@@ -219,7 +223,6 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
     });
     if (routes != updatedRoutes)
         setRoutes(updatedRoutes);
-
 };
 
 export function getContent(data, block) {
