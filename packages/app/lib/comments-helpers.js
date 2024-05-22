@@ -398,7 +398,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions')){
                 if (formData.author.url == "/javascript:"){
-                    form.data.inputs.cmt_text.value = '<span class="bx-mention-link">' + formData.author.display_name + '</span>&nbsp;';
+                    form.data.inputs.cmt_text.value = '<span class="bx-mention-link">' + formData.author.display_name.replace(" (anonymized)", '') + '</span>&nbsp;';
                 }
                 else{
                     form.data.inputs.cmt_text.value = '<a target="_blank" id="' + md5(formData.text) + '" class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
@@ -463,7 +463,7 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
                         <View className=' flex-auto pr-4'>
                             <Row className='max-w-full '>
                                 <Text className='text-xs text-neutral-900 dark:text-neutral-50'>Reply to: </Text>
-                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{commentData.formAuthor}</Text>
+                                <Text className='font-semibold text-xs text-neutral-900 dark:text-neutral-50'>{commentData.formAuthor.replace(" (anonymized)", '')}</Text>
                             </Row>
                             <Text className='text-sm overflow-hidden text-neutral-900 dark:text-neutral-50' numberOfLines={3}>{form.data.inputs.cmt_parent_id.value == 0 ? '' : '' + commentData.formText}</Text>
                         </View>
