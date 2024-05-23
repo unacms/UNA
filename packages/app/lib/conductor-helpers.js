@@ -93,7 +93,6 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
                 }
                 
                 let stateD = getDataFromCache('ul:data', i.storageKeyValue);
-                console.log("stateD", i.storageKeyValue, stateD)
                 if (stateD) {
                     i.endpoint = stateD.endpoint;
                     i.data = stateD.data;
@@ -209,7 +208,6 @@ export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes
                 route.sidebar = sidebar
 
             route.inited = true;
-            console.log("storageSet", route.data.concat(newItems))
             storageSet('ul:data', route.storageKeyValue, { data: route.data.concat(newItems), endpoint: route.endpoint });
             return {
                 ...route,

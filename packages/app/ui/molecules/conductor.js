@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useCurrentUser } from 'app/context/user'
 import { useRouter } from 'expo-router';
 import { LayoutData } from 'app/context/layout';
+import { menuItemsFilter } from 'app/lib/util';
 
 export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDefaultHeader = false, menu, data, blocks, useSectionAsMenu = false, unitMode = '', skeleton = '', onChangeRoute, keyword }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
@@ -186,7 +187,9 @@ export function Conductor({ header, smallHeader, minHeaderHeight = 100, isHideDe
             setTimeout(() => {
                 //TODO FIX
                 //updateRightHeaderObj(addButtons, navigation);
-                updateRightHeader(currentUser?menuSettings?.add:null, navigation, );
+                let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
+                addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+                updateRightHeader(addButtonsSet, navigation, );
             }, 300);
             /* gap-x-2*/
             return (

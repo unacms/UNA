@@ -26,10 +26,11 @@ export default function ElementConnections(oProps) {
     const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
 
     let oButtonProps = {};
-    if(oProps.primary)
-        oButtonProps.variant = 'primary';
     if(oProps.params?.button_variant != undefined)
         oButtonProps.variant = oProps.params.button_variant;
+    if(oProps.primary)
+        oButtonProps.variant = 'primary';
+  
     if(oProps.params?.button_size != undefined)
         oButtonProps.size = oProps.params.button_size;
     if(oProps.params?.button_rounded != undefined)

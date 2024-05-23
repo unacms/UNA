@@ -781,4 +781,3 @@ export function handleFeedLayoutData(layoutData, data) {
     }
     return data;
 }
-

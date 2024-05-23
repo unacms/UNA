@@ -455,3 +455,6 @@ body {
 div{
     scrollbar-width: none;
 }
+html[theme="dark"]:root {
+    --rsbs-bg: rgba(17,24,39,1);
+}

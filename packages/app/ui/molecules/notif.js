@@ -14,6 +14,7 @@ export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [ntfsOpen, setNtfsOpen] = useState(false);
     const notifCount = currentUser.notifications;
+    console.log("currentUser.notifications", currentUser.notifications)
     const { t } = useTranslation();
 
     let data = { request_url: "/api.php?r=bx_notifications/get_data/&params[]=", "type": "obj_own_and_con", unit: "notifications" }

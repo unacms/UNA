@@ -23,7 +23,7 @@ import Dropdown from 'app/ui/atoms/dropdown'
 import Search from 'app/ui/molecules/search';
 import Location from 'app/components/form-fields/location'
 import DynamicMenu from 'app/components/nav/menu-dynamic';
-import { storageClear } from 'app/lib/util';
+import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 
 export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
@@ -376,9 +376,10 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         if (routes.length > 1) {
             const menuSettings = appSetting('menu_items', menu.object);
             let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
-            if (!currentUser) {
+            addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
+           /* if (!currentUser) {
                 addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false );
-            }
+            }*/
             const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
                 if (button.section)
