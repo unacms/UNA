@@ -77,6 +77,11 @@ let settingsDefault = {
         comments_in_modal: true,
         comments_count_in_feed: 3
     },
+    forms:{
+        sys_login: {hide_errors: true, button_full_width: true}, 
+        sys_account_create: {hide_errors: true, button_full_width: true}
+        
+    },
     jitsi: {
         prefix: 'prefix_',
         domain: 'https://meet.jit.si/',

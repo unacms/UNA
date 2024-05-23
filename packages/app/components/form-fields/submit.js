@@ -3,6 +3,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import { Button, Hidden } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
+import { appSetting } from 'app/lib/util'
 
 export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
@@ -13,6 +14,8 @@ export default function FormFieldSubmit(props) {
     let { width } = useWindowDimensions();
     const { field } = useController({ name, rules, defaultValue });
 
+    const formProps = appSetting('forms', props.form_name);
+    
     return (
         <Field  {...props}>
             <Button
@@ -22,7 +25,7 @@ export default function FormFieldSubmit(props) {
                 startDecorator={props.icon}
                 size={!!props.size ? props.size : 'base'}
                 disabled={props.disabled ? props.disabled : false}
-                fullWidth={props.form_name == 'sys_account_create' || props.form_name == 'sys_login' || width < 1024}
+                fullWidth={formProps?.button_full_width == true || width < 1024}
 
             />
             <Hidden
@@ -32,7 +35,7 @@ export default function FormFieldSubmit(props) {
                 defaultValue={defaultValue}
             />
             {
-                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !==true) &&
+                (Object.keys(formContext.formState.errors).length > 0 && props.hide_errors !==true && formProps?.hide_errors !== true) &&
                 <View className="mt-2"><FormError errorText={"Errors:"} /><View className="ml-4">
                     {
                         Object.keys(formContext.formState.errors).map((fieldName, index) => {
@@ -42,6 +45,5 @@ export default function FormFieldSubmit(props) {
                     }</View></View>
             }
         </Field>
-
     );
 }

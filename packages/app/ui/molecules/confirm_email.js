@@ -44,11 +44,11 @@ export default function ElementConfirmEmail(props) {
     return (
         <> <Redirect ref={redirectdRef} />
             <Msg onVisible={showMsg} title={"Letter sent, please check your email"} handleOk={() => { setShowMsg(false) }} />
-            <View className='mx-auto max-w-xl p-4 w-full'>
+            <View className='mx-auto max-w-xl p-4 w-full '>
                 <Card rounded margin=' p-4 '>
                     <View className='mb-4 '>
-                        <Text className="text-lg text-center mb-2">{t("Unconfirmed email address")}</Text>
-                        <Text className="text-base text-center">{t("Please check your email.")}</Text>
+                        <Text className="text-lg text-center mb-2 text-neutral-700 dark:text-neutral-300">{t("Unconfirmed email address")}</Text>
+                        <Text className="text-base text-center text-neutral-700 dark:text-neutral-300">{t("Please check your email.")}</Text>
                     </View>
                     <View className='gap-y-4'>
                         <Row className='w-full gap-x-4 items-start justify-between'>
