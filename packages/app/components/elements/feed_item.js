@@ -2,29 +2,40 @@ import { View } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { linkify2 } from 'app/lib/util'
 import Menu from 'app/components/menu';
-import React, { useState, useMemo, useEffect } from 'react'
+import { useState,  useEffect, useContext } from 'react'
 import Carousel from 'app/ui/molecules/carousel'
+import { LayoutData } from 'app/context/layout';
+
 
 export default function ElementFeedItem({data}) {
+    const { layoutData, setLayoutData } = useContext(LayoutData);
+    const [content, setContent] = useState(data.event.content)
+
+    useEffect(() => {
+        if (layoutData && layoutData.type == 'feed_item:content') {
+            setContent(layoutData.data.content)
+        }
+    }, [layoutData]);
+
     let tlContent = '';
 
-    tlContent = data.event.content.text;//truncateHTML(data.content.text, 380);
-    if (data.event.content.images_attach.length == 0){
+    tlContent = content.text;//truncateHTML(data.content.text, 380);
+    if (content.images_attach.length == 0){
         /*let link = linkify2(data.event.content.text);
         if (link){
             tlContent = tlContent + '<br><div class="bx-embed-link" source="' + link + '">' + link + '</div>'
         }*/
-        if (data.event.content.embed){
-            tlContent = tlContent + data.event.content.embed
+        if (content.embed){
+            tlContent = tlContent + content.embed
         }
     }
 
     let content_attach = [];
-    if (data.event.content.images_attach && data.event.content.images_attach.length > 0 ) {
-        content_attach = content_attach.concat(data.event.content.images_attach);
+    if (content.images_attach && content.images_attach.length > 0 ) {
+        content_attach = content_attach.concat(content.images_attach);
     }
-    if (data.event.content.videos_attach && data.event.content.videos_attach.length > 0 ) {
-        content_attach = content_attach.concat(data.event.content.videos_attach);
+    if (content.videos_attach && content.videos_attach.length > 0 ) {
+        content_attach = content_attach.concat(content.videos_attach);
     }
 
     function UnitImages(images) {

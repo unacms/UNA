@@ -720,6 +720,14 @@ export function menuItemsByName(name, items, currentUser, url = '') {
     if (!items)
         items = [{ link: url, title: '' }];
 
+    
+    return menuItemsFilter(items,currentUser);
+}
+
+export function menuItemsFilter(items, currentUser) {
+    if (!items)
+        return items;
+
     if (!currentUser) {
         items = items.filter(item => item.nonlogged !== false && item.nonoperator !== false);
     }
@@ -742,7 +750,6 @@ export function menuItemsByName(name, items, currentUser, url = '') {
         }
         return item;
     });
-
     return items;
 }
 
