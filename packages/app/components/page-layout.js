@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 import Cell from 'app/components/cell';
 import { View } from 'app/design/view'
 import { useCurrentUser } from 'app/context/user';
-import ConfirmEmail from 'app/ui/molecules/confirm_email';
+//import ConfirmEmail from 'app/ui/molecules/confirm_email';
 import { appStatic } from 'app/lib/app-static'
 import Redirect from 'app/ui/atoms/redirect'
 import { useRef, useEffect  } from 'react';
@@ -43,7 +43,6 @@ function Page403() {
 }
 
 export default function PageLayout(props) {
-
     const isWeb = Platform.OS == 'web'
     let {layoutName, layoutBlocks, isCustomLayout}  = getLayoutName(props.data, props.data?.uri?.toString(), isWeb)
     let Component = componentsMap[layoutName];
@@ -69,18 +68,30 @@ export default function PageLayout(props) {
     cells = Object.keys(data.elements).map(key => {
         return <Cell key={key} uri={props.data.uri} url={props.url} blocks={data.elements[key]} />
     });
-    // return data web layouts
-    return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>);
+
+    return Wrapper(<Component layoutName={layoutName} {...props} >{cells}</Component>, props);
 }
 
-function Wrapper(p){
+function Wrapper(p, props){
+    const redirectdRef = useRef();
+    console.log(props?.data?.uri?.toString())
     let { currentUser, setCurrentUser } = useCurrentUser();
-    if (!currentUser || currentUser?.confirmed || appSetting('layout', 'lock_unconfirmed') != true){
+    let bConfirm = false;
+    if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
+        bConfirm = true;
+
+    useEffect(() => {
+        if (bConfirm){
+            redirectdRef.current.redirect('/confirm-email');
+        }
+    }, []);
+   
+    if (bConfirm)
+        return <Redirect ref={redirectdRef} />
+    else
         return <View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View>
-    }
-    else{
-        return <View className='flex-1 mx-auto w-full h-full animated-view'><ConfirmEmail/></View>
-    }
+        
+
 }
 
 export function getLayoutName(data, uri, isWeb) {
