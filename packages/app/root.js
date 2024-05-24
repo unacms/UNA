@@ -9,6 +9,7 @@ import { remoteSettings } from 'app/settings-remote';
 import { subscribe } from 'app/ui/atoms/socket';
 import { getRemoteSettings } from 'app/config';
 import dynamic from 'next/dynamic'
+import { appSetting } from 'app/lib/util'
 
 const Layouts = dynamic(() => import('app/components/layouts'), { ssr: false, })
 //const Layouts = React.lazy(() => import('app/components/layouts'));
@@ -31,9 +32,21 @@ export function Root(props) {
     useEffect(() => {
         if (isWeb) {
             if (data?.title){
-                document.title = decodeText(data?.title.replace('__notification__', currentUser?.notifications > 0 ? '(' + currentUser.notifications +')' : ''));
-                metaAdder('property="og:title"', decodeText(data?.title))
+              
+                if (appSetting('layout', 'add_notifications_count_in_title')){
+                    if (currentUser?.notifications > 0){
+                        document.title = decodeText('(' + currentUser?.notifications +') ' + data?.title);
+                    }
+                    else{
+                        document.title = decodeText(data?.title);
+                    }
+                }
+                else{
+                    document.title = decodeText(data?.title);
+                }
+
             }
+            metaAdder('property="og:title"', decodeText(data?.title))
         }
         if (props.settings)
             remoteSettings.data = props.settings;

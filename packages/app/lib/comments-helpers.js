@@ -136,6 +136,17 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
         total_count: browse?.data?.total_count
     });
 
+    useEffect(() => {
+        if (isShort){
+            setCommentData(
+                prevData => ({
+                    ...prevData,
+                    listData: browse
+                })
+            );
+        }
+    }, [browse]);
+
 
     const addCommentData = (params) => {
         if (!params.postData)
@@ -252,7 +263,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     const toasterRef = useRef();
 
     const cb = (data) => {
-        console.log('cb2', data)
         let k = JSON.parse(data);
         if (currentUser && currentUser.id != k.author_id) {
             if (!dataArrayRef.current.includes(k.id)) {
@@ -292,8 +302,9 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     }, [])
 
     const dataArrayRef = useRef([]);
-
+    
     if (isShort) {
+        console.log("aaaa4", dataOut.length, maxCount)
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (
