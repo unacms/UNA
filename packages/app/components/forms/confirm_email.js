@@ -30,7 +30,7 @@ export default function FormComments(props) {
     props.data.inputs['do_submit'].value = 'Confirm';
 
     return <>
-        <Msg onVisible={showMsg} title={"Letter sent, please check your email"} handleOk={() => { setShowMsg(false) }} />
+        <Msg onVisible={showMsg} title={"New verification code emailed"} handleOk={() => { setShowMsg(false) }} />
         <View className='mx-auto max-w-xl p-4 w-full '>
             <Card rounded margin=' p-4 '>
                 <View className='mb-4 '>
