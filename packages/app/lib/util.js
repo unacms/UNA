@@ -172,7 +172,7 @@ export function getBlocksFromData(data) {
     Object.keys(data?.elements).forEach(key => {
         Object.keys(data.elements[key]).forEach(key2 => {
             blocks['block' + data.elements[key][key2].id] = { name: data.elements[key][key2].source, showPad: true }
-            if (data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse') {
+            if (data.elements[key][key2] && Array.isArray(data.elements[key][key2].content) && data.elements[key][key2].content[0] && data.elements[key][key2].content[0].type != 'browse') {
                 blocks['block' + data.elements[key][key2].id].perLine = 1
             }
         })
