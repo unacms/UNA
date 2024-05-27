@@ -67,8 +67,6 @@ export default function (props) {
     /* unit mode & change unit mode */
     const unitMode = props.unitMode ? props.unitMode : appSetting('feed', 'default_view');
 
-   
-
     const windowWidth = useWindowDimensions().width;
     const windowHeight = useWindowDimensions().height;
     const [numColumns, setNumColumns] = useState(getNumCols(windowWidth, props, data));
@@ -136,7 +134,6 @@ export default function (props) {
         return browseParams;
     }
 
-    
     let sSkeleton = data.module ? data.module : data.unit
     if (props?.skeleton)
         sSkeleton = props?.skeleton;
@@ -223,8 +220,19 @@ export default function (props) {
             refetch();
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
-    if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && !props.only_one_page) || status === 'loading'))
-        return Preload
+    console.log(dataItems?.params?.start, status, data.unit)
+    if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page &&  data.unit!='notifications') ) || status === 'loading'))
+        return <>{Preload}</>
+
+    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications'){
+        return <View className="p-8">
+            <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
+                <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">
+                No notifications
+                </Text>
+            </View>
+        </View>
+    }
 
     if (props.sidebar) {
         return dataItems.data.filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i).map((item, index) => (
@@ -262,7 +270,6 @@ export default function (props) {
             </View>
         </View>
     );
-
 
 }
 

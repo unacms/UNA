@@ -8,11 +8,11 @@ import { PluginKey } from '@tiptap/pm/state'
 export function Suggestion(startfrom) {
     return {
         char: startfrom,
-        pluginKey: new PluginKey('mentSuggestionPluginKey1ion'+startfrom),
+        pluginKey: new PluginKey('mentSuggestionPluginKey1ion' + startfrom),
         items: async ({ query }) => {
-            if (query.length > 0){
-            const result = await fetcher('/searchExtended.php?action=get_mention&symbol=' + (startfrom == '#' ? '%23': startfrom) + '&term=' + query); // keyword
-            return result;
+            if (query.length > 0) {
+                const result = await fetcher('/searchExtended.php?action=get_mention&symbol=' + (startfrom == '#' ? '%23' : startfrom) + '&term=' + query); // keyword
+                return result;
             }
             return [];
         },
@@ -69,9 +69,9 @@ export function Suggestion(startfrom) {
                     console.log('props', props)
                     // Assuming `props` contains the necessary attributes for your mention
                     commands.insertMentionEx({
-                      attrs: props,
+                        attrs: props,
                     });
-                  },
+                },
 
                 onExit() {
                     popup[0].destroy()

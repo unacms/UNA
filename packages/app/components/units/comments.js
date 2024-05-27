@@ -188,7 +188,7 @@ export default function UnitComments(props) {
                                 </View>
                             ) : <Html htmlStyles={{ fontSize: 14 }} data={linkify(data.cmt_text)} />}
                         </View>
-                        {(viewState.view != 'edited' && aImg.length > 0) && <Carousel data={aImg} />}
+                        {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
                     </View>
                     {viewState.view != 'edited' && <View className=' mb-1 flex-row w-full  items-center'>
                         {!!currentUser && !!props.handleReply ? <View className='mr-2'>
