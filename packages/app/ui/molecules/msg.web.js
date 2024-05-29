@@ -15,7 +15,7 @@ export default function ElementMsg(props) {
         <>
             <Modal id={'file-preview'} onVisible={props.onVisible} >
                 <View className='gap-y-4'>
-                    <View className='text-center w-full'><Text className="text-center text-base">{props.title}</Text></View>
+                    <View className='text-center w-full'><Text className="text-center text-base text-neutral-600 dark:text-neutral-400">{props.title}</Text></View>
                     <Row className='gap-x-4 justify-center'>
                         <Button variant="primary" size="sm" rounded  title="OK"  onPress={() => handleOk()} />
                     </Row>

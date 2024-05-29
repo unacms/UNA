@@ -143,12 +143,12 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     let endpointUpdateContent = '';
     let bUpdateContent = false;
 
-    if (hasEndpoint && currentRoute.data.length > 0) {
+    if (hasEndpoint) {
         const a = [...new Set(currentRoute.data
             .filter(item => item.type !== 'block')
             .map(item => item.id)
         )].slice(0, 10).join(',');
-        if (a) {
+        if (a || true) {
             endpointUpdateContent = currentRoute.endpoint.request_url + JSON.stringify({
                 'params': { ...currentRoute.endpoint.params, validate: a }
             });
@@ -156,13 +156,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         }
     }
 
-    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, true, bUpdateContent, 10000);
+    const { daemonData, daemonUrl } = useDaemon(endpointUpdateContent, false, bUpdateContent, 10000);
 
     useEffect(() => {
         if (daemonUrl == endpointUpdateContent) {
-            const data = daemonData?.[0]?.data?.data;
-            if (data && (data == 'valid' || data == 'invalid')) {
-                setToaster2Visible(data !== 'valid');
+            if (daemonData){
+                const data = daemonData?.[0]?.data?.data;
+                if (data && (data == 'valid' || data == 'invalid')) {
+                    setToaster2Visible(data !== 'valid');
+                }
+            }
+            else{
+                setToaster2Visible(false);
             }
         }
     }, [daemonData, daemonUrl]);
@@ -170,6 +175,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const showNewContent2 = async () => {
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)
+        
         const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;

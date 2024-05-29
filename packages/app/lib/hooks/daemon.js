@@ -25,6 +25,10 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
         }
     }, [url, pollingInterval]); 
 
+    useEffect(() => {
+        setDaemonData(null);
+    }, [url]); 
+
     return { daemonData, error, daemonUrl:url };
 };
 

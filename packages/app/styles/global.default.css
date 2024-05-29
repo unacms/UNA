@@ -458,7 +458,7 @@ div{
 html[theme="dark"]:root {
     --rsbs-bg: rgba(17,24,39,1);
 }
-.tippy-content::after{
+.tippy-content .items:not(:has(div))::after{
     content:'Mention a user';
     display: block;
 }

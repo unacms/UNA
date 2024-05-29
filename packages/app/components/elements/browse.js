@@ -220,7 +220,6 @@ export default function (props) {
             refetch();
     }, [storageKeyValue, dataItems.params, props.cachePrefix]);
 
-    console.log(dataItems?.params?.start, status, data.unit)
     if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page &&  data.unit!='notifications') ) || status === 'loading'))
         return <>{Preload}</>
 

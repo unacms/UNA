@@ -304,7 +304,6 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
     const dataArrayRef = useRef([]);
     
     if (isShort) {
-        console.log("aaaa4", dataOut.length, maxCount)
         if (maxCount)
             dataOut = dataOut.slice(0, maxCount);
         return dataOut.map((item, index) => (

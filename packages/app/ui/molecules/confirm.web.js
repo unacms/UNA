@@ -16,7 +16,7 @@ export default function ElementConfirm(props) {
         <>
             <Modal id={'file-preview'} onVisible={props.onVisible} fullWidth={false}>
                 <View className='gap-y-4'>
-                    <View className='text-center w-full'><Text className="text-center text-base">{props.title}</Text></View>
+                    <View className='text-center w-full'><Text className="text-center text-base text-neutral-600 dark:text-neutral-400">{props.title}</Text></View>
                     <Row className='gap-x-4 justify-center'>
                         <Button variant="primary" size="sm" rounded  title="OK"  onPress={() => handleOk()} />
                         <Button variant="default" size="sm" rounded  title="Cancel"  onPress={() => handleCancel()} />
