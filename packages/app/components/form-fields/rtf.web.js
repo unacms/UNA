@@ -3,10 +3,10 @@ import { useMemo } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import * as ImagePicker from 'expo-image-picker';
-import Field, {getValidationRules} from 'app/components/form-fields/_field';
+import Field, { getValidationRules } from 'app/components/form-fields/_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Button, ButtonsGroup } from 'app/design/controls';
-import { uploadImage,linkify2 } from 'app/lib/util';
+import { uploadImage, linkify2 } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { absoluteApiUrl } from 'app/lib/util'
 import { useState, useEffect } from 'react'
@@ -31,7 +31,7 @@ const MenuBar = ({ editor }) => {
     const [showModal, setShowModal] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [modalType, setModalType] = useState('')
-    
+
     if (!editor) return null;
 
     function handleChange(e) {
@@ -44,7 +44,7 @@ const MenuBar = ({ editor }) => {
         setModalType('embed')
     };
 
-    
+
     const handleCancel = () => {
         setInputValue('');
         setShowModal(false);
@@ -53,7 +53,7 @@ const MenuBar = ({ editor }) => {
 
     const handleModal = () => {
 
-        if (modalType == 'link'){
+        if (modalType == 'link') {
             if (inputValue === '') {
                 editor.chain().focus().extendMarkRange('link').unsetLink().run()
                 return
@@ -63,10 +63,10 @@ const MenuBar = ({ editor }) => {
             setModalType('');
             setInputValue('');
         }
-        if (modalType == 'embed'){
+        if (modalType == 'embed') {
             if (inputValue != '') {
                 let className = "w-full max-w-xl aspect-video mx-auto ";
-                
+
                 const rvUrl = absoluteApiUrl("embeds") + inputValue + '&theme=' + scheme;
                 editor.chain().focus().setIframe({ src: rvUrl, origin: inputValue, class: className }).run()
                 setShowModal(false);
@@ -81,23 +81,23 @@ const MenuBar = ({ editor }) => {
         setInputValue(previousUrl);
         setShowModal(true);
         setModalType('link')
-       
+
     };
 
-    const handleAddImage =    async () => {
+    const handleAddImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 1,
-                allowsMultipleSelection: false,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 1,
+            allowsMultipleSelection: false,
         });
 
         if (!result.canceled) {
             result.assets.forEach(function (i) {
                 uploadImage(
-                    i.uri, 
-                    '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline', 
+                    i.uri,
+                    '/api.php?r=system/get_data_api/TemplUploaderServices/&params[]&o=sys_images_editor&t=sys_images_editor&a=upload_inline',
                     handleInsertImageFinish,
-                    {editor: editor, test:'text'}
+                    { editor: editor, test: 'text' }
                 );
             });
         }
@@ -108,37 +108,37 @@ const MenuBar = ({ editor }) => {
     }
 
     let aButtonsGroup = [];
-    aButtonsGroup.push(<Button pressed={editor.isActive('bold') ? true : false} key="TextB" startDecorator="TextB" onPress={() => editor.chain().focus().toggleBold().run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('italic') ? true : false} key="TextItalic" startDecorator="TextItalic" onPress={() => editor.chain().focus().toggleItalic().run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('strike') ? true : false} key="TextStrikethrough" startDecorator="TextStrikethrough" onPress={() => editor.chain().focus().toggleStrike().run()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('bold') ? true : false} key="TextB" startDecorator="TextB" onPress={() => editor.chain().focus().toggleBold().run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('italic') ? true : false} key="TextItalic" startDecorator="TextItalic" onPress={() => editor.chain().focus().toggleItalic().run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('strike') ? true : false} key="TextStrikethrough" startDecorator="TextStrikethrough" onPress={() => editor.chain().focus().toggleStrike().run()} />);
     //aButtonsGroup.push(<Button pressed={editor.isActive('code') ? true : false} key="Code" startDecorator="Code" onPress={() => editor.chain().focus().toggleCode().run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 1 }) ? true : false} key="TextHOne" startDecorator="TextHOne" onPress={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 2 }) ? true : false} key="TextHTwo" startDecorator="TextHTwo" onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 3 }) ? true : false} key="TextHThree" startDecorator="TextHThree" onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()}/>);
-    aButtonsGroup.push(<Button pressed={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()}/>);
-    aButtonsGroup.push(<Button key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()}/>);
-    aButtonsGroup.push(<Button key="ArrowUUpRight" startDecorator="ArrowUUpRight" onPress={() => editor.chain().focus().redo().run()}/>);
-    aButtonsGroup.push(<Button key="Image" startDecorator="Image" onPress={() => handleAddImage()}/>);
-    aButtonsGroup.push(<Button key="Link" startDecorator="Link" onPress={() => handleAddLink()}/>);
-    aButtonsGroup.push(<Button key="Code" startDecorator="Code" onPress={() => handleAddEmbeds()}/>);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 1 }) ? true : false} key="TextHOne" startDecorator="TextHOne" onPress={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 2 }) ? true : false} key="TextHTwo" startDecorator="TextHTwo" onPress={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('heading', { level: 3 }) ? true : false} key="TextHThree" startDecorator="TextHThree" onPress={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('bulletList') ? true : false} key="ListBullets" startDecorator="ListBullets" onPress={() => editor.chain().focus().toggleBulletList().run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('orderedList') ? true : false} key="ListNumbers" startDecorator="ListNumbers" onPress={() => editor.chain().focus().toggleOrderedList().run()} />);
+    aButtonsGroup.push(<Button pressed={editor.isActive('blockquote') ? true : false} key="Quotes" startDecorator="Quotes" onPress={() => editor.chain().focus().toggleBlockquote().run()} />);
+    aButtonsGroup.push(<Button key="ArrowUUpLeft" startDecorator="ArrowUUpLeft" onPress={() => editor.chain().focus().undo().run()} />);
+    aButtonsGroup.push(<Button key="ArrowUUpRight" startDecorator="ArrowUUpRight" onPress={() => editor.chain().focus().redo().run()} />);
+    aButtonsGroup.push(<Button key="Image" startDecorator="Image" onPress={() => handleAddImage()} />);
+    aButtonsGroup.push(<Button key="Link" startDecorator="Link" onPress={() => handleAddLink()} />);
+    aButtonsGroup.push(<Button key="Code" startDecorator="Code" onPress={() => handleAddEmbeds()} />);
     return (
         <>
-            <Modal id={'file-preview'}  onVisible={showModal} >
-                    <View className="w-full">
-                    
-                        <TextTag className='text-lg font-bold'>Insert {modalType}</TextTag>
-                        <View className='mt-4 w-full'>
-                        <Input onChangeText={handleChange} value={inputValue}  />
-                        </View>
-                        <View className='mt-4 mx-auto flex-row gap-4'>
-                            <Button variant="primary" title="Ok" onPress={handleModal}/>
-                            <Button variant="default" title="Cancel" onPress={handleCancel}/>
-                        </View>
+            <Modal id={'file-preview'} onVisible={showModal} >
+                <View className="w-full">
+
+                    <TextTag className='text-lg font-bold'>Insert {modalType}</TextTag>
+                    <View className='mt-4 w-full'>
+                        <Input onChangeText={handleChange} value={inputValue} />
                     </View>
+                    <View className='mt-4 mx-auto flex-row gap-4'>
+                        <Button variant="primary" title="Ok" onPress={handleModal} />
+                        <Button variant="default" title="Cancel" onPress={handleCancel} />
+                    </View>
+                </View>
             </Modal>
-            <ButtonsGroup  variant="outline">{aButtonsGroup}</ButtonsGroup>
+            <ButtonsGroup variant="outline">{aButtonsGroup}</ButtonsGroup>
         </>
     )
 }
@@ -146,20 +146,20 @@ const MenuBar = ({ editor }) => {
 var MentionEx = Mention.extend({
     addCommands() {
         return {
-          insertMentionEx: (options) => ({ commands }) => {
-            commands.insertContent({
-              type: 'mention',
-              attrs: options.attrs,
-            });
-            commands.insertContent(' '); // Insert space after mention
-            return true;
-          },
+            insertMentionEx: (options) => ({ commands }) => {
+                commands.insertContent({
+                    type: 'mention',
+                    attrs: options.attrs,
+                });
+                commands.insertContent(' '); // Insert space after mention
+                return true;
+            },
         };
-      },
+    },
     renderHTML({ node, HTMLAttributes }) {
         return [
             'a',
-            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {href:node.attrs.id.url, title:node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value}),
+            mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { href: node.attrs.id.url, title: node.attrs.id.label, dchar: node.attrs.id.symbol, 'data-profile-id': node.attrs.id.value }),
             (node.attrs.id.symbol == '@' ? '' : node.attrs.id.symbol) + '' + node.attrs.id.label,
         ]
     },
@@ -167,44 +167,44 @@ var MentionEx = Mention.extend({
 
 const BxMentionSpan = Node.create({
     name: 'bxMentionLink',
-  
+
     inline: true,
     group: 'inline',
     content: 'inline*',
     selectable: false,
     atom: true,
-  
+
     addAttributes() {
-      return {
-        class: {
-          default: 'bx-mention-link',
-        },
-      };
+        return {
+            class: {
+                default: 'bx-mention-link',
+            },
+        };
     },
-  
+
     parseHTML() {
-      return [
-        {
-          tag: 'span.bx-mention-link',
-        },
-      ];
+        return [
+            {
+                tag: 'span.bx-mention-link',
+            },
+        ];
     },
-  
+
     renderHTML({ HTMLAttributes }) {
-      return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
+        return ['span', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0];
     },
-  
+
     addCommands() {
-      return {
-        setBxMentionLink: () => ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-          });
-        },
-      };
+        return {
+            setBxMentionLink: () => ({ commands }) => {
+                return commands.insertContent({
+                    type: this.name,
+                });
+            },
+        };
     },
-  });
-    
+});
+
 export default function FormFieldFtf(props) {
 
     const rules = getValidationRules(props);
@@ -215,22 +215,22 @@ export default function FormFieldFtf(props) {
     const { field } = useController({ name, rules, defaultValue });
     const object_privacy_view = formContext.watch('object_privacy_view');
     const object_id = formContext.watch('id');
-    const m = name=="cmt_text" ? "sys_cmts": "bx_timeline";
+    const m = name == "cmt_text" ? "sys_cmts" : "bx_timeline";
 
 
     useEffect(() => {
-        if (props.value !== undefined){
+        if (props.value !== undefined) {
             field.onChange(props.value);
-        }   
+        }
         //formContext.setValue(props.name, props.value)
     }, [props.name, props.value]);
 
-    if (props.html == 2){
-        return <Editor  contentf={field.value} defaultValue = {defaultValue} field={field}  formContext = {formContext} name = {name} viewClasses={props.viewClasses} />
+    if (props.html == 2) {
+        return <Editor contentf={field.value} defaultValue={defaultValue} field={field} formContext={formContext} name={name} viewClasses={props.viewClasses} />
     }
 
     const SubmitOnEnter = props.submitOnEnter && Extension.create({
-       addKeyboardShortcuts() {
+        addKeyboardShortcuts() {
             return {
                 ShiftEnter: () => false,
                 Enter: () => {
@@ -257,7 +257,7 @@ export default function FormFieldFtf(props) {
             }),
             Placeholder.configure({
                 placeholder: props.placeholder,
-              }),
+            }),
 
             MentionEx.configure({
                 HTMLAttributes: {
@@ -265,17 +265,17 @@ export default function FormFieldFtf(props) {
                 },
                 suggestion: Suggestion('@', object_privacy_view, m, object_id),
 
-                
+
             }),
             MentionEx.configure({
                 HTMLAttributes: {
                     class: 'bx-mention-link',
                 },
                 suggestion: Suggestion('#', object_privacy_view, m, object_id),
-                
-                
+
+
             }),
-            
+
             StarterKit.configure({
                 bulletList: {
                     keepMarks: true,
@@ -289,24 +289,37 @@ export default function FormFieldFtf(props) {
         ],
         content: field.value,
         onUpdate({ editor }) {
-            if (props.linkify){
+            if (props.linkify) {
                 let l = linkify2(editor.getHTML());
-                if (l != link){
+                if (l != link) {
                     setLink('<div class="bx-embed-link" source="' + l + '">' + l + '</div>');
                 }
             }
-            field.onChange(editor.getHTML());   
-        }
+            field.onChange(editor.getHTML());
+        },
+        editorProps: {
+            handlePaste: function (view, event, slice) {
+                const hasImages = Array.from(event.clipboardData.items).some(
+                    item => item.type.indexOf('image') !== -1
+                );
+
+                if (hasImages) {
+                    return true; // Prevent image pasting
+                }
+
+                return false; // Allow other pasting
+            },
+        },
     })
 
     useEffect(() => {
-        if (editor && editor.getHTML() != field.value){//&& field.value == ''{}
+        if (editor && editor.getHTML() != field.value) {//&& field.value == ''{}
             editor.commands.setContent(field.value);
             editor.commands.focus()
         }
 
     }, [field.value]);
-    
+
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -316,36 +329,36 @@ export default function FormFieldFtf(props) {
     }, [editor]);*/
 
     useEffect(() => {
-    if (editor && props.focus == true){
-        editor.commands.focus('end')
-    }
-}, [editor]);
+        if (editor && props.focus == true) {
+            editor.commands.focus('end')
+        }
+    }, [editor]);
 
     const isFullHtml = (props.html == 2 || props.html == 1);
 
     const computedData = useMemo(() => {
         if (link)
-            return  <View className='w-1/3 mt-2'>
+            return <View className='w-1/3 mt-2'>
                 <Html data={link} />
             </View>
 
         return <></>
     }, [link]);
 
-    const bgClass = props.bg =='transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
+    const bgClass = props.bg == 'transparent' ? '' : " dark:focus:bg-bgrinput-dafocus bg-neutral-500/10 border border-bdr dark:border-bdr-d focus:bg-bgrinput-focus focus:outline-none focus:border-bdrinput-focus dark:focus:border-bdrinput-df rounded-lg "
     return (
         <>
             <View>
-                <EditorContent 
-                    editor={editor} 
-                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 text-base' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml? ' p-4 ' : ' px-2.5 py-2 ')}
+                <EditorContent
+                    editor={editor}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 text-base' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' px-2.5 py-2 ')}
 
                 />
-                <View className={isFullHtml? 'm-2' : 'm-0 p-0'}>
-                    {isFullHtml && <MenuBar editor={editor} /> }
+                <View className={isFullHtml ? 'm-2' : 'm-0 p-0'}>
+                    {isFullHtml && <MenuBar editor={editor} />}
                 </View>
             </View>
-            { computedData}
+            {computedData}
         </>
     )
 }
