@@ -40,7 +40,7 @@ export default function FormComments(props) {
                 <View className=''>
                     <Row className='w-full items-start justify-between '>
                         <View className='w-2/3 lg:w-5/6 pr-4'>
-                            {getFormFieldByData(props.data.inputs['code'], props.handleSubmit, 'custom',  { placeholder: 'Verification code' })}
+                            {getFormFieldByData(props.data.inputs['code'], props.handleSubmit, 'custom',  { placeholder: 'Verification code', autoFocus: true})}
                         </View>
                         <Row className='w-1/3 lg:w-1/6 justify-end items-end'>
                             {getFormFieldByData(props.data.inputs['do_submit'], props.handleSubmit, 'custom')}
