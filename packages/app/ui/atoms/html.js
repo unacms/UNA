@@ -100,7 +100,11 @@ export default function ElementHtml(props) {
         },
         lastP: {
             marginBottom: 0,
+        },
+        'bx-embeded-link': {
+            color: colors.default
         }
+
     }
 
 

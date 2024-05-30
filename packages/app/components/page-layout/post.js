@@ -83,13 +83,13 @@ export default function PageLayout(props) {
 
     return (//style ={{marginBottom: sizes.formHeight}}
         <View className='flex-1 w-full h-full '>
-            <View ref={viewCntRef} className="w-full h-full flex-1 bg-bgrcard dark:bg-bgrcard-d" >
+            <View ref={viewCntRef} className="w-full h-full flex-1 bg-bgrcard dark:bg-bgrcard-d px-3" >
                 <View  className='overflow-hidden h-full w-full' >
                     <CommentsBrowse addItems = {aItems} handleReply={handleReply} browse={commentsData.content[0].browse} addData={addData} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} requestUrl={commentsData.content[0].url} />
                 </View>
             </View>                
             <KeyboardAvoidingView keyboardVerticalOffset={92} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} >
-                <View ref={viewFormRef} onLayout={handleLayout} className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d'> 
+                <View ref={viewFormRef} onLayout={handleLayout} className='border-bdrcard dark:border-bdrcard-d  border-t border-bdr dark:border-bdr-d px-3 ' style={{ backgroundColor: colors.barsBackground }}> 
                     <CommentsForm handleForm={handleForm} browse={commentsData.content[0].browse} module={commentsData?.content[0].browse?.data?.module ? commentsData?.content[0].browse.data.module : commentsData?.module} form={commentsData.content[0].form} formData={formData} requestUrl={commentsData.content[0].url} />         
                 </View>
             </KeyboardAvoidingView>

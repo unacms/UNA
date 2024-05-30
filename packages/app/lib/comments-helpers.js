@@ -3,7 +3,7 @@ import { Pressable, View, Row } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { Text } from 'app/design/typography'
 import { useState, useContext, useRef, useEffect } from 'react';
-import { componentsMap } from 'app/components/units/_map';
+import { componentsMap } from 'app/components/units/_map_internal';
 import { Button, Modal } from 'app/design/controls'
 import useSWR from "swr";
 import { fetcher } from 'app/lib/fetcher';
