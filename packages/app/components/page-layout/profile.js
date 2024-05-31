@@ -16,7 +16,8 @@ export default function PageLayout(props) {
         if(layoutData && layoutData?.type == 'сonnections:action'){
             (async () => {
                 const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageData.url);
-                setPageData(sResponse.data);
+                if (sResponse.data != pageData)
+                    setPageData(sResponse.data);
             })();
             
         }

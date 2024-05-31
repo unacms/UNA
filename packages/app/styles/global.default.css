@@ -453,7 +453,7 @@ body {
     border: 1px solid rgba(107, 114, 128, 0.2) !important
 }
 .bx-embeded-link{
-    color:inherit;
+    color:inherit !important;
 }
 div{
     scrollbar-width: none;

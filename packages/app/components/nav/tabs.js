@@ -75,10 +75,11 @@ export default function () {
                     },
                     tabBarItemStyle: {
                         marginBottom: 5,
-                        height: 40,
+                        height: 44,
                         marginTop: 5,
                     },
                     tabBarInactiveTintColor: colors.barsColor,
+                    tabBarActiveTintColor: colors.primary,
                     freezeOnBlur: true,
                     unmountOnBlur: false,
                 })}

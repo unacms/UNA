@@ -195,8 +195,7 @@ export default function AtomProfile(oProps) {
                         </View>}
                     {!!oProps.url_avatar && <Image
                             className={sSize+"    z-50"}
-                            width={iSizeWidth}
-                            height={iSizeHeight}
+                            view="cover"
                             src={oProps.url_avatar}
                             alt={oProps.display_name}
                         />
