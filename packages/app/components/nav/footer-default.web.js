@@ -42,7 +42,7 @@ export default function () {
         <View className={"fixed bottom-0 left-0 z-30 w-full backdrop-blur lg:hidden tabbar bg-bgrtabbar dark:bg-bgrtabbar-d "+ (isInStandaloneMode()? "pb-4": "")}>
             <View className={" backdrop-blur z-50  bg-bgrnavbar dark:bg-bgrnavbar-d border-t  border-bdrnavbar dark:border-bdrnavbar-d w-full px-2  "+ (isInStandaloneMode()? "h-12": "h-16")}>
                 <Row className="flex-auto items-center flex-row  justify-around  w-full ">
-                    {TabList.map((tab, index) => (
+                    {TabList.filter(item => (item.hide != true ) ).map((tab, index) => (
                         <View key={"fl" + index} className={'w-1/6 flex items-center rounded-lg text-base p-1.5 duration-200 group hover:text-primary dark:hover:text-primary ' + (pathname != tab.url ? 'text-neutral-700 dark:text-neutral-300' : 'text-primary')}>
                             <Link href={tab.url} noprefetch={tab.url == appSetting('layout', 'notifications') ? "false" : "true"}>
                                 <View className='flex-col gap-1 items-center'>

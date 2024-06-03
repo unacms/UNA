@@ -98,6 +98,9 @@ export default function () {
                         if (tab.title == '') {
                             options.tabBarLabel = () => null;
                         }
+
+                        if (tab.hide == true)
+                            options.href = null;
                 
                         return (
                             <Tabs.Screen

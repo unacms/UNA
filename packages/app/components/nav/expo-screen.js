@@ -93,7 +93,7 @@ export function Screen(params) {
             }
         };
         fetchPageData();
-    }, [_path, isFocused, currentUser.id]);
+    }, [_path, isFocused, currentUser?.id]);
 
 
     if (!isFocused)

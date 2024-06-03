@@ -465,3 +465,7 @@ html[theme="dark"]:root {
     content:'Mention a user';
     display: block;
 }
+
+div[data-radix-popper-content-wrapper]{
+    z-index: 1000000 !important;
+}
