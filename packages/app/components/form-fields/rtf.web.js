@@ -320,6 +320,7 @@ export default function FormFieldFtf(props) {
 
     }, [field.value]);
 
+    let size = props.name == 'cmt_text' ? 'text-sm' : 'text-base';
     /*useEffect(() => {
         
         if (editor && props.name == 'cmt_text'){
@@ -351,7 +352,7 @@ export default function FormFieldFtf(props) {
             <View>
                 <EditorContent
                     editor={editor}
-                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 text-base' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' px-2.5 py-2 ')}
+                    className={(props?.numLines == 1 ? bgClass + ' text-neutral-800 w-full placeholder-neutral-500 dark:text-neutral-200 font-default ' + size + ' ' : bgClass + ' text-neutral-800 rounded-xl w-full placeholder-neutral-500 dark:text-neutral-200 text-base ') + ' ' + (isFullHtml ? ' p-4 ' : ' px-2.5 py-2 ')}
 
                 />
                 <View className={isFullHtml ? 'm-2' : 'm-0 p-0'}>

@@ -66,7 +66,7 @@ export default function ElementFeedItem({ data }) {
             </View>
             <UnitImages images={content_attach} />
             {
-                data.event.menu_actions.length > 0 && (<View className="my-4 flex-row items-center">
+                data.event.menu_actions.items.length > 0 && (<View className="my-4 flex-row items-center">
                     <View className=" flex-row flex-auto flex-wrap text-wrap ">
                         <Menu {...data.event.menu_actions} displayType="element" showMatched={true} params={{ show_action: true, show_counter: true, show_combined: true }} />
                     </View>
