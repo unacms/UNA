@@ -75,22 +75,18 @@ export default function PageLayout(props) {
 function Wrapper(p, props){
     const redirectdRef = useRef();
     let { currentUser, setCurrentUser } = useCurrentUser();
-    let bConfirm = false;
-    if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
-        bConfirm = true;
+    
 
     useEffect(() => {
+        let bConfirm = false;
+        if ((currentUser && !currentUser?.confirmed && appSetting('layout', 'lock_unconfirmed') == true) && props?.data?.uri?.toString() != 'confirm-email')
+            bConfirm = true;
         if (bConfirm){
             redirectdRef.current.redirect('/confirm-email');
         }
-    }, []);
+    }, [currentUser?.confirmed]);
    
-    if (bConfirm)
-        return <Redirect ref={redirectdRef} />
-    else
-        return <View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View>
-        
-
+    return <><Redirect ref={redirectdRef} /><View className='flex-1 mx-auto w-full h-full animated-view'>{p}</View></>
 }
 
 export function getLayoutName(data, uri, isWeb) {
