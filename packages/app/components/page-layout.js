@@ -42,15 +42,19 @@ function Page403() {
     );
 }
 
-function Page503() {
-    return (
-        <>
-            {appStatic('maintenance_mode')}
-        </>
-    );
-}
+
 
 export default function PageLayout(props) {
+
+    let data = props.data;
+    if (data.page_status == 404){
+        return <Page404/>
+    }
+
+    if (data.page_status == 403){
+        return <Page403/>
+    }
+
     const isWeb = Platform.OS == 'web'
     let {layoutName, layoutBlocks, isCustomLayout}  = getLayoutName(props.data, props.data?.uri?.toString(), isWeb)
     let Component = componentsMap[layoutName];
@@ -59,19 +63,6 @@ export default function PageLayout(props) {
         return Wrapper(<Component layoutName={layoutName} {...props} blocks={layoutBlocks}/>);
 
     let cells = null;
-
-    let data = props.data;
-    if (data.page_status == 404){
-        return <Page404/>
-    }
-    console.log("data.page_status", data.page_status)
-    if (data.page_status == 503){
-        return <Page503/>
-    }
-
-    if (data.page_status == 403){
-        return <Page403/>
-    }
 
     if (!data || !data.elements)
         return <></>

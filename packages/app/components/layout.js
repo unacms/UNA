@@ -5,6 +5,7 @@ import { useFonts } from 'expo-font';
 import { appSetting } from 'app/lib/util'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
 import { ImageBackground } from 'react-native';
+import { appStatic } from 'app/lib/app-static'
 
 export default function Layout(props) {
     const isUseCustomFont = appSetting('layout', 'use_custom_font');
@@ -14,6 +15,12 @@ export default function Layout(props) {
 
     if (!fontsLoaded) {
         return null;
+    }
+
+    if (props.data.page_status == 503){
+        return   <>
+            {appStatic('maintenance_mode')}
+        </>
     }
 
     return (

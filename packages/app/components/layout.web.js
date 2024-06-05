@@ -42,6 +42,8 @@ export default function Layout(props) {
     let children = props.children
     const { width } = useWindowDimensions();
 
+    
+
     let theme = storageGet('layout:theme', '', true);
     const scheme = useColorScheme();
     if (theme == '') {
@@ -192,6 +194,12 @@ export default function Layout(props) {
     const handleCloseModal = () => {
         storageSet('layout:modal', '', true, true);
         setIsModal(false)
+    }
+
+    if (data.page_status == 503){
+        return   <>
+            {appStatic('maintenance_mode')}
+        </>
     }
 
     if (getLayout(currentUser, layoutName) == 'hor') {
