@@ -100,7 +100,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         if (!isWeb)
             return;
         if (selectedMenu && selectedConvo) {
-            window.history.pushState(null, null, "/messenger/" + selectedMenu + '/' + selectedConvo.id + '/');
+            window.history.pushState(null, null, appSetting('layout', 'messenger') + '/' + selectedMenu + '/' + selectedConvo.id + '/');
         }
     }
 
