@@ -308,7 +308,7 @@ function DefaultUnit(data) {
     const isCommentsModal = appSetting('layout', 'comments_in_modal');
 
     const showCommentsModal = async (initFormData) => {
-        const res = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
+        const res = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + data?.cmts?.module + '","object_id":' + data?.cmts?.object_id + '}');
         setBottomSheetData(
             { 
                 title: data.author_data.display_name + "'s post", 
@@ -434,7 +434,7 @@ function DefaultUnit(data) {
                 <Link href={url} className="">
                     <Text
                         numberOfLines={1}
-                        className="  text-neutral-600 dark:text-neutral-400 text-xs uppercase  tracking-tight overflow-hidden"
+                        className=" text-neutral-600 dark:text-neutral-400 text-xs uppercase tracking-tight overflow-hidden"
                     >
                         {data.content.visibility != '3' ? (
                             <>PRIVATE</>

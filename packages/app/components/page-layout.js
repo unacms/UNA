@@ -42,6 +42,14 @@ function Page403() {
     );
 }
 
+function Page503() {
+    return (
+        <>
+            {appStatic('maintenance_mode')}
+        </>
+    );
+}
+
 export default function PageLayout(props) {
     const isWeb = Platform.OS == 'web'
     let {layoutName, layoutBlocks, isCustomLayout}  = getLayoutName(props.data, props.data?.uri?.toString(), isWeb)
@@ -55,6 +63,10 @@ export default function PageLayout(props) {
     let data = props.data;
     if (data.page_status == 404){
         return <Page404/>
+    }
+    console.log("data.page_status", data.page_status)
+    if (data.page_status == 503){
+        return <Page503/>
     }
 
     if (data.page_status == 403){

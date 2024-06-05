@@ -89,6 +89,7 @@ let settingsDefault = {
     },
     urls: {
         embeds: '/oembed.php?html=1&a=get_link&l=',
+        cmts: 'system/get_data_api/TemplCmtsServices'
     },
     cache: {
         list: true,

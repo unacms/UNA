@@ -46,7 +46,7 @@ export default function UnitComments(props) {
         return (<View></View>);
 
     let { data: dynamicData, error } = useSWR(
-        postData ? ['/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
+        postData ? ['/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}', '', postData] : null,
         fetcher,
         !true ? undefined : {
             revalidateIfStale: false,
@@ -71,12 +71,12 @@ export default function UnitComments(props) {
     const handleManageMenuSelect = async (oItem, event) => {
         switch (oItem.name) {
             case 'item-edit':
-                const result1 = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}');
+                const result1 = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"edit","id":' + props.data.cmt_id + '}');
                 setViewState({ view: 'edited', data: result1.data.form });
                 break;
 
             case 'item-delete':
-                const result = await fetcher('/api.php?r=system/get_data_api/TemplCmtsServices/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"remove","id":' + props.data.cmt_id + '}');
+                const result = await fetcher('/api.php?r='+appSetting("urls", "cmts")+'/&params[]={"module":"' + props.module + '","object_id":' + props.data.cmt_object_id + ',"action":"remove","id":' + props.data.cmt_id + '}');
                 setViewState({ view: 'deleted' });
                 props.handleDelete();
                 break;

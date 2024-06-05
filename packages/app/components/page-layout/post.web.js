@@ -91,7 +91,7 @@ export default function PageLayout(props) {
             {header}
             <View className=" py-0 lg:px-4 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d ">
-                    <Row>
+                    <Row className='pb-20'>
                         <View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 16 : 24, heightx: sizes.otherHeight }} className={'w-full  p-3 sm:p-6 '+ (windowDimensions.width < 1024 ? '' : offset)}>
                             {CommentsPartsData[0]}
                         </View>
@@ -103,5 +103,4 @@ export default function PageLayout(props) {
             </View>
         </>
     )
-
 }
