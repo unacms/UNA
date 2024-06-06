@@ -26,7 +26,7 @@ export default function FormComments(props) {
                 {getFormFieldByData(props.data.inputs['action'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_cf'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['cmt_parent_id'], props.handleSubmit, 'custom')}
-                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', {focus:true, bg:'transparent', placeholder: 'Write your comment here...', classes: 'mb-0 mt-0' })}
+                {getFormFieldByData(props.data.inputs['cmt_text'], props.handleSubmit, 'custom', {container_class:'comments', focus:true, bg:'transparent', placeholder: 'Write your comment here...', classes: 'mb-0 mt-0' })}
                 {getFormFieldByData(props.data.inputs['id'], props.handleSubmit, 'custom')}
                 {getFormFieldByData(props.data.inputs['sys'], props.handleSubmit, 'custom')}
             </View>

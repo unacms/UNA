@@ -362,8 +362,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 }
 
 const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch }) => {
-    return data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
-        {data.length > 0 && <>
+            
+    return data && data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
+        {data && data.length > 0 && <>
         
             <Row  className='py-2 px-3 border-b border-bdr dark:border-bdr-d'>
         <InputRounded name="search" placeholder={("Search") + '...'}   value={searchValue}  onChangeText={(value) => handleSearch(value)} />

@@ -474,3 +474,14 @@ html[theme="dark"]:root {
 div[data-radix-popper-content-wrapper]{
     z-index: 1000000 !important;
 }
+
+.tiptap-default{
+    max-height: 250px;
+    overflow-y: scroll;
+    scrollbar-width: auto;
+}
+.tiptap-comments{
+    max-height: 100px;
+    overflow-y: scroll;
+    scrollbar-width: auto;
+}

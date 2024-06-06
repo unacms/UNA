@@ -298,6 +298,9 @@ export default function FormFieldFtf(props) {
             field.onChange(editor.getHTML());
         },
         editorProps: {
+            attributes: {
+                class: 'tiptap-'+(props.container_class ? props.container_class : 'default'),
+            },
             handlePaste: function (view, event, slice) {
                 const hasImages = Array.from(event.clipboardData.items).some(
                     item => item.type.indexOf('image') !== -1
