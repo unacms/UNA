@@ -114,7 +114,7 @@ export default function ElementMenu(oProps) {
         });
 
         if (bShowContent)
-        return sItems;
+            return sItems;
 
         if (!bAutoSize) {
             return <View className={sClassName}>{sItems}</View>;

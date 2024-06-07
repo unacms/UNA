@@ -107,12 +107,20 @@ export default function ElementCalendar({ data }) {
                 
                 <View className={(!showCalendar ? 'hidden' : '') +' md:block f-full sm:w-1/3 '}>
                     <Card margin="m-2 pb-2" rounded="rounded">
-                        <Calendars.ExpandableCalendar
+                        <Calendars.ExpandableCalendar 
                             firstDay={1}
                             markedDates={marked}
                             animateScroll
                             initialPosition={'closed'}
                             hideKnob={false}
+                            theme={{
+                              calendarBackground: 'transparent', 
+                              textDayColor: "#000",
+                              dayTextColor: colors.default,
+                              dotColor: colors.primary,
+                              monthTextColor: colors.default,
+                            }}
+
                         />
                         
                     </Card>

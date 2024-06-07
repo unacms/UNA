@@ -241,6 +241,7 @@ let settingsDefault = {
             'delete': 'Trash',
             'messenger': 'ChatTeardropDots', 
             'profile-confirm': 'Check',
+            'profile-set-acl-level': 'UserList'
         },
         menu_navbar: [
             { name: 'home', title: 'Home', link: '/', icon: 'House'},

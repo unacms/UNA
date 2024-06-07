@@ -1,14 +1,17 @@
-import { useRef, useState } from 'react';
-
-import {ButtonMenuActionDefault, ButtonMenuActionText} from 'app/design/controls';
+import { useRef, useState, useContext } from 'react';
+import { ButtonMenuActionDefault, ButtonMenuActionText } from 'app/design/controls';
 import { View } from 'app/design/view';
 import { fetcher } from 'app/lib/fetcher';
 import Submenu from './submenu'
 import SubmenuShare from './submenu-share'
 import Redirect from 'app/ui/atoms/redirect';
+import { BottomSheetData } from 'app/context/bottomsheet';
+import { Platform } from 'react-native';
+import RbList from 'app/ui/molecules/radio_list';
 
 export default function MenuItemButton(oProps) {
     const redirectdRef = useRef();
+    const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const [isVisible, setIsVisible] = useState(true);
 
     const oIconAliases = {
@@ -22,7 +25,17 @@ export default function MenuItemButton(oProps) {
     const oIconset = oProps?.params && !!oProps.params?.iconset ? oProps.params.iconset : {};
 
     let sContent = undefined;
-    switch(oProps.content_type) {
+
+    const setMembership = async (val) => {
+
+
+        oProps.data.value = val;
+        let request_url = '/api.php?r=system/set_membership/TemplServiceProfiles&params[]=' + oProps.data.profile_id + '&params[]=' + val;
+        await fetcher(request_url);
+        setBottomSheetData(false);
+    }
+
+    switch (oProps.content_type) {
         case 'submenu':
             const oSubmenuMap = {
                 'bx_timeline_menu_item_share': SubmenuShare,
@@ -36,18 +49,31 @@ export default function MenuItemButton(oProps) {
 
         default:
             let oButtonProps = {};
-            if(oProps.primary)
+            if (oProps.primary)
                 oButtonProps.variant = 'primary';
-            if(oProps.params?.button_variant != undefined)
+            if (oProps.params?.button_variant != undefined)
                 oButtonProps.variant = oProps.params.button_variant;
-            if(oProps.params?.button_size != undefined)
+            if (oProps.params?.button_size != undefined)
                 oButtonProps.size = oProps.params.button_size;
-            if(oProps.params?.button_rounded != undefined)
+            if (oProps.params?.button_rounded != undefined)
                 oButtonProps.rounded = oProps.params.button_rounded;
-            if(oProps.params?.button_full_width != undefined)
+            if (oProps.params?.button_full_width != undefined)
                 oButtonProps.fullWidth = oProps.params.button_full_width;
+            if (oProps.params?.button_hide_title_on_small != undefined)
+                oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
             const handleClick = async (event) => {
+                if (oProps.content_type == 'memberships') {
+                    if (Platform.OS == 'web') {
+                        const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+                        if (popperDiv) {
+                            popperDiv.classList.add('radix-hide');
+                        }
+                    }
+                    setBottomSheetData({ title: 'Choose membership', showClose: true, snapPoints: ['70%', '70%'], content: <RbList values={oProps.data.values} setValue={setMembership} selectedValue={oProps.data.value} /> });
+                    return;
+                }
+
                 let request_url = '/api.php?r=' + oProps.data.request_url;
                 const sResponse = await fetcher(request_url);
                 if (oProps.data.on_callback == 'hide')
@@ -59,19 +85,19 @@ export default function MenuItemButton(oProps) {
             const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
 
             let sButtonIcon = '';
-            if(!bTitleOnly) {
-                if(!!oIconAliases[oProps.name])
+            if (!bTitleOnly) {
+                if (!!oIconAliases[oProps.name])
                     sButtonIcon = oIconAliases[oProps.name];
-                else if(!!oIconset[oProps.name])
+                else if (!!oIconset[oProps.name])
                     sButtonIcon = oIconset[oProps.name];
             }
 
             sContent = (
-                        <View className="flex-auto">
-                            <Redirect ref={redirectdRef} />
-                            <ButtonAction onPress = {handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
-                        </View>
-                      );
+                <View className="flex-auto">
+                    <Redirect ref={redirectdRef} />
+                    <ButtonAction onPress={handleClick} title={oProps.title} startDecorator={sButtonIcon} {...oButtonProps} />
+                </View>
+            );
     }
 
     if (!isVisible)

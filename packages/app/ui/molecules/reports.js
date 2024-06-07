@@ -12,6 +12,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, Easing, withSequence } from "react-native-reanimated";
 import Dropdown from 'app/ui/atoms/dropdown'
 import { InputMulti } from 'app/design/controls'
+import { Platform } from 'react-native';
 
 const ElementReports = forwardRef((oProps, ref) => {
     const { t } = useTranslation();
@@ -112,6 +113,12 @@ const ElementReports = forwardRef((oProps, ref) => {
         if(!!event)
             event.preventDefault();
 
+        if (Platform.OS == 'web') {
+            const popperDiv = document.querySelector('div[data-radix-popper-content-wrapper]');
+            if (popperDiv) {
+                popperDiv.classList.add('radix-hide');
+            }
+        }
         setPopupVisibleDo(true);
     };
 
@@ -228,6 +235,8 @@ const ElementReports = forwardRef((oProps, ref) => {
         oButtonProps.rounded = oProps.params.button_rounded;
     if(oProps.params?.button_full_width != undefined)
         oButtonProps.fullWidth = oProps.params.button_full_width;
+    if(oProps.params?.button_hide_title_on_small != undefined)
+        oButtonProps.hideTitleOnSmall = oProps.params.button_hide_title_on_small;
 
     const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
 

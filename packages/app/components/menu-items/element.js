@@ -6,7 +6,6 @@ export default function MenuItemElement(oProps) {
         return;
 
     const bShowVertical = oProps.params != undefined && oProps.params.showVertical != undefined && oProps.params.showVertical === true;
-
     const Element = componentsMap[oProps.data.type];
     if(!Element)
         return;

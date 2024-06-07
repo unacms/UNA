@@ -471,7 +471,7 @@ html[theme="dark"]:root {
     display: block;
 }
 
-div[data-radix-popper-content-wrapper]{
+div[data-radix-popper-content-wrapper]:not(.radix-hide){
     z-index: 1000000 !important;
 }
 
