@@ -93,6 +93,10 @@ export default function ElementCalendar({ data }) {
         fetchData();
     };
 
+    const onDateChanged = (a) => {
+        // console.log(a);
+    }
+
     return (
         <View className='w-full'>
             <Calendars.CalendarProvider
