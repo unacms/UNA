@@ -24,7 +24,6 @@ export default function PageLayout(props) {
     }, [layoutData?.data?.time]);
       
 
-
     if (!props.data.menu.items){
         props.data.menu.items = [];
     }
@@ -44,8 +43,6 @@ export default function PageLayout(props) {
     const windowWidth = windowDimen.width;
     let headerSettings = getHeaderSettings(props.uri, windowWidth, 'profile');
     let cover = headerSettings.cover;
-   // if (!isNamePresent2)
-    //    cover = 'min';
 
     let header = <Cover data={props.data.cover_block} mode={cover} uri={props.uri}/>
     let smallHeader = <CoverSmall data={props.data.cover_block}/>

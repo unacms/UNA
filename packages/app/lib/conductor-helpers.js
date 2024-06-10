@@ -192,7 +192,6 @@ export async function fetchAndUpdateData(routes, index, setRoutes) {
 }
 
 export function addMoreData(newItems, endpoint, setRoutes, index, blocks, routes, sidebar = false, pageData = null) {
-    console.log(123)
     const updatedRoutes = routes.map((route) => {
         if (route.index === index) {
             route.endpoint = endpoint;

@@ -18,7 +18,6 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 
 export default function (props) {
-    console.log('props', props)
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation()
@@ -140,6 +139,7 @@ export default function (props) {
                                             variant="text"
                                             size="lg"
                                             tooltip={t(item.title)}
+                                            title={item.showTitle?t(item.title):''}
                                             alt={t(item.title)}
                                             aria-label={t(item.title)}
                                             fullWidth

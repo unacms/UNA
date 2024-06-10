@@ -43,6 +43,7 @@
     "react-countdown": "^2.3.5",
     "react-dom": "^18.2.0",
     "react-google-autocomplete": "^2.7.3",
+    "react-grid-layout": "^1.4.4",
     "react-moveable": "^0.54.1",
     "react-onesignal": "^3.0.1",
     "react-virtuoso": "^4.4.2",

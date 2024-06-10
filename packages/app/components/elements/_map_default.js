@@ -14,7 +14,7 @@ import CategoriesList from './categories_list';
 import FeedItem from './feed_item';
 import ProfileSwitcher from './profile_switcher';
 import DashboardStat from './dashboard_stat';
-//import MessengerPage from './messenger/root';
+import SmartGrid from './smart_grid';
 import ProfileContacts from './contacts';
 import SimpleList from './simple_list';
 import Lang from './lang';
@@ -44,6 +44,7 @@ export const componentsMapDefault = {
     entity_cover: EntityCover,
     profile_menu: ProfileMenu,
     profile_switcher: ProfileSwitcher,
+    grid_data: SmartGrid,
     feed_item: FeedItem,
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,

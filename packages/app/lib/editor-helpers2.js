@@ -66,7 +66,6 @@ export function Suggestion(startfrom) {
                     return component?.ref?.onKeyDown(props)
                 },
                 onSelect: (props, { commands }) => {
-                    console.log('props', props)
                     // Assuming `props` contains the necessary attributes for your mention
                     commands.insertMentionEx({
                         attrs: props,

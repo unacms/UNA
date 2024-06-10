@@ -26,7 +26,7 @@ import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth='w-80', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -650,6 +650,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     
 
     const leftSideBarObj = useCallback(() => {
+        if (leftSideBarBlocks?.length > 0) {
+            return <View className="m-4">
+            {leftSideBarBlocks.map((block, index) => {
+                return <View key={"lb-"+index}>{block}</View>
+            })}</View>
+        }
+
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
 
@@ -702,6 +709,42 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         
     }, [routes, index]);
 
+    const topSideBarObj = useCallback(() => {
+
+        return <Row className="w-full px-8 pt-6 items-stretch justify-stretch  sticky z-50 t-8 gap-x-8">
+            {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+
+                let btn = <Button
+                    variant={a.index == index ? 'outline' : "text"}
+                    size={!a.ident ? "base" : "sm"}
+                    pressed={a.index == index ? true : false}
+                    
+                    title={(a.title)}
+                    align="start"
+
+                    addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
+                />
+                
+                return (
+                    <Pressable className={" py-2 items-center "}
+                key={`tab-${a.index}`}
+                onPress={() => {
+                    setIndex(a.index);
+                    getNumCols(windowWidth)
+                    window.history.pushState({}, '', '/' + a.key);
+                    if (onChangeRoute) {
+                        onChangeRoute(a);
+                    }
+                }}
+            >
+                {btn}
+            </Pressable>
+                )
+            })}
+        </Row>
+        
+    }, [routes, index]);
+
     if (leftSideBar) {
         return (
             <View className={appSetting('layout', 'max_width') + " w-full h-full mx-auto"} scrollEnabled={false} onLayout={handleLayoutTop}>
@@ -711,10 +754,11 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                    <View style={{ minHeight: (windowHeight - 64) }} className={'hidden lg:block w-80 border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                    <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
+                            {topSideBarObj()}
                             <RenderScene route={currentRoute} />
                         </View>
                     </Row>
@@ -729,6 +773,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
+              
                 <RenderScene route={currentRoute} />
             </View>
             <Footer />
