@@ -796,7 +796,7 @@ let settingsDefault = {
             headerSettings: { offset: false, header: false, cover:'min' }
         },
         //############ PERSONS PAGES ############
-        'view-persons-profile': {
+        /*'view-persons-profile': {
             layout: 'profile',
             blocks: {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
@@ -805,8 +805,8 @@ let settingsDefault = {
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false, cover: 'profile' }
-        },
-        /*'view-persons-profile': {
+        },*/
+        'view-persons-profile': {
             layout: 'profile-alt',
             blocks: {
                 col5: { name: 'bx_persons:grid_data', showTitle: false, showBg: false, sidebar: false, leftbar: false },
@@ -817,7 +817,7 @@ let settingsDefault = {
                 
             },
             headerSettings: { offset: false, header: false, cover: 'profile' }
-        },*/
+        },
         //############ ORGS PAGES ############
         'view-organization-profile': {
             layout: 'profile',

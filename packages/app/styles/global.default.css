@@ -485,3 +485,7 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
     overflow-y: scroll;
     scrollbar-width: auto;
 }
+
+.pac-container{ 
+    z-index: 1000000 !important;
+}

@@ -4,7 +4,7 @@ import { Text } from 'app/design/typography'
 import { Icon } from 'app/ui/atoms/icon'
 import { appSetting } from 'app/lib/util'
 
-export default function ElementMap({data}) {
+export default function ElementMap({data, height}) {
     if (!data.location?.lat)
         return <></>
 
@@ -17,7 +17,7 @@ export default function ElementMap({data}) {
     };
 
     return (
-        <View className='w-full aspect-square'>
+        <View className='w-full aspect-square' style={{height:height}}>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: appSetting('config', 'api_keys', 'google_maps') }}
                 defaultCenter={defaultProps.center}

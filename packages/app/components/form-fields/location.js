@@ -1,13 +1,5 @@
 import Field from './_field';
 import {Text} from 'app/design/typography'
-//import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-//import Autocomplete from "react-google-autocomplete";
-//import { ReactOsmGeocoding } from '@paraboly/react-osm-geocoding'
-//import Geosuggest from '@ubilabs/react-geosuggest';
-//import '@paraboly/react-osm-geocoding/dist/index.css' 
-//AIzaSyDucslZsW9Lx-C5siKKjw2SD2_tHKc1oE8
-//    "react-native-google-places-autocomplete": "^2.5.6",
-//import Autocomplete from "react-google-autocomplete";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { Input } from 'app/design/controls'
 import { use, useState, } from 'react';
@@ -111,7 +103,8 @@ export default function FormFieldLocation(props) {
         <Field {...props}>   
             <Input 
                 ref={ref} 
-                defaultValue={defaultValue.location_string}        
+                defaultValue={defaultValue.location_string}   
+                placeholder='Start typing your address'     
             />
         </Field>
     );

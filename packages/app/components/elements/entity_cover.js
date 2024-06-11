@@ -17,9 +17,9 @@ export default function (props) {
             </View>
             <View className="flex-row flex-wrap ">
                 <View className=" flex-col px-4  flex-auto">
-                    <View className="text-3xl pt-4 font-bold text-neutral-800 dark:text-neutral-100">
+                    <Text className="text-3xl pt-4 font-bold text-neutral-800 dark:text-neutral-100">
                         {data.fullname}
-                    </View>
+                    </Text>
 
                 </View>
                 <View className="flex-none my-auto px-4 pt-4  flex-row gap-x-2 ">

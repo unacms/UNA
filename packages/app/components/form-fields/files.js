@@ -42,14 +42,18 @@ export default function (props) {
                 av.push(result.data[0][k].file_id)
             });
         }
-
         a.forEach(function (k) {
             if (k.file_id) {
                 const val = av.join(',');
                 if (name == 'covers') {
                     formContext.setValue('thumb', val)
                 }
-                field.onChange(val);
+                if (props.useUrl) {
+                    field.onChange(a[0].file_url);
+                }
+                else{
+                    field.onChange(val);
+                }
             }
         });
         if (a.length == 0 && field.value != '')

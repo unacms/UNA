@@ -44,7 +44,7 @@ export const componentsMapDefault = {
     entity_cover: EntityCover,
     profile_menu: ProfileMenu,
     profile_switcher: ProfileSwitcher,
-    grid_data: SmartGrid,
+    smart_grid: SmartGrid,
     feed_item: FeedItem,
     notifications_settings: NotificationsSettings,
     dashboard_stat: DashboardStat,
