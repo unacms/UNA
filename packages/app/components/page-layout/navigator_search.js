@@ -32,7 +32,7 @@ export default function PageLayout(props) {
             id: index + 1,
             name: obj.name,
             title: obj.title,
-            link: 'search-keyword?keyword=' + keyword.replace(' ','') + (obj.name != '' ? '&section=' +obj.name : ''),
+            link: 'search-keyword?keyword=' + keyword.replace(' ','+') + (obj.name != '' ? '&section=' +obj.name : ''),
             icon: ''
         }
     });  
