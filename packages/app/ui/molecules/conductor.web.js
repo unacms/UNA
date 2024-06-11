@@ -758,7 +758,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
-                            {topSideBarObj()}
+                            {(leftSideBarBlocks && leftSideBarBlocks.length> 0) && topSideBarObj()}
                             <RenderScene route={currentRoute} />
                         </View>
                     </Row>
