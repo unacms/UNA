@@ -28,10 +28,20 @@ function getFormFieldList(name, inputs, handleSubmit, isInitial = false){
     });  
 }
 
+const checkInputType = (name, form_name, input_name) => {
+    const setting = appSetting('layout', 'form_' + name + '_control_names');
+    if (setting && (setting.includes(form_name + '_' + input_name) || setting.includes('*_' + input_name)))
+       return true;
+    
+    return false;
+}
+
 export default function Form(props) {
     let data = props.data;
     let response = props.response;
     let onFormSubmit = props.onFormSubmit;
+
+    let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
 
     const defaultValues = {}
     if(data.inputs){
@@ -39,10 +49,14 @@ export default function Form(props) {
             if ((data.inputs[key].type == "switcher" || data.inputs[key].type == "checkbox") && data.inputs[key].checked == false)
                 data.inputs[key].value = 0;
             
-            if (data.inputs[key].name == "allow_view_to" || data.inputs[key].name == "object_privacy_view"){
+            if (checkInputType('visibility', name, data.inputs[key].name)){
                 data.inputs[key].type = 'visibility'
             }
-
+            console.log('8715',  data.inputs[key].name, checkInputType('selector', name, data.inputs[key].name))
+            if (checkInputType('selector', name, data.inputs[key].name)){
+                data.inputs[key].type = 'selector'
+            }
+           
             if (data.inputs[key].value || data.inputs[key].value == 0)      
                 defaultValues[key] = data.inputs[key].value;
         });
@@ -102,7 +116,7 @@ export default function Form(props) {
     }
     let _handleSubmit = methods.handleSubmit(onSubmit, onError)
     
-    let name = props.data.params?.display?.includes('_delete') ? '' : (props.name ? props.name : props.data.params?.display)
+   
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true);
     if (inputs?.length > 0)

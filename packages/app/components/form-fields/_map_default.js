@@ -10,6 +10,7 @@ import Select from './select';
 import Files from './files';
 import Location from './location';
 import Datetime from './dattime';
+import Selector from './selector';
 import BlockHeader from './block_header';
 import Suggestion from './suggestion';
 import InitialMembers from './initial_members';
@@ -19,6 +20,7 @@ import LocationRadius from './location_radius';
 import DoubleRange from './doublerange';
 import CheckboxSet from './checkbox_set';
 import Visibility from './visibility';
+import selector from './selector';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -38,6 +40,7 @@ export const componentsMapDefault = {
     radio_set: Select,
     files: Files,
     location: Location,
+    selector: Selector,
     location_radius: LocationRadius,
     datetime: Datetime,
     datepicker: Datetime,

@@ -7,7 +7,7 @@ export function getFormFieldByData(inputData, handleSubmit, format, externalProp
    
     if (!inputData)
         return <></>;
-
+    
     const InputType = componentsMap[String(inputData.type)];
 
     if (!InputType) 

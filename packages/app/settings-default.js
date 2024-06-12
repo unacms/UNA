@@ -68,6 +68,8 @@ let settingsDefault = {
         form_fields_optional_text: 'Optional',
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
+        form_visibility_control_names: ['*_allow_view_to', '*_object_privacy_view'],
+        form_selector_control_names: [],
         card_amimation_duration: 0,
         comments_mentions: true,
         carousel_image_width: '',
