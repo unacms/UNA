@@ -4,7 +4,7 @@ import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useContext, useState, useEffect, useCallback  } from 'react';
+import { useContext, useState, useEffect, useCallback } from 'react';
 import { Button, Modal } from "app/design/controls";
 import Form from 'app/components/elements/form';
 import Map from 'app/components/elements/map';
@@ -25,9 +25,11 @@ export default function (props) {
         }
     }
 
-    const initedData = [
+    let initedData = [
         { i: '1', x: 0, y: 0, w: 2, h: 1, type: "image", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
         { i: '7', x: 2, y: 0, w: 1, h: 1, type: "text", content: 'I`ll be back' },
+        { i: '8', x: 3, y: 0, w: 1, h: 1, type: "text", content: 'I`ll be back1' },
+        
         { i: '9', x: 2, y: 0, w: 1, h: 1, type: "link", content: 'https://www.msn.com/en-us/news/world/possible-war-crimes-in-israeli-hostage-rescue-raid-un/ar-BB1o0YZZ' },
         {
             i: '11', x: 0, y: 0, w: 2, h: 1, type: "map", content: {
@@ -47,7 +49,8 @@ export default function (props) {
 
     const [data, setData] = useState(initedData)
     const [addType, setAddType] = useState(false)
-    const [containerWidth, setContainerWidth] = useState(1120)
+    const [viewSettings, setViewSettings] = useState({ width: 1120, cols: 4 })
+
 
     const onChangeLayout = (layout) => {
         const updatedData = data.map(item => {
@@ -152,7 +155,11 @@ export default function (props) {
     }
 
     const onContainerLayout = useCallback((event) => {
-        setContainerWidth(event.nativeEvent.layout.width);
+        let cols = 4;
+        const w = event.nativeEvent.layout.width;
+        if (w < 700)
+            cols = 2;
+        setViewSettings({ width: w, cols: cols });
     });
 
     const onFormSubmit = (formData, d) => {
@@ -182,41 +189,41 @@ export default function (props) {
 
     return (
         <View className="px-2 w-full">
-        <View className="w-full" onLayout={onContainerLayout}>
-            {addType && <Modal
-                outerClickClose={false}
-                onVisible={addType}
-                onClose={() => {
-                    setAddType(false)
-                }}
-                presentation='overFullScreen'
-                transparent={true}
-                headerBorder={true}
-                title={(addType.i > 0 ? "Edit " : "Add new ") + addType.type}
-            >
-                <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
-            </Modal>}
-            {bAllowEdit && <Row className="gap-x-4 items-center justify-center">
-                <Button variant='text' size='base' rounded startDecorator='Article' onPress={() => { onAdd('text') }} />
-                <Button variant='text' size='base' rounded startDecorator='Link' onPress={() => { onAdd('link') }} />
-                <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
-                <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
-            </Row>}
-            <GridLayout
-                className="layout w-full"
-                layout={data}
-                cols={4}
-                rowHeight={rowHeight}
-                width={containerWidth}
-                onLayoutChange={(layout) => { onChangeLayout(layout); }}
-            >
+            <View className="w-full" onLayout={onContainerLayout}>
+                {addType && <Modal
+                    outerClickClose={false}
+                    onVisible={addType}
+                    onClose={() => {
+                        setAddType(false)
+                    }}
+                    presentation='overFullScreen'
+                    transparent={true}
+                    headerBorder={true}
+                    title={(addType.i > 0 ? "Edit " : "Add new ") + addType.type}
+                >
+                    <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
+                </Modal>}
+                {bAllowEdit && <Row className="gap-x-4 items-center justify-center">
+                    <Button variant='text' size='base' rounded startDecorator='Article' onPress={() => { onAdd('text') }} />
+                    <Button variant='text' size='base' rounded startDecorator='Link' onPress={() => { onAdd('link') }} />
+                    <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
+                    <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
+                </Row>}
+                <GridLayout
+                    className="layout w-full"
+                    layout={data}
+                    cols={viewSettings.cols}
+                    rowHeight={rowHeight}
+                    width={viewSettings.width}
+                    onLayoutChange={(layout) => { onChangeLayout(layout); }}
+                >
 
-                {data.map((block) => {
-                    return getCell(block);
-                })}
-            </GridLayout>
+                    {data.map((block) => {
+                        return getCell(block);
+                    })}
+                </GridLayout>
 
-        </View>
+            </View>
         </View>
     );
 
@@ -240,7 +247,7 @@ export default function (props) {
                 blockContent = null;
         }
 
-        console.log("containerWidth", data, containerWidth)
+        console.log("containerWidth", viewSettings)
 
         return (
             <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
