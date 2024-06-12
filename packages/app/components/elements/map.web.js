@@ -19,7 +19,7 @@ export default function ElementMap({data, height}) {
     return (
         <View className='w-full aspect-square' style={{height:height}}>
             <GoogleMapReact
-                bootstrapURLKeys={{ key: appSetting('config', 'api_keys', 'google_maps') }}
+                bootstrapURLKeys={{ key: appSetting('config', 'api_keys', 'google_maps'),libraries:['places'] }}
                 defaultCenter={defaultProps.center}
                 defaultZoom={defaultProps.zoom}
             >

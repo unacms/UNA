@@ -4,10 +4,12 @@ import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useCallback  } from 'react';
 import { Button, Modal } from "app/design/controls";
 import Form from 'app/components/elements/form';
 import Map from 'app/components/elements/map';
+import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
+
 export default function (props) {
 
     const bAllowEdit = true;
@@ -23,28 +25,29 @@ export default function (props) {
         }
     }
 
-    let initedData = [
+    const initedData = [
         { i: '1', x: 0, y: 0, w: 2, h: 1, type: "image", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
-        { i: '7', x: 2, y: 0, w: 1, h: 1, type: "text", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
-        { i: '9', x: 2, y: 0, w: 1, h: 1, type: "link", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
-        { i: '11', x: 0, y: 0, w: 2, h: 1, type: "map", content: {
+        { i: '7', x: 2, y: 0, w: 1, h: 1, type: "text", content: 'I`ll be back' },
+        { i: '9', x: 2, y: 0, w: 1, h: 1, type: "link", content: 'https://www.msn.com/en-us/news/world/possible-war-crimes-in-israeli-hostage-rescue-raid-un/ar-BB1o0YZZ' },
+        {
+            i: '11', x: 0, y: 0, w: 2, h: 1, type: "map", content: {
 
-            "content_country": "IN",
-            "content_state": "Telangana",
-            "content_city": "Hyderabad",
-            "content_zip": "500055",
-            "content_lat": 17.5238527,
-            "content_lng": 78.4347044,
-            "content_street": "Road Number 9",
-            "content_street_number": "940"
-        }},
+                "content_country": "IN",
+                "content_state": "Telangana",
+                "content_city": "Hyderabad",
+                "content_zip": "500055",
+                "content_lat": 17.5238527,
+                "content_lng": 78.4347044,
+                "content_street": "Road Number 9",
+                "content_street_number": "940"
+            }
+        },
     ];
     initedData = initedData.map(item => (addSettings(item)));
 
     const [data, setData] = useState(initedData)
     const [addType, setAddType] = useState(false)
-
-
+    const [containerWidth, setContainerWidth] = useState(1120)
 
     const onChangeLayout = (layout) => {
         const updatedData = data.map(item => {
@@ -61,7 +64,6 @@ export default function (props) {
         e.preventDefault();
         e.stopPropagation();
         const updatedData = data.filter(item => item.i.toString() !== key.toString());
-        console.log("updatedData", updatedData, key);
         setData(updatedData);
 
     }
@@ -73,7 +75,7 @@ export default function (props) {
     }
 
     const onAdd = (type) => {
-        setAddType({ i: 0, x: 0, y: 0, w: 2, h: 1, type: type})
+        setAddType({ i: 0, x: 0, y: 0, w: 2, h: 1, type: type })
     }
 
     useEffect(() => {
@@ -89,7 +91,7 @@ export default function (props) {
                 type: 'textarea',
                 required: true,
                 value: addType.content,
-                caption:'',
+                caption: '',
                 placeholder: 'Content',
             };
             break;
@@ -99,7 +101,7 @@ export default function (props) {
                 type: 'text',
                 required: true,
                 value: addType.content,
-                caption:'',
+                caption: '',
                 placeholder: 'Content',
             };
             break;
@@ -108,17 +110,17 @@ export default function (props) {
                 name: 'content',
                 type: 'files',
                 required: true,
-                value: '',
-                storage_object: 'sys_cmts_images',
-                images_transcoder: 'sys_cmts_images_preview',
+                value: addType.content,
+                storage_object: 'sys_images_editor',
+                images_transcoder: 'sys_images_editor',
                 multiple: false,
-                uploaders:[
+                uploaders: [
                     "sys_cmts_html5"
                 ],
                 useUrl: true,
-                ext_allow:"jpg,jpeg,jpe,gif,png,webp",
-                ext_deny:"",
-                caption:'',
+                ext_allow: "jpg,jpeg,jpe,gif,png,webp",
+                ext_deny: "",
+                caption: '',
                 placeholder: 'Content',
             };
             break;
@@ -128,7 +130,7 @@ export default function (props) {
                 type: 'location',
                 required: true,
                 value: '',
-                caption:'',
+                caption: '',
                 placeholder: 'Content',
             };
             break;
@@ -143,23 +145,46 @@ export default function (props) {
                     type: 'submit',
                     label: 'Content',
                     required: true,
-                    value: 'Add',
+                    value: 'Save',
                 },
             ],
         }
     }
 
+    const onContainerLayout = useCallback((event) => {
+        setContainerWidth(event.nativeEvent.layout.width);
+    });
+
     const onFormSubmit = (formData, d) => {
-        console.log("onFormSubmit", formData, d);
-        const maxI = data.reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[0].i);
-        const updatedData = [...data, addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType, content: d.content })];
+        let updatedData;
+        let content = d.content;
+        if (addType.type === 'map') {
+            content = d;
+        }
+        if (addType.i > 0) {
+            const layout = [addType];
+            updatedData = data.map(item => {
+                const layoutItem = layout.find(l => l.i === item.i);
+                if (layoutItem) {
+                    return { ...item, content: content };
+                }
+                return item;
+            });
+        }
+        else {
+            const maxI = data.reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[0].i);
+            updatedData = [...data, addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content })];
+        }
+        //  console.log('updatedData', updatedData)
         setData(updatedData);
         setAddType(false);
     }
 
     return (
-        <View className="px-2">
-            { addType && <Modal
+        <View className="px-2 w-full">
+        <View className="w-full" onLayout={onContainerLayout}>
+            {addType && <Modal
+                outerClickClose={false}
                 onVisible={addType}
                 onClose={() => {
                     setAddType(false)
@@ -167,7 +192,7 @@ export default function (props) {
                 presentation='overFullScreen'
                 transparent={true}
                 headerBorder={true}
-                title="Add new"
+                title={(addType.i > 0 ? "Edit " : "Add new ") + addType.type}
             >
                 <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
             </Modal>}
@@ -182,7 +207,7 @@ export default function (props) {
                 layout={data}
                 cols={4}
                 rowHeight={rowHeight}
-                width={1120}
+                width={containerWidth}
                 onLayoutChange={(layout) => { onChangeLayout(layout); }}
             >
 
@@ -192,39 +217,40 @@ export default function (props) {
             </GridLayout>
 
         </View>
-
+        </View>
     );
 
     function getCell(block) {
-        console.log(block)
         let blockContent;
         switch (block.type) {
             case "image":
-                blockContent = <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} />
+                blockContent = <><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></>
                 break;
             case "text":
-                blockContent = <View className="p-2"><Text className='text-base'>{block.content}</Text></View>;
+                blockContent = <View className="p-2 items-center justify-center h-full"><Text className='text-lg'>{block.content}</Text></View>;
                 break;
             case "link":
-                blockContent = <View className="p-2"><Text className='text-base'>{block.content}</Text></View>;
+                blockContent = <View className="items-center justify-center h-full"><iframe scrolling="no" width="100%" src={absoluteApiUrl("embeds") + block.content + '&theme=light&'} /></View>
                 break;
             case "map":
-                blockContent = <Map height={rowHeight*block.h} data={{ caption: 'ssss'+block.content.content_state+', '+block.content.content_city+', '+block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
+                blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
                 break;
                 break;
             default:
                 blockContent = null;
         }
 
+        console.log("containerWidth", data, containerWidth)
+
         return (
             <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
                 {blockContent}
-                {bAllowEdit && <View className="absolute left-1 top-1 z-50">
+                {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
                     <Pressable onMouseDown={(event) => onRemove(event, block.i)}
                         onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
                     </Pressable>
                 </View>}
-                {bAllowEdit && <View className="absolute left-1 top-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
+                {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
                     <Button variant='text' size='xs' rounded startDecorator='Pencil' />
                 </Pressable>
                 </View>

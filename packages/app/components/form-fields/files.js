@@ -74,7 +74,8 @@ export default function (props) {
     }, [imageSource]);
 
     useEffect(() => {
-        if (formValue && field.value) {
+        console.log('formValue', field.value, formValue);
+        if (formValue && field.value && !isNaN(field.value)) {
             RestoreGhosts(0);
         }
         if (!formValue)
@@ -84,7 +85,7 @@ export default function (props) {
     }, [formValue]);
 
     useEffect(() => {
-        if (!imageSource.images) {
+        if (!imageSource.images && !props.useUrl) {
             RestoreGhosts(0);
         }
         if (formContext.formState.isSubmitted) {
@@ -275,6 +276,9 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
 
         if (!bMultiple) {
             let img = imagesList && imagesList.length > 0 ? imagesList[0] : null;
+            if (!img && props.useUrl) {
+                img = {file_url:props.value, file_type: "image/jpeg"};
+            }
             let w = props.name == 'picture' ? 'w-48 h-48' : 'w-full';
             if (!props.viewClasses) {
                 w += ' bg-bgrinput dark:bg-bgrinput-d border-bdrinput dark:border-bdrinput-d rounded-lg'
@@ -293,7 +297,7 @@ function ActionButton({ imagesList, props, selectImage, handleDelete, bMultiple,
                         </View>
                         {img != null && (<>
                             { isImage && <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={img.file_url} />}
-                            { imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
+                            { imagesList && imagesList.find(item => item.preload === true) && <View className='absolute w-full h-full justify-center items-center z-50'><Loading /></View>}
                             <View className='absolute top-1 right-1 w-6.5 text-center mx-auto'>
                                 <Button onPress={() => handleDelete(img.file_id)} variant="default" startDecorator="X" align="start" title="" rounded size="xs" />
                             </View>
