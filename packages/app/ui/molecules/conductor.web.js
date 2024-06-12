@@ -710,7 +710,6 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }, [routes, index]);
 
     const topSideBarObj = useCallback(() => {
-
         return <Row className="w-full px-8 pt-6 items-stretch justify-stretch  sticky z-50 t-8 gap-x-8">
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 

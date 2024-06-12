@@ -811,7 +811,7 @@ let settingsDefault = {
         'view-persons-profile': {
             layout: 'profile-alt',
             blocks: {
-                col5: { name: 'bx_persons:grid_data', showTitle: false, showBg: false, sidebar: false, leftbar: false },
+                col5: { name: 'system:block_1572', showTitle: false, showBg: false, sidebar: false, leftbar: false },
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
                 col4: { name: 'bx_persons:entity_text_block', showTitle: false, showBg: true, sidebar: false },

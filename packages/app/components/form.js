@@ -52,7 +52,6 @@ export default function Form(props) {
             if (checkInputType('visibility', name, data.inputs[key].name)){
                 data.inputs[key].type = 'visibility'
             }
-            console.log('8715',  data.inputs[key].name, checkInputType('selector', name, data.inputs[key].name))
             if (checkInputType('selector', name, data.inputs[key].name)){
                 data.inputs[key].type = 'selector'
             }

@@ -4,8 +4,9 @@ import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useContext, useState, useEffect, useCallback } from 'react';
+import { useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { Button, Modal } from "app/design/controls";
+import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
 import Map from 'app/components/elements/map';
 import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
@@ -14,8 +15,12 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function (props) {
+    console.log("propsprops", props)
+    const bAllowEdit = props.is_allowed_edit;
+    const blockId = props.block_id;
+    const contentId = props.content_id;
+    const contentModule = props.content_module;
 
-    const bAllowEdit = true;
     const defaultCols = 4;
     const settings = { minW: 1, maxW: 2, minH: 1, maxH: 2 };
     const rowHeight = 260;
@@ -28,62 +33,35 @@ export default function (props) {
             maxH: settings.maxH,
         }
     }
-
-    let initedData = {lg: [
-        
-        { i: '1', x: 0, y: 0, w: 2, h: 1, type: "image", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
-        { i: '7', x: 2, y: 0, w: 1, h: 1, type: "text", content: 'I`ll be back' },
-        { i: '8', x: 3, y: 0, w: 1, h: 1, type: "text", content: 'I`ll be back1' },
-        
-        { i: '9', x: 2, y: 0, w: 1, h: 1, type: "link", content: 'https://www.msn.com/en-us/news/world/possible-war-crimes-in-israeli-hostage-rescue-raid-un/ar-BB1o0YZZ' },
-        {
-            i: '11', x: 0, y: 0, w: 2, h: 1, type: "map", content: {
-
-                "content_country": "IN",
-                "content_state": "Telangana",
-                "content_city": "Hyderabad",
-                "content_zip": "500055",
-                "content_lat": 17.5238527,
-                "content_lng": 78.4347044,
-                "content_street": "Road Number 9",
-                "content_street_number": "940"
+    let initedData = false;
+    const [data, setData] = useState(initedData)
+    useEffect(() => {
+        const fetchData = async () => {
+            const sResponse = await fetcher('/api.php?r=system/get_page_block_data/TemplServicePages&params[]=' + blockId + '&params[]=' + contentId + '&params[]=' + contentModule);
+            if (sResponse.data) {
+                setData(sResponse.data);
             }
-        },
-    ],
-    sm: [
-        
-        { i: '1', x: 0, y: 0, w: 2, h: 1, type: "image", content: 'https://us-east-1.linodeobjects.com/una/bx_forum_photos_resized/v/vu/vu5/vu5uxrv6jdum8kyhaibf2fspvexpqagy.webp' },
-        { i: '7', x: 0, y: 1, w: 1, h: 1, type: "text", content: 'I`ll be back' },
-        { i: '8', x: 1, y: 1, w: 1, h: 1, type: "text", content: 'I`ll be back1' },
-        
-        { i: '9', x: 1, y: 2, w: 1, h: 1, type: "link", content: 'https://www.msn.com/en-us/news/world/possible-war-crimes-in-israeli-hostage-rescue-raid-un/ar-BB1o0YZZ' },
-        {
-            i: '11', x: 0, y: 3, w: 2, h: 1, type: "map", content: {
-
-                "content_country": "IN",
-                "content_state": "Telangana",
-                "content_city": "Hyderabad",
-                "content_zip": "500055",
-                "content_lat": 17.5238527,
-                "content_lng": 78.4347044,
-                "content_street": "Road Number 9",
-                "content_street_number": "940"
+            else {
+                setData({ lg: [], sm: [] });
             }
-        },
-    ]
-};
+        };
+
+        fetchData();
+    }, []);
+
     Object.keys(initedData).forEach(key => {
         initedData[key] = initedData[key].map(addSettings);
     });
 
-    const [data, setData] = useState(initedData)
+
     const [addType, setAddType] = useState(false);
     const [breakpoint, setBreakpoint] = useState('lg')
-    /*const [viewSettings, setViewSettings] = useState({ width: 1120, cols: 4 })*/
 
 
-    const onChangeLayout = (layout) => {
-        console.log('onChangeLayout', layout, breakpoint);
+    const onChangeLayout = (layout, allLayouts) => {
+    };
+
+    const onDrag = (layout) => {
         const updatedData1 = data[breakpoint].map(item => {
             const layoutItem = layout.find(l => l.i === item.i);
             if (layoutItem) {
@@ -93,7 +71,21 @@ export default function (props) {
         });
         const updatedData = { ...data, [breakpoint]: updatedData1 };
         setData(updatedData);
-    };
+
+    }
+
+    const onResize = (a) => {
+        const updatedData1 = data[breakpoint].map(item => {
+            const layoutItem = layout.find(l => l.i === item.i);
+            if (layoutItem) {
+                return { ...item, x: layoutItem.x, y: layoutItem.y, w: layoutItem.w, h: layoutItem.h };
+            }
+            return item;
+        });
+        const updatedData = { ...data, [breakpoint]: updatedData1 };
+        setData(updatedData);
+    }
+
 
     const onRemove = (e, key) => {
         e.preventDefault();
@@ -102,7 +94,6 @@ export default function (props) {
         Object.keys(data).forEach(iter => {
             updatedData[iter] = data[iter].filter(item => item.i.toString() !== key.toString());
         });
-        console.log("updatedData", updatedData)
         setData(updatedData);
 
     }
@@ -118,9 +109,15 @@ export default function (props) {
     }
 
     useEffect(() => {
-        //TODO SAVE
-        console.log("data", data, props.block.id);
+        saveData(data)
     }, [data]);
+
+    const saveData = async (data) => {
+        if (data) {
+            const sResponse = await fetcher(['/api.php?r=system/set_page_block_data/TemplServicePages&params[]=' + blockId + '&params[]=' + contentId + '&params[]=' + contentModule, null, JSON.stringify(data)]);
+        }
+    }
+
 
     let control
     switch (addType.type) {
@@ -190,17 +187,8 @@ export default function (props) {
         }
     }
 
-    /*const onContainerLayout = useCallback((event) => {
-        let cols = defaultCols;
-        const w = event.nativeEvent.layout.width;
-        if (w < 700)
-            cols = 2;
-        setViewSettings({ width: w, cols: cols });
-    });*/
-
     const onBreakpointChange = (breakpoint, cols) => {
         setBreakpoint(breakpoint);
-        console.log('onBreakpointChange', breakpoint, cols);
     }
 
     const onFormSubmit = (formData, d) => {
@@ -211,7 +199,7 @@ export default function (props) {
         }
         if (addType.i > 0) {
             const layout = [addType];
-            
+
             Object.keys(data).forEach(iter => {
                 updatedData[iter] = data[iter].map(item => {
                     const layoutItem = layout.find(l => l.i === item.i);
@@ -223,21 +211,27 @@ export default function (props) {
             });
         }
         else {
-            
+
             Object.keys(data).forEach(iter => {
-                const maxI = data[iter].reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[iter][0].i);
+                const maxI = data[iter].length > 0 ? data[iter].reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[iter][0].i) : 0;
                 updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content })];
             })
         }
+
         setData(updatedData);
         setAddType(false);
     }
 
-    console.log("breakpoint", breakpoint)
+    const memoizedCells = useMemo(() => {
+        if (data && data[breakpoint]) {
+            return data[breakpoint].map(getCell);
+        }
+        return [];
+    }, [data, breakpoint, getCell]);
 
     return (
         <View className="px-2 w-full">
-            <View className="w-full" /*onLayout={onContainerLayout}>*/>
+            <View className="w-full">
                 {addType && <Modal
                     outerClickClose={false}
                     onVisible={addType}
@@ -250,7 +244,7 @@ export default function (props) {
                     title={(addType.i > 0 ? "Edit " : "Add new ") + addType.type}
                 >
                     <View className="p-4 sm:p-0">
-                    <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
+                        <Form {...form} resetOnSubmit={true} onFormSubmit={onFormSubmit} />
                     </View>
                 </Modal>}
                 {bAllowEdit && <Row className="gap-x-4 items-center justify-center">
@@ -261,20 +255,20 @@ export default function (props) {
                 </Row>}
                 <ResponsiveReactGridLayout
                     className="layout w-full"
-                    layouts={data }
+                    layouts={data}
                     isResizable={bAllowEdit}
                     isDraggable={bAllowEdit}
 
                     breakpoints={{ lg: 700, sm: 0 }}
-                    cols={{ lg: 4, sm: 2}}
+                    cols={{ lg: 4, sm: 2 }}
                     rowHeight={rowHeight}
                     onBreakpointChange={onBreakpointChange}
-                    onLayoutChange={(layout) => { onChangeLayout(layout); }}
+                    onLayoutChange={(currentLayout, allLayouts) => { onChangeLayout(currentLayout, allLayouts); }}
+                    onResizeStop={(current) => { onResize(current); }}
+                    onDragStop={(current) => { onDrag(current); }}
                 >
 
-                    {data[breakpoint].map((block) => {
-                        return getCell(block);
-                    })}
+                    {memoizedCells}
                 </ResponsiveReactGridLayout>
 
             </View>
