@@ -4,7 +4,7 @@ import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
 import { View, Pressable, Row } from 'app/design/view';
 import { Text } from 'app/design/typography';
-import { useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { useContext, useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { Button, Modal } from "app/design/controls";
 import { fetcher } from 'app/lib/fetcher';
 import Form from 'app/components/elements/form';
@@ -13,6 +13,63 @@ import { appSetting, md5, absoluteApiUrl } from 'app/lib/util'
 import { WidthProvider, Responsive } from "react-grid-layout";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoint, onBreakpointChange, onResize, onDrag }) => (
+    <ResponsiveReactGridLayout
+        className="layout w-full"
+        layouts={data}
+        isResizable={bAllowEdit}
+        isDraggable={bAllowEdit}
+
+        breakpoints={{ lg: 700, sm: 0 }}
+        cols={{ lg: 4, sm: 2 }}
+        rowHeight={rowHeight}
+        onBreakpointChange={onBreakpointChange}
+        onResizeStop={onResize}
+        onDragStop={onDrag}
+
+    >
+        {data[breakpoint].map((block) => {
+            return getCell(block, bAllowEdit);
+        })}
+    </ResponsiveReactGridLayout>
+));
+
+function getCell(block, bAllowEdit) {
+    let blockContent;
+    switch (block.type) {
+        case "image":
+            blockContent = <><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></>
+            break;
+        case "text":
+            blockContent = <View className="p-2 items-center justify-center h-full"><Text className='text-lg'>{block.content}</Text></View>;
+            break;
+        case "link":
+            blockContent = <View className="items-center justify-center h-full"><iframe scrolling="no" width="100%" src={absoluteApiUrl("embeds") + block.content + '&theme=light&'} /></View>
+            break;
+        case "map":
+            blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
+            break;
+        default:
+            blockContent = null;
+    }
+
+    return (
+        <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
+            {blockContent}
+            {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
+                <Pressable onMouseDown={(event) => onRemove(event, block.i)}
+                    onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
+                </Pressable>
+            </View>}
+            {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
+                <Button variant='text' size='xs' rounded startDecorator='Pencil' />
+            </Pressable>
+            </View>
+            }
+        </View>
+    );
+}
 
 export default function (props) {
     console.log("propsprops", props)
@@ -33,9 +90,14 @@ export default function (props) {
             maxH: settings.maxH,
         }
     }
-    let initedData = false;
+    let initedData = props.data.content;
+    if (!initedData.lg)
+        initedData = { lg: [], sm: [] };
+
+    console.log("props.data.content", props.data.content, initedData);
+
     const [data, setData] = useState(initedData)
-    useEffect(() => {
+    /*useEffect(() => {
         const fetchData = async () => {
             const sResponse = await fetcher('/api.php?r=system/get_page_block_data/TemplServicePages&params[]=' + blockId + '&params[]=' + contentId + '&params[]=' + contentModule);
             if (sResponse.data) {
@@ -47,7 +109,7 @@ export default function (props) {
         };
 
         fetchData();
-    }, []);
+    }, []);*/
 
     Object.keys(initedData).forEach(key => {
         initedData[key] = initedData[key].map(addSettings);
@@ -109,6 +171,7 @@ export default function (props) {
     }
 
     useEffect(() => {
+        console.log(555);
         saveData(data)
     }, [data]);
 
@@ -217,7 +280,7 @@ export default function (props) {
                 updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content })];
             })
         }
-
+        console.log("updatedData", updatedData)
         setData(updatedData);
         setAddType(false);
     }
@@ -231,7 +294,7 @@ export default function (props) {
 
     return (
         <View className="px-2 w-full">
-            <View className="w-full">
+            <View className="w-full overflow-hidden">
                 {addType && <Modal
                     outerClickClose={false}
                     onVisible={addType}
@@ -253,61 +316,16 @@ export default function (props) {
                     <Button variant='text' size='base' rounded startDecorator='Image' onPress={() => { onAdd('image') }} />
                     <Button variant='text' size='base' rounded startDecorator='MapPin' onPress={() => { onAdd('map') }} />
                 </Row>}
-                <ResponsiveReactGridLayout
-                    className="layout w-full"
-                    layouts={data}
-                    isResizable={bAllowEdit}
-                    isDraggable={bAllowEdit}
-
-                    breakpoints={{ lg: 700, sm: 0 }}
-                    cols={{ lg: 4, sm: 2 }}
+                <ResponsiveReactGridLayoutM
                     rowHeight={rowHeight}
+                    data={data}
+                    bAllowEdit={bAllowEdit}
+                    breakpoint={breakpoint}
                     onBreakpointChange={onBreakpointChange}
-                    onLayoutChange={(currentLayout, allLayouts) => { onChangeLayout(currentLayout, allLayouts); }}
-                    onResizeStop={(current) => { onResize(current); }}
-                    onDragStop={(current) => { onDrag(current); }}
-                >
-
-                    {memoizedCells}
-                </ResponsiveReactGridLayout>
-
+                    onResize={onResize}
+                    onDrag={onDrag}
+                />
             </View>
         </View>
     );
-
-    function getCell(block) {
-        let blockContent;
-        switch (block.type) {
-            case "image":
-                blockContent = <><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></>
-                break;
-            case "text":
-                blockContent = <View className="p-2 items-center justify-center h-full"><Text className='text-lg'>{block.content}</Text></View>;
-                break;
-            case "link":
-                blockContent = <View className="items-center justify-center h-full"><iframe scrolling="no" width="100%" src={absoluteApiUrl("embeds") + block.content + '&theme=light&'} /></View>
-                break;
-            case "map":
-                blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
-                break;
-            default:
-                blockContent = null;
-        }
-
-        return (
-            <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
-                {blockContent}
-                {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
-                    <Pressable onMouseDown={(event) => onRemove(event, block.i)}
-                        onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
-                    </Pressable>
-                </View>}
-                {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
-                    <Button variant='text' size='xs' rounded startDecorator='Pencil' />
-                </Pressable>
-                </View>
-                }
-            </View>
-        );
-    }
 }

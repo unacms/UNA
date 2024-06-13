@@ -9,11 +9,11 @@ import { BlockByName } from 'app/components/block';
 
 export default function PageLayout(props) {
     const windowDimen = useWindowDimensions();
-    const { layoutData, setLayoutData } = useContext(LayoutData);
+    //const { layoutData, setLayoutData } = useContext(LayoutData);
     const [pageData, setPageData] = useState(props.data);
     let ts = 0;
 
-    useEffect(() => {
+   /* useEffect(() => {
         if (layoutData && layoutData?.type == 'сonnections:action') {
             (async () => {
                 const sResponse = await fetcher('/api.php?r=system/get_page_by_request/TemplServicePages&params[]=' + pageData.url);
@@ -22,7 +22,7 @@ export default function PageLayout(props) {
             })();
 
         }
-    }, [layoutData?.data?.time]);
+    }, [layoutData?.data?.time]);*/
 
     if (!props.data.menu.items) {
         props.data.menu.items = [];
