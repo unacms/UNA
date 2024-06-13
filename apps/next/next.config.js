@@ -56,7 +56,8 @@ const nextConfig = {
     'react-i18next',
     'react-native-localize',
     'victory-native',
-    '@stripe/stripe-react-native'
+    '@stripe/stripe-react-native',
+    'react-native-star-rating-widget'
   ],
   images: {
     remotePatterns: [

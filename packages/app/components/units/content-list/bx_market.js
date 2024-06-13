@@ -5,9 +5,12 @@ import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import Card from "app/ui/molecules/card";
 import Profile from 'app/ui/molecules/profile'
+import StarRating from 'react-native-star-rating-widget';
+import { useState } from 'react';
 
 export default function Unit(props) {
     const data = props.data;
+    const [rating, setRating] = useState(0);
     const imageSizes = getImageSizes();
     let sMeta = (
         <Profile
@@ -81,6 +84,12 @@ export default function Unit(props) {
                                             </View>
                                         )}
                                     </Row>
+                                    <StarRating
+                        starSize ={24}
+                        enableHalfStar={false}
+        rating={rating}
+        onChange={setRating}
+      />
                                     <Text
                                         numberOfLines={1}
                                         className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
@@ -90,9 +99,11 @@ export default function Unit(props) {
                                 </View>
                             </View>
                         </Link>
+                        
                         <View className=" mb-auto px-4 pb-3 sm:pt-0">
                             {sMeta}
                         </View>
+                       
                     </View>
                 </View>
             </Card>

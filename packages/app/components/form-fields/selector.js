@@ -111,7 +111,7 @@ function ChkList({ values, selectedValues, setFormValue }) {
                 ))}
 
             </ScrollView>
-            <View className='pb-2 justify-end items-end'>
+            <View className='pb-2 justify-end items-start'>
                 <Button
                     title='Save'
                     variant="default"

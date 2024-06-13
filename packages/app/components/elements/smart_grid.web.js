@@ -14,7 +14,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoint, onBreakpointChange, onResize, onDrag }) => (
+const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoint, onBreakpointChange, onResize, onDrag, getCell }) => (
     <ResponsiveReactGridLayout
         className="layout w-full"
         layouts={data}
@@ -35,44 +35,7 @@ const ResponsiveReactGridLayoutM = memo(({ data, bAllowEdit, rowHeight, breakpoi
     </ResponsiveReactGridLayout>
 ));
 
-function getCell(block, bAllowEdit) {
-    let blockContent;
-    switch (block.type) {
-        case "image":
-            blockContent = <><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></>
-            break;
-        case "text":
-            blockContent = <View className="p-2 items-center justify-center h-full"><Text className='text-lg'>{block.content}</Text></View>;
-            break;
-        case "link":
-            blockContent = <View className="items-center justify-center h-full"><iframe scrolling="no" width="100%" src={absoluteApiUrl("embeds") + block.content + '&theme=light&'} /></View>
-            break;
-        case "map":
-            blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
-            break;
-        default:
-            blockContent = null;
-    }
-
-    return (
-        <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
-            {blockContent}
-            {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
-                <Pressable onMouseDown={(event) => onRemove(event, block.i)}
-                    onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
-                </Pressable>
-            </View>}
-            {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
-                <Button variant='text' size='xs' rounded startDecorator='Pencil' />
-            </Pressable>
-            </View>
-            }
-        </View>
-    );
-}
-
 export default function (props) {
-    console.log("propsprops", props)
     const bAllowEdit = props.is_allowed_edit;
     const blockId = props.block_id;
     const contentId = props.content_id;
@@ -93,8 +56,6 @@ export default function (props) {
     let initedData = props.data.content;
     if (!initedData.lg)
         initedData = { lg: [], sm: [] };
-
-    console.log("props.data.content", props.data.content, initedData);
 
     const [data, setData] = useState(initedData)
     /*useEffect(() => {
@@ -136,7 +97,7 @@ export default function (props) {
 
     }
 
-    const onResize = (a) => {
+    const onResize = (layout) => {
         const updatedData1 = data[breakpoint].map(item => {
             const layoutItem = layout.find(l => l.i === item.i);
             if (layoutItem) {
@@ -171,7 +132,6 @@ export default function (props) {
     }
 
     useEffect(() => {
-        console.log(555);
         saveData(data)
     }, [data]);
 
@@ -254,11 +214,16 @@ export default function (props) {
         setBreakpoint(breakpoint);
     }
 
-    const onFormSubmit = (formData, d) => {
+    const onFormSubmit = async (formData, d) => {
         let updatedData = {};
+        let content_data ='';
         let content = d.content;
         if (addType.type === 'map') {
             content = d;
+        }
+        if (addType.type === 'link') {
+            const a = await fetcher('/api.php?r=system/get_url_info/TemplServicePages&params[]=' +  d.content);
+            content_data = a.data;
         }
         if (addType.i > 0) {
             const layout = [addType];
@@ -267,7 +232,7 @@ export default function (props) {
                 updatedData[iter] = data[iter].map(item => {
                     const layoutItem = layout.find(l => l.i === item.i);
                     if (layoutItem) {
-                        return { ...item, content: content };
+                        return { ...item, content: content, content_data: content_data };
                     }
                     return item;
                 });
@@ -277,10 +242,9 @@ export default function (props) {
 
             Object.keys(data).forEach(iter => {
                 const maxI = data[iter].length > 0 ? data[iter].reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[iter][0].i) : 0;
-                updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content })];
+                updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content, content_data: content_data  })];
             })
         }
-        console.log("updatedData", updatedData)
         setData(updatedData);
         setAddType(false);
     }
@@ -291,6 +255,52 @@ export default function (props) {
         }
         return [];
     }, [data, breakpoint, getCell]);
+
+    function getCell(block, bAllowEdit) {
+        let blockContent;
+        switch (block.type) {
+            case "image":
+                blockContent = <><Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover " alt='' src={block.content} /></>
+                break;
+            case "text":
+                blockContent = <View className="py-2 px-4 items-start justify-start h-full"><Text className='text-lg'>{block.content}</Text></View>;
+                break;
+            case "link":
+                blockContent = block.content_data && (<View className="items-left justify-between h-full p-4">
+                    <View><View className="h-8 w-8 rounded-full">
+                        <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover rounded-full" alt='' src={block.content_data.logo} />
+                    </View>
+                    <Text className='text-base my-2' numberOfLines={1}>{block.content_data.title}</Text>
+                    <Text className='text-sm'>{block.content_data.domain}</Text>
+                    </View>
+                    <View className="w-full aspect-video rounded-2xl">
+                        <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover  rounded-lg" alt='' src={block.content_data.image} />
+                    </View>
+                </View>)
+                break;
+            case "map":
+                blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
+                break;
+            default:
+                blockContent = null;
+        }
+
+        return (
+            <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
+                {blockContent}
+                {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
+                    <Pressable onMouseDown={(event) => onRemove(event, block.i)}
+                        onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
+                    </Pressable>
+                </View>}
+                {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
+                    <Button variant='text' size='xs' rounded startDecorator='Pencil' />
+                </Pressable>
+                </View>
+                }
+            </View>
+        );
+    }
 
     return (
         <View className="px-2 w-full">
@@ -324,6 +334,7 @@ export default function (props) {
                     onBreakpointChange={onBreakpointChange}
                     onResize={onResize}
                     onDrag={onDrag}
+                    getCell={getCell}
                 />
             </View>
         </View>
