@@ -8,7 +8,6 @@ import { View } from 'app/design/view'
 import { Text} from 'app/design/typography'
 
 export default function BlockContentObjectDataArray(props) {
-
     const [postData, setPostData] = useState(null);
     // check if any element in a block has request URL
     let immutable = false;
@@ -70,7 +69,7 @@ export default function BlockContentObjectDataArray(props) {
     // display each block element from static data or from dynamic data
     return (
         <View className="relative ">
-            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={onFormSubmit} {...a} />)}
+            {realData?.map(a => <Element key={a.id+a.type} type={a.type} {...props} onSubmittig={postData && !dynamicData} onFormSubmit={props.onFormSubmit ? props.onFormSubmit : onFormSubmit} {...a} />)}
         </View>
     );
 }

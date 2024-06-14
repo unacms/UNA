@@ -21,6 +21,27 @@ export function getBackButtonWeb() {
     return <></>
 }
 
+export function processBlocks(blocks) {
+    let leftBlocks = [];
+
+    if (blocks) {
+        leftBlocks = Object.entries(blocks)
+            .filter(([key, value]) => value.leftbar)
+            .map(([key, value]) => ({
+                key,
+                ...value,
+            }));
+        blocks = Object.entries(blocks)
+            .filter(([key, value]) => !value.leftbar)
+            .map(([key, value]) => ({
+                key,
+                ...value,
+            }));
+    }
+
+    return { mainBlocks: blocks, leftBlocks: leftBlocks }
+}
+
 export function handleFeedLayoutData(layoutData, data) {
 
     if (layoutData && layoutData?.type == 'feed:new_content') {
@@ -91,7 +112,7 @@ export function fillTabs(menu, data, blocks, currentUser, useSectionAsMenu) {
                     // i.endpoint = stateC.endpoint;
                     i.state = stateC.state
                 }
-                
+
                 let stateD = getDataFromCache('ul:data', i.storageKeyValue);
                 if (stateD) {
                     i.endpoint = stateD.endpoint;
@@ -309,18 +330,18 @@ function ItemRenderer_({ route, numColumns, item, unit, module, unitMode, unitTy
 
 export const ItemRenderer = memo(ItemRenderer_);
 
-export function LeftSidebar({ title, addButtons, children }) {
+export function LeftSidebar({ title, addButtons, children, width }) {
     return (
-        <View className=" hidden lg:block w-80 ">
-            <View className=' fixed-process w-80 lg:px-4 lg:py-3 '>
-                <Row className="justify-between items-center mt-1 mb-4 ml-3 ">
+        <View className={" hidden lg:block " + width}>
+            <View className={' fixed-process ' + width + ' lg:px-4 lg:py-3 '}>
+                {(title && addButtons) && <Row className="justify-between items-center mt-1 mb-4 ml-3 ">
                     <Text className="text-2xl truncate mr-auto font-bold  text-neutral-700 dark:text-neutral-100 hidden lg:flex flex-row items-center gap-x-2 ">
                         {title}
                     </Text>
                     <Row className=" ">
                         {addButtons}
                     </Row>
-                </Row>
+                </Row>}
                 <View className=' hidden flex-col gap-y-1 lg:flex '>
                     {children}
                 </View>
@@ -336,7 +357,7 @@ export function TopSidebar({ styles, isWeb, leftSideBar, header, headerSettings,
             <View className={(leftSideBar ? appSetting('layout', 'max_width') : appSetting('layout', 'max_width') + ' mx-auto ') + ' lala w-full '}>
                 {!header && isWeb && <Row className="lg:hidden flex-row gap-x-1 flex-none items-center justify-between h-16 border-b bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-bdrnavbar dark:border-bdrnavbar-d">
                     <Row className="items-center px-3 sm:px-4">
-                        
+
                         {headerSettings.header && getBackButtonWeb()}
                         {(headerSettings.header == false && headerSettings.menu == true && isDrawer) && <View className="lg:hidden mr-3 sm:mr-4"><Pressable onPress={showMenu}>
                             <Button

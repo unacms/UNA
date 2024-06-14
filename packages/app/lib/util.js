@@ -213,6 +213,9 @@ export function getHeaderSettings(uri, width, layout) {
 
     let sColumns = typeof settings?.headerSettings?.columns !== 'undefined' ? settings.headerSettings.columns : '';
 
+    let bHideLeftmenu = typeof settings?.headerSettings?.hideLeftmenu !== 'undefined' ? settings.headerSettings.hideLeftmenu : false;
+    let bShowAltTopMenu = typeof settings?.headerSettings?.showAltTopMenu !== 'undefined' ? settings.headerSettings.showAltTopMenu : false;
+
     if (width >= 1024)
         bOffset = true;
 
@@ -224,7 +227,9 @@ export function getHeaderSettings(uri, width, layout) {
         offset: bOffset,
         footer: bFooter,
         cover: sCover,
-        columns: sColumns
+        columns: sColumns,
+        hideLeftmenu: bHideLeftmenu,
+        showAltTopMenu: bShowAltTopMenu
     }
 }
 

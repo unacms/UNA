@@ -5,7 +5,7 @@ import { View, Row, Pressable } from 'app/design/view';
 import UniList from 'app/ui/atoms/unilist'
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { appSetting, getHeaderSettings, getUnitModeBySource, getURI, getLayout, handleFeedLayoutData, menuItemsByName } from 'app/lib/util';
-import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar  } from 'app/lib/conductor-helpers';
+import { fillTabs, parseData, fetchAndUpdateData, ItemRenderer, LeftSidebar, TopSidebar } from 'app/lib/conductor-helpers';
 import { Button } from 'app/design/controls';
 import Link from 'app/ui/atoms/link'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
@@ -26,7 +26,38 @@ import DynamicMenu from 'app/components/nav/menu-dynamic';
 import { storageClear, menuItemsFilter } from 'app/lib/util';
 import Footer from 'app/components/nav/footer';
 
-export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth='w-80', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
+function AddBlocks({leftSideBarBlocks, data, onFormSubmit})
+{
+    const windowDimen = useWindowDimensions();
+    const windowWidth = windowDimen.width;
+    const [show, setShow] = useState(false);
+
+    let leftSideBarBlocksObj = leftSideBarBlocks.map((block) => {
+        return <BlockByName
+            data={data}
+            name={block}
+            onFormSubmit={onFormSubmit}
+            saveOnChanges={true}
+        />
+    });
+
+    return <>
+        {leftSideBarBlocksObj?.length > 0 &&
+            <>
+            {windowWidth < 1024 && <View className="items-start ml-4 mt-2">
+                <Button title={show ?"Hide filters": "Show filters"}  variant="outline" rounded onPress={() =>{setShow(!show)}} />
+            </View>}
+            {(show || windowWidth>=1024) && <View className="m-4">
+                {leftSideBarBlocksObj.map((block, index) => {
+                    return <View key={"lb-" + index}>{block}</View>
+                })}
+            </View>}
+            </>
+        }
+    </>
+}
+
+export function Conductor({ header, smallHeader, menu, data, blocks, useSectionAsMenu, leftSideBar, leftSideBarBlocks, leftSideBarWidth = 'w-80', skeleton = '', onChangeRoute, keyword, cover, layoutName }) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const { layoutData, setLayoutData } = useContext(LayoutData);
     const { t } = useTranslation();
@@ -48,7 +79,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const [routes, setRoutes] = useState(initedTabs);
     const [cntWidth, setCntWidth] = useState(0);
 
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
 
     useEffect(() => {
         setRoutes(initedTabs);
@@ -160,13 +191,13 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
 
     useEffect(() => {
         if (daemonUrl == endpointUpdateContent) {
-            if (daemonData){
+            if (daemonData) {
                 const data = daemonData?.[0]?.data?.data;
                 if (data && (data == 'valid' || data == 'invalid')) {
                     setToaster2Visible(data !== 'valid');
                 }
             }
-            else{
+            else {
                 setToaster2Visible(false);
             }
         }
@@ -175,7 +206,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     const showNewContent2 = async () => {
         storageClear('ul:data', currentRoute.storageKeyValue)
         storageClear('ul:state', currentRoute.storageKeyValue)
-        
+
         const newRoutes = [...routes];
         newRoutes[index].endpoint.finished = false;
         newRoutes[index].data = newRoutes[index].data.filter(item => item.type === 'block');;
@@ -300,6 +331,18 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
     }
 
 
+    const onFormSubmit = useCallback((formData, d) => {
+        let filterValues = [];
+        for (let key in d) {
+            filterValues.push({name: key, value: Array.isArray(d[key])?d[key].join(','):d[key]})
+        };
+        setFilterValue(filterValues)
+
+    });
+
+    const MemoAddBlocks = React.memo(AddBlocks);
+
+    
 
     /*const applyFilterValue = () => {
         const newRoutes = [...routes];
@@ -383,9 +426,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             const menuSettings = appSetting('menu_items', menu.object);
             let addButtonsSet = menuSettings?.add?.filter(item => item.hideInTopBar !== true);
             addButtonsSet = menuItemsFilter(addButtonsSet, currentUser);
-           /* if (!currentUser) {
-                addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false );
-            }*/
+            /* if (!currentUser) {
+                 addButtonsSet = addButtonsSet?.filter(item => item.nonlogged !== false && item.nonoperator !== false );
+             }*/
             const addButtons = addButtonsSet?.map((button) => {
                 let btn = undefined;
                 if (button.section)
@@ -405,7 +448,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                  styles = { width: 1536 - 20 * 16 }
              }
  */
-            
+
             return (
                 <TopSidebar isDrawer={isDrawer} isWeb={true} style={styles} leftSideBar={leftSideBar} header={header} headerSettings={headerSettings} addButtons={addButtons} isSmall={isSmall} showMenu={showMenu} layout={getLayout(currentUser)} title={t(menuSettings?.name)} >
                     <ConductorMenu routes={routes} index={index} t={t} setIndex={setIndex} getNumCols={getNumCols} windowWidth={windowWidth} onChangeRoute={onChangeRoute} />
@@ -598,24 +641,24 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                     }
                 />
             }, [dataItems, numColumns, dataItems.length]);
-           /* const TabFlashListM = <TabFlashList
-                index={route.index}
-                data={dataItems}
-                endpoint={route.endpoint}
-                listState={route?.state}
-                storagekey={route.storageKeyValue}
-                refer={uniRef}
-                route={route}
-                unit={route.endpoint?.unit}
-                renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
-                ListFooterComponent={
-                    <View>
-                        {(hasNextPage && isFetchingNextPage) ? (
-                            Preload
-                        ) : null}
-                    </View>
-                }
-            />*/
+            /* const TabFlashListM = <TabFlashList
+                 index={route.index}
+                 data={dataItems}
+                 endpoint={route.endpoint}
+                 listState={route?.state}
+                 storagekey={route.storageKeyValue}
+                 refer={uniRef}
+                 route={route}
+                 unit={route.endpoint?.unit}
+                 renderItem={({ item, index }) => <ItemRenderer unitType={unitType} route={route} numColumns={numColumns} item={item} unit={route?.endpoint?.unit} module={route?.endpoint?.module} />}
+                 ListFooterComponent={
+                     <View>
+                         {(hasNextPage && isFetchingNextPage) ? (
+                             Preload
+                         ) : null}
+                     </View>
+                 }
+             />*/
             //
             let sidebarUnitType = 'default';
             if (route.blocks?.browse_sidebar?.unitType) {
@@ -647,15 +690,9 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
         setCntWidth(event.nativeEvent.layout.width)
 
     };
-    
+
 
     const leftSideBarObj = useCallback(() => {
-        if (leftSideBarBlocks?.length > 0) {
-            return <View className="m-4">
-            {leftSideBarBlocks.map((block, index) => {
-                return <View key={"lb-"+index}>{block}</View>
-            })}</View>
-        }
 
         const menuSettings = appSetting('menu_items', menu.object);
         const addButtons = menuSettings?.add?.filter(item => item.hideInSideBar !== true).map((button) => {
@@ -672,76 +709,82 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <View className="ml-2 " key={`add-${button.icon}`} >{btn}</View>
             )
         });
-        return <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons}>
-            {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
-                let settings = appSetting('layouts', a.key)
-                let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
-                let btn = <Button
-                    variant={a.index == index ? 'outline' : "text"}
-                    size={!a.ident ? "base" : "sm"}
-                    pressed={a.index == index ? true : false}
-                    fullWidth
-                    title={(a.title)}
-                    align="start"
-                    startDecorator={icon}
-                    addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
-                />
-                if (a?.icon == '*') {
-                    return (
-                        <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
-                            {btn}
-                        </Link>
-                    );
-                }
-                return (
-                    <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
-                        <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
-                            setIndex(a.index);
-                            window.history.pushState({}, '', a.key);
-                            event.preventDefault()
-                        }}>
-                            {btn}
-                        </Pressable>
-                    </Link>
-                )
-            })}
-        </LeftSidebar>
-        
+        return (
+            <>
+                <LeftSidebar title={t(menuSettings?.name)} addButtons={addButtons} width={leftSideBarWidth}>
+                    {headerSettings.hideLeftmenu != true && routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
+                        let settings = appSetting('layouts', a.key)
+                        let icon = !a.ident ? (settings?.icon ? settings?.icon : a?.icon.replace('*', '')) : a.icon.replace('*', '');
+                        let btn = <Button
+                            variant={a.index == index ? 'outline' : "text"}
+                            size={!a.ident ? "base" : "sm"}
+                            pressed={a.index == index ? true : false}
+                            fullWidth
+                            title={(a.title)}
+                            align="start"
+                            startDecorator={icon}
+                            addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
+                        />
+                        if (a?.icon == '*') {
+                            return (
+                                <Link href={a.link} key={`lmenu-${a.index}`} alt={a.title}>
+                                    {btn}
+                                </Link>
+                            );
+                        }
+                        return (
+                            <Link href={a.key} key={`lmenu-${a.index}`} alt={a.title}>
+                                <Pressable className={a.ident ? 'pl-10' : ''} onPress={(event) => {
+                                    setIndex(a.index);
+                                    window.history.pushState({}, '', a.key);
+                                    event.preventDefault()
+                                }}>
+                                    {btn}
+                                </Pressable>
+                            </Link>
+                        )
+                    })}
+                    <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>
+                    
+                </LeftSidebar>
+
+            </>
+        )
     }, [routes, index]);
 
     const topSideBarObj = useCallback(() => {
-        return <Row className="w-full px-8 pt-6 items-stretch justify-stretch  sticky z-50 t-8 gap-x-8">
+        return <Row className="w-full px-8 pt-6 items-stretch justify-stretch sticky z-50 t-8 gap-x-8 hidden lg:flex">
             {routes.filter((aItem) => aItem.hideInTop != true).map((a) => {
 
                 let btn = <Button
                     variant={a.index == index ? 'outline' : "text"}
                     size={!a.ident ? "base" : "sm"}
                     pressed={a.index == index ? true : false}
-                    
+
                     title={(a.title)}
                     align="start"
 
                     addon={!appSetting('layout', 'show_nav_counters') && a.addon ? null : a.addon}
                 />
-                
+
                 return (
                     <Pressable className={" py-2 items-center "}
-                key={`tab-${a.index}`}
-                onPress={() => {
-                    setIndex(a.index);
-                    getNumCols(windowWidth)
-                    window.history.pushState({}, '', '/' + a.key);
-                    if (onChangeRoute) {
-                        onChangeRoute(a);
-                    }
-                }}
-            >
-                {btn}
-            </Pressable>
+                        key={`tab-${a.index}`}
+                        onPress={() => {
+                            setIndex(a.index);
+                            getNumCols(windowWidth)
+                            window.history.pushState({}, '', '/' + a.key);
+                            if (onChangeRoute) {
+                                onChangeRoute(a);
+                            }
+                        }}
+                    >
+                        {btn}
+                    </Pressable>
                 )
             })}
         </Row>
-        
+
     }, [routes, index]);
 
     if (leftSideBar) {
@@ -753,11 +796,14 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
                 <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
                 <View style={{ minHeight: (windowHeight - 64) }} className={appSetting('layout', 'max_width  ') + '  mx-auto w-full '} >
                     <Row>
-                    <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
+                        <View style={{ minHeight: (windowHeight - 64) }} className={leftSideBarWidth + ' hidden lg:block border-r border-bdr dark:border-bdr-d  fixed lg:relative top-0 z-50'}>
                             {leftSideBarObj()}
                         </View>
                         <View className=" flex-auto">{/*min-h-screen???*/}
-                            {(leftSideBarBlocks && leftSideBarBlocks.length> 0) && topSideBarObj()}
+                            {(headerSettings.showAltTopMenu) && topSideBarObj()}
+                            <View className="lg:hidden">
+                                <MemoAddBlocks leftSideBarBlocks={leftSideBarBlocks} data={data} onFormSubmit={onFormSubmit}/>
+                            </View>
                             <RenderScene route={currentRoute} />
                         </View>
                     </Row>
@@ -772,7 +818,7 @@ export function Conductor({ header, smallHeader, menu, data, blocks, useSectionA
             <MenuDrawer showMenu={showMenu} menuPopup={menuPopup} cssClass="lg:hidden fixed z-50 top-16 w-full" />
             <Toaster ref={toasterRef2} onPress={showNewContent2} variant="primary" title="New content" size="sm" />
             <View className={appSetting('layout', 'max_width') + ' mx-auto w-full min-h-screen'}>
-              
+
                 <RenderScene route={currentRoute} />
             </View>
             <Footer />

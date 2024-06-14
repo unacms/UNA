@@ -6,6 +6,7 @@ import { useWindowDimensions } from 'react-native';
 import { LayoutData } from 'app/context/layout';
 import { fetcher } from 'app/lib/fetcher';
 import { BlockByName } from 'app/components/block';
+import { processBlocks } from 'app/lib/conductor-helpers';
 
 export default function PageLayout(props) {
     const windowDimen = useWindowDimensions();
@@ -51,33 +52,12 @@ export default function PageLayout(props) {
     if (!blocks) {
         blocks = getBlocksFromData(props.data)
     }
-    const leftBlocks = Object.entries(blocks)
-        .filter(([key, value]) => value.leftbar)
-        .map(([key, value]) => ({
-            key,
-            ...value,
-        }));
-
-    blocks = Object.entries(blocks)
-        .filter(([key, value]) => !value.leftbar)
-        .map(([key, value]) => ({
-            key,
-            ...value,
-        }));
+    blocks = processBlocks(blocks);
 
     if (windowDimen.width > 768) {
         header = <></>;
         smallHeader = null;
     }
-
-    let leftSideBarBlocks = leftBlocks.map((block) => {
-        return <BlockByName
-            data={pageData}
-            name={block}
-
-        />
-    });
-
 
     return (
         <Conductor
@@ -89,12 +69,12 @@ export default function PageLayout(props) {
             isHideDefaultHeader={true}
             menu={menu}
             data={pageData}
-            blocks={blocks}
+            blocks={blocks.mainBlocks}
             cover={cover}
             ts={ts}
             leftSideBar={leftSideBar}
             leftSideBarWidth='w-96'
-            leftSideBarBlocks={leftSideBarBlocks}
+            leftSideBarBlocks={blocks.leftBlocks}
 
         />
     )

@@ -6,8 +6,9 @@ import { Platform } from 'react-native'
 import { linkedText } from 'app/lib/text-helpers';
 import { appSetting } from 'app/lib/util';
 import { Icon } from 'app/ui/atoms/icon';
+import { Button } from 'app/design/controls';
 
-export default function FormField(props) {
+export default function (props) {
     let caption = props.caption;
     if (props.format == 'notitle')
         caption = '';
@@ -25,9 +26,13 @@ export default function FormField(props) {
                         <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
                         {((props.checker || props.required) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')} /></Text> : <></>)}
+                       
                     </Row >
                 </Text>
             }
+             {(props.last_changed == props.name) && <View className='absolute right-0 top-0'>
+                <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />
+                </View>}
             {props.children}
             {!!props.error && Array.isArray(props.error) && <FormError errorText={error[0]} errorLink={error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}

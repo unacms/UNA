@@ -1,4 +1,3 @@
-import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import Image from 'app/ui/atoms/image';
@@ -42,7 +41,7 @@ export default function (props) {
     const contentModule = props.content_module;
 
     const defaultCols = 4;
-    const settings = { minW: 1, maxW: 2, minH: 1, maxH: 2 };
+    const settings = { minW: 1, maxW: 2, minH: 1, maxH: 2, resizeHandles: ["s", "w", "e", "n", "sw", "nw", "se", "ne"] };
     const rowHeight = 260;
     const addSettings = (item) => {
         return {
@@ -51,6 +50,7 @@ export default function (props) {
             maxW: settings.maxW,
             minH: settings.minH,
             maxH: settings.maxH,
+            resizeHandles: settings.resizeHandles,
         }
     }
     let initedData = props.data.content;
@@ -216,13 +216,13 @@ export default function (props) {
 
     const onFormSubmit = async (formData, d) => {
         let updatedData = {};
-        let content_data ='';
+        let content_data = '';
         let content = d.content;
         if (addType.type === 'map') {
             content = d;
         }
         if (addType.type === 'link') {
-            const a = await fetcher('/api.php?r=system/get_url_info/TemplServicePages&params[]=' +  d.content);
+            const a = await fetcher('/api.php?r=system/get_url_info/TemplServicePages&params[]=' + d.content);
             content_data = a.data;
         }
         if (addType.i > 0) {
@@ -242,7 +242,7 @@ export default function (props) {
 
             Object.keys(data).forEach(iter => {
                 const maxI = data[iter].length > 0 ? data[iter].reduce((max, item) => (parseInt(item.i) > max ? parseInt(item.i) : max), data[iter][0].i) : 0;
-                updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content, content_data: content_data  })];
+                updatedData[iter] = [...data[iter], addSettings({ i: (maxI + 1).toString(), x: Infinity, y: Infinity, w: 1, h: 1, type: addType.type, content: content, content_data: content_data })];
             })
         }
         setData(updatedData);
@@ -257,6 +257,7 @@ export default function (props) {
     }, [data, breakpoint, getCell]);
 
     function getCell(block, bAllowEdit) {
+        console.log('getCell', block);
         let blockContent;
         switch (block.type) {
             case "image":
@@ -266,17 +267,27 @@ export default function (props) {
                 blockContent = <View className="py-2 px-4 items-start justify-start h-full"><Text className='text-lg'>{block.content}</Text></View>;
                 break;
             case "link":
-                blockContent = block.content_data && (<View className="items-left justify-between h-full p-4">
-                    <View><View className="h-8 w-8 rounded-full">
-                        <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover rounded-full" alt='' src={block.content_data.logo} />
+                const ImageComponent = ({ className, src }) => (
+                    <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className={className} alt='' src={src} />
+                );
+
+                blockContent = block.content_data && (
+                    <View className={`items-left justify-between h-full p-4 ${block.h == 1 && block.w == 2 ? 'flex-row' : ''}`}>
+                        <View className={block.h == 1 && block.w == 2 ? 'w-1/2' : ''}>
+                            <View className="h-8 w-8 rounded-full">
+                                <ImageComponent className="u-cover rounded-full" src={block.content_data.logo} />
+                            </View>
+                            <Text className='text-base mt-2 font-semibold tracking-tight' numberOfLines={1}>{block.content_data.title}</Text>
+                            {(block.h > 1 || block.w > 1) && <Text className='text-base my-2' numberOfLines={block.h == 1 && block.w == 2 ? 3 : 4}>{block.content_data.description}</Text>}
+                            <Text className='text-sm'>{block.content_data.domain}</Text>
+                        </View>
+                        <View className={`${block.h == 1 && block.w == 2 ? 'w-1/2 items-center justify-center pl-4' : 'w-full aspect-video rounded-2xl'}`}>
+                            <View className="aspect-video rounded-2xl w-full">
+                                <ImageComponent className="u-cover rounded-lg" src={block.content_data.image} />
+                            </View>
+                        </View>
                     </View>
-                    <Text className='text-base my-2' numberOfLines={1}>{block.content_data.title}</Text>
-                    <Text className='text-sm'>{block.content_data.domain}</Text>
-                    </View>
-                    <View className="w-full aspect-video rounded-2xl">
-                        <Image view='cover' sizes="(max-width:1024px) 100vw, 1024px" className=" u-cover  rounded-lg" alt='' src={block.content_data.image} />
-                    </View>
-                </View>)
+                );
                 break;
             case "map":
                 blockContent = <Map height={rowHeight * block.h} data={{ caption: block.content.content_state + ', ' + block.content.content_city + ', ' + block.content.content_street, location: { lat: block.content.content_lat, lng: block.content.content_lng } }} />
@@ -288,16 +299,15 @@ export default function (props) {
         return (
             <View key={block.i} className="border border-bdrcard dark:border-bdrcard-d shadow-sm group duration-200 overflow-hidden sm:rounded-2xl  bg-bgrcard dark:bg-bgrcard-d">
                 {blockContent}
-                {bAllowEdit && <View className="absolute left-1 bottom-1 z-50">
-                    <Pressable onMouseDown={(event) => onRemove(event, block.i)}
-                        onTouchStart={(event) => onRemove(event, block.i)}><Button variant='text' size='xs' rounded startDecorator='X' />
+                {bAllowEdit && <View className="absolute left-1/4 w-1/2 flex-row justify-center gap-x-4  items-center bottom-[20px] z-50">
+                    <Pressable onMouseDown={(event) => onRemove(event, block.i)} onTouchStart={(event) => onRemove(event, block.i)}>
+                            <Button variant='default' size='xs' rounded startDecorator='X' />
+                    </Pressable>
+                    <Pressable onPressIn={(event) => { onChange(event, block.i) }}>
+                        <Button variant='default' size='xs' rounded startDecorator='Pencil' />
                     </Pressable>
                 </View>}
-                {bAllowEdit && <View className="absolute left-1 bottom-8 z-50"><Pressable onPressIn={(event) => { onChange(event, block.i) }}>
-                    <Button variant='text' size='xs' rounded startDecorator='Pencil' />
-                </Pressable>
-                </View>
-                }
+
             </View>
         );
     }
@@ -335,6 +345,7 @@ export default function (props) {
                     onResize={onResize}
                     onDrag={onDrag}
                     getCell={getCell}
+                    resizeHandles={["s", "w", "e", "n", "sw", "nw", "se", "ne"]}
                 />
             </View>
         </View>

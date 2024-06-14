@@ -69,7 +69,7 @@ let settingsDefault = {
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         form_visibility_control_names: ['*_allow_view_to', '*_object_privacy_view'],
-        form_selector_control_names: [],
+        form_selector_control_names: ['*_cat'],
         card_amimation_duration: 0,
         comments_mentions: true,
         carousel_image_width: '',
@@ -381,7 +381,6 @@ let settingsDefault = {
             ],
             add: [
                 { icon: 'Plus', name: 'Add', link: '/create-product', nonlogged: false },
-                { icon: 'MagnifyingGlass', name: 'Search', link: '', section:'bx_market'},
             ],
         },
         bx_persons_submenu: {
@@ -660,9 +659,11 @@ let settingsDefault = {
         'products-home': {
             layout: 'navigator',
             blocks: {
-                browse: { name: 'bx_market:browse_public', showTitle: false, showBg: false},
+                browse: { name: 'system:get_results', showTitle: false, showBg: false},
                 categories: { name: 'system:categories_list', showTitle: false, showBg: true, sidebar: false, hidden:true },
-            }
+                col4: { name: 'system:get_form', showTitle: false, showBg: false, sidebar: false, leftbar: true },
+            },
+            headerSettings: { hideLeftmenu:true },
         },
         'products-category': {
             layout: 'navigator',
@@ -818,7 +819,7 @@ let settingsDefault = {
                 col4: { name: 'bx_persons:entity_cover', showTitle: false, showBg: false, sidebar: false, leftbar: true },
                 
             },
-            headerSettings: { offset: false, header: false, cover: 'profile' }
+            headerSettings: { offset: false, header: false, cover: 'profile', hideLeftmenu:true, showAltTopMenu:true }
         },
         //############ ORGS PAGES ############
         'view-organization-profile': {

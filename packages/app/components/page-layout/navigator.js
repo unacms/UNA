@@ -3,6 +3,8 @@ import { Conductor } from 'app/ui/molecules/conductor';
 import { getLayout } from 'app/lib/util';
 import { useMemo} from 'react';
 import { useCurrentUser } from 'app/context/user'
+import { BlockByName } from 'app/components/block';
+import { processBlocks } from 'app/lib/conductor-helpers';
 
 function getMenu(props, layout) {
     let menu = Object.assign({}, props.data.menu);;
@@ -36,6 +38,8 @@ export default function PageLayout(props) {
     if (!isNamePresent){
         menu.items.push({id:-1, name: props.uri, title:'', link: props.data.url, hideInTop: true});
     }
+    const pageData = props.data;
+    const blocks = processBlocks(props.blocks);
 
     return (
         <Conductor 
@@ -43,10 +47,11 @@ export default function PageLayout(props) {
             minHeaderHeight={0} 
             isHideDefaultHeader={false} 
             menu={menu} 
-            data={props.data} 
-            blocks={props.blocks}
+            data={pageData} 
+            blocks={blocks.mainBlocks}
             useSectionAsMenu={false}
             leftSideBar={leftSideBar}
+            leftSideBarBlocks={blocks.leftBlocks}
         />
     )
 }

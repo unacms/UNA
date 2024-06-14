@@ -27,8 +27,11 @@ export default function (props) {
         field.onChange(newValue);
     }
 
-    const dataFlat = props.values.map(obj => ({ ...obj, key: Number(obj.key) }));
-
+    let dataFlat;
+    if (Array.isArray(props.values))
+        dataFlat = props.values.map(obj => ({ ...obj, key: Number(obj.key) }));
+    else
+        dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: Number(key), value }));
     const showSelect = (val) => {
         setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
     }
@@ -36,7 +39,7 @@ export default function (props) {
     let styles = "justify-start pr-4";
     if (props.align == 'right')
         styles += 'justify-end pl-4';
-    console.log("field.valuefield.value", field.value, dataFlat.filter(item => field.value.includes(item.key)))
+
     return (
         <Field {...props}>
             <View className='w-full justify-between '>

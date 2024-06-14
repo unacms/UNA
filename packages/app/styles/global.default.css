@@ -489,3 +489,32 @@ div[data-radix-popper-content-wrapper]:not(.radix-hide){
 .pac-container{ 
     z-index: 1000000 !important;
 }
+
+.react-grid-item > .react-resizable-handle.react-resizable-handle-ne {
+    top: 5px !important;
+    right: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-e {
+    right: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-se {
+    bottom: 5px !important;
+    right: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-s {
+    bottom: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-n {
+    top: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-nw {
+    top: 5px !important;
+    left: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-w {
+    left: 5px !important;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-sw {
+    bottom: 5px !important;
+    left: 5px !important;
+}
