@@ -16,7 +16,7 @@ export default function (props) {
     if (Platform.OS != 'web')
         sClassName += '  ';
 
-    const isShowOptional = appSetting('layout', 'form_fields_optional_text') ? '(' + appSetting('layout', 'form_fields_optional_text') + ')' : '';
+    const isShowOptional = appSetting('layout', 'form_fields_optional_text1')!= '' ? '(' + appSetting('layout', 'form_fields_optional_text1') + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
     return (
         <View className={sClassName}>

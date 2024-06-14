@@ -65,7 +65,7 @@ let settingsDefault = {
         show_nav_counters: true,
         allow_edit_covers: true,
         allow_create_new_profile: true,
-        form_fields_optional_text: 'Optional',
+        form_fields_optional_text1: '',
         form_fields_mandatory_icon: 'Asterisk',
         form_without_captions: ['sys_account_create', 'sys_login'],
         form_visibility_control_names: ['*_allow_view_to', '*_object_privacy_view'],
