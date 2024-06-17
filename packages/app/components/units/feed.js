@@ -565,6 +565,11 @@ function DefaultUnit(data) {
     }
 
     function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url, isCompact }) {
+        let imgs = [];
+        if (Array.isArray(data.content.images_attach))
+            imgs = [...imgs, data.content.images_attach];
+        if (Array.isArray(data.content.videos_attach))
+            imgs = [...imgs, data.content.videos_attach];
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (
@@ -615,7 +620,7 @@ function DefaultUnit(data) {
             </View>
             {bIsTimelineContent && (
                 <View className="">
-                    <UnitImages images={[...data.content.images_attach, ...data.content.videos_attach]} />
+                    <UnitImages images={imgs} />
                 </View>
             )}
         </>

@@ -186,7 +186,7 @@ export default function UnitComments(props) {
                                     <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>
                                     <Form {...viewState.data} classContainerName="flex-row flex-wrap w-full  items-start justify-between" onFormSubmit={onFormSubmit} />
                                 </View>
-                            ) : <Html htmlStyles={{ fontSize: 14 }} data={linkify(data.cmt_text)} />}
+                            ) : <Html htmlStyles={{ fontSize: 14 }} customClassName='u-vanilla-html-small' data={linkify(data.cmt_text)} />}
                         </View>
                         {(viewState.view != 'edited' && aImg.length > 0) && <View className=' max-w-lg'><Carousel data={aImg} /></View>}
                     </View>

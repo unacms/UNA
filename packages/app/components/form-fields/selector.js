@@ -11,7 +11,7 @@ import RadioButton from 'app/ui/atoms/radiobutton';
 export default function (props) {
 
     const rules = {};
-    const defaultValue = props.value ? props.value.map(Number) : '';
+    const defaultValue = props.value ? props.value.map(String) : '';
     const formContext = useFormContext();
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
@@ -29,9 +29,9 @@ export default function (props) {
 
     let dataFlat;
     if (Array.isArray(props.values))
-        dataFlat = props.values.map(obj => ({ ...obj, key: Number(obj.key) }));
+        dataFlat = props.values.map(obj => ({ ...obj, key: String(obj.key) }));
     else
-        dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: Number(key), value }));
+        dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: String(key), value }));
     const showSelect = (val) => {
         setBottomSheetData({ title: 'Choose', showClose: true, content: <ChkList values={dataFlat} selectedValues={field.value} setFormValue={setFormValue} /> });
     }
