@@ -296,7 +296,7 @@ export function processUrl(data, blocks) {
             if (block.sidebar) {
                 acc.sidebar.content = processContent(acc.sidebar, b);
             } else {
-                if (!block.hidden)
+                if (!block.hidden && !block.leftbar)
                     acc.content = processContent(acc, b);
             }
         }
