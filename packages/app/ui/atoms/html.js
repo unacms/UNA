@@ -51,14 +51,19 @@ export default function ElementHtml(props) {
     const { colors } = Theme();
     const [iframeH, setIframeH] = useState({});
     let { width } = useWindowDimensions();
-
+    let customClassName = props.customClassName ? props.customClassName : '';
+    let fontSize = 16;
+    let lineHeight = 23;
+    if (customClassName == 'u-vanilla-html-small')
+        fontSize = 14;
+        lineHeight = 18;
     const theme = useColorScheme();
     let tagsStyles = {
         body: {
             whiteSpace: 'normal',
             color: colors.default,
-            fontSize: props?.htmlStyles?.fontSize ? props?.htmlStyles?.fontSize: 16,
-            lineHeight: 23,
+            fontSize: fontSize,
+            lineHeight: lineHeight,
             marginLeft: 0,
             marginRight: 0,
             marginTop: 0,

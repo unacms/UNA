@@ -22,7 +22,7 @@ export default function ElementSearch(oProps) {
 
     const handleOpenPopupDefault = () => {
         if (!bottomSheetData){
-            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: false, snapPoints: ['75%', '100%'] });
+            setBottomSheetData({ title: 'Search', content: <ElementSearchData {...oProps} />,showClose: true, snapPoints: ['75%', '100%'] });
         }else{
             setBottomSheetData(false);
         }
