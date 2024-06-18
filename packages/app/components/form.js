@@ -122,10 +122,13 @@ export default function (props) {
 
     const { watch } = methods;
     useEffect(() => {
-        const subscription = watch((value, { name, type }) =>
-            setLastChangedField(name)
-        )
-        return () => subscription.unsubscribe()
+        if (props.saveOnChanges){
+            const subscription = watch((value, { name, type }) =>
+                setLastChangedField(name)
+            )
+        
+            return () => subscription.unsubscribe()
+        }
     }, [watch])
 
     let inputs = getFormFieldList(name, data.inputs, _handleSubmit, true, lastChangedField);
@@ -142,7 +145,6 @@ export default function (props) {
         }));
     }
 
-
     const ElementForm = getFormType(name)
     if ('undefined' !== typeof ElementForm) {
         inputs = <ElementForm data={data} response={response} handleSubmit={_handleSubmit} exProps={props.exProps}></ElementForm>
@@ -152,8 +154,6 @@ export default function (props) {
             </FormProvider>
         )
     }
-
-
 
     return (
         <View className=' w-full '>
