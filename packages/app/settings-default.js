@@ -217,6 +217,9 @@ let settingsDefault = {
         recommendation: {
             show_action_as_button: true,
         },
+        feature: {
+            show_action_as_button: true,
+        }
     },
     menu_meta:{
         unit_by_source: {
