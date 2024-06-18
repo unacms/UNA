@@ -87,7 +87,7 @@ export function Screen(params) {
                     : <></>;
 
                 updateRightHeader(currentUser ? settings?.header : null, navigation);
-                updateCenterHeader(_path, t(data.props.data.title), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
+                updateCenterHeader(_path, t(data.props.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
                 
                 setPageData(data.props);
             }
