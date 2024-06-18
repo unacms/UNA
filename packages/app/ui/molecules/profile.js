@@ -124,10 +124,10 @@ export default function AtomProfile(oProps) {
         const isAnon = !oProps.url || oProps.url == '' || oProps.url == 'javascript:' || oProps.url == '/javascript:';
 
 
-        if (isAnon){
+        if (isAnon || oProps.title.includes("(anonymized)")){
             return (
                 <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center '+sSizeFont}>
-                    <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
+                    <Text className={'text-neutral-900  dark:text-neutral-100 '  + sSizeFont + ' truncate '}>
                         {oProps.title && oProps.title.replace(" (anonymized)", '')} 
                     </Text>
                     <Icon icon="Detective"></Icon>
@@ -135,9 +135,10 @@ export default function AtomProfile(oProps) {
             )
      
         }
+       
         return (
-            <Text className={'text-neutral-900  dark:text-neutral-100 ' + (isAnon ? '': ' hover:text-linkhover ')  + sSizeFont + ' truncate '}>
-                {oProps.title}
+            <Text className={'text-neutral-900  dark:text-neutral-100 hover:text-linkhover ' + sSizeFont + ' truncate '}>
+                {oProps.title}x
             </Text>
         )
     }

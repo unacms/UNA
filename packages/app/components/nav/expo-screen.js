@@ -79,22 +79,25 @@ export function Screen(params) {
 
             if (data?.props) {
                 setBottomSheetData(bottomSheetData !== false ? false : bottomSheetData);
-                let settings = appSetting('layouts', data.props.data.uri)
-                const profileDisplay = currentUser && appSetting('layout', 'show_user_icon')
-                    ? <View className="mr-2">
-                        <Profile {...{ ...currentUser, url_avatar: currentUser.avatar }} displayType="unit_wo_info" displaySize="xs" />
-                    </View>
-                    : <></>;
-
-                updateRightHeader(currentUser ? settings?.header : null, navigation);
-                updateCenterHeader(_path, t(data.props.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
-                
                 setPageData(data.props);
             }
         };
         fetchPageData();
     }, [_path, isFocused, currentUser?.id]);
 
+    useEffect(() => {
+        if (pageData){
+            const settings = appSetting('layouts', pageData.data.uri)
+            const profileDisplay = <></>;/*currentUser && appSetting('layout', 'show_user_icon')
+            ? <View className="mr-2">
+                <Profile {...{ ...currentUser, url_avatar: currentUser.avatar }} displayType="unit_wo_info" displaySize="xs" />
+            </View>
+            : <></>;*/
+            updateRightHeader(currentUser ? settings?.header : null, navigation);
+            updateCenterHeader(_path, t(pageData.data.name), false, navigation, routerExpo, colors, '', profileDisplay, currentUser);
+        }
+    }, [pageData, currentUser?.id]);
+    
 
     if (!isFocused)
         return <></>;

@@ -19,7 +19,6 @@ export default function () {
     
     const navigation = useNavigation();
     const router = useRouter();
-    //let currentUser =1;
     const { colors } = Theme();
     const TabList = currentUser ? appSetting('menu_items', 'menu_tabbar_logged') : appSetting('menu_items', 'menu_tabbar_non_logged');
     let iconWidth = 24;
@@ -62,6 +61,7 @@ export default function () {
         profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="xs" />
     }
     
+
     return (
         <BottomSheetDataContext>
             <Tabs
@@ -87,7 +87,7 @@ export default function () {
                 {
                     TabList.map((tab, index) => {
                         const options = {
-                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && notifCount) ? notifCount : null,
+                            tabBarBadge: (tab.url == appSetting('layout', 'notifications') && currentUser?.notifications) ? currentUser?.notifications : null,
                             title: t(tab.title),
                             headerShown: false,
                             tabBarIcon: ({ color }) => (

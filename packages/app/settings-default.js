@@ -828,7 +828,7 @@ let settingsDefault = {
                 col0: { name: 'bx_timeline:get_block_post_profile', showTitle: false, showBg: false },
                 col1: { name: 'bx_timeline:get_block_view_profile', showTitle: false, showBg: false, perLine: 1 },
                 col2: { name: 'bx_organizations:entity_info', showTitle: false, showBg: true, sidebar: true },
-                col4: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: true, sidebar: true },
+            col4: { name: 'bx_organizations:entity_text_block', showTitle: false, showBg: true, sidebar: true },
             },
             headerSettings: { offset: false, header: false }
         },

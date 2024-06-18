@@ -53,7 +53,7 @@ export default function ElementHtml(props) {
     let { width } = useWindowDimensions();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
-    let lineHeight = 23;
+    let lineHeight = 40;
     if (customClassName == 'u-vanilla-html-small')
         fontSize = 14;
         lineHeight = 18;
@@ -108,6 +108,10 @@ export default function ElementHtml(props) {
         },
         'bx-embeded-link': {
             color: colors.default
+        },
+        'link': {
+            color: colors.primary,
+            textDecorationLine: 'none',
         }
 
     }

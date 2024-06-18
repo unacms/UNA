@@ -40,12 +40,12 @@ H5 {
     line-height: 1.25rem;
 }
 
-.u-vanilla-html A {
+.u-vanilla-html A, .u-vanilla-html .link{
     color: #0284c7;
     text-decoration: none;
 }
 
-.u-vanilla-html A:hover {
+.u-vanilla-html A:hover, .u-vanilla-html .link {
     text-decoration: underline;
 }
 .bx-mention-link,

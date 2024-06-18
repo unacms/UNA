@@ -32,7 +32,7 @@ export function ContentMore({ content, embed, numberOfLines, textStyle, openSmal
     if (showButton){
         const lastIndex = shortHtml.lastIndexOf('</p>');
         if (lastIndex !== -1) {
-            shortHtml = shortHtml.slice(0, lastIndex) + '... <a href="javascript">Show more</a></p>' + shortHtml.slice(lastIndex + 4);
+            shortHtml = shortHtml.slice(0, lastIndex) + '... <span class="link">Show more</a></p>' + shortHtml.slice(lastIndex + 4);
         }
     }
 

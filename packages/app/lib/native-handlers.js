@@ -66,8 +66,15 @@ export function updateCenterHeader(_path, header, backButtonPresented, navigatio
         </Row> );
     }
 
+   /* if (currentUser === null)
+        header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>hz</Text></>
+*/
     if (!currentUser)
-        header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>Login to your account</Text></>
+        header = <><Text className='font-bold  ml-2 text-neutral-800 dark:text-neutral-200 text-xl'>Log in</Text></>
+
+   /* if (!currentUser){
+        header = <></>
+    }*/
 
     navigation.setOptions({ 
         headerBackVisible: false, 

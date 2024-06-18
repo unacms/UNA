@@ -10,7 +10,9 @@ function formatDate(date, t) {
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     const month = t(monthNames[date.getMonth()]);
-    const year = date.getFullYear();
+    let year = date.getFullYear();
+    if (year == new Date().getFullYear()) 
+        year ='';
     return `${day} ${month} ${year}`;
 }
 
