@@ -147,6 +147,14 @@ let settingsDefault = {
             show_counter_as_button: false,
             haptics_type: 'Medium',
         },
+        star: {
+            show_action: true,
+            show_action_as_button: false,
+            show_action_label: false,
+            show_counter: true,
+            show_counter_as_button: false,
+            haptics_type: 'Medium',
+        },
         reaction: {
             show_action: true,
             show_action_as_button: true,
@@ -217,6 +225,9 @@ let settingsDefault = {
         recommendation: {
             show_action_as_button: true,
         },
+        feature: {
+            show_action_as_button: true,
+        }
     },
     menu_meta:{
         unit_by_source: {
