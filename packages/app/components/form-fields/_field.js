@@ -16,7 +16,7 @@ export default function (props) {
     if (Platform.OS != 'web')
         sClassName += '  ';
 
-    const isShowOptional = appSetting('layout', 'form_fields_optional_text1')!= '' ? '(' + appSetting('layout', 'form_fields_optional_text1') + ')' : '';
+    const isShowOptional = appSetting('layout', 'form_fields_optional_text1') != '' ? '(' + appSetting('layout', 'form_fields_optional_text1') + ')' : '';
     const isShowCaption = !!props.caption && props.format == 'default' && !props.use_caption_as_placeholder && ['switcher', 'checkbox'].includes(props.type) == false;
     return (
         <View className={sClassName}>
@@ -26,13 +26,13 @@ export default function (props) {
                         <Text className="font-semibold">{caption}</Text>
                         {((props.checker || props.required) ? <></> : <Text>{isShowOptional}</Text>)}
                         {((props.checker || props.required) ? <Text className="text-red-600 h-4 text-xs"><Icon icon={appSetting('layout', 'form_fields_mandatory_icon')} /></Text> : <></>)}
-                       
+
                     </Row >
                 </Text>
             }
-             {(props.last_changed == props.name) && <View className='absolute right-0 top-0'>
+            {(props.last_changed == props.name) && <View className='absolute right-0 top-0'>
                 <Button onPress={props.handleSubmit} startDecorator="ArrowClockwise" variant="primary" size="xs" rounded />
-                </View>}
+            </View>}
             {props.children}
             {!!props.error && Array.isArray(props.error) && <FormError errorText={error[0]} errorLink={error[1]} />}
             {!!props.error && !Array.isArray(props.error) && <FormError errorText={props.error} />}
@@ -74,7 +74,7 @@ export function getValidationRules({ checker, caption }) {
             return {
                 validate: value => {
                     const age = Math.abs(new Date(Date.now() - new Date(value).getTime()).getUTCFullYear() - 1970);
-                    if (age< checker.params.min || age > checker.params.max) {
+                    if (age < checker.params.min || age > checker.params.max) {
                         return checker.error;
                     }
                 }
