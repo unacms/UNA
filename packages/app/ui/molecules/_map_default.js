@@ -1,4 +1,5 @@
 import Likes from './likes';
+import Stars from './stars';
 import Reactions from './reactions';
 import Scores from './scores';
 import Comments from './comments';
@@ -11,6 +12,7 @@ import Recommendation from './recommendations';
 
 export const componentsMapDefault = {
     likes: Likes,
+    stars: Stars,
     reactions: Reactions,
     scores: Scores,
     comments: Comments,
