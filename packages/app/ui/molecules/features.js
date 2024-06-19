@@ -13,8 +13,8 @@ export default function ElementFeatures(oProps) {
     const oAction = oProps.action;
 
     const oIcons = oProps?.o && oSettings[oProps.o]?.icons != undefined ? oSettings[oProps.o].icons : {
-        do: 'UserPlus', 
-        undo: 'UserMinus'
+        do: 'Star', 
+        undo: 'Star'
     };
 
     //--- default display type: action, counter, both.
