@@ -149,8 +149,6 @@ let settingsDefault = {
         },
         star: {
             show_action: true,
-            show_action_as_button: false,
-            show_action_label: false,
             show_counter: true,
             show_counter_as_button: false,
             haptics_type: 'Medium',

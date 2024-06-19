@@ -5,17 +5,18 @@ import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
 import { View } from 'app/design/view'
-import { ButtonMenuActionDefault, ButtonMenuActionText, ButtonMenuCounterDefault, ButtonMenuCounterText, Modal } from 'app/design/controls';
+import { ButtonMenuCounterDefault, ButtonMenuCounterText, Modal } from 'app/design/controls';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, withSequence } from "react-native-reanimated";
+import StarRating from 'react-native-star-rating-widget';
+import StarRatingDisplay from 'react-native-star-rating-widget';
 
 export default function ElementStars(oProps) {
     const { t } = useTranslation();
     const oSettings = appSetting('social_actions', 'star');
 
     const oParams = {...oSettings, ...oProps.params};
-    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "ThumbsUp"
     const oAction = oProps.action;
     const oCounter = oProps.counter;
 
@@ -104,21 +105,10 @@ export default function ElementStars(oProps) {
             onLoad(sResponse?.data);
     };
 
-    //TODO: Value should be taken from Stars component.
-    const handleDo = (event) => {
-        event.preventDefault();
-
+    const handleDo = (iNumber) => {
         FeedbackHaptics(oParams.haptics_type);
 
-        performAction('do', {value: 1}, (oData) => {
-            setContextVars(oData);
-        });
-    };
-
-    const handleUndo = (event) => {
-        event.preventDefault();
-
-        performAction('do', {value: 1}, (oData) => {
+        performAction('do', {value: iNumber}, (oData) => {
             setContextVars(oData);
         });
     };
@@ -170,28 +160,38 @@ export default function ElementStars(oProps) {
     }
 
     //--- show action
-    const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
-    const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
-
     const bShowActionUndo = oAction?.is_undo === true;
-    const bShowActionVoted = oAction?.is_voted === true || (isContextVar('is_voted') && getContextVar('is_voted') === true);
-    const bShowActionDisabled = oAction?.is_disabled === true || (isContextVar('is_disabled') && getContextVar('is_disabled') === true);
+
+    let bShowActionVoted = oAction?.is_voted === true;
+    if(isContextVar('is_voted'))
+        bShowActionVoted = getContextVar('is_voted') === true;
+
+    let bShowActionDisabled = oAction?.is_disabled === true;
+    if(isContextVar('is_disabled'))
+        bShowActionDisabled = getContextVar('is_disabled') === true;
 
     let sTitle = oAction?.title || '';
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
-    const ButtonAction = bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText;
+    let fRate = '';
+    if (oCounter?.rate)
+        fRate = oCounter.rate;
+    if(isContextVar('counter')) {
+        const oCounterGlobal = getContextVar('counter');
+        if(oCounterGlobal?.rate)
+            fRate = oCounterGlobal.rate;
+    }
 
     let sActionButton = undefined;
-    if(bShowActionUndo && bShowActionVoted) {
+    if((bShowActionVoted && !bShowActionUndo) || bShowActionDisabled) {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={handleUndo} pressed={true} {...oButtonProps} />
+            <StarRatingDisplay starSize ={24} color="#dddddd" enableHalfStar={false} rating={fRate} onChange={() => {}} />
         );
     }
     else {
         sActionButton = (
-            <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} onPress={!bShowActionDisabled ? (event) => {handleDo(event)} : () => {}} disabled={bShowActionDisabled} {...oButtonProps} />
+            <StarRating starSize={24} enableHalfStar={false} rating={fRate} onChange={!bShowActionDisabled ? (number) => {handleDo(number)} : () => {}} />
         );
     }
 
@@ -201,68 +201,51 @@ export default function ElementStars(oProps) {
 
     const ButtonCounter = bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText;
 
-    let iCount = '';
-    if (oCounter?.count)
-        iCount = oCounter.count;
-    if(isContextVar('counter')) {
-        const oCounterGlobal = getContextVar('counter');
-        if(oCounterGlobal?.count)
-            iCount = oCounterGlobal.count;
-    }    
-   
+    const sharedValue = useSharedValue(1);
+    const indicatorStyle = useAnimatedStyle(() => {
+        return {
+            opacity: sharedValue.value,
+        };
+    },[sharedValue]);
 
-  const sharedValue = useSharedValue(1);
+    useEffect(() => {
+        sharedValue.value = withSequence(
+            withTiming(0, { duration: 500 }), // fade out
+            withTiming(1, { duration: 500 }) // fade in
+        );
+    }, [fRate]);    
 
-  const indicatorStyle = useAnimatedStyle(() => {
-    return {
-      opacity: sharedValue.value,
-    };
-  },[sharedValue]);
-
-  useEffect(() => {
-    sharedValue.value = withSequence(
-      withTiming(0, { duration: 500 }), // fade out
-      withTiming(1, { duration: 500 }) // fade in
-    );
-  }, [iCount]);
-  
-    
- 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && oCounter?.count != undefined) {
-
-        if(iCount > 0) {
-            let sUsers = undefined;
-            if(performedBy) {
-                sUsers = performedBy.map(aUser => {
-                    return (
-                        <View key={aUser.id}><Profile {...aUser} /></View>
-                    );
-                });
-            }
-
-
-            if(!sUsers || sUsers.length == 0)
-                sUsers = getSkeleton();
-
-            sCounterButton = (
-                <Animated.View key="counter" style={indicatorStyle}>
-                    <ButtonCounter size={sDisplaySize} startDecorator={'ThumbsUp'} title={iCount+''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
-                </Animated.View>
-            );
-
-            sCounterPopup = (
-                <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
-                    <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
-                </Modal>
-            );
+    if(bShowCounter && oCounter?.rate != undefined && fRate > 0) {
+        let sUsers = undefined;
+        if(performedBy) {
+            sUsers = performedBy.map(aUser => {
+                return (
+                    <View key={aUser.id}><Profile {...aUser} /></View>
+                );
+            });
         }
+
+        if(!sUsers || sUsers.length == 0)
+            sUsers = getSkeleton();
+
+        sCounterButton = (
+            <Animated.View key="counter" style={indicatorStyle}>
+                <ButtonCounter size={sDisplaySize} startDecorator={'Star'} title={fRate + ''} onPress={(event) => {handleGetPerformedBy(event)}} {...oButtonProps} />
+            </Animated.View>
+        );
+
+        sCounterPopup = (
+            <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+                <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
+            </Modal>
+        );
     }
 
     const sObject = getName();
     return (
-        <View className="flex-auto flex-row items-center">
+        <View className="flex-auto flex-row items-center h-full">
             {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
             {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
             {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
