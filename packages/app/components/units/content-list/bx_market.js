@@ -4,8 +4,8 @@ import { getImageSizes } from "app/lib/util";
 import { Text } from "app/design/typography";
 import { View, Row } from "app/design/view";
 import Card from "app/ui/molecules/card";
-import Profile from 'app/ui/molecules/profile'
-import StarRating from 'react-native-star-rating-widget';
+import Profile from 'app/ui/molecules/profile';
+import Stars from 'app/ui/molecules/stars';
 import { useState } from 'react';
 
 export default function Unit(props) {
@@ -27,6 +27,19 @@ export default function Unit(props) {
             return String.fromCharCode(parseInt(grp, 16));
         },
     );
+
+    let sRate = undefined;
+    if(data.meta?.items)
+        data.meta.items.forEach((aItem) => {
+            if(aItem.name != 'votes' || aItem.data.type != 'stars')
+                return;
+
+            aItem.data.params = {...aItem.data.params, show_counter: false};
+
+            sRate = (
+                <Stars {...aItem.data} />
+            );
+        });
 
     return (
         <>
@@ -84,12 +97,7 @@ export default function Unit(props) {
                                             </View>
                                         )}
                                     </Row>
-                                    <StarRating
-                        starSize ={24}
-                        enableHalfStar={false}
-        rating={rating}
-        onChange={setRating}
-      />
+                                    {sRate}
                                     <Text
                                         numberOfLines={1}
                                         className="text-neutral-700 dark:text-neutral-300 mb-auto text-sm"
