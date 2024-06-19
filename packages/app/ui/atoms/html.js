@@ -53,10 +53,11 @@ export default function ElementHtml(props) {
     let { width } = useWindowDimensions();
     let customClassName = props.customClassName ? props.customClassName : '';
     let fontSize = 16;
-    let lineHeight = 40;
-    if (customClassName == 'u-vanilla-html-small')
+    let lineHeight = 24;
+    if (customClassName == 'u-vanilla-html-small'){
         fontSize = 14;
         lineHeight = 18;
+    }
     const theme = useColorScheme();
     let tagsStyles = {
         body: {

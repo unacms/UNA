@@ -1,5 +1,9 @@
 import {BlockByName} from 'app/components/block';
-import {ClearNotif} from 'app/ui/workers/notif_checker';
+import { clearNotif } from 'app/lib/util'
+import React, { useEffect } from "react";
 export default function PageLayout(props) {
-    return (  <><ClearNotif/><BlockByName data={props.data} name={props.blocks.browse} /></>)
+    useEffect(() => {
+        clearNotif();
+    }, [])
+    return (  <><BlockByName data={props.data} name={props.blocks.browse} /></>)
 }

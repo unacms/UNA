@@ -14,22 +14,22 @@ const useDaemon = (url, isLoadOnInit = false, isActive = true, pollingInterval =
             setError(e);
         }
     };
-    
+
     useEffect(() => {
         if (isLoadOnInit && url != '')
-            fetchData(); 
-        if (isActive){
-            const intervalId = setInterval(fetchData, pollingInterval); 
+            fetchData();
+        if (isActive) {
+            const intervalId = setInterval(fetchData, pollingInterval);
 
-            return () => clearInterval(intervalId); 
+            return () => clearInterval(intervalId);
         }
-    }, [url, pollingInterval]); 
+    }, [url, pollingInterval]);
 
     useEffect(() => {
         setDaemonData(null);
-    }, [url]); 
+    }, [url]);
 
-    return { daemonData, error, daemonUrl:url };
+    return { daemonData, error, daemonUrl: url };
 };
 
 export default useDaemon;

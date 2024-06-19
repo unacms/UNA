@@ -48,10 +48,10 @@ export default function () {
 
     }, [url, currentUser]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (currentUser?.notifications && notifCount != currentUser?.notifications)
             setNotifCount(currentUser?.notifications)
-    }, [currentUser?.notifications]);
+    }, [currentUser?.notifications]);*/
     // DEEP LINKING
 
     if (currentUser) {

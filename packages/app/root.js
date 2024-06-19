@@ -70,14 +70,22 @@ export function Root(props) {
                 storageClear();
             }
             if (currentUser?.notifications && currentUser?.notifications != data.user.notifications) {
-                let b = currentUser;
+                /*let b = currentUser;
                 b.notifications = data.user.notifications
-                setCurrentUser(b);
+                setCurrentUser(b);*/
+                /*setCurrentUser(prevUser => ({
+                    ...prevUser,
+                    notifications: data.user.notifications,
+                }));*/
             }
             if (currentUser && currentUser?.informer != data.user.informer) {
-                let b = currentUser;
+                /*let b = currentUser;
                 b.informer = data.user.informer
-                setCurrentUser(data.user);
+                setCurrentUser(data.user);*/
+                setCurrentUser(prevUser => ({
+                    ...prevUser,
+                    informer: data.user.informer,
+                }));
             }
         }
         else {

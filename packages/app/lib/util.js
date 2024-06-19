@@ -50,6 +50,20 @@ export function absoluteApiUrl(url_name) {
     return appSetting("config", "una_url") + appSetting("urls", url_name);
 }
 
+export function clearNotif(currentUser, setCurrentUser) {
+
+    console.log("ClearNotif", currentUser);
+    if (currentUser?.notifications > 0) {
+        setCurrentUser(prevUser => ({
+            ...prevUser,
+            notifications: 0,
+        }));
+        async () => {
+            await fetcher('/api.php?r=bx_notifications/mark_as_read/')
+        }
+    }
+}
+
 export const getDataFromCache = (pref, storageKeyValue) => {
     if (appSetting('cache', 'list')) {
         return storageGet(pref, storageKeyValue);

@@ -2,7 +2,7 @@ import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { appSetting } from 'app/lib/util'
+import { appSetting, clearNotif } from 'app/lib/util'
 import { useCurrentUser } from 'app/context/user'
 import DropdownPopup from 'app/ui/atoms/dropdown-popup'
 import { useTranslation } from 'react-i18next';
@@ -22,9 +22,14 @@ export default function (props) {
         return <Browse cachePrefix={Date.now()} height={400} data={data} />;
     }, [notifCount]);
 
+    useEffect(() => {
+        if (ntfsOpen){
+            clearNotif();
+        }
+    }, [ntfsOpen])
+
     const ntfsContent = (
         ntfsOpen && <View key="ddp-content" className="px-1.5 pb-1.5">
-            <ClearNotif/>
             <View className="flex-row items-center mb-1">
                 <Text className="text-neutral-700 dark:text-neutral-300 text-lg flex-auto font-bold ml-0.5">
                     { t("Notifications")}
