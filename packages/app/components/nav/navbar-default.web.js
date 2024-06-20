@@ -6,7 +6,7 @@ import { useCurrentUser } from 'app/context/user'
 
 export default function (props) {
     let { currentUser, setCurrentUser } = useCurrentUser()
-
+    console.log('navbar-default.web.js: currentUser');
     const layout = getLayout(currentUser);
     if(layout == 'ver')
         return <NavbarVer {...props}/>

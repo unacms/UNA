@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { memo, useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
@@ -11,7 +11,6 @@ import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
 import Search from 'app/ui/molecules/search'
 import NotificationButton from 'app/ui/molecules/notif'
-import Profile from 'app/ui/molecules/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import MenuAccount from 'app/components/nav/menu-account'
@@ -19,59 +18,74 @@ import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 import ProfileSwitcher from 'app/components/elements/profile_switcher';
 
+const HeaderLine = memo(({headerSettings, currentUser, uri, title, menuPopup, setMenuPopup, showMenu}) => {
+    
+    const { width } = useWindowDimensions();
+    if (width > 1280 && menuPopup)
+        setMenuPopup(false)
+
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
+
+    return (
+        <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
+            {(headerSettings.menu && isDrawer) && (
+                <View className="lg:hidden mr-3 sm:mr-4">
+                    <Pressable onPress={showMenu}>
+                        <Button
+                            variant="outline"
+                            startDecorator="List"
+                            rounded
+                            align="start"
+                            aria-label="Menu"
+                            alt="Menu"
+                        />
+                    </Pressable>
+                    
+                </View>
+            )}
+            {(uri === 'home' || width >= 1024) && (
+                <Link href="/home" aria-label="Logo">
+                    <View className="group mr-auto flex-row flex-none items-center rounded-lg my-auto">
+                        {appStatic('logo_mark')}
+                        {appStatic('logo_text')}
+                    </View>
+                </Link>
+            )}
+            {headerSettings.backButton && getBackButtonWeb()}
+            {headerSettings.title && <View className='flex-auto overflow-hidden'>
+                <Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">
+                    {title}
+                </Text>
+            </View>}
+                       
+        </View>
+    )
+});
+
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation();
-    let { width } = useWindowDimensions()
-
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
-
-    if (width > 1280 && menuPopup)
-        setMenuPopup(false)
-
-    const showMenu = (params) => {
-        setMenuPopup(!menuPopup)
-    }
-
-    const hideMenu = (params) => {
-        // setMenuPopup(false)
-    }
-
     const bSearch = appSetting('layout', 'search') == true;
     const bMessenger = appSetting('layout', 'messenger') ? true : false;
     const bNotifs = appSetting('layout', 'notifications') ? true : false;
 
-    let profile = null
-    if (currentUser) {
-        let dUser = Object.assign({}, currentUser)
-        dUser.url_avatar = dUser.avatar
-        dUser.url = appSetting('layout', 'dashboard')
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
-    }
-
     const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
-    const windowWidth = useWindowDimensions().width;
-    let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
-
-    useEffect(() => {
-        const handleClick = () => {
-            hideMenu();
-        }
-
-        document.addEventListener('click', handleClick)
-
-        return () => document.removeEventListener('click', handleClick)
-    }, [])
-
+    const headerSettings = props.headerSettings;
 
     let sTitle = props.title;
     const menuSettings = appSetting('menu_items', props?.menu?.object);
     if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name);
 
-    const bIsHideHeader = windowWidth < 1024 && (!headerSettings.header);
+    const bIsHideHeader = false; //windowWidth < 1024 && (!headerSettings.header); // MAY BE NEEDED
+
+    const showMenu = () => {
+        setMenuPopup(!menuPopup)
+    }
+
+    console.log("Content5")
     return (
         <>
             <View className={appSetting('layout', 'max_width') + " w-full flex-row flex-auto mx-auto"}>
@@ -79,7 +93,7 @@ export default function (props) {
                     {(menu_sidebar_items.length > 0 && (props.uri != 'home' || (props.uri == 'home' && currentUser))) && <View className='hidden lg:block w-full lg:w-80 '>
                         <View className=' pt-16 fixed-process w-80'>
                             <View className='px-4 py-3'>
-                                <ProfileSwitcher hideTitle={true} useDefault={true}/>
+                                <ProfileSwitcher hideTitle={true} useDefault={true} />
                                 {menu_sidebar_items.map(
                                     (item, index) =>
                                         <Link href={item.link} key={`menu-${index}`} alt={item.title}>
@@ -115,37 +129,10 @@ export default function (props) {
             {!bIsHideHeader && <View className={(props.layoutName == 'profile' ? 'hidden lg:flex ' : '') + " fixed w-full"}>
                 <View className=" backdrop-blur h-16  items-center w-full shadow-sm border-b border-bdrnavbar dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d  ">
                     <View className={appSetting('layout', 'max_width') + "  w-full flex-row flex-auto  items-center "}>
-                        <View className="flex-row xl:w-80 px-3 sm:px-4 my-auto items-center">
-                            {
-                                (headerSettings.menu && isDrawer) && (
-                                    <View className="lg:hidden mr-3 sm:mr-4">
-                                        <Pressable onPress={showMenu}>
-                                            <Button
-                                                variant="outline"
-                                                startDecorator="List"
-                                                rounded
-                                                align="start"
-                                                aria-label={t("Menu")}
-                                                alt={t("Menu")}
-                                            />
+                        <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} title={sTitle} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
 
-                                        </Pressable>
-                                    </View>)}
-                            {(props.uri == 'home' || windowWidth >= 1024) &&
-                                <Link href="/home" aria-label="Logo">
-                                    <View className="group  mr-auto flex-row  flex-none  items-center rounded-lg my-auto">
-                                        {appStatic('logo_mark')}
-                                        {appStatic('logo_text')}
-                                    </View>
-                                </Link>
-                            }
-                            {headerSettings.backButton && getBackButtonWeb()}
-                            {headerSettings.title && <View className='flex-auto overflow-hidden'><Text numberOfLines={1} ellipsizeMode='tail' className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 ">{sTitle}</Text></View>}
-                        </View>
                         <Row className="flex-auto  ">
                             <Row className='w-full items-center '>
-
-
                                 {(bSearch && currentUser) && <View className=' items-end mx-auto flex-auto max-w-2xl hidden lg:block '>
                                     <Search type="input" placeholder="Enter search text" />
                                 </View>}

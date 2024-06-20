@@ -294,8 +294,6 @@ function DefaultUnit(data) {
         content_attach = content_attach.concat(data.content.videos_attach);
     }
 
-
-
     const MainContent = () => bIsMarketContent
         ? <MarketView isCompact={false} content_attach={content_attach} url={url} data={data} styles={styles} bIsTitle={bIsTitle} bIsTimelineContent={bIsTimelineContent} />
         : bIsAddContent
@@ -566,10 +564,13 @@ function DefaultUnit(data) {
 
     function DefaultView({ data, styles, bIsTitle, bIsTimelineContent, content_attach, url, isCompact }) {
         let imgs = [];
-        if (Array.isArray(data.content.images_attach))
-            imgs = [...imgs, data.content.images_attach];
-        if (Array.isArray(data.content.videos_attach))
-            imgs = [...imgs, data.content.videos_attach];
+
+        if (data.content.images_attach && data.content.images_attach.length > 0) {
+            imgs = content_attach.concat(data.content.images_attach);
+        }
+        if (data.content.videos_attach && data.content.videos_attach.length > 0) {
+            imgs = content_attach.concat(data.content.videos_attach);
+        }
         return <>
             <View className={isCompact ? "flex-row-reverse" : " flex-col md:flex-row-reverse "}>
                 {data.mainImage && (

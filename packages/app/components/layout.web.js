@@ -9,7 +9,7 @@ import { View, Row } from 'app/design/view';
 import { getLayoutName } from 'app/components/page-layout';
 import { useCurrentUser } from 'app/context/user'
 import BottomSheet from 'app/ui/molecules/bottomsheet_content';
-import { getHeaderSettings, getLayout } from 'app/lib/util';
+import { getHeaderSettings, getLayout, deepEqual } from 'app/lib/util';
 import { useColorScheme } from 'react-native';
 import { appSetting } from 'app/lib/util'
 import BottomSheetDataContext from 'app/context/bottomsheet';
@@ -26,23 +26,114 @@ const NavbarMemo = React.memo(function NavbarMemo(props) {
     );
 });
 
-async function runOneSignal() {    
+async function runOneSignal() {
     const ONESIGNAL_KEY = appSetting('config', 'api_keys', 'onesignal');
     if (ONESIGNAL_KEY) {
-        await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true});
+        await OneSignal.init({ appId: ONESIGNAL_KEY, allowLocalhostAsSecureOrigin: true });
         OneSignal.Slidedown.promptPush();
     }
 }
 
-export default function Layout(props) {
+
+const MemoizedContent = React.memo(({ headerSettings, currentUser, layoutName, data, children, uri, blocks }) => {
     const [isModal, setIsModal] = useState(false);
+   
+    useEffect(() => {
+        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(uri)) {
+            setTimeout(() => {
+                setIsModal(true)
+            }, appSetting('layout', 'show_login_modal'));
+        }
+    }, []);
+
+    const ModalPopup = ({ }) => {
+        let p = {
+            blocks: blocks,
+            data: data,
+        }
+        if (!isModal)
+            return <></>
+        return (<Modal title=" " onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
+            {appStatic('components_modal', p)}
+        </Modal>);
+    };
+
+    const handleCloseModal = () => {
+        storageSet('layout:modal', '', true, true);
+        setIsModal(false)
+    }
+
+
+    if (data.page_status == 503) {
+        return <>
+            {appStatic('maintenance_mode')}
+        </>
+    }
+
+    if (getLayout(currentUser, layoutName) == 'hor') {
+        return (
+            <BottomSheetDataContext>
+                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+
+                <Suggestions />
+                <AsyncWorker />
+                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
+                <BottomSheet />
+                <ModalPopup />
+            </BottomSheetDataContext>
+        );
+    }
+
+    if (getLayout(currentUser, layoutName) == 'mixed') {
+
+        return (
+            <BottomSheetDataContext>
+
+                <Suggestions />
+                <AsyncWorker />
+                <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
+                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                </NavbarMemo>
+                <BottomSheet />
+                <ModalPopup />
+
+            </BottomSheetDataContext>
+
+        );
+    }
+
+    if (getLayout(currentUser, layoutName) == 'ver') {
+
+        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
+        return (
+            <BottomSheetDataContext>
+                <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
+                    <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
+                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
+                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
+                            <Suggestions />
+                            <AsyncWorker />
+                        </View>
+                        {menuItems.length > 0 && <View className='w-full lg:w-80 '>
+                            <NavbarMemo headerSettings={headerSettings} layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
+                        </View>}
+                    </Row>
+                    <BottomSheet />
+                    <ModalPopup />
+                </View>
+            </BottomSheetDataContext>
+        );
+    }
+});
+
+export default function (props) {
+
     const { currentUser, setCurrentUser } = useCurrentUser();
     let data = props.data;
+    let blocks = props.blocks;
     let uri = props.uri
     let children = props.children
     const { width } = useWindowDimensions();
-
-    
 
     let theme = storageGet('layout:theme', '', true);
     const scheme = useColorScheme();
@@ -145,7 +236,19 @@ export default function Layout(props) {
     }, []);
 
     const { layoutName } = getLayoutName(data, uri, true);
-    const headerSettings = useMemo(() => getHeaderSettings(uri, width, layoutName), [uri, width]);
+    const [headerSettings, setHeaderSettings] = useState(getHeaderSettings(uri, width, layoutName));
+
+    useEffect(() => {
+        let a = getHeaderSettings(uri, width, layoutName);
+        if (getLayout(currentUser, layoutName) == 'ver') {
+            if (width > 1024)
+                a.offset = false;
+        }
+        if (!deepEqual(headerSettings, a)) {
+            setHeaderSettings(a);
+        }
+    }, [uri, width, layoutName]);
+
 
     if (data?.empty)
         return <>{children}</>
@@ -169,94 +272,8 @@ export default function Layout(props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-
-    useEffect(() => {
-        if (currentUser === false && !storageGet('layout:modal', '', true) && appSetting('layout', 'show_login_modal') > 0 && !['create-account', 'home', 'login', 'forgot-password', 'confirm-email'].includes(props.uri)) {
-            setTimeout(() => {
-                setIsModal(true)
-            }, appSetting('layout', 'show_login_modal'));
-        }
-    }, []);
-
-    const ModalPopup = ({ }) => {
-        let p = {
-            blocks: props.blocks,
-            data: props.data,
-        }
-        if (!isModal)
-            return <></>
-        return (<Modal title=" " onVisible={isModal} outerClickClose={false} onClose={() => handleCloseModal()}>
-            {appStatic('components_modal', p)}
-        </Modal>);
-    };
-
-
-    const handleCloseModal = () => {
-        storageSet('layout:modal', '', true, true);
-        setIsModal(false)
-    }
-
-    if (data.page_status == 503){
-        return   <>
-            {appStatic('maintenance_mode')}
-        </>
-    }
-
-    if (getLayout(currentUser, layoutName) == 'hor') {
-        return (
-            <BottomSheetDataContext>
-                <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
-
-                <Suggestions />
-                <AsyncWorker />
-                <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
-                <BottomSheet />
-                <ModalPopup />
-            </BottomSheetDataContext>
-        );
-    }
-
-    if (getLayout(currentUser, layoutName) == 'mixed') {
-        return (
-            <BottomSheetDataContext>
-
-                <Suggestions />
-                <AsyncWorker />
-                <NavbarMemo layoutName={layoutName} title={data?.name} menu={data?.menu} menu_add={data?.menu_add || false} uri={uri} >
-                    <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
-                </NavbarMemo>
-                <BottomSheet />
-                <ModalPopup />
-
-            </BottomSheetDataContext>
-
-        );
-    }
-
-    if (getLayout(currentUser, layoutName) == 'ver') {
-        if (width > 1024)
-            headerSettings.offset = false;
-
-        const menuItems = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
-        return (
-            <BottomSheetDataContext>
-                <View className={appSetting('layout', 'max_width') + ' w-full mx-auto'}>
-                    <Row className='w-full flex-col lg:flex-row-reverse  lg:min-h-screen '>
-                        <View className={(menuItems.length > 0 ? 'lg:w-[calc(100%-20rem)] border-x border-bdr dark:border-bdr-d' : '') + ' w-full '}>
-                            <Content layoutName={layoutName} headerSettings={headerSettings} children={children} currentUser={currentUser} />
-                            <Suggestions />
-                            <AsyncWorker />
-                        </View>
-                        {menuItems.length > 0 && <View className='w-full lg:w-80 '>
-                            <NavbarMemo layoutName={layoutName} title={data.name} menu={data.menu} menu_add={data.menu_add || false} uri={uri} />
-                        </View>}
-                    </Row>
-                    <BottomSheet />
-                    <ModalPopup />
-                </View>
-            </BottomSheetDataContext>
-        );
-    }
+    console.log('Content1')
+    return <MemoizedContent blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
 const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUser, layoutName }) => {
@@ -265,13 +282,13 @@ const Content = React.memo(({ children, headerSettings, stylesBgImage, currentUs
 
             <View className="w-full items-stretch" >
                 <View className=" w-full mx-auto flex-row " >
-                    <View className={(layoutName != 'messenger' ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/ }
+                    <View className={(layoutName != 'messenger' ? 'pb-16 lg:pb-0' : '') + '  w-full  relative overflow-hidden    mx-auto'}>{/*mb-16* TODO lg:pb-0*/}
                         <View className='w-full mx-auto min-h-screen'>
                             {headerSettings.offset && <View className='w-full h-16' />}
                             <Informer />
                             {children}
                         </View>
-                       
+
                     </View>
                 </View>
                 {/*layoutName == 'default' && appStatic('components_fullfooter', '')*/}

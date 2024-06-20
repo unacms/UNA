@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, memo } from 'react'
 import { useWindowDimensions } from 'react-native'
 import Link from 'app/ui/atoms/link'
 import { Text } from 'app/design/typography'
 import { View, Row, Pressable } from 'app/design/view'
 import { Button, ButtonRef } from 'app/design/controls'
 import { useCurrentUser } from 'app/context/user'
-import { appSetting, getHeaderSettings } from 'app/lib/util'
+import { appSetting } from 'app/lib/util'
 import { getBackButtonWeb } from 'app/lib/conductor-helpers'
 import { appStatic } from 'app/lib/app-static'
 import { menuItemsByName } from 'app/lib/util'
@@ -17,23 +17,73 @@ import MenuAccount from 'app/components/nav/menu-account'
 import MenuLauncher from 'app/components/nav/menu-launcher'
 import MenuDrawer from 'app/components/nav/menu-drawer'
 
+const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu, title }) => {
+
+    const { width } = useWindowDimensions();
+    if (width > 1280 && menuPopup)
+        setMenuPopup(false)
+
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
+
+
+    return (
+        <View className="flex-row pl-3 sm:pl-6  flex-auto lg:flex-none lg:w-80 my-auto items-center">
+            {(headerSettings.menu && isDrawer) && (
+                <View className="lg:hidden mr-3 sm:mr-4">
+                    <Pressable onPress={showMenu}>
+                        <Button
+                            variant="outline"
+                            startDecorator="List"
+                            rounded
+                            align="start"
+                            aria-label={'Menu'}
+                            alt={'Menu'}
+                        />
+                    </Pressable>
+                </View>
+            )}
+            {(uri == 'home' || width >= 1024) && (
+                <Link href="/home" aria-label="Logo">
+                    <View className="group mr-4 flex-row flex-none items-center my-auto">
+                        {appStatic('logo_mark')}
+                        <View className="lg:hidden">
+                            {appStatic('logo_text')}
+                        </View>
+                    </View>
+                </Link>
+            )}
+            {headerSettings.backButton && getBackButtonWeb()}
+            {headerSettings.title && (
+                <View className="flex-auto overflow-hidden">
+                    <Text
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
+                    >
+                        {title}
+                    </Text>
+                </View>
+            )}
+            {bSearch && (
+                <View className=" w-full flex-auto max-w-sm hidden lg:flex ">
+                    <Search
+                        type="input"
+                        placeholder="Enter search text"
+                    />
+                </View>
+            )}
+        </View>
+    )
+});
+
 export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser()
     const [menuPopup, setMenuPopup] = useState(false)
     const { t } = useTranslation()
-    let { width } = useWindowDimensions()
-
-    if (width > 1280 && menuPopup) setMenuPopup(false)
 
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
     }
-
-    const hideMenu = (params) => {
-        // setMenuPopup(false)
-    }
-
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0 ;
 
     const bSearch = appSetting('layout', 'search') == true
     const bMessenger = appSetting('layout', 'messenger') ? true : false
@@ -45,24 +95,11 @@ export default function (props) {
         currentUser
     )
 
-    const windowWidth = useWindowDimensions().width
-    let headerSettings = getHeaderSettings(props.uri, width, props.layoutName)
-
-    useEffect(() => {
-        const handleClick = () => {
-            hideMenu()
-        }
-
-        document.addEventListener('click', handleClick)
-
-        return () => document.removeEventListener('click', handleClick)
-    }, [])
-
-    if (windowWidth < 1024 && !headerSettings.header) return <></>
+    const headerSettings = props.headerSettings;
 
     let sTitle = props.title
     const menuSettings = appSetting('menu_items', props?.menu?.object)
-    if (menuSettings && menuSettings.name) 
+    if (menuSettings && menuSettings.name)
         sTitle = t(menuSettings.name)
 
     return (
@@ -75,52 +112,7 @@ export default function (props) {
                             ' w-full flex-row flex-auto  items-center'
                         }
                     >
-                        <View className="flex-row pl-3 sm:pl-6  flex-auto lg:flex-none lg:w-80 my-auto items-center">
-                            {(headerSettings.menu && isDrawer) && (
-                                <View className="sm:hidden mr-3 sm:mr-4">
-                                    <Pressable onPress={showMenu}>
-                                        <Button
-                                            variant="outline"
-                                            startDecorator="List"
-                                            rounded
-                                            align="start"
-                                            aria-label={t('Menu')}
-                                            alt={t('Menu')}
-                                        />
-                                    </Pressable>
-                                </View>
-                            )}
-                            {(props.uri == 'home' || windowWidth >= 1024) && (
-                                <Link href="/home" aria-label="Logo">
-                                    <View className="group mr-4 flex-row flex-none items-center my-auto">
-                                        {appStatic('logo_mark')}
-                                        <View className="lg:hidden">
-                                            {appStatic('logo_text')}
-                                        </View>
-                                    </View>
-                                </Link>
-                            )}
-                            {headerSettings.backButton && getBackButtonWeb()}
-                            {headerSettings.title && (
-                                <View className="flex-auto overflow-hidden">
-                                    <Text
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-                                        className="text-2xl sm:text-3xl lg:hidden font-bold text-neutral-800 dark:text-neutral-200 "
-                                    >
-                                        {sTitle}
-                                    </Text>
-                                </View>
-                            )}
-                            {bSearch && (
-                                <View className=" w-full flex-auto max-w-sm hidden lg:flex ">
-                                    <Search
-                                        type="input"
-                                        placeholder="Enter search text"
-                                    />
-                                </View>
-                            )}
-                        </View>
+                        <HeaderLine headerSettings={headerSettings} title={sTitle} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <Row className="hidden lg:flex flex-auto">
                             <Row className="w-full mx-auto gap-x-0.5 max-w-lg justify-between">
                                 {menu_navbar_items.map((item, index) => (
@@ -139,7 +131,7 @@ export default function (props) {
                                             variant="text"
                                             size="lg"
                                             tooltip={t(item.title)}
-                                            title={item.showTitle?t(item.title):''}
+                                            title={item.showTitle ? t(item.title) : ''}
                                             alt={t(item.title)}
                                             aria-label={t(item.title)}
                                             fullWidth
@@ -171,26 +163,26 @@ export default function (props) {
                                             {bNotifs && <NotificationButton />}
                                         </View>
                                         <View className="sm:block">
-                                        {bMessenger && (
-                                            <Link
-                                                href={appSetting(
-                                                    'layout',
-                                                    'messenger'
-                                                )}
-                                                alt={t('Messenger')}
-                                            >
-                                                <ButtonRef
-                                                    tooltip={t('Messenger')}
-                                                    variant="outline"
-                                                    rounded
-                                                    startDecorator="ChatTeardropDots"
-                                                    id="m2"
-                                                />
-                                            </Link>
-                                        )}                                        
+                                            {bMessenger && (
+                                                <Link
+                                                    href={appSetting(
+                                                        'layout',
+                                                        'messenger'
+                                                    )}
+                                                    alt={t('Messenger')}
+                                                >
+                                                    <ButtonRef
+                                                        tooltip={t('Messenger')}
+                                                        variant="outline"
+                                                        rounded
+                                                        startDecorator="ChatTeardropDots"
+                                                        id="m2"
+                                                    />
+                                                </Link>
+                                            )}
                                         </View>
 
-                                        
+
                                         <View className="hidden sm:block">
                                             <MenuAccount />
                                         </View>

@@ -180,7 +180,7 @@ export default function UnitComments(props) {
                                 <ContentMore content={data.cmt_parent.data.cmt_text} numberOfLines={1} openSmall={false} textClassName="text-base text-neutral-600 dark:text-neutral-400" />
                             </View>
                         }
-                        <View>
+                        <View className='text-neutral-900 dark:text-neutral-50'>
                             {viewState.view == 'edited' ? (
                                 <View className='-translate-y-6'>
                                     <View className='ml-auto mb-2'><Button align="start" title="Cancel" size="xs" startDecorator="X" variant="outline" onPress={() => setViewState({ view: '' })} rounded /></View>

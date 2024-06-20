@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { memo, useState, useRef, useEffect } from 'react'
 import { useWindowDimensions } from 'react-native'
 
 import Link from 'app/ui/atoms/link'
@@ -16,8 +16,80 @@ import Profile from 'app/ui/molecules/profile'
 import { useTranslation } from 'react-i18next';
 import MenuAdd from 'app/components/nav/menu-add'
 import BlockByUrl from 'app/ui/molecules/block'
-import ProfileSwitcher from 'app/components/elements/profile_switcher';
 import DropdownMenu from 'app/ui/atoms/dropdown-menu';
+
+
+const HeaderLine = memo(({ headerSettings, currentUser, uri, bSearch, menuPopup, setMenuPopup, showMenu }) => {
+
+    const { width } = useWindowDimensions();
+    if (width > 1280 && menuPopup)
+        setMenuPopup(false)
+
+    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
+
+    const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
+
+    return (
+        <View className=' flex-row lg:flex-col lg:w-80'>
+            {(headerSettings.menu && isDrawer) && (
+                <View className="lg:hidden ml-4">
+                    <Pressable onPress={showMenu}>
+                        <Button
+                            variant="outline"
+                            startDecorator="List"
+                            rounded
+                            align="start"
+                        />
+                    </Pressable>
+                </View>
+            )}
+            <View className='justify-center px-4'>
+                <Link href="/home" aria-label="Logo">
+                    <View className="group  mr-auto flex-row flex-none items-center my-auto lg:py-2.5 px-1">
+                        {appStatic('logo_mark')}
+                        {appStatic('logo_text')}
+                    </View>
+                </Link>
+                <View className='hidden lg:block'>
+                    {menu_sidebar_items.map(
+                        (item, index) =>
+                            <Link href={item.link} key={`menu-${index}`} alt={item.title}>
+                                <Button
+                                    variant="text"
+                                    size="base"
+                                    fullWidth={true}
+                                    startDecorator={
+                                        item.icon.indexOf(' ') == -1
+                                            ? item.icon
+                                            : item.icon.split(' ')[0]
+                                    }
+                                    rounded
+                                    align="start"
+                                    title={item.title}
+                                />
+                            </Link>
+                    )}
+                    {!!currentUser && (
+                        <>
+
+                            {bSearch && <Search>
+                                <Button
+                                    variant="text"
+                                    size="base"
+                                    fullWidth={true}
+                                    startDecorator="MagnifyingGlass"
+                                    align="start"
+                                    rounded
+                                    title={"Search"}
+                                />
+                            </Search>
+                            }
+                        </>)}
+                </View>
+            </View>
+        </View>
+    )
+});
 
 export default function (props) {
 
@@ -26,135 +98,36 @@ export default function (props) {
     const { currentUser, setCurrentUser } = useCurrentUser();
     const [menuPopup, setMenuPopup] = useState(false)
 
-    const isDrawer = menuItemsByName('main_menu', appSetting('menu_items', 'menu_drawer'), currentUser).length > 0;
-
-    let { width } = useWindowDimensions()
-
-    if (width > 1280 && menuPopup)
-        setMenuPopup(false)
-
     const showMenu = (params) => {
         setMenuPopup(!menuPopup)
     }
 
-    const hideMenu = (params) => {
-        // setMenuPopup(false)
-    }
-
     const bSearch = appSetting('layout', 'search') == true;
-    const bNotifs = appSetting('layout', 'notifications') ? true : false;
-
-    let profile = null
-    if (currentUser) {
-        let dUser = Object.assign({}, currentUser)
-        dUser.url_avatar = dUser.avatar
-        dUser.url = appSetting('layout', 'dashboard')
-        profile = <Profile {...dUser} displayType="unit_wo_info" displaySize="sm" />
-    }
-
-    let isUseBg = appSetting('layout', 'use_background');
-
-    const menu_sidebar_items = menuItemsByName('main_menu', appSetting('menu_items', 'menu_sidebar'), currentUser);
 
     const menu_add_items = menuItemsByName('', appSetting('menu_items', 'menu_add'), currentUser)
 
-    const windowWidth = useWindowDimensions().width + 17;
-    let headerSettings = getHeaderSettings(props.uri, width, props.layoutName);
-    if (windowWidth < 1024)
-        isUseBg = true;
-    useEffect(() => {
-        const handleClick = () => {
-            hideMenu();
-        }
-
-        document.addEventListener('click', handleClick)
-
-        return () => document.removeEventListener('click', handleClick)
-    }, [])
-
-    if (windowWidth < 1024 && (!headerSettings.header))
-        return <></>
+    const headerSettings = props.headerSettings;
 
     const buttonProps = {
-
         id: "m3",
         startDecorator: "Plus",
         tooltip: "Create",
         rounded: 'rounded',
-    
     }
 
     const menu_account_items = menuItemsByName('', appSetting('menu_items', 'menu_account'), currentUser)
 
     return (
         <>
-
             <Redirect ref={redirectdRef} />
             <ScrollView
                 contentContainerStyle={{
                     width: '100%',
                 }}
-                className={(isUseBg ? "dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm" : " ") + "  fixed w-full lg:w-80 top-0  items-start lg:h-screen    "}>
+                className={"dark:border-bdrnavbar-d bg-bgrnavbar dark:bg-bgrnavbar-d backdrop-blur border-b border-bdrnavbar shadow-sm lg:bg-transparent lg:border-none lg:shadow-none" + "  fixed w-full lg:w-80 top-0 items-start lg:h-screen" + (!headerSettings.header ? ' hidden lg:flex' : '')}>
                 <View className=' flex-row lg:flex-col  h-16 lg:h-auto items-center lg:items-start ' >
                     <View className=' justify-between  lg:h-screen flex-auto '>
-                        <View className=' flex-row lg:flex-col lg:w-80'>
-                            {(headerSettings.menu && isDrawer) && (
-                                <View className="lg:hidden mr-3 sm:mr-4">
-                                    <Pressable onPress={showMenu}>
-                                        <Button
-                                            variant="outline"
-                                            startDecorator="List"
-                                            rounded
-                                            align="start"
-                                        />
-                                    </Pressable>
-                                </View>
-                            )}
-                            <View className='justify-center px-4'>
-                                <Link href="/home" aria-label="Logo">
-                                    <View className="group  mr-auto flex-row flex-none items-center my-auto lg:py-2.5 px-1">
-                                        {appStatic('logo_mark')}
-                                        {appStatic('logo_text')}
-                                    </View>
-                                </Link>
-                                <View className='hidden lg:block'>
-                                    {menu_sidebar_items.map(
-                                        (item, index) =>
-                                            <Link href={item.link} key={`menu-${index}`} alt={item.title}>
-                                                <Button
-                                                    variant="text"
-                                                    size="base"
-                                                    fullWidth={true}
-                                                    startDecorator={
-                                                        item.icon.indexOf(' ') == -1
-                                                            ? item.icon
-                                                            : item.icon.split(' ')[0]
-                                                    }
-                                                    rounded
-                                                    align="start"
-                                                    title={item.title}
-                                                />
-                                            </Link>
-                                    )}
-                                    {!!currentUser && (
-                                        <>
-
-                                            {bSearch && <Search>
-                                                <Button
-                                                    variant="text"
-                                                    size="base"
-                                                    fullWidth={true}
-                                                    startDecorator="MagnifyingGlass"
-                                                    align="start"
-                                                    rounded
-                                                    title={"Search"}
-                                                />
-                                            </Search>
-                                            }
-                                        </>)}
-                                </View>
-                            </View>
-                        </View>
+                        <HeaderLine headerSettings={headerSettings} currentUser={currentUser} uri={props.uri} bSearch={bSearch} showMenu={showMenu} menuPopup={menuPopup} setMenuPopup={setMenuPopup} />
                         <View className='hidden lg:flex flex-col flex-auto justify-between h-full'>
                             {!!currentUser && (
                                 <Row className='mt-4 justify-center mx-auto w-full px-4 gap-x-4'>
@@ -164,43 +137,43 @@ export default function (props) {
                                 </Row>
                             )}
                             <View className='py-4'>
-                            <Row className='flex-row px-4 '>  
-                                <View className='flex-auto'>
-                                <DropdownMenu items={menu_account_items.map(
-                                    (item, index) => {
-                                        return (
-                                            {
-                                                id: 'menu-' + index,
-                                                link: item.link,
-                                                title: t(item.title),
-                                                icon:
-                                                    item.icon.indexOf(' ') == -1
-                                                        ? item.icon
-                                                        : item.icon.split(' ')[0],
+                                <Row className='flex-row px-4 '>
+                                    <View className='flex-auto'>
+                                        <DropdownMenu items={menu_account_items.map(
+                                            (item, index) => {
+                                                return (
+                                                    {
+                                                        id: 'menu-' + index,
+                                                        link: item.link,
+                                                        title: t(item.title),
+                                                        icon:
+                                                            item.icon.indexOf(' ') == -1
+                                                                ? item.icon
+                                                                : item.icon.split(' ')[0],
+                                                    }
+                                                )
                                             }
-                                        )
-                                    }
-                                )}
-                                >
-                                    <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
-                                        <Row className='flex-row gap-x-3 items-center'>
-                                            <Profile
-                                                {...currentUser}
-                                                url_avatar={currentUser.avatar}
-                                                displayType="unit_wo_info"
-                                                displaySize="sm"
-                                            />
-                                            <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
-                                                {currentUser.display_name}
-                                            </Text>
-                                        </Row>
+                                        )}
+                                        >
+                                            <Row className={"rounded-full items-center justify-between  p-1  hover:border-transparent  cursor-pointer hover:bg-bgrbutton-h dark:hover:bg-bgrbutton-dh active:opacity-50"}>
+                                                <Row className='flex-row gap-x-3 items-center'>
+                                                    <Profile
+                                                        {...currentUser}
+                                                        url_avatar={currentUser.avatar}
+                                                        displayType="unit_wo_info"
+                                                        displaySize="sm"
+                                                    />
+                                                    <Text className="text-base flex-auto my-auto font-semibold truncate text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900  dark:group-hover:text-neutral-100">
+                                                        {currentUser.display_name}
+                                                    </Text>
+                                                </Row>
 
-                                    </Row>
-                                </DropdownMenu>
-                                </View> 
-                                <View className='ml-2'>
-                                {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
-                                </View>
+                                            </Row>
+                                        </DropdownMenu>
+                                    </View>
+                                    <View className='ml-2'>
+                                        {menu_add_items.length > 0 && <MenuAdd typestyle="button" buttonProps={buttonProps} />}
+                                    </View>
                                 </Row>
                             </View>
                         </View>

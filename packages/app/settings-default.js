@@ -265,7 +265,7 @@ let settingsDefault = {
             { name: 'products-home', title: 'Market', link: '/products-home', icon: 'Storefront' }, 
         ],
         menu_drawer: [
-          /*  { name: 'home', title: 'Home', link: '/', icon: 'House'},
+           /* { name: 'home', title: 'Home', link: '/', icon: 'House'},
             { name: 'friends', title: 'Friends', link: '/friends', icon: 'Users', nonlogged: false }, 
             { name: 'posts-home', title: 'Posts', link: '/posts-home', icon: 'ChatCenteredText' }, 
             { name: 'groups-home', title: 'Groups', link: '/groups-home', icon: 'UsersThree' },
