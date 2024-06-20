@@ -11,6 +11,7 @@ import { subscribe } from 'app/ui/atoms/socket';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, withSequence } from "react-native-reanimated";
 import StarRating from 'react-native-star-rating-widget';
 import StarRatingDisplay from 'react-native-star-rating-widget';
+import { StarsView, StarsAction } from 'app/ui/atoms/stars';
 
 export default function ElementStars(oProps) {
     const { t } = useTranslation();
@@ -186,12 +187,12 @@ export default function ElementStars(oProps) {
     let sActionButton = undefined;
     if((bShowActionVoted && !bShowActionUndo) || bShowActionDisabled) {
         sActionButton = (
-            <StarRatingDisplay starSize ={24} color="#dddddd" enableHalfStar={false} rating={fRate} onChange={() => {}} />
+            <StarsView rating={fRate}  />
         );
     }
     else {
         sActionButton = (
-            <StarRating starSize={24} enableHalfStar={false} rating={fRate} onChange={!bShowActionDisabled ? (number) => {handleDo(number)} : () => {}} />
+            <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {handleDo(number)} : () => {}} />
         );
     }
 

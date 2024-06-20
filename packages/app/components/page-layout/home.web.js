@@ -93,24 +93,24 @@ export default function (props) {
         })
 
 
-    if (currentUser === null && renderBlock) {
+    if (!currentUser && renderBlock) {
         let p = {
             blocks: props.blocks,
             data: props.data,
             block: SplashBlock(props),
         }
         return (
+        <ScrollView>
             <View
                 className={
-                    appSetting('layout', 'max_width') +
+                    appSetting('layout', 'theme') +
                     ' mx-auto w-full'
                 }
             >
                 {appStatic('components_splash', p)}
-                {getLayout(currentUser) == 'ver ' &&
-                    appStatic('components_fullfooter', p)}
             </View>
-        )
+        </ScrollView>);
+
     }
     if (currentUser) {
         let dUser = Object.assign({}, currentUser)

@@ -2,8 +2,7 @@ import Field, {getValidationRules} from './_field';
 import { useController, useFormContext } from 'react-hook-form';
 import { Input } from 'app/design/controls'
 import React, { useEffect, useRef } from 'react';
-import StarRating from 'react-native-star-rating-widget';
-
+import { StarsAction } from 'app/ui/atoms/stars';
 
 export default function FormFieldText(props) {
 
@@ -34,7 +33,7 @@ export default function FormFieldText(props) {
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>
-            <StarRating onRatingStart={setRating} onRatingEnd={setRating} starSize={24} enableHalfStar={false} rating={Number(field.value)} onChange={field.onChange} />
+            <StarsAction rating={Number(field.value)} onChange={field.onChange} />
         </Field>
     );
 }

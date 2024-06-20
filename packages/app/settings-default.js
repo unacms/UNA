@@ -643,7 +643,7 @@ let settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_posts:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false, offset: false, backButton: true },
+            headerSettings: { header: false, footer: false, offset: false, backButton: true, title:false },
         },
         item: {
             layout: 'post',
@@ -709,7 +709,7 @@ let settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_market:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false, offset: false },
+            headerSettings: { header: false, footer: false, offset: false, title: false },
         },
         //############ ADS PAGES ############
         'view-ad': {
@@ -723,7 +723,7 @@ let settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_ads:entity_reviews', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false, offset: false },
+            headerSettings: { header: false, footer: false, offset: false, title:false },
         },
         
         //############ POSTS PAGES ############
@@ -785,7 +785,7 @@ let settingsDefault = {
                 'comments-empty': { name: 'static:comments_empty', showTitle: false, showBg: false,forList: true },
                 comments: { name: 'bx_forum:entity_comments', showTitle: false, showBg: false },
             },
-            headerSettings: { header: false, footer: false, offset: false },
+            headerSettings: { header: false, footer: false, offset: false, title:false },
         },
         //############ GROUPS PAGES ############
         'view-group-profile': {

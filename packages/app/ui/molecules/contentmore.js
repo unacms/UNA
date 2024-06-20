@@ -5,6 +5,7 @@ import { View, Pressable } from 'app/design/view';
 import Html from 'app/ui/atoms/html';
 import { appSetting, linkify2, truncateHTML } from 'app/lib/util';
 import { Button } from 'app/design/controls'
+import Link from 'app/ui/atoms/link';
 
 function HtmlMemo({ data }) {
     const computedData = useMemo(() => {
@@ -45,11 +46,7 @@ export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, 
             <Pressable onPress={handleToggle}>
                 <HtmlMemo data={showFull ? content + linkContent : shortHtml + linkContent} htmlStyles={textStyle} />
                 {showLess && (
-                    <Button
-                        variant="link"
-                        size="base"
-                        title={showFull ? "Show less" : "Show more"}
-                    />
+                    <Text className="text-primary dark:text-primary text-base" >{showFull ? "Show less" : "Show more"}</Text>
                 )}
             </Pressable>
         );
