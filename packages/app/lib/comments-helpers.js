@@ -107,7 +107,7 @@ export function CommentsParts(commentsData, aItems, height = 0, initFormData, is
     ]
 }
 
-export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal }) {
+export function CommentsBrowse({ browse, requestUrl, module, handleReply, handleEdit, addData, addItems, isShort = false, maxCount, height = 0, showCommentsModal, classesBrowse='', commentsTitle="Comments" }) {
     const UnitComments = componentsMap['comments'];
 
     const { t } = useTranslation();
@@ -314,8 +314,8 @@ export function CommentsBrowse({ browse, requestUrl, module, handleReply, handle
 
 
     let header = commentData.total_count > 0 ? (
-        <Row className='flex-row  items-center my-4 pt-4 border-t border-bdr/50 dark:border-bdr-d/50'>
-            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t('Comments')} ({commentData.total_count})</Text>
+        <Row className={'flex-row ' + (classesBrowse? classesBrowse: 'items-center my-4 pt-4 border-t border-bdr/50 dark:border-bdr-d/50')}>
+            <Text className='flex-auto text-base font-bold text-neutral-900 dark:text-neutral-50'>{t(commentsTitle)} ({commentData.total_count})</Text>
             {!appSetting('layout', 'hide_comments_sort') && <View className="ml-4">
                 <Pressable className="flex-auto" onPress={(event) => { event.preventDefault() }}>
                     <DropdownMenu items={[

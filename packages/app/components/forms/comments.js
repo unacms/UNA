@@ -36,5 +36,6 @@ export default function FormComments(props) {
             <View className={isWeb ? '' : ' w-10 '}>{getFormFieldByData(props.data.inputs['cmt_submit'], props.handleSubmit, 'custom', { classes: isWeb ? 'mb-0 ml-0 mt-0' : 'mb-0 mt-0' })}</View>
         </Row>
         {(prevList.length > 0 && prevList[0]?.key) && <Row className='flex-wrap gap-2 mt-3'>{prevList}</Row>}
+        {getFormFieldByData(props.data.inputs['cmt_mood'], props.handleSubmit, 'custom')}
     </View>
 }

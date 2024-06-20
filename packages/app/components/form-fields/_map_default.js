@@ -20,7 +20,7 @@ import LocationRadius from './location_radius';
 import DoubleRange from './doublerange';
 import CheckboxSet from './checkbox_set';
 import Visibility from './visibility';
-import selector from './selector';
+import Stars from './stars';
 
 export const componentsMapDefault = {
     input_set: InputSet,
@@ -28,6 +28,7 @@ export const componentsMapDefault = {
     initial_members: InitialMembers,
     captcha: Captcha,
     custom: Custom,
+    mood: Stars,
     hidden: Hidden,
     password: Password,
     submit: Submit,

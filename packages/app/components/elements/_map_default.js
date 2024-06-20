@@ -23,6 +23,7 @@ import Map from './map';
 import Calendar from './calendar';
 import Grid from './grid';
 import Chart from './chart';
+import Comments from './comments';
 import NotificationsSettings from './notifications_settings';
 
 export const componentsMapDefault = {
@@ -32,6 +33,7 @@ export const componentsMapDefault = {
     invite: Invite,
     map: Map,
     calendar: Calendar,
+    comments: Comments,
     form: Form,
     msg: Msg,
     login: Login,
