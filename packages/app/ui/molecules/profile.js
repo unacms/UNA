@@ -100,7 +100,7 @@ export default function AtomProfile(oProps) {
             sSizeFont = 'text-4xl font-semibold';
             sSizeFontLetter = 'text-7xl font-bold';
             break
-        
+
         case 'full':
             sSize = ' w-full aspect-square rounded-xl '
             iSizeWidth = 400
@@ -117,28 +117,28 @@ export default function AtomProfile(oProps) {
     const bShowLinks = oProps.showLinks !== false;
 
     function DisplayNameLink(oProps) {
-        
+
         if (oProps.href && (oProps.href == 'javascript:' || oProps.href === undefined))
-            oProps.href='';
+            oProps.href = '';
 
         const isAnon = !oProps.url || oProps.url == '' || oProps.url == 'javascript:' || oProps.url == '/javascript:';
 
 
-        if (isAnon || oProps.title.includes("(anonymized)")){
+        if (isAnon || oProps.title.includes("(anonymized)")) {
             return (
-                <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center '+sSizeFont}>
-                    <Text className={'text-neutral-900  dark:text-neutral-100 '  + sSizeFont + ' truncate '}>
-                        {oProps.title && oProps.title.replace(" (anonymized)", '')} 
+                <Row className={'text-neutral-900  dark:text-neutral-100 gap-x-2 items-center ' + sSizeFont}>
+                    <Text className={'text-neutral-900  dark:text-neutral-100 ' + sSizeFont + ' truncate '}>
+                        {oProps.title && oProps.title.replace(" (anonymized)", '')}
                     </Text>
                     <Icon icon="Detective"></Icon>
                 </Row>
             )
-     
+
         }
-       
+
         return (
             <Text className={'text-neutral-900  dark:text-neutral-100 hover:text-linkhover ' + sSizeFont + ' truncate '}>
-                {oProps.title}x
+                {oProps.title}
             </Text>
         )
     }
@@ -158,7 +158,7 @@ export default function AtomProfile(oProps) {
             <View className="flex-row ">
                 <Text className="mr-2 text-neutral-600 dark:text-neutral-400 text-sm    tracking-tight">
                     user
-                </Text>     
+                </Text>
             </View>
         )
     }
@@ -166,7 +166,7 @@ export default function AtomProfile(oProps) {
     let sShowInfo = undefined;
     if (oProps.showInfo != undefined)
         sShowInfo = oProps.showInfo !== 'false' ? oProps.showInfo : undefined;
-    else 
+    else
         sShowInfo = <DisplayInfo {...oProps} />
 
     switch (sDisplayType) {
@@ -181,25 +181,25 @@ export default function AtomProfile(oProps) {
                     </View>
                 </View>
             )
-            break         
+            break
 
         case 'unit_wo_info':
-            let name = oProps.display_name ? oProps.display_name.substr(0,1) : ''
+            let name = oProps.display_name ? oProps.display_name.substr(0, 1) : ''
             const content = <View className="relative flex-row">
-                <View className={sSize +" aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
+                <View className={sSize + " aspect-square overflow-hidden bg-neutral-50 dark:bg-neutral-700 mx-auto  rounded-full "}>
                     {/*!oProps.url_avatar && <View>
                         <View className="w-[50%] z-20 aspect-square bg-neutral-300 dark:bg-neutral-600 border-2 border-neutral-50 dark:border-neutral-700 mx-auto rounded-full mt-[15%] "></View>
                         <View className="w-[80%] -translate-y-[5%] aspect-square bg-neutral-300    dark:bg-neutral-600 mx-auto rounded-t-full "></View>
                         </View>*/}
-                    {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-'+getRandomColor(oProps.id)+'-500 uppercase'}>
+                    {!oProps.url_avatar && <View className={'h-full items-center justify-center bg-' + getRandomColor(oProps.id) + '-500 uppercase'}>
                         <Text className={sSizeFontLetter + ' text-white '}>{name}</Text>
-                        </View>}
+                    </View>}
                     {!!oProps.url_avatar && <Image
-                            className={sSize+"    z-50"}
-                            view="cover"
-                            src={oProps.url_avatar}
-                            alt={oProps.display_name}
-                        />
+                        className={sSize + "    z-50"}
+                        view="cover"
+                        src={oProps.url_avatar}
+                        alt={oProps.display_name}
+                    />
                     }
                 </View>
             </View>;
@@ -209,38 +209,38 @@ export default function AtomProfile(oProps) {
 
         case 'unit_wo_image':
             sResult = (
-                    <View className="flex-col my-auto ">
-                        
-                        {bShowLinks ? (
-                            <Link emulate={emulate} haptics="Select" href={oProps.url}>
+                <View className="flex-col my-auto ">
+
+                    {bShowLinks ? (
+                        <Link emulate={emulate} haptics="Select" href={oProps.url}>
                             <DisplayNameLink
                                 title={oProps.display_name}
                                 url={oProps.url}
                             /></Link>
-                        ) : (
-                            <DisplayNameText title={oProps.display_name} />
-                        )}
-                        
-                        <View >{sShowInfo}</View>
-                    </View>
-         
+                    ) : (
+                        <DisplayNameText title={oProps.display_name} />
+                    )}
+
+                    <View >{sShowInfo}</View>
+                </View>
+
             )
             break
 
         case 'text':
-                sResult = (
-                    <View className="flex-col my-auto">
-                        {bShowLinks ? (
-                            <DisplayNameLink
-                                title={oProps.display_name}
-                                url={oProps.url}
-                            />
-                        ) : (
-                            <DisplayNameText title={oProps.display_name} />
-                        )}
-                    </View>
-                )
-                break
+            sResult = (
+                <View className="flex-col my-auto">
+                    {bShowLinks ? (
+                        <DisplayNameLink
+                            title={oProps.display_name}
+                            url={oProps.url}
+                        />
+                    ) : (
+                        <DisplayNameText title={oProps.display_name} />
+                    )}
+                </View>
+            )
+            break
 
         default:
             sResult = (

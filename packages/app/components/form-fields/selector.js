@@ -11,8 +11,8 @@ import RadioButton from 'app/ui/atoms/radiobutton';
 export default function (props) {
 
     const rules = {};
-    const defaultValue = props.value ? props.value.map(String) : '';
-    const formContext = useFormContext();
+    console.log("props?.value", props?.value)
+    const defaultValue = props?.value ? (Array.isArray(props.value) ? props.value.map(String) : [props.value]) : '';
     const name = props.name ? props.name : '';
     const { field } = useController({ name, rules, defaultValue });
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);

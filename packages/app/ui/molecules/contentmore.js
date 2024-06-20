@@ -13,44 +13,48 @@ function HtmlMemo({ data }) {
     return computedData
 }
 
-export function ContentMore({ content, embed, numberOfLines, textStyle, openSmall, textClassName, showLink = true }) {
-    
+export function ContentMore({ content, embed, numberOfSymbols = 350, textStyle, openSmall, showLink = true, showLess = false }) {
+    const [showFull, setShowFull] = useState(openSmall);
+
     let linkContent = '';
     if (showLink && embed) {
         linkContent = embed;
     }
 
-    const handleShowMore = () => {
-        setShowFull(!showFull);
-    }
-    let shortHtml = truncateHTML(content, 350);
-    
+    let shortHtml = truncateHTML(content, numberOfSymbols);
+
     let showButton = false;
     if (content && shortHtml && shortHtml.trim() != content.trim())
         showButton = true;
 
-    if (showButton){
+    if (showButton) {
         const lastIndex = shortHtml.lastIndexOf('</p>');
         if (lastIndex !== -1) {
-            shortHtml = shortHtml.slice(0, lastIndex) + '... <span class="link">Show more</a></p>' + shortHtml.slice(lastIndex + 4);
+            shortHtml = shortHtml.slice(0, lastIndex) + (showLess ? '...' : '... <span class="link">Show more</a>') + '</p>' + shortHtml.slice(lastIndex + 4);
         }
     }
 
-    const [showFull, setShowFull] = useState(openSmall);
-    if (!showFull) {
-        if (showButton){
-            return (<Pressable onPress={(e) => { handleShowMore(); e.preventDefault() }} >
-                <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
-            </Pressable>);
-        }
-        else{
-            return <HtmlMemo data={shortHtml + linkContent} htmlStyles={textStyle} />
-        }
-        
-    }
-    else {
+
+    const handleToggle = (e) => {
+        setShowFull((prevShowFull) => !prevShowFull);
+        e.preventDefault();
+    };
+
+    if (showButton) {
         return (
-            <HtmlMemo data={content + linkContent} htmlStyles={textStyle} />
-        )
+            <Pressable onPress={handleToggle}>
+                <HtmlMemo data={showFull ? content + linkContent : shortHtml + linkContent} htmlStyles={textStyle} />
+                {showLess && (
+                    <Button
+                        variant="link"
+                        size="base"
+                        title={showFull ? "Show less" : "Show more"}
+                    />
+                )}
+            </Pressable>
+        );
     }
+
+    return <HtmlMemo data={content + linkContent} htmlStyles={textStyle} />;
+
 }
