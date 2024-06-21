@@ -2,11 +2,8 @@ import { useState, useRef } from 'react';
 import { stripTags } from 'app/lib/util';
 import { Text } from 'app/design/typography'
 import { View, Pressable } from 'app/design/view'
-import Time from 'app/ui/atoms/time';
 import Redirect from 'app/ui/atoms/redirect';
 import Profile from 'app/ui/molecules/profile';
-import Link from 'app/ui/atoms/link';
-import Card from 'app/ui/molecules/card'
 import GeneralContentList from './general-content-list';
 export default function UnitSearchResults(props) {
    

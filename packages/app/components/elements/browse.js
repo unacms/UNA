@@ -223,7 +223,7 @@ export default function (props) {
     if ( dataItems.data.length == 0 && ((dataItems?.params?.start === 0 && (!props.only_one_page &&  data.unit!='notifications') ) || status === 'loading'))
         return <>{Preload}</>
 
-    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems.params.start > 0){
+    if (dataItems.data.length == 0 && status === 'success' && data.unit == 'notifications' && dataItems?.params?.start > 0){
         return <View className="p-8">
             <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto mb-auto py-4 px-8 h-full items-center rounded-2xl  bg-neutral-500/10 ">
                 <Text className="text-center text-base text-neutral-600 dark:text-neutral-400 ">

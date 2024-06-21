@@ -29,7 +29,10 @@ export default function (props) {
 
     let dataFlat;
     if (Array.isArray(props.values))
-        dataFlat = props.values.map(obj => ({ ...obj, key: String(obj.key) }));
+        dataFlat = props.values.map(obj => ({
+            ...obj,
+            key: obj.key !== undefined ? String(obj.key) : String(obj.value)
+        }));
     else
         dataFlat = Object.entries(props.values).map(([key, value]) => ({ key: String(key), value }));
     const showSelect = (val) => {
@@ -100,18 +103,21 @@ function ChkList({ values, selectedValues, setFormValue }) {
                 </View>)
             }
             <ScrollView className='h-72'>
-                {filtred.map((item2, index) => (
-                    <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
-                        <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
-                            <RadioButton
-                                value={item2.key}
-                                status={value2.includes(item2.key) ? 'checked' : 'unchecked'}
-                                onPress={() => { addValue2(item2.key); }}
-                            />
-                            <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
-                        </Row>
-                    </Pressable>
-                ))}
+                {filtred.map((item2, index) => {
+                    const key = item2.key;
+                    return (
+                        <Pressable key={`lbl-${index}`} onPress={() => addValue2(item2.value)}>
+                            <Row className='items-center my-1 border border-bdr dark:border-bdr-d rounded-lg hover:bg-primary/10 active:bg-primary/20 dark:hover:bg-primary-d/10 dark:active:bg-primary-d/20' key={'chk' + index}>
+                                <RadioButton
+                                    value={key}
+                                    status={value2.includes(key) ? 'checked' : 'unchecked'}
+                                    onPress={() => { addValue2(key); }}
+                                />
+                                <Text className="text-neutral-700 dark:text-neutral-200  text-sm">{item2.value}</Text>
+                            </Row>
+                        </Pressable>
+                    )
+                })}
 
             </ScrollView>
             <View className='pb-2 justify-end items-start'>

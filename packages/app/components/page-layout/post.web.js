@@ -34,7 +34,7 @@ export default function PageLayout(props) {
                     offset = 128;
                 }
                 let otherH = windowDimensions.height;
-                otherH = otherH - FormH - offset
+                otherH = otherH - FormH - offset;
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
                     setSizes({ formHeight: FormH, formWidth: width, otherHeight: otherH, cntHeight: height })
                 });
@@ -85,7 +85,6 @@ export default function PageLayout(props) {
     const offset = commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html === 2 ? "pb-36 " : "pb-2";
     const isStycky = windowDimensions.width < 1024 || sizes.otherHeight < sizes.cntHeight;
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
-
     return (
         <>
             {header}
@@ -96,7 +95,7 @@ export default function PageLayout(props) {
                             {CommentsPartsData[0]}
                         </View>
                     </Row>
-                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full ' : ' px-6 py-2 w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
+                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full ' : ' px-3 py-2 w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
                         {CommentsPartsData[1]} 
                     </View>
                 </View>
