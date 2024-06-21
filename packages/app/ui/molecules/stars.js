@@ -1,25 +1,28 @@
 import { useState, useContext, useEffect } from 'react';
+import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { appSetting, FeedbackHaptics } from 'app/lib/util';
 import { fetcher } from 'app/lib/fetcher';
 import { useCurrentUser } from 'app/context/user';
 import { ActionsData } from 'app/context/actions';
-import { View } from 'app/design/view'
-import { ButtonMenuCounterDefault, ButtonMenuCounterText, Modal } from 'app/design/controls';
+import { View, Pressable } from 'app/design/view'
+import { ButtonMenuCounterDefault, ButtonMenuCounterText, ButtonMenuGroupItem, ButtonsGroupMenu, Modal } from 'app/design/controls';
+import DropdownPopup from 'app/ui/atoms/dropdown-popup';
 import Profile from 'app/ui/molecules/profile';
 import { subscribe } from 'app/ui/atoms/socket';
 import Animated, { useSharedValue, withTiming, useAnimatedStyle, withSequence } from "react-native-reanimated";
-import StarRating from 'react-native-star-rating-widget';
-import StarRatingDisplay from 'react-native-star-rating-widget';
 import { StarsView, StarsAction } from 'app/ui/atoms/stars';
 
 export default function ElementStars(oProps) {
     const { t } = useTranslation();
+    const bWeb = Platform.OS === 'web';
     const oSettings = appSetting('social_actions', 'star');
 
     const oParams = {...oSettings, ...oProps.params};
     const oAction = oProps.action;
     const oCounter = oProps.counter;
+
+    const sIcon = oSettings[oProps['system']]?.icon ? oSettings[oProps['system']].icon : "Star";
 
     //--- default display type: action, counter, both.
     const sDisplayType = oProps?.displayType ? oProps.displayType : 'both';
@@ -28,6 +31,7 @@ export default function ElementStars(oProps) {
     const bShowAction = (oParams?.show_action == undefined || oParams.show_action === true) && (sDisplayType == 'action' || sDisplayType == 'both');
     const bShowCounter = oParams?.show_counter != undefined && oParams.show_counter === true && (sDisplayType == 'counter' || sDisplayType == 'both');
     const bShowFull = bShowAction && bShowCounter;
+    const bShowCombined = bShowFull && oParams?.show_combined != undefined && oParams.show_combined === true;
 
     let oButtonProps = {};
     if(oProps.primary)
@@ -54,7 +58,9 @@ export default function ElementStars(oProps) {
     const { actionsData, setActionsData } = useContext(ActionsData);
     const [ actionsDataState, asetActionsDataState ] = useState({});
 
-    const [ popupVisible, setPopupVisible ] = useState(false);
+    const [ popupVisibleDo, setPopupVisibleDo ] = useState(false);
+
+    const [ popupVisiblePb, setPopupVisiblePb ] = useState(false);
     const [ performedBy, setPerformedBy ] = useState();
 
     const isContextVar = (sName) => {
@@ -111,6 +117,19 @@ export default function ElementStars(oProps) {
 
         performAction('do', {value: iNumber}, (oData) => {
             setContextVars(oData);
+            setPopupVisibleDo(false);
+        });
+    };
+
+    const handleUndo = () => {
+        FeedbackHaptics(oParams.haptics_type);
+
+        let iNumber = oProps.action.value;
+        if(isContextVar('value'))
+            iNumber = getContextVar('value');
+
+        performAction('do', {value: iNumber}, (oData) => {
+            setContextVars(oData);
         });
     };
 
@@ -127,7 +146,7 @@ export default function ElementStars(oProps) {
                 return;
 
             setPerformedBy(oData.performed_by);
-            setPopupVisible(true);
+            setPopupVisiblePb(true);
         });
     };
 
@@ -160,9 +179,6 @@ export default function ElementStars(oProps) {
             setContextVars(aData.api.performer_id == currentUser.id ? aData.api : {counter: aData.api.counter});
     }
 
-    //--- show action
-    const bShowActionUndo = oAction?.is_undo === true;
-
     let bShowActionVoted = oAction?.is_voted === true;
     if(isContextVar('is_voted'))
         bShowActionVoted = getContextVar('is_voted') === true;
@@ -175,32 +191,71 @@ export default function ElementStars(oProps) {
     if(isContextVar('title'))
         sTitle = getContextVar('title');
 
+    let iCount = 0;
+    if (oCounter?.count)
+        iCount = oCounter.count;
+    if(isContextVar('counter')) {
+        const oCounterGlobal = getContextVar('counter');
+        if(oCounterGlobal?.count != undefined)
+            iCount = oCounterGlobal.count;
+    }
+
     let fRate = '';
     if (oCounter?.rate)
         fRate = oCounter.rate;
     if(isContextVar('counter')) {
         const oCounterGlobal = getContextVar('counter');
-        if(oCounterGlobal?.rate)
+        if(oCounterGlobal?.rate != undefined)
             fRate = oCounterGlobal.rate;
     }
 
+    //--- show action
     let sActionButton = undefined;
-    if((bShowActionVoted && !bShowActionUndo) || bShowActionDisabled) {
-        sActionButton = (
-            <StarsView rating={fRate}  />
-        );
-    }
-    else {
-        sActionButton = (
-            <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {handleDo(number)} : () => {}} />
-        );
+    if(bShowAction) {
+        const bShowActionAsButton = oParams?.show_action_as_button == undefined || oParams.show_action_as_button === true;
+        const bShowActionLabel = oParams?.show_action_label == undefined || oParams.show_action_label === true;
+
+        const bShowActionUndo = oAction?.is_undo === true;
+
+        const ButtonAction = !bShowCombined ? (bShowActionAsButton ? ButtonMenuActionDefault : ButtonMenuActionText) : ButtonMenuGroupItem;
+
+        if(bShowActionVoted) {
+            if(bShowActionUndo)
+                sActionButton = (
+                    <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={handleUndo} {...oButtonProps} />
+                );
+            else
+                sActionButton = (
+                    <ButtonAction key="action" size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={true} {...oButtonProps} />
+                );
+        }
+        else {
+            if(bWeb) {
+                sActionButton = (
+                    <Pressable key="action" onPress={(event) => {event.preventDefault()}}>
+                        <DropdownPopup size="auto" open={!!popupVisibleDo} onOpenChange={async (bOpen) => {setPopupVisibleDo(bOpen)}}>
+                        {[
+                            <ButtonAction variant={bShowCombined ? 'group-item' : false} size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : ''} onPress={() => {}} disabled={bShowActionDisabled} {...oButtonProps} />,
+                            <StarsAction rating={fRate} onChange={!bShowActionDisabled ? (number) => {handleDo(number)} : () => {}} />
+                        ]}
+                        </DropdownPopup>
+                    </Pressable>
+                );
+            }
+            else {
+                //TODO: Roman, something should be used here for Native.
+                sActionButton = (
+                    <ButtonAction size={sDisplaySize} startDecorator={sIcon} title={bShowActionLabel ? sTitle : false} {...oButtonProps} />
+                );
+            }
+        }
     }
 
     //--- Counter
     const bShowCounterAsButton = oParams?.show_counter_as_button != undefined && oParams.show_counter_as_button === true;
     const bAllowViewVoted = oSettings[oProps['system']]?.allow_view_voted != undefined ? oSettings[oProps['system']].allow_view_voted : true;
 
-    const ButtonCounter = bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText;
+    const ButtonCounter = !bShowCombined ? (bShowCounterAsButton ? ButtonMenuCounterDefault : ButtonMenuCounterText) : ButtonMenuGroupItem;
 
     const sharedValue = useSharedValue(1);
     const indicatorStyle = useAnimatedStyle(() => {
@@ -218,7 +273,7 @@ export default function ElementStars(oProps) {
 
     let sCounterButton = undefined;
     let sCounterPopup = undefined;
-    if(bShowCounter && oCounter?.rate != undefined && fRate > 0) {
+    if(bShowCounter && (iCount > 0 || fRate > 0)) {
         let sUsers = undefined;
         if(performedBy) {
             sUsers = performedBy.map(aUser => {
@@ -238,18 +293,40 @@ export default function ElementStars(oProps) {
         );
 
         sCounterPopup = (
-            <Modal title={t('Likes')} onVisible={popupVisible} onClose={() => {setPopupVisible(false)}}>
+            <Modal title={t('Likes')} onVisible={popupVisiblePb} onClose={() => {setPopupVisiblePb(false)}}>
                 <View className="p-2 gap-y-4 overflow-y-auto text-neutral-700 dark:text-neutral-200">{sUsers}</View>
             </Modal>
         );
     }
 
-    const sObject = getName();
-    return (
-        <View className="flex-auto flex-row items-center h-full">
-            {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
-            {bShowCounter &&  !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
-            {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
-        </View>
-    );
+    let sResult = undefined;
+    if(bShowCombined) {
+        let aButtonsGroup = [];
+
+        if(bShowAction && !!sActionButton)
+            aButtonsGroup.push(sActionButton)
+
+        if(bShowCounter && !!sCounterButton)
+            aButtonsGroup.push(sCounterButton)
+
+        sResult = (
+            <View>
+                <ButtonsGroupMenu size={sDisplaySize}  {...oButtonProps}>{aButtonsGroup}</ButtonsGroupMenu>
+                {sCounterPopup}
+            </View>
+        );
+    }
+    else {
+        const sObject = getName();
+
+        sResult = (
+            <View className="flex-auto flex-row items-center h-full">
+                {bShowAction && <View key={sObject + '-action'} className={'flex-auto' + (bShowFull ? ' mr-1' : '')}>{sActionButton}</View>}
+                {bShowCounter && !!sCounterButton && <View key={sObject + '-counter-button'}>{sCounterButton}</View>}
+                {bShowCounter && !!sCounterPopup && <View key={sObject + '-counter-popup'}>{sCounterPopup}</View>}
+            </View>
+        );
+    }
+
+    return sResult;
  }

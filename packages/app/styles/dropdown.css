@@ -18,6 +18,9 @@
 .DropdownMenuContentSmall{
   width: 16rem;
 }
+.DropdownMenuContentAuto{
+  width: auto;
+}
 .DropdownMenuContent[data-side='top'],
 .DropdownMenuSubContent[data-side='top'] {
   animation-name: slideDownAndFade;
