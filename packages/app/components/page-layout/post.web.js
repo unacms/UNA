@@ -28,13 +28,12 @@ export default function PageLayout(props) {
         if (viewFormRef.current) {
             viewFormRef.current.measure((x, y, width, height, pageX, pageY) => {
                 let FormH = height
-                let offset = 90;
-                if (windowDimensions.width < 1024) {
-                    FormH = FormH
-                    offset = 128;
-                }
+                let offset = 100;
                 let otherH = windowDimensions.height;
-                otherH = otherH - FormH - offset;
+                if (windowDimensions.width >= 1024){
+                    otherH = otherH - FormH - offset;
+                }
+                
                 viewCntRef.current.measure((x, y, width, height, pageX, pageY) => {
                     setSizes({ formHeight: FormH, formWidth: width, otherHeight: otherH, cntHeight: height })
                 });
@@ -85,17 +84,20 @@ export default function PageLayout(props) {
     const offset = commentsData?.content[0]?.form?.data?.inputs?.cmt_text?.html === 2 ? "pb-36 " : "pb-2";
     const isStycky = windowDimensions.width < 1024 || sizes.otherHeight < sizes.cntHeight;
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
+
+    console.log('sizes', sizes, isStycky)
+
     return (
         <>
             {header}
             <View className=" py-0 lg:px-4 mt-14 lg:mt-4 ">
                 <View className="max-w-5xl mx-auto w-full border-bdrcard dark:border-bdrcard-d group duration-500  lg:rounded-2xl bg-bgrcard dark:bg-bgrcard-d ">
-                    <Row className='pb-20'>
-                        <View ref={viewCntRef} style={{ marginBottom: isStycky ? /*sizes.formHeight +*/ 16 : 24, heightx: sizes.otherHeight }} className={'w-full  p-3 sm:p-6 '+ (windowDimensions.width < 1024 ? '' : offset)}>
+                    <Row style={{ paddingBottom: isStycky? sizes.formHeight: 0 }}>
+                        <View ref={viewCntRef} className={'w-full  p-3 sm:p-6 '+ (windowDimensions.width < 1024 ? '' : offset)}>
                             {CommentsPartsData[0]}
                         </View>
                     </Row>
-                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full ' : ' px-3 py-2 w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
+                    <View ref={viewFormRef} style={{ width: sizes.formWidth }} onLayout={handleLayout} className={isStycky ? ' px-3 bg-bgrcard dark:bg-bgrcard-d border-t border-bdr dark:border-bdr-d fixed bottom-0 w-full ' : ' px-3 w-full sm:rounded-b-2xl border-t border-bdr dark:border-bdr-d '} >
                         {CommentsPartsData[1]} 
                     </View>
                 </View>
