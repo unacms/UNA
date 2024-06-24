@@ -33,7 +33,7 @@ export default function CreateConvo ({ onSave, initedData=[], convoId }) {
     )
 };
 
-export function CreateConvoButton({onSave, variant ='small'}) {
+export function CreateConvoButton({onSave, onShow, variant ='small'}) {
     const { bottomSheetData, setBottomSheetData } = useContext(BottomSheetData);
     const newConvo = () => {
         setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} />, showClose: true, snapPoints: ['25%', '50%'] });
@@ -47,6 +47,6 @@ export function CreateConvoButton({onSave, variant ='small'}) {
     if (variant == 'small')
         return <View className="ml-2 " key={`add-1`} ><Button startDecorator={"Plus"} variant="outline" rounded size="sm" onPress={() => newConvo()} /></View>
 
-    return <Button startDecorator={"Plus"} variant="primary" title="Create your first conversation" rounded  onPress={() => newConvo()} />
+    return <Button startDecorator={"Plus"} variant="primary" title="Create your first conversation" rounded  onPress={() => {newConvo(), onShow()}} />
 
 }

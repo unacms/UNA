@@ -49,8 +49,7 @@ export default function PageLayout({ url, data, layoutName, blocks: { main } }) 
                 if (term){
                     let request_url = '/api.php?r=bx_messenger/search_lots/Services&params=' + JSON.stringify({ term: term });
                     const sResponse = await fetcher(request_url);
-                    //ANTON TO CHECK
-                    setConvos({ data: sResponse.data.lots });
+                    setConvos({ data: sResponse.data.lots ? sResponse.data.lots : [] });
                 }
                 else{
                     let request_url = '/api.php?r=bx_messenger/get_convos_list/Services&params[]=' + JSON.stringify({ group: menuItem, count: 0 });

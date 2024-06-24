@@ -4,7 +4,7 @@ import { fetcher } from 'app/lib/fetcher';
 import React, { memo, useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
 import { appSetting } from 'app/lib/util'
 import UniList from 'app/ui/atoms/unilist'
-import { Button, InputRounded, InputRoundedSmall  } from 'app/design/controls'
+import { Button, InputRounded, InputRoundedSmall } from 'app/design/controls'
 import Form from 'app/components/elements/form';
 import { Keyboard } from 'react-native'
 import { useWindowDimensions } from 'react-native';
@@ -36,7 +36,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [formHeight, setFormHeight] = useState(100);
     const [showMsg, setShowMsg] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
-    
+
     const refListConvos = useRef();
     const refListJots = useRef();
     const selectedConvoIndex = convos?.data && convoId ? convos.data.findIndex(item => item.id === convoId) : -1;
@@ -46,7 +46,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const [replyItem, setReplyItem] = useState(false);
 
     const layoutHeightLeft = layoutHeight;
-    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight- 10;
+    const layoutHeightRight = isWeb ? layoutHeight - 48 - formHeight - 10 : layoutHeight - formHeight - 10;
 
     let { data: dynamicData, error } = useSWR(
         commentForm ? ['/api.php?r=bx_messenger/get_send_form/Services&params=' + JSON.stringify({ id: selectedConvo.id, convo_id: selectedConvo.id, reply_id: replyItem ? replyItem.id : 0 }), '', commentForm] : null,
@@ -65,13 +65,13 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
             scrolTo();
     }, [dynamicData]);
 
-   
+
 
     const handleSearch = async (sValue) => {
         setSearchValue(sValue);
     }
 
-    useEffect(() => {   
+    useEffect(() => {
         fetchConvos(searchValue);
         if (convos.data.length > 0)
             setConvoId(convos.data[0].id);
@@ -149,18 +149,18 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     }
 
     const scrolTo = () => {
-        if (refListJots && refListJots?.current ) {
+        if (refListJots && refListJots?.current) {
             let offset = 0;
             if (selectedConvo.unread > 0)
                 offset = selectedConvo.unread - 1;
-            if (isWeb){
+            if (isWeb) {
                 //offset
-               // if (jots?.data?.params?.start == 0){
-                    setTimeout(() => {
-                        refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
-                    }, 100);
-                   
-              //  }
+                // if (jots?.data?.params?.start == 0){
+                setTimeout(() => {
+                    refListJots.current.scrollToIndex({ animated: false, align: "end", behavior: "smooth", index: 9999999999 });
+                }, 100);
+
+                //  }
             }
             else {
                 //console.log('-----------------', jots.data?.jots?.length - offset - 1)
@@ -255,7 +255,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
         else {
             const content = (<View className='items-center justify-center'>
                 <Row className='mb-4 gap-x-4'>
-                    <Profile {...sResponse.data.lot.author_data}  />
+                    <Profile {...sResponse.data.lot.author_data} />
                     <View>
                         <Text>Participants: {sResponse.data.lot.parts}</Text>
                         <Text>Messages: {sResponse.data.lot.messages}</Text>
@@ -264,7 +264,7 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
                 </Row>
             </View>)
             setBottomSheetData({ title: 'Conversation info', content: content, showClose: true, snapPoints: ['25%', '50%'] });
-            
+
         }
     }
 
@@ -276,9 +276,9 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
     const editConvo = async () => {
         let request_url = '/api.php?r=bx_messenger/get_parts_list/Services&params=' + JSON.stringify({ lot: selectedConvo.id2 });
         const sResponse = await fetcher(request_url);
-        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['25%', '50%'] });   
+        setBottomSheetData({ title: 'Add users to start messaging', content: <CreateConvo onSave={onSaveHandler} initedData={sResponse.data} convoId={selectedConvo.id2} />, showClose: true, snapPoints: ['25%', '50%'] });
     }
-    
+
     const onFormSubmit = (formData, d) => {
         setCommentForm(formData);
         Keyboard.dismiss();
@@ -362,29 +362,38 @@ export default function ({ defaultConvoId, selectedMenu, convos, layoutHeight, f
 }
 
 const Convos = memo(({ layoutHeightLeft, data, refListConvos, selectedConvoIndex, changeConvo, onSave, searchValue, handleSearch }) => {
-            
-    return data && data.length > 0 ? <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
-        {data && data.length > 0 && <>
-        
-            <Row  className='py-2 px-3 border-b border-bdr dark:border-bdr-d'>
-        <InputRounded name="search" placeholder={("Search") + '...'}   value={searchValue}  onChangeText={(value) => handleSearch(value)} />
-    </Row><UniList
-            refer={refListConvos}
-            height={layoutHeightLeft}
 
-            data={data}
-            renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
-        /></>}
-    </View> : <View className='items-center justify-center w-full h-full'><View className="pt-8">
-        <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
-            <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
-                <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
-                    Bla bla bal
-                </Text>
-            </View>
-            <CreateConvoButton variant='full' onSave={onSave} />
-        </View>
-    </View></View>
+    function onSave2() {
+        handleSearch('')
+    }
+
+
+    return <View style={{ height: layoutHeightLeft }} className={' w-full bg-bgrcard dark:bg-bgrcard-d md:w-2/5  border-bdr dark:border-bdr-d border-r'}>
+        <Row className='py-2 px-3 border-b border-bdr dark:border-bdr-d'>
+            <InputRounded name="search" placeholder={("Search") + '...'} value={searchValue} onChangeText={(value) => handleSearch(value)} />
+        </Row>
+        {data && data.length > 0 ? <>
+
+            <UniList
+                refer={refListConvos}
+                height={layoutHeightLeft}
+
+                data={data}
+                renderItem={({ item, index }) => <ItemConvo selectedIndex={selectedConvoIndex} item={item} index={index} changeConvo={changeConvo} />}
+            /></>
+            : <View className='items-center justify-center w-full h-full'><View className="pt-8">
+                <View className="flex-col gap-y-2 items-center opacity-80 justify-center  mx-auto my-auto  py-4 px-8  items-center rounded-2xl  bg-neutral-500/10 ">
+                    <View className="flex-col mx-auto  text-neutral-800 dark:text-neutral-200 ">
+                        <Text className="text-center text-lg text-neutral-800 dark:text-neutral-200 lg:text-xl font-semibold  ">
+                            No conversations found
+                        </Text>
+                    </View>
+                    <CreateConvoButton variant='full' onSave={onSave} onShow={onSave2} />
+                </View>
+            </View></View>
+
+        }
+    </View>
 });
 /*bg-neutral-500/10 border-b border-neutral-500/10*/
 const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots, showConvo, deleteConvo, leaveConvo, getConvo, editConvo, handleReply, startReached }) => {
@@ -392,13 +401,13 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
     return (<>
         <View className='md:px-0 border-bdrcard dark:border-bdrcard-d border-b'>
             {isWeb && <Row className='px-4 py-3 items-center justify-between w-full'>
-                <Row className='items-center justify-start '>           
+                <Row className='items-center justify-start '>
                     {isSmallScreen && <Button variant="text" startDecorator='ArrowLeft' rounded align="start" onPress={() => showConvo()} />}
                     <Text className="text-lg lg:text-xl font-bold font-bold tracking-tight  text-neutral-900 dark:text-neutral-50">{title}</Text>
                 </Row>
                 <Row className='items-center gap-x-2 '>
                     <Button buttonTooltip="Edit participants list" startDecorator="Users" variant="outline" rounded size="sm" onPress={() => editConvo()} />
-                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="sm"  onPress={() => leaveConvo()} />
+                    <Button buttonTooltip="Leave" startDecorator="SignOut" variant="outline" rounded size="sm" onPress={() => leaveConvo()} />
                     <Button buttonTooltip="Delete" startDecorator='Trash' variant="outline" rounded size="sm" onPress={() => deleteConvo()} />
                     <Button buttonTooltip="Info" startDecorator='Info' variant="outline" rounded size="sm" onPress={() => getConvo()} />
                 </Row>
@@ -414,7 +423,7 @@ const Jots = memo(({ isSmallScreen, title, layoutHeightRight, data, refListJots,
                 scrollToLastItem={true}
                 data={isWeb ? data : data.slice().reverse()}
                 height={layoutHeightRight}
-              
+
                 useWindowScroll
                 renderItem={({ item, index }) => <ItemJot handleReply={handleReply} item={item} index={index} />}
             />}
