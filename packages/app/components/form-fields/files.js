@@ -74,7 +74,6 @@ export default function (props) {
     }, [imageSource]);
 
     useEffect(() => {
-        console.log('formValue', field.value, formValue);
         if (formValue && field.value && !isNaN(field.value)) {
             RestoreGhosts(0);
         }

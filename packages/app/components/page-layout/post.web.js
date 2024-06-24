@@ -85,8 +85,6 @@ export default function PageLayout(props) {
     const isStycky = windowDimensions.width < 1024 || sizes.otherHeight < sizes.cntHeight;
     const CommentsPartsData = CommentsParts(commentsData?.content[0], aItems);
 
-    console.log('sizes', sizes, isStycky)
-
     return (
         <>
             {header}

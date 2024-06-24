@@ -408,10 +408,10 @@ export function CommentsForm({ form, requestUrl, module, browse, formData, handl
             form.data.inputs.cmt_parent_id.value = formData.parent_id;
             if (appSetting('layout', 'comments_mentions')){
                 if (formData.author.url == "/javascript:"){
-                    form.data.inputs.cmt_text.value = '<span class="bx-mention-link">' + formData.author.display_name.replace(" (anonymized)", '') + '</span>&nbsp;';
+                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" data-id="[object Object]" href="#" title="'+formData.author.display_name+'" dchar="@" data-profile-id="-1" contenteditable="false">'+formData.author.display_name+'</a>&nbsp;';
                 }
                 else{
-                    form.data.inputs.cmt_text.value = '<a target="_blank" id="' + md5(formData.text) + '" class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
+                    form.data.inputs.cmt_text.value = '<a class="bx-mention-link" href="' + formData.author.url + '">' + formData.author.display_name + '</a>&nbsp;';
                 }
             }
             form.data.reset = true;

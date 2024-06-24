@@ -272,7 +272,6 @@ export default function (props) {
         applyStyles(stylesBgImage);
         applyStyles(stylesBg);
     }, [stylesBgImage, stylesBg]);
-    console.log('Content1')
     return <MemoizedContent blocks={blocks} headerSettings={headerSettings} currentUser={currentUser} layoutName={layoutName} data={data} children={children} uri={uri} />
 }
 
