@@ -88,7 +88,7 @@ const expoConfig = {
     },
     plugins: [
       [
-        "@config-plugins/react-native-ble-plx",
+        "react-native-ble-plx",
         {
           "isBackgroundEnabled": true,
           "modes": ["peripheral", "central"],

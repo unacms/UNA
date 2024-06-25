@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@amplitude/react-native": "2.7.0",
-    "@config-plugins/react-native-ble-plx": "^7.0.0",
     "@giphy/react-native-sdk": "2.3.0",
     "@gorhom/bottom-sheet": "^4",
     "@jitsi/react-native-sdk": "^0.4.1",
@@ -47,7 +46,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.2",
     "react-i18next": "^13.2.2",
-    "react-native": "0.72.3",
+    "react-native": "0.72.10",
     "react-native-background-timer": "2.4.1",
     "react-native-ble-plx": "^3.1.2",
     "react-native-calendar-events": "2.2.0",
