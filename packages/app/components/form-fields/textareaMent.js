@@ -7,14 +7,33 @@ import { fetcher } from 'app/lib/fetcher';
 import { replaceMentionValues } from 'react-native-controlled-mentions';
 import { MentionInput as MentionInputDef } from 'react-native-controlled-mentions'
 import { styled } from 'nativewind'
+import { Theme } from 'app/design/theme';
 
 const MentionInput = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5 h-[40px]')
-const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput  border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
-const MentionInputMultiTransparent = styled(MentionInputDef, '  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
+const MentionInputMulti = styled(MentionInputDef, ' bg-bgrinput text-neutral-900 border border-bdrinput dark:border-bdrinput-d focus:bg-bgrinput-focus focus:outline-none  focus:border-bdrinput-focus dark:focus:border-bdrinput-df  text-neutral-900 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-100 text-base leading-5')
+const MentionInputMultiTransparent = styled(MentionInputDef, '  text-red-500 rounded-lg   w-full p-2 dark:bg-bgrinput-d dark:focus:bg-bgrinput-dafocus placeholder-neutral-500 dark:text-neutral-200 text-base leading-5 text-neutral-800')
 
-export default function FormFieldText({ name, value = '', numLines = 4, ...props }) {
+function formatText(text) {
+    let v =  text.replace(/<\/?p>/g, '\n').trim();
+    v =  v.replace(/&nbsp;/g, ' ').trim();
+    v = v.replace(
+        /<a(.*?)class="bx-mention-link(.*?)"[^>]*>([^<]+)<\/a>/g,
+        (match, p1, p2, name) => {
+            //console.log('Name:', name);
+            const trigger = '@'; // Assuming '@' is the trigger in this context
+            //console.log('Trigger:', trigger);
+            return `@[${name}](7)`; // Replace '8' with the appropriate ID if needed
+        }
+    );
+    return v;
+}
+
+export default function ({ name, value = '', numLines = 4, ...props }) {
+    const { colors } = Theme();
     const { field } = useController({ name, rules: {}, defaultValue: value });
-    const [localValue, setLocalValue] = useState(field.value);
+    let v =  formatText(field.value);
+
+    const [localValue, setLocalValue] = useState(v);
     const [suggestions, setSuggestions] = useState([]);
     const [keywordval, setKeyword] = useState(['', '']);
 
@@ -32,6 +51,7 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
         fetchData();
     }, [keywordval]);
 
+    
     useEffect(() => {
         if (field.value == ''){
             setLocalValue('');
@@ -42,6 +62,7 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
         setLocalValue(val);
         
         let v = replaceMentionValues(val, ({trigger, name, id}) => `<a class="bx-mention-link" href="/pages/view-persons-profile?id=${id}" title="${name}" dchar="${trigger}" data-profile-id="${id}">${trigger}${name}</a>`)
+        v = v.split('\n').map(line => `<p>${line}</p>`).join('');
         field.onChange(v)
     }
 
@@ -81,18 +102,19 @@ export default function FormFieldText({ name, value = '', numLines = 4, ...props
         <Field {...props}>
             <MentionInput style={styles}
                 multiline
+                autoFocus={true}
                 value={localValue}
                 onChange={handleChange2}
                 partTypes={[
                     {
                         trigger: '@', 
                         renderSuggestions: (params) => renderSuggestions({...params, trigger: '@'}),
-                        textStyle: {fontWeight: 'bold', color: 'blue'}, 
+                        textStyle: {fontWeight: 'bold', color: colors.primary}, 
                     },
                     {
                         trigger: '#', 
                         renderSuggestions: (params) => renderSuggestions({...params, trigger: '#'}),
-                        textStyle: {fontWeight: 'bold', color: 'blue'}, 
+                        textStyle: {fontWeight: 'bold', color: colors.primary}, 
                     },
                 ]}
             />

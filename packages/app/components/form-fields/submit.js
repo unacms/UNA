@@ -4,7 +4,7 @@ import { Button, Hidden } from 'app/design/controls'
 import { View } from 'app/design/view'
 import { useWindowDimensions } from 'react-native'
 import { appSetting } from 'app/lib/util'
-
+import { Keyboard } from 'react-native';
 export default function FormFieldSubmit(props) {
     const formContext = useFormContext();
     const { formState } = formContext;
@@ -21,7 +21,7 @@ export default function FormFieldSubmit(props) {
             <Button
                 title={!props.icon_only ? props.value : ''}
                 variant={!!props.variant ? props.variant : 'primary'}
-                onPress={props.handleSubmit}
+                onTouchStart={()=> {if (!props.disabled){props.handleSubmit();  Keyboard.dismiss();console.log('submitting')}}}
                 startDecorator={props.icon}
                 size={!!props.size ? props.size : 'base'}
                 disabled={props.disabled ? props.disabled : false}

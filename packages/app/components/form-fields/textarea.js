@@ -2,7 +2,7 @@ import Field, {getValidationRules} from './_field';
 import FormFieldMent from './textareaMent';
 import { useController,useFormContext } from 'react-hook-form';
 import { InputMulti, Input } from 'app/design/controls'
-import { useState  } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function FormFieldText(props) {
     
@@ -45,6 +45,12 @@ export default function FormFieldText(props) {
     if (props.html == 2 || props.html == 3){
         input =  <FormFieldMent  {...props} />;
     }    
+
+
+    useEffect(() => {
+        if (props.value !== undefined)
+            field.onChange(props.value)
+    }, [props.name, props.value]);
 
     return (
         <Field {...props} error2={formContext.formState.errors[name]}>

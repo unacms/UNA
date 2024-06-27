@@ -11,6 +11,7 @@ import { FeedbackHaptics } from 'app/lib/util';
 import * as Linking from 'expo-linking';
 import { useRouter, useNavigation } from 'expo-router';
 import { parseUrl } from 'app/lib/util'
+import { clearNotif } from 'app/lib/util'
 
 export default function () {
 
@@ -77,9 +78,14 @@ export default function () {
                         marginBottom: 5,
                         height: 44,
                         marginTop: 5,
+                        borderRadius: 10,
+                        marginLeft:10,
+                        marginRight:10,
                     },
+
                     tabBarInactiveTintColor: colors.barsColor,
                     tabBarActiveTintColor: colors.primary,
+                    tabBarActiveBackgroundColor: colors.primaryBg,
                     freezeOnBlur: true,
                     unmountOnBlur: false,
                 })}
@@ -109,6 +115,12 @@ export default function () {
                                 initialParams={{ url2: tab.url }}
                                 listeners={{
                                     tabPress: e => {
+                                        if (e.type=='tabPress'){
+                                            let a = e.target.split('-');
+                                            let d= TabList[a[0].replace('tab', '')];
+                                            if(d.url == appSetting('layout', 'notifications'))
+                                                clearNotif(currentUser, setCurrentUser)
+                                        }
                                         FeedbackHaptics('Medium');
                                     },
                                 }}
